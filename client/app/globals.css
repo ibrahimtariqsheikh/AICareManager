@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+
+    --card: 0 0% 97%;
+    --card-foreground: 0 0% 0%;
+
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 0%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 40%;
+
+    --info: 0 0% 20%;
+    --info-foreground: 0 0% 100%;
+
+    --accent: 0 0% 93%;
+    --accent-foreground: 0 0% 0%;
+
+    --sidebar: 0 0% 97;
+    --sidebar-hover: 0 0% 93%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90.2%;
+    --input: 0 0% 90.2%;
+    --ring: 0 0% 0%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --gradient: linear-gradient(to top left, #000000, #333333);
+
+    --background: 0 0% 7%;
+    --foreground: 0 0% 100%;
+
+    --muted: 0 0% 40%;
+    --muted-foreground: 0 0% 90%;
+
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 100%;
+
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 100%;
+
+    --border: 0 0% 30%;
+    --input: 0 0% 15%;
+
+    --info: 0 0% 25%;
+    --info-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 80%;
+    --secondary-foreground: 0 0% 0%;
+
+    --sidebar: 0 0% 5;
+    --sidebar-hover: 0 0% 15%;
+
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --ring: 0 0% 80%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.dotPattern {
+  background-image: radial-gradient(rgb(35, 35, 35) 1px, transparent 1px);
+  background-size: 25px 25px;
+}
+
+.use-automation-zoom-in {
+  animation: automation-zoom-in 0.5s;
+}
+
+@keyframes automation-zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer utilities {
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  .animation-delay-6000 {
+    animation-delay: 6s;
+  }
+}
