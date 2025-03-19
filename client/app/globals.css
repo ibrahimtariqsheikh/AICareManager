@@ -2,29 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  height: 100vh;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-
 @layer base {
+
+  html,
+  body {
+    @apply h-screen;
+  }
+
+  *,
+  *::before,
+  *::after {
+    @apply box-border;
+  }
+
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 97%;
     --foreground: 0 0% 0%;
 
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
 
-    --card: 0 0% 97%;
+    --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
-
 
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
@@ -41,7 +40,7 @@ body {
     --accent: 0 0% 93%;
     --accent-foreground: 0 0% 0%;
 
-    --sidebar: 0 0% 97;
+    --sidebar: 0 0% 100%;
     --sidebar-hover: 0 0% 93%;
 
     --destructive: 0 84.2% 60.2%;
@@ -92,49 +91,12 @@ body {
 
     --ring: 0 0% 80%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-.dotPattern {
-  background-image: radial-gradient(rgb(35, 35, 35) 1px, transparent 1px);
-  background-size: 25px 25px;
-}
-
-.use-automation-zoom-in {
-  animation: automation-zoom-in 0.5s;
-}
-
-@keyframes automation-zoom-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@layer utilities {
-  .animation-delay-2000 {
-    animation-delay: 2s;
-  }
-
-  .animation-delay-4000 {
-    animation-delay: 4s;
-  }
-
-  .animation-delay-6000 {
-    animation-delay: 6s;
   }
 }

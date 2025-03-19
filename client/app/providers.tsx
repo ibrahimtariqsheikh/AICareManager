@@ -4,7 +4,7 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import StoreProvider from "../state/redux";
 import { Amplify } from "aws-amplify";
 import { ThemeProvider } from "../components/theme-provider";
-import { SidebarProvider } from "../components/ui/sidebar";
+import { SidebarProvider } from "../components/ui/sidebar-provider";
 
 // Configure Amplify
 Amplify.configure({

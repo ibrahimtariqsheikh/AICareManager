@@ -7,18 +7,18 @@ import { RecentActivity } from "../../components/dashboard/recent-activity"
 
 export default function DashboardPage() {
     return (
-        <div className="flex justify-center items-center h-screen w-full mx-auto ">
-            <div className="flex items-center justify-between">
+        <div className="flex flex-col p-6 w-full max-w-7xl mx-auto min-h-screen">
+            <div className="flex items-center justify-between mb-6">
                 <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
             </div>
-            <Tabs defaultValue="overview" className="space-y-4">
-                <TabsList>
+            <Tabs defaultValue="overview" className="w-full space-y-6">
+                <TabsList className="w-full sm:w-auto">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="analytics">Analytics</TabsTrigger>
                     <TabsTrigger value="reports">Reports</TabsTrigger>
                 </TabsList>
-                <TabsContent value="overview" className="space-y-4">
-                    <div className="grid gap-4 w-full">
+                <TabsContent value="overview" className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
@@ -56,16 +56,16 @@ export default function DashboardPage() {
                             </CardContent>
                         </Card>
                     </div>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                        <Card className="col-span-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+                        <Card className="lg:col-span-4">
                             <CardHeader>
                                 <CardTitle>Overview</CardTitle>
                             </CardHeader>
-                            <CardContent className="pl-2">
+                            <CardContent className="pl-2 overflow-x-auto">
                                 <Overview />
                             </CardContent>
                         </Card>
-                        <Card className="col-span-3">
+                        <Card className="lg:col-span-3">
                             <CardHeader>
                                 <CardTitle>Recent Activity</CardTitle>
                                 <CardDescription>Recent user activity and invitations</CardDescription>

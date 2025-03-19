@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { sidebarOpt } from "../../lib/constants";
 import MenuOptions from "./menu-options";
@@ -5,9 +6,10 @@ import MenuOptions from "./menu-options";
 type Props = {
     id: string;
     type: "chatbot" | "workspace";
+    onToggle: () => void;
 };
 
-const Sidebar = async ({ id, type }: Props) => {
+const Sidebar = ({ id, type, onToggle }: Props) => {
     return (
         <>
             {/* For Desktop */}
@@ -16,9 +18,10 @@ const Sidebar = async ({ id, type }: Props) => {
                 id={id}
                 sidebarOpt={sidebarOpt}
                 type={type}
+                onToggle={onToggle}
             />
             {/* For Mobile */}
-            <MenuOptions id={id} sidebarOpt={sidebarOpt} type={type} />
+            <MenuOptions id={id} sidebarOpt={sidebarOpt} type={type} onToggle={onToggle} />
         </>
     );
 };

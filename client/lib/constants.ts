@@ -34,6 +34,7 @@ import {
   BarChart3,
   Calendar,
   Users,
+  HelpCircle,
 } from "lucide-react";
 import React from "react";
 
@@ -183,6 +184,37 @@ export const icons = [
     label: "Settings",
     path: Settings,
   },
+  {
+    value: "help",
+    label: "Help",
+    path: HelpCircle,
+  },
+  // Ensure all icons from sidebar options are included
+  {
+    value: "barchart3",
+    label: "BarChart3",
+    path: BarChart3,
+  },
+  {
+    value: "calendar",
+    label: "Calendar",
+    path: Calendar,
+  },
+  {
+    value: "users",
+    label: "Users",
+    path: Users,
+  },
+  {
+    value: "settings",
+    label: "Settings",
+    path: Settings,
+  },
+  {
+    value: "helpcircle",
+    label: "HelpCircle",
+    path: HelpCircle,
+  },
 ];
 
 export const frontPageCards = [
@@ -260,17 +292,20 @@ export type SidebarOption = {
 
 export const sidebarOpt: SidebarOption[] = [
   {
-    heading: "",
+    heading: "MAIN",
     items: [
       { name: "Users", icon: "Users", link: "/dashboard/users" },
       { name: "Analytics", icon: "BarChart3", link: "/dashboard/analytics" },
       { name: "Schedule", icon: "Calendar", link: "/dashboard/schedule" },
-      { name: "Settings", icon: "Settings", link: "/dashboard/settings" },
+      
     ],
   },
   {
-    heading: "",
-    items: [],
+    heading: "PERFORMANCE",
+    items: [
+     { name: "Settings", icon: "Settings", link: "/dashboard/settings" },
+{ name: "Help", icon: "HelpCircle", link: "/dashboard/help" },
+    ],
   },
 ];
 
