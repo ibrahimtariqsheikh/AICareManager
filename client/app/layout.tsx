@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./providers";
 import { Amplify } from "aws-amplify";
 import { Toaster } from "../components/ui/sonner";
+import Navbar from "../components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <Providers>
+
+          {children}
+        </Providers>
         <Toaster />
       </body>
     </html>

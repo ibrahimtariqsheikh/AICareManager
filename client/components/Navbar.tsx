@@ -1,21 +1,23 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "../components/ui/button"
-import { signOut } from "aws-amplify/auth"
 import { useAuthenticator } from "@aws-amplify/ui-react"
 import { useRouter } from "next/navigation"
-import { LogIn, LogOut, Menu, User, Moon, Sun } from "lucide-react"
-import { useIsMobile } from "../hooks/use-mobile"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "../components/ui/sheet"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useTheme } from "next-themes"
+import { useIsMobile } from "../hooks/use-mobile"
+import { LogIn, LogOut, Menu, User, Moon, Sun, ChevronRight } from 'lucide-react'
+import { signOut } from 'aws-amplify/auth';
 
 const Navbar = () => {
   const { user } = useAuthenticator((context) => [context.user])
   const router = useRouter()
+  const pathname = usePathname()
   const isMobile = useIsMobile()
   const [isOpen, setIsOpen] = useState(false)
   const { theme, setTheme } = useTheme()
@@ -27,8 +29,12 @@ const Navbar = () => {
   }, [])
 
   const handleSignOut = async () => {
-    await signOut()
-    setIsOpen(false)
+    try {
+      await signOut()
+      setIsOpen(false)
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
   }
 
   const handleLogin = () => {
@@ -108,15 +114,23 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/"
-          className="hover:text-primary text-sm font-medium hover:underline underline-offset-4 transition-colors"
+          className={`hover:text-orange-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'text-orange-500' : ''}`}
         >
           Home
         </Link>
       </motion.div>
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
+          href="/pricing"
+          className={`hover:text-orange-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'text-orange-500' : ''}`}
+        >
+          Pricing
+        </Link>
+      </motion.div>
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
+        <Link
           href="/dashboard"
-          className="hover:text-primary text-sm font-medium hover:underline underline-offset-4 transition-colors"
+          className={`hover:text-orange-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'text-orange-500' : ''}`}
         >
           Dashboard
         </Link>
@@ -128,7 +142,7 @@ const Navbar = () => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} transition={{ duration: 0.2 }}>
-          <Button variant="outline" size="icon" aria-label="Open menu">
+          <Button variant="outline" size="icon" aria-label="Open menu" className="rounded-xl">
             {user ? <User className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </Button>
         </motion.div>
@@ -148,7 +162,7 @@ const Navbar = () => {
               className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-md"
               variants={mobileItemVariants}
             >
-              <User className="w-5 h-5 text-primary" />
+              <User className="w-5 h-5 text-orange-500" />
               <span className="font-medium text-sm">{user.username}</span>
             </motion.div>
           )}
@@ -156,7 +170,7 @@ const Navbar = () => {
           {/* Navigation Links */}
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/" className="block p-2 hover:text-primary transition-colors">
+              <Link href="/" className="block p-2 hover:text-orange-500 transition-colors">
                 Home
               </Link>
             </motion.div>
@@ -164,24 +178,24 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/about" className="block p-2 hover:text-primary transition-colors">
-                About
+              <Link href="/pricing" className="block p-2 hover:text-orange-500 transition-colors">
+                Pricing
               </Link>
             </motion.div>
           </SheetClose>
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/contact" className="block p-2 hover:text-primary transition-colors">
-                Contact
-              </Link>
-            </motion.div>
-          </SheetClose>
-
-          <SheetClose asChild>
-            <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/dashboard" className="block p-2 hover:text-primary transition-colors">
+              <Link href="/dashboard" className="block p-2 hover:text-orange-500 transition-colors">
                 Dashboard
+              </Link>
+            </motion.div>
+          </SheetClose>
+
+          <SheetClose asChild>
+            <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
+              <Link href="/contact" className="block p-2 hover:text-orange-500 transition-colors">
+                Contact
               </Link>
             </motion.div>
           </SheetClose>
@@ -210,12 +224,12 @@ const Navbar = () => {
           {/* Auth Button */}
           <motion.div variants={mobileItemVariants} className="mt-4">
             {user ? (
-              <Button onClick={handleSignOut} className="w-full" variant="default">
+              <Button onClick={handleSignOut} className="w-full rounded-xl" variant="default">
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </Button>
             ) : (
-              <Button onClick={handleLogin} className="w-full" variant="default">
+              <Button onClick={handleLogin} className="w-full rounded-xl" variant="default">
                 <LogIn className="w-4 h-4 mr-2" />
                 Login
               </Button>
@@ -236,6 +250,7 @@ const Navbar = () => {
           size="icon"
           onClick={toggleTheme}
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="rounded-xl"
         >
           {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </Button>
@@ -247,7 +262,7 @@ const Navbar = () => {
     if (user) {
       return (
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-          <Button variant="outline" onClick={handleSignOut}>
+          <Button variant="outline" onClick={handleSignOut} className="rounded-xl">
             <LogOut className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline text-sm">Logout</span>
           </Button>
@@ -257,7 +272,7 @@ const Navbar = () => {
 
     return (
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-        <Button variant="outline" onClick={() => router.push("/signin")}>
+        <Button variant="outline" onClick={() => router.push("/signin")} className="rounded-xl">
           <LogIn className="w-4 h-4 mr-2" />
           <span className="hidden sm:inline text-sm">Login</span>
         </Button>
@@ -265,9 +280,23 @@ const Navbar = () => {
     )
   }
 
+  const DemoButton = () => (
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
+      <Button
+        className="bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-orange-500 text-white rounded-xl"
+        asChild
+      >
+        <Link href="/#book-demo">
+          Book a Demo
+          <ChevronRight className="ml-1 h-4 w-4" />
+        </Link>
+      </Button>
+    </motion.div>
+  )
+
   return (
     <motion.header
-      className="fixed top-4 left-0 right-0 mx-4 md:mx-10 flex justify-between items-center bg-background/80 backdrop-blur-sm z-20 mt-2 py-3 px-4 rounded-lg border border-border/40"
+      className="fixed top-4 left-0 right-0 mx-4 md:mx-10 flex justify-between items-center bg-background/80 backdrop-blur-sm z-20 mt-2 py-3 px-4 rounded-2xl border border-border/40"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -289,6 +318,7 @@ const Navbar = () => {
             <>
               <NavLinks key="desktop" />
               <ThemeToggle />
+              {!user && <DemoButton />}
               <AuthButton />
             </>
           )}

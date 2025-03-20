@@ -8,6 +8,7 @@ import type { AppointmentEvent } from "../types"
 import { Button } from "../../../ui/button"
 import { cn } from "../../../../lib/utils"
 
+// Add spaceTheme prop to the component interface
 interface CustomMonthViewProps {
     date: Date
     events: AppointmentEvent[]
@@ -15,8 +16,10 @@ interface CustomMonthViewProps {
     onDateSelect: (date: Date) => void
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
+    spaceTheme?: boolean
 }
 
+// Update the function to accept the spaceTheme prop
 export function CustomMonthView({
     date,
     events,
@@ -24,6 +27,7 @@ export function CustomMonthView({
     onDateSelect,
     staffMembers,
     getEventDurationInMinutes,
+    spaceTheme = false,
 }: CustomMonthViewProps) {
     const [calendar, setCalendar] = useState<Date[][]>([])
     const [expandedDays, setExpandedDays] = useState<{ [key: string]: boolean }>({})
@@ -69,21 +73,38 @@ export function CustomMonthView({
         return moment(event.start).format("h:mm A")
     }
 
-    // Get event background color based on type
+    // Update the getEventBackground function to use more subtle colors in dark mode
     const getEventBackground = (event: AppointmentEvent) => {
-        switch (event.type) {
-            case "HOME_VISIT":
-                return "bg-green-50 border-l-4 border-green-500"
-            case "VIDEO_CALL":
-                return "bg-blue-50 border-l-4 border-blue-500"
-            case "HOSPITAL":
-                return "bg-green-50 border-l-4 border-green-500"
-            case "IN_PERSON":
-                return "bg-amber-50 border-l-4 border-amber-500"
-            case "AUDIO_CALL":
-                return "bg-red-50 border-l-4 border-red-500"
-            default:
-                return "bg-gray-50 border-l-4 border-gray-500"
+        if (spaceTheme) {
+            switch (event.type) {
+                case "HOME_VISIT":
+                    return "bg-green-900/30 border-l-4 border-green-500"
+                case "VIDEO_CALL":
+                    return "bg-blue-900/30 border-l-4 border-blue-500"
+                case "HOSPITAL":
+                    return "bg-green-900/30 border-l-4 border-green-500"
+                case "IN_PERSON":
+                    return "bg-amber-900/30 border-l-4 border-amber-500"
+                case "AUDIO_CALL":
+                    return "bg-red-900/30 border-l-4 border-red-500"
+                default:
+                    return "bg-zinc-800/30 border-l-4 border-zinc-700"
+            }
+        } else {
+            switch (event.type) {
+                case "HOME_VISIT":
+                    return "bg-green-50 border-l-4 border-green-500"
+                case "VIDEO_CALL":
+                    return "bg-blue-50 border-l-4 border-blue-500"
+                case "HOSPITAL":
+                    return "bg-green-50 border-l-4 border-green-500"
+                case "IN_PERSON":
+                    return "bg-amber-50 border-l-4 border-amber-500"
+                case "AUDIO_CALL":
+                    return "bg-red-50 border-l-4 border-red-500"
+                default:
+                    return "bg-gray-50 border-l-4 border-gray-500"
+            }
         }
     }
 
@@ -96,9 +117,12 @@ export function CustomMonthView({
     return (
         <div className="h-full flex flex-col">
             {/* Day headers */}
-            <div className="grid grid-cols-7 border-b">
+            <div className={`grid grid-cols-7 border-b ${spaceTheme ? "border-zinc-800" : ""}`}>
                 {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
-                    <div key={i} className="p-2 text-center text-sm font-medium text-gray-500">
+                    <div
+                        key={i}
+                        className={`p-2 text-center text-sm font-medium ${spaceTheme ? "text-zinc-400" : "text-gray-500"}`}
+                    >
                         {day}
                     </div>
                 ))}
@@ -124,9 +148,10 @@ export function CustomMonthView({
                                 key={i}
                                 className={cn(
                                     "border-b border-r p-1 relative transition-all duration-200",
-                                    isCurrentMonth ? "bg-white" : "bg-gray-50",
-                                    isToday ? "bg-blue-50" : "",
+                                    isCurrentMonth ? (spaceTheme ? "bg-black" : "bg-white") : spaceTheme ? "bg-zinc-900" : "bg-gray-50",
+                                    isToday ? (spaceTheme ? "bg-zinc-800" : "bg-blue-50") : "",
                                     hasEvents ? "min-h-[100px]" : "min-h-[60px]", // Smaller height for days without events
+                                    spaceTheme ? "border-zinc-800 text-white" : "",
                                 )}
                                 onClick={() => onDateSelect(day)}
                             >
@@ -134,7 +159,13 @@ export function CustomMonthView({
                                 <div
                                     className={cn(
                                         "text-sm font-medium p-1 rounded-full w-7 h-7 flex items-center justify-center",
-                                        isToday ? "bg-blue-500 text-white" : "text-gray-700",
+                                        isToday
+                                            ? spaceTheme
+                                                ? "bg-green-600 text-white"
+                                                : "bg-blue-500 text-white"
+                                            : spaceTheme
+                                                ? "text-white"
+                                                : "text-gray-700",
                                     )}
                                 >
                                     {moment(day).date()}
@@ -145,27 +176,32 @@ export function CustomMonthView({
                                     {eventsToShow.map((event, idx) => (
                                         <motion.div
                                             key={event.id}
-                                            className={cn("text-xs p-1 rounded cursor-pointer", getEventBackground(event))}
+                                            className={cn("text-xs p-1 rounded cursor-pointer event-card", getEventBackground(event))}
                                             style={{
                                                 borderLeftColor: getStaffColor(event),
                                             }}
-                                            whileHover={{ y: -1, boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
+                                            whileHover={{
+                                                y: -1,
+                                                boxShadow: spaceTheme ? "0 0 8px rgba(0,0,0,0.5)" : "0 2px 4px rgba(0,0,0,0.1)",
+                                            }}
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 onSelectEvent(event)
                                             }}
                                         >
-                                            <div className="font-medium truncate">{event.title}</div>
-                                            <div className="text-gray-500">{formatEventTime(event)}</div>
+                                            <div className={`font-medium truncate ${spaceTheme ? "text-white" : ""}`}>{event.title}</div>
+                                            <div className={`${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
+                                                {formatEventTime(event)}
+                                            </div>
                                         </motion.div>
                                     ))}
 
                                     {/* Show more button */}
                                     {hasMore && (
                                         <Button
-                                            variant="ghost"
+                                            variant={spaceTheme ? "outline" : "ghost"}
                                             size="sm"
-                                            className="text-xs w-full h-6 mt-1"
+                                            className={`text-xs w-full h-6 mt-1 ${spaceTheme ? "border-zinc-700 text-zinc-300 hover:bg-zinc-800" : ""}`}
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 toggleDayExpand(dateStr)
@@ -179,9 +215,9 @@ export function CustomMonthView({
                                     {/* Show less button */}
                                     {isExpanded && (
                                         <Button
-                                            variant="ghost"
+                                            variant={spaceTheme ? "outline" : "ghost"}
                                             size="sm"
-                                            className="text-xs w-full h-6 mt-1"
+                                            className={`text-xs w-full h-6 mt-1 ${spaceTheme ? "border-zinc-700 text-zinc-300 hover:bg-zinc-800" : ""}`}
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 toggleDayExpand(dateStr)

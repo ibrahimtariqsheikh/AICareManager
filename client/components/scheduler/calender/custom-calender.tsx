@@ -29,7 +29,9 @@ interface CustomCalendarProps {
     deselectAllClients?: () => void
     toggleSidebarMode?: () => void
     clients?: any[]
+
     eventTypes?: any[]
+    spaceTheme?: boolean
 }
 
 export function CustomCalendar({
@@ -54,6 +56,7 @@ export function CustomCalendar({
     toggleSidebarMode = () => { },
     clients = [],
     eventTypes = [],
+    spaceTheme = false,
 }: CustomCalendarProps) {
     const calendarRef = useRef<HTMLDivElement>(null)
     const [calendarHeight, setCalendarHeight] = useState("calc(90vh - 120px)")
@@ -97,6 +100,7 @@ export function CustomCalendar({
                 selectAllClients={selectAllClients}
                 deselectAllClients={deselectAllClients}
                 toggleSidebarMode={toggleSidebarMode}
+                spaceTheme={spaceTheme}
             />
         )
     }, [
@@ -117,7 +121,7 @@ export function CustomCalendar({
         selectAllClients,
         deselectAllClients,
         toggleSidebarMode,
-        getEventDurationInMinutes,
+        spaceTheme,
     ])
 
     // Memoize the week view
@@ -132,9 +136,10 @@ export function CustomCalendar({
                 onEventUpdate={onEventUpdate}
                 staffMembers={staffMembers}
                 getEventDurationInMinutes={getEventDurationInMinutes}
+                spaceTheme={spaceTheme}
             />
         )
-    }, [activeView, currentDate, events, onSelectEvent, onEventUpdate, staffMembers, getEventDurationInMinutes])
+    }, [activeView, currentDate, events, onSelectEvent, onEventUpdate, staffMembers, getEventDurationInMinutes, spaceTheme])
 
     // Memoize the month view
     const monthView = useMemo(() => {
@@ -148,43 +153,24 @@ export function CustomCalendar({
                 onDateSelect={(date) => onNavigate(date)}
                 staffMembers={staffMembers}
                 getEventDurationInMinutes={getEventDurationInMinutes}
+                spaceTheme={spaceTheme}
             />
         )
-    }, [activeView, currentDate, events, onSelectEvent, onNavigate, staffMembers, getEventDurationInMinutes])
+    }, [activeView, currentDate, events, onSelectEvent, onNavigate, staffMembers, getEventDurationInMinutes, spaceTheme])
+
+    const cardClasses = spaceTheme
+        ? "flex-1 shadow-lg border border-indigo-500/20 rounded-lg overflow-hidden p-0 h-full bg-slate-900/60 backdrop-blur-sm"
+        : "flex-1 shadow-sm border border-gray-100 rounded-lg overflow-hidden p-0 h-full"
 
     return (
-        <Card className="flex-1 shadow-sm border border-gray-100 rounded-lg overflow-hidden p-0 h-full">
+        <Card className={cardClasses}>
             {isLoading ? (
                 <div className="flex items-center justify-center h-full min-h-[500px]">
-                    <Loader2 className="h-6 w-6 text-blue-500 animate-spin" />
+                    <Loader2 className={`h-6 w-6 ${spaceTheme ? 'text-purple-400' : 'text-blue-500'} animate-spin`} />
                 </div>
             ) : (
                 <div className="h-full flex flex-col" ref={calendarRef}>
-                    {activeView === "day" && (
-                        <div className="p-4 h-full overflow-hidden">
-                            <CustomDayView
-                                date={currentDate}
-                                events={events}
-                                onSelectEvent={onSelectEvent}
-                                onEventUpdate={onEventUpdate}
-                                min={new Date(new Date().setHours(7, 0, 0))}
-                                max={new Date(new Date().setHours(19, 0, 0))}
-                                staffMembers={staffMembers}
-                                getEventDurationInMinutes={getEventDurationInMinutes}
-                                clients={clients}
-                                eventTypes={eventTypes}
-                                sidebarMode={sidebarMode}
-                                toggleStaffSelection={toggleStaffSelection}
-                                toggleClientSelection={toggleClientSelection}
-                                toggleEventTypeSelection={toggleEventTypeSelection}
-                                selectAllStaff={selectAllStaff}
-                                deselectAllStaff={deselectAllStaff}
-                                selectAllClients={selectAllClients}
-                                deselectAllClients={deselectAllClients}
-                                toggleSidebarMode={toggleSidebarMode}
-                            />
-                        </div>
-                    )}
+                    {activeView === "day" && dayView}
                     {activeView === "week" && weekView}
                     {activeView === "month" && monthView}
                 </div>
@@ -192,4 +178,3 @@ export function CustomCalendar({
         </Card>
     )
 }
-

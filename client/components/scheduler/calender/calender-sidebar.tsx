@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar"
 import { Home, Video, Building2, Phone, User, Users } from 'lucide-react'
 import { type StaffMember, type Client, type EventType } from "./types"
 
+
 interface CalendarSidebarProps {
     showSidebar: boolean
     sidebarMode: "staff" | "clients"
@@ -23,6 +24,7 @@ interface CalendarSidebarProps {
     selectAllClients: () => void
     deselectAllClients: () => void
     toggleSidebarMode: () => void
+    spaceTheme?: boolean
 }
 
 export function CalendarSidebar({
@@ -38,7 +40,8 @@ export function CalendarSidebar({
     deselectAllStaff,
     selectAllClients,
     deselectAllClients,
-    toggleSidebarMode
+    toggleSidebarMode,
+    spaceTheme = false,
 }: CalendarSidebarProps) {
     // Get event icon based on type
     const getEventTypeIcon = (type: string) => {
@@ -58,6 +61,14 @@ export function CalendarSidebar({
         }
     }
 
+    const cardClasses = spaceTheme
+        ? "h-full p-4 overflow-y-auto bg-zinc-900/80 backdrop-blur-sm border-zinc-800 text-white"
+        : "h-full p-4 overflow-y-auto"
+
+    const buttonClasses = spaceTheme ? "text-white/80 hover:text-white hover:bg-zinc-800" : ""
+
+    const separatorClasses = spaceTheme ? "bg-zinc-800" : ""
+
     return (
         <AnimatePresence initial={false}>
             {showSidebar && (
@@ -68,23 +79,21 @@ export function CalendarSidebar({
                     transition={{ duration: 0.3 }}
                     className="h-full mr-4 overflow-hidden"
                 >
-                    <Card className="h-full p-4 overflow-y-auto">
+                    <Card className={cardClasses}>
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center">
                                 {sidebarMode === "staff" ? (
-                                    <Users className="h-4 w-4 mr-2 text-gray-500" />
+                                    <Users className={`h-4 w-4 mr-2 ${spaceTheme ? "text-green-400" : "text-gray-500"}`} />
                                 ) : (
-                                    <User className="h-4 w-4 mr-2 text-gray-500" />
+                                    <User className={`h-4 w-4 mr-2 ${spaceTheme ? "text-green-400" : "text-gray-500"}`} />
                                 )}
-                                <h3 className="text-sm font-medium">
-                                    {sidebarMode === "staff" ? "Healthcare Staff" : "Clients"}
-                                </h3>
+                                <h3 className="text-sm font-medium">{sidebarMode === "staff" ? "Healthcare Staff" : "Clients"}</h3>
                             </div>
                             <div className="flex gap-1">
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-7 text-xs"
+                                    className={`h-7 text-xs ${buttonClasses}`}
                                     onClick={sidebarMode === "staff" ? selectAllStaff : selectAllClients}
                                 >
                                     All
@@ -92,12 +101,19 @@ export function CalendarSidebar({
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-7 text-xs"
+                                    className={`h-7 text-xs ${buttonClasses}`}
                                     onClick={sidebarMode === "staff" ? deselectAllStaff : deselectAllClients}
                                 >
                                     None
                                 </Button>
-
+                                <Button
+                                    variant={spaceTheme ? "ghost" : "outline"}
+                                    size="sm"
+                                    className={`h-7 text-xs ml-1 ${buttonClasses}`}
+                                    onClick={toggleSidebarMode}
+                                >
+                                    {sidebarMode === "staff" ? <User className="h-3 w-3" /> : <Users className="h-3 w-3" />}
+                                </Button>
                             </div>
                         </div>
 
@@ -109,6 +125,11 @@ export function CalendarSidebar({
                                             id={`staff-${staff.id}`}
                                             checked={staff.selected}
                                             onCheckedChange={() => toggleStaffSelection(staff.id)}
+                                            className={
+                                                spaceTheme
+                                                    ? "border-zinc-600 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                                                    : ""
+                                            }
                                         />
                                         <div className="flex items-center flex-1 ">
                                             <Avatar className="h-6 w-6 mr-2">
@@ -120,11 +141,11 @@ export function CalendarSidebar({
                                             <div>
                                                 <label
                                                     htmlFor={`staff-${staff.id}`}
-                                                    className="text-sm font-medium leading-none cursor-pointer"
+                                                    className={`text-sm font-medium leading-none cursor-pointer ${spaceTheme ? "text-white" : ""}`}
                                                 >
                                                     {staff.name}
                                                 </label>
-                                                <p className="text-xs text-gray-500">{staff.role}</p>
+                                                <p className={`text-xs ${spaceTheme ? "text-zinc-400" : "text-gray-500"}`}>{staff.role}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -138,6 +159,11 @@ export function CalendarSidebar({
                                             id={`client-${client.id}`}
                                             checked={client.selected}
                                             onCheckedChange={() => toggleClientSelection(client.id)}
+                                            className={
+                                                spaceTheme
+                                                    ? "border-zinc-600 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                                                    : ""
+                                            }
                                         />
                                         <div className="flex items-center flex-1 ">
                                             <Avatar className="h-6 w-6 mr-2">
@@ -149,7 +175,7 @@ export function CalendarSidebar({
                                             <div>
                                                 <label
                                                     htmlFor={`client-${client.id}`}
-                                                    className="text-sm font-medium leading-none cursor-pointer"
+                                                    className={`text-sm font-medium leading-none cursor-pointer ${spaceTheme ? "text-white" : ""}`}
                                                 >
                                                     {client.name}
                                                 </label>
@@ -160,10 +186,10 @@ export function CalendarSidebar({
                             </div>
                         )}
 
-                        <Separator className="my-4" />
+                        <Separator className={`my-4 ${separatorClasses}`} />
 
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-medium">Appointment Types</h3>
+                            <h3 className={`text-sm font-medium ${spaceTheme ? "text-white" : ""}`}>Appointment Types</h3>
                         </div>
 
                         <div className="space-y-3">
@@ -173,12 +199,17 @@ export function CalendarSidebar({
                                         id={`type-${type.id}`}
                                         checked={type.selected}
                                         onCheckedChange={() => toggleEventTypeSelection(type.id)}
+                                        className={
+                                            spaceTheme
+                                                ? "border-zinc-600 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                                                : ""
+                                        }
                                     />
                                     <div className="flex items-center">
                                         <span className="h-3 w-3 rounded-full mr-2" style={{ backgroundColor: type.color }} />
                                         <label
                                             htmlFor={`type-${type.id}`}
-                                            className="text-sm font-medium leading-none cursor-pointer flex items-center"
+                                            className={`text-sm font-medium leading-none cursor-pointer flex items-center ${spaceTheme ? "text-white" : ""}`}
                                         >
                                             <span className="mr-1">{getEventTypeIcon(type.id)}</span>
                                             {type.name}

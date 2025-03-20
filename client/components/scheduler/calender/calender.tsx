@@ -5,15 +5,21 @@ import moment from "moment"
 import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useMediaQuery } from "../../../hooks/use-mobile"
-import { CustomCalendar } from "./custom-calender"
-import type { CalendarProps } from "./types"
+import { useTheme } from "next-themes"
+import { CalendarIcon, Moon, Sun } from "lucide-react"
 import { useCalendarData } from "./use-calender-data"
-import { useCalendarFilters } from "./use-calender-filters"
-import { useCalendarStyles } from "./use-calender-styles"
-import { useCalendarSearch } from "./use-calender-search"
-import { AppointmentForm } from "../appointment-form"
+import { Button } from "../../ui/button"
+
 import { CalendarHeader } from "./calender-header"
 import { CalendarSidebar } from "./calender-sidebar"
+import { AppointmentForm } from "../appointment-form"
+
+import { CustomCalendar } from "./custom-calender"
+import type { CalendarProps } from "./types"
+import { useCalendarSearch } from "./use-calender-search"
+import { useCalendarStyles } from "./use-calender-styles"
+import { useCalendarFilters } from "./use-calender-filters"
+
 
 export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(dateRange.from || new Date())
@@ -22,8 +28,8 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const [editingEvent, setEditingEvent] = useState(null)
     const [showSidebar, setShowSidebar] = useState(true)
     const calendarRef = useRef<HTMLDivElement>(null)
+    const { theme, setTheme } = useTheme()
 
-    // Custom hooks for calendar functionality
     const {
         events,
         filteredEvents,
@@ -242,7 +248,25 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     }
 
     return (
-        <div className="flex flex-col h-full w-full">
+        <div className={`flex flex-col h-full w-full relative ${theme === "dark" ? "dark-theme" : ""}`}>
+
+            <div className="flex items-center justify-between gap-2 mb-4 z-10">
+                <div className="flex items-center gap-2">
+                    <CalendarIcon className={`h-5 w-5 ${theme === "dark" ? "text-green-400" : "text-blue-500"}`} />
+                    <h1 className={`text-lg font-semibold ${theme === "dark" ? "text-white" : ""}`}>Calendar</h1>
+                </div>
+
+                <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    className={`h-8 w-8 rounded-full ${theme === "dark" ? "bg-black text-white border-slate-700 hover:bg-slate-700 hover:border-slate-600" : ""}`}
+                >
+                    {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
+            </div>
+
             <CalendarHeader
                 activeView={activeView}
                 handleViewChange={handleViewChange}
@@ -261,9 +285,10 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                 searchQuery={searchQuery}
                 searchInputRef={searchInputRef as React.RefObject<HTMLInputElement>}
                 setSearchQuery={setSearchQuery}
+                spaceTheme={theme === "dark"}
             />
 
-            <div className="flex flex-1 h-full">
+            <div className="flex flex-1 h-full relative z-10">
                 {/* Staff sidebar - only show in week/month views */}
                 {
                     <CalendarSidebar
@@ -280,20 +305,12 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                         selectAllClients={handleSelectAllClients}
                         deselectAllClients={handleDeselectAllClients}
                         toggleSidebarMode={handleToggleSidebarMode}
+                        spaceTheme={theme === "dark"}
                     />
                 }
 
                 {/* Main calendar area */}
                 <div className="flex-1 h-full" ref={calendarRef}>
-                    {/* Left sidebar with day indicators - only shown in week/month views */}
-                    {!isMobile && activeView !== "day" && (
-                        <div className="w-16 flex flex-col items-center pt-8 border-r border-gray-100">
-                            <div className="flex flex-col items-center">
-                                <span className="text-xs text-gray-500 uppercase">MON</span>
-                                <span className="text-lg font-medium">{moment(currentDate).date()}</span>
-                            </div>
-                        </div>
-                    )}
 
                     {/* Custom Calendar */}
                     <CustomCalendar
@@ -318,12 +335,13 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                         toggleSidebarMode={handleToggleSidebarMode}
                         clients={clients}
                         eventTypes={eventTypes}
+                        spaceTheme={theme === "dark"}
                     />
                 </div>
             </div>
 
             <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                <DialogContent>
+                <DialogContent className={theme === "dark" ? "dark-dialog" : ""}>
                     <VisuallyHidden>
                         <DialogTitle>New Appointment</DialogTitle>
                     </VisuallyHidden>
@@ -341,4 +359,3 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
         </div>
     )
 }
-

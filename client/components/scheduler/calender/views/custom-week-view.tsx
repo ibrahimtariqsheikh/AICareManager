@@ -14,6 +14,7 @@ interface CustomWeekViewProps {
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
+    spaceTheme?: boolean
 }
 
 export function CustomWeekView({
@@ -23,6 +24,7 @@ export function CustomWeekView({
     staffMembers,
     getEventDurationInMinutes,
     onEventUpdate,
+    spaceTheme = false,
 }: CustomWeekViewProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const gridRef = useRef<HTMLDivElement>(null)
@@ -147,7 +149,7 @@ export function CustomWeekView({
         })
 
         setEventPositions(positions)
-    }, [events, weekDays, date, timeSlots.length, startHour, endHour])
+    }, [events, weekDays, date, timeSlots, startHour, endHour, containerRef, gridRef])
 
     // Scroll to current time on initial render
     useEffect(() => {
@@ -162,23 +164,40 @@ export function CustomWeekView({
 
             containerRef.current.scrollTop = Math.max(0, scrollPosition)
         }
-    }, [gridDimensions.slotHeight, startHour, endHour])
+    }, [gridDimensions.slotHeight])
 
     // Get event background color based on type
     const getEventBackground = (event: AppointmentEvent) => {
-        switch (event.type) {
-            case "HOME_VISIT":
-                return "bg-green-50"
-            case "VIDEO_CALL":
-                return "bg-blue-50"
-            case "HOSPITAL":
-                return "bg-green-50"
-            case "IN_PERSON":
-                return "bg-amber-50"
-            case "AUDIO_CALL":
-                return "bg-red-50"
-            default:
-                return "bg-gray-50"
+        if (spaceTheme) {
+            switch (event.type) {
+                case "HOME_VISIT":
+                    return "bg-green-900/30"
+                case "VIDEO_CALL":
+                    return "bg-blue-900/30"
+                case "HOSPITAL":
+                    return "bg-green-900/30"
+                case "IN_PERSON":
+                    return "bg-amber-900/30"
+                case "AUDIO_CALL":
+                    return "bg-red-900/30"
+                default:
+                    return "bg-zinc-800/30"
+            }
+        } else {
+            switch (event.type) {
+                case "HOME_VISIT":
+                    return "bg-green-50"
+                case "VIDEO_CALL":
+                    return "bg-blue-50"
+                case "HOSPITAL":
+                    return "bg-green-50"
+                case "IN_PERSON":
+                    return "bg-amber-50"
+                case "AUDIO_CALL":
+                    return "bg-red-50"
+                default:
+                    return "bg-gray-50"
+            }
         }
     }
 
@@ -317,30 +336,32 @@ export function CustomWeekView({
     // Track if we're dragging to prevent click after drag
     const isDraggingRef = useRef(false)
 
-    // Calculate current time indicator position once
-    const currentTimePosition = (() => {
-        const now = new Date()
-        const currentHour = now.getHours()
-        const currentMinute = now.getMinutes()
-
-        if (currentHour < startHour || currentHour > endHour) return 0
-
-        const minutesSinceStart = (currentHour - startHour) * 60 + currentMinute
-        return Math.round((minutesSinceStart / 30) * gridDimensions.slotHeight)
-    })()
-
     return (
         <div className="h-full flex flex-col">
             {/* Day headers */}
-            <div className="flex border-b">
-                <div className="w-[60px] flex-shrink-0"></div>
+            <div className={`flex border-b ${spaceTheme ? "border-zinc-800" : ""}`}>
+                <div className={`w-[60px] flex-shrink-0 ${spaceTheme ? "text-zinc-400" : ""}`}></div>
                 <div className="flex-1 grid grid-cols-7">
                     {weekDays.map((day, i) => {
                         const isToday = moment(day).isSame(moment(), "day")
                         return (
-                            <div key={i} className={cn("p-2 text-center border-r", isToday ? "bg-blue-50" : "")}>
-                                <div className="text-xs text-gray-500">{moment(day).format("ddd").toUpperCase()}</div>
-                                <div className={cn("text-sm font-medium mt-1", isToday ? "text-blue-500" : "")}>
+                            <div
+                                key={i}
+                                className={cn(
+                                    "p-2 text-center border-r",
+                                    isToday ? (spaceTheme ? "bg-zinc-900" : "bg-blue-50") : "",
+                                    spaceTheme ? "border-zinc-800 text-white" : "",
+                                )}
+                            >
+                                <div className={cn("text-xs", spaceTheme ? "text-zinc-400" : "text-gray-500")}>
+                                    {moment(day).format("ddd").toUpperCase()}
+                                </div>
+                                <div
+                                    className={cn(
+                                        "text-sm font-medium mt-1",
+                                        isToday ? (spaceTheme ? "text-green-400" : "text-blue-500") : spaceTheme ? "text-white" : "",
+                                    )}
+                                >
                                     {moment(day).format("D")}
                                 </div>
                             </div>
@@ -350,12 +371,18 @@ export function CustomWeekView({
             </div>
 
             {/* Time grid */}
-            <div className="flex-1 overflow-y-auto" ref={containerRef}>
+            <div
+                className={`flex-1 overflow-y-auto ${spaceTheme ? "scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900" : ""}`}
+                ref={containerRef}
+            >
                 <div className="flex relative min-h-full">
                     {/* Time gutter */}
-                    <div className="w-[60px] flex-shrink-0 border-r">
+                    <div className={`w-[60px] flex-shrink-0 border-r ${spaceTheme ? "border-zinc-800" : ""}`}>
                         {timeSlots.map((slot, i) => (
-                            <div key={i} className={cn("h-[40px] text-xs text-gray-500 text-right pr-2 pt-1")}>
+                            <div
+                                key={i}
+                                className={cn("h-[40px] text-xs text-right pr-2 pt-1", spaceTheme ? "text-zinc-400" : "text-gray-500")}
+                            >
                                 {i % 2 === 0 && formatTimeSlot(slot)}
                             </div>
                         ))}
@@ -365,7 +392,7 @@ export function CustomWeekView({
                     <div className="flex-1 grid grid-cols-7 relative" ref={gridRef}>
                         {/* Time slot grid */}
                         {weekDays.map((day, dayIndex) => (
-                            <div key={dayIndex} className="border-r">
+                            <div key={dayIndex} className={`border-r ${spaceTheme ? "border-zinc-800" : ""}`}>
                                 {timeSlots.map((slot, slotIndex) => {
                                     const hasEvents = hasEventsInTimeSlot(day, slotIndex)
                                     return (
@@ -373,8 +400,14 @@ export function CustomWeekView({
                                             key={slotIndex}
                                             className={cn(
                                                 "h-[40px] border-b",
-                                                slotIndex % 2 === 0 ? "border-gray-200" : "border-gray-100",
-                                                hasEvents ? "" : "bg-gray-50/30",
+                                                slotIndex % 2 === 0
+                                                    ? spaceTheme
+                                                        ? "border-zinc-800"
+                                                        : "border-gray-200"
+                                                    : spaceTheme
+                                                        ? "border-zinc-900"
+                                                        : "border-gray-100",
+                                                hasEvents ? "" : spaceTheme ? "bg-zinc-900" : "bg-gray-50/30",
                                             )}
                                         ></div>
                                     )
@@ -385,12 +418,21 @@ export function CustomWeekView({
                         {/* Current time indicator */}
                         {weekDays.some((day) => moment(day).isSame(moment(), "day")) && (
                             <div
-                                className="absolute left-0 right-0 border-t-2 border-red-500 z-10"
+                                className={`absolute left-0 right-0 border-t-2 z-10 ${spaceTheme ? "border-green-500" : "border-red-500"}`}
                                 style={{
-                                    top: `${currentTimePosition}px`,
+                                    top: (() => {
+                                        const now = new Date()
+                                        const currentHour = now.getHours()
+                                        const currentMinute = now.getMinutes()
+
+                                        if (currentHour < startHour || currentHour > endHour) return 0
+
+                                        const minutesSinceStart = (currentHour - startHour) * 60 + currentMinute
+                                        return Math.round((minutesSinceStart / 30) * gridDimensions.slotHeight)
+                                    })(),
                                 }}
                             >
-                                <div className="w-2 h-2 rounded-full bg-red-500 -mt-1 -ml-1"></div>
+                                <div className={`w-2 h-2 rounded-full -mt-1 -ml-1 ${spaceTheme ? "bg-green-500" : "bg-red-500"}`}></div>
                             </div>
                         )}
 
@@ -405,7 +447,10 @@ export function CustomWeekView({
                             return (
                                 <motion.div
                                     key={event.id}
-                                    className={cn("absolute rounded p-1 text-xs overflow-hidden cursor-move", getEventBackground(event))}
+                                    className={cn(
+                                        "absolute rounded p-1 text-xs overflow-hidden cursor-move event-card",
+                                        getEventBackground(event),
+                                    )}
                                     style={{
                                         top: `${position.top}px`,
                                         left: `${position.left - 20}px`, // Apply -20px offset for proper alignment
@@ -423,7 +468,7 @@ export function CustomWeekView({
                                     }}
                                     whileHover={{
                                         zIndex: 20,
-                                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                                        boxShadow: spaceTheme ? "0 0 8px rgba(0,0,0,0.5)" : "0 4px 6px rgba(0,0,0,0.1)",
                                         scale: 1.02,
                                     }}
                                     drag
@@ -448,12 +493,14 @@ export function CustomWeekView({
                                         }
                                     }}
                                 >
-                                    <div className="font-medium truncate">{displayEvent.title}</div>
-                                    <div className="text-gray-500 text-[10px]">
+                                    <div className={`font-medium truncate ${spaceTheme ? "text-white" : ""}`}>{displayEvent.title}</div>
+                                    <div className={`text-[10px] ${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
                                         {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
                                     </div>
                                     {position.height > 60 && (
-                                        <div className="text-gray-500 mt-1 truncate text-[10px]">{event.staffName}</div>
+                                        <div className={`mt-1 truncate text-[10px] ${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
+                                            {event.staffName}
+                                        </div>
                                     )}
                                 </motion.div>
                             )
@@ -464,3 +511,4 @@ export function CustomWeekView({
         </div>
     )
 }
+
