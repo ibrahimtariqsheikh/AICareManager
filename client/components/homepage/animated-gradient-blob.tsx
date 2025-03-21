@@ -1,13 +1,15 @@
-"use client"
-
 import { useRef } from "react"
+
+type Size = "sm" | "md" | "lg" | "xl"
+type Position = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center"
+type Intensity = "low" | "medium" | "high"
 
 interface AnimatedGradientBlobProps {
     className?: string
     delay?: number
-    size?: "sm" | "md" | "lg" | "xl"
-    position?: "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center"
-    intensity?: "low" | "medium" | "high"
+    size?: Size
+    position?: Position
+    intensity?: Intensity
 }
 
 export function AnimatedGradientBlob({
@@ -50,11 +52,9 @@ export function AnimatedGradientBlob({
         <div className="overflow-visible">
             <div
                 ref={blobRef}
-                className={`absolute rounded-full bg-gradient-radial from-orange-500/40 to-orange-500/0 blur-[80px] animate-blob ${sizeClasses[size]} ${positionClasses[position]} ${intensityClasses[intensity]} ${className}`}
+                className={`absolute rounded-full bg-gradient-radial from-purple-500/40 to-fuchsia-500/0 blur-[80px] animate-blob ${sizeClasses[size]} ${positionClasses[position]} ${intensityClasses[intensity]} ${className}`}
                 style={delayStyle}
             />
         </div>
     )
 }
-
-export default AnimatedGradientBlob;

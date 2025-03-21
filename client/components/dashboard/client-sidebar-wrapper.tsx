@@ -16,10 +16,11 @@ import {
 } from "../ui/sidebar"
 import { useSidebar } from "../ui/sidebar-provider"
 import { Button } from "../ui/button"
-import { User, Settings, BarChart3, Calendar, Users, Folder, HelpCircle } from 'lucide-react'
+import { User, Settings, BarChart3, Calendar, Users, Folder, HelpCircle, Moon, Sun } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { sidebarOpt } from "../../lib/constants"
 import { cn } from "../../lib/utils"
+import { useTheme } from "next-themes"
 
 interface DashboardSidebarProps {
     id: string
@@ -30,6 +31,7 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
     const pathname = usePathname()
     const { state, toggleSidebar } = useSidebar()
     const isExpanded = state === "expanded"
+    const { theme, setTheme } = useTheme()
 
     // Map icon strings to components
     const getIconComponent = (iconName: string) => {
@@ -203,6 +205,63 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
                         </motion.div>
                     ))}
                 </AnimatePresence>
+
+                {/* Theme Toggle */}
+                <motion.div
+                    className="mb-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                >
+                    {isExpanded && (
+                        <motion.h3 className="text-xs text-muted-foreground font-medium px-2 mb-2" variants={itemVariants}>
+                            APPEARANCE
+                        </motion.h3>
+                    )}
+                    <SidebarMenu>
+                        <SidebarMenuItem className="mb-1">
+                            <SidebarMenuButton
+                                asChild
+                                tooltip={!isExpanded ? "Toggle Theme" : undefined}
+                                className="py-1.5 transition-all duration-200 hover:bg-gray-100"
+                            >
+                                <motion.div
+                                    whileHover={{
+                                        scale: 1.02,
+                                        transition: { duration: 0.2 },
+                                    }}
+                                    whileTap={{
+                                        scale: 0.98,
+                                        transition: { duration: 0.1 },
+                                    }}
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{
+                                        opacity: 1,
+                                        y: 0,
+                                        transition: {
+                                            duration: 0.2,
+                                        },
+                                    }}
+                                >
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                                        className="flex items-center gap-2 px-2 w-full justify-start"
+                                    >
+                                        <div className={cn("flex items-center justify-center w-5 h-5", !isExpanded && "mx-auto")}>
+                                            {theme === "dark" ? <Sun className="h-4 w-4 flex-shrink-0" /> : <Moon className="h-4 w-4 flex-shrink-0" />}
+                                        </div>
+                                        {isExpanded && (
+                                            <motion.span className="text-xs truncate" variants={itemVariants}>
+                                                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                                            </motion.span>
+                                        )}
+                                    </Button>
+                                </motion.div>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </motion.div>
             </SidebarContent>
 
             <SidebarFooter className="px-1 pb-2">

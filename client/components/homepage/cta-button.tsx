@@ -1,19 +1,16 @@
-"use client"
-
-import type React from "react"
-
 import { motion } from "framer-motion"
+import { ArrowRight } from 'lucide-react'
 import { Button } from "../../components/ui/button"
-import { ArrowRight } from "lucide-react"
 
 interface CTAButtonProps {
     children: React.ReactNode
     onClick?: () => void
     icon?: React.ReactNode
     className?: string
-    size?: "default" | "sm" | "lg"
+    size?: "sm" | "lg" | "icon"
 }
 
+// Update the button gradient colors to purple/magenta
 export function CTAButton({
     children,
     onClick,
@@ -26,7 +23,7 @@ export function CTAButton({
             <Button
                 size={size}
                 onClick={onClick}
-                className={`bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-orange-500 text-white shadow-lg hover:shadow-orange-500/20 ${className}`}
+                className={`purple-button-gradient text-white shadow-lg hover:shadow-purple-500/20 ${className}`}
             >
                 {children}
                 {icon}
@@ -34,5 +31,3 @@ export function CTAButton({
         </motion.div>
     )
 }
-
-export default CTAButton;

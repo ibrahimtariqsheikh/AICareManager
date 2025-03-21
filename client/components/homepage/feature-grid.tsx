@@ -1,8 +1,6 @@
-"use client"
-
-import type React from "react"
+// Update feature grid accent colors to purple/magenta
 import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight } from 'lucide-react'
 
 interface Feature {
     icon: React.ReactNode
@@ -15,22 +13,23 @@ interface FeatureGridProps {
     features: Feature[]
 }
 
-const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6 },
-    },
-}
-
 const staggerChildren = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
         transition: {
             staggerChildren: 0.1,
-            delayChildren: 0.3,
+        },
+    },
+}
+
+const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.4,
         },
     },
 }
@@ -47,7 +46,7 @@ export function FeatureGrid({ features }: FeatureGridProps) {
             {features.map((feature, index) => (
                 <motion.div
                     key={index}
-                    className="bg-white dark:bg-black/40 rounded-xl p-6 border border-gray-100 dark:border-white/10 hover:border-orange-200 transition-all relative overflow-hidden group"
+                    className="bg-white dark:bg-black/40 rounded-xl p-6 border border-gray-100 dark:border-white/10 hover:border-purple-200 transition-all relative overflow-hidden group"
                     variants={fadeIn}
                     whileHover={{
                         y: -5,
@@ -55,12 +54,12 @@ export function FeatureGrid({ features }: FeatureGridProps) {
                     }}
                 >
                     {/* Subtle accent in top right */}
-                    <div className="absolute -right-10 -top-10 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl transition-all duration-500 group-hover:bg-orange-500/10" />
+                    <div className="absolute -right-10 -top-10 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl transition-all duration-500 group-hover:bg-purple-500/10" />
 
                     {/* Icon with accent background */}
                     <div className="mb-5 relative z-10">
-                        <div className="w-12 h-12 bg-orange-50 dark:bg-orange-950/20 rounded-lg flex items-center justify-center">
-                            <div className="text-orange-500">{feature.icon}</div>
+                        <div className="w-12 h-12 bg-purple-50 dark:bg-purple-950/20 rounded-lg flex items-center justify-center">
+                            <div className="text-purple-500">{feature.icon}</div>
                         </div>
                     </div>
 
@@ -73,7 +72,7 @@ export function FeatureGrid({ features }: FeatureGridProps) {
                         <div className="mt-4 relative z-10">
                             <a
                                 href={feature.link}
-                                className="inline-flex items-center text-sm font-medium text-orange-500 transition-colors group/link"
+                                className="inline-flex items-center text-sm font-medium text-purple-500 transition-colors group/link"
                             >
                                 Learn more
                                 <motion.div className="ml-1" initial={{ x: 0 }} whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
@@ -85,7 +84,7 @@ export function FeatureGrid({ features }: FeatureGridProps) {
 
                     {/* Subtle hover indicator */}
                     <motion.div
-                        className="absolute bottom-0 left-0 h-1 w-0 bg-orange-500/20 group-hover:w-full transition-all duration-300"
+                        className="absolute bottom-0 left-0 h-1 w-0 bg-purple-500/20 group-hover:w-full transition-all duration-300"
                         initial={{ width: 0 }}
                         whileHover={{ width: "100%" }}
                     />
@@ -94,6 +93,3 @@ export function FeatureGrid({ features }: FeatureGridProps) {
         </motion.div>
     )
 }
-
-export default FeatureGrid
-

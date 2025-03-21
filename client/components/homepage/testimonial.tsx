@@ -1,9 +1,10 @@
 "use client"
 
+// Update testimonial colors to purple/magenta
 import { useState, useEffect } from "react"
+import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "framer-motion"
 import { Star } from "lucide-react"
-import { useTheme } from "next-themes"
 
 interface Testimonial {
     quote: string
@@ -47,7 +48,7 @@ export function TestimonialCarousel({ testimonials, autoPlay = true, interval = 
                         index === currentTestimonial && (
                             <motion.div
                                 key={index}
-                                className={`absolute inset-0 ${theme === "dark" ? "bg-black/40" : "bg-white"} backdrop-blur-md rounded-2xl p-8 border ${theme === "dark" ? "border-white/10" : "border-gray-100"} ${theme === "dark" ? "shadow-xl" : "shadow-sm"}`}
+                                className={`absolute inset-0 ${theme === "dark" ? "testimonial-card" : "bg-white"} backdrop-blur-md rounded-2xl p-8 border ${theme === "dark" ? "border-purple-500/10" : "border-gray-100"} ${theme === "dark" ? "shadow-xl" : "shadow-sm"}`}
                                 initial={{ opacity: 0, x: 50 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -50 }}
@@ -81,8 +82,8 @@ export function TestimonialCarousel({ testimonials, autoPlay = true, interval = 
                         key={index}
                         onClick={() => setCurrentTestimonial(index)}
                         className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentTestimonial
-                                ? "bg-orange-500 w-6"
-                                : `${theme === "dark" ? "bg-orange-500/30" : "bg-orange-300/50"}`
+                                ? "bg-purple-500 w-6"
+                                : `${theme === "dark" ? "bg-purple-500/30" : "bg-purple-300/50"}`
                             }`}
                         aria-label={`Go to testimonial ${index + 1}`}
                     />

@@ -140,7 +140,7 @@ export default function Home() {
 
   return (
     <div
-      className={`min-h-screen w-full overflow-hidden ${theme === "dark" ? "bg-gradient-to-b from-stone-950 to-black" : "bg-gradient-to-b from-orange-50/30 to-white"}`}
+      className={`min-h-screen w-full overflow-visible ${theme === "dark" ? "bg-gradient-to-b from-stone-950 to-black" : "bg-gradient-to-b from-orange-50/30 to-white"}`}
     >
       <Navbar />
 
@@ -254,7 +254,7 @@ export default function Home() {
       {/* CTA Section */}
       <Section className="py-24 relative z-10">
         <motion.div
-          className={`${theme === "dark" ? "bg-gradient-to-r from-black/70 to-black/70" : "bg-gradient-to-r from-white to-white/90"} backdrop-blur-md rounded-3xl p-8 md:p-12 text-center mx-auto border ${theme === "dark" ? "border-white/10 shadow-xl" : "border-gray-100 shadow-sm"} relative overflow-hidden`}
+          className={`${theme === "dark" ? "bg-gradient-to-r from-black/70 to-black/70" : "bg-gradient-to-r from-white to-white/90"} backdrop-blur-md rounded-3xl p-8 md:p-12 text-center mx-auto border ${theme === "dark" ? "border-white/10 shadow-xl" : "border-gray-100 shadow-sm"} relative overflow-visible`}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}

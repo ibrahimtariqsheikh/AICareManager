@@ -20,13 +20,11 @@ import { useCalendarSearch } from "./use-calender-search"
 import { useCalendarStyles } from "./use-calender-styles"
 import { useCalendarFilters } from "./use-calender-filters"
 
-
 export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(dateRange.from || new Date())
     const [activeView, setActiveView] = useState<"day" | "week" | "month">(view)
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState(null)
-    const [showSidebar, setShowSidebar] = useState(true)
     const calendarRef = useRef<HTMLDivElement>(null)
     const { theme, setTheme } = useTheme()
 
@@ -248,24 +246,10 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     }
 
     return (
-        <div className={`flex flex-col h-full w-full relative ${theme === "dark" ? "dark-theme" : ""}`}>
+        <div className={`flex flex-col h-full w-full overflow-hidden relative ${theme === "dark" ? "dark-theme" : ""}`}>
 
-            <div className="flex items-center justify-between gap-2 mb-4 z-10">
-                <div className="flex items-center gap-2">
-                    <CalendarIcon className={`h-5 w-5 ${theme === "dark" ? "text-green-400" : "text-blue-500"}`} />
-                    <h1 className={`text-lg font-semibold ${theme === "dark" ? "text-white" : ""}`}>Calendar</h1>
-                </div>
 
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className={`h-8 w-8 rounded-full ${theme === "dark" ? "bg-black text-white border-slate-700 hover:bg-slate-700 hover:border-slate-600" : ""}`}
-                >
-                    {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
-            </div>
+
 
             <CalendarHeader
                 activeView={activeView}
@@ -289,29 +273,26 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
             />
 
             <div className="flex flex-1 h-full relative z-10">
-                {/* Staff sidebar - only show in week/month views */}
-                {
-                    <CalendarSidebar
-                        showSidebar={showSidebar}
-                        sidebarMode={sidebarMode}
-                        staffMembers={staffMembers}
-                        clients={clients}
-                        eventTypes={eventTypes}
-                        toggleStaffSelection={handleToggleStaffSelection}
-                        toggleClientSelection={handleToggleClientSelection}
-                        toggleEventTypeSelection={handleToggleEventTypeSelection}
-                        selectAllStaff={handleSelectAllStaff}
-                        deselectAllStaff={handleDeselectAllStaff}
-                        selectAllClients={handleSelectAllClients}
-                        deselectAllClients={handleDeselectAllClients}
-                        toggleSidebarMode={handleToggleSidebarMode}
-                        spaceTheme={theme === "dark"}
-                    />
-                }
+                {/* Staff sidebar - always visible in all views */}
+                <CalendarSidebar
+                    showSidebar={true}
+                    sidebarMode={sidebarMode}
+                    staffMembers={staffMembers}
+                    clients={clients}
+                    eventTypes={eventTypes}
+                    toggleStaffSelection={handleToggleStaffSelection}
+                    toggleClientSelection={handleToggleClientSelection}
+                    toggleEventTypeSelection={handleToggleEventTypeSelection}
+                    selectAllStaff={handleSelectAllStaff}
+                    deselectAllStaff={handleDeselectAllStaff}
+                    selectAllClients={handleSelectAllClients}
+                    deselectAllClients={handleDeselectAllClients}
+                    toggleSidebarMode={handleToggleSidebarMode}
+                    spaceTheme={theme === "dark"}
+                />
 
                 {/* Main calendar area */}
                 <div className="flex-1 h-full" ref={calendarRef}>
-
                     {/* Custom Calendar */}
                     <CustomCalendar
                         events={filteredEvents}

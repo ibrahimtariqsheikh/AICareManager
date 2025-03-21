@@ -12,18 +12,22 @@ type SpotlightProps = {
     smallWidth?: number;
     duration?: number;
     xOffset?: number;
+    intensity?: number;
+    spread?: number;
 };
 
 export const Spotlight = ({
-    gradientFirst = "radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(30, 100%, 85%, .08) 0, hsla(30, 100%, 55%, .02) 50%, hsla(30, 100%, 45%, 0) 80%)",
-    gradientSecond = "radial-gradient(50% 50% at 50% 50%, hsla(30, 100%, 85%, .06) 0, hsla(30, 100%, 55%, .02) 80%, transparent 100%)",
-    gradientThird = "radial-gradient(50% 50% at 50% 50%, hsla(30, 100%, 85%, .04) 0, hsla(30, 100%, 45%, .02) 80%, transparent 100%)",
+    gradientFirst = "radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(280, 100%, 85%, .25) 0, hsla(280, 100%, 60%, .15) 50%, hsla(280, 100%, 45%, .05) 80%)",
+    gradientSecond = "radial-gradient(50% 50% at 50% 50%, hsla(300, 100%, 85%, .2) 0, hsla(300, 100%, 60%, .1) 80%, transparent 100%)",
+    gradientThird = "radial-gradient(50% 50% at 50% 50%, hsla(320, 100%, 85%, .15) 0, hsla(320, 100%, 60%, .08) 80%, transparent 100%)",
     translateY = -350,
-    width = 560,
-    height = 1380,
-    smallWidth = 240,
+    width = 700,
+    height = 1200,
+    smallWidth = 300,
     duration = 7,
-    xOffset = 100,
+    xOffset = 150,
+    intensity = .75,
+    spread = 1.5,
 }: SpotlightProps = {}) => {
     return (
         <motion.div
@@ -31,16 +35,17 @@ export const Spotlight = ({
                 opacity: 0,
             }}
             animate={{
-                opacity: 1,
+                opacity: intensity,
             }}
             transition={{
                 duration: 1.5,
             }}
-            className="pointer-events-none absolute inset-0 h-full w-full"
+            className="pointer-events-none absolute inset-0 h-full w-full overflow-hidden"
         >
             <motion.div
                 animate={{
                     x: [0, xOffset, 0],
+                    y: [0, -50, 0],
                 }}
                 transition={{
                     duration,
@@ -56,26 +61,29 @@ export const Spotlight = ({
                         background: gradientFirst,
                         width: `${width}px`,
                         height: `${height}px`,
+                        filter: `blur(${10 * spread}px)`,
                     }}
                     className={`absolute top-0 left-0`}
                 />
 
                 <div
                     style={{
-                        transform: "rotate(-45deg) translate(5%, -50%)",
+                        transform: "rotate(-45deg) translate(15%, -60%)",
                         background: gradientSecond,
                         width: `${smallWidth}px`,
                         height: `${height}px`,
+                        filter: `blur(${8 * spread}px)`,
                     }}
                     className={`absolute top-0 left-0 origin-top-left`}
                 />
 
                 <div
                     style={{
-                        transform: "rotate(-45deg) translate(-180%, -70%)",
+                        transform: "rotate(-45deg) translate(-220%, -90%)",
                         background: gradientThird,
                         width: `${smallWidth}px`,
                         height: `${height}px`,
+                        filter: `blur(${8 * spread}px)`,
                     }}
                     className={`absolute top-0 left-0 origin-top-left`}
                 />
@@ -84,9 +92,10 @@ export const Spotlight = ({
             <motion.div
                 animate={{
                     x: [0, -xOffset, 0],
+                    y: [0, 50, 0],
                 }}
                 transition={{
-                    duration,
+                    duration: duration * 1.2,
                     repeat: Infinity,
                     repeatType: "reverse",
                     ease: "easeInOut",
@@ -99,26 +108,29 @@ export const Spotlight = ({
                         background: gradientFirst,
                         width: `${width}px`,
                         height: `${height}px`,
+                        filter: `blur(${10 * spread}px)`,
                     }}
                     className={`absolute top-0 right-0`}
                 />
 
                 <div
                     style={{
-                        transform: "rotate(45deg) translate(-5%, -50%)",
+                        transform: "rotate(45deg) translate(-15%, -60%)",
                         background: gradientSecond,
                         width: `${smallWidth}px`,
                         height: `${height}px`,
+                        filter: `blur(${8 * spread}px)`,
                     }}
                     className={`absolute top-0 right-0 origin-top-right`}
                 />
 
                 <div
                     style={{
-                        transform: "rotate(45deg) translate(180%, -70%)",
+                        transform: "rotate(45deg) translate(220%, -90%)",
                         background: gradientThird,
                         width: `${smallWidth}px`,
                         height: `${height}px`,
+                        filter: `blur(${8 * spread}px)`,
                     }}
                     className={`absolute top-0 right-0 origin-top-right`}
                 />

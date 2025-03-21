@@ -30,6 +30,7 @@ interface CustomDayViewProps {
     selectAllClients?: () => void
     deselectAllClients?: () => void
     toggleSidebarMode?: () => void
+    showSidebar?: boolean
 }
 
 export function CustomDayView({
@@ -46,6 +47,7 @@ export function CustomDayView({
         return end.diff(start, "minutes")
     },
     spaceTheme = false,
+    showSidebar = true, // Add default value for showSidebar
 }: CustomDayViewProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const timelineRef = useRef<HTMLDivElement>(null)
@@ -407,8 +409,14 @@ export function CustomDayView({
 
                 <div
                     ref={containerRef}
-                    className={`flex-1 overflow-x-auto overflow-y-hidden relative border rounded-md shadow-sm ${timelineClass} h-full`}
+                    className={`flex-1 overflow-x-auto overflow-y-auto relative border rounded-md shadow-sm ${timelineClass} h-full`}
                     onScroll={handleScroll}
+                    style={{
+                        width: "calc(100% - 16px)",
+                        maxWidth: "100%",
+                        overflowX: "auto",
+                        marginRight: "16px",
+                    }}
                 >
                     {/* Time slots */}
                     <div
@@ -416,6 +424,7 @@ export function CustomDayView({
                         style={{
                             width: `${totalWidth}px`,
                             minHeight: `${minContainerHeight}px`,
+                            maxWidth: "none",
                         }}
                         ref={timelineRef}
                     >

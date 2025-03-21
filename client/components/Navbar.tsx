@@ -13,6 +13,7 @@ import { useTheme } from "next-themes"
 import { useIsMobile } from "../hooks/use-mobile"
 import { LogIn, LogOut, Menu, User, Moon, Sun, ChevronRight } from 'lucide-react'
 import { signOut } from 'aws-amplify/auth';
+import Image from "next/image"
 
 const Navbar = () => {
   const { user } = useAuthenticator((context) => [context.user])
@@ -114,7 +115,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/"
-          className={`hover:text-orange-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'text-orange-500' : ''}`}
+          className={`hover:text-purple-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'text-purple-500' : ''}`}
         >
           Home
         </Link>
@@ -122,7 +123,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/pricing"
-          className={`hover:text-orange-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'text-orange-500' : ''}`}
+          className={`hover:text-purple-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'text-purple-500' : ''}`}
         >
           Pricing
         </Link>
@@ -130,7 +131,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/dashboard"
-          className={`hover:text-orange-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'text-orange-500' : ''}`}
+          className={`hover:text-purple-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'text-purple-500' : ''}`}
         >
           Dashboard
         </Link>
@@ -162,7 +163,7 @@ const Navbar = () => {
               className="flex items-center gap-2 mb-4 p-2 bg-muted/50 rounded-md"
               variants={mobileItemVariants}
             >
-              <User className="w-5 h-5 text-orange-500" />
+              <User className="w-5 h-5 text-purple-500" />
               <span className="font-medium text-sm">{user.username}</span>
             </motion.div>
           )}
@@ -170,7 +171,7 @@ const Navbar = () => {
           {/* Navigation Links */}
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/" className="block p-2 hover:text-orange-500 transition-colors">
+              <Link href="/" className="block p-2 hover:text-purple-500 transition-colors">
                 Home
               </Link>
             </motion.div>
@@ -178,7 +179,7 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/pricing" className="block p-2 hover:text-orange-500 transition-colors">
+              <Link href="/pricing" className="block p-2 hover:text-purple-500 transition-colors">
                 Pricing
               </Link>
             </motion.div>
@@ -186,7 +187,7 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/dashboard" className="block p-2 hover:text-orange-500 transition-colors">
+              <Link href="/dashboard" className="block p-2 hover:text-purple-500 transition-colors">
                 Dashboard
               </Link>
             </motion.div>
@@ -194,7 +195,7 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/contact" className="block p-2 hover:text-orange-500 transition-colors">
+              <Link href="/contact" className="block p-2 hover:text-purple-500 transition-colors">
                 Contact
               </Link>
             </motion.div>
@@ -283,31 +284,49 @@ const Navbar = () => {
   const DemoButton = () => (
     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
       <Button
-        className="bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-orange-500 text-white rounded-xl"
+        className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white rounded-xl relative overflow-hidden group"
         asChild
       >
         <Link href="/#book-demo">
-          Book a Demo
-          <ChevronRight className="ml-1 h-4 w-4" />
+          <span className="relative z-10 flex items-center">
+            Book a Demo
+            <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </span>
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            initial={{ x: '-100%' }}
+            animate={{ x: '100%' }}
+            transition={{
+              repeat: Infinity,
+              duration: 2,
+              ease: "linear"
+            }}
+          />
         </Link>
       </Button>
     </motion.div>
   )
-
   return (
     <motion.header
-      className="fixed top-4 left-0 right-0 mx-4 md:mx-10 flex justify-between items-center bg-background/80 backdrop-blur-sm z-20 mt-2 py-3 px-4 rounded-2xl border border-border/40"
+      className="fixed top-4 left-0 right-0 mx-4 md:mx-10 flex justify-between items-center bg-transparent backdrop-blur-md z-50 mt-2 py-3 px-4 rounded-2xl border border-border/40 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)]"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <motion.div
-        className="font-bold text-lg"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.2 }}
       >
-        <Link href="/">AI Care Manager</Link>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/assets/logo.png"
+            alt="AI Care Manager"
+            width={125}
+            height={125}
+            className={`${theme === 'light' ? 'invert' : ''} transition-all duration-300`}
+          />
+        </Link>
       </motion.div>
 
       <motion.div className="flex items-center gap-4 text-sm font-medium" variants={itemVariants}>

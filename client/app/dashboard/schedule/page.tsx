@@ -24,7 +24,7 @@ export default function SchedulerPage() {
     })
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
-    const [isFilterOpen, setIsFilterOpen] = useState(false)
+    const [isFilterOpen, setIsFilterOpen] = useState(true)
 
     const handleEventSelect = (event: any) => {
         setSelectedEvent(event)
@@ -55,20 +55,10 @@ export default function SchedulerPage() {
 
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 min-h-screen min-w-full ">
-                    {isDesktop && isFilterOpen ? (
-                        <Card className="p-4 space-y-4">
-                            <h3 className="font-medium">Filters</h3>
-                            <StaffFilter />
-                            <ClientFilter />
-                            {/* <DatePickerWithRange date={dateRange} setDate={setDateRange} /> */}
-                        </Card>
-                    ) : null}
 
-                    <div className={`${isDesktop && isFilterOpen ? "md:col-span-3" : "md:col-span-4"}`}>
-                        <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
-                    </div>
-                </div>
+                <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
+
+
 
 
             </div>

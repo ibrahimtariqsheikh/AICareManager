@@ -169,7 +169,7 @@ export function CalendarHeader({
                         animate={{ width: "200px", opacity: 1 }}
                         exit={{ width: 0, opacity: 0 }}
                         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                        className="relative mb-4 absolute right-0 top-16 z-10"
+                        className="absolute right-0 top-16 z-10 mb-4"
                     >
                         <Input
                             ref={searchInputRef}

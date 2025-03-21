@@ -17,6 +17,17 @@ interface CustomMonthViewProps {
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
     spaceTheme?: boolean
+    clients?: any[]
+    eventTypes?: any[]
+    sidebarMode?: "staff" | "clients"
+    toggleStaffSelection?: (staffId: string) => void
+    toggleClientSelection?: (clientId: string) => void
+    toggleEventTypeSelection?: (typeId: string) => void
+    selectAllStaff?: () => void
+    deselectAllStaff?: () => void
+    selectAllClients?: () => void
+    deselectAllClients?: () => void
+    toggleSidebarMode?: () => void
 }
 
 // Update the function to accept the spaceTheme prop
@@ -28,6 +39,17 @@ export function CustomMonthView({
     staffMembers,
     getEventDurationInMinutes,
     spaceTheme = false,
+    clients,
+    eventTypes,
+    sidebarMode,
+    toggleStaffSelection,
+    toggleClientSelection,
+    toggleEventTypeSelection,
+    selectAllStaff,
+    deselectAllStaff,
+    selectAllClients,
+    deselectAllClients,
+    toggleSidebarMode,
 }: CustomMonthViewProps) {
     const [calendar, setCalendar] = useState<Date[][]>([])
     const [expandedDays, setExpandedDays] = useState<{ [key: string]: boolean }>({})

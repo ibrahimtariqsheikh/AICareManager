@@ -29,7 +29,6 @@ interface CustomCalendarProps {
     deselectAllClients?: () => void
     toggleSidebarMode?: () => void
     clients?: any[]
-
     eventTypes?: any[]
     spaceTheme?: boolean
 }
@@ -101,6 +100,7 @@ export function CustomCalendar({
                 deselectAllClients={deselectAllClients}
                 toggleSidebarMode={toggleSidebarMode}
                 spaceTheme={spaceTheme}
+                showSidebar={true} // Always show sidebar in day view
             />
         )
     }, [
@@ -139,7 +139,16 @@ export function CustomCalendar({
                 spaceTheme={spaceTheme}
             />
         )
-    }, [activeView, currentDate, events, onSelectEvent, onEventUpdate, staffMembers, getEventDurationInMinutes, spaceTheme])
+    }, [
+        activeView,
+        currentDate,
+        events,
+        onSelectEvent,
+        onEventUpdate,
+        staffMembers,
+        getEventDurationInMinutes,
+        spaceTheme,
+    ])
 
     // Memoize the month view
     const monthView = useMemo(() => {
@@ -159,17 +168,17 @@ export function CustomCalendar({
     }, [activeView, currentDate, events, onSelectEvent, onNavigate, staffMembers, getEventDurationInMinutes, spaceTheme])
 
     const cardClasses = spaceTheme
-        ? "flex-1 shadow-lg border border-indigo-500/20 rounded-lg overflow-hidden p-0 h-full bg-slate-900/60 backdrop-blur-sm"
+        ? "flex-1 shadow-lg border border-indigo-500/20 rounded-lg overflow-hidden p-0 h-full backdrop-blur-sm"
         : "flex-1 shadow-sm border border-gray-100 rounded-lg overflow-hidden p-0 h-full"
 
     return (
         <Card className={cardClasses}>
             {isLoading ? (
                 <div className="flex items-center justify-center h-full min-h-[500px]">
-                    <Loader2 className={`h-6 w-6 ${spaceTheme ? 'text-purple-400' : 'text-blue-500'} animate-spin`} />
+                    <Loader2 className={`h-6 w-6 ${spaceTheme ? "text-purple-400" : "text-blue-500"} animate-spin`} />
                 </div>
             ) : (
-                <div className="h-full flex flex-col" ref={calendarRef}>
+                <div className="h-full flex flex-col overflow-hidden" ref={calendarRef}>
                     {activeView === "day" && dayView}
                     {activeView === "week" && weekView}
                     {activeView === "month" && monthView}
@@ -178,3 +187,4 @@ export function CustomCalendar({
         </Card>
     )
 }
+
