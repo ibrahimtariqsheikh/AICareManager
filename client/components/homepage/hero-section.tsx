@@ -1,6 +1,6 @@
 "use client"
 
-// Update hero section colors to purple/magenta
+// Update hero section colors to blue
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
@@ -9,6 +9,8 @@ import { Input } from "../../components/ui/input"
 import Image from "next/image"
 import { Section } from "./section"
 import { CTAButton } from "./cta-button"
+import { Button } from "../ui/button"
+import { useRouter } from "next/navigation"
 
 interface HeroSectionProps {
     title: string
@@ -21,7 +23,7 @@ interface HeroSectionProps {
 export function HeroSection({ title, subtitle, image, isAuthenticated = false, onDashboardClick }: HeroSectionProps) {
     const { theme } = useTheme()
     const [mounted, setMounted] = useState(false)
-
+    const router = useRouter()
     useEffect(() => {
         setMounted(true)
     }, [])
@@ -37,17 +39,25 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
         <Section className="pt-20 pb-16 md:pt-32 md:pb-24 relative z-10">
             <motion.div className="max-w-4xl mx-auto text-center space-y-8" variants={fadeIn}>
                 <motion.div
-                    className={`inline-block px-4 py-1 rounded-full ${theme === "dark" ? "bg-purple-500/10" : "bg-purple-100"} backdrop-blur-sm text-purple-500 text-sm font-medium mb-4`}
+                    className={`relative inline-block px-4 py-1 rounded-full ${theme === "dark" ? "bg-blue-500/10" : "bg-blue-100"} backdrop-blur-sm text-blue-500 text-sm font-medium mb-4 overflow-hidden`}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                 >
-                    Next generation homecare management
+                    <span className="relative z-10">Next generation homecare management</span>
+                    <span className="absolute inset-0 overflow-hidden rounded-full">
+                        <span className="absolute inset-0 opacity-30 bg-gradient-to-r from-transparent via-blue-400 to-transparent animate-[shimmer_2s_infinite]"
+                            style={{
+                                backgroundSize: '200% 100%',
+                                animation: 'shimmer 2s linear infinite'
+                            }} />
+                    </span>
+                    <span className="absolute inset-0 rounded-full border border-blue-500/30 animate-pulse" />
                 </motion.div>
 
                 <motion.h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight px-2" variants={fadeIn}>
                     <span className={theme === "dark" ? "text-white" : "text-black"}>{regularWords}</span>{" "}
-                    <span className="purple-gradient-text">{highlightedWords}</span>
+                    <span className="text-primary">{highlightedWords}</span>
                 </motion.h1>
 
                 <motion.p className="text-md md:text-lg text-muted-foreground max-w-2xl mx-auto" variants={fadeIn}>
@@ -64,10 +74,16 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                             <Input
                                 type="email"
                                 placeholder="Enter your email"
-                                className={`h-12 backdrop-blur-sm ${theme === "dark" ? "bg-white/10 dark:bg-black/20" : "bg-gray-50"} border-purple-500/20 focus:border-purple-500/50 transition-all`}
+                                className={`h-9 backdrop-blur-sm ${theme === "dark" ? "bg-white/10 dark:bg-black/20" : "bg-gray-50"} border-blue-500/20 focus:border-blue-500/50 transition-all`}
                             />
                         </div>
-                        <CTAButton>Book a Demo</CTAButton>
+                        <Button
+                            onClick={() => router.push("/dashboard")}
+                            className=""
+
+                        >
+                            Book a Demo
+                        </Button>
                     </motion.div>
                 )}
             </motion.div>
@@ -80,18 +96,18 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                 transition={{ delay: 0.5, duration: 0.8 }}
             >
                 <div
-                    className={`relative ${theme === "dark" ? "shadow-2xl shadow-purple-500/10" : "shadow-lg shadow-purple-500/5"} rounded-xl overflow-hidden border ${theme === "dark" ? "border-white/10" : "border-gray-100"} backdrop-blur-sm`}
+                    className={`relative ${theme === "dark" ? "shadow-2xl shadow-blue-500/10" : "shadow-lg shadow-blue-500/5"} rounded-xl overflow-hidden border ${theme === "dark" ? "border-white/10" : "border-gray-100"} backdrop-blur-sm`}
                 >
                     <Image
                         src={image || "/placeholder.svg"}
                         alt="Dashboard Preview"
                         width={1200}
                         height={600}
-                        className="w-full h-auto"
+                        className="w-full h-auto rounded-xl"
                     />
+                    <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
                 </div>
             </motion.div>
         </Section>
     )
 }
-

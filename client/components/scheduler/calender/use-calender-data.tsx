@@ -1,315 +1,209 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import moment from "moment"
+import { useState, useEffect, useCallback } from "react"
 import { toast } from "sonner"
-import { type StaffMember, type Client, type EventType, type AppointmentEvent } from "./types"
+import type { AppointmentEvent, StaffMember, Client, EventType } from "./types"
+import { useAppSelector } from "../../../state/redux"
+import { useGetSchedulesByDateRangeQuery, useGetSchedulesQuery } from "../../../state/api"
 
-export function useCalendarData(dateRange: { from: Date | undefined; to: Date | undefined }) {
+
+interface DateRange {
+    from?: Date
+    to?: Date
+}
+
+export function useCalendarData(dateRange: DateRange) {
     const [events, setEvents] = useState<AppointmentEvent[]>([])
     const [filteredEvents, setFilteredEvents] = useState<AppointmentEvent[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [staffMembers, setStaffMembers] = useState<StaffMember[]>([])
+    const [clients, setClients] = useState<Client[]>([])
+    const [eventTypes, setEventTypes] = useState<EventType[]>([])
     const [sidebarMode, setSidebarMode] = useState<"staff" | "clients">("staff")
 
-    // Staff members data
-    const [staffMembers, setStaffMembers] = useState<StaffMember[]>([
-        {
-            id: "staff-1",
-            name: "Dr. Sarah Johnson",
-            role: "Primary Care",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#4f46e5",
-            selected: true,
-        },
-        {
-            id: "staff-2",
-            name: "Dr. Michael Chen",
-            role: "Cardiologist",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#0891b2",
-            selected: true,
-        },
-        {
-            id: "staff-3",
-            name: "Nurse Emma Rodriguez",
-            role: "Registered Nurse",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#16a34a",
-            selected: true,
-        },
-        {
-            id: "staff-4",
-            name: "Dr. James Wilson",
-            role: "Neurologist",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#9333ea",
-            selected: true,
-        },
-        {
-            id: "staff-5",
-            name: "Therapist Olivia Brown",
-            role: "Physical Therapist",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#ea580c",
-            selected: true,
-        },
-    ])
+    // Get agency ID from auth state
+    const { userInfo } = useAppSelector((state) => state.auth)
+    const agencyId = userInfo?.agencyId || ""
 
-    // Clients data
-    const [clients, setClients] = useState<Client[]>([
-        {
-            id: "client-1",
-            name: "Miracle Workman",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#4f46e5",
-            selected: true,
-        },
-        {
-            id: "client-2",
-            name: "Jayden Lubin",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#0891b2",
-            selected: true,
-        },
-        {
-            id: "client-3",
-            name: "Jayden Culhane",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#16a34a",
-            selected: true,
-        },
-        {
-            id: "client-4",
-            name: "Chance Bostrom",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#9333ea",
-            selected: true,
-        },
-        {
-            id: "client-5",
-            name: "Zane Lubin",
-            avatar: "/placeholder.svg?height=40&width=40",
-            color: "#ea580c",
-            selected: true,
-        },
-    ])
+    // Prepare query parameters for API calls
+    const queryParams = {
+        agencyId,
+        startDate: dateRange.from?.toISOString(),
+        endDate: dateRange.to?.toISOString(),
+        status: undefined,
+        type: undefined,
+        limit: 100,
+        offset: 0,
+    }
 
-    // Event types data
-    const [eventTypes, setEventTypes] = useState<EventType[]>([
-        { id: "HOME_VISIT", name: "Home Visit", color: "#22c55e", selected: true },
-        { id: "VIDEO_CALL", name: "Video Call", color: "#2563eb", selected: true },
-        { id: "HOSPITAL", name: "Hospital", color: "#22c55e", selected: true },
-        { id: "IN_PERSON", name: "In-Person", color: "#f59e0b", selected: true },
-        { id: "AUDIO_CALL", name: "Audio Call", color: "#ef4444", selected: true },
-    ])
+    // Use the appropriate query based on whether date range is provided
+    const hasDateRange = Boolean(dateRange.from && dateRange.to)
 
-    useEffect(() => {
-        const fetchAppointments = async () => {
+    const schedulesQuery = useGetSchedulesQuery(
+        {
+            agencyId,
+            status: undefined,
+            type: undefined,
+            limit: 100,
+            offset: 0,
+        },
+        { skip: hasDateRange || !agencyId },
+    )
+
+    const dateRangeQuery = useGetSchedulesByDateRangeQuery(queryParams, { skip: !hasDateRange || !agencyId })
+
+    // Determine which query to use
+    const query = hasDateRange ? dateRangeQuery : schedulesQuery
+
+    // Function to fetch staff and clients data
+    const fetchStaffAndClients = useCallback(async () => {
+        try {
             setIsLoading(true)
-            try {
-                // In a real app, this would be an API call to fetch appointments
-                // For now, we'll use mock data
-                await new Promise((resolve) => setTimeout(resolve, 800)) // Simulate API delay
-                const mockAppointments = [
-                    {
-                        id: "1",
-                        title: "Miracle Workman",
-                        start: moment().hour(8).minute(0).toDate(),
-                        end: moment().hour(10).minute(30).toDate(), // 2.5 hour appointment
-                        resourceId: "staff-1",
-                        clientId: "client-1",
-                        status: "CONFIRMED",
-                        type: "HOME_VISIT",
-                    },
-                    {
-                        id: "2",
-                        title: "Jayden Lubin",
-                        start: moment().hour(9).minute(0).toDate(),
-                        end: moment().hour(9).minute(30).toDate(),
-                        resourceId: "staff-2",
-                        clientId: "client-2",
-                        status: "HOME_VISIT",
-                        type: "HOME_VISIT",
-                    },
-                    {
-                        id: "3",
-                        title: "Jayden Culhane",
-                        start: moment().hour(9).minute(0).toDate(),
-                        end: moment().hour(9).minute(30).toDate(),
-                        resourceId: "staff-1",
-                        clientId: "client-3",
-                        status: "VIDEO_CALL",
-                        type: "VIDEO_CALL",
-                    },
-                    {
-                        id: "4",
-                        title: "Meeting",
-                        start: moment().hour(8).minute(30).toDate(),
-                        end: moment().hour(9).minute(0).toDate(),
-                        resourceId: "staff-3",
-                        clientId: "client-4",
-                        status: "HOSPITAL",
-                        type: "HOSPITAL",
-                    },
-                    {
-                        id: "5",
-                        title: "Chance Bostrom",
-                        start: moment().hour(9).minute(30).toDate(),
-                        end: moment().hour(10).minute(0).toDate(),
-                        resourceId: "staff-2",
-                        clientId: "client-4",
-                        status: "VIDEO_CALL",
-                        type: "VIDEO_CALL",
-                    },
-                    {
-                        id: "6",
-                        title: "Zane Lubin",
-                        start: moment().hour(9).minute(30).toDate(),
-                        end: moment().hour(10).minute(0).toDate(),
-                        resourceId: "staff-3",
-                        clientId: "client-5",
-                        status: "HOME_VISIT",
-                        type: "HOME_VISIT",
-                    },
-                    {
-                        id: "7",
-                        title: "Rayna Carder",
-                        start: moment().hour(10).minute(0).toDate(),
-                        end: moment().hour(10).minute(30).toDate(),
-                        resourceId: "staff-1",
-                        clientId: "client-1",
-                        status: "VIDEO_CALL",
-                        type: "VIDEO_CALL",
-                    },
-                    {
-                        id: "8",
-                        title: "Patlyn Torff",
-                        start: moment().hour(10).minute(30).toDate(),
-                        end: moment().hour(11).minute(0).toDate(),
-                        resourceId: "staff-2",
-                        clientId: "client-2",
-                        status: "AUDIO_CALL",
-                        type: "AUDIO_CALL",
-                    },
-                    {
-                        id: "9",
-                        title: "Eliza Morgan",
-                        start: moment().add(1, "days").hour(8).minute(0).toDate(),
-                        end: moment().add(1, "days").hour(8).minute(30).toDate(),
-                        resourceId: "staff-1",
-                        clientId: "client-3",
-                        status: "CONFIRMED",
-                        type: "HOME_VISIT",
-                    },
-                    {
-                        id: "10",
-                        title: "Mason Reynolds",
-                        start: moment().add(1, "days").hour(9).minute(0).toDate(),
-                        end: moment().add(1, "days").hour(9).minute(30).toDate(),
-                        resourceId: "staff-3",
-                        clientId: "client-4",
-                        status: "HOSPITAL",
-                        type: "HOSPITAL",
-                    },
-                    {
-                        id: "11",
-                        title: "Sophia Chen",
-                        start: moment().add(1, "days").hour(10).minute(30).toDate(),
-                        end: moment().add(1, "days").hour(11).minute(0).toDate(),
-                        resourceId: "staff-2",
-                        clientId: "client-5",
-                        status: "VIDEO_CALL",
-                        type: "VIDEO_CALL",
-                    },
-                    {
-                        id: "12",
-                        title: "Noah Williams",
-                        start: moment().add(2, "days").hour(8).minute(30).toDate(),
-                        end: moment().add(2, "days").hour(9).minute(0).toDate(),
-                        resourceId: "staff-4",
-                        clientId: "client-1",
-                        status: "AUDIO_CALL",
-                        type: "AUDIO_CALL",
-                    },
-                    {
-                        id: "13",
-                        title: "Emma Johnson",
-                        start: moment().add(2, "days").hour(11).minute(0).toDate(),
-                        end: moment().add(2, "days").hour(11).minute(30).toDate(),
-                        resourceId: "staff-5",
-                        clientId: "client-2",
-                        status: "HOME_VISIT",
-                        type: "HOME_VISIT",
-                    },
-                    {
-                        id: "14",
-                        title: "Liam Davis",
-                        start: moment().add(3, "days").hour(9).minute(0).toDate(),
-                        end: moment().add(3, "days").hour(9).minute(30).toDate(),
-                        resourceId: "staff-4",
-                        clientId: "client-3",
-                        status: "VIDEO_CALL",
-                        type: "VIDEO_CALL",
-                    },
-                    {
-                        id: "15",
-                        title: "Olivia Martinez",
-                        start: moment().add(3, "days").hour(13).minute(0).toDate(),
-                        end: moment().add(3, "days").hour(13).minute(30).toDate(),
-                        resourceId: "staff-5",
-                        clientId: "client-4",
-                        status: "HOSPITAL",
-                        type: "HOSPITAL",
-                    },
-                ]
 
-                setEvents(mockAppointments)
-                applyFilters(mockAppointments, staffMembers, clients, eventTypes, sidebarMode)
-            } catch (error) {
-                console.error("Failed to fetch appointments:", error)
-                toast.error("Failed to load appointments. Please try again.")
-            } finally {
-                setIsLoading(false)
-            }
+            // Fetch staff members (healthcare workers)
+            const staffResponse = await fetch(`/api/users?role=HEALTH_WORKER&agencyId=${agencyId}`)
+            if (!staffResponse.ok) throw new Error("Failed to fetch staff")
+            const staffData = await staffResponse.json()
+
+            const mappedStaff = (staffData.data || []).map((staff: any) => ({
+                id: staff.id,
+                name: `${staff.firstName} ${staff.lastName}`,
+                role: staff.role || "Care Worker",
+                color: staff.color || getRandomColor(staff.id),
+                avatar: staff.profile?.avatarUrl || "",
+                selected: true,
+            }))
+
+            setStaffMembers(mappedStaff)
+
+            // Fetch clients
+            const clientsResponse = await fetch(`/api/clients?agencyId=${agencyId}`)
+            if (!clientsResponse.ok) throw new Error("Failed to fetch clients")
+            const clientsData = await clientsResponse.json()
+
+            const mappedClients = (clientsData.data || []).map((client: any) => ({
+                id: client.id,
+                name: `${client.firstName} ${client.lastName}`,
+                color: client.color || getRandomColor(client.id),
+                avatar: client.profile?.avatarUrl || "",
+                selected: true,
+            }))
+
+            setClients(mappedClients)
+
+            // Set up event types
+            const eventTypesList: EventType[] = [
+                { id: "HOME_VISIT", name: "Home Visit", color: "#4f46e5", selected: true },
+                { id: "VIDEO_CALL", name: "Video Call", color: "#10b981", selected: true },
+                { id: "HOSPITAL", name: "Hospital", color: "#f59e0b", selected: true },
+                { id: "IN_PERSON", name: "In-Person", color: "#ef4444", selected: true },
+                { id: "AUDIO_CALL", name: "Audio Call", color: "#8b5cf6", selected: true },
+            ]
+
+            setEventTypes(eventTypesList)
+        } catch (error) {
+            console.error("Error fetching staff and clients:", error)
+            toast.error("Failed to load staff and clients data")
         }
+    }, [agencyId])
 
-        fetchAppointments()
-    }, [dateRange])
+    // Function to map API schedule data to calendar events
+    const mapSchedulesToEvents = useCallback((schedules: any[]) => {
+        return schedules.map((schedule) => ({
+            id: schedule.id,
+            title: schedule.title || `Appointment with ${schedule.clientName || "Client"}`,
+            start: new Date(schedule.shiftStart),
+            end: new Date(schedule.shiftEnd),
+            resourceId: schedule.userId,
+            clientId: schedule.clientId,
+            type: schedule.type || "APPOINTMENT",
+            status: schedule.status || "PENDING",
+            notes: schedule.notes || "",
+            chargeRate: schedule.chargeRate || 25,
+            color: getEventColor(schedule.type),
+        }))
+    }, [])
 
-    // Apply filters based on selected staff members/clients and event types
-    const applyFilters = (
-        allEvents: AppointmentEvent[],
-        staff: StaffMember[],
-        clientList: Client[],
-        types: EventType[],
-        mode: string
-    ) => {
-        const selectedStaffIds = staff.filter((s) => s.selected).map((s) => s.id)
-        const selectedClientIds = clientList.filter((c) => c.selected).map((c) => c.id)
-        const selectedTypeIds = types.filter((t) => t.selected).map((t) => t.id)
+    // Helper function to get a random color based on ID
+    const getRandomColor = (id: string) => {
+        const colors = ["#4f46e5", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#ec4899"]
+        const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
+        return colors[hash % colors.length]
+    }
 
-        const filtered = allEvents.filter((event) => {
-            const staffMatch = selectedStaffIds.includes(event.resourceId)
-            const clientMatch = selectedClientIds.includes(event.clientId)
-            const typeMatch = selectedTypeIds.includes(event.type)
+    // Helper function to get event color based on type
+    const getEventColor = (type: string) => {
+        switch (type) {
+            case "HOME_VISIT":
+                return "#4f46e5"
+            case "VIDEO_CALL":
+                return "#10b981"
+            case "HOSPITAL":
+                return "#f59e0b"
+            case "IN_PERSON":
+                return "#ef4444"
+            case "AUDIO_CALL":
+                return "#8b5cf6"
+            default:
+                return "#6b7280"
+        }
+    }
 
-            if (mode === "staff") {
-                return staffMatch && typeMatch
-            } else {
-                return clientMatch && typeMatch
-            }
+    // Fetch staff and clients on initial load
+    useEffect(() => {
+        if (agencyId) {
+            fetchStaffAndClients()
+        }
+    }, [fetchStaffAndClients, agencyId])
+
+    // Process schedules data when query results change
+    useEffect(() => {
+        if (query.data) {
+            const schedules = query.data.data || []
+            const mappedEvents = mapSchedulesToEvents(schedules)
+            setEvents(mappedEvents)
+            setFilteredEvents(mappedEvents)
+            setIsLoading(false)
+        } else if (query.error) {
+            console.error("Error fetching schedules:", query.error)
+            toast.error("Failed to load schedule data")
+            setIsLoading(false)
+        }
+    }, [query.data, query.error, mapSchedulesToEvents])
+
+    // Update loading state based on query status
+    useEffect(() => {
+        setIsLoading(query.isLoading)
+    }, [query.isLoading])
+
+    // Filter events when staff, clients, or event types change
+    useEffect(() => {
+        const selectedStaffIds = staffMembers.filter((staff) => staff.selected).map((staff) => staff.id)
+
+        const selectedClientIds = clients.filter((client) => client.selected).map((client) => client.id)
+
+        const selectedEventTypeIds = eventTypes.filter((type) => type.selected).map((type) => type.id)
+
+        const filtered = events.filter((event) => {
+            const staffMatch = selectedStaffIds.length === 0 || selectedStaffIds.includes(event.resourceId)
+            const clientMatch = selectedClientIds.length === 0 || selectedClientIds.includes(event.clientId)
+            const typeMatch = selectedEventTypeIds.length === 0 || selectedEventTypeIds.includes(event.type)
+
+            return staffMatch && clientMatch && typeMatch
         })
 
         setFilteredEvents(filtered)
-    }
+    }, [events, staffMembers, clients, eventTypes])
 
-    // Update filtered events whenever filters change
-    useEffect(() => {
-        applyFilters(events, staffMembers, clients, eventTypes, sidebarMode)
-    }, [events, staffMembers, clients, eventTypes, sidebarMode])
+    // Function to refresh data
+    const refreshData = useCallback(() => {
+        query.refetch()
+        fetchStaffAndClients()
+    }, [query, fetchStaffAndClients])
 
     return {
         events,
+        setEvents,
         filteredEvents,
         isLoading,
         staffMembers,
@@ -320,6 +214,7 @@ export function useCalendarData(dateRange: { from: Date | undefined; to: Date | 
         setEventTypes,
         sidebarMode,
         setSidebarMode,
-        applyFilters
+        refreshData,
     }
 }
+

@@ -115,7 +115,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/"
-          className={`hover:text-purple-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'text-purple-500' : ''}`}
+          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'font-semibold' : ''}`}
         >
           Home
         </Link>
@@ -123,7 +123,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/pricing"
-          className={`hover:text-purple-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'text-purple-500' : ''}`}
+          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'font-semibold' : ''}`}
         >
           Pricing
         </Link>
@@ -131,7 +131,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/dashboard"
-          className={`hover:text-purple-500 text-sm font-medium hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'text-purple-500' : ''}`}
+          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'font-semibold' : ''}`}
         >
           Dashboard
         </Link>
@@ -280,11 +280,10 @@ const Navbar = () => {
       </motion.div>
     )
   }
-
   const DemoButton = () => (
     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
       <Button
-        className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white rounded-xl relative overflow-hidden group"
+        className="bg-primary text-white rounded-xl relative overflow-hidden group shadow-md dark:shadow-[0_0_15px_rgba(56,182,255,0.3)]"
         asChild
       >
         <Link href="/#book-demo">
@@ -292,23 +291,26 @@ const Navbar = () => {
             Book a Demo
             <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </span>
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            initial={{ x: '-100%' }}
-            animate={{ x: '100%' }}
-            transition={{
-              repeat: Infinity,
-              duration: 2,
-              ease: "linear"
-            }}
-          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary overflow-hidden">
+            <motion.div
+              className="w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              initial={{ x: '-100%' }}
+              animate={{ x: '100%' }}
+              transition={{
+                repeat: Infinity,
+                repeatType: "mirror",
+                duration: 1.5,
+                ease: "easeInOut"
+              }}
+            />
+          </div>
         </Link>
       </Button>
     </motion.div>
   )
   return (
     <motion.header
-      className="fixed top-4 left-0 right-0 mx-4 md:mx-10 flex justify-between items-center bg-transparent backdrop-blur-md z-50 mt-2 py-3 px-4 rounded-2xl border border-border/40 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)]"
+      className="fixed top-0 left-0 right-0  flex justify-between items-center bg-transparent backdrop-blur-md z-50  py-4 px-10  border border-border/40 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)]"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -337,8 +339,8 @@ const Navbar = () => {
             <>
               <NavLinks key="desktop" />
               <ThemeToggle />
-              {!user && <DemoButton />}
               <AuthButton />
+              {!user && <DemoButton />}
             </>
           )}
         </AnimatePresence>

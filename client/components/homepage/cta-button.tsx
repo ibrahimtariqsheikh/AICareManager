@@ -21,9 +21,8 @@ export function CTAButton({
     return (
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
             <Button
-                size={size}
                 onClick={onClick}
-                className={`purple-button-gradient text-white shadow-lg hover:shadow-purple-500/20 ${className}`}
+                className={` ${className}`}
             >
                 {children}
                 {icon}

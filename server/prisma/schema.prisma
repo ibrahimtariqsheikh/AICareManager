@@ -113,6 +113,7 @@ model Client {
   phoneNumber    String?
   nhsNumber      String?
   dnraOrder      Boolean? @default(false)
+  chargeRate     Float?   @default(25.0) // Default charge rate for client
 
   // Care-specific information
   mobility      String?
@@ -160,13 +161,15 @@ model ClientCareAssignment {
 model Schedule {
   id         String         @id @default(cuid())
   agencyId   String
-  userId     String
-  clientId   String
-  date       DateTime
-  shiftStart DateTime
-  shiftEnd   DateTime
-  status     ScheduleStatus
-  type       ScheduleType
+  clientId   String // Client receiving care
+  userId     String // Care worker assigned
+  date       DateTime // Date of appointment
+  shiftStart DateTime // Start time
+  shiftEnd   DateTime // End time
+  status     ScheduleStatus // Status of appointment
+  type       ScheduleType // Type of visit
+  notes      String? // Optional notes about the appointment
+  chargeRate Float? // Client charge rate for this specific appointment
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
 

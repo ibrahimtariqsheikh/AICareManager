@@ -11,21 +11,10 @@ interface CustomWeekViewProps {
     date: Date
     events: AppointmentEvent[]
     onSelectEvent: (event: AppointmentEvent) => void
-    onEventUpdate?: (updatedEvent: AppointmentEvent) => void
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
+    onEventUpdate?: (updatedEvent: AppointmentEvent) => void
     spaceTheme?: boolean
-    clients?: any[]
-    eventTypes?: any[]
-    sidebarMode?: "staff" | "clients"
-    toggleStaffSelection?: (staffId: string) => void
-    toggleClientSelection?: (clientId: string) => void
-    toggleEventTypeSelection?: (typeId: string) => void
-    selectAllStaff?: () => void
-    deselectAllStaff?: () => void
-    selectAllClients?: () => void
-    deselectAllClients?: () => void
-    toggleSidebarMode?: () => void
 }
 
 export function CustomWeekView({
@@ -36,17 +25,6 @@ export function CustomWeekView({
     getEventDurationInMinutes,
     onEventUpdate,
     spaceTheme = false,
-    clients,
-    eventTypes,
-    sidebarMode,
-    toggleStaffSelection,
-    toggleClientSelection,
-    toggleEventTypeSelection,
-    selectAllStaff,
-    deselectAllStaff,
-    selectAllClients,
-    deselectAllClients,
-    toggleSidebarMode,
 }: CustomWeekViewProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const gridRef = useRef<HTMLDivElement>(null)
@@ -521,7 +499,7 @@ export function CustomWeekView({
                                     </div>
                                     {position.height > 60 && (
                                         <div className={`mt-1 truncate text-[10px] ${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
-                                            {event.staffName}
+                                            {event.title || "No staff assigned"}
                                         </div>
                                     )}
                                 </motion.div>
