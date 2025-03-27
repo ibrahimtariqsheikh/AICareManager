@@ -21,7 +21,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.750.0",
     "@aws-sdk/lib-storage": "^3.750.0",
-    "@prisma/client": "^6.4.1",
+    "@prisma/client": "^6.5.0",
     "@terraformer/wkt": "^2.2.1",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
@@ -33,7 +33,6 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemailer": "^6.10.0",
-    "prisma": "^6.4.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
@@ -47,6 +46,7 @@
     "@types/uuid": "^10.0.0",
     "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
+    "prisma": "^6.5.0",
     "rimraf": "^6.0.1",
     "shx": "^0.3.4",
     "ts-node": "^10.9.2",

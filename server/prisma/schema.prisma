@@ -316,11 +316,10 @@ model CareOutcome {
 }
 
 // ======== ENUMS ========
-
 enum Role {
   SOFTWARE_OWNER
   ADMIN
-  HEALTH_WORKER
+  CARE_WORKER
   OFFICE_STAFF
   CLIENT
   FAMILY

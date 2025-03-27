@@ -5,25 +5,33 @@ const prisma = new PrismaClient()
 
 export const getSchedules = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { status, type, agencyId, limit = 100, offset = 0 } = req.query
+    const { status, type, limit = 100, offset = 0 } = req.query
 
     const where: any = {}
 
     if (status) where.status = status as ScheduleStatus
     if (type) where.type = type as ScheduleType
-    if (agencyId) where.agencyId = agencyId as string
+
+    // Get the user ID from the authenticated request
+    // This would typically come from your auth middleware
+    // const userId = req.user?.id
+    // if (userId) where.userId = userId
+
+    console.log("Fetching schedules with where clause:", where)
 
     const schedules = await prisma.schedule.findMany({
       where,
       include: {
         client: {
           select: {
+            id: true,
             firstName: true,
             lastName: true,
           },
         },
         user: {
           select: {
+            id: true,
             firstName: true,
             lastName: true,
           },
@@ -36,10 +44,18 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
       },
     })
 
+    // Add clientName for easier display
+    const formattedSchedules = schedules.map((schedule) => ({
+      ...schedule,
+      clientName: schedule.client ? `${schedule.client.firstName} ${schedule.client.lastName}` : "Unknown Client",
+    }))
+
     const total = await prisma.schedule.count({ where })
 
+    console.log(`Found ${schedules.length} schedules`)
+    
     res.json({
-      data: schedules,
+      data: formattedSchedules,
       meta: {
         total,
         limit: Number(limit),
@@ -80,7 +96,7 @@ export const createSchedule = async (req: Request, res: Response): Promise<void>
   try {
     const { agencyId, clientId, userId, date, shiftStart, shiftEnd, status, type, notes, chargeRate } = req.body
 
-    if (!agencyId || !clientId || !userId || !date || !shiftStart || !shiftEnd || !status || !type) {
+    if (!clientId || !userId || !date || !shiftStart || !shiftEnd || !status || !type) {
       res.status(400).json({ message: "Missing required fields" })
       return
     }
@@ -269,34 +285,53 @@ export const getSchedulesByUser = async (req: Request, res: Response): Promise<v
 
 export const getSchedulesByDateRange = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { startDate, endDate, agencyId, status, limit = 100, offset = 0 } = req.query
+    const { startDate, endDate, status, limit = 100, offset = 0 } = req.query
 
     if (!startDate || !endDate) {
       res.status(400).json({ message: "Both startDate and endDate are required" })
       return
     }
 
-    const where: any = {
-      date: {
-        gte: new Date(startDate as string),
-        lte: new Date(endDate as string),
+    const where: any = {}
+    
+    // Handle date range for both date and shiftStart fields
+    where.OR = [
+      {
+        date: {
+          gte: new Date(startDate as string),
+          lte: new Date(endDate as string),
+        }
       },
-    }
+      {
+        shiftStart: {
+          gte: new Date(startDate as string),
+          lte: new Date(endDate as string),
+        }
+      }
+    ]
 
-    if (agencyId) where.agencyId = agencyId as string
     if (status) where.status = status as ScheduleStatus
+
+    // Get the user ID from the authenticated request
+    // This would typically come from your auth middleware
+    // const userId = req.user?.id
+    // if (userId) where.userId = userId
+
+    console.log("Fetching schedules by date range with where clause:", JSON.stringify(where, null, 2))
 
     const schedules = await prisma.schedule.findMany({
       where,
       include: {
         client: {
           select: {
+            id: true,
             firstName: true,
             lastName: true,
           },
         },
         user: {
           select: {
+            id: true,
             firstName: true,
             lastName: true,
           },
@@ -305,14 +340,22 @@ export const getSchedulesByDateRange = async (req: Request, res: Response): Prom
       take: Number(limit),
       skip: Number(offset),
       orderBy: {
-        date: "asc",
+        shiftStart: "asc",
       },
     })
 
+    // Add clientName for easier display
+    const formattedSchedules = schedules.map((schedule) => ({
+      ...schedule,
+      clientName: schedule.client ? `${schedule.client.firstName} ${schedule.client.lastName}` : "Unknown Client"
+    }))
+
     const total = await prisma.schedule.count({ where })
 
+    console.log(`Found ${schedules.length} schedules by date range`)
+    
     res.json({
-      data: schedules,
+      data: formattedSchedules,
       meta: {
         total,
         limit: Number(limit),
@@ -324,4 +367,3 @@ export const getSchedulesByDateRange = async (req: Request, res: Response): Prom
     res.status(500).json({ message: "Error fetching schedules by date range", error })
   }
 }
-

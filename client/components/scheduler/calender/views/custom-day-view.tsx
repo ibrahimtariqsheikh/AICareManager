@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import moment from "moment"
 import { motion, type PanInfo } from "framer-motion"
-import { ChevronLeft, ChevronRight, Home, Video, Building2, Phone, User } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Home, Video, Building2, Phone, User } from "lucide-react"
 import { Button } from "../../../ui/button"
 import { cn } from "../../../../lib/utils"
 import { toast } from "sonner"
@@ -21,7 +21,7 @@ interface CustomDayViewProps {
     spaceTheme?: boolean
     clients?: any[]
     eventTypes?: any[]
-    sidebarMode?: "staff" | "clients"
+    sidebarMode?: any
     toggleStaffSelection?: (staffId: string) => void
     toggleClientSelection?: (clientId: string) => void
     toggleEventTypeSelection?: (typeId: string) => void
@@ -377,6 +377,9 @@ export function CustomDayView({
     const hourLineClass = spaceTheme ? "border-slate-700" : "border-gray-300"
     const halfHourLineClass = spaceTheme ? "border-slate-800" : "border-gray-200"
 
+    // Fix width issues in the day view
+
+    // Update the return statement to fix width issues
     return (
         <div className="h-full flex flex-col">
             <div className="flex justify-center items-center mb-4">
@@ -412,15 +415,14 @@ export function CustomDayView({
                     className={`flex-1 overflow-x-auto overflow-y-auto relative border rounded-md shadow-sm ${timelineClass} h-full`}
                     onScroll={handleScroll}
                     style={{
-                        width: "calc(100% - 16px)",
+                        width: "100%",
                         maxWidth: "100%",
                         overflowX: "auto",
-                        marginRight: "16px",
                     }}
                 >
                     {/* Time slots */}
                     <div
-                        className="h-full"
+                        className="h-full relative"
                         style={{
                             width: `${totalWidth}px`,
                             minHeight: `${minContainerHeight}px`,
@@ -464,121 +466,120 @@ export function CustomDayView({
                                     />
                                 )
                             })}
+                        </div>
 
-                            {/* Current time indicator */}
-                            {moment(new Date()).isSame(date, "day") && (
-                                <div
-                                    className={`absolute top-8 bottom-0 w-0.5 z-20 ${currentTimeClass}`}
-                                    style={{
-                                        left: `${Math.round((((new Date().getHours() - min.getHours()) * 60 + new Date().getMinutes()) / 10) * slotWidth)}px`,
-                                    }}
-                                >
-                                    <div className={`w-2 h-2 rounded-full ${currentTimeClass} -ml-[3px] -mt-1`} />
-                                </div>
-                            )}
+                        {/* Current time indicator */}
+                        {moment(new Date()).isSame(date, "day") && (
+                            <div
+                                className={`absolute top-8 bottom-0 w-0.5 z-20 ${currentTimeClass}`}
+                                style={{
+                                    left: `${Math.round((((new Date().getHours() - min.getHours()) * 60 + new Date().getMinutes()) / 10) * slotWidth)}px`,
+                                }}
+                            >
+                                <div className={`w-2 h-2 rounded-full ${currentTimeClass} -ml-[3px] -mt-1`} />
+                            </div>
+                        )}
 
-                            {/* Events */}
-                            <div className="absolute top-8 left-0 right-0 bottom-0">
-                                {dayEvents.map((event) => {
-                                    const position = eventPositions[event.id]
-                                    if (!position) return null
+                        {/* Events */}
+                        <div className="absolute top-8 left-0 right-0 bottom-0">
+                            {dayEvents.map((event) => {
+                                const position = eventPositions[event.id]
+                                if (!position) return null
 
-                                    // Use the display event for rendering (which will have updated times after drag)
-                                    const displayEvent = displayEvents[event.id] || event
-                                    const bgClass = getEventBackground(displayEvent)
-                                    const typeLabel = getEventTypeLabel(displayEvent.type)
-                                    const icon = getEventIcon(displayEvent.type)
+                                // Use the display event for rendering (which will have updated times after drag)
+                                const displayEvent = displayEvents[event.id] || event
+                                const bgClass = getEventBackground(displayEvent)
+                                const typeLabel = getEventTypeLabel(displayEvent.type)
+                                const icon = getEventIcon(displayEvent.type)
 
-                                    // Find staff member for this event
-                                    const staffMember = staffMembers.find((s) => s.id === event.resourceId)
-                                    const staffColor = staffMember?.color || "#888888"
+                                // Find staff member for this event
+                                const staffMember = staffMembers.find((s) => s.id === event.resourceId)
+                                const staffColor = staffMember?.color || "#888888"
 
-                                    return (
-                                        <motion.div
-                                            key={event.id}
-                                            className={cn("absolute p-2 rounded-md shadow-sm cursor-move event-card", bgClass)}
-                                            style={{
-                                                top: `${position.top}px`,
-                                                left: `${position.left}px`,
-                                                width: `${position.width}px`,
-                                                height: `${position.height}px`,
-                                                zIndex: isDragging.current ? 30 : 10,
-                                            }}
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{
-                                                opacity: 1,
-                                                scale: 1,
-                                                transition: { type: "spring", stiffness: 300, damping: 30 },
-                                            }}
-                                            whileHover={{
-                                                zIndex: 20,
-                                                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                                                scale: 1.02,
-                                            }}
-                                            drag
-                                            dragConstraints={timelineRef}
-                                            dragElastic={0}
-                                            dragMomentum={false}
-                                            onDragStart={() => {
-                                                isDragging.current = true
-                                            }}
-                                            onDragEnd={(_, info) => {
-                                                handleDragEnd(event, info, position)
-                                                // Reset dragging state after a short delay
-                                                setTimeout(() => {
-                                                    isDragging.current = false
-                                                }, 100)
-                                            }}
-                                            onClick={(e) => {
-                                                // Only trigger select if not dragging
-                                                if (!isDragging.current) {
-                                                    onSelectEvent(event)
-                                                }
-                                            }}
-                                        >
-                                            <div className="flex flex-col h-full">
-                                                <div className={`text-xs font-medium truncate ${spaceTheme ? "text-white" : ""}`}>
-                                                    {displayEvent.title}
-                                                </div>
+                                return (
+                                    <motion.div
+                                        key={event.id}
+                                        className={cn("absolute p-2 rounded-md shadow-sm cursor-move event-card", bgClass)}
+                                        style={{
+                                            top: `${position.top}px`,
+                                            left: `${position.left}px`,
+                                            width: `${position.width}px`,
+                                            height: `${position.height}px`,
+                                            zIndex: isDragging.current ? 30 : 10,
+                                        }}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{
+                                            opacity: 1,
+                                            scale: 1,
+                                            transition: { type: "spring", stiffness: 300, damping: 30 },
+                                        }}
+                                        whileHover={{
+                                            zIndex: 20,
+                                            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                                            scale: 1.02,
+                                        }}
+                                        drag
+                                        dragConstraints={timelineRef}
+                                        dragElastic={0}
+                                        dragMomentum={false}
+                                        onDragStart={() => {
+                                            isDragging.current = true
+                                        }}
+                                        onDragEnd={(_, info) => {
+                                            handleDragEnd(event, info, position)
+                                            // Reset dragging state after a short delay
+                                            setTimeout(() => {
+                                                isDragging.current = false
+                                            }, 100)
+                                        }}
+                                        onClick={(e) => {
+                                            // Only trigger select if not dragging
+                                            if (!isDragging.current) {
+                                                onSelectEvent(event)
+                                            }
+                                        }}
+                                    >
+                                        <div className="flex flex-col h-full">
+                                            <div className={`text-xs font-medium truncate ${spaceTheme ? "text-white" : ""}`}>
+                                                {displayEvent.title}
+                                            </div>
+                                            <div
+                                                className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-1`}
+                                            >
+                                                <span>
+                                                    {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
+                                                </span>
+                                            </div>
+                                            {position.height >= 50 && (
                                                 <div
-                                                    className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-1`}
+                                                    className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-1 mt-1`}
                                                 >
-                                                    <span>
-                                                        {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
+                                                    {icon}
+                                                    <span>{typeLabel}</span>
+                                                </div>
+                                            )}
+
+                                            {position.height >= 60 && (
+                                                <div className="mt-auto flex items-center gap-1 pt-1">
+                                                    <div
+                                                        className="w-3 h-3 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] text-white"
+                                                        style={{ backgroundColor: staffColor }}
+                                                    >
+                                                        {staffMember?.name?.[0] || "?"}
+                                                    </div>
+                                                    <span className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} truncate`}>
+                                                        {staffMember?.name || "Staff"}
                                                     </span>
                                                 </div>
-                                                {position.height >= 50 && (
-                                                    <div
-                                                        className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-1 mt-1`}
-                                                    >
-                                                        {icon}
-                                                        <span>{typeLabel}</span>
-                                                    </div>
-                                                )}
-
-                                                {position.height >= 60 && (
-                                                    <div className="mt-auto flex items-center gap-1 pt-1">
-                                                        <div
-                                                            className="w-3 h-3 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] text-white"
-                                                            style={{ backgroundColor: staffColor }}
-                                                        >
-                                                            {staffMember?.name[0] || "?"}
-                                                        </div>
-                                                        <span className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} truncate`}>
-                                                            {staffMember?.name || "Staff"}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    )
-                                })}
-                            </div>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
-

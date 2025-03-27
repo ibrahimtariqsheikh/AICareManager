@@ -1,181 +1,168 @@
 "use client"
 
-import { useState, useMemo, useRef, RefObject } from "react"
+import { useState, useMemo, useRef } from "react"
 import moment from "moment"
 import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useMediaQuery } from "../../../hooks/use-mobile"
 import { useTheme } from "next-themes"
 import { CalendarIcon, Moon, PlusCircle, Sun } from "lucide-react"
-import { useCalendarData } from "./use-calender-data"
 import { Button } from "../../ui/button"
 
 import { CalendarHeader } from "./calender-header"
-import { CalendarSidebar } from "./calender-sidebar"
 import { AppointmentForm } from "../appointment-form"
 
 import { CustomCalendar } from "./custom-calender"
-import type { CalendarProps } from "./types"
-import { useCalendarSearch } from "./use-calender-search"
-import { useCalendarStyles } from "./use-calender-styles"
-import { useCalendarFilters } from "./use-calender-filters"
+import type { CalendarProps, StaffMember, Client, SidebarMode } from "./types"
 import { Card } from "../../ui/card"
+import { setClients, setCareWorkers, setOfficeStaff, setSidebarMode } from "../../../state/slices/userSlice"
+import { useAppSelector, useAppDispatch } from "../../../state/redux"
+import { getRandomColor } from "./calender-utils"
+import { CalendarSidebar } from "./calender-sidebar"
 
 export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(dateRange.from || new Date())
     const [activeView, setActiveView] = useState<"day" | "week" | "month">(view)
     const [isFormOpen, setIsFormOpen] = useState(false)
-    const [editingEvent, setEditingEvent] = useState(null)
+    const [editingEvent, setEditingEvent] = useState<{ id?: string; start: Date; end: Date; date: Date } | null>(null)
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState("")
     const calendarRef = useRef<HTMLDivElement>(null)
     const { theme, setTheme } = useTheme()
     const searchInputRef = useRef<HTMLInputElement>(null)
+    const dispatch = useAppDispatch()
 
+    // Get data from Redux store
     const {
+        officeStaff,
+        careWorkers,
+        clients,
         events,
         filteredEvents,
-        isLoading,
-        staffMembers,
-        setStaffMembers,
-        clients,
-        setClients,
-        eventTypes,
-        setEventTypes,
         sidebarMode,
-        setSidebarMode,
-        refreshData,
-    } = useCalendarData(dateRange)
+        loading: isLoading,
+    } = useAppSelector((state) => state.user)
 
-    const {
-        toggleStaffSelection,
-        toggleClientSelection,
-        toggleEventTypeSelection,
-        selectAllStaff,
-        deselectAllStaff,
-        selectAllClients,
-        deselectAllClients,
-        toggleSidebarMode,
-    } = useCalendarFilters({
-        events,
-        staffMembers,
-        clients,
-        eventTypes,
-        sidebarMode,
-        setSidebarMode,
-    })
+    // Format staff members for the calendar
+    const careWorkerMembers: StaffMember[] = useMemo(() => {
+        return careWorkers.map((staff) => ({
+            id: staff.id,
+            name: `${staff.firstName} ${staff.lastName}`,
+            role: staff.role || "CARE_WORKER",
+            color: staff.color || getRandomColor(staff.id),
+            avatar: staff.profile?.avatarUrl || "",
+            selected: staff.selected || true,
+        }))
+    }, [careWorkers])
 
-    // Add these handler functions to properly update state
-    const handleToggleStaffSelection = (staffId: string) => {
-        const updatedStaff = toggleStaffSelection(staffId)
-        setStaffMembers(updatedStaff)
+    const officeStaffMembers: StaffMember[] = useMemo(() => {
+        return officeStaff.map((staff) => ({
+            id: staff.id,
+            name: `${staff.firstName} ${staff.lastName}`,
+            role: staff.role || "OFFICE_STAFF",
+            color: staff.color || getRandomColor(staff.id),
+            avatar: staff.profile?.avatarUrl || "",
+            selected: staff.selected || true,
+        }))
+    }, [officeStaff])
+
+    // Format clients for the calendar
+    const formattedClients: Client[] = useMemo(() => {
+        return clients.map((client) => ({
+            id: client.id,
+            name: `${client.firstName} ${client.lastName}`,
+            color: client.color || getRandomColor(client.id),
+            avatar: client.profile?.avatarUrl || "",
+            selected: client.selected || true,
+        }))
+    }, [clients])
+
+    // Handle toggle functions directly in the Calendar component
+    const handleToggleCareWorkerSelection = (staffId: string) => {
+        const updatedCareWorkers = careWorkers.map((worker) => ({
+            ...worker,
+            selected: worker.id === staffId ? !worker.selected : worker.selected,
+        }))
+        dispatch(setCareWorkers(updatedCareWorkers))
+    }
+
+    const handleToggleOfficeStaffSelection = (staffId: string) => {
+        const updatedOfficeStaff = officeStaff.map((staff) => ({
+            ...staff,
+            selected: staff.id === staffId ? !staff.selected : staff.selected,
+        }))
+        dispatch(setOfficeStaff(updatedOfficeStaff))
     }
 
     const handleToggleClientSelection = (clientId: string) => {
-        const updatedClients = toggleClientSelection(clientId)
-        setClients(updatedClients)
+        const updatedClients = clients.map((client) => ({
+            ...client,
+            selected: client.id === clientId ? !client.selected : client.selected,
+        }))
+        dispatch(setClients(updatedClients))
     }
 
-    const handleToggleEventTypeSelection = (typeId: string) => {
-        const updatedTypes = toggleEventTypeSelection(typeId)
-        setEventTypes(updatedTypes)
+    const handleSelectAllCareWorkers = () => {
+        const updatedCareWorkers = careWorkers.map((worker) => ({
+            ...worker,
+            selected: true,
+        }))
+        dispatch(setCareWorkers(updatedCareWorkers))
     }
 
-    const handleSelectAllStaff = () => {
-        const updatedStaff = selectAllStaff()
-        setStaffMembers(updatedStaff)
+    const handleDeselectAllCareWorkers = () => {
+        const updatedCareWorkers = careWorkers.map((worker) => ({
+            ...worker,
+            selected: false,
+        }))
+        dispatch(setCareWorkers(updatedCareWorkers))
     }
 
-    const handleDeselectAllStaff = () => {
-        const updatedStaff = deselectAllStaff()
-        setStaffMembers(updatedStaff)
+    const handleSelectAllOfficeStaff = () => {
+        const updatedOfficeStaff = officeStaff.map((staff) => ({
+            ...staff,
+            selected: true,
+        }))
+        dispatch(setOfficeStaff(updatedOfficeStaff))
+    }
+
+    const handleDeselectAllOfficeStaff = () => {
+        const updatedOfficeStaff = officeStaff.map((staff) => ({
+            ...staff,
+            selected: false,
+        }))
+        dispatch(setOfficeStaff(updatedOfficeStaff))
     }
 
     const handleSelectAllClients = () => {
-        const updatedClients = selectAllClients()
-        setClients(updatedClients)
+        const updatedClients = clients.map((client) => ({
+            ...client,
+            selected: true,
+        }))
+        dispatch(setClients(updatedClients))
     }
 
     const handleDeselectAllClients = () => {
-        const updatedClients = deselectAllClients()
-        setClients(updatedClients)
+        const updatedClients = clients.map((client) => ({
+            ...client,
+            selected: false,
+        }))
+        dispatch(setClients(updatedClients))
     }
 
-    const handleToggleSidebarMode = () => {
-        const newMode = toggleSidebarMode()
-        setSidebarMode(newMode)
+    const handleSetSidebarMode = (mode: SidebarMode) => {
+        dispatch(setSidebarMode(mode))
     }
 
-    const { isSearchOpen, searchQuery, toggleSearch, setSearchQuery } = useCalendarSearch(
-        events,
-        staffMembers,
-        clients,
-        eventTypes,
-        sidebarMode,
-    )
-
-    const { getEventDurationInMinutes } = useCalendarStyles(
-        filteredEvents,
-        staffMembers,
-        clients,
-        eventTypes,
-        sidebarMode,
-    )
+    const toggleSearch = () => {
+        setIsSearchOpen(!isSearchOpen)
+        if (isSearchOpen) {
+            setSearchQuery("")
+        }
+    }
 
     // Media queries for responsive design
     const isMobile = useMediaQuery("(max-width: 640px)")
-
-    // Generate dynamic sidebar data based on current date and view
-    const sidebarData = useMemo(() => {
-        const today = moment().startOf("day")
-        const currentMoment = moment(currentDate)
-        const weekStart = moment(currentDate).startOf("week")
-
-        // Calculate week number
-        const weekNumber = currentMoment.isoWeek()
-
-        // Generate days for the sidebar
-        const days = []
-
-        if (activeView === "week") {
-            // For week view, show 7 days starting from the week start
-            for (let i = 0; i < 7; i++) {
-                const day = moment(weekStart).add(i, "days")
-                days.push({
-                    dayName: day.format("ddd").toUpperCase(),
-                    date: day.date(),
-                    isCurrent: day.isSame(today, "day"),
-                    momentObj: day,
-                })
-            }
-        } else if (activeView === "month") {
-            // For month view, show the first day of each week in the month
-            const monthStart = moment(currentDate).startOf("month")
-            const monthEnd = moment(currentDate).endOf("month")
-
-            const day = moment(monthStart).startOf("week")
-            while (day.isBefore(monthEnd)) {
-                days.push({
-                    dayName: day.format("ddd").toUpperCase(),
-                    date: day.date(),
-                    isCurrent: day.isSame(today, "day"),
-                    momentObj: day,
-                })
-                day.add(1, "week")
-            }
-        } else {
-            // For day view, just show the current day
-            days.push({
-                dayName: currentMoment.format("ddd").toUpperCase(),
-                date: currentMoment.date(),
-                isCurrent: currentMoment.isSame(today, "day"),
-                momentObj: currentMoment,
-            })
-        }
-
-        return {
-            weekNumber,
-            days,
-        }
-    }, [currentDate, activeView])
 
     // Format the date range for display
     const formatDateRange = () => {
@@ -223,22 +210,26 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     }
 
     const handleEventSelect = (event: any) => {
-        setEditingEvent(event)
+        // If this is a slot selection (new event), create a default event
+        if (!event.id) {
+            const defaultEvent = {
+                start: new Date(event.start),
+                end: new Date(event.end),
+                date: new Date(event.start),
+            }
+            setEditingEvent(defaultEvent as any)
+        } else {
+            setEditingEvent(event)
+        }
         setIsFormOpen(true)
-        onEventSelect(event)
+        if (onEventSelect && event.id) {
+            onEventSelect(event)
+        }
     }
 
     // Handle event updates from drag operations
     const handleEventUpdate = (updatedEvent: any) => {
         // In a real app, you would update the event in your database
-        // For now, we'll just update it in our local state
-        const updatedEvents = events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
-
-        // Update filtered events as well
-        const updatedFilteredEvents = filteredEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
-
-        // This would typically be handled by your data service
-        // For demo purposes, we're just logging the update
         console.log("Event updated:", updatedEvent)
     }
 
@@ -252,7 +243,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const handleFormClose = () => {
         setIsFormOpen(false)
         setEditingEvent(null)
-        refreshData() // This will now trigger a refetch from the API
+        // Refresh data would be handled by Redux
     }
 
     // Create a new appointment
@@ -302,42 +293,45 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                 handleNavigate={handleNavigate}
                 formatDateRange={formatDateRange}
                 sidebarMode={sidebarMode}
-                setSidebarMode={setSidebarMode}
+                setSidebarMode={handleSetSidebarMode}
                 isSearchOpen={isSearchOpen}
                 toggleSearch={toggleSearch}
                 setEditingEvent={setEditingEvent}
                 setIsFormOpen={setIsFormOpen}
-                events={events}
-                staffMembers={staffMembers}
-                clients={clients}
-                eventTypes={eventTypes}
                 searchQuery={searchQuery}
-                searchInputRef={searchInputRef as RefObject<HTMLInputElement>}
                 setSearchQuery={setSearchQuery}
                 spaceTheme={theme === "dark"}
             />
 
             <div className="flex flex-1 h-full relative z-10">
-                {/* Staff sidebar - always visible */}
+                {/* Sidebar - always visible */}
                 <CalendarSidebar
-                    showSidebar={true} // Always show sidebar
+                    showSidebar={true}
                     sidebarMode={sidebarMode}
-                    staffMembers={staffMembers}
-                    clients={clients}
-                    eventTypes={eventTypes}
-                    toggleStaffSelection={handleToggleStaffSelection}
+                    staffMembers={[]}
+                    careWorkers={careWorkerMembers}
+                    officeStaff={officeStaffMembers}
+                    clients={formattedClients}
+                    eventTypes={[]}
+                    toggleStaffSelection={() => { }}
+                    toggleCareWorkerSelection={handleToggleCareWorkerSelection}
+                    toggleOfficeStaffSelection={handleToggleOfficeStaffSelection}
                     toggleClientSelection={handleToggleClientSelection}
-                    toggleEventTypeSelection={handleToggleEventTypeSelection}
-                    selectAllStaff={handleSelectAllStaff}
-                    deselectAllStaff={handleDeselectAllStaff}
+                    toggleEventTypeSelection={() => { }}
+                    selectAllStaff={() => { }}
+                    deselectAllStaff={() => { }}
+                    selectAllCareWorkers={handleSelectAllCareWorkers}
+                    deselectAllCareWorkers={handleDeselectAllCareWorkers}
+                    selectAllOfficeStaff={handleSelectAllOfficeStaff}
+                    deselectAllOfficeStaff={handleDeselectAllOfficeStaff}
                     selectAllClients={handleSelectAllClients}
                     deselectAllClients={handleDeselectAllClients}
-                    toggleSidebarMode={handleToggleSidebarMode}
+                    setSidebarMode={handleSetSidebarMode}
                     spaceTheme={theme === "dark"}
                 />
 
                 {/* Main calendar area */}
-                <div className="flex-1 h-full" ref={calendarRef}>
+                <div className="flex-1 h-full overflow-hidden" ref={calendarRef}>
                     {hasNoData ? (
                         <Card
                             className={`flex-1 h-full flex flex-col items-center justify-center p-8 ${theme === "dark" ? "bg-slate-900/60 border-slate-800" : ""}`}
@@ -367,20 +361,10 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                             onEventUpdate={handleEventUpdate}
                             onNavigate={handleDateSelect}
                             isLoading={isLoading}
-                            staffMembers={staffMembers}
-                            getEventDurationInMinutes={getEventDurationInMinutes}
+                            staffMembers={[...careWorkerMembers, ...officeStaffMembers]}
                             isMobile={isMobile}
                             sidebarMode={sidebarMode}
-                            toggleStaffSelection={handleToggleStaffSelection}
-                            toggleClientSelection={handleToggleClientSelection}
-                            toggleEventTypeSelection={handleToggleEventTypeSelection}
-                            selectAllStaff={handleSelectAllStaff}
-                            deselectAllStaff={handleDeselectAllStaff}
-                            selectAllClients={handleSelectAllClients}
-                            deselectAllClients={handleDeselectAllClients}
-                            toggleSidebarMode={handleToggleSidebarMode}
-                            clients={clients}
-                            eventTypes={eventTypes}
+                            clients={formattedClients}
                             spaceTheme={theme === "dark"}
                         />
                     )}
@@ -396,7 +380,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                         isOpen={true}
                         onClose={handleFormClose}
                         event={editingEvent}
-                        isNew={!editingEvent}
+                        isNew={!editingEvent || !editingEvent.id}
                         spaceTheme={theme === "dark"}
                     />
                 </DialogContent>

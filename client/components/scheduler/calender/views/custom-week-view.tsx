@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import moment from "moment"
 import { motion, type PanInfo } from "framer-motion"
 import { toast } from "sonner"
@@ -62,7 +62,7 @@ export function CustomWeekView({
             slots.push(`${hour}:30`)
         }
         setTimeSlots(slots)
-    }, [date])
+    }, [date, startHour, endHour])
 
     // Initialize display events
     useEffect(() => {
@@ -238,100 +238,113 @@ export function CustomWeekView({
     }
 
     // Snap time to 15-minute intervals
-    const snapTimeToGrid = (minutes: number): number => {
+    const snapTimeToGrid = useCallback((minutes: number): number => {
         return Math.round(minutes / 15) * 15
-    }
+    }, [])
 
     // Handle drag end for events
-    const handleDragEnd = (event: AppointmentEvent, info: PanInfo, position: any) => {
-        if (!gridRef.current) return
+    const handleDragEnd = useCallback(
+        (event: AppointmentEvent, info: PanInfo, position: any) => {
+            if (!gridRef.current) return
 
-        // Calculate new day and time based on position
-        const { dayWidth, slotHeight, timeGutterWidth } = gridDimensions
+            // Calculate new day and time based on position
+            const { dayWidth, slotHeight, timeGutterWidth } = gridDimensions
 
-        // Calculate new day index
-        const newLeft = position.left + info.offset.x
-        const rawDayIndex = Math.floor((newLeft - timeGutterWidth + 20) / dayWidth) // Add 20 to account for the offset
-        const dayIndex = Math.max(0, Math.min(6, rawDayIndex))
+            // Calculate new day index
+            const newLeft = position.left + info.offset.x
+            const rawDayIndex = Math.floor((newLeft - timeGutterWidth + 20) / dayWidth) // Add 20 to account for the offset
+            const dayIndex = Math.max(0, Math.min(6, rawDayIndex))
 
-        // Calculate new start time
-        const newTop = Math.max(0, position.top + info.offset.y)
-        const minutesFromStart = Math.round((newTop / slotHeight) * 30)
-        const startHourOffset = Math.floor(minutesFromStart / 60)
-        const startMinuteOffset = minutesFromStart % 60
-        const roundedStartMinute = snapTimeToGrid(startMinuteOffset)
+            // Calculate new start time
+            const newTop = Math.max(0, position.top + info.offset.y)
+            const minutesFromStart = Math.round((newTop / slotHeight) * 30)
+            const startHourOffset = Math.floor(minutesFromStart / 60)
+            const startMinuteOffset = minutesFromStart % 60
+            const roundedStartMinute = snapTimeToGrid(startMinuteOffset)
 
-        // Ensure we don't go beyond the visible time range
-        const clampedStartHour = Math.min(startHour + startHourOffset, endHour - 0.5)
+            // Ensure we don't go beyond the visible time range
+            const clampedStartHour = Math.min(startHour + startHourOffset, endHour - 0.5)
 
-        // Create new start and end dates
-        const newStartDate = moment(weekDays[dayIndex])
-            .hour(clampedStartHour)
-            .minute(roundedStartMinute)
-            .second(0)
-            .millisecond(0)
+            // Create new start and end dates
+            const newStartDate = moment(weekDays[dayIndex])
+                .hour(clampedStartHour)
+                .minute(roundedStartMinute)
+                .second(0)
+                .millisecond(0)
 
-        // Maintain the original duration
-        const originalDurationMinutes = position.durationMinutes
-        const roundedDurationMinutes = snapTimeToGrid(originalDurationMinutes)
-        const newEndDate = moment(newStartDate).add(roundedDurationMinutes, "minutes")
+            // Maintain the original duration
+            const originalDurationMinutes = position.durationMinutes
+            const roundedDurationMinutes = snapTimeToGrid(originalDurationMinutes)
+            const newEndDate = moment(newStartDate).add(roundedDurationMinutes, "minutes")
 
-        // Ensure end time doesn't exceed the visible range
-        if (newEndDate.hour() > endHour) {
-            newEndDate.hour(endHour).minute(0)
-        }
+            // Ensure end time doesn't exceed the visible range
+            if (newEndDate.hour() > endHour) {
+                newEndDate.hour(endHour).minute(0)
+            }
 
-        // Create updated event
-        const updatedEvent: AppointmentEvent = {
-            ...event,
-            start: newStartDate.toDate(),
-            end: newEndDate.toDate(),
-        }
+            // Create updated event
+            const updatedEvent: AppointmentEvent = {
+                ...event,
+                start: newStartDate.toDate(),
+                end: newEndDate.toDate(),
+            }
 
-        // Update the display event immediately to reflect the new times in the UI
-        setDisplayEvents((prev) => ({
-            ...prev,
-            [event.id]: updatedEvent,
-        }))
+            // Update the display event immediately to reflect the new times in the UI
+            setDisplayEvents((prev) => ({
+                ...prev,
+                [event.id]: updatedEvent,
+            }))
 
-        // Recalculate position values
-        const updatedStartMinutes = (newStartDate.hour() - startHour) * 60 + newStartDate.minute()
-        const updatedEndMinutes = (newEndDate.hour() - startHour) * 60 + newEndDate.minute()
-        const updatedDurationMinutes = updatedEndMinutes - updatedStartMinutes
+            // Recalculate position values
+            const updatedStartMinutes = (newStartDate.hour() - startHour) * 60 + newStartDate.minute()
+            const updatedEndMinutes = (newEndDate.hour() - startHour) * 60 + newEndDate.minute()
+            const updatedDurationMinutes = updatedEndMinutes - updatedStartMinutes
 
-        // Calculate exact pixel positions - ensure they align with grid
-        const updatedTop = Math.round((updatedStartMinutes / 30) * slotHeight)
-        const updatedHeight = Math.round((updatedDurationMinutes / 30) * slotHeight)
+            // Calculate exact pixel positions - ensure they align with grid
+            const updatedTop = Math.round((updatedStartMinutes / 30) * slotHeight)
+            const updatedHeight = Math.round((updatedDurationMinutes / 30) * slotHeight)
 
-        // Ensure minimum height for visibility
-        const minHeight = 20
-        const finalHeight = Math.max(updatedHeight, minHeight)
+            // Ensure minimum height for visibility
+            const minHeight = 20
+            const finalHeight = Math.max(updatedHeight, minHeight)
 
-        // Calculate exact column position
-        const exactColumnLeft = timeGutterWidth + dayIndex * dayWidth
+            // Calculate exact column position
+            const exactColumnLeft = timeGutterWidth + dayIndex * dayWidth
 
-        // Update event positions
-        const updatedPositions = { ...eventPositions }
-        updatedPositions[event.id] = {
-            ...position,
-            top: updatedTop,
-            left: exactColumnLeft,
-            height: finalHeight,
-            width: dayWidth - 4, // Ensure consistent width
-            dayIndex,
-            startMinutes: updatedStartMinutes,
-            durationMinutes: updatedDurationMinutes,
-            originalEvent: { ...updatedEvent },
-        }
+            // Update event positions
+            const updatedPositions = { ...eventPositions }
+            updatedPositions[event.id] = {
+                ...position,
+                top: updatedTop,
+                left: exactColumnLeft,
+                height: finalHeight,
+                width: dayWidth - 4, // Ensure consistent width
+                dayIndex,
+                startMinutes: updatedStartMinutes,
+                durationMinutes: updatedDurationMinutes,
+                originalEvent: { ...updatedEvent },
+            }
 
-        setEventPositions(updatedPositions)
+            setEventPositions(updatedPositions)
 
-        // Call onEventUpdate if provided
-        if (onEventUpdate) {
-            onEventUpdate(updatedEvent)
-            toast.success("Event updated successfully")
-        }
-    }
+            // Call onEventUpdate if provided
+            if (onEventUpdate) {
+                onEventUpdate(updatedEvent)
+                toast.success("Event updated successfully")
+            }
+        },
+        [
+            gridDimensions,
+            weekDays,
+            startHour,
+            endHour,
+            snapTimeToGrid,
+            onEventUpdate,
+            eventPositions,
+            setEventPositions,
+            setDisplayEvents,
+        ],
+    )
 
     // Track if we're dragging to prevent click after drag
     const isDraggingRef = useRef(false)

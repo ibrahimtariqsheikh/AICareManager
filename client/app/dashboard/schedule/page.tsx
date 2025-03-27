@@ -1,15 +1,15 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "../../../components/ui/button"
-import { Plus, Filter } from "lucide-react"
-import { Card } from "../../../components/ui/card"
-import { AppointmentForm } from "../../../components/scheduler/appointment-form"
+import { useEffect, useState } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
-import { Sheet, SheetContent, SheetTrigger } from "../../../components/ui/sheet"
-import { StaffFilter } from "../../../components/scheduler/staff-filter"
-import { ClientFilter } from "../../../components/scheduler/client-filter"
 import { useMediaQuery } from "../../../hooks/use-mobile"
+import { User } from "../../../types/prismaTypes"
+import { useGetFilteredUsersQuery, useGetUserQuery } from "../../../state/api"
+import { useDispatch } from "react-redux"
+import { setOfficeStaff } from "../../../state/slices/userSlice"
+import { setClients } from "../../../state/slices/userSlice"
+import { useAppSelector } from "../../../state/redux"
+import { setCareWorkers } from "../../../state/slices/userSlice"
 
 export default function SchedulerPage() {
     const [isCreating, setIsCreating] = useState(false)
@@ -23,8 +23,23 @@ export default function SchedulerPage() {
         to: undefined,
     })
 
+    const dispatch = useDispatch()
+
     const isDesktop = useMediaQuery("(min-width: 768px)")
-    const [isFilterOpen, setIsFilterOpen] = useState(true)
+    const { careWorkers, clients, officeStaff } = useAppSelector((state: any) => state.user)
+    const { data: authUser } = useGetUserQuery()
+
+    const { data: filteredUsers } = useGetFilteredUsersQuery(authUser?.userInfo?.id || "")
+
+    useEffect(() => {
+        if (filteredUsers) {
+            dispatch(setCareWorkers(filteredUsers.careWorkers))
+            dispatch(setClients(filteredUsers.clients))
+            dispatch(setOfficeStaff(filteredUsers.officeStaff))
+        }
+    }, [filteredUsers])
+
+
 
     const handleEventSelect = (event: any) => {
         setSelectedEvent(event)
@@ -51,6 +66,7 @@ export default function SchedulerPage() {
                             Your schedule for the week. Add, edit, or delete appointments as needed. Create new appointments for clients.
                             And manage your schedule. And Track your time. and more. We have you covered.
                         </p>
+
                     </div>
 
                 </div>

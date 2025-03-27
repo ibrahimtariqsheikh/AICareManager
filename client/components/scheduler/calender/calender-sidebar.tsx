@@ -1,214 +1,380 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
-import { Card } from "../../ui/card"
+import { useState } from "react"
+import { Check, ChevronDown, ChevronUp, Users, UserRound, Briefcase, Filter } from "lucide-react"
 import { Button } from "../../ui/button"
-import { Checkbox } from "../../ui/checkbox"
-import { Separator } from "../../ui/separator"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../ui/collapsible"
+import { ScrollArea } from "../../ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar"
-import { Home, Video, Building2, Phone, User, Users } from 'lucide-react'
-import { type StaffMember, type Client, type EventType } from "./types"
-
+import { Badge } from "../../ui/badge"
+import type { StaffMember, Client, SidebarMode } from "./types"
 
 interface CalendarSidebarProps {
     showSidebar: boolean
-    sidebarMode: "staff" | "clients"
+    sidebarMode: SidebarMode
     staffMembers: StaffMember[]
+    careWorkers: StaffMember[]
+    officeStaff: StaffMember[]
     clients: Client[]
-    eventTypes: EventType[]
-    toggleStaffSelection: (staffId: string) => void
-    toggleClientSelection: (clientId: string) => void
-    toggleEventTypeSelection: (typeId: string) => void
+    eventTypes: any[]
+    toggleStaffSelection: (id: string) => void
+    toggleCareWorkerSelection: (id: string) => void
+    toggleOfficeStaffSelection: (id: string) => void
+    toggleClientSelection: (id: string) => void
+    toggleEventTypeSelection: (id: string) => void
     selectAllStaff: () => void
     deselectAllStaff: () => void
+    selectAllCareWorkers: () => void
+    deselectAllCareWorkers: () => void
+    selectAllOfficeStaff: () => void
+    deselectAllOfficeStaff: () => void
     selectAllClients: () => void
     deselectAllClients: () => void
-    toggleSidebarMode: () => void
+    setSidebarMode: (mode: SidebarMode) => void
     spaceTheme?: boolean
 }
 
 export function CalendarSidebar({
-
+    showSidebar,
     sidebarMode,
     staffMembers,
+    careWorkers,
+    officeStaff,
     clients,
     eventTypes,
     toggleStaffSelection,
+    toggleCareWorkerSelection,
+    toggleOfficeStaffSelection,
     toggleClientSelection,
     toggleEventTypeSelection,
     selectAllStaff,
     deselectAllStaff,
+    selectAllCareWorkers,
+    deselectAllCareWorkers,
+    selectAllOfficeStaff,
+    deselectAllOfficeStaff,
     selectAllClients,
     deselectAllClients,
-    toggleSidebarMode,
+    setSidebarMode,
     spaceTheme = false,
 }: CalendarSidebarProps) {
-    // Get event icon based on type
-    const getEventTypeIcon = (type: string) => {
-        switch (type) {
-            case "HOME_VISIT":
-                return <Home className="h-3 w-3 mr-1" />
-            case "VIDEO_CALL":
-                return <Video className="h-3 w-3 mr-1" />
-            case "HOSPITAL":
-                return <Building2 className="h-3 w-3 mr-1" />
-            case "AUDIO_CALL":
-                return <Phone className="h-3 w-3 mr-1" />
-            case "IN_PERSON":
-                return <User className="h-3 w-3 mr-1" />
-            default:
-                return null
-        }
-    }
+    const [isStaffOpen, setIsStaffOpen] = useState(true)
+    const [isClientsOpen, setIsClientsOpen] = useState(true)
+    const [isEventTypesOpen, setIsEventTypesOpen] = useState(true)
 
-    const cardClasses = spaceTheme
-        ? "h-full p-4 overflow-y-auto bg-zinc-900/80 backdrop-blur-sm border-zinc-800 text-white"
-        : "h-full p-4 overflow-y-auto"
+    if (!showSidebar) return null
 
-    const buttonClasses = spaceTheme ? "text-white/80 hover:text-white hover:bg-zinc-800" : ""
+    const selectedCareWorkers = careWorkers.filter((staff) => staff.selected).length
+    const selectedOfficeStaff = officeStaff.filter((staff) => staff.selected).length
+    const selectedClients = clients.filter((client) => client.selected).length
+    const selectedEventTypes = eventTypes.filter((type) => type.selected).length
 
-    const separatorClasses = spaceTheme ? "bg-zinc-800" : ""
-
-    // Always render the sidebar, regardless of showSidebar prop
     return (
-        <motion.div
-            initial={{ width: 240, opacity: 1 }}
-            animate={{ width: 240, opacity: 1 }}
-            className="h-full mr-4 overflow-visibe1"
+        <div
+            className={`w-64 border-r ${spaceTheme ? "border-slate-800 bg-slate-900/60" : "border-gray-200"
+                } h-full overflow-hidden flex flex-col`}
         >
-            <Card className={cardClasses}>
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                        {sidebarMode === "staff" ? (
-                            <Users className={`h-4 w-4 mr-2 ${spaceTheme ? "text-green-400" : "text-gray-500"}`} />
-                        ) : (
-                            <User className={`h-4 w-4 mr-2 ${spaceTheme ? "text-green-400" : "text-gray-500"}`} />
-                        )}
-                        <h3 className="text-sm font-semibold">{sidebarMode === "staff" ? "Healthcare Staff" : "Clients"}</h3>
-                    </div>
-                    <div className="flex gap-1">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`h-7 text-xs ${buttonClasses}`}
-                            onClick={sidebarMode === "staff" ? selectAllStaff : selectAllClients}
-                        >
-                            All
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`h-7 text-xs ${buttonClasses}`}
-                            onClick={sidebarMode === "staff" ? deselectAllStaff : deselectAllClients}
-                        >
-                            None
-                        </Button>
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 className={`font-medium ${spaceTheme ? "text-white" : ""}`}>Filters</h3>
+                <Filter className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+            </div>
 
-                    </div>
-                </div>
+            <Tabs
+                defaultValue={sidebarMode}
+                value={sidebarMode}
+                onValueChange={(value) => setSidebarMode(value as SidebarMode)}
+                className="flex-1 flex flex-col"
+            >
+                <TabsList className="grid grid-cols-3 p-1 m-2">
+                    <TabsTrigger value="clients" className="text-xs">
+                        <Users className="h-3 w-3 mr-1" />
+                        Clients
+                    </TabsTrigger>
+                    <TabsTrigger value="careworkers" className="text-xs">
+                        <UserRound className="h-3 w-3 mr-1" />
+                        Careworkers
+                    </TabsTrigger>
+                    <TabsTrigger value="officestaff" className="text-xs">
+                        <Briefcase className="h-3 w-3 mr-1" />
+                        Office Staff
+                    </TabsTrigger>
+                </TabsList>
 
-                {sidebarMode === "staff" ? (
-                    <div className="space-y-3">
-                        {staffMembers.map((staff) => (
-                            <div key={staff.id} className="flex items-center space-x-2">
-                                <Checkbox
-                                    id={`staff-${staff.id}`}
-                                    checked={staff.selected}
-                                    onCheckedChange={() => toggleStaffSelection(staff.id)}
-                                    className={
-                                        spaceTheme
-                                            ? "border-zinc-600 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                                            : ""
-                                    }
-                                />
-                                <div className="flex items-center flex-1 ">
-                                    <Avatar className="h-6 w-6 mr-2">
-                                        <AvatarImage src={staff.avatar} alt={staff.name.split(" ")[0]} />
-                                        <AvatarFallback className="text-white text-xs" style={{ backgroundColor: staff.color }}>
-                                            {staff.name[0]}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <label
-                                            htmlFor={`staff-${staff.id}`}
-                                            className={`text-sm font-medium leading-none cursor-pointer ${spaceTheme ? "text-white" : ""}`}
+                <ScrollArea className="flex-1">
+                    <div className="p-4 space-y-4">
+                        {/* Event Types Section - Always visible */}
+                        <Collapsible open={isEventTypesOpen} onOpenChange={setIsEventTypesOpen}>
+                            <div className="flex items-center justify-between">
+                                <CollapsibleTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className={`w-full justify-between p-2 ${spaceTheme ? "hover:bg-slate-800 text-white" : ""}`}
+                                    >
+                                        <div className="flex items-center">
+                                            <span>Event Types</span>
+                                            <Badge variant="secondary" className={`ml-2 ${spaceTheme ? "bg-slate-800 text-slate-200" : ""}`}>
+                                                {selectedEventTypes}/{eventTypes.length}
+                                            </Badge>
+                                        </div>
+                                        {isEventTypesOpen ? (
+                                            <ChevronUp className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                        ) : (
+                                            <ChevronDown className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                        )}
+                                    </Button>
+                                </CollapsibleTrigger>
+                            </div>
+                            <CollapsibleContent className="space-y-2 mt-2">
+                                {eventTypes.map((type) => (
+                                    <div
+                                        key={type.id}
+                                        className={`flex items-center p-2 rounded-md cursor-pointer ${spaceTheme ? "hover:bg-slate-800" : "hover:bg-gray-100"
+                                            }`}
+                                        onClick={() => toggleEventTypeSelection(type.id)}
+                                    >
+                                        <div
+                                            className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${type.selected ? "bg-primary" : spaceTheme ? "bg-slate-700" : "bg-gray-200"
+                                                }`}
                                         >
-                                            {staff.name}
-                                        </label>
-                                        <p className={`text-xs ${spaceTheme ? "text-zinc-400" : "text-gray-500"}`}>{staff.role}</p>
+                                            {type.selected && <Check className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <div className="flex items-center flex-1">
+                                            <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: type.color }}></div>
+                                            <span className={`text-sm ${spaceTheme ? "text-white" : ""}`}>{type.name}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="space-y-3">
-                        {clients.map((client) => (
-                            <div key={client.id} className="flex items-center space-x-2">
-                                <Checkbox
-                                    id={`client-${client.id}`}
-                                    checked={client.selected}
-                                    onCheckedChange={() => toggleClientSelection(client.id)}
-                                    className={
-                                        spaceTheme
-                                            ? "border-zinc-600 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                                            : ""
-                                    }
-                                />
-                                <div className="flex items-center flex-1 ">
-                                    <Avatar className="h-6 w-6 mr-2">
-                                        <AvatarImage src={client.avatar} alt={client.name.split(" ")[0]} />
-                                        <AvatarFallback className="text-white text-xs" style={{ backgroundColor: client.color }}>
-                                            {client.name[0]}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <label
-                                            htmlFor={`client-${client.id}`}
-                                            className={`text-sm font-medium leading-none cursor-pointer ${spaceTheme ? "text-white" : ""}`}
+                                ))}
+                            </CollapsibleContent>
+                        </Collapsible>
+
+                        {/* Tab Content */}
+                        <TabsContent value="clients" className="mt-0 space-y-4">
+                            <Collapsible open={isClientsOpen} onOpenChange={setIsClientsOpen}>
+                                <div className="flex items-center justify-between">
+                                    <CollapsibleTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className={`w-full justify-between p-2 ${spaceTheme ? "hover:bg-slate-800 text-white" : ""}`}
                                         >
-                                            {client.name}
-                                        </label>
-                                    </div>
+                                            <div className="flex items-center">
+                                                <span>Clients</span>
+                                                <Badge
+                                                    variant="secondary"
+                                                    className={`ml-2 ${spaceTheme ? "bg-slate-800 text-slate-200" : ""}`}
+                                                >
+                                                    {selectedClients}/{clients.length}
+                                                </Badge>
+                                            </div>
+                                            {isClientsOpen ? (
+                                                <ChevronUp className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                            ) : (
+                                                <ChevronDown className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                            )}
+                                        </Button>
+                                    </CollapsibleTrigger>
                                 </div>
-                            </div>
-                        ))}
+                                <CollapsibleContent className="space-y-2 mt-2">
+                                    <div className="flex justify-between mb-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={`text-xs ${spaceTheme ? "border-slate-700 hover:bg-slate-800" : ""}`}
+                                            onClick={selectAllClients}
+                                        >
+                                            Select All
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={`text-xs ${spaceTheme ? "border-slate-700 hover:bg-slate-800" : ""}`}
+                                            onClick={deselectAllClients}
+                                        >
+                                            Deselect All
+                                        </Button>
+                                    </div>
+                                    {clients.map((client) => (
+                                        <div
+                                            key={client.id}
+                                            className={`flex items-center p-2 rounded-md cursor-pointer ${spaceTheme ? "hover:bg-slate-800" : "hover:bg-gray-100"
+                                                }`}
+                                            onClick={() => toggleClientSelection(client.id)}
+                                        >
+                                            <div
+                                                className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${client.selected ? "bg-primary" : spaceTheme ? "bg-slate-700" : "bg-gray-200"
+                                                    }`}
+                                            >
+                                                {client.selected && <Check className="h-3 w-3 text-white" />}
+                                            </div>
+                                            <Avatar className="h-6 w-6 mr-2">
+                                                <AvatarImage src={client.avatar} alt={client.name} />
+                                                <AvatarFallback className="text-xs" style={{ backgroundColor: client.color }}>
+                                                    {client.name
+                                                        .split(" ")
+                                                        .map((n) => n[0])
+                                                        .join("")}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <span className={`text-sm truncate ${spaceTheme ? "text-white" : ""}`}>{client.name}</span>
+                                        </div>
+                                    ))}
+                                </CollapsibleContent>
+                            </Collapsible>
+                        </TabsContent>
+
+                        <TabsContent value="careworkers" className="mt-0 space-y-4">
+                            <Collapsible open={isStaffOpen} onOpenChange={setIsStaffOpen}>
+                                <div className="flex items-center justify-between">
+                                    <CollapsibleTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className={`w-full justify-between p-2 ${spaceTheme ? "hover:bg-slate-800 text-white" : ""}`}
+                                        >
+                                            <div className="flex items-center">
+                                                <span>Care Workers</span>
+                                                <Badge
+                                                    variant="secondary"
+                                                    className={`ml-2 ${spaceTheme ? "bg-slate-800 text-slate-200" : ""}`}
+                                                >
+                                                    {selectedCareWorkers}/{careWorkers.length}
+                                                </Badge>
+                                            </div>
+                                            {isStaffOpen ? (
+                                                <ChevronUp className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                            ) : (
+                                                <ChevronDown className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                            )}
+                                        </Button>
+                                    </CollapsibleTrigger>
+                                </div>
+                                <CollapsibleContent className="space-y-2 mt-2">
+                                    <div className="flex justify-between mb-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={`text-xs ${spaceTheme ? "border-slate-700 hover:bg-slate-800" : ""}`}
+                                            onClick={selectAllCareWorkers}
+                                        >
+                                            Select All
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={`text-xs ${spaceTheme ? "border-slate-700 hover:bg-slate-800" : ""}`}
+                                            onClick={deselectAllCareWorkers}
+                                        >
+                                            Deselect All
+                                        </Button>
+                                    </div>
+                                    {careWorkers.map((staff) => (
+                                        <div
+                                            key={staff.id}
+                                            className={`flex items-center p-2 rounded-md cursor-pointer ${spaceTheme ? "hover:bg-slate-800" : "hover:bg-gray-100"
+                                                }`}
+                                            onClick={() => toggleCareWorkerSelection(staff.id)}
+                                        >
+                                            <div
+                                                className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${staff.selected ? "bg-primary" : spaceTheme ? "bg-slate-700" : "bg-gray-200"
+                                                    }`}
+                                            >
+                                                {staff.selected && <Check className="h-3 w-3 text-white" />}
+                                            </div>
+                                            <Avatar className="h-6 w-6 mr-2">
+                                                <AvatarImage src={staff.avatar} alt={staff.name} />
+                                                <AvatarFallback className="text-xs" style={{ backgroundColor: staff.color }}>
+                                                    {staff.name
+                                                        .split(" ")
+                                                        .map((n) => n[0])
+                                                        .join("")}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <span className={`text-sm truncate ${spaceTheme ? "text-white" : ""}`}>{staff.name}</span>
+                                        </div>
+                                    ))}
+                                </CollapsibleContent>
+                            </Collapsible>
+                        </TabsContent>
+
+                        <TabsContent value="officestaff" className="mt-0 space-y-4">
+                            <Collapsible open={isStaffOpen} onOpenChange={setIsStaffOpen}>
+                                <div className="flex items-center justify-between">
+                                    <CollapsibleTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className={`w-full justify-between p-2 ${spaceTheme ? "hover:bg-slate-800 text-white" : ""}`}
+                                        >
+                                            <div className="flex items-center">
+                                                <span>Office Staff</span>
+                                                <Badge
+                                                    variant="secondary"
+                                                    className={`ml-2 ${spaceTheme ? "bg-slate-800 text-slate-200" : ""}`}
+                                                >
+                                                    {selectedOfficeStaff}/{officeStaff.length}
+                                                </Badge>
+                                            </div>
+                                            {isStaffOpen ? (
+                                                <ChevronUp className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                            ) : (
+                                                <ChevronDown className={`h-4 w-4 ${spaceTheme ? "text-slate-400" : "text-gray-500"}`} />
+                                            )}
+                                        </Button>
+                                    </CollapsibleTrigger>
+                                </div>
+                                <CollapsibleContent className="space-y-2 mt-2">
+                                    <div className="flex justify-between mb-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={`text-xs ${spaceTheme ? "border-slate-700 hover:bg-slate-800" : ""}`}
+                                            onClick={selectAllOfficeStaff}
+                                        >
+                                            Select All
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={`text-xs ${spaceTheme ? "border-slate-700 hover:bg-slate-800" : ""}`}
+                                            onClick={deselectAllOfficeStaff}
+                                        >
+                                            Deselect All
+                                        </Button>
+                                    </div>
+                                    {officeStaff.map((staff) => (
+                                        <div
+                                            key={staff.id}
+                                            className={`flex items-center p-2 rounded-md cursor-pointer ${spaceTheme ? "hover:bg-slate-800" : "hover:bg-gray-100"
+                                                }`}
+                                            onClick={() => toggleOfficeStaffSelection(staff.id)}
+                                        >
+                                            <div
+                                                className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${staff.selected ? "bg-primary" : spaceTheme ? "bg-slate-700" : "bg-gray-200"
+                                                    }`}
+                                            >
+                                                {staff.selected && <Check className="h-3 w-3 text-white" />}
+                                            </div>
+                                            <Avatar className="h-6 w-6 mr-2">
+                                                <AvatarImage src={staff.avatar} alt={staff.name} />
+                                                <AvatarFallback className="text-xs" style={{ backgroundColor: staff.color }}>
+                                                    {staff.name
+                                                        .split(" ")
+                                                        .map((n) => n[0])
+                                                        .join("")}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <span className={`text-sm truncate ${spaceTheme ? "text-white" : ""}`}>{staff.name}</span>
+                                        </div>
+                                    ))}
+                                </CollapsibleContent>
+                            </Collapsible>
+                        </TabsContent>
                     </div>
-                )}
-
-                <Separator className={`my-4 ${separatorClasses}`} />
-
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className={`text-sm font-medium ${spaceTheme ? "text-white" : ""}`}>Appointment Types</h3>
-                </div>
-
-                <div className="space-y-3">
-                    {eventTypes.map((type) => (
-                        <div key={type.id} className="flex items-center space-x-2">
-                            <Checkbox
-                                id={`type-${type.id}`}
-                                checked={type.selected}
-                                onCheckedChange={() => toggleEventTypeSelection(type.id)}
-                                className={
-                                    spaceTheme
-                                        ? "border-zinc-600 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                                        : ""
-                                }
-                            />
-                            <div className="flex items-center">
-                                <span className="h-3 w-3 rounded-full mr-2" style={{ backgroundColor: type.color }} />
-                                <label
-                                    htmlFor={`type-${type.id}`}
-                                    className={`text-sm font-medium leading-none cursor-pointer flex items-center ${spaceTheme ? "text-white" : ""}`}
-                                >
-                                    {getEventTypeIcon(type.id)}
-                                    {type.name}
-                                </label>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </Card>
-        </motion.div>
+                </ScrollArea>
+            </Tabs>
+        </div>
     )
 }
+

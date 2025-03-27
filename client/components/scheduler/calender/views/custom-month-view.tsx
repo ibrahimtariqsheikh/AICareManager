@@ -19,7 +19,7 @@ interface CustomMonthViewProps {
     spaceTheme?: boolean
     clients?: any[]
     eventTypes?: any[]
-    sidebarMode?: "staff" | "clients"
+    sidebarMode?: any
     toggleStaffSelection?: (staffId: string) => void
     toggleClientSelection?: (clientId: string) => void
     toggleEventTypeSelection?: (typeId: string) => void

@@ -10,20 +10,23 @@ import { format, addMonths, subMonths, setHours, setMinutes, isBefore, isAfter }
 import { cn } from "../../lib/utils"
 
 import { useState, useEffect, useRef, useMemo } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../../components/ui/dialog"
-import { Button } from "../../components/ui/button"
-import { Textarea } from "../../components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog"
+import { Button } from "../ui/button"
+import { Textarea } from "../ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { toast } from "sonner"
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "../../components/ui/form"
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "../ui/form"
 
-import { useCreateScheduleMutation, useUpdateScheduleMutation, ScheduleInput } from "../../state/api"
-import { useAppSelector } from "../../state/redux"
+import { useAppSelector, useAppDispatch } from "../../state/redux"
+import { addEvent, updateEvent, deleteEvent } from "../../state/slices/userSlice"
+import { v4 as uuidv4 } from "uuid"
 
 const formSchema = z.object({
-    agencyId: z.string({
-        required_error: "Agency ID is required",
-    }),
+    agencyId: z
+        .string({
+            required_error: "Agency ID is required",
+        })
+        .optional(),
     clientId: z.string({
         required_error: "Please select a client",
     }),
@@ -39,7 +42,7 @@ const formSchema = z.object({
     endTime: z.string({
         required_error: "Please select an end time",
     }),
-    type: z.enum(["WEEKLY_CHECKUP", "APPOINTMENT", "HOME_VISIT", "OTHER"], {
+    type: z.enum(["WEEKLY_CHECKUP", "APPOINTMENT", "HOME_VISIT", "OTHER", "CHECKUP", "EMERGENCY", "ROUTINE"], {
         required_error: "Please select an appointment type",
     }),
     status: z.enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELED"], {
@@ -98,14 +101,12 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     const [availableEndTimes, setAvailableEndTimes] = useState(allTimeOptions)
     const chargeRateOptions = useMemo(() => generateChargeRateOptions(), [])
     const calendarRef = useRef<HTMLDivElement>(null)
+    const dispatch = useAppDispatch()
 
-    // Get agency ID from auth state
-    const { userInfo } = useAppSelector((state) => state.auth)
+    // Get data from Redux store
+    const { careWorkers, clients: reduxClients } = useAppSelector((state) => state.user)
+    const { userInfo } = useAppSelector((state) => state.auth || { userInfo: null })
     const agencyId = userInfo?.agencyId || ""
-
-    // RTK Query hooks for creating and updating schedules
-    const [createSchedule] = useCreateScheduleMutation()
-    const [updateSchedule] = useUpdateScheduleMutation()
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -155,39 +156,17 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         }
     }, [form.watch("startTime"), allTimeOptions, form])
 
-    // Fetch clients and staff when the form opens
+    // Initialize clients and staff from Redux store
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setIsLoading(true)
+        setClients(reduxClients || [])
+        setStaff(careWorkers || [])
+        setAvailableStaff(careWorkers || [])
 
-                // Fetch clients
-                const clientsResponse = await fetch(`/api/clients?agencyId=${agencyId}`)
-                if (!clientsResponse.ok) throw new Error("Failed to fetch clients")
-                const clientsData = await clientsResponse.json()
-                setClients(clientsData.data || [])
-
-                // Fetch staff (healthcare workers)
-                const staffResponse = await fetch(`/api/users?role=HEALTH_WORKER&agencyId=${agencyId}`)
-                if (!staffResponse.ok) throw new Error("Failed to fetch staff")
-                const staffData = await staffResponse.json()
-                setStaff(staffData.data || [])
-                setAvailableStaff(staffData.data || [])
-
-                // Set agency ID from auth state
-                form.setValue("agencyId", agencyId)
-            } catch (error) {
-                console.error("Failed to fetch data:", error)
-                toast.error("Failed to load form data")
-            } finally {
-                setIsLoading(false)
-            }
+        // Set agency ID from auth state
+        if (agencyId) {
+            form.setValue("agencyId", agencyId)
         }
-
-        if (isOpen) {
-            fetchData()
-        }
-    }, [isOpen, agencyId, form])
+    }, [reduxClients, careWorkers, agencyId, form])
 
     // Populate form with event data when editing
     useEffect(() => {
@@ -231,8 +210,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         }
     }, [])
 
-    // Update the onSubmit function to handle API integration
-
     const onSubmit = async (data: FormValues) => {
         try {
             if (data.endTime <= data.startTime) {
@@ -252,39 +229,75 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             const endDateTime = new Date(data.date)
             endDateTime.setHours(endHour, endMinute)
 
-            // Prepare the data for API
-            const scheduleData = {
-                agencyId: data.agencyId,
+            // Find the selected care worker and client for additional data
+            const careWorker = careWorkers.find((worker) => worker.id === data.userId)
+            const client = reduxClients.find((client) => client.id === data.clientId)
+
+            // Create a title that includes both care worker and client names
+            const title = `${client ? `${client.firstName} ${client.lastName}` : "Client"} with ${careWorker ? `${careWorker.firstName} ${careWorker.lastName}` : "Care Worker"}`
+
+            const eventData = {
+                id: event?.id || uuidv4(),
+                title: title,
+                start: startDateTime,
+                end: endDateTime,
+                resourceId: data.userId,
                 clientId: data.clientId,
-                userId: data.userId,
-                date: data.date.toISOString(),
-                shiftStart: startDateTime.toISOString(),
-                shiftEnd: endDateTime.toISOString(),
-                status: data.status,
                 type: data.type,
-                notes: data.notes,
-                chargeRate: data.chargeRate,
+                status: data.status,
+                notes: data.notes || "",
+                chargeRate: data.chargeRate || 25,
+                color: getEventColor(data.type),
+                careWorker: careWorker
+                    ? {
+                        firstName: careWorker.firstName,
+                        lastName: careWorker.lastName,
+                    }
+                    : undefined,
+                client: client
+                    ? {
+                        firstName: client.firstName,
+                        lastName: client.lastName,
+                    }
+                    : undefined,
             }
 
+            // Dispatch to Redux store
             if (isNew) {
-                // Create new schedule
-                await createSchedule(scheduleData).unwrap()
+                dispatch(addEvent(eventData))
+                console.log("Created new appointment:", eventData)
                 toast.success("Appointment created successfully")
             } else {
-                // Update existing schedule
-                await updateSchedule({
-                    id: event.id,
-                    ...scheduleData,
-                }).unwrap()
+                dispatch(updateEvent(eventData))
+                console.log("Updated appointment:", eventData)
                 toast.success("Appointment updated successfully")
             }
 
             onClose()
         } catch (error) {
-            console.error("Failed to save appointment:", error)
+            console.error("Error saving appointment:", error)
             toast.error(`Failed to ${isNew ? "create" : "update"} appointment`)
         } finally {
             setIsLoading(false)
+        }
+    }
+
+    // Helper function to get event color based on type
+    const getEventColor = (type: string): string => {
+        switch (type) {
+            case "APPOINTMENT":
+                return "#4f46e5" // indigo
+            case "CHECKUP":
+            case "WEEKLY_CHECKUP":
+                return "#10b981" // emerald
+            case "EMERGENCY":
+                return "#ef4444" // red
+            case "ROUTINE":
+                return "#8b5cf6" // purple
+            case "HOME_VISIT":
+                return "#059669" // green
+            default:
+                return "#6b7280" // gray
         }
     }
 
@@ -303,6 +316,22 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         e.preventDefault()
         form.setValue("date", newDate)
         setCalendarOpen(false)
+    }
+
+    // Handle appointment deletion
+    const handleDelete = async () => {
+        if (!event?.id) return
+
+        try {
+            // Dispatch to Redux store
+            dispatch(deleteEvent(event.id))
+            console.log("Deleted appointment:", event.id)
+            toast.success("Appointment deleted successfully")
+            onClose()
+        } catch (error) {
+            console.error("Error deleting appointment:", error)
+            toast.error("Failed to delete appointment")
+        }
     }
 
     return (
@@ -338,11 +367,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                             value={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                     <SelectValue placeholder="Select a client" />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                 {clients.map((client) => (
                                                     <SelectItem key={client.id} value={client.id}>
                                                         {client.firstName} {client.lastName}
@@ -363,11 +392,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                         <FormLabel>Care Worker</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                     <SelectValue placeholder="Select a care worker" />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                 {availableStaff.map((staffMember) => (
                                                     <SelectItem key={staffMember.id} value={staffMember.id}>
                                                         {staffMember.firstName} {staffMember.lastName}
@@ -393,7 +422,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                 <div className="relative">
                                                     <Button
                                                         variant={"outline"}
-                                                        className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                                                        className={cn(
+                                                            "w-full pl-3 text-left font-normal",
+                                                            !field.value && "text-muted-foreground",
+                                                            spaceTheme && "bg-slate-800 border-slate-700 text-white",
+                                                        )}
                                                         onClick={(e) => {
                                                             e.preventDefault()
                                                             setCalendarOpen(!calendarOpen)
@@ -414,17 +447,19 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                                 <Button
                                                                     variant="outline"
                                                                     size="icon"
-                                                                    className="h-7 w-7"
+                                                                    className={`h-7 w-7 ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
                                                                     onClick={goToPreviousMonth}
                                                                     type="button"
                                                                 >
                                                                     <ChevronLeft className="h-4 w-4" />
                                                                 </Button>
-                                                                <div className="text-center font-medium">{format(currentMonth, "MMMM yyyy")}</div>
+                                                                <div className={`text-center font-medium ${spaceTheme ? "text-white" : ""}`}>
+                                                                    {format(currentMonth, "MMMM yyyy")}
+                                                                </div>
                                                                 <Button
                                                                     variant="outline"
                                                                     size="icon"
-                                                                    className="h-7 w-7"
+                                                                    className={`h-7 w-7 ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
                                                                     onClick={goToNextMonth}
                                                                     type="button"
                                                                 >
@@ -433,7 +468,10 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                             </div>
                                                             <div className="grid grid-cols-7 gap-1 py-2">
                                                                 {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
-                                                                    <div key={day} className="text-center text-sm text-muted-foreground">
+                                                                    <div
+                                                                        key={day}
+                                                                        className={`text-center text-sm ${spaceTheme ? "text-slate-400" : "text-muted-foreground"}`}
+                                                                    >
                                                                         {day}
                                                                     </div>
                                                                 ))}
@@ -495,6 +533,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                                                 !isCurrentMonth && "text-muted-foreground opacity-50",
                                                                                 isSelected && "bg-primary text-primary-foreground",
                                                                                 isToday && !isSelected && "border border-primary text-primary",
+                                                                                spaceTheme && "hover:bg-slate-800",
                                                                             )}
                                                                             type="button"
                                                                             onClick={(e) => {
@@ -523,12 +562,14 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                 <FormLabel>Time From</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                                     <FormControl>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                             <SelectValue placeholder="Select start time" />
                                                             <Clock className="ml-auto h-4 w-4 opacity-50" />
                                                         </SelectTrigger>
                                                     </FormControl>
-                                                    <SelectContent className="h-[200px]">
+                                                    <SelectContent
+                                                        className={`h-[200px] ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
+                                                    >
                                                         {allTimeOptions.map((option) => (
                                                             <SelectItem key={option.value} value={option.value}>
                                                                 {option.label}
@@ -549,12 +590,14 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                 <FormLabel>Time To</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                                     <FormControl>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                             <SelectValue placeholder="Select end time" />
                                                             <Clock className="ml-auto h-4 w-4 opacity-50" />
                                                         </SelectTrigger>
                                                     </FormControl>
-                                                    <SelectContent className="h-[200px]">
+                                                    <SelectContent
+                                                        className={`h-[200px] ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
+                                                    >
                                                         {availableEndTimes.map((option) => (
                                                             <SelectItem key={option.value} value={option.value}>
                                                                 {option.label}
@@ -579,14 +622,17 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                         <FormLabel>Visit Type</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                     <SelectValue placeholder="Select type" />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                 <SelectItem value="WEEKLY_CHECKUP">Weekly Checkup</SelectItem>
                                                 <SelectItem value="APPOINTMENT">Appointment</SelectItem>
                                                 <SelectItem value="HOME_VISIT">Home Visit</SelectItem>
+                                                <SelectItem value="CHECKUP">Checkup</SelectItem>
+                                                <SelectItem value="EMERGENCY">Emergency</SelectItem>
+                                                <SelectItem value="ROUTINE">Routine</SelectItem>
                                                 <SelectItem value="OTHER">Other</SelectItem>
                                             </SelectContent>
                                         </Select>
@@ -607,11 +653,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                             value={field.value?.toString()}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                     <SelectValue placeholder="Select charge rate" />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                 {chargeRateOptions.map((option) => (
                                                     <SelectItem key={option.value} value={option.value.toString()}>
                                                         {option.label}
@@ -634,11 +680,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                     <FormLabel>Status</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                         <FormControl>
-                                            <SelectTrigger>
+                                            <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                                 <SelectValue placeholder="Select status" />
                                             </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>
+                                        <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
                                             <SelectItem value="PENDING">Pending</SelectItem>
                                             <SelectItem value="CONFIRMED">Confirmed</SelectItem>
                                             <SelectItem value="COMPLETED">Completed</SelectItem>
@@ -657,7 +703,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                 <FormItem>
                                     <FormLabel>Notes</FormLabel>
                                     <FormControl>
-                                        <Textarea placeholder="Add any additional notes here..." className="resize-none" {...field} />
+                                        <Textarea
+                                            placeholder="Add any additional notes here..."
+                                            className={`resize-none ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormDescription>Optional notes about the appointment</FormDescription>
                                     <FormMessage />
@@ -666,7 +716,17 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                         />
 
                         <DialogFooter>
-                            <Button type="button" variant="outline" onClick={onClose}>
+                            {!isNew && (
+                                <Button type="button" variant="destructive" onClick={handleDelete} className="mr-auto">
+                                    Delete
+                                </Button>
+                            )}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={onClose}
+                                className={spaceTheme ? "bg-slate-800 border-slate-700 text-white hover:bg-slate-700" : ""}
+                            >
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={isLoading}>

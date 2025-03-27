@@ -85,6 +85,51 @@ body {
   }
 }
 
+/* Custom calendar styles */
+.home-visit {
+  @apply bg-green-900/30 border-l-4 border-green-500;
+}
+
+.video-call {
+  @apply bg-blue-900/30 border-l-4 border-blue-500;
+}
+
+.hospital {
+  @apply bg-green-900/30 border-l-4 border-green-500;
+}
+
+.in-person {
+  @apply bg-amber-900/30 border-l-4 border-amber-500;
+}
+
+.audio-call {
+  @apply bg-red-900/30 border-l-4 border-red-500;
+}
+
+.calendar-button {
+  @apply border-slate-700 hover:bg-slate-800 text-white;
+}
+
+.calendar-grid {
+  @apply bg-slate-900 border-slate-700;
+}
+
+.time-label {
+  @apply text-slate-400 border-r border-slate-700;
+}
+
+.current-time-indicator {
+  @apply bg-green-500;
+}
+
+.dark-calendar .event-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark-dialog {
+  @apply bg-slate-900 border-slate-700 text-white;
+}
+
 @layer base {
   * {
     @apply border-border;

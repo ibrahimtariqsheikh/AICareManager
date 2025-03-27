@@ -35,14 +35,20 @@ export interface User {
     avatarUrl?: string
     address?: string
   }
+  color?: string
 }
 
 export interface Client {
   id: string
   email: string
-  name: string
+  firstName: string
+  lastName: string
   status: "Pending" | "Active"
   dateAdded: string
+  profile?: {
+    avatarUrl?: string
+  }
+  color?: string
 }
 
 export interface Notification {
@@ -149,6 +155,31 @@ export interface ScheduleResponse {
   }
 }
 
+export interface UsersResponse {
+  data: User[]
+  meta: {
+    total: number
+  }
+}
+
+export interface ClientsResponse {
+  data: Client[]
+  meta: {
+    total: number
+  }
+}
+
+export interface UserQueryParams {
+  role?: string
+  agencyId?: string
+}
+
+// Update the ClientQueryParams interface in your API file
+export interface ClientQueryParams {
+  status?: string
+  userId?: string // Use userId to filter clients by user's agency
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -162,7 +193,16 @@ export const api = createApi({
     },
   }),
   reducerPath: "api",
-  tagTypes: ["Invitations", "Notifications", "InvitationsByEmail", "Schedules", "Schedule", "Locations"],
+  tagTypes: [
+    "Invitations",
+    "Notifications",
+    "InvitationsByEmail",
+    "Schedules",
+    "Schedule",
+    "Locations",
+    "Users",
+    "Clients",
+  ],
   endpoints: (build) => ({
     // Get user
     getUser: build.query<any, void>({
@@ -195,6 +235,22 @@ export const api = createApi({
       },
     }),
 
+    // Get users with filtering
+    getUsers: build.query<UsersResponse, UserQueryParams>({
+      query: (params) => {
+        console.log("params", params)
+        return `/users?role=${params.role}&agencyId=${params.agencyId}`
+      },
+      providesTags: ["Users"],
+    }),
+
+    // Get filtered users for scheduling
+    getFilteredUsers: build.query<{ careWorkers: User[], clients: User[], officeStaff: User[] }, string>({
+      query: (inviterId) => `/users/filtered/${inviterId}`,
+      providesTags: ["Users"],
+    }),
+
+
     //create user
     createUser: build.mutation<User, User>({
       query: (user: User) => ({
@@ -203,9 +259,53 @@ export const api = createApi({
         body: user,
       }),
     }),
+    // Update the getUserInvitations endpoint to add more debugging and error handling
     // Get user invitations
     getUserInvitations: build.query<Invitation[], string>({
-      query: (inviterId) => `/invitations/user/${inviterId}`,
+      queryFn: async (inviterId, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          console.log("Fetching invitations for user ID:", inviterId)
+
+          // Make the API request
+          const response = await fetchWithBQ(`/invitations/user/${inviterId}`)
+
+          // Log the response for debugging
+          console.log("Invitations API response:", response)
+
+          if (response.error) {
+            console.error("Error fetching invitations:", response.error)
+
+            // Check if it's a Prisma error
+            const errorData = response.error.data
+            if (errorData && typeof errorData === "object" && "message" in errorData && "name" in errorData) {
+              if (typeof errorData.message === "string" && errorData.message.includes("prisma.invitation.findMany()")) {
+                console.error("Prisma query error detected. This is likely a server-side database issue.")
+
+                // Return a more specific error for Prisma issues
+                return {
+                  error: {
+                    status: "CUSTOM_ERROR",
+                    error: "Database query error. Please check server logs for details about the Prisma query issue.",
+                  },
+                }
+              }
+            }
+
+            return { error: response.error }
+          }
+
+          // Check if the response data is an array
+          if (!Array.isArray(response.data)) {
+            console.error("Invitations API returned non-array data:", response.data)
+            return { data: [] }
+          }
+
+          return { data: response.data }
+        } catch (error) {
+          console.error("Exception in getUserInvitations:", error)
+          return { error: { status: "FETCH_ERROR", error: String(error) } }
+        }
+      },
       providesTags: ["Invitations"],
     }),
 
@@ -258,10 +358,15 @@ export const api = createApi({
 
     // Get all schedules with filtering
     getSchedules: build.query<ScheduleResponse, ScheduleQueryParams>({
-      query: (params) => ({
-        url: "/schedules",
-        params,
-      }),
+      query: (params) => {
+        const { status, type, limit = 100, offset = 0 } = params
+        let queryString = `/schedules?limit=${limit}&offset=${offset}`
+
+        if (status) queryString += `&status=${status}`
+        if (type) queryString += `&type=${type}`
+
+        return queryString
+      },
       providesTags: (result) =>
         result
           ? [...result.data.map(({ id }) => ({ type: "Schedules" as const, id })), { type: "Schedules", id: "LIST" }]
@@ -270,10 +375,14 @@ export const api = createApi({
 
     // Get schedules by date range
     getSchedulesByDateRange: build.query<ScheduleResponse, ScheduleQueryParams>({
-      query: (params) => ({
-        url: "/schedules/date-range",
-        params,
-      }),
+      query: (params) => {
+        const { startDate, endDate, status, limit = 100, offset = 0 } = params
+        let queryString = `/schedules/date-range?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}`
+
+        if (status) queryString += `&status=${status}`
+
+        return queryString
+      },
       providesTags: [{ type: "Schedules", id: "DATE_RANGE" }],
     }),
 
@@ -316,6 +425,8 @@ export const api = createApi({
 
 export const {
   useGetUserQuery,
+  useGetUsersQuery,
+  useGetFilteredUsersQuery,
   useGetUserInvitationsQuery,
   useVerifyInvitationQuery,
   useCreateInvitationMutation,

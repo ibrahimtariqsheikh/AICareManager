@@ -223,14 +223,24 @@ export const getUserInvitations = async (req: Request, res: Response): Promise<v
         const { inviterId } = req.params;
         const { status } = req.query;
         
-        const where: any = { inviterId };
-        
-        if (status) {
-            where.status = status as InvitationStatus;
+        // Validate inviterId
+        if (!inviterId) {
+            res.status(400).json({ error: "inviterId is required" });
+            return;
         }
         
+        // Build the where clause properly
+        const whereClause: any = { inviterId };
+        
+        // Only add status filter if it's a valid InvitationStatus value
+        if (status && Object.values(InvitationStatus).includes(status as InvitationStatus)) {
+            whereClause.status = status as InvitationStatus;
+        }
+        
+        console.log("Finding invitations with where clause:", whereClause);
+        
         const invitations = await prisma.invitation.findMany({
-            where,
+            where: whereClause,
             include: {
                 inviter: {
                     select: {
@@ -244,8 +254,10 @@ export const getUserInvitations = async (req: Request, res: Response): Promise<v
             orderBy: { createdAt: 'desc' },
         });
         
+        console.log(`Found ${invitations.length} invitations for user ${inviterId}`);
         res.status(200).json(invitations);
     } catch (error: any) {
+        console.error("Error in getUserInvitations:", error);
         res.status(500).json({ error: error.message });
     }
 };

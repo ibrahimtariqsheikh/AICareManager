@@ -1,10 +1,19 @@
-import express from "express";
-import { createUser, getUser, getUsers } from "../controllers/userControllers";
+import express from "express"
+import * as userController from "../controllers/userControllers"
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", getUsers);
-router.get("/:cognitoId", getUser);
-router.post("/", createUser);
+// User routes
+router.get("/", userController.getUsers)
+router.post("/", userController.createUser)
+router.get("/:cognitoId", userController.getUser)
 
-export default router;
+// Client routes (handled by user controller)
+router.get("/clients", userController.getClients)
+
+// Filtered users for scheduling
+router.get("/filtered/:inviterId", userController.getFilteredUsers)
+
+
+export default router
+

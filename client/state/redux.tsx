@@ -12,13 +12,14 @@ import { api } from "./api"
 import authReducer from "./slices/authSlice"
 import scheduleReducer from "./slices/scheduleSlice"
 import invitationReducer from "./slices/invitationSlice"
-
+import userReducer from "./slices/userSlice"
 /* REDUX STORE */
 const rootReducer = combineReducers({
   global: globalReducer,
   auth: authReducer,
   schedule: scheduleReducer,
   invitations: invitationReducer,
+  user: userReducer,
   [api.reducerPath]: api.reducer,
 })
 

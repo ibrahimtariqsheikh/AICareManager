@@ -1,36 +1,23 @@
 "use client"
-
-import { useState, useEffect, useRef, useMemo } from "react"
-import { Card } from "../../../components/ui/card"
-import { Loader2, PlusCircle } from 'lucide-react'
-import type { AppointmentEvent } from "./types"
-import { CustomMonthView } from "./views/custom-month-view"
-import { CustomWeekView } from "./views/custom-week-view"
+import { useEffect } from "react"
 import { CustomDayView } from "./views/custom-day-view"
-import { Button } from "../../ui/button"
+import { CustomWeekView } from "./views/custom-week-view"
+import { CustomMonthView } from "./views/custom-month-view"
+import type { AppointmentEvent, StaffMember, Client, SidebarMode } from "./types"
+import { Skeleton } from "../../ui/skeleton"
 
 interface CustomCalendarProps {
     events: AppointmentEvent[]
     currentDate: Date
     activeView: "day" | "week" | "month"
-    onSelectEvent: (event: AppointmentEvent) => void
-    onEventUpdate?: (updatedEvent: AppointmentEvent) => void
+    onSelectEvent: (event: any) => void
+    onEventUpdate: (event: any) => void
     onNavigate: (date: Date) => void
     isLoading: boolean
-    staffMembers: any[]
-    getEventDurationInMinutes: (event: any) => number
+    staffMembers: StaffMember[]
     isMobile: boolean
-    sidebarMode?: "staff" | "clients"
-    toggleStaffSelection?: (staffId: string) => void
-    toggleClientSelection?: (clientId: string) => void
-    toggleEventTypeSelection?: (typeId: string) => void
-    selectAllStaff?: () => void
-    deselectAllStaff?: () => void
-    selectAllClients?: () => void
-    deselectAllClients?: () => void
-    toggleSidebarMode?: () => void
-    clients?: any[]
-    eventTypes?: any[]
+    sidebarMode: SidebarMode
+    clients: Client[]
     spaceTheme?: boolean
 }
 
@@ -43,180 +30,84 @@ export function CustomCalendar({
     onNavigate,
     isLoading,
     staffMembers,
-    getEventDurationInMinutes,
     isMobile,
-    sidebarMode = "staff",
-    toggleStaffSelection = () => { },
-    toggleClientSelection = () => { },
-    toggleEventTypeSelection = () => { },
-    selectAllStaff = () => { },
-    deselectAllStaff = () => { },
-    selectAllClients = () => { },
-    deselectAllClients = () => { },
-    toggleSidebarMode = () => { },
-    clients = [],
-    eventTypes = [],
-    spaceTheme = false,
+    sidebarMode,
+    clients,
+    spaceTheme,
 }: CustomCalendarProps) {
-    const calendarRef = useRef<HTMLDivElement>(null)
-    const [calendarHeight, setCalendarHeight] = useState("calc(90vh - 120px)")
+    // Ensure dates are properly parsed
+    const processedEvents = events.map((event) => ({
+        ...event,
+        start: event.start instanceof Date ? event.start : new Date(event.start),
+        end: event.end instanceof Date ? event.end : new Date(event.end),
+    }))
 
-    // Update calendar height based on container size
+    // Calculate event duration in minutes
+    const getEventDurationInMinutes = (event: AppointmentEvent) => {
+        const start = new Date(event.start)
+        const end = new Date(event.end)
+        return Math.round((end.getTime() - start.getTime()) / (1000 * 60))
+    }
+
+    // Log events for debugging
     useEffect(() => {
-        const updateHeight = () => {
-            if (calendarRef.current) {
-                const containerHeight = calendarRef.current.offsetHeight
-                setCalendarHeight(`${containerHeight}px`)
-            }
-        }
+        console.log("Calendar received events:", events.length)
+        console.log("Processed events:", processedEvents.length)
+    }, [events, processedEvents.length])
 
-        updateHeight()
-        window.addEventListener("resize", updateHeight)
-        return () => window.removeEventListener("resize", updateHeight)
-    }, [])
-
-    // Memoize the day view to prevent unnecessary re-renders
-    const dayView = useMemo(() => {
-        if (activeView !== "day") return null
-
+    if (isLoading) {
         return (
-            <CustomDayView
-                date={currentDate}
-                events={events}
-                onSelectEvent={onSelectEvent}
-                onEventUpdate={onEventUpdate}
-                min={new Date(new Date().setHours(7, 0, 0))}
-                max={new Date(new Date().setHours(19, 0, 0))}
-                staffMembers={staffMembers}
-                getEventDurationInMinutes={getEventDurationInMinutes}
-                clients={clients}
-                eventTypes={eventTypes}
-                sidebarMode={sidebarMode}
-                toggleStaffSelection={toggleStaffSelection}
-                toggleClientSelection={toggleClientSelection}
-                toggleEventTypeSelection={toggleEventTypeSelection}
-                selectAllStaff={selectAllStaff}
-                deselectAllStaff={deselectAllStaff}
-                selectAllClients={selectAllClients}
-                deselectAllClients={deselectAllClients}
-                toggleSidebarMode={toggleSidebarMode}
-                spaceTheme={spaceTheme}
-                showSidebar={true} // Always show sidebar in day view
-            />
+            <div className="w-full h-full p-4">
+                <Skeleton className="w-full h-full" />
+            </div>
         )
-    }, [
-        activeView,
-        currentDate,
-        events,
-        onSelectEvent,
-        onEventUpdate,
-        staffMembers,
-        clients,
-        eventTypes,
-        sidebarMode,
-        toggleStaffSelection,
-        toggleClientSelection,
-        toggleEventTypeSelection,
-        selectAllStaff,
-        deselectAllStaff,
-        selectAllClients,
-        deselectAllClients,
-        toggleSidebarMode,
-        spaceTheme,
-        getEventDurationInMinutes,
-    ])
+    }
 
-    // Memoize the week view
-    const weekView = useMemo(() => {
-        if (activeView !== "week") return null
-
-        return (
-            <CustomWeekView
-                date={currentDate}
-                events={events}
-                onSelectEvent={onSelectEvent}
-                onEventUpdate={onEventUpdate}
-                staffMembers={staffMembers}
-                getEventDurationInMinutes={getEventDurationInMinutes}
-                spaceTheme={spaceTheme}
-            />
-        )
-    }, [
-        activeView,
-        currentDate,
-        events,
-        onSelectEvent,
-        onEventUpdate,
-        staffMembers,
-        getEventDurationInMinutes,
-        spaceTheme,
-    ])
-
-    // Memoize the month view
-    const monthView = useMemo(() => {
-        if (activeView !== "month") return null
-
-        return (
-            <CustomMonthView
-                date={currentDate}
-                events={events}
-                onSelectEvent={onSelectEvent}
-                onDateSelect={(date) => onNavigate(date)}
-                staffMembers={staffMembers}
-                getEventDurationInMinutes={getEventDurationInMinutes}
-                spaceTheme={spaceTheme}
-            />
-        )
-    }, [activeView, currentDate, events, onSelectEvent, onNavigate, staffMembers, getEventDurationInMinutes, spaceTheme])
-
-    const cardClasses = spaceTheme
-        ? "flex-1 shadow-lg border border-indigo-500/20 rounded-lg overflow-hidden p-0 h-full bg-slate-900/60 backdrop-blur-sm"
-        : "flex-1 shadow-sm border border-gray-100 rounded-lg overflow-hidden p-0 h-full"
-
-    // Check if we have events for the current view
-    const hasEventsInCurrentView = events.length > 0
-
+    // Render the appropriate view based on activeView
     return (
-        <Card className={cardClasses}>
-            {isLoading ? (
-                <div className="flex items-center justify-center h-full min-h-[500px]">
-                    <Loader2 className={`h-6 w-6 ${spaceTheme ? "text-purple-400" : "text-blue-500"} animate-spin`} />
-                </div>
-            ) : !hasEventsInCurrentView ? (
-                <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-                    <div className={`mb-4 ${spaceTheme ? "text-slate-400" : "text-gray-400"}`}>
-                        {activeView === "day" ? (
-                            <span>No appointments scheduled for this day</span>
-                        ) : activeView === "week" ? (
-                            <span>No appointments scheduled for this week</span>
-                        ) : (
-                            <span>No appointments scheduled for this month</span>
-                        )}
-                    </div>
-                    <Button
-                        onClick={() => {
-                            // Create a default event with the current date
-                            const defaultEvent = {
-                                start: new Date(currentDate),
-                                end: new Date(new Date(currentDate).setHours(currentDate.getHours() + 1)),
-                                date: currentDate,
-                            }
-                            onSelectEvent(defaultEvent as any)
-                        }}
-                        className={spaceTheme ? "bg-purple-600 hover:bg-purple-700" : ""}
-                    >
-                        <PlusCircle className="h-4 w-4 mr-2" />
-                        Add Appointment
-                    </Button>
-                </div>
-            ) : (
-                <div className="h-full flex flex-col overflow-hidden" ref={calendarRef}>
-                    {activeView === "day" && dayView}
-                    {activeView === "week" && weekView}
-                    {activeView === "month" && monthView}
-                </div>
+        <div className={`h-full w-full ${spaceTheme ? "dark-calendar" : ""}`}>
+            {activeView === "day" && (
+                <CustomDayView
+                    date={currentDate}
+                    events={processedEvents}
+                    onSelectEvent={onSelectEvent}
+                    onEventUpdate={onEventUpdate}
+                    staffMembers={staffMembers}
+                    getEventDurationInMinutes={getEventDurationInMinutes}
+                    spaceTheme={spaceTheme}
+                    clients={clients}
+                    sidebarMode={sidebarMode}
+                />
             )}
-        </Card>
+
+            {activeView === "week" && (
+                <CustomWeekView
+                    date={currentDate}
+                    events={processedEvents}
+                    onSelectEvent={onSelectEvent}
+                    onEventUpdate={onEventUpdate}
+                    staffMembers={staffMembers}
+                    getEventDurationInMinutes={getEventDurationInMinutes}
+                    spaceTheme={spaceTheme}
+                />
+            )}
+
+            {activeView === "month" && (
+                <CustomMonthView
+                    date={currentDate}
+                    events={processedEvents}
+                    onSelectEvent={onSelectEvent}
+                    onDateSelect={onNavigate}
+                    staffMembers={staffMembers}
+                    getEventDurationInMinutes={getEventDurationInMinutes}
+                    spaceTheme={spaceTheme}
+                    clients={clients}
+                    sidebarMode={sidebarMode}
+                />
+            )}
+        </div>
     )
 }
+
+export default CustomCalendar
 
