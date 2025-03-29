@@ -1,26 +1,83 @@
 "use client"
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuItem,
-    SidebarMenuButton,
-    SidebarSeparator,
-    SidebarTrigger,
-} from "../ui/sidebar"
-import { useSidebar } from "../ui/sidebar-provider"
+
+import { usePathname, useRouter } from "next/navigation"
+import { motion, AnimatePresence, MotionConfig } from "framer-motion"
+import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from "../ui/sidebar"
 import { Button } from "../ui/button"
-import { User, Settings, BarChart3, Calendar, Users, Folder, HelpCircle, Moon, Sun } from 'lucide-react'
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { sidebarOpt } from "../../lib/constants"
+import { ArrowLeft, ArrowRight, ChevronDown, HelpCircle, Users, LogOut, Moon, Sun } from "lucide-react"
 import { cn } from "../../lib/utils"
 import { useTheme } from "next-themes"
+import { useSidebar } from "../ui/sidebar-provider"
+import { useState, useRef, useEffect } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { useAppSelector, useAppDispatch } from "../../state/redux"
+import { signOut } from "aws-amplify/auth"
+import { logout } from "../../state/slices/authSlice"
+
+import { LayoutDashboardIcon, UsersIcon, BarChart3, Calendar, Settings } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+import { useMediaQuery } from "../../hooks/use-mobile"
+
+export interface NavItem {
+    title: string
+    icon: LucideIcon
+    href: string
+    isActive?: boolean
+}
+
+export interface NavSection {
+    title: string
+    items: NavItem[]
+}
+
+export const sidebarNavigation: NavSection[] = [
+    {
+        title: "Overview",
+        items: [
+            {
+                title: "Dashboard",
+                icon: LayoutDashboardIcon,
+                href: "/dashboard",
+                isActive: true,
+            },
+        ],
+    },
+    {
+        title: "Management",
+        items: [
+            {
+                title: "Users",
+                icon: UsersIcon,
+                href: "/users",
+            },
+            {
+                title: "Analytics",
+                icon: BarChart3,
+                href: "/analytics",
+            },
+            {
+                title: "Schedule",
+                icon: Calendar,
+                href: "/schedule",
+            },
+        ],
+    },
+    {
+        title: "Settings",
+        items: [
+            {
+                title: "Preferences",
+                icon: Settings,
+                href: "/settings",
+            },
+            {
+                title: "Help",
+                icon: HelpCircle,
+                href: "/help",
+            },
+        ],
+    },
+]
 
 interface DashboardSidebarProps {
     id: string
@@ -29,51 +86,83 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
     const pathname = usePathname()
+    const router = useRouter()
     const { state, toggleSidebar } = useSidebar()
     const isExpanded = state === "expanded"
     const { theme, setTheme } = useTheme()
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+    const dropdownRef = useRef<HTMLDivElement>(null)
+    const isMobile = useMediaQuery("(max-width: 768px)")
 
-    // Map icon strings to components
-    const getIconComponent = (iconName: string) => {
-        switch (iconName) {
-            case "Users":
-                return Users
-            case "BarChart3":
-                return BarChart3
-            case "Calendar":
-                return Calendar
-            case "Settings":
-                return Settings
-            case "HelpCircle":
-                return HelpCircle
-            default:
-                return Folder
+    // Get user data from Redux store
+    const { userInfo } = useAppSelector((state) => state.auth)
+    const dispatch = useAppDispatch()
+
+    // Dynamic user data from Redux store
+    const userData = {
+        name: userInfo?.firstName && userInfo?.lastName ? `${userInfo.firstName} ${userInfo.lastName}` : "User",
+        email: userInfo?.email || "user@example.com",
+        avatarUrl:
+            userInfo?.firstName && userInfo?.lastName
+                ? `${userInfo.firstName[0]}${userInfo.lastName[0]}`
+                : "/placeholder.svg?height=40&width=40",
+    }
+
+    const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(
+        // Initialize all sections as expanded by default
+        sidebarNavigation.reduce(
+            (acc, section) => {
+                acc[section.title] = true
+                return acc
+            },
+            {} as Record<string, boolean>,
+        ),
+    )
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setUserDropdownOpen(false)
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [])
+
+    const toggleSection = (sectionTitle: string) => {
+        setExpandedSections((prev) => ({
+            ...prev,
+            [sectionTitle]: !prev[sectionTitle],
+        }))
+    }
+
+    const handleLogout = async () => {
+        try {
+            // Sign out using AWS Amplify
+            await signOut()
+
+            // Dispatch logout action to Redux
+            dispatch(logout())
+
+            console.log("Logging out...")
+            setUserDropdownOpen(false)
+
+            // Redirect to login page
+            window.location.href = "/login"
+        } catch (error) {
+            console.error("Error logging out:", error)
         }
     }
 
-    // Animation variants for smoother transitions
-    const itemVariants = {
-        hidden: { opacity: 0, x: -10 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 24,
-                mass: 0.8,
-            },
-        },
-        exit: {
-            opacity: 0,
-            x: -10,
-            transition: {
-                duration: 0.15,
-                ease: "easeOut",
-            },
-        },
+    const toggleTheme = () => {
+        setTheme(theme === "dark" ? "light" : "dark")
     }
 
+    // Animation variants for smoother transitions
     const logoVariants = {
         hidden: { opacity: 0, x: -20 },
         visible: {
@@ -97,252 +186,339 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
         },
     }
 
+    // Sidebar animation
+    const sidebarVariants = {
+        expanded: {
+            width: isMobile ? "80px" : "240px",
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+            },
+        },
+        collapsed: {
+            width: "80px",
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+            },
+        },
+    }
+
+    // Footer animation
+    const footerVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 24,
+                mass: 0.8,
+                delay: 0.1,
+            },
+        },
+    }
+
+    // Dropdown animation
+    const dropdownVariants = {
+        hidden: {
+            opacity: 0,
+            y: -10,
+            scale: 0.95,
+            transition: {
+                duration: 0.15,
+                ease: "easeInOut",
+            },
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 25,
+            },
+        },
+    }
+
+    // Determine if we should show text labels
+    const showLabels = isExpanded && !isMobile
+
     return (
-        <Sidebar variant="floating" collapsible="icon" className="overflow-hidden">
-            <SidebarHeader>
-                <div className={`flex items-center ${isExpanded ? "justify-between" : "justify-center"} p-2`}>
-                    <AnimatePresence mode="wait">
-                        {isExpanded && (
-                            <motion.div
-                                className="flex items-center gap-2"
-                                variants={logoVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                            >
-                                <Image
-                                    src={type === "chatbot" ? "/assets/ncbai.svg" : "/logos/medbox.svg"}
-                                    alt={type === "chatbot" ? "NoCodeBot.ai Logo" : "AICare Logo"}
-                                    width={24}
-                                    height={24}
-                                    className="ml-1"
-                                />
-                                <h1 className="text-lg font-bold text-primary truncate">
-                                    {type === "chatbot" ? "NoCodeBot.ai" : "AICare"}
-                                </h1>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                        className="flex items-center justify-center"
-                    >
-                        <SidebarTrigger className="h-7 w-7 hover:bg-gray-100 hover:text-secondary-foreground transition-colors duration-200" />
-                    </motion.div>
-                </div>
-            </SidebarHeader>
-
-            <SidebarSeparator />
-
-            <SidebarContent className="px-1 overflow-y-auto">
-                <AnimatePresence mode="wait">
-                    {sidebarOpt.map((section) => (
-                        <motion.div
-                            key={section.heading}
-                            className="mb-4"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ staggerChildren: 0.05, delayChildren: 0.05 }}
-                        >
-                            {isExpanded && (
-                                <motion.h3 className="text-xs text-muted-foreground font-medium px-2 mb-2" variants={itemVariants}>
-                                    {section.heading}
-                                </motion.h3>
-                            )}
-                            <SidebarMenu>
-                                {section.items.map((item, index) => {
-                                    const IconComponent = getIconComponent(item.icon)
-                                    const isActive = pathname === item.link
-
-                                    return (
-                                        <SidebarMenuItem key={item.name} className="mb-1">
-                                            <SidebarMenuButton
-                                                asChild
-                                                isActive={isActive}
-                                                tooltip={!isExpanded ? item.name : undefined}
-                                                className={cn(
-                                                    "py-1.5 transition-all duration-200",
-                                                    isActive ? "bg-primary/10" : "hover:bg-gray-100",
-                                                )}
-                                            >
-                                                <motion.div
-                                                    whileHover={{
-                                                        scale: 1.02,
-                                                        transition: { duration: 0.2 },
-                                                    }}
-                                                    whileTap={{
-                                                        scale: 0.98,
-                                                        transition: { duration: 0.1 },
-                                                    }}
-                                                    initial={{ opacity: 0, y: 5 }}
-                                                    animate={{
-                                                        opacity: 1,
-                                                        y: 0,
-                                                        transition: {
-                                                            delay: 0.05 * index,
-                                                            duration: 0.2,
-                                                        },
-                                                    }}
-                                                >
-                                                    <Link href={item.link} className="flex items-center gap-2 px-2">
-                                                        <div className={cn("flex items-center justify-center w-5 h-5", !isExpanded && "mx-auto")}>
-                                                            <IconComponent className="h-4 w-4 flex-shrink-0" />
-                                                        </div>
-                                                        {isExpanded && (
-                                                            <motion.span className="text-xs truncate" variants={itemVariants}>
-                                                                {item.name}
-                                                            </motion.span>
-                                                        )}
-                                                    </Link>
-                                                </motion.div>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    )
-                                })}
-                            </SidebarMenu>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-
-                {/* Theme Toggle */}
-                <motion.div
-                    className="mb-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                >
-                    {isExpanded && (
-                        <motion.h3 className="text-xs text-muted-foreground font-medium px-2 mb-2" variants={itemVariants}>
-                            APPEARANCE
-                        </motion.h3>
+        <MotionConfig reducedMotion="user">
+            <motion.div
+                className="h-full flex flex-col"
+                initial={false}
+                animate={isExpanded ? "expanded" : "collapsed"}
+                variants={sidebarVariants}
+            >
+                <Sidebar
+                    variant="sidebar"
+                    collapsible="icon"
+                    className={cn(
+                        "overflow-hidden h-full flex flex-col",
+                        theme === "dark" ? "bg-zinc-900 text-zinc-100" : "bg-[#F9F9FB]",
                     )}
-                    <SidebarMenu>
-                        <SidebarMenuItem className="mb-1">
-                            <SidebarMenuButton
-                                asChild
-                                tooltip={!isExpanded ? "Toggle Theme" : undefined}
-                                className="py-1.5 transition-all duration-200 hover:bg-gray-100"
-                            >
-                                <motion.div
-                                    whileHover={{
-                                        scale: 1.02,
-                                        transition: { duration: 0.2 },
-                                    }}
-                                    whileTap={{
-                                        scale: 0.98,
-                                        transition: { duration: 0.1 },
-                                    }}
-                                    initial={{ opacity: 0, y: 5 }}
-                                    animate={{
-                                        opacity: 1,
-                                        y: 0,
-                                        transition: {
-                                            duration: 0.2,
-                                        },
-                                    }}
-                                >
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                                        className="flex items-center gap-2 px-2 w-full justify-start"
+                >
+                    <SidebarHeader>
+                        <div className={cn("flex items-center mt-3", isExpanded ? "justify-between" : "justify-center")}>
+                            <AnimatePresence mode="wait">
+                                {isExpanded && !isMobile && (
+                                    <motion.div
+                                        className="flex items-center gap-2"
+                                        variants={logoVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
                                     >
-                                        <div className={cn("flex items-center justify-center w-5 h-5", !isExpanded && "mx-auto")}>
-                                            {theme === "dark" ? <Sun className="h-4 w-4 flex-shrink-0" /> : <Moon className="h-4 w-4 flex-shrink-0" />}
+                                        <div className="flex h-full w-full justify-center items-center gap-2">
+                                            <motion.div
+                                                className={cn("w-6 h-6 rounded-md", theme === "dark" ? "bg-primary/20" : "bg-primary/10")}
+                                                whileHover={{
+                                                    scale: 1.05,
+                                                    backgroundColor: "var(--primary-light)",
+                                                    transition: { duration: 0.2 },
+                                                }}
+                                            />
+                                            <div className="flex justify-center flex-col">
+                                                <motion.h1
+                                                    className="text-md font-bold text-primary truncate mb-0"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: 0.1 }}
+                                                >
+                                                    AI Care Manager
+                                                </motion.h1>
+                                                <motion.p
+                                                    className="text-muted-foreground text-xs"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: 0.2 }}
+                                                >
+                                                    microdose.studio
+                                                </motion.p>
+                                            </div>
                                         </div>
-                                        {isExpanded && (
-                                            <motion.span className="text-xs truncate" variants={itemVariants}>
-                                                {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                                            </motion.span>
-                                        )}
-                                    </Button>
-                                </motion.div>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </motion.div>
-            </SidebarContent>
-
-            <SidebarFooter className="px-1 pb-2">
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <motion.div
-                            whileHover={{
-                                scale: 1.02,
-                                transition: { duration: 0.2 },
-                            }}
-                            whileTap={{
-                                scale: 0.98,
-                                transition: { duration: 0.1 },
-                            }}
-                        >
-                            <Button
-                                variant="ghost"
-                                className={cn(
-                                    "w-full justify-start px-2 py-1.5 gap-2 transition-colors duration-200 hover:bg-gray-100",
-                                    !isExpanded && "justify-center",
+                                    </motion.div>
                                 )}
-                            >
-                                <div className={cn("flex items-center justify-center w-5 h-5", !isExpanded && "mx-auto")}>
-                                    <User className="h-4 w-4 flex-shrink-0" />
-                                </div>
-                                {isExpanded && (
-                                    <motion.span
-                                        className="text-xs truncate"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
+                                {isExpanded && isMobile && (
+                                    <motion.div
+                                        className="flex items-center justify-center"
+                                        variants={logoVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
                                     >
-                                        User Profile
-                                    </motion.span>
+                                        <motion.div
+                                            className={cn("w-6 h-6 rounded-md", theme === "dark" ? "bg-primary/20" : "bg-primary/10")}
+                                            whileHover={{
+                                                scale: 1.05,
+                                                backgroundColor: "var(--primary-light)",
+                                                transition: { duration: 0.2 },
+                                            }}
+                                        />
+                                    </motion.div>
                                 )}
-                            </Button>
-                        </motion.div>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-48 p-2" align="end">
-                        <div className="space-y-1">
-                            <motion.div
-                                whileHover={{
-                                    scale: 1.02,
-                                    backgroundColor: "rgba(0, 0, 0, 0.05)",
-                                    transition: { duration: 0.2 },
-                                }}
-                                whileTap={{ scale: 0.98 }}
-                                className="rounded-md"
-                            >
+                            </AnimatePresence>
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                                 <Button
-                                    variant="ghost"
-                                    className="w-full justify-start px-2 py-1.5 transition-colors duration-200"
-                                    asChild
+                                    variant="outline"
+                                    size="icon"
+                                    className={cn(
+                                        "h-6 w-6 transition-colors duration-200",
+                                        theme === "dark"
+                                            ? "hover:bg-zinc-800 hover:text-zinc-200"
+                                            : "hover:bg-gray-100 hover:text-secondary-foreground",
+                                    )}
+                                    onClick={toggleSidebar}
                                 >
-                                    <Link href="/dashboard/settings">
-                                        <Settings className="mr-2 h-3.5 w-3.5" />
-                                        <span className="text-xs">Settings</span>
-                                    </Link>
-                                </Button>
-                            </motion.div>
-
-                            <motion.div
-                                whileHover={{
-                                    scale: 1.02,
-                                    backgroundColor: "rgba(0, 0, 0, 0.05)",
-                                    transition: { duration: 0.2 },
-                                }}
-                                whileTap={{ scale: 0.98 }}
-                                className="rounded-md"
-                            >
-                                <Button variant="ghost" className="w-full justify-start px-2 py-1.5 transition-colors duration-200">
-                                    <User className="mr-2 h-3.5 w-3.5" />
-                                    <span className="text-xs">Sign Out</span>
+                                    <motion.div
+                                        initial={false}
+                                        animate={{ rotate: isExpanded ? 0 : 180 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                    >
+                                        {isExpanded ? (
+                                            <ArrowLeft className="h-3 w-3 text-muted-foreground" />
+                                        ) : (
+                                            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                        )}
+                                    </motion.div>
                                 </Button>
                             </motion.div>
                         </div>
-                    </PopoverContent>
-                </Popover>
-            </SidebarFooter>
-        </Sidebar>
+                    </SidebarHeader>
+
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+                        <div
+                            className={cn("my-4 w-[80%] mx-auto border-b", theme === "dark" ? "border-zinc-700" : "border-gray-200")}
+                        />
+                    </motion.div>
+
+                    <SidebarContent className="flex flex-col gap-4 w-[80%] mx-auto flex-1">
+                        {/* Map through navigation sections */}
+                        {sidebarNavigation.map((section) => (
+                            <div key={section.title} className="flex flex-col gap-2">
+                                {/* Section Header - Only show when expanded */}
+                                {!isMobile && isExpanded && (
+                                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => toggleSection(section.title)}>
+                                        <div className="text-xs font-medium text-muted-foreground">{section.title}</div>
+                                        <motion.div
+                                            animate={{ rotate: expandedSections[section.title] ? 180 : 0 }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                        >
+                                            <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                                        </motion.div>
+                                    </div>
+                                )}
+
+                                {/* Section Items */}
+                                {(expandedSections[section.title] || isMobile) && (
+                                    <div className="flex flex-col gap-1">
+                                        {section.items.map((item) => (
+                                            <motion.div
+                                                key={item.title}
+                                                className={cn(
+                                                    "flex items-center gap-2 rounded-md p-2 cursor-pointer",
+                                                    pathname === item.href && (theme === "dark" ? "bg-primary/10" : "bg-primary/5"),
+                                                    isMobile && "justify-center",
+                                                )}
+                                                whileHover={{
+                                                    backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                                                    borderRadius: "6px",
+                                                }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={() => router.push(item.href)}
+                                            >
+                                                <motion.div whileHover={{ rotate: 5 }} transition={{ type: "spring", stiffness: 400 }}>
+                                                    <item.icon className="h-4 w-4" />
+                                                </motion.div>
+                                                {showLabels && <div className="text-xs font-medium">{item.title}</div>}
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </SidebarContent>
+
+                    {/* User Profile Footer */}
+                    <SidebarFooter className="mt-auto mx-auto mb-4">
+                        <motion.div variants={footerVariants} initial="hidden" animate="visible" className="mt-auto">
+                            <div className={cn("my-2 border-b", theme === "dark" ? "border-zinc-700" : "border-gray-200")} />
+
+                            {/* Quick Action Buttons */}
+                            <div className="flex flex-col gap-2 mb-4">
+                                <motion.div
+                                    className={cn("flex items-center gap-2 rounded-md p-2 cursor-pointer", isMobile && "justify-center")}
+                                    whileHover={{
+                                        backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                                        borderRadius: "6px",
+                                    }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <HelpCircle className="h-4 w-4" />
+                                    {showLabels && <div className="text-xs font-medium">Help Center</div>}
+                                </motion.div>
+
+                                <motion.div
+                                    className={cn("flex items-center gap-2 rounded-md p-2 cursor-pointer", isMobile && "justify-center")}
+                                    whileHover={{
+                                        backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                                        borderRadius: "6px",
+                                    }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={toggleTheme}
+                                >
+                                    {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                                    {showLabels && (
+                                        <div className="text-xs font-medium">{theme === "dark" ? "Light Mode" : "Dark Mode"}</div>
+                                    )}
+                                </motion.div>
+
+                                <motion.div
+                                    className={cn("flex items-center gap-2 rounded-md p-2 cursor-pointer", isMobile && "justify-center")}
+                                    whileHover={{
+                                        backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                                        borderRadius: "6px",
+                                    }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Users className="h-4 w-4" />
+                                    {showLabels && <div className="text-xs font-medium">Invite teams</div>}
+                                </motion.div>
+                            </div>
+
+                            <div className={cn("my-2 border-b", theme === "dark" ? "border-zinc-700" : "border-gray-200")} />
+
+                            {/* User Profile with Custom Dropdown */}
+                            <div className="relative" ref={dropdownRef}>
+                                <motion.div
+                                    className={cn("flex items-center gap-2 p-2 rounded-md cursor-pointer", isMobile && "justify-center")}
+                                    whileHover={{
+                                        backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                                        borderRadius: "6px",
+                                    }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                                >
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarImage src={userData.avatarUrl} alt={userData.name} />
+                                        <AvatarFallback>
+                                            {userData.name
+                                                .split(" ")
+                                                .map((n) => n[0])
+                                                .join("")}
+                                        </AvatarFallback>
+                                    </Avatar>
+
+                                    {showLabels && (
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-medium">{userData.name}</span>
+                                            <span className="text-xs text-muted-foreground">{userData.email}</span>
+                                        </div>
+                                    )}
+                                </motion.div>
+
+                                {/* Custom Motion Dropdown */}
+                                <AnimatePresence>
+                                    {userDropdownOpen && (
+                                        <motion.div
+                                            className={cn(
+                                                "absolute bottom-full mb-2 -right-4 w-56 rounded-md shadow-lg p-1 z-50",
+                                                theme === "dark" ? "bg-zinc-800 border border-zinc-700" : "bg-white border border-gray-200",
+                                            )}
+                                            variants={dropdownVariants}
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="hidden"
+                                        >
+                                            <motion.div
+                                                className="p-2 flex items-center gap-2"
+                                                whileHover={{
+                                                    backgroundColor: theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                                                    borderRadius: "4px",
+                                                }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={handleLogout}
+                                            >
+                                                <LogOut className="h-4 w-4" />
+                                                <span className="text-sm">Log out</span>
+                                            </motion.div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </motion.div>
+                    </SidebarFooter>
+                </Sidebar>
+            </motion.div>
+        </MotionConfig>
     )
 }
 
 export default DashboardSidebar
+

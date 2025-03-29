@@ -1,8 +1,10 @@
-"use client"
+"use client";
 
-import React, { ReactNode } from "react"
 import { SidebarInset } from "../../components/ui/sidebar"
 import DashboardSidebar from "../../components/dashboard/client-sidebar-wrapper"
+import { redirect } from "next/navigation"
+import { ReactNode, useEffect, useState } from "react"
+import { useAuthenticator } from "@aws-amplify/ui-react"
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -11,7 +13,23 @@ interface DashboardLayoutProps {
     }
 }
 
-const DashboardLayout = ({ children, params }: DashboardLayoutProps) => {
+export default function DashboardLayout({ children, params }: DashboardLayoutProps) {
+    const { user } = useAuthenticator((context) => [context.user])
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        // Check if user is logged in
+        if (!user) {
+            window.location.href = "/"
+        } else {
+            setIsLoading(false)
+        }
+    }, [user])
+
+    if (isLoading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>
+    }
+
     // Default to workspace type if not specified
     const type = "workspace"
 
@@ -24,5 +42,3 @@ const DashboardLayout = ({ children, params }: DashboardLayoutProps) => {
         </div>
     )
 }
-
-export default DashboardLayout
