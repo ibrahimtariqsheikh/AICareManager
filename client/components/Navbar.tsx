@@ -128,14 +128,16 @@ const Navbar = () => {
           Pricing
         </Link>
       </motion.div>
-      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-        <Link
-          href="/dashboard"
-          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'font-semibold' : ''}`}
-        >
-          Dashboard
-        </Link>
-      </motion.div>
+      {user && (
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
+          <Link
+            href="/dashboard"
+            className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'font-semibold' : ''}`}
+          >
+            Dashboard
+          </Link>
+        </motion.div>
+      )}
     </motion.div>
   )
 
@@ -263,7 +265,7 @@ const Navbar = () => {
     if (user) {
       return (
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-          <Button variant="outline" onClick={handleSignOut} className="rounded-xl">
+          <Button onClick={handleSignOut} className="rounded-xl">
             <LogOut className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline text-sm">Logout</span>
           </Button>
@@ -273,7 +275,7 @@ const Navbar = () => {
 
     return (
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-        <Button variant="outline" onClick={() => router.push("/signin")} className="rounded-xl">
+        <Button onClick={() => router.push("/signin")} className="rounded-xl">
           <LogIn className="w-4 h-4 mr-2" />
           <span className="hidden sm:inline text-sm">Login</span>
         </Button>
@@ -326,7 +328,7 @@ const Navbar = () => {
             alt="AI Care Manager"
             width={125}
             height={125}
-            className={`${theme === 'light' ? 'invert' : ''} transition-all duration-300`}
+            className={mounted && theme === 'light' ? 'invert transition-all duration-300' : 'transition-all duration-300'}
           />
         </Link>
       </motion.div>
@@ -340,7 +342,7 @@ const Navbar = () => {
               <NavLinks key="desktop" />
               <ThemeToggle />
               <AuthButton />
-              {!user && <DemoButton />}
+
             </>
           )}
         </AnimatePresence>

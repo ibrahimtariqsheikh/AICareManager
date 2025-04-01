@@ -163,10 +163,7 @@ const VerificationForm = ({
             )}
 
             <div className="text-center mb-6">
-                <h2 className="text-xl font-semibold">Verify Your Account</h2>
-                <p className="text-sm text-muted-foreground mt-2">
-                    We've sent a verification code to your email. Please enter it below.
-                </p>
+
                 {email && (
                     <p className="text-sm font-medium mt-1">Email: {email}</p>
                 )}

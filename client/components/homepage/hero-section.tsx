@@ -11,6 +11,7 @@ import { Section } from "./section"
 import { CTAButton } from "./cta-button"
 import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
+import { AnimatedBadge } from "../ui/animated-badge" // Import the AnimatedBadge component
 
 interface HeroSectionProps {
     title: string
@@ -38,22 +39,10 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
     return (
         <Section className="pt-20 pb-16 md:pt-32 md:pb-24 relative z-10">
             <motion.div className="max-w-4xl mx-auto text-center space-y-8" variants={fadeIn}>
-                <motion.div
-                    className={`relative inline-block px-4 py-1 rounded-full ${theme === "dark" ? "bg-blue-500/10" : "bg-blue-100"} backdrop-blur-sm text-blue-500 text-sm font-medium mb-4 overflow-hidden`}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                >
-                    <span className="relative z-10">Next generation homecare management</span>
-                    <span className="absolute inset-0 overflow-hidden rounded-full">
-                        <span className="absolute inset-0 opacity-30 bg-gradient-to-r from-transparent via-blue-400 to-transparent animate-[shimmer_2s_infinite]"
-                            style={{
-                                backgroundSize: '200% 100%',
-                                animation: 'shimmer 2s linear infinite'
-                            }} />
-                    </span>
-                    <span className="absolute inset-0 rounded-full border border-blue-500/30 animate-pulse" />
-                </motion.div>
+                {/* Replace the old badge with the AnimatedBadge component */}
+                <div className="flex justify-center">
+                    <AnimatedBadge text="Next generation homecare management" />
+                </div>
 
                 <motion.h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight px-2" variants={fadeIn}>
                     <span className={theme === "dark" ? "text-white" : "text-black"}>{regularWords}</span>{" "}
@@ -77,11 +66,7 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                                 className={`h-9 backdrop-blur-sm ${theme === "dark" ? "bg-white/10 dark:bg-black/20" : "bg-gray-50"} border-blue-500/20 focus:border-blue-500/50 transition-all`}
                             />
                         </div>
-                        <Button
-                            onClick={() => router.push("/dashboard")}
-                            className=""
-
-                        >
+                        <Button onClick={() => router.push("/dashboard")} className="">
                             Book a Demo
                         </Button>
                     </motion.div>
@@ -111,3 +96,4 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
         </Section>
     )
 }
+

@@ -69,6 +69,46 @@ body {
   }
 }
 
+input {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(4px);
+}
+
+input:focus {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Improve button appearance on glass background */
+button[type="submit"] {
+  backdrop-filter: blur(4px);
+}
+
+/* Improved form styling for glass effect */
+.glass-form input {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #333 !important;
+}
+
+.glass-form input:focus {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.glass-form button[type="submit"] {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.glass-form label {
+  color: #555 !important;
+  font-weight: 500 !important;
+}
+
 
 /* Custom calendar styles */
 .home-visit {

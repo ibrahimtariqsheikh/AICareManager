@@ -7,7 +7,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "./ui/sidebar";
 import {
   Building,
@@ -21,6 +20,7 @@ import {
 import { NAVBAR_HEIGHT } from "../lib/constants";
 import { cn } from "../lib/utils";
 import Link from "next/link";
+import { useSidebar } from "./ui/sidebar-provider";
 
 type UserType = "manager" | "tenant";
 

@@ -48,17 +48,17 @@ export const sidebarNavigation: NavSection[] = [
             {
                 title: "Users",
                 icon: UsersIcon,
-                href: "/users",
+                href: "/dashboard/users",
             },
             {
                 title: "Analytics",
                 icon: BarChart3,
-                href: "/analytics",
+                href: "/dashboard/analytics",
             },
             {
                 title: "Schedule",
                 icon: Calendar,
-                href: "/schedule",
+                href: "/dashboard/schedule",
             },
         ],
     },
@@ -68,12 +68,12 @@ export const sidebarNavigation: NavSection[] = [
             {
                 title: "Preferences",
                 icon: Settings,
-                href: "/settings",
+                href: "/dashboard/settings",
             },
             {
                 title: "Help",
                 icon: HelpCircle,
-                href: "/help",
+                href: "/dashboard/help",
             },
         ],
     },
@@ -95,18 +95,11 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
     const isMobile = useMediaQuery("(max-width: 768px)")
 
     // Get user data from Redux store
-    const { userInfo } = useAppSelector((state) => state.auth)
-    const dispatch = useAppDispatch()
+    const { user } = useAppSelector((state) => state.user)
 
-    // Dynamic user data from Redux store
-    const userData = {
-        name: userInfo?.firstName && userInfo?.lastName ? `${userInfo.firstName} ${userInfo.lastName}` : "User",
-        email: userInfo?.email || "user@example.com",
-        avatarUrl:
-            userInfo?.firstName && userInfo?.lastName
-                ? `${userInfo.firstName[0]}${userInfo.lastName[0]}`
-                : "/placeholder.svg?height=40&width=40",
-    }
+    const dispatch = useAppDispatch()
+    console.log("Prisma User", user)
+
 
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(
         // Initialize all sections as expanded by default
@@ -152,7 +145,7 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
             setUserDropdownOpen(false)
 
             // Redirect to login page
-            window.location.href = "/login"
+            window.location.href = "/"
         } catch (error) {
             console.error("Error logging out:", error)
         }
@@ -466,19 +459,16 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
                                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                                 >
                                     <Avatar className="h-8 w-8">
-                                        <AvatarImage src={userData.avatarUrl} alt={userData.name} />
+                                        <AvatarImage src={""} alt={"hello"} />
                                         <AvatarFallback>
-                                            {userData.name
-                                                .split(" ")
-                                                .map((n) => n[0])
-                                                .join("")}
+                                            {"I"}
                                         </AvatarFallback>
                                     </Avatar>
 
                                     {showLabels && (
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium">{userData.name}</span>
-                                            <span className="text-xs text-muted-foreground">{userData.email}</span>
+                                            <span className="text-sm font-medium">{user.userInfo.firstName + " " + user.userInfo.lastName || "User"}</span>
+                                            <span className="text-xs text-muted-foreground">{user.userInfo.email || "user@example.com"}</span>
                                         </div>
                                     )}
                                 </motion.div>

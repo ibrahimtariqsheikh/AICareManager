@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense } from "react"
-import { UserDashboard } from "../../../components/dashboard/users/user-dashboard"
+import { UserDashboard } from "../../../components/users/user-dashboard"
 import { LoadingSpinner } from "../../../components/ui/loading-spinner"
 
 

@@ -5,6 +5,10 @@ import DashboardSidebar from "../../components/dashboard/client-sidebar-wrapper"
 import { redirect } from "next/navigation"
 import { ReactNode, useEffect, useState } from "react"
 import { useAuthenticator } from "@aws-amplify/ui-react"
+import { useAppDispatch } from "../../state/redux";
+import { setUser } from "../../state/slices/userSlice";
+import { useGetUserQuery } from "../../state/api";
+
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -15,16 +19,23 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, params }: DashboardLayoutProps) {
     const { user } = useAuthenticator((context) => [context.user])
+    const { data: userInformation } = useGetUserQuery()
+    const dispatch = useAppDispatch()
+
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         // Check if user is logged in
-        if (!user) {
-            window.location.href = "/"
+        if (!userInformation) {
+            dispatch(setUser(userInformation))
+            console.log("userInformation", userInformation)
         } else {
+            console.log("userInformation", userInformation)
+            dispatch(setUser(userInformation))
+
             setIsLoading(false)
         }
-    }, [user])
+    }, [user, userInformation])
 
     if (isLoading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>

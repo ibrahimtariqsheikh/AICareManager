@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@aws-amplify/auth": "^6.12.1",
     "@radix-ui/react-popover": "^1.1.6",
     "@types/moment": "^2.11.29",
     "@types/react-big-calendar": "^1.16.1",

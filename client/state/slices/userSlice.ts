@@ -21,7 +21,22 @@ function deserializeEvent(event: any): AppointmentEvent {
   }
 }
 
+interface AdditionalUserInfo {
+  userInfo: User
+  authUser: {
+    cognitoInfo: {
+      signInDetails: {
+        authFlowType: string;
+        loginId: string;
+      };
+      userId: string;
+      username: string;
+    };
+  }
+}
+
 interface UserState {
+  user: AdditionalUserInfo
   officeStaff: User[]
   careWorkers: User[]
   clients: User[]
@@ -34,6 +49,19 @@ interface UserState {
 
 // Initial state
 const initialState: UserState = {
+  user: {
+    userInfo: null,
+    authUser: {
+      cognitoInfo: {
+        signInDetails: {
+          authFlowType: "",
+          loginId: "",
+        },
+        userId: "",
+        username: "",
+      },
+    },
+  },
   officeStaff: [],
   careWorkers: [],
   clients: [],
@@ -49,6 +77,9 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    setUser: (state, action: PayloadAction<AdditionalUserInfo>) => {
+      state.user = action.payload
+    },
     setOfficeStaff: (state, action: PayloadAction<User[]>) => {
       state.officeStaff = action.payload
       // Update filtered events when staff changes
@@ -72,6 +103,7 @@ const userSlice = createSlice({
     setFilteredEvents: (state, action: PayloadAction<AppointmentEvent[]>) => {
       state.filteredEvents = action.payload.map(serializeEvent)
     },
+  
     setSidebarMode: (state, action: PayloadAction<SidebarMode>) => {
       state.sidebarMode = action.payload
       // Update filtered events when sidebar mode changes
@@ -250,6 +282,7 @@ export const {
   updateEvent,
   deleteEvent,
   clearUserError,
+  setUser,
 } = userSlice.actions
 export default userSlice.reducer
 
