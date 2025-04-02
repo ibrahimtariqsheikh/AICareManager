@@ -322,14 +322,8 @@ const Navbar = () => {
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.2 }}
       >
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/assets/logo.png"
-            alt="AI Care Manager"
-            width={125}
-            height={125}
-            className={mounted && theme === 'light' ? 'invert transition-all duration-300' : 'transition-all duration-300'}
-          />
+        <Link href="/" className="flex items-center font-bold">
+          AI Care Manager
         </Link>
       </motion.div>
 

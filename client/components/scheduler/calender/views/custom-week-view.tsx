@@ -239,7 +239,7 @@ export function CustomWeekView({
 
     // Snap time to 15-minute intervals
     const snapTimeToGrid = useCallback((minutes: number): number => {
-        return Math.round(minutes / 15) * 15
+        return Math.floor(minutes / 10) * 10
     }, [])
 
     // Handle drag end for events
@@ -255,12 +255,14 @@ export function CustomWeekView({
             const rawDayIndex = Math.floor((newLeft - timeGutterWidth + 20) / dayWidth) // Add 20 to account for the offset
             const dayIndex = Math.max(0, Math.min(6, rawDayIndex))
 
-            // Calculate new start time
+            // Calculate new start time with exact 10-minute snapping
             const newTop = Math.max(0, position.top + info.offset.y)
-            const minutesFromStart = Math.round((newTop / slotHeight) * 30)
+            const minutesFromStart = Math.floor((newTop / slotHeight) * 30)
             const startHourOffset = Math.floor(minutesFromStart / 60)
             const startMinuteOffset = minutesFromStart % 60
-            const roundedStartMinute = snapTimeToGrid(startMinuteOffset)
+
+            // Ensure we snap to exactly 10-minute intervals
+            const roundedStartMinute = Math.floor(startMinuteOffset / 10) * 10
 
             // Ensure we don't go beyond the visible time range
             const clampedStartHour = Math.min(startHour + startHourOffset, endHour - 0.5)
@@ -272,9 +274,9 @@ export function CustomWeekView({
                 .second(0)
                 .millisecond(0)
 
-            // Maintain the original duration
+            // Maintain the original duration but ensure it's a multiple of 10 minutes
             const originalDurationMinutes = position.durationMinutes
-            const roundedDurationMinutes = snapTimeToGrid(originalDurationMinutes)
+            const roundedDurationMinutes = Math.floor(originalDurationMinutes / 10) * 10
             const newEndDate = moment(newStartDate).add(roundedDurationMinutes, "minutes")
 
             // Ensure end time doesn't exceed the visible range
@@ -295,14 +297,14 @@ export function CustomWeekView({
                 [event.id]: updatedEvent,
             }))
 
-            // Recalculate position values
+            // Recalculate position values with precise snapping
             const updatedStartMinutes = (newStartDate.hour() - startHour) * 60 + newStartDate.minute()
             const updatedEndMinutes = (newEndDate.hour() - startHour) * 60 + newEndDate.minute()
             const updatedDurationMinutes = updatedEndMinutes - updatedStartMinutes
 
             // Calculate exact pixel positions - ensure they align with grid
-            const updatedTop = Math.round((updatedStartMinutes / 30) * slotHeight)
-            const updatedHeight = Math.round((updatedDurationMinutes / 30) * slotHeight)
+            const updatedTop = Math.floor(updatedStartMinutes / 30) * slotHeight
+            const updatedHeight = Math.floor(updatedDurationMinutes / 30) * slotHeight
 
             // Ensure minimum height for visibility
             const minHeight = 20
@@ -333,21 +335,12 @@ export function CustomWeekView({
                 toast.success("Event updated successfully")
             }
         },
-        [
-            gridDimensions,
-            weekDays,
-            startHour,
-            endHour,
-            snapTimeToGrid,
-            onEventUpdate,
-            eventPositions,
-            setEventPositions,
-            setDisplayEvents,
-        ],
+        [gridDimensions, weekDays, startHour, endHour, onEventUpdate, eventPositions, setEventPositions, setDisplayEvents],
     )
 
     // Track if we're dragging to prevent click after drag
     const isDraggingRef = useRef(false)
+    const eventRefs = useRef<{ [key: string]: HTMLElement }>({})
 
     return (
         <div className="h-full flex flex-col">
@@ -460,9 +453,15 @@ export function CustomWeekView({
                             return (
                                 <motion.div
                                     key={event.id}
+                                    ref={(el) => {
+                                        if (el) {
+                                            eventRefs.current[event.id] = el;
+                                        }
+                                    }}
                                     className={cn(
                                         "absolute rounded p-1 text-xs overflow-hidden cursor-move event-card",
                                         getEventBackground(event),
+                                        "transition-shadow duration-200",
                                     )}
                                     style={{
                                         top: `${position.top}px`,
@@ -472,8 +471,9 @@ export function CustomWeekView({
                                         borderLeft: `3px solid ${getStaffColor(event)}`,
                                         overflow: "hidden",
                                         zIndex: isDraggingRef.current ? 30 : 10,
+                                        boxShadow: spaceTheme ? "0 2px 6px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.1)",
                                     }}
-                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{
                                         opacity: 1,
                                         scale: 1,
@@ -481,15 +481,31 @@ export function CustomWeekView({
                                     }}
                                     whileHover={{
                                         zIndex: 20,
-                                        boxShadow: spaceTheme ? "0 0 8px rgba(0,0,0,0.5)" : "0 4px 6px rgba(0,0,0,0.1)",
+                                        boxShadow: spaceTheme ? "0 4px 10px rgba(0,0,0,0.4)" : "0 4px 8px rgba(0,0,0,0.15)",
                                         scale: 1.02,
+                                        transition: { duration: 0.2 },
                                     }}
                                     drag
                                     dragConstraints={gridRef}
                                     dragElastic={0}
                                     dragMomentum={false}
+                                    dragSnapToOrigin={false}
                                     onDragStart={() => {
                                         isDraggingRef.current = true
+                                    }}
+                                    onDrag={(_, info) => {
+                                        // Apply snapping during drag for visual feedback
+                                        const { slotHeight } = gridDimensions
+                                        const minutesFromStart = Math.floor(((position.top + info.offset.y) / slotHeight) * 30)
+                                        const snappedMinutes = Math.floor(minutesFromStart / 10) * 10
+                                        const snappedTop = (snappedMinutes / 30) * slotHeight
+
+                                        // Update the transform to snap to grid lines during drag
+                                        const dragElement = eventRefs.current[event.id]
+                                        if (dragElement) {
+                                            const snapDiff = snappedTop - (position.top + info.offset.y)
+                                            dragElement.style.transform = `translate3d(${info.offset.x}px, ${info.offset.y + snapDiff}px, 0)`
+                                        }
                                     }}
                                     onDragEnd={(_, dragInfo) => {
                                         handleDragEnd(event, dragInfo, position)

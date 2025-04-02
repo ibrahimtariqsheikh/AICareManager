@@ -2,16 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -67,95 +57,7 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
 
-input {
-  background-color: rgba(255, 255, 255, 0.5) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(4px);
-}
-
-input:focus {
-  background-color: rgba(255, 255, 255, 0.7) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Improve button appearance on glass background */
-button[type="submit"] {
-  backdrop-filter: blur(4px);
-}
-
-/* Improved form styling for glass effect */
-.glass-form input {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  color: #333 !important;
-}
-
-.glass-form input:focus {
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
-}
-
-.glass-form button[type="submit"] {
-  background-color: #000 !important;
-  color: #fff !important;
-}
-
-.glass-form label {
-  color: #555 !important;
-  font-weight: 500 !important;
-}
-
-
-/* Custom calendar styles */
-.home-visit {
-  @apply bg-green-900/30 border-l-4 border-green-500;
-}
-
-.video-call {
-  @apply bg-blue-900/30 border-l-4 border-blue-500;
-}
-
-.hospital {
-  @apply bg-green-900/30 border-l-4 border-green-500;
-}
-
-.in-person {
-  @apply bg-amber-900/30 border-l-4 border-amber-500;
-}
-
-.audio-call {
-  @apply bg-red-900/30 border-l-4 border-red-500;
-}
-
-.calendar-button {
-  @apply border-slate-700 hover:bg-slate-800 text-white;
-}
-
-.calendar-grid {
-  @apply bg-slate-900 border-slate-700;
-}
-
-.time-label {
-  @apply text-slate-400 border-r border-slate-700;
-}
-
-.current-time-indicator {
-  @apply bg-green-500;
-}
-
-.dark-calendar .event-card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.dark-dialog {
-  @apply bg-slate-900 border-slate-700 text-white;
-}
-
-@layer base {
   * {
     @apply border-border;
   }
@@ -163,195 +65,328 @@ button[type="submit"] {
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
 
-/* Noise background texture */
-.noise-bg {
-  position: relative;
-}
+@layer components {
 
-.noise-bg::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.035;
-  pointer-events: none;
-  z-index: 100;
-  mix-blend-mode: overlay;
-}
-
-/* Add these new dark theme styles for better section separation */
-.dark {
-  color-scheme: dark;
-}
-
-.dark .calendar-container {
-  @apply relative;
-  background-color: hsl(260 20% 5%);
-}
-
-.dark .calendar-header {
-  background-color: hsl(260 20% 7%);
-  border-bottom: 1px solid hsl(260 20% 12%);
-}
-
-.dark .calendar-sidebar {
-  background-color: hsl(260 20% 8%);
-  border-right: 1px solid hsl(260 20% 12%);
-}
-
-.dark .calendar-grid {
-  background-color: hsl(260 20% 6%);
-}
-
-.dark .time-label {
-  color: hsl(260 10% 70%);
-  border-right: 1px solid hsl(260 20% 12%);
-}
-
-.dark .current-time-indicator {
-  background-color: hsl(280 100% 60%);
-}
-
-/* Card and panel styles with subtle grain */
-.dark .card,
-.dark .sidebar,
-.dark .panel {
-  position: relative;
-}
-
-.dark .card::after,
-.dark .sidebar::after,
-.dark .panel::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 1;
-  mix-blend-mode: overlay;
-}
-
-/* Event styles for dark mode with improved contrast */
-.dark .event-card {
-  @apply backdrop-blur-sm bg-opacity-30 border border-zinc-700/50;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-.dark .home-visit {
-  @apply bg-green-900/40 border-l-4 border-green-500;
-}
-
-.dark .video-call {
-  @apply bg-blue-900/40 border-l-4 border-blue-500;
-}
-
-.dark .hospital {
-  @apply bg-green-900/40 border-l-4 border-green-500;
-}
-
-.dark .in-person {
-  @apply bg-amber-900/40 border-l-4 border-amber-500;
-}
-
-.dark .audio-call {
-  @apply bg-red-900/40 border-l-4 border-red-500;
-}
-
-/* Dialog styles */
-.dark-dialog {
-  @apply bg-zinc-900/95 backdrop-blur-md border-zinc-800 text-white;
-}
-
-/* Calendar button styles */
-.dark .calendar-button {
-  @apply bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600;
-}
-
-/* Add subtle purple accents to various elements */
-.dark .calendar-header button:hover {
-  @apply bg-purple-900/30;
-}
-
-.dark .calendar-sidebar .active {
-  @apply bg-purple-900/30 border-l-2 border-purple-500;
-}
-
-.dark .calendar-grid .time-slot:hover {
-  @apply bg-purple-900/10;
-}
-
-/* Animation utilities */
-@keyframes blob {
-
-  0%,
-  100% {
-    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  /* Calendar Events */
+  .home-visit {
+    @apply bg-green-900/30 border-l-4 border-green-500 hover:bg-green-900/40 transition-colors;
   }
 
-  25% {
-    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  .video-call {
+    @apply bg-blue-900/30 border-l-4 border-blue-500 hover:bg-blue-900/40 transition-colors;
   }
 
-  50% {
-    border-radius: 50% 60% 30% 70% / 40% 30% 70% 60%;
+  .hospital {
+    @apply bg-green-900/30 border-l-4 border-green-500 hover:bg-green-900/40 transition-colors;
   }
 
-  75% {
-    border-radius: 40% 60% 70% 30% / 60% 70% 40% 30%;
+  .in-person {
+    @apply bg-amber-900/30 border-l-4 border-amber-500 hover:bg-amber-900/40 transition-colors;
+  }
+
+  .audio-call {
+    @apply bg-red-900/30 border-l-4 border-red-500 hover:bg-red-900/40 transition-colors;
+  }
+
+  .light-theme .home-visit {
+    @apply bg-green-50 border-green-500 hover:bg-green-100;
+  }
+
+  .light-theme .video-call {
+    @apply bg-blue-50 border-blue-500 hover:bg-blue-100;
+  }
+
+  .light-theme .hospital {
+    @apply bg-green-50 border-green-500 hover:bg-green-100;
+  }
+
+  .light-theme .in-person {
+    @apply bg-amber-50 border-amber-500 hover:bg-amber-100;
+  }
+
+  .light-theme .audio-call {
+    @apply bg-red-50 border-red-500 hover:bg-red-100;
+  }
+
+  .dark .home-visit {
+    @apply bg-green-900/40;
+  }
+
+  .dark .video-call {
+    @apply bg-blue-900/40;
+  }
+
+  .dark .hospital {
+    @apply bg-green-900/40;
+  }
+
+  .dark .in-person {
+    @apply bg-amber-900/40;
+  }
+
+  .dark .audio-call {
+    @apply bg-red-900/40;
+  }
+
+  /* Calendar UI */
+  .calendar-button {
+    @apply border-slate-700 hover:bg-slate-800 text-white transition-colors duration-200;
+  }
+
+  .calendar-grid {
+    @apply bg-slate-900 border-slate-700;
+  }
+
+  .dark .calendar-button {
+    @apply bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600;
+  }
+
+  .time-label {
+    @apply text-slate-400 border-r border-slate-700;
+  }
+
+  .current-time-indicator {
+    @apply bg-green-500;
+  }
+
+  .dark .calendar-container {
+    @apply relative;
+    background-color: hsl(260 20% 5%);
+  }
+
+  .dark .calendar-header {
+    background-color: hsl(260 20% 7%);
+    border-bottom: 1px solid hsl(260 20% 12%);
+  }
+
+  .dark .calendar-sidebar {
+    background-color: hsl(260 20% 8%);
+    border-right: 1px solid hsl(260 20% 12%);
+  }
+
+  .dark .calendar-grid {
+    background-color: hsl(260 20% 6%);
+  }
+
+  .dark .calendar-header button:hover {
+    @apply bg-purple-900/30;
+  }
+
+  .dark .calendar-sidebar .active {
+    @apply bg-purple-900/30 border-l-2 border-purple-500;
+  }
+
+  .event-card {
+    @apply transition-all duration-200;
+  }
+
+  .dark-calendar .event-card {
+    @apply backdrop-blur-sm bg-opacity-30 border border-zinc-700/50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .dark-calendar .event-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .time-slot {
+    @apply transition-colors duration-200;
+  }
+
+  .time-slot:hover {
+    @apply bg-opacity-70;
+  }
+
+  .dark .calendar-grid .time-slot:hover {
+    @apply bg-purple-900/10;
+  }
+
+  /* Scrollbars */
+  .calendar-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 116, 139, 0.5) transparent;
+  }
+
+  .calendar-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .calendar-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .calendar-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 116, 139, 0.5);
+    border-radius: 3px;
+  }
+
+  .dark-calendar .calendar-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.3);
+  }
+
+  /* Glass UI */
+  .glass-form input {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: #333 !important;
+  }
+
+  .glass-form input:focus {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .glass-form button[type="submit"] {
+    background-color: #000 !important;
+    color: #fff !important;
+  }
+
+  .glass-form label {
+    color: #555 !important;
+    font-weight: 500 !important;
+  }
+
+  input {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  input:focus {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  button[type="submit"] {
+    backdrop-filter: blur(4px);
+  }
+
+  /* Dialog */
+  .dark-dialog {
+    @apply bg-zinc-900/95 backdrop-blur-md border-zinc-800 text-white;
+  }
+
+  /* Decorative Noise */
+  .noise-bg {
+    position: relative;
+  }
+
+  .noise-bg::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 100;
+    mix-blend-mode: overlay;
+  }
+
+  .dark .card,
+  .dark .sidebar,
+  .dark .panel {
+    position: relative;
+  }
+
+  .dark .card::after,
+  .dark .sidebar::after,
+  .dark .panel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  /* Dragging state styles */
+  body.dragging {
+    cursor: grabbing !important;
+  }
+
+  body.dragging * {
+    cursor: grabbing !important;
   }
 }
 
-.animate-blob {
-  animation: blob 8s ease-in-out infinite;
-}
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
+  @keyframes blob {
 
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
+    0%,
+    100% {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
 
-/* Custom background for the homepage */
-.purple-gradient-bg {
-  background: linear-gradient(135deg, #13111c 0%, #1a1625 100%);
-  background-size: cover;
-  background-position: center;
-}
+    25% {
+      border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    }
 
-/* Button gradients */
-.purple-button-gradient {
-  background: linear-gradient(90deg, #8b5cf6 0%, #d946ef 100%);
-  transition: all 0.3s ease;
-}
+    50% {
+      border-radius: 50% 60% 30% 70% / 40% 30% 70% 60%;
+    }
 
-.purple-button-gradient:hover {
-  background: linear-gradient(90deg, #7c3aed 0%, #c026d3 100%);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-}
+    75% {
+      border-radius: 40% 60% 70% 30% / 60% 70% 40% 30%;
+    }
+  }
 
-/* Testimonial card styles */
-.testimonial-card {
-  background: rgba(26, 22, 37, 0.6);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-}
+  .animate-blob {
+    animation: blob 8s ease-in-out infinite;
+  }
 
-/* Gradient text */
-.purple-gradient-text {
-  background: linear-gradient(90deg, #8b5cf6, #d946ef);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  .purple-gradient-bg {
+    background: linear-gradient(135deg, #13111c 0%, #1a1625 100%);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .purple-button-gradient {
+    background: linear-gradient(90deg, #8b5cf6 0%, #d946ef 100%);
+    transition: all 0.3s ease;
+  }
+
+  .purple-button-gradient:hover {
+    background: linear-gradient(90deg, #7c3aed 0%, #c026d3 100%);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+  }
+
+  .purple-gradient-text {
+    background: linear-gradient(90deg, #8b5cf6, #d946ef);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .testimonial-card {
+    background: rgba(26, 22, 37, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+  }
 }

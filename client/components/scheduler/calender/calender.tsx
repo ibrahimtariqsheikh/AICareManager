@@ -8,6 +8,7 @@ import { useMediaQuery } from "../../../hooks/use-mobile"
 import { useTheme } from "next-themes"
 import { CalendarIcon, Moon, PlusCircle, Sun } from "lucide-react"
 import { Button } from "../../ui/button"
+import type { AppointmentEvent } from "./types"
 
 import { CalendarHeader } from "./calender-header"
 import { AppointmentForm } from "../appointment-form"
@@ -17,14 +18,15 @@ import type { CalendarProps, StaffMember, Client, SidebarMode } from "./types"
 import { Card } from "../../ui/card"
 import { setClients, setCareWorkers, setOfficeStaff, setSidebarMode } from "../../../state/slices/userSlice"
 import { useAppSelector, useAppDispatch } from "../../../state/redux"
-import { getRandomColor } from "./calender-utils"
+
 import { CalendarSidebar } from "./calender-sidebar"
+import { getRandomColor } from "./calender-utils"
 
 export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(dateRange.from || new Date())
     const [activeView, setActiveView] = useState<"day" | "week" | "month">(view)
     const [isFormOpen, setIsFormOpen] = useState(false)
-    const [editingEvent, setEditingEvent] = useState<{ id?: string; start: Date; end: Date; date: Date } | null>(null)
+    const [editingEvent, setEditingEvent] = useState<AppointmentEvent | null>(null)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const calendarRef = useRef<HTMLDivElement>(null)
@@ -261,6 +263,38 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     // Check if we have any data
     const hasNoData = !isLoading && filteredEvents.length === 0 && events.length === 0
 
+    // Add performance optimization to prevent unnecessary re-renders
+    const memoizedCalendar = useMemo(
+        () => (
+            <CustomCalendar
+                events={filteredEvents}
+                currentDate={currentDate}
+                activeView={activeView}
+                onSelectEvent={handleEventSelect}
+                onEventUpdate={handleEventUpdate}
+                onNavigate={handleDateSelect}
+                isLoading={isLoading}
+                staffMembers={[...careWorkerMembers, ...officeStaffMembers]}
+                isMobile={isMobile}
+                sidebarMode={sidebarMode}
+                clients={formattedClients}
+                spaceTheme={theme === "dark"}
+            />
+        ),
+        [
+            filteredEvents,
+            currentDate,
+            activeView,
+            isLoading,
+            careWorkerMembers,
+            officeStaffMembers,
+            isMobile,
+            sidebarMode,
+            formattedClients,
+            theme,
+        ],
+    )
+
     return (
         <div className={`flex flex-col h-full w-full relative ${theme === "dark" ? "dark-theme" : ""}`}>
             {/* Dark mode background */}
@@ -353,20 +387,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                             </div>
                         </Card>
                     ) : (
-                        <CustomCalendar
-                            events={filteredEvents}
-                            currentDate={currentDate}
-                            activeView={activeView}
-                            onSelectEvent={handleEventSelect}
-                            onEventUpdate={handleEventUpdate}
-                            onNavigate={handleDateSelect}
-                            isLoading={isLoading}
-                            staffMembers={[...careWorkerMembers, ...officeStaffMembers]}
-                            isMobile={isMobile}
-                            sidebarMode={sidebarMode}
-                            clients={formattedClients}
-                            spaceTheme={theme === "dark"}
-                        />
+                        memoizedCalendar
                     )}
                 </div>
             </div>
@@ -380,7 +401,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                         isOpen={true}
                         onClose={handleFormClose}
                         event={editingEvent}
-                        isNew={!editingEvent || !editingEvent.id}
+                        isNew={!editingEvent?.id}
                         spaceTheme={theme === "dark"}
                     />
                 </DialogContent>

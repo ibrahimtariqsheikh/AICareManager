@@ -65,7 +65,7 @@ export function CustomCalendar({
 
     // Render the appropriate view based on activeView
     return (
-        <div className={`h-full w-full ${spaceTheme ? "dark-calendar" : ""}`}>
+        <div className={`h-full w-full calendar-scrollbar ${spaceTheme ? "dark-calendar" : "light-theme"}`}>
             {activeView === "day" && (
                 <CustomDayView
                     date={currentDate}
