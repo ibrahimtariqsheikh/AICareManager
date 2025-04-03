@@ -31,6 +31,7 @@ import { useAppDispatch, useAppSelector } from "../../../../state/redux";
 import { signupUser, verifyCode } from "../../../../state/slices/authSlice";
 import { withToast } from "../../../../lib/utils";
 import { useCreateUserMutation } from "../../../../state/api";
+import { Role } from "../../../../types/prismaTypes";
 
 const signupSchema = z.object({
     email: z.string().email("Please enter a valid email address"),
@@ -39,10 +40,6 @@ const signupSchema = z.object({
     lastName: z.string().min(1, "Last name is required"),
     role: z.string(),
     password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
 });
 
 type SignupFormValues = z.infer<typeof signupSchema>;
@@ -80,7 +77,6 @@ const SignupForm = ({
             lastName: "",
             role: invitationData?.role || "CLIENT",
             password: "",
-            confirmPassword: "",
         },
     });
 
@@ -127,12 +123,11 @@ const SignupForm = ({
             } else if (result) {
                 //CREATE USER IN DATABASE
                 const user = await createUser({
-                    id: crypto.randomUUID(),
-                    cognitoId: result.user.cognitoId ?? "",
                     email: values.email,
                     firstName: values.firstName,
                     lastName: values.lastName,
-                    role: values.role,
+                    role: values.role as Role,
+                    cognitoId: result.user.cognitoId ?? "",
                     invitedById: invitationData?.inviterId
                 })
                 toast.success("Account created successfully!");
@@ -151,179 +146,115 @@ const SignupForm = ({
         <>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }: { field: any }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="Enter your email"
-                                        {...field}
-                                        disabled={isInvitation}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className="space-y-6">
+                        {/* First Name and Last Name in one row */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="firstName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>First Name</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter your first name" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }: { field: any }) => (
-                            <FormItem>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="Enter your username"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                            <FormField
+                                control={form.control}
+                                name="lastName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Last Name</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter your last name" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
-                    <FormField
-                        control={form.control}
-                        name="firstName"
-                        render={({ field }: { field: any }) => (
-                            <FormItem>
-                                <FormLabel>First Name</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Enter your first name" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="lastName"
-                        render={({ field }: { field: any }) => (
-                            <FormItem>
-                                <FormLabel>Last Name</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Enter your last name" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="role"
-                        render={({ field }: { field: any }) => (
-                            <FormItem>
-                                <FormLabel>Role</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    disabled={isInvitation}
-                                >
+                        {/* Email in its own row */}
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select a role" />
-                                        </SelectTrigger>
+                                        <Input placeholder="Enter your email" {...field} />
                                     </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="CLIENT">Client</SelectItem>
-                                        <SelectItem value="FAMILY">Family</SelectItem>
-                                        <SelectItem value="HEALTH_WORKER">Health Worker</SelectItem>
-                                        <SelectItem value="OFFICE_STAFF">Office Staff</SelectItem>
-                                        <SelectItem value="ADMIN">Admin</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }: { field: any }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <div className="relative">
-                                        <Input
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder="Enter your password"
-                                            {...field}
-                                        />
-                                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                                            <button
+                        {/* Role in its own row */}
+                        <FormField
+                            control={form.control}
+                            name="role"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Role</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a role" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="CLIENT">Client</SelectItem>
+                                            <SelectItem value="CARE_WORKER">Care Worker</SelectItem>
+                                            <SelectItem value="OFFICE_STAFF">Office Staff</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {/* Password in its own row */}
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Input
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Enter your password"
+                                                {...field}
+                                            />
+                                            <Button
                                                 type="button"
-                                                className="text-muted-foreground"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setShowPassword(!showPassword);
-                                                }}
+                                                variant="ghost"
+                                                size="icon"
+                                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                                onClick={() => setShowPassword(!showPassword)}
                                             >
                                                 {showPassword ? (
-                                                    <Eye className="w-4 h-4" />
+                                                    <EyeOff className="h-4 w-4 text-gray-500" />
                                                 ) : (
-                                                    <EyeOff className="w-4 h-4" />
+                                                    <Eye className="h-4 w-4 text-gray-500" />
                                                 )}
-                                            </button>
+                                            </Button>
                                         </div>
-                                    </div>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="confirmPassword"
-                        render={({ field }: { field: any }) => (
-                            <FormItem>
-                                <FormLabel>Confirm Password</FormLabel>
-                                <FormControl>
-                                    <Input type="password" placeholder="Confirm your password" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <>
-                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                <span>Signing Up...</span>
-                            </>
-                        ) : isInvitation ? "Complete Registration" : "Sign Up"}
-                    </Button>
-
-                    <div className="text-center mt-4">
-                        <p className="text-sm text-muted-foreground">
-                            Already have an account?{" "}
-                            <Link href="/signin" className="text-primary hover:underline">
-                                Log In
-                            </Link>
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-2">
-                            Need to verify your account?{" "}
-                            <button
-                                type="button"
-                                onClick={toggleForm}
-                                className="text-primary hover:underline"
-                            >
-                                Verify Account
-                            </button>
-                        </p>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
+
+                    <Button type="submit" className="w-full">
+                        Sign Up
+                    </Button>
                 </form>
             </Form>
         </>

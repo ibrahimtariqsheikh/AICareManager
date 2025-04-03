@@ -2,7 +2,7 @@ import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth"
 import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { AppointmentEvent } from "../components/scheduler/calender/types"
-import { Invitation, Schedule } from "../types/prismaTypes"
+import { Invitation, Schedule, Role } from "../types/prismaTypes"
 
 
 export interface ScheduleInput {
@@ -177,6 +177,15 @@ export interface DashboardData {
   }>;
 }
 
+interface CreateUserInput {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: Role;
+    cognitoId: string;
+    invitedById?: string;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -249,8 +258,8 @@ export const api = createApi({
 
 
     //create user
-    createUser: build.mutation<User, User>({
-      query: (user: User) => ({
+    createUser: build.mutation<User, CreateUserInput>({
+      query: (user) => ({
         url: "/users",
         method: "POST",
         body: user,
