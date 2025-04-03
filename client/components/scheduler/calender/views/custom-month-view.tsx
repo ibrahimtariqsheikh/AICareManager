@@ -175,10 +175,11 @@ export function CustomMonthView({
     }
 
     // Format date and time for tooltip
-    const formatDateTimeForTooltip = (date: Date, event: AppointmentEvent) => {
-        const dateText = moment(date).format("ddd, MMM D")
-        const timeText = moment(event.start).format("h:mm A")
-        return { dateText, timeText }
+    const formatDateTimeForTooltip = (date: Date | string, event: AppointmentEvent) => {
+        const dateObj = date instanceof Date ? date : new Date(date);
+        const dateText = moment(dateObj).format("ddd, MMM D");
+        const timeText = moment(event.start instanceof Date ? event.start : new Date(event.start)).format("h:mm A");
+        return { dateText, timeText };
     }
 
     // Get event background based on type and theme
@@ -759,8 +760,8 @@ export function CustomMonthView({
                                             variant={spaceTheme ? "outline" : "ghost"}
                                             size="sm"
                                             className={`text-xs w-full h-6 mt-1 ${spaceTheme
-                                                    ? "border-zinc-800 text-zinc-300 hover:bg-zinc-800/50"
-                                                    : "border-gray-200 hover:bg-gray-50"
+                                                ? "border-zinc-800 text-zinc-300 hover:bg-zinc-800/50"
+                                                : "border-gray-200 hover:bg-gray-50"
                                                 }`}
                                             onClick={(e) => toggleDayExpand(dateStr, e)}
                                         >
@@ -775,8 +776,8 @@ export function CustomMonthView({
                                             variant={spaceTheme ? "outline" : "ghost"}
                                             size="sm"
                                             className={`text-xs w-full h-6 mt-1 ${spaceTheme
-                                                    ? "border-zinc-800 text-zinc-300 hover:bg-zinc-800/50"
-                                                    : "border-gray-200 hover:bg-gray-50"
+                                                ? "border-zinc-800 text-zinc-300 hover:bg-zinc-800/50"
+                                                : "border-gray-200 hover:bg-gray-50"
                                                 }`}
                                             onClick={(e) => toggleDayExpand(dateStr, e)}
                                         >

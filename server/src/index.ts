@@ -9,6 +9,7 @@ import agencyRoutes from "./routes/agencyRoutes";
 //import { authMiddleware } from "./middleware/authMiddleware";
 import invitationRoutes from "./routes/invitationRoutes";
 import scheduleRoutes from "./routes/scheduleRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes"
 
 
 /* CONFIGURATIONS */
@@ -36,6 +37,10 @@ app.use("/users", userRoutes);
 app.use("/agencies", agencyRoutes);
 app.use("/invitations", invitationRoutes);
 app.use("/schedules", scheduleRoutes);
+app.use("/api/users", userRoutes)
+app.use("/api/invitations", invitationRoutes)
+app.use("/api/schedules", scheduleRoutes)
+app.use("/api/dashboard", dashboardRoutes)
 
 /* SERVER */
 app.listen(PORT, () => {

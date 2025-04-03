@@ -17,6 +17,7 @@ import { logout } from "../../state/slices/authSlice"
 import { LayoutDashboardIcon, UsersIcon, BarChart3, Calendar, Settings } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useMediaQuery } from "../../hooks/use-mobile"
+import { useGetUserQuery } from "../../state/api"
 
 export interface NavItem {
     title: string
@@ -100,6 +101,7 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
     const dispatch = useAppDispatch()
     console.log("Prisma User", user)
 
+    const { data: authUser } = useGetUserQuery();
 
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(
         // Initialize all sections as expanded by default
@@ -292,7 +294,7 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
                                                     animate={{ opacity: 1 }}
                                                     transition={{ delay: 0.2 }}
                                                 >
-                                                    microdose.studio
+                                                    {authUser?.userInfo?.agency?.name || "Agency"}
                                                 </motion.p>
                                             </div>
                                         </div>
@@ -467,8 +469,12 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
 
                                     {showLabels && (
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium">{user.userInfo.firstName + " " + user.userInfo.lastName || "User"}</span>
-                                            <span className="text-xs text-muted-foreground">{user.userInfo.email || "user@example.com"}</span>
+                                            <span className="text-sm font-medium">
+                                                {authUser?.userInfo?.agency?.name || "Agency"}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground">
+                                                {authUser?.userInfo?.firstName} {authUser?.userInfo?.lastName}
+                                            </span>
                                         </div>
                                     )}
                                 </motion.div>

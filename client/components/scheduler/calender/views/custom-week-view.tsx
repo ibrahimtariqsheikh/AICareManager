@@ -66,22 +66,32 @@ export function CustomWeekView({
 
     // Initialize display events
     useEffect(() => {
-        const eventMap: { [key: string]: AppointmentEvent } = {}
+        console.log('Initializing display events for week view');
+        const eventMap: { [key: string]: AppointmentEvent } = {};
         events.forEach((event) => {
-            eventMap[event.id] = { ...event }
-        })
-        setDisplayEvents(eventMap)
-    }, [events])
+            // Ensure dates are properly parsed
+            const processedEvent = {
+                ...event,
+                start: moment(event.start).toDate(),
+                end: moment(event.end).toDate(),
+                date: moment(event.date).toDate(),
+            };
+            console.log('Processing event:', event.id, 'Start:', processedEvent.start.toISOString());
+            eventMap[event.id] = processedEvent;
+        });
+        setDisplayEvents(eventMap);
+    }, [events]);
 
     // Calculate grid dimensions and event positions
     useEffect(() => {
-        if (!containerRef.current || !gridRef.current || weekDays.length === 0) return
+        if (!containerRef.current || !gridRef.current || weekDays.length === 0) return;
 
-        const containerWidth = gridRef.current.offsetWidth
-        const timeGutterWidth = 60
-        const dayWidth = (containerWidth - timeGutterWidth) / 7
-        const slotHeight = 40
-        const totalHeight = timeSlots.length * slotHeight
+        console.log('Calculating grid dimensions and event positions');
+        const containerWidth = gridRef.current.offsetWidth;
+        const timeGutterWidth = 60;
+        const dayWidth = (containerWidth - timeGutterWidth) / 7;
+        const slotHeight = 40;
+        const totalHeight = timeSlots.length * slotHeight;
 
         setGridDimensions({
             slotHeight,
@@ -89,47 +99,55 @@ export function CustomWeekView({
             timeGutterWidth,
             totalHeight,
             totalWidth: containerWidth,
-        })
+        });
 
-        const positions: { [key: string]: any } = {}
+        const positions: { [key: string]: any } = {};
+        const currentWeek = moment(date).startOf('week');
 
         events.forEach((event) => {
-            const eventStart = moment(event.start)
-            const eventEnd = moment(event.end)
+            const eventStart = moment(event.start);
+            const eventEnd = moment(event.end);
 
             // Skip events outside the current week
-            if (!eventStart.isSame(moment(date), "week")) return
+            if (!eventStart.isSame(currentWeek, "week")) {
+                console.log('Skipping event outside current week:', event.id);
+                return;
+            }
 
             // Calculate day index (0-6)
-            const dayIndex = eventStart.day()
+            const dayIndex = eventStart.day();
+            console.log('Event day index:', event.id, dayIndex);
 
             // Calculate top position based on time
-            const startHourDecimal = eventStart.hours() + eventStart.minutes() / 60
-            const endHourDecimal = eventEnd.hours() + eventEnd.minutes() / 60
+            const startHourDecimal = eventStart.hours() + eventStart.minutes() / 60;
+            const endHourDecimal = eventEnd.hours() + eventEnd.minutes() / 60;
 
             // Skip events outside the visible time range
-            if (endHourDecimal < startHour || startHourDecimal > endHour) return
+            if (endHourDecimal < startHour || startHourDecimal > endHour) {
+                console.log('Skipping event outside visible time range:', event.id);
+                return;
+            }
 
             // Clamp event times to visible range
-            const clampedStartHour = Math.max(startHourDecimal, startHour)
-            const clampedEndHour = Math.min(endHourDecimal, endHour)
+            const clampedStartHour = Math.max(startHourDecimal, startHour);
+            const clampedEndHour = Math.min(endHourDecimal, endHour);
 
             // Calculate minutes from start of day
-            const startMinutes = (clampedStartHour - startHour) * 60
-            const endMinutes = (clampedEndHour - startHour) * 60
-            const durationMinutes = endMinutes - startMinutes
+            const startMinutes = (clampedStartHour - startHour) * 60;
+            const endMinutes = (clampedEndHour - startHour) * 60;
+            const durationMinutes = endMinutes - startMinutes;
 
             // Calculate exact pixel positions
-            const top = Math.round((startMinutes / 30) * slotHeight)
-            const height = Math.round((durationMinutes / 30) * slotHeight)
+            const top = Math.round((startMinutes / 30) * slotHeight);
+            const height = Math.round((durationMinutes / 30) * slotHeight);
 
             // Ensure minimum height for visibility
-            const minHeight = 20
-            const finalHeight = Math.max(height, minHeight)
+            const minHeight = 20;
+            const finalHeight = Math.max(height, minHeight);
 
             // Calculate left position based on day
-            const left = timeGutterWidth + dayIndex * dayWidth
-            const width = dayWidth - 4 // 4px for gap
+            const left = timeGutterWidth + dayIndex * dayWidth;
+            const width = dayWidth - 4; // 4px for gap
 
             positions[event.id] = {
                 top,
@@ -145,11 +163,12 @@ export function CustomWeekView({
                 originalStartMinute: eventStart.minutes(),
                 originalEndHour: eventEnd.hours(),
                 originalEndMinute: eventEnd.minutes(),
-            }
-        })
+            };
+        });
 
-        setEventPositions(positions)
-    }, [events, weekDays, date, timeSlots, startHour, endHour, containerRef, gridRef])
+        console.log('Calculated positions for events:', Object.keys(positions).length);
+        setEventPositions(positions);
+    }, [events, weekDays, date, timeSlots, startHour, endHour, containerRef, gridRef]);
 
     // Scroll to current time on initial render
     useEffect(() => {

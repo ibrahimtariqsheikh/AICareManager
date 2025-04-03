@@ -105,6 +105,9 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     console.log("cognitoId", cognitoId);
     const user = await prisma.user.findUnique({
         where: { cognitoId },
+        include: {
+            agency: true
+        }
     });
 
     if (!user) {
@@ -122,11 +125,12 @@ export const getClients = async (req: Request, res: Response): Promise<void> => 
     const { status, userId } = req.query;
 
     // Build where clause for filtering
-    const where: any = {};
+    const where: any = {
+      role: Role.CLIENT
+    };
     if (status) where.status = status as string;
 
     // If userId is provided, check user's permissions
-
     console.log("userId", userId);
     console.log("status", status);
     if (userId) {
@@ -160,7 +164,7 @@ export const getClients = async (req: Request, res: Response): Promise<void> => 
     console.log("Fetching clients with where clause:", where);
 
     // Get clients with filtering
-    const clients = await prisma.client.findMany({
+    const clients = await prisma.user.findMany({
       where,
       select: {
         id: true,
@@ -179,11 +183,16 @@ export const getClients = async (req: Request, res: Response): Promise<void> => 
     });
 
     // Format clients for the frontend
-    const formattedClients = clients.map((client) => ({
+    const formattedClients = clients.map((client: { 
+      id: string;
+      firstName: string;
+      lastName: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }) => ({
       id: client.id,
       firstName: client.firstName,
       lastName: client.lastName,
-  
       status: "Active", // Default status
       dateAdded: client.createdAt,
       color: getRandomColor(client.id),

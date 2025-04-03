@@ -1,21 +1,103 @@
 import type { Request, Response } from "express"
-import { PrismaClient, type ScheduleStatus, type ScheduleType } from "@prisma/client"
+import { PrismaClient, type ScheduleStatus, type ScheduleType, type Schedule, type User } from "@prisma/client"
+import { format, parse } from "date-fns"
 
 const prisma = new PrismaClient()
 
+type ScheduleWithRelations = Schedule & {
+  client: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    addressLine1?: string;
+    townOrCity?: string;
+  };
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
+// Helper function to get event color based on type
+const getEventColor = (type: ScheduleType): string => {
+  switch (type) {
+    case "APPOINTMENT":
+      return "#4f46e5" // indigo
+    case "WEEKLY_CHECKUP":
+      return "#10b981" // emerald
+    case "HOME_VISIT":
+      return "#059669" // green
+    case "OTHER":
+      return "#6b7280" // gray
+    default:
+      return "#6b7280" // gray
+  }
+}
+
+// Helper function to map form types to database types
+const mapFormTypeToDbType = (formType: string): ScheduleType => {
+  switch (formType) {
+    case "CHECKUP":
+    case "WEEKLY_CHECKUP":
+      return "WEEKLY_CHECKUP"
+    case "EMERGENCY":
+    case "ROUTINE":
+      return "APPOINTMENT"
+    case "HOME_VISIT":
+      return "HOME_VISIT"
+    case "OTHER":
+      return "OTHER"
+    default:
+      return "APPOINTMENT"
+  }
+}
+
+// Helper function to map database types to form types
+const mapDbTypeToFormType = (dbType: ScheduleType): string => {
+  switch (dbType) {
+    case "WEEKLY_CHECKUP":
+      return "WEEKLY_CHECKUP"
+    case "APPOINTMENT":
+      return "APPOINTMENT"
+    case "HOME_VISIT":
+      return "HOME_VISIT"
+    case "OTHER":
+      return "OTHER"
+    default:
+      return "APPOINTMENT"
+  }
+}
+
 export const getSchedules = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { status, type, limit = 100, offset = 0 } = req.query
+    const { 
+      status, 
+      type, 
+      userId,
+      startDate,
+      endDate,
+      agencyId,
+      limit = 100, 
+      offset = 0 
+    } = req.query
 
-    const where: any = {}
+    const where: any = {
+      agencyId: agencyId as string
+    }
 
     if (status) where.status = status as ScheduleStatus
-    if (type) where.type = type as ScheduleType
-
-    // Get the user ID from the authenticated request
-    // This would typically come from your auth middleware
-    // const userId = req.user?.id
-    // if (userId) where.userId = userId
+    if (type) where.type = mapFormTypeToDbType(type as string)
+    if (userId) where.userId = userId as string
+    
+    // Add date range filtering
+    if (startDate && endDate) {
+      where.date = {
+        gte: new Date(startDate as string),
+        lte: new Date(endDate as string)
+      }
+    }
 
     console.log("Fetching schedules with where clause:", where)
 
@@ -27,6 +109,9 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
             id: true,
             firstName: true,
             lastName: true,
+            phoneNumber: true,
+            addressLine1: true,
+            townOrCity: true,
           },
         },
         user: {
@@ -40,14 +125,33 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
       take: Number(limit),
       skip: Number(offset),
       orderBy: {
-        date: "desc",
+        date: "asc",
       },
-    })
+    }) as ScheduleWithRelations[]
 
-    // Add clientName for easier display
+    // Format schedules for frontend display
     const formattedSchedules = schedules.map((schedule) => ({
-      ...schedule,
-      clientName: schedule.client ? `${schedule.client.firstName} ${schedule.client.lastName}` : "Unknown Client",
+      id: schedule.id,
+      title: `${schedule.client.firstName} ${schedule.client.lastName} with ${schedule.user.firstName} ${schedule.user.lastName}`,
+      start: schedule.startTime,
+      end: schedule.endTime,
+      date: schedule.date,
+      startTime: schedule.startTime,
+      endTime: schedule.endTime,
+      resourceId: schedule.userId,
+      clientId: schedule.clientId,
+      type: mapDbTypeToFormType(schedule.type as ScheduleType),
+      status: schedule.status,
+      notes: schedule.notes,
+      color: getEventColor(schedule.type as ScheduleType),
+      careWorker: {
+        firstName: schedule.user.firstName,
+        lastName: schedule.user.lastName,
+      },
+      client: {
+        firstName: schedule.client.firstName,
+        lastName: schedule.client.lastName,
+      },
     }))
 
     const total = await prisma.schedule.count({ where })
@@ -68,36 +172,77 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
   }
 }
 
-export const getSchedule = async (req: Request, res: Response): Promise<void> => {
+export const createSchedule = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params
+    const { 
+      agencyId, 
+      clientId, 
+      userId, 
+      date, 
+      startTime,
+      endTime,
+      status, 
+      type, 
+      notes, 
+      chargeRate 
+    } = req.body
 
-    const schedule = await prisma.schedule.findUnique({
-      where: { id },
-      include: {
-        client: true,
-        user: true,
-      },
-    })
-
-    if (!schedule) {
-      res.status(404).json({ message: "Schedule not found" })
+    // Validate required fields
+    if (!agencyId || !clientId || !userId || !date || !startTime || !endTime || !status || !type) {
+      res.status(400).json({ 
+        message: "Missing required fields",
+        required: ["agencyId", "clientId", "userId", "date", "startTime", "endTime", "status", "type"]
+      })
       return
     }
 
-    res.json(schedule)
-  } catch (error) {
-    console.error("Error fetching schedule:", error)
-    res.status(500).json({ message: "Error fetching schedule", error })
-  }
-}
+    // Validate time format
+    const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+    if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+      res.status(400).json({ message: "Invalid time format. Use HH:mm format" })
+      return
+    }
 
-export const createSchedule = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { agencyId, clientId, userId, date, shiftStart, shiftEnd, status, type, notes, chargeRate } = req.body
+    // Parse and validate date range
+    const appointmentDate = new Date(date)
+    const [startHour, startMinute] = startTime.split(":").map(Number)
+    const [endHour, endMinute] = endTime.split(":").map(Number)
 
-    if (!clientId || !userId || !date || !shiftStart || !shiftEnd || !status || !type) {
-      res.status(400).json({ message: "Missing required fields" })
+    const startDateTime = new Date(appointmentDate)
+    startDateTime.setHours(startHour, startMinute)
+
+    const endDateTime = new Date(appointmentDate)
+    endDateTime.setHours(endHour, endMinute)
+
+    if (endDateTime <= startDateTime) {
+      res.status(400).json({ message: "End time must be after start time" })
+      return
+    }
+
+    // Check for overlapping schedules
+    const overlappingSchedule = await prisma.schedule.findFirst({
+      where: {
+        userId,
+        date: appointmentDate,
+        OR: [
+          {
+            AND: [
+              { startTime: { lte: startTime } },
+              { endTime: { gt: startTime } }
+            ]
+          },
+          {
+            AND: [
+              { startTime: { lt: endTime } },
+              { endTime: { gte: endTime } }
+            ]
+          }
+        ]
+      }
+    })
+
+    if (overlappingSchedule) {
+      res.status(400).json({ message: "Schedule overlaps with existing appointment" })
       return
     }
 
@@ -106,17 +251,58 @@ export const createSchedule = async (req: Request, res: Response): Promise<void>
         agencyId,
         clientId,
         userId,
-        date: new Date(date),
-        shiftStart: new Date(shiftStart),
-        shiftEnd: new Date(shiftEnd),
+        date: appointmentDate,
+        startTime,
+        endTime,
         status: status as ScheduleStatus,
-        type: type as ScheduleType,
+        type: mapFormTypeToDbType(type),
         notes,
         chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
       },
-    })
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    }) as ScheduleWithRelations
 
-    res.status(201).json(schedule)
+    // Format response to match frontend expectations
+    const formattedSchedule = {
+      id: schedule.id,
+      title: `${schedule.client.firstName} ${schedule.client.lastName} with ${schedule.user.firstName} ${schedule.user.lastName}`,
+      start: schedule.startTime,
+      end: schedule.endTime,
+      date: schedule.date,
+      startTime: schedule.startTime,
+      endTime: schedule.endTime,
+      resourceId: schedule.userId,
+      clientId: schedule.clientId,
+      type: mapDbTypeToFormType(schedule.type as ScheduleType),
+      status: schedule.status,
+      notes: schedule.notes,
+      color: getEventColor(schedule.type as ScheduleType),
+      careWorker: {
+        firstName: schedule.user.firstName,
+        lastName: schedule.user.lastName,
+      },
+      client: {
+        firstName: schedule.client.firstName,
+        lastName: schedule.client.lastName,
+      },
+    }
+
+    res.status(201).json(formattedSchedule)
   } catch (error) {
     console.error("Error creating schedule:", error)
     res.status(500).json({ message: "Error creating schedule", error })
@@ -126,7 +312,17 @@ export const createSchedule = async (req: Request, res: Response): Promise<void>
 export const updateSchedule = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
-    const { clientId, userId, date, shiftStart, shiftEnd, status, type, notes, chargeRate } = req.body
+    const { 
+      clientId, 
+      userId, 
+      date, 
+      startTime,
+      endTime,
+      status, 
+      type, 
+      notes, 
+      chargeRate 
+    } = req.body
 
     // Check if schedule exists
     const existingSchedule = await prisma.schedule.findUnique({
@@ -138,22 +334,102 @@ export const updateSchedule = async (req: Request, res: Response): Promise<void>
       return
     }
 
+    // Validate time format if provided
+    if (startTime || endTime) {
+      const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+      if ((startTime && !timeRegex.test(startTime)) || (endTime && !timeRegex.test(endTime))) {
+        res.status(400).json({ message: "Invalid time format. Use HH:mm format" })
+        return
+      }
+    }
+
+    // Check for overlapping schedules if time is being updated
+    if (startTime && endTime) {
+      const overlappingSchedule = await prisma.schedule.findFirst({
+        where: {
+          id: { not: id }, // Exclude current schedule
+          userId: userId || existingSchedule.userId,
+          date: date ? new Date(date) : existingSchedule.date,
+          OR: [
+            {
+              AND: [
+                { startTime: { lte: startTime } },
+                { endTime: { gt: startTime } }
+              ]
+            },
+            {
+              AND: [
+                { startTime: { lt: endTime } },
+                { endTime: { gte: endTime } }
+              ]
+            }
+          ]
+        }
+      })
+
+      if (overlappingSchedule) {
+        res.status(400).json({ message: "Schedule overlaps with existing appointment" })
+        return
+      }
+    }
+
     const updatedSchedule = await prisma.schedule.update({
       where: { id },
       data: {
         clientId,
         userId,
         date: date ? new Date(date) : undefined,
-        shiftStart: shiftStart ? new Date(shiftStart) : undefined,
-        shiftEnd: shiftEnd ? new Date(shiftEnd) : undefined,
+        startTime: startTime || undefined,
+        endTime: endTime || undefined,
         status: status as ScheduleStatus,
-        type: type as ScheduleType,
+        type: type ? mapFormTypeToDbType(type) : undefined,
         notes,
         chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
       },
-    })
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    }) as ScheduleWithRelations
 
-    res.json(updatedSchedule)
+    // Format response to match frontend expectations
+    const formattedSchedule = {
+      id: updatedSchedule.id,
+      title: `${updatedSchedule.client.firstName} ${updatedSchedule.client.lastName} with ${updatedSchedule.user.firstName} ${updatedSchedule.user.lastName}`,
+      start: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.startTime}`),
+      end: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.endTime}`),
+      date: updatedSchedule.date,
+      startTime: updatedSchedule.startTime,
+      endTime: updatedSchedule.endTime,
+      resourceId: updatedSchedule.userId,
+      clientId: updatedSchedule.clientId,
+      type: mapDbTypeToFormType(updatedSchedule.type as ScheduleType),
+      status: updatedSchedule.status,
+      notes: updatedSchedule.notes,
+      color: getEventColor(updatedSchedule.type as ScheduleType),
+      careWorker: {
+        firstName: updatedSchedule.user.firstName,
+        lastName: updatedSchedule.user.lastName,
+      },
+      client: {
+        firstName: updatedSchedule.client.firstName,
+        lastName: updatedSchedule.client.lastName,
+      },
+    }
+
+    res.json(formattedSchedule)
   } catch (error) {
     console.error("Error updating schedule:", error)
     res.status(500).json({ message: "Error updating schedule", error })
@@ -181,189 +457,5 @@ export const deleteSchedule = async (req: Request, res: Response): Promise<void>
   } catch (error) {
     console.error("Error deleting schedule:", error)
     res.status(500).json({ message: "Error deleting schedule", error })
-  }
-}
-
-export const getSchedulesByClient = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { clientId } = req.params
-    const { status, startDate, endDate, limit = 100, offset = 0 } = req.query
-
-    const where: any = { clientId }
-
-    if (status) where.status = status as ScheduleStatus
-
-    if (startDate || endDate) {
-      where.date = {}
-      if (startDate) where.date.gte = new Date(startDate as string)
-      if (endDate) where.date.lte = new Date(endDate as string)
-    }
-
-    const schedules = await prisma.schedule.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-      take: Number(limit),
-      skip: Number(offset),
-      orderBy: {
-        date: "asc",
-      },
-    })
-
-    const total = await prisma.schedule.count({ where })
-
-    res.json({
-      data: schedules,
-      meta: {
-        total,
-        limit: Number(limit),
-        offset: Number(offset),
-      },
-    })
-  } catch (error) {
-    console.error("Error fetching client schedules:", error)
-    res.status(500).json({ message: "Error fetching client schedules", error })
-  }
-}
-
-export const getSchedulesByUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { userId } = req.params
-    const { status, startDate, endDate, limit = 100, offset = 0 } = req.query
-
-    const where: any = { userId }
-
-    if (status) where.status = status as ScheduleStatus
-
-    if (startDate || endDate) {
-      where.date = {}
-      if (startDate) where.date.gte = new Date(startDate as string)
-      if (endDate) where.date.lte = new Date(endDate as string)
-    }
-
-    const schedules = await prisma.schedule.findMany({
-      where,
-      include: {
-        client: {
-          select: {
-            firstName: true,
-            lastName: true,
-            addressLine1: true,
-            townOrCity: true,
-            postalCode: true,
-          },
-        },
-      },
-      take: Number(limit),
-      skip: Number(offset),
-      orderBy: {
-        date: "asc",
-      },
-    })
-
-    const total = await prisma.schedule.count({ where })
-
-    res.json({
-      data: schedules,
-      meta: {
-        total,
-        limit: Number(limit),
-        offset: Number(offset),
-      },
-    })
-  } catch (error) {
-    console.error("Error fetching user schedules:", error)
-    res.status(500).json({ message: "Error fetching user schedules", error })
-  }
-}
-
-export const getSchedulesByDateRange = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { startDate, endDate, status, limit = 100, offset = 0 } = req.query
-
-    if (!startDate || !endDate) {
-      res.status(400).json({ message: "Both startDate and endDate are required" })
-      return
-    }
-
-    const where: any = {}
-    
-    // Handle date range for both date and shiftStart fields
-    where.OR = [
-      {
-        date: {
-          gte: new Date(startDate as string),
-          lte: new Date(endDate as string),
-        }
-      },
-      {
-        shiftStart: {
-          gte: new Date(startDate as string),
-          lte: new Date(endDate as string),
-        }
-      }
-    ]
-
-    if (status) where.status = status as ScheduleStatus
-
-    // Get the user ID from the authenticated request
-    // This would typically come from your auth middleware
-    // const userId = req.user?.id
-    // if (userId) where.userId = userId
-
-    console.log("Fetching schedules by date range with where clause:", JSON.stringify(where, null, 2))
-
-    const schedules = await prisma.schedule.findMany({
-      where,
-      include: {
-        client: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-      take: Number(limit),
-      skip: Number(offset),
-      orderBy: {
-        shiftStart: "asc",
-      },
-    })
-
-    // Add clientName for easier display
-    const formattedSchedules = schedules.map((schedule) => ({
-      ...schedule,
-      clientName: schedule.client ? `${schedule.client.firstName} ${schedule.client.lastName}` : "Unknown Client"
-    }))
-
-    const total = await prisma.schedule.count({ where })
-
-    console.log(`Found ${schedules.length} schedules by date range`)
-    
-    res.json({
-      data: formattedSchedules,
-      meta: {
-        total,
-        limit: Number(limit),
-        offset: Number(offset),
-      },
-    })
-  } catch (error) {
-    console.error("Error fetching schedules by date range:", error)
-    res.status(500).json({ message: "Error fetching schedules by date range", error })
   }
 }

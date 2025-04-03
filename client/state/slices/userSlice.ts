@@ -3,22 +3,61 @@ import type { User } from "../../types/prismaTypes"
 import { api } from "../api"
 import type { AppointmentEvent, SidebarMode } from "../../components/scheduler/calender/types"
 import { filterEvents } from "../../components/scheduler/calender/calender-utils"
+import type { ScheduleResponse } from "../api"
 
 // This will help serialize and deserialize dates
 function serializeEvent(event: AppointmentEvent): any {
-  return {
-    ...event,
-    start: event.start instanceof Date ? event.start.toISOString() : event.start,
-    end: event.end instanceof Date ? event.end.toISOString() : event.end,
-  }
+    // Create a copy of the event to avoid mutating the original
+    const serializedEvent = { ...event };
+
+    // Helper function to safely convert date to ISO string
+    const toISOString = (date: Date | string | undefined): string => {
+        if (!date) return new Date().toISOString();
+        try {
+            const dateObj = date instanceof Date ? date : new Date(date);
+            if (isNaN(dateObj.getTime())) return new Date().toISOString();
+            return dateObj.toISOString();
+        } catch (error) {
+            console.error('Error serializing date:', error);
+            return new Date().toISOString();
+        }
+    };
+
+    // Safely serialize dates
+    serializedEvent.start = toISOString(event.start);
+    serializedEvent.end = toISOString(event.end);
+    serializedEvent.date = toISOString(event.date);
+
+    return serializedEvent;
 }
 
 function deserializeEvent(event: any): AppointmentEvent {
-  return {
-    ...event,
-    start: typeof event.start === "string" ? new Date(event.start) : event.start,
-    end: typeof event.end === "string" ? new Date(event.end) : event.end,
-  }
+    // Create a copy of the event to avoid mutating the original
+    const deserializedEvent = { ...event };
+
+    // Helper function to safely convert to Date
+    const toDate = (dateStr: string | Date | undefined): Date => {
+        if (!dateStr) return new Date();
+        try {
+            const date = dateStr instanceof Date ? dateStr : new Date(dateStr);
+            if (isNaN(date.getTime())) return new Date();
+            return date;
+        } catch (error) {
+            console.error('Error deserializing date:', error);
+            return new Date();
+        }
+    };
+
+    // Safely deserialize dates
+    deserializedEvent.start = toDate(event.start);
+    deserializedEvent.end = toDate(event.end);
+    deserializedEvent.date = toDate(event.date);
+
+    deserializedEvent.start = new Date(event.start);
+    deserializedEvent.end = new Date(event.end);
+    deserializedEvent.date = new Date(event.date);
+
+    return deserializedEvent;
 }
 
 interface AdditionalUserInfo {
@@ -36,15 +75,49 @@ interface AdditionalUserInfo {
 }
 
 interface UserState {
-  user: AdditionalUserInfo
-  officeStaff: User[]
-  careWorkers: User[]
-  clients: User[]
-  events: AppointmentEvent[]
-  filteredEvents: AppointmentEvent[]
-  sidebarMode: SidebarMode
-  loading: boolean
-  error: string | null
+  user: {
+    userInfo: {
+      id: string;
+      cognitoId: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      role: string;
+      agencyId?: string;
+      agency?: {
+        id: string;
+        name: string;
+        isActive: boolean;
+        isSuspended: boolean;
+        hasScheduleV2: boolean;
+        hasEMAR: boolean;
+        hasFinance: boolean;
+        isWeek1And2ScheduleEnabled: boolean;
+        hasPoliciesAndProcedures: boolean;
+        isTestAccount: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+      };
+    } | null;
+    authUser: {
+      cognitoInfo: {
+        signInDetails: {
+          authFlowType: string;
+          loginId: string;
+        };
+        userId: string;
+        username: string;
+      };
+    };
+  };
+  officeStaff: User[];
+  careWorkers: User[];
+  clients: User[];
+  events: AppointmentEvent[];
+  filteredEvents: AppointmentEvent[];
+  sidebarMode: SidebarMode;
+  loading: boolean;
+  error: string | null;
 }
 
 // Initial state
@@ -114,10 +187,8 @@ const userSlice = createSlice({
       // We'll keep it for API compatibility
     },
     addEvent: (state, action: PayloadAction<AppointmentEvent>) => {
-      // Serialize the event before adding it to the state
       const serializedEvent = serializeEvent(action.payload)
       state.events.push(serializedEvent)
-
       // Log the event for debugging
       console.log("Added event to Redux store:", serializedEvent)
 
@@ -161,31 +232,37 @@ const userSlice = createSlice({
         state.loading = false
         state.error = error.message || "Failed to fetch users"
       })
-      // Handle getSchedulesByDateRange
-      .addMatcher(api.endpoints.getSchedulesByDateRange.matchPending, (state) => {
+      // Handle getSchedules
+      .addMatcher(api.endpoints.getSchedules.matchPending, (state) => {
         state.loading = true
+        state.error = null
       })
-      .addMatcher(api.endpoints.getSchedulesByDateRange.matchFulfilled, (state, { payload }) => {
+      .addMatcher(api.endpoints.getSchedules.matchFulfilled, (state, { payload }) => {
         state.loading = false
-        // Map API schedules to our event format
-        const events = payload.data.map((schedule) => ({
+        // Map API schedules to our event format and serialize dates
+        const events = payload.data.map((schedule: ScheduleResponse) => ({
           id: schedule.id,
-          title: `Appointment with ${schedule.client?.firstName || "Client"}`,
-          start: new Date(schedule.shiftStart),
-          end: new Date(schedule.shiftEnd),
-          resourceId: schedule.userId,
+          title: schedule.title,
+          start: new Date(schedule.start),
+          end: new Date(schedule.end),
+          date: new Date(schedule.date),
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          resourceId: schedule.resourceId,
           clientId: schedule.clientId,
-          type: schedule.type || "APPOINTMENT",
-          status: schedule.status || "PENDING",
+          type: schedule.type,
+          status: schedule.status,
           notes: schedule.notes || "",
-          chargeRate: schedule.chargeRate || 25,
-          color: getEventColor(schedule.type),
-        }))
-        state.events = events.map(serializeEvent)
+          color: schedule.color || getEventColor(schedule.type),
+          careWorker: schedule.careWorker,
+          client: schedule.client,
+        })).map(serializeEvent)
+        
+        state.events = events
         // Update filtered events when events change
         updateFilteredEvents(state)
       })
-      .addMatcher(api.endpoints.getSchedulesByDateRange.matchRejected, (state, { error }) => {
+      .addMatcher(api.endpoints.getSchedules.matchRejected, (state, { error }) => {
         state.loading = false
         state.error = error.message || "Failed to fetch schedules"
       })
@@ -194,61 +271,62 @@ const userSlice = createSlice({
 
 // Helper function to update filtered events based on current state
 function updateFilteredEvents(state: UserState) {
-  // If there are no events, set filtered events to empty array
-  if (!state.events || state.events.length === 0) {
-    state.filteredEvents = []
-    return
-  }
+    // If there are no events, set filtered events to empty array
+    if (!state.events || state.events.length === 0) {
+        state.filteredEvents = [];
+        return;
+    }
 
-  // Deserialize events for processing
-  const deserializedEvents = state.events.map(deserializeEvent)
+    // Deserialize events for processing
+    const deserializedEvents = state.events.map(deserializeEvent);
 
-  // Format staff members for filtering
-  const careWorkerMembers = state.careWorkers.map((staff) => ({
-    id: staff.id,
-    name: `${staff.firstName} ${staff.lastName}`,
-    role: staff.role || "CARE_WORKER",
-    color: staff.color || "#000000",
-    avatar: staff.profile?.avatarUrl || "",
-    selected: staff.selected || true,
-  }))
+    // Format staff members for filtering
+    const careWorkerMembers = state.careWorkers.map((staff) => ({
+        id: staff.id,
+        name: `${staff.firstName} ${staff.lastName}`,
+        role: staff.role || "CARE_WORKER",
+        color: staff.color || "#000000",
+        avatar: staff.profile?.avatarUrl || "",
+        selected: true, // Set all staff as selected by default
+    }));
 
-  const officeStaffMembers = state.officeStaff.map((staff) => ({
-    id: staff.id,
-    name: `${staff.firstName} ${staff.lastName}`,
-    role: staff.role || "OFFICE_STAFF",
-    color: staff.color || "#000000",
-    avatar: staff.profile?.avatarUrl || "",
-    selected: staff.selected || true,
-  }))
+    const officeStaffMembers = state.officeStaff.map((staff) => ({
+        id: staff.id,
+        name: `${staff.firstName} ${staff.lastName}`,
+        role: staff.role || "OFFICE_STAFF",
+        color: staff.color || "#000000",
+        avatar: staff.profile?.avatarUrl || "",
+        selected: true, // Set all staff as selected by default
+    }));
 
-  // Format clients for filtering
-  const formattedClients = state.clients.map((client) => ({
-    id: client.id,
-    name: `${client.firstName} ${client.lastName}`,
-    color: client.color || "#000000",
-    avatar: client.profile?.avatarUrl || "",
-    selected: client.selected || true,
-  }))
+    // Format clients for filtering
+    const formattedClients = state.clients.map((client) => ({
+        id: client.id,
+        name: `${client.firstName} ${client.lastName}`,
+        color: client.color || "#000000",
+        avatar: client.profile?.avatarUrl || "",
+        selected: true, // Set all clients as selected by default
+    }));
 
-  // No event types anymore, so we'll pass an empty array
-  const eventTypes: any[] = []
+    // No event types anymore, so we'll pass an empty array
+    const eventTypes: any[] = [];
 
-  // Filter events based on current selections
-  const filtered = filterEvents(
-    deserializedEvents,
-    careWorkerMembers,
-    officeStaffMembers,
-    formattedClients,
-    eventTypes,
-    state.sidebarMode,
-  )
+    // Filter events based on current selections
+    const filtered = filterEvents(
+        deserializedEvents,
+        careWorkerMembers,
+        officeStaffMembers,
+        formattedClients,
+        eventTypes,
+        state.sidebarMode,
+    );
 
-  // Serialize filtered events before storing in state
-  state.filteredEvents = filtered.map(serializeEvent)
+    // Serialize filtered events before storing in state
+    state.filteredEvents = filtered.map(serializeEvent);
 
-  // Log for debugging
-  console.log("Updated filtered events:", state.filteredEvents.length)
+    // Log for debugging
+    console.log("Updated filtered events:", state.filteredEvents.length);
+    console.log("Sample filtered event:", state.filteredEvents[0]);
 }
 
 // Helper function to get event color based on type

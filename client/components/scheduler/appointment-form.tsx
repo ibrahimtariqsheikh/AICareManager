@@ -20,6 +20,8 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, For
 import { useAppSelector, useAppDispatch } from "../../state/redux"
 import { addEvent, updateEvent, deleteEvent } from "../../state/slices/userSlice"
 import { v4 as uuidv4 } from "uuid"
+import { useCreateScheduleMutation, useUpdateScheduleMutation, useDeleteScheduleMutation, useGetFilteredUsersQuery } from "../../state/api"
+import { FetchUserAttributesOutput } from "@aws-amplify/auth"
 
 const formSchema = z.object({
     agencyId: z
@@ -49,11 +51,7 @@ const formSchema = z.object({
         required_error: "Please select a status",
     }),
     notes: z.string().optional(),
-    chargeRate: z
-        .number()
-        .min(25, "Charge rate must be at least 25 CAD")
-        .max(50, "Charge rate must not exceed 50 CAD")
-        .default(25),
+    chargeRate: z.number().optional(),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -81,13 +79,18 @@ const generateTimeOptions = () => {
     return options
 }
 
-// Generate charge rate options in intervals of 5
-const generateChargeRateOptions = () => {
-    const options = []
-    for (let rate = 25; rate <= 50; rate += 5) {
-        options.push({ value: rate, label: `${rate} CAD` })
-    }
-    return options
+interface UserInfo {
+    agencyId: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: string
+    id: string
+}
+
+interface AuthState {
+    user: FetchUserAttributesOutput | null
 }
 
 export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTheme = false }: AppointmentFormProps) {
@@ -99,14 +102,20 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     const [calendarOpen, setCalendarOpen] = useState(false)
     const allTimeOptions = useMemo(() => generateTimeOptions(), [])
     const [availableEndTimes, setAvailableEndTimes] = useState(allTimeOptions)
-    const chargeRateOptions = useMemo(() => generateChargeRateOptions(), [])
     const calendarRef = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch()
+    const [createSchedule] = useCreateScheduleMutation()
+    const [updateSchedule] = useUpdateScheduleMutation()
+    const [deleteSchedule] = useDeleteScheduleMutation()
 
     // Get data from Redux store
-    const { careWorkers, clients: reduxClients } = useAppSelector((state) => state.user)
-    const { userInfo } = useAppSelector((state) => state.auth || { userInfo: null })
-    const agencyId = userInfo?.agencyId || ""
+    const { careWorkers, clients: reduxClients, events, user } = useAppSelector((state) => state.user)
+    const agencyId = user?.userInfo?.agencyId || ""
+
+    // Load filtered users when form opens
+    const { data: filteredUsers } = useGetFilteredUsersQuery(user?.userInfo?.id || '', {
+        skip: !user?.userInfo?.id
+    })
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -120,7 +129,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             type: "APPOINTMENT",
             status: "PENDING",
             notes: "",
-            chargeRate: 25,
         },
     })
 
@@ -158,15 +166,26 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
 
     // Initialize clients and staff from Redux store
     useEffect(() => {
-        setClients(reduxClients || [])
-        setStaff(careWorkers || [])
-        setAvailableStaff(careWorkers || [])
+        console.log('Initializing clients and staff')
+        console.log('Redux clients:', reduxClients)
+        console.log('Care workers:', careWorkers)
+        console.log('Filtered users:', filteredUsers)
+
+        if (filteredUsers) {
+            setClients(filteredUsers.clients || [])
+            setStaff(filteredUsers.careWorkers || [])
+            setAvailableStaff(filteredUsers.careWorkers || [])
+        } else {
+            setClients(reduxClients || [])
+            setStaff(careWorkers || [])
+            setAvailableStaff(careWorkers || [])
+        }
 
         // Set agency ID from auth state
         if (agencyId) {
             form.setValue("agencyId", agencyId)
         }
-    }, [reduxClients, careWorkers, agencyId, form])
+    }, [reduxClients, careWorkers, agencyId, form, filteredUsers])
 
     // Populate form with event data when editing
     useEffect(() => {
@@ -174,9 +193,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             const startDate = new Date(event.shiftStart || event.start)
             const endDate = new Date(event.shiftEnd || event.end)
             const appointmentDate = new Date(event.date || startDate)
-
-            // Format the charge rate
-            const chargeRate = event.chargeRate ? Math.min(Math.max(Math.round(event.chargeRate), 25), 50) : 25
 
             form.reset({
                 agencyId: event.agencyId || agencyId,
@@ -188,7 +204,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                 type: event.type || "APPOINTMENT",
                 status: event.status || "PENDING",
                 notes: event.notes || "",
-                chargeRate: chargeRate,
             })
 
             // Set the current month to the event's month
@@ -217,6 +232,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                 return
             }
 
+            if (!data.agencyId) {
+                toast.error("Agency ID is required")
+                return
+            }
+
             setIsLoading(true)
 
             // Combine date and time
@@ -233,44 +253,60 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             const careWorker = careWorkers.find((worker) => worker.id === data.userId)
             const client = reduxClients.find((client) => client.id === data.clientId)
 
+            console.log('Selected client:', client)
+            console.log('Available clients:', reduxClients)
+            console.log('Selected clientId:', data.clientId)
+
             // Create a title that includes both care worker and client names
             const title = `${client ? `${client.firstName} ${client.lastName}` : "Client"} with ${careWorker ? `${careWorker.firstName} ${careWorker.lastName}` : "Care Worker"}`
 
-            const eventData = {
-                id: event?.id || uuidv4(),
-                title: title,
-                start: startDateTime,
-                end: endDateTime,
-                resourceId: data.userId,
+            const scheduleData = {
+                agencyId: data.agencyId,
                 clientId: data.clientId,
+                userId: data.userId,
+                date: data.date,
+                startTime: data.startTime,
+                endTime: data.endTime,
                 type: data.type,
                 status: data.status,
                 notes: data.notes || "",
-                chargeRate: data.chargeRate || 25,
-                color: getEventColor(data.type),
-                careWorker: careWorker
-                    ? {
-                        firstName: careWorker.firstName,
-                        lastName: careWorker.lastName,
-                    }
-                    : undefined,
-                client: client
-                    ? {
-                        firstName: client.firstName,
-                        lastName: client.lastName,
-                    }
-                    : undefined,
+                chargeRate: data.chargeRate,
+            }
+
+            let response
+            if (isNew) {
+                response = await createSchedule(scheduleData).unwrap()
+                console.log("Created new appointment:", response)
+                toast.success("Appointment created successfully")
+            } else {
+                response = await updateSchedule({ id: event.id, ...scheduleData }).unwrap()
+                console.log("Updated appointment:", response)
+                toast.success("Appointment updated successfully")
             }
 
             // Dispatch to Redux store
+            const eventData = {
+                id: response.id,
+                title: response.title,
+                start: startDateTime,
+                end: endDateTime,
+                date: data.date,
+                startTime: data.startTime,
+                endTime: data.endTime,
+                resourceId: response.resourceId,
+                clientId: response.clientId,
+                type: response.type,
+                status: response.status,
+                notes: response.notes || "",
+                color: response.color,
+                careWorker: response.careWorker,
+                client: response.client,
+            }
+
             if (isNew) {
                 dispatch(addEvent(eventData))
-                console.log("Created new appointment:", eventData)
-                toast.success("Appointment created successfully")
             } else {
                 dispatch(updateEvent(eventData))
-                console.log("Updated appointment:", eventData)
-                toast.success("Appointment updated successfully")
             }
 
             onClose()
@@ -323,7 +359,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         if (!event?.id) return
 
         try {
-            // Dispatch to Redux store
+            await deleteSchedule(event.id).unwrap()
             dispatch(deleteEvent(event.id))
             console.log("Deleted appointment:", event.id)
             toast.success("Appointment deleted successfully")
@@ -353,15 +389,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                         <Select
                                             onValueChange={(value) => {
                                                 field.onChange(value)
-                                                // Auto-fill charge rate when client is selected
-                                                const selectedClient = clients.find((c) => c.id === value)
-                                                if (selectedClient && selectedClient.chargeRate) {
-                                                    // Round to nearest 5
-                                                    const roundedRate = Math.round(selectedClient.chargeRate / 5) * 5
-                                                    // Ensure the charge rate is within the allowed range
-                                                    const rate = Math.min(Math.max(roundedRate, 25), 50)
-                                                    form.setValue("chargeRate", rate)
-                                                }
                                             }}
                                             defaultValue={field.value}
                                             value={field.value}
@@ -515,9 +542,9 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                                     const dateToCheck = new Date(year, month, day)
                                                                     const isSelected =
                                                                         field.value &&
-                                                                        dateToCheck.getDate() === field.value.getDate() &&
-                                                                        dateToCheck.getMonth() === field.value.getMonth() &&
-                                                                        dateToCheck.getFullYear() === field.value.getFullYear()
+                                                                        dateToCheck.getDate() === new Date(field.value).getDate() &&
+                                                                        dateToCheck.getMonth() === new Date(field.value).getMonth() &&
+                                                                        dateToCheck.getFullYear() === new Date(field.value).getFullYear()
 
                                                                     const isToday =
                                                                         dateToCheck.getDate() === new Date().getDate() &&
@@ -640,61 +667,54 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
-                                name="chargeRate"
+                                name="status"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Client Charge Rate (CAD/hour)</FormLabel>
-                                        <Select
-                                            onValueChange={(value) => field.onChange(Number(value))}
-                                            defaultValue={field.value?.toString()}
-                                            value={field.value?.toString()}
-                                        >
+                                        <FormLabel>Status</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                    <SelectValue placeholder="Select charge rate" />
+                                                    <SelectValue placeholder="Select status" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                {chargeRateOptions.map((option) => (
-                                                    <SelectItem key={option.value} value={option.value.toString()}>
-                                                        {option.label}
-                                                    </SelectItem>
-                                                ))}
+                                                <SelectItem value="PENDING">Pending</SelectItem>
+                                                <SelectItem value="CONFIRMED">Confirmed</SelectItem>
+                                                <SelectItem value="COMPLETED">Completed</SelectItem>
+                                                <SelectItem value="CANCELED">Canceled</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormDescription>Range: 25-50 CAD per hour</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
 
-                        <FormField
-                            control={form.control}
-                            name="status"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Status</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="chargeRate"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Charge Rate (£)</FormLabel>
                                         <FormControl>
-                                            <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                <SelectValue placeholder="Select status" />
-                                            </SelectTrigger>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                className={`w-full rounded-md border px-3 py-2 ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
+                                                {...field}
+                                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                                            />
                                         </FormControl>
-                                        <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                            <SelectItem value="PENDING">Pending</SelectItem>
-                                            <SelectItem value="CONFIRMED">Confirmed</SelectItem>
-                                            <SelectItem value="COMPLETED">Completed</SelectItem>
-                                            <SelectItem value="CANCELED">Canceled</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                        <FormDescription>Optional charge rate for this appointment</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
                         <FormField
                             control={form.control}
@@ -746,4 +766,3 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         </Dialog>
     )
 }
-

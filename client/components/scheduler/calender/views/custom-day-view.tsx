@@ -20,6 +20,10 @@ import { cn } from "../../../../lib/utils"
 import { toast } from "sonner"
 import type { AppointmentEvent } from "../types"
 
+// ==============================
+// TYPES & INTERFACES
+// ==============================
+
 interface CustomDayViewProps {
     date: Date
     events: AppointmentEvent[]
@@ -60,6 +64,9 @@ export function CustomDayView({
     spaceTheme = false,
     showSidebar = true,
 }: CustomDayViewProps) {
+    // ==============================
+    // STATE & REFS
+    // ==============================
     const containerRef = useRef<HTMLDivElement>(null)
     const timelineRef = useRef<HTMLDivElement>(null)
     const [scrollPosition, setScrollPosition] = useState(0)
@@ -71,7 +78,9 @@ export function CustomDayView({
     const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
     const eventRefs = useRef<{ [key: string]: HTMLElement }>({})
 
-    // Constants for grid calculations
+    // ==============================
+    // CONSTANTS & GRID CALCULATIONS
+    // ==============================
     const startHour = min.getHours()
     const endHour = max.getHours()
     const slotHeight = 12 // Height in pixels for each 10-minute slot
@@ -91,135 +100,160 @@ export function CustomDayView({
 
     // Filter events for the current day
     const dayEvents = useMemo(() => {
-        return events.filter((event) => moment(event.start).isSame(date, "day"))
-    }, [events, date])
+        console.log('Filtering events for date:', date.toISOString());
+        console.log('Total events:', events.length);
+
+        const filteredEvents = events.filter((event) => {
+            const eventDate = moment(event.start);
+            const isSameDay = eventDate.isSame(date, "day");
+            console.log('Event:', event.id, 'Date:', eventDate.format(), 'Is same day:', isSameDay);
+            return isSameDay;
+        });
+
+        console.log('Filtered events for day:', filteredEvents.length);
+        return filteredEvents;
+    }, [events, date]);
+
+    // ==============================
+    // EFFECTS & DATA INITIALIZATION
+    // ==============================
 
     // Initialize display events
     useEffect(() => {
+        console.log('Initializing display events for day view');
         const eventMap: { [key: string]: AppointmentEvent } = {}
         dayEvents.forEach((event) => {
-            eventMap[event.id] = { ...event }
-        })
-        setDisplayEvents(eventMap)
-    }, [dayEvents])
+            // Ensure dates are properly parsed
+            const processedEvent = {
+                ...event,
+                start: moment(event.start).toDate(),
+                end: moment(event.end).toDate(),
+                date: moment(event.date).toDate(),
+            };
+            console.log('Processing event:', event.id, 'Start:', processedEvent.start.toISOString());
+            eventMap[event.id] = processedEvent;
+        });
+        setDisplayEvents(eventMap);
+    }, [dayEvents]);
 
     // Calculate positions for events
     useEffect(() => {
-        if (!timelineRef.current) return
+        if (!timelineRef.current) return;
 
-        const positions: { [key: string]: any } = {}
-        const containerWidth = timelineRef.current.clientWidth - 60 // Subtract time label width
+        try {
+            console.log('Calculating positions for events');
+            const positions: { [key: string]: any } = {};
+            const containerWidth = timelineRef.current.clientWidth - 60; // Subtract time label width
 
-        // Sort events by start time to handle overlaps properly
-        const sortedEvents = [...dayEvents].sort((a, b) => moment(a.start).valueOf() - moment(b.start).valueOf())
+            // Sort events by start time to handle overlaps properly
+            const sortedEvents = [...dayEvents].sort((a, b) => moment(a.start).valueOf() - moment(b.start).valueOf());
+            console.log('Sorted events:', sortedEvents.length);
 
-        // Map to track columns by time slot
-        const timeSlotColumns: { [key: string]: Set<number> } = {}
+            sortedEvents.forEach((event) => {
+                const eventStart = moment(event.start);
+                const eventEnd = moment(event.end);
 
-        sortedEvents.forEach((event) => {
-            const eventStart = moment(event.start)
-            const eventEnd = moment(event.end)
+                // Calculate position based on time
+                const startMinutes = (eventStart.hours() - startHour) * 60 + eventStart.minutes();
+                const endMinutes = (eventEnd.hours() - startHour) * 60 + eventEnd.minutes();
 
-            // Calculate position based on time
-            const startMinutes = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
-            const endMinutes = (eventEnd.hours() - startHour) * 60 + eventEnd.minutes()
+                // Snap to grid
+                const roundedStartMinutes = Math.round(startMinutes / minutesPerSlot) * minutesPerSlot;
+                const roundedEndMinutes = Math.round(endMinutes / minutesPerSlot) * minutesPerSlot;
+                const roundedDuration = roundedEndMinutes - roundedStartMinutes;
 
-            // Snap to grid
-            const roundedStartMinutes = Math.round(startMinutes / minutesPerSlot) * minutesPerSlot
-            const roundedEndMinutes = Math.round(endMinutes / minutesPerSlot) * minutesPerSlot
-            const roundedDuration = roundedEndMinutes - roundedStartMinutes
+                const top = (roundedStartMinutes / minutesPerSlot) * slotHeight;
+                const height = Math.max((roundedDuration / minutesPerSlot) * slotHeight, 20);
 
-            const top = (roundedStartMinutes / minutesPerSlot) * slotHeight
-            const height = Math.max((roundedDuration / minutesPerSlot) * slotHeight, 20)
+                // Find overlapping events
+                const overlappingEvents = dayEvents.filter((otherEvent) => {
+                    if (otherEvent.id === event.id) return false;
+                    const otherStart = moment(otherEvent.start);
+                    const otherEnd = moment(otherEvent.end);
+                    return (
+                        (eventStart.isBefore(otherEnd) && eventEnd.isAfter(otherStart)) ||
+                        (otherStart.isBefore(eventEnd) && otherEnd.isAfter(eventStart))
+                    );
+                });
 
-            // Find overlapping events
-            const overlappingEvents = dayEvents.filter((otherEvent) => {
-                if (otherEvent.id === event.id) return false
-                const otherStart = moment(otherEvent.start)
-                const otherEnd = moment(otherEvent.end)
-                return (
-                    (eventStart.isBefore(otherEnd) && eventEnd.isAfter(otherStart)) ||
-                    (otherStart.isBefore(eventEnd) && otherEnd.isAfter(eventStart))
-                )
-            })
+                // Find an available column
+                let column = 0;
+                const usedColumns = new Set<number>();
 
-            // Find an available column
-            let column = 0
-            const usedColumns = new Set<number>()
+                // Get columns used by overlapping events
+                overlappingEvents.forEach((otherEvent) => {
+                    if (positions[otherEvent.id]) {
+                        usedColumns.add(positions[otherEvent.id].column);
+                    }
+                });
 
-            // Get columns used by overlapping events
-            overlappingEvents.forEach((otherEvent) => {
-                if (positions[otherEvent.id]) {
-                    usedColumns.add(positions[otherEvent.id].column)
+                // Find the first available column
+                while (usedColumns.has(column)) {
+                    column++;
                 }
-            })
 
-            // Find the first available column
-            while (usedColumns.has(column)) {
-                column++
+                // Calculate total columns needed
+                const totalColumns = Math.max(
+                    1,
+                    ...overlappingEvents.filter((e) => positions[e.id]).map((e) => positions[e.id].column + 1),
+                    column + 1,
+                );
+
+                // Calculate width and position
+                const columnWidth = containerWidth / totalColumns;
+                const left = 60 + column * columnWidth;
+                const width = columnWidth - 4; // Small gap between cards
+
+                // Store position information
+                positions[event.id] = {
+                    top,
+                    left,
+                    width,
+                    height,
+                    column,
+                    totalColumns,
+                    startMinutes: roundedStartMinutes,
+                    durationMinutes: roundedDuration,
+                    originalEvent: { ...event },
+                };
+            });
+
+            console.log('Calculated positions:', Object.keys(positions).length);
+            setEventPositions(positions);
+        } catch (error) {
+            console.error('Error calculating event positions:', error);
+        }
+    }, [dayEvents, timelineRef.current, startHour, minutesPerSlot, slotHeight]);
+
+    // Handle window resize to recalculate event positions
+    useEffect(() => {
+        const handleResize = () => {
+            // Force recalculation of event positions when window is resized
+            if (timelineRef.current) {
+                const containerWidth = timelineRef.current.clientWidth - 60
+
+                // Update positions with new container width
+                setEventPositions((prev) => {
+                    const updated = { ...prev }
+
+                    // Recalculate widths for all events
+                    Object.keys(updated).forEach((eventId) => {
+                        const pos = updated[eventId]
+                        const columnWidth = containerWidth / pos.totalColumns
+                        updated[eventId] = {
+                            ...pos,
+                            width: columnWidth - 4,
+                        }
+                    })
+
+                    return updated
+                })
             }
-
-            // Calculate total columns needed
-            const totalColumns = Math.max(
-                1,
-                ...overlappingEvents.filter((e) => positions[e.id]).map((e) => positions[e.id].column + 1),
-                column + 1,
-            )
-
-            // Calculate width and position
-            const columnWidth = containerWidth / totalColumns
-            const left = 60 + column * columnWidth
-            const width = columnWidth - 4 // Small gap between cards
-
-            // Store position information
-            positions[event.id] = {
-                top,
-                left,
-                width,
-                height,
-                column,
-                totalColumns,
-                startMinutes: roundedStartMinutes,
-                durationMinutes: roundedDuration,
-                originalEvent: { ...event },
-            }
-
-            // Update time slot column tracking
-            const startSlot = Math.floor(roundedStartMinutes / minutesPerSlot)
-            const endSlot = Math.ceil(roundedEndMinutes / minutesPerSlot)
-
-            for (let i = startSlot; i < endSlot; i++) {
-                if (!timeSlotColumns[i]) {
-                    timeSlotColumns[i] = new Set()
-                }
-                timeSlotColumns[i].add(column)
-            }
-        })
-
-        // Update event columns based on the full day's layout
-        for (const eventId in positions) {
-            const pos = positions[eventId]
-            const startSlot = Math.floor(pos.startMinutes / minutesPerSlot)
-            const endSlot = Math.ceil((pos.startMinutes + pos.durationMinutes) / minutesPerSlot)
-
-            // Find max columns for all time slots this event spans
-            let maxColumns = 1
-            for (let i = startSlot; i < endSlot; i++) {
-                if (timeSlotColumns[i]) {
-                    maxColumns = Math.max(maxColumns, timeSlotColumns[i].size)
-                }
-            }
-
-            // Update width based on maximum columns
-            const columnWidth = containerWidth / maxColumns
-            const width = columnWidth - 4
-
-            positions[eventId].width = width
-            positions[eventId].totalColumns = maxColumns
         }
 
-        setEventPositions(positions)
-    }, [dayEvents, startHour, slotHeight, timelineRef])
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [timelineRef, dayEvents])
 
     // Scroll to current time on initial load
     useEffect(() => {
@@ -234,9 +268,53 @@ export function CustomDayView({
         }
     }, [date, startHour, slotHeight])
 
+    // Add custom scrollbar styles to the container
+    useEffect(() => {
+        if (containerRef.current) {
+            const style = document.createElement("style")
+            style.textContent = `
+              .calendar-scrollbar::-webkit-scrollbar {
+                width: 8px;
+              }
+              .calendar-scrollbar::-webkit-scrollbar-track {
+                background: ${spaceTheme ? "#1e293b" : "#f1f5f9"};
+                border-radius: 4px;
+              }
+              .calendar-scrollbar::-webkit-scrollbar-thumb {
+                background: ${spaceTheme ? "#475569" : "#cbd5e1"};
+                border-radius: 4px;
+              }
+              .calendar-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: ${spaceTheme ? "#64748b" : "#94a3b8"};
+              }
+            `
+            document.head.appendChild(style)
+
+            return () => {
+                document.head.removeChild(style)
+            }
+        }
+    }, [spaceTheme])
+
+    // ==============================
+    // SCROLL HANDLERS
+    // ==============================
+
     const handleScroll = () => {
         if (containerRef.current) {
-            setScrollPosition(containerRef.current.scrollTop)
+            const scrollTop = containerRef.current.scrollTop
+            const maxScroll = totalHeight - containerRef.current.clientHeight
+
+            // Prevent overscrolling
+            if (scrollTop < 0) {
+                containerRef.current.scrollTop = 0
+                setScrollPosition(0)
+            } else if (scrollTop > maxScroll) {
+                containerRef.current.scrollTop = maxScroll
+                setScrollPosition(maxScroll)
+            } else {
+                setScrollPosition(scrollTop)
+            }
         }
     }
 
@@ -253,6 +331,10 @@ export function CustomDayView({
             setScrollPosition(containerRef.current.scrollTop)
         }
     }
+
+    // ==============================
+    // TIME & POSITION UTILITIES
+    // ==============================
 
     // Format time from minutes since start of day
     const formatTimeFromMinutes = (minutesFromStart: number) => {
@@ -279,6 +361,10 @@ export function CustomDayView({
     const getSnapPosition = (y: number) => {
         return Math.round(y / slotHeight) * slotHeight
     }
+
+    // ==============================
+    // DRAG & DROP HANDLERS
+    // ==============================
 
     // Handle drag start
     const handleDragStart = (eventId: string) => {
@@ -322,8 +408,15 @@ export function CustomDayView({
         const rawNewTop = position.top + info.offset.y
         const snappedTop = getSnapPosition(rawNewTop)
 
+        // Prevent dragging above the timeline
+        const clampedTop = Math.max(0, snappedTop)
+
+        // Prevent dragging below the timeline
+        const maxTop = totalHeight - position.height
+        const boundedTop = Math.min(clampedTop, maxTop)
+
         // Calculate new time
-        const minutesFromStart = getTimeFromGridPosition(snappedTop)
+        const minutesFromStart = getTimeFromGridPosition(boundedTop)
         const hours = Math.floor(minutesFromStart / 60) + startHour
         const minutes = minutesFromStart % 60
 
@@ -369,7 +462,7 @@ export function CustomDayView({
             ...prev,
             [eventId]: {
                 ...prev[eventId],
-                top: (updatedMinutesFromStart / minutesPerSlot) * slotHeight,
+                top: Math.max(0, (updatedMinutesFromStart / minutesPerSlot) * slotHeight),
                 startMinutes: updatedMinutesFromStart,
                 originalEvent: updatedEvent,
             },
@@ -378,7 +471,7 @@ export function CustomDayView({
         // Call update callback
         if (onEventUpdate) {
             onEventUpdate(updatedEvent)
-            toast.success(`Event updated to ${newStartDate.format("h:mm A")}`)
+            toast.success(`${updatedEvent.title} updated to ${newStartDate.format("h:mm A")}`)
         }
 
         // Reset drag state
@@ -387,41 +480,46 @@ export function CustomDayView({
         setIsDragging(false)
     }
 
-    // Style helpers
-    const getEventBackground = (event: AppointmentEvent) => {
+    // ==============================
+    // EVENT STYLING & DISPLAY HELPERS
+    // ==============================
+
+    // Get background color based on event type
+    const getEventBackground = (event: AppointmentEvent, isActive = false) => {
         if (spaceTheme) {
             switch (event.type) {
                 case "HOME_VISIT":
-                    return "bg-green-900/30"
+                    return isActive ? "bg-green-900/50" : "bg-green-900/30"
                 case "VIDEO_CALL":
-                    return "bg-blue-900/30"
+                    return isActive ? "bg-blue-900/50" : "bg-blue-900/30"
                 case "HOSPITAL":
-                    return "bg-green-900/30"
+                    return isActive ? "bg-green-900/50" : "bg-green-900/30"
                 case "IN_PERSON":
-                    return "bg-amber-900/30"
+                    return isActive ? "bg-amber-900/50" : "bg-amber-900/30"
                 case "AUDIO_CALL":
-                    return "bg-red-900/30"
+                    return isActive ? "bg-red-900/50" : "bg-red-900/30"
                 default:
-                    return "bg-slate-800/30"
+                    return isActive ? "bg-slate-800/50" : "bg-slate-800/30"
             }
         } else {
             switch (event.type) {
                 case "HOME_VISIT":
-                    return "bg-green-50"
+                    return isActive ? "bg-green-100" : "bg-green-50"
                 case "VIDEO_CALL":
-                    return "bg-blue-50"
+                    return isActive ? "bg-blue-100" : "bg-blue-50"
                 case "HOSPITAL":
-                    return "bg-green-50"
+                    return isActive ? "bg-green-100" : "bg-green-50"
                 case "IN_PERSON":
-                    return "bg-amber-50"
+                    return isActive ? "bg-amber-100" : "bg-amber-50"
                 case "AUDIO_CALL":
-                    return "bg-red-50"
+                    return isActive ? "bg-red-100" : "bg-red-50"
                 default:
-                    return "bg-gray-50"
+                    return isActive ? "bg-gray-100" : "bg-gray-50"
             }
         }
     }
 
+    // Get accent color for event border
     const getEventAccentColor = (event: AppointmentEvent) => {
         switch (event.type) {
             case "HOME_VISIT":
@@ -439,6 +537,7 @@ export function CustomDayView({
         }
     }
 
+    // Get icon for event type
     const getEventIcon = (type: string) => {
         switch (type) {
             case "HOME_VISIT":
@@ -456,6 +555,7 @@ export function CustomDayView({
         }
     }
 
+    // Get label for event type
     const getEventTypeLabel = (type: string) => {
         switch (type) {
             case "HOME_VISIT":
@@ -473,6 +573,7 @@ export function CustomDayView({
         }
     }
 
+    // Check if a time slot has events
     const hasEventsInTimeSlot = (timeSlot: Date) => {
         const slotStart = moment(timeSlot)
         const slotEnd = moment(slotStart).add(minutesPerSlot, "minutes")
@@ -499,7 +600,10 @@ export function CustomDayView({
         return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
     }
 
-    // Style classes
+    // ==============================
+    // THEME & STYLE CLASSES
+    // ==============================
+
     const headerTextClass = spaceTheme ? "text-white" : "text-gray-700"
     const timelineClass = spaceTheme ? "bg-slate-900" : "bg-white"
     const timeLabelsClass = spaceTheme ? "text-slate-400" : "text-gray-500"
@@ -510,6 +614,10 @@ export function CustomDayView({
     const tooltipClass = spaceTheme
         ? "bg-slate-800 text-white border border-slate-700"
         : "bg-white text-black border border-gray-200"
+
+    // ==============================
+    // RENDER COMPONENT
+    // ==============================
 
     return (
         <div className="h-full flex flex-col">
@@ -565,6 +673,10 @@ export function CustomDayView({
                     ref={containerRef}
                     className={`flex-1 overflow-y-auto overflow-x-hidden relative border rounded-xl shadow-sm ${timelineClass} h-full calendar-scrollbar`}
                     onScroll={handleScroll}
+                    style={{
+                        minHeight: "300px",
+                        maxHeight: "calc(100vh - 200px)",
+                    }}
                 >
                     <div className="relative min-h-full" style={{ height: `${totalHeight}px` }} ref={timelineRef}>
                         {/* Time labels on the left with improved styling */}
@@ -639,21 +751,40 @@ export function CustomDayView({
                                 </div>
                             )}
 
-                            {/* Events with improved styling */}
+                            {/* Empty state when no events */}
+                            {dayEvents.length === 0 && (
+                                <div
+                                    className={`absolute inset-0 flex items-center justify-center ${spaceTheme ? "text-slate-400" : "text-gray-400"} text-sm`}
+                                >
+                                    <div className="text-center p-6">
+                                        <Calendar className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                                        <p>No events scheduled for this day</p>
+                                        <p className="text-xs mt-1 opacity-70">Events will appear here when scheduled</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Event cards */}
                             {dayEvents.map((event) => {
                                 const position = eventPositions[event.id]
                                 if (!position) return null
 
                                 const displayEvent = displayEvents[event.id] || event
-                                const bgClass = getEventBackground(displayEvent)
+                                const isActive = activeEvent === event.id
+                                const isHovered = hoveredEvent === event.id && !isDragging
+                                const bgClass = getEventBackground(displayEvent, isActive)
                                 const accentColor = getEventAccentColor(displayEvent)
                                 const typeLabel = getEventTypeLabel(displayEvent.type)
                                 const icon = getEventIcon(displayEvent.type)
-                                const isActive = activeEvent === event.id
-                                const isHovered = hoveredEvent === event.id && !isDragging
                                 const staffMember = staffMembers.find((s) => s.id === event.resourceId)
                                 const staffColor = staffMember?.color || "#888888"
                                 const duration = getEventDuration(displayEvent)
+
+                                // Determine content to show based on card size
+                                const showType = position.height >= 50
+                                const showStaff = position.height >= 60
+                                const showDescription = position.height >= 80 && displayEvent.notes
+                                const isTinyCard = position.height < 40
 
                                 return (
                                     <div
@@ -662,10 +793,11 @@ export function CustomDayView({
                                             if (el) eventRefs.current[event.id] = el
                                         }}
                                         className={cn(
-                                            "absolute p-2.5 rounded-lg shadow-sm cursor-grab active:cursor-grabbing event-card transition-all",
+                                            "absolute p-1.5 rounded-lg shadow-sm cursor-grab active:cursor-grabbing event-card transition-all overflow-hidden",
                                             bgClass,
-                                            isActive ? "ring-2 ring-primary shadow-lg" : "",
+                                            isActive ? "ring-2 ring-primary shadow-lg z-30" : "",
                                             isHovered ? "brightness-95" : "",
+                                            isTinyCard ? "py-0.5 px-1" : "",
                                         )}
                                         style={{
                                             top: `${position.top}px`,
@@ -708,53 +840,65 @@ export function CustomDayView({
                                             }}
                                         />
 
-                                        {/* Event content with improved layout */}
-                                        <div className="flex flex-col h-full relative z-0">
-                                            {/* Event header with title */}
-                                            <div className="flex items-start justify-between mb-1">
-                                                <div className={`text-xs font-semibold truncate ${spaceTheme ? "text-white" : ""}`}>
+                                        {/* Event content with improved layout for overflow handling */}
+                                        <div className="flex flex-col h-full relative z-0 overflow-hidden">
+                                            {/* Event header with title - improved overflow handling */}
+                                            <div className="flex items-start justify-between mb-0.5">
+                                                <div
+                                                    className={`text-xs font-semibold truncate max-w-[calc(100%-40px)] ${spaceTheme ? "text-white" : ""}`}
+                                                >
                                                     {displayEvent.title}
                                                 </div>
 
                                                 {/* Duration badge */}
-                                                <div
-                                                    className={`text-[10px] px-1.5 py-0.5 rounded-full ${spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
-                                                        }`}
-                                                >
-                                                    {duration}
-                                                </div>
+                                                {!isTinyCard && (
+                                                    <div
+                                                        className={`text-[9px] px-1 py-0.5 rounded-full flex-shrink-0 ${spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"}`}
+                                                    >
+                                                        {duration}
+                                                    </div>
+                                                )}
                                             </div>
 
                                             {/* Time range with icon */}
                                             <div
-                                                className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-1`}
+                                                className={`text-[10px] ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-0.5 truncate`}
                                             >
-                                                <Clock className="h-3 w-3" />
-                                                <span>
+                                                <Clock className="h-2.5 w-2.5 flex-shrink-0" />
+                                                <span className="truncate whitespace-nowrap">
                                                     {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
                                                 </span>
                                             </div>
 
                                             {/* Event type with icon - show if there's enough space */}
-                                            {position.height >= 50 && (
+                                            {showType && (
                                                 <div
-                                                    className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-1 mt-1.5`}
+                                                    className={`text-[10px] ${spaceTheme ? "text-slate-300" : "text-gray-600"} flex items-center gap-0.5 mt-0.5 truncate`}
                                                 >
-                                                    {icon}
-                                                    <span>{typeLabel}</span>
+                                                    <span className="flex-shrink-0">{icon}</span>
+                                                    <span className="truncate">{typeLabel}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Description - show if there's enough space */}
+                                            {showDescription && (
+                                                <div
+                                                    className={`text-[10px] ${spaceTheme ? "text-slate-400" : "text-gray-500"} mt-0.5 line-clamp-2`}
+                                                >
+                                                    {displayEvent.notes}
                                                 </div>
                                             )}
 
                                             {/* Staff info - show if there's enough space */}
-                                            {position.height >= 60 && (
-                                                <div className="mt-auto flex items-center gap-1.5 pt-1.5">
+                                            {showStaff && (
+                                                <div className="mt-auto flex items-center gap-1 pt-1">
                                                     <div
-                                                        className="w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] text-white shadow-sm"
+                                                        className="w-3.5 h-3.5 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] text-white shadow-sm"
                                                         style={{ backgroundColor: staffColor }}
                                                     >
                                                         {staffMember?.name?.[0] || "?"}
                                                     </div>
-                                                    <span className={`text-xs ${spaceTheme ? "text-slate-300" : "text-gray-600"} truncate`}>
+                                                    <span className={`text-[10px] ${spaceTheme ? "text-slate-300" : "text-gray-600"} truncate`}>
                                                         {staffMember?.name || "Staff"}
                                                     </span>
                                                 </div>
@@ -764,15 +908,15 @@ export function CustomDayView({
                                         {/* Time tooltip with improved styling */}
                                         {isActive && dragTooltip && dragTooltip.eventId === event.id && (
                                             <div
-                                                className={`fixed px-3 py-1.5 rounded-md ${tooltipClass} text-xs font-semibold shadow-md z-50 pointer-events-none`}
+                                                className={`fixed px-2 py-1 rounded-md ${tooltipClass} text-xs font-semibold shadow-md z-50 pointer-events-none`}
                                                 style={{
-                                                    top: `${eventRefs.current[event.id]?.getBoundingClientRect().top - 35}px`,
+                                                    top: `${eventRefs.current[event.id]?.getBoundingClientRect().top - 30}px`,
                                                     left: `${eventRefs.current[event.id]?.getBoundingClientRect().left}px`,
                                                     opacity: 1,
                                                 }}
                                             >
-                                                <div className="flex items-center gap-1.5">
-                                                    <Clock className="h-3.5 w-3.5" />
+                                                <div className="flex items-center gap-1 text-xs whitespace-nowrap">
+                                                    <Clock className="h-3 w-3" />
                                                     {dragTooltip.time}
                                                 </div>
                                             </div>

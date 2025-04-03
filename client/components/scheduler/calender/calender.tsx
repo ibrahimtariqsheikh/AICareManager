@@ -1,30 +1,81 @@
 "use client"
 
-import { useState, useMemo, useRef } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 import moment from "moment"
+import { format } from "date-fns"
 import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useMediaQuery } from "../../../hooks/use-mobile"
 import { useTheme } from "next-themes"
-import { CalendarIcon, Moon, PlusCircle, Sun } from "lucide-react"
+import { CalendarIcon, Moon, PlusCircle, PlusIcon, Sun } from "lucide-react"
 import { Button } from "../../ui/button"
 import type { AppointmentEvent } from "./types"
+import { useGetSchedulesQuery } from "../../../state/api"
+import { setEvents } from "../../../state/slices/userSlice"
 
 import { CalendarHeader } from "./calender-header"
 import { AppointmentForm } from "../appointment-form"
 
 import { CustomCalendar } from "./custom-calender"
 import type { CalendarProps, StaffMember, Client, SidebarMode } from "./types"
-import { Card } from "../../ui/card"
 import { setClients, setCareWorkers, setOfficeStaff, setSidebarMode } from "../../../state/slices/userSlice"
 import { useAppSelector, useAppDispatch } from "../../../state/redux"
 
 import { CalendarSidebar } from "./calender-sidebar"
 import { getRandomColor } from "./calender-utils"
 
+function deserializeEvent(event: any): AppointmentEvent {
+    try {
+        console.log('Deserializing event:', event);
+
+        // Helper function to safely parse dates
+        const parseDate = (dateStr: string): Date => {
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) {
+                    console.warn('Invalid date string:', dateStr);
+                    return new Date();
+                }
+                return date;
+            } catch (error) {
+                console.warn('Error parsing date:', dateStr, error);
+                return new Date();
+            }
+        };
+
+        // Parse the dates
+        const startDate = parseDate(event.start);
+        const endDate = parseDate(event.end);
+        const eventDate = parseDate(event.date);
+
+        const deserialized = {
+            ...event,
+            start: startDate,
+            end: endDate,
+            date: eventDate,
+            // Ensure these are strings in HH:mm format
+            startTime: event.startTime || format(startDate, "HH:mm"),
+            endTime: event.endTime || format(endDate, "HH:mm"),
+        };
+
+        console.log('Deserialized event:', deserialized);
+        return deserialized;
+    } catch (error) {
+        console.error('Error deserializing event:', error);
+        return {
+            ...event,
+            start: new Date(),
+            end: new Date(),
+            date: new Date(),
+            startTime: "00:00",
+            endTime: "00:00",
+        };
+    }
+}
+
 export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
-    const [currentDate, setCurrentDate] = useState(dateRange.from || new Date())
-    const [activeView, setActiveView] = useState<"day" | "week" | "month">(view)
+    const [currentDate, setCurrentDate] = useState(dateRange?.from || new Date())
+    const [activeView, setActiveView] = useState<"day" | "week" | "month">(view || "week")
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<AppointmentEvent | null>(null)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -45,6 +96,112 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
         loading: isLoading,
     } = useAppSelector((state) => state.user)
 
+    // Get user info from Redux store
+    const { user } = useAppSelector((state) => state.user)
+
+    // Fetch schedules using the API hook
+    const { data: schedulesData, isLoading: isSchedulesLoading } = useGetSchedulesQuery({
+        agencyId: user?.userInfo?.agencyId,
+        startDate: moment(currentDate).startOf(activeView).toISOString(),
+        endDate: moment(currentDate).endOf(activeView).toISOString(),
+    }, {
+        skip: !user?.userInfo?.agencyId,
+    })
+
+    // Debug logs
+    useEffect(() => {
+        console.log('User:', user)
+        console.log('Agency ID:', user?.userInfo?.agencyId)
+        console.log('Schedules Data:', schedulesData)
+        console.log('Events:', events)
+        console.log('Filtered Events:', filteredEvents)
+    }, [user, schedulesData, events, filteredEvents])
+
+    // Update events in Redux when schedules data changes
+    useEffect(() => {
+        if (schedulesData?.data) {
+            console.log('Raw schedules data:', JSON.stringify(schedulesData.data, null, 2));
+            // Transform ScheduleResponse to AppointmentEvent
+            const transformedEvents: AppointmentEvent[] = schedulesData.data
+                .map(schedule => {
+                    try {
+                        // Helper function to safely create and serialize dates
+                        const createDate = (dateStr: string | Date, timeStr?: string): string => {
+                            try {
+                                let date: Date;
+
+                                // If we have a time string, combine it with the date
+                                if (timeStr) {
+                                    const [hours, minutes] = timeStr.split(':').map(Number);
+                                    date = new Date(dateStr);
+                                    date.setHours(hours, minutes, 0, 0);
+                                } else {
+                                    date = new Date(dateStr);
+                                }
+
+                                // Check if the date is valid
+                                if (isNaN(date.getTime())) {
+                                    console.warn('Invalid date string received:', dateStr);
+                                    return new Date().toISOString();
+                                }
+
+                                return date.toISOString();
+                            } catch (error) {
+                                console.warn('Error creating date from:', dateStr, error);
+                                return new Date().toISOString();
+                            }
+                        };
+
+                        // Create base event with required fields
+                        const event: AppointmentEvent = {
+                            id: schedule.id,
+                            title: `${schedule.client?.firstName || 'Client'} with ${schedule.careWorker?.firstName || 'Care Worker'}`,
+                            // Use the date and time strings to create proper ISO dates
+                            start: createDate(schedule.date, schedule.startTime),
+                            end: createDate(schedule.date, schedule.endTime),
+                            date: createDate(schedule.date),
+                            startTime: schedule.startTime || "00:00",
+                            endTime: schedule.endTime || "00:00",
+                            resourceId: schedule.resourceId,
+                            clientId: schedule.clientId,
+                            type: schedule.type || "APPOINTMENT",
+                            status: schedule.status || "PENDING",
+                            notes: schedule.notes || "",
+                            color: schedule.color || getRandomColor(schedule.type),
+                            careWorker: schedule.careWorker || {},
+                            client: schedule.client || {},
+                        };
+
+                        // Ensure all required fields are present
+                        if (!event.id || !event.start || !event.end || !event.date) {
+                            console.warn('Missing required fields in event:', event);
+                            return null;
+                        }
+
+                        console.log('Transformed event:', JSON.stringify(event, null, 2));
+                        return event;
+                    } catch (error) {
+                        console.error('Error transforming schedule:', error);
+                        return null;
+                    }
+                })
+                .filter((event): event is AppointmentEvent => event !== null);
+
+            console.log('All transformed events:', JSON.stringify(transformedEvents, null, 2));
+            dispatch(setEvents(transformedEvents));
+        }
+    }, [schedulesData, dispatch])
+
+    // Update schedule fetch when view or date changes
+    useEffect(() => {
+        // This will trigger a refetch of schedules when the view or date changes
+        if (user?.userInfo?.agencyId) {
+            const startDate = moment(currentDate).startOf(activeView).toISOString()
+            const endDate = moment(currentDate).endOf(activeView).toISOString()
+            console.log('Fetching schedules for:', { startDate, endDate, view: activeView })
+        }
+    }, [currentDate, activeView, user?.userInfo?.agencyId])
+
     // Format staff members for the calendar
     const careWorkerMembers: StaffMember[] = useMemo(() => {
         return careWorkers.map((staff) => ({
@@ -53,7 +210,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
             role: staff.role || "CARE_WORKER",
             color: staff.color || getRandomColor(staff.id),
             avatar: staff.profile?.avatarUrl || "",
-            selected: staff.selected || true,
+            selected: true,
         }))
     }, [careWorkers])
 
@@ -64,7 +221,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
             role: staff.role || "OFFICE_STAFF",
             color: staff.color || getRandomColor(staff.id),
             avatar: staff.profile?.avatarUrl || "",
-            selected: staff.selected || true,
+            selected: true,
         }))
     }, [officeStaff])
 
@@ -75,7 +232,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
             name: `${client.firstName} ${client.lastName}`,
             color: client.color || getRandomColor(client.id),
             avatar: client.profile?.avatarUrl || "",
-            selected: client.selected || true,
+            selected: true,
         }))
     }, [clients])
 
@@ -158,13 +315,16 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
 
     const toggleSearch = () => {
         setIsSearchOpen(!isSearchOpen)
+        if (!isSearchOpen && searchInputRef.current) {
+            setTimeout(() => searchInputRef.current?.focus(), 100)
+        }
         if (isSearchOpen) {
             setSearchQuery("")
         }
     }
 
     // Media queries for responsive design
-    const isMobile = useMediaQuery("(max-width: 640px)")
+    const isMobile = useMediaQuery("(max-width: 768px)")
 
     // Format the date range for display
     const formatDateRange = () => {
@@ -172,7 +332,7 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
             return moment(currentDate).format("MMM D, YYYY")
         } else if (activeView === "week") {
             const startDate = moment(currentDate).startOf("week").format("MMM D")
-            const endDate = moment(currentDate).endOf("week").format("MMM D")
+            const endDate = moment(currentDate).endOf("week").format("MMM D, YYYY")
             return `${startDate} - ${endDate}`
         } else {
             return moment(currentDate).format("MMMM YYYY")
@@ -218,10 +378,24 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                 start: new Date(event.start),
                 end: new Date(event.end),
                 date: new Date(event.start),
+                startTime: format(new Date(event.start), "HH:mm"),
+                endTime: format(new Date(event.end), "HH:mm"),
+                type: "APPOINTMENT",
+                status: "PENDING",
+                notes: "",
             }
             setEditingEvent(defaultEvent as any)
         } else {
-            setEditingEvent(event)
+            // For existing events, ensure all required fields are present
+            const formattedEvent = {
+                ...event,
+                start: new Date(event.start),
+                end: new Date(event.end),
+                date: new Date(event.date),
+                startTime: event.startTime || format(new Date(event.start), "HH:mm"),
+                endTime: event.endTime || format(new Date(event.end), "HH:mm"),
+            }
+            setEditingEvent(formattedEvent)
         }
         setIsFormOpen(true)
         if (onEventSelect && event.id) {
@@ -261,148 +435,213 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     }
 
     // Check if we have any data
-    const hasNoData = !isLoading && filteredEvents.length === 0 && events.length === 0
+    const hasNoData = !isSchedulesLoading && !events.length && !filteredEvents.length
+
+    // Update the events and filteredEvents usage in the component
+    const deserializedEvents = events.map(deserializeEvent);
+    const deserializedFilteredEvents = filteredEvents.map(deserializeEvent);
 
     // Add performance optimization to prevent unnecessary re-renders
-    const memoizedCalendar = useMemo(
-        () => (
+    const memoizedCalendar = useMemo(() => {
+        console.log('Rendering calendar with:', {
+            events: deserializedFilteredEvents.length,
+            currentDate: currentDate.toISOString(),
+            activeView,
+            isSchedulesLoading,
+            staffMembers: [...careWorkers, ...officeStaff].length,
+            isMobile,
+            sidebarMode,
+            clients: clients.length,
+            theme
+        });
+
+        // Log a sample event if available
+        if (deserializedFilteredEvents.length > 0) {
+            console.log('Sample event:', JSON.stringify(deserializedFilteredEvents[0], null, 2));
+        }
+
+        return (
             <CustomCalendar
-                events={filteredEvents}
+                events={deserializedFilteredEvents}
                 currentDate={currentDate}
                 activeView={activeView}
                 onSelectEvent={handleEventSelect}
                 onEventUpdate={handleEventUpdate}
                 onNavigate={handleDateSelect}
-                isLoading={isLoading}
-                staffMembers={[...careWorkerMembers, ...officeStaffMembers]}
+                isLoading={isSchedulesLoading}
+                staffMembers={[...careWorkers, ...officeStaff]}
                 isMobile={isMobile}
                 sidebarMode={sidebarMode}
-                clients={formattedClients}
+                clients={clients}
                 spaceTheme={theme === "dark"}
             />
-        ),
-        [
-            filteredEvents,
-            currentDate,
-            activeView,
-            isLoading,
-            careWorkerMembers,
-            officeStaffMembers,
-            isMobile,
-            sidebarMode,
-            formattedClients,
-            theme,
-        ],
-    )
+        );
+    }, [
+        deserializedFilteredEvents,
+        currentDate,
+        activeView,
+        isSchedulesLoading,
+        careWorkers,
+        officeStaff,
+        isMobile,
+        sidebarMode,
+        clients,
+        theme,
+    ]);
+
+    const isDark = theme === "dark"
 
     return (
-        <div className={`flex flex-col h-full w-full relative ${theme === "dark" ? "dark-theme" : ""}`}>
-            {/* Dark mode background */}
-            {theme === "dark" && (
+        <div className={`flex flex-col h-full w-full relative ${isDark ? "dark-theme" : ""}`}>
+            {/* Dark mode background with improved gradient */}
+            {isDark && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 opacity-90"></div>
+                    <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-green-500/10 blur-3xl rounded-full"></div>
+                    <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-purple-500/10 blur-3xl rounded-full"></div>
                 </div>
             )}
 
-            <div className="flex items-center justify-between gap-2 mb-4 z-10">
-                <div className="flex items-center gap-2">
-                    <CalendarIcon className={`h-5 w-5 ${theme === "dark" ? "text-green-400" : "text-blue-500"}`} />
-                    <h1 className={`text-lg font-semibold ${theme === "dark" ? "text-white" : ""}`}>Calendar</h1>
+            {/* Header with improved spacing and visual hierarchy */}
+            <div className="flex items-center justify-between gap-2 mb-6 z-10 px-1">
+                <div className="flex items-center gap-2.5">
+                    <div className={`p-2 rounded-lg ${isDark ? "bg-slate-800/60" : "bg-slate-100"}`}>
+                        <CalendarIcon className={`h-5 w-5 ${isDark ? "text-green-400" : "text-emerald-500"}`} />
+                    </div>
+                    <h1 className={`text-xl font-semibold ${isDark ? "text-white" : "text-slate-800"}`}>Appointment Calendar</h1>
                 </div>
 
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className={`h-8 w-8 rounded-full ${theme === "dark" ? "bg-slate-800 text-white border-slate-700 hover:bg-slate-700 hover:border-slate-600" : ""}`}
-                >
-                    {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button
+                        onClick={handleCreateAppointment}
+                        size="sm"
+                        className={`hidden sm:flex`}
+                    >
+                        <PlusCircle className="h-4 w-4 mr-1.5" />
+                        New Appointment
+                    </Button>
+
+                </div>
             </div>
 
-            <CalendarHeader
-                activeView={activeView}
-                handleViewChange={handleViewChange}
-                handleNavigate={handleNavigate}
-                formatDateRange={formatDateRange}
-                sidebarMode={sidebarMode}
-                setSidebarMode={handleSetSidebarMode}
-                isSearchOpen={isSearchOpen}
-                toggleSearch={toggleSearch}
-                setEditingEvent={setEditingEvent}
-                setIsFormOpen={setIsFormOpen}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                spaceTheme={theme === "dark"}
-            />
-
-            <div className="flex flex-1 h-full relative z-10">
-                {/* Sidebar - always visible */}
-                <CalendarSidebar
-                    showSidebar={true}
+            {/* Calendar header with improved styling */}
+            <div
+                className={`rounded-t-xl overflow-hidden ${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border z-10 mb-1`}
+            >
+                <CalendarHeader
+                    activeView={activeView}
+                    handleViewChange={handleViewChange}
+                    handleNavigate={handleNavigate}
+                    formatDateRange={formatDateRange}
                     sidebarMode={sidebarMode}
-                    staffMembers={[]}
-                    careWorkers={careWorkerMembers}
-                    officeStaff={officeStaffMembers}
-                    clients={formattedClients}
-                    eventTypes={[]}
-                    toggleStaffSelection={() => { }}
-                    toggleCareWorkerSelection={handleToggleCareWorkerSelection}
-                    toggleOfficeStaffSelection={handleToggleOfficeStaffSelection}
-                    toggleClientSelection={handleToggleClientSelection}
-                    toggleEventTypeSelection={() => { }}
-                    selectAllStaff={() => { }}
-                    deselectAllStaff={() => { }}
-                    selectAllCareWorkers={handleSelectAllCareWorkers}
-                    deselectAllCareWorkers={handleDeselectAllCareWorkers}
-                    selectAllOfficeStaff={handleSelectAllOfficeStaff}
-                    deselectAllOfficeStaff={handleDeselectAllOfficeStaff}
-                    selectAllClients={handleSelectAllClients}
-                    deselectAllClients={handleDeselectAllClients}
                     setSidebarMode={handleSetSidebarMode}
-                    spaceTheme={theme === "dark"}
-                />
+                    isSearchOpen={isSearchOpen}
+                    toggleSearch={toggleSearch}
+                    setEditingEvent={setEditingEvent}
+                    setIsFormOpen={setIsFormOpen}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    searchInputRef={searchInputRef}
 
-                {/* Main calendar area */}
-                <div className="flex-1 h-full overflow-hidden" ref={calendarRef}>
+                />
+            </div>
+
+            {/* Main content area with improved layout */}
+            <div className="flex flex-1 h-full relative z-10 gap-3 overflow-hidden">
+                {/* Sidebar with improved styling */}
+                <div
+                    className={`${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border rounded-lg overflow-hidden transition-all duration-200 ease-in-out`}
+                    style={{ width: isMobile ? "0" : "280px", minWidth: isMobile ? "0" : "280px", opacity: isMobile ? 0 : 1 }}
+                >
+                    {!isMobile && (
+                        <CalendarSidebar
+                            showSidebar={true}
+                            sidebarMode={sidebarMode}
+                            staffMembers={[]}
+                            careWorkers={careWorkerMembers}
+                            officeStaff={officeStaffMembers}
+                            clients={formattedClients}
+
+                            toggleStaffSelection={() => { }}
+                            toggleCareWorkerSelection={handleToggleCareWorkerSelection}
+                            toggleOfficeStaffSelection={handleToggleOfficeStaffSelection}
+                            toggleClientSelection={handleToggleClientSelection}
+
+                            selectAllStaff={() => { }}
+                            deselectAllStaff={() => { }}
+                            selectAllCareWorkers={handleSelectAllCareWorkers}
+                            deselectAllCareWorkers={handleDeselectAllCareWorkers}
+                            selectAllOfficeStaff={handleSelectAllOfficeStaff}
+                            deselectAllOfficeStaff={handleDeselectAllOfficeStaff}
+                            selectAllClients={handleSelectAllClients}
+                            deselectAllClients={handleDeselectAllClients}
+                            setSidebarMode={handleSetSidebarMode}
+
+                        />
+                    )}
+                </div>
+
+                {/* Main calendar area with improved styling */}
+                <div
+                    className={`flex-1 h-full overflow-hidden ${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border rounded-lg`}
+                    ref={calendarRef}
+                >
                     {hasNoData ? (
-                        <Card
-                            className={`flex-1 h-full flex flex-col items-center justify-center p-8 ${theme === "dark" ? "bg-slate-900/60 border-slate-800" : ""}`}
-                        >
+                        <div className="flex-1 h-full flex flex-col items-center justify-center p-8">
                             <div className="text-center max-w-md">
-                                <CalendarIcon
-                                    className={`h-12 w-12 mx-auto mb-4 ${theme === "dark" ? "text-slate-400" : "text-gray-400"}`}
-                                />
-                                <h3 className={`text-xl font-semibold mb-2 ${theme === "dark" ? "text-white" : ""}`}>
-                                    No appointments found
+                                <div
+                                    className={`w-14 h-14 mx-auto mb-6 rounded-full flex items-center justify-center ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                                >
+                                    <CalendarIcon className={`h-6 w-6 ${isDark ? "text-emerald-400" : "text-emerald-500"}`} />
+                                </div>
+                                <h3 className={`text-xl font-semibold mb-3 ${isDark ? "text-white" : "text-slate-800"}`}>
+                                    Create a schedule
                                 </h3>
-                                <p className="text-muted-foreground mb-6">
+                                <p className={`mb-6 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                                     You don't have any appointments scheduled. Create your first appointment to get started.
                                 </p>
-                                <Button onClick={handleCreateAppointment} className="mx-auto">
-                                    <PlusCircle className="h-4 w-4 mr-2" />
+                                <Button
+                                    onClick={handleCreateAppointment}
+                                    className="mx-auto"
+                                >
+                                    <PlusIcon className="h-4 w-4 mr-2" />
                                     Create Appointment
                                 </Button>
                             </div>
-                        </Card>
+                        </div>
                     ) : (
                         memoizedCalendar
                     )}
                 </div>
             </div>
 
+            {/* Mobile floating action button for creating appointments */}
+            {isMobile && (
+                <Button
+                    onClick={handleCreateAppointment}
+                    size="icon"
+                    className={`fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-20 ${isDark ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-emerald-500 hover:bg-emerald-600 text-white"
+                        }`}
+                >
+                    <PlusCircle className="h-6 w-6" />
+                    <span className="sr-only">New Appointment</span>
+                </Button>
+            )}
+
+            {/* Appointment form dialog with improved styling */}
             <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                <DialogContent className={theme === "dark" ? "dark-dialog" : ""}>
+                <DialogContent
+                    className={`${isDark ? "bg-slate-900 border-slate-800 text-white" : ""} max-w-lg w-full max-h-[90vh] overflow-auto`}
+                >
                     <VisuallyHidden>
-                        <DialogTitle>New Appointment</DialogTitle>
+                        <DialogTitle>{editingEvent?.id ? "Edit Appointment" : "New Appointment"}</DialogTitle>
                     </VisuallyHidden>
                     <AppointmentForm
                         isOpen={true}
                         onClose={handleFormClose}
                         event={editingEvent}
                         isNew={!editingEvent?.id}
-                        spaceTheme={theme === "dark"}
+
                     />
                 </DialogContent>
             </Dialog>

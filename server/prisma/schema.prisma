@@ -40,13 +40,25 @@ model Agency {
   updatedAt                  DateTime @updatedAt
 
   users           User[]
-  clients         Client[]
   schedules       Schedule[]
   invoices        Invoice[]
   mileageRecords  MileageRecord[]
   documents       Document[]               @relation("AgencyDocuments")
   incidentReports IncidentReport[]
   medications     MedicationDatabaseLink[]
+}
+
+model ClientCareAssignment {
+  id              String   @id @default(cuid())
+  clientId        String
+  userId          String
+  isDecisionMaker Boolean  @default(false)
+  assignedAt      DateTime @default(now())
+
+  client User @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
+  user   User @relation("CareWorkerAssignments", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, userId])
 }
 
 model User {
@@ -69,10 +81,37 @@ model User {
   invitedBy    User?   @relation("UserInvites", fields: [invitedById], references: [id], onDelete: SetNull)
   invitedUsers User[]  @relation("UserInvites")
 
+  // Client-specific fields (only for users with CLIENT role)
+  title          String?
+  addressLine1   String?
+  addressLine2   String?
+  townOrCity     String?
+  county         String?
+  postalCode     String?
+  propertyAccess String?
+  phoneNumber    String?
+  nhsNumber      String?
+  dnraOrder      Boolean?  @default(false)
+  chargeRate     Float?    @default(25.0)
+  mobility       String?
+  likesDislikes  String?
+  dateOfBirth    DateTime?
+  languages      String?
+  allergies      String?
+  interests      String?
+  history        String?
+
   // Client care relationships
-  careAssignments ClientCareAssignment[]
-  schedules       Schedule[]
-  careReports     Report[]               @relation("ReportCaregiver")
+  careAssignments       ClientCareAssignment[] @relation("CareWorkerAssignments")
+  clientAssignments     ClientCareAssignment[] @relation("ClientAssignments")
+  careWorkerSchedules   Schedule[]             @relation("CareWorkerSchedules")
+  clientSchedules       Schedule[]             @relation("ClientSchedules")
+  careReports           Report[]               @relation("ReportCaregiver")
+  clientReports         Report[]               @relation("ReportClient")
+  careWorkerMedications MedicationRecord[]     @relation("CareWorkerMedications")
+  clientMedications     MedicationRecord[]     @relation("ClientMedications")
+  careWorkerMileage     MileageRecord[]        @relation("CareWorkerMileage")
+  clientMileage         MileageRecord[]        @relation("ClientMileage")
 
   // Other relationships
   profile           Profile?
@@ -82,6 +121,11 @@ model User {
   mileageRecords    MileageRecord[]
   documents         Document[]         @relation("UserDocuments")
   incidentReports   IncidentReport[]
+  keyContacts       KeyContact[]
+  careOutcomes      CareOutcome[]
+  Invoice           Invoice[]
+  Document          Document[]
+  Notification      Notification[]
 }
 
 model MedicationDatabaseLink {
@@ -91,91 +135,35 @@ model MedicationDatabaseLink {
   url          String
   source       String
 
-  agencyId String
-  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-}
-
-// ======== CLIENT/CARE DATA MODELS ========
-
-model Client {
-  id             String   @id @default(cuid())
-  agencyId       String
-  title          String?
-  firstName      String
-  lastName       String
-  clientId       String?  @unique
-  addressLine1   String
-  addressLine2   String?
-  townOrCity     String
-  county         String
-  postalCode     String
-  propertyAccess String?
-  phoneNumber    String?
-  nhsNumber      String?
-  dnraOrder      Boolean? @default(false)
-  chargeRate     Float?   @default(25.0) // Default charge rate for client
-
-  // Care-specific information
-  mobility      String?
-  likesDislikes String?
-  dateOfBirth   DateTime?
-  languages     String?
-  allergies     String?
-  interests     String?
-  history       String?
-
-  // Related data
-  keyContacts     KeyContact[]
-  careOutcomes    CareOutcome[]
-  careAssignments ClientCareAssignment[]
-  schedules       Schedule[]
-  reports         Report[]               @relation("ReportClient")
-  medications     MedicationRecord[]
-  documents       Document[]             @relation("ClientDocuments")
-  mileageRecords  MileageRecord[]
-  invoices        Invoice[]
-
-  // Metadata
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-}
-
-model ClientCareAssignment {
-  id              String   @id @default(cuid())
-  clientId        String
-  userId          String
-  isDecisionMaker Boolean  @default(false)
-  assignedAt      DateTime @default(now())
-
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([clientId, userId])
+  agencyId         String
+  agency           Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  MedicationRecord MedicationRecord[]
 }
 
 // ======== CARE DELIVERY MODELS ========
 
 model Schedule {
-  id         String         @id @default(cuid())
+  id         String       @id @default(cuid())
   agencyId   String
-  clientId   String // Client receiving care
-  userId     String // Care worker assigned
-  date       DateTime // Date of appointment
-  shiftStart DateTime // Start time
-  shiftEnd   DateTime // End time
-  status     ScheduleStatus // Status of appointment
-  type       ScheduleType // Type of visit
-  notes      String? // Optional notes about the appointment
-  chargeRate Float? // Client charge rate for this specific appointment
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  clientId   String
+  userId     String
+  date       DateTime
+  startTime  String
+  endTime    String
+  status     String       @default("PENDING")
+  type       ScheduleType @default(APPOINTMENT)
+  notes      String?
+  chargeRate Float?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 
   agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client User   @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
+  user   User   @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([userId])
 }
 
 model Report {
@@ -190,8 +178,8 @@ model Report {
 
   tasksCompleted ReportTask[]
 
-  client    Client @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
-  caregiver User   @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
+  client    User @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
+  caregiver User @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ReportTask {
@@ -204,17 +192,26 @@ model ReportTask {
 }
 
 model MedicationRecord {
-  id             String   @id @default(cuid())
-  userId         String
-  clientId       String?
-  medication     String
-  dosage         String
-  frequency      String
-  administeredAt DateTime
-  notes          String?
+  id           String    @id @default(cuid())
+  medicationId String
+  clientId     String
+  userId       String
+  dosage       String
+  frequency    String
+  startDate    DateTime
+  endDate      DateTime?
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  client Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  medication MedicationDatabaseLink @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  client     User                   @relation("ClientMedications", fields: [clientId], references: [id], onDelete: Cascade, map: "MedicationRecord_client_fkey")
+  user       User                   @relation("CareWorkerMedications", fields: [userId], references: [id], onDelete: Cascade, map: "MedicationRecord_care_worker_fkey")
+  User       User                   @relation(fields: [userId], references: [id])
+
+  @@index([medicationId])
+  @@index([clientId])
+  @@index([userId])
 }
 
 // ======== SHARED/SUPPORT MODELS ========
@@ -229,22 +226,31 @@ model Invoice {
   dueDate     DateTime
   status      InvoiceStatus
 
-  agency Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client User?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
 }
 
 model MileageRecord {
-  id       String   @id @default(cuid())
-  agencyId String
-  userId   String
-  clientId String?
-  distance Float
-  date     DateTime @default(now())
-  notes    String?
+  id           String   @id @default(cuid())
+  agencyId     String
+  clientId     String
+  userId       String
+  date         DateTime
+  startMileage Float
+  endMileage   Float
+  totalMiles   Float
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  agency Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  client Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client User   @relation("ClientMileage", fields: [clientId], references: [id], onDelete: Cascade, map: "MileageRecord_client_fkey")
+  user   User   @relation("CareWorkerMileage", fields: [userId], references: [id], onDelete: Cascade, map: "MileageRecord_care_worker_fkey")
+  User   User   @relation(fields: [userId], references: [id])
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([userId])
 }
 
 model Document {
@@ -259,7 +265,7 @@ model Document {
   agencyId String?
 
   user   User?   @relation("UserDocuments", fields: [userId], references: [id], onDelete: SetNull)
-  client Client? @relation("ClientDocuments", fields: [clientId], references: [id], onDelete: SetNull)
+  client User?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
   agency Agency? @relation("AgencyDocuments", fields: [agencyId], references: [id], onDelete: SetNull)
 }
 
@@ -304,7 +310,7 @@ model KeyContact {
   phone    String
   email    String?
 
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
 model CareOutcome {
@@ -312,7 +318,22 @@ model CareOutcome {
   clientId String
   outcome  String
 
-  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // ======== ENUMS ========
@@ -336,6 +357,9 @@ enum ScheduleType {
   WEEKLY_CHECKUP
   APPOINTMENT
   HOME_VISIT
+  CHECKUP
+  EMERGENCY
+  ROUTINE
   OTHER
 }
 
@@ -357,4 +381,12 @@ enum InvitationStatus {
   ACCEPTED
   EXPIRED
   CANCELED
+}
+
+enum NotificationType {
+  SCHEDULE
+  REPORT
+  DOCUMENT
+  SYSTEM
+  ALERT
 }

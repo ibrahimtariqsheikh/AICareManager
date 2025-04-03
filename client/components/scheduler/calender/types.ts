@@ -18,15 +18,25 @@ export interface Client {
 export interface AppointmentEvent {
   id: string
   title: string
-  start: Date
-  end: Date
+  start: Date | string
+  end: Date | string
+  date: Date | string
+  startTime: string
+  endTime: string
   resourceId: string
   clientId: string
   type: string
   status: string
   notes: string
-  chargeRate: number
   color: string
+  careWorker?: {
+    firstName: string
+    lastName: string
+  }
+  client?: {
+    firstName: string
+    lastName: string
+  }
 }
 
 export interface CalendarProps {

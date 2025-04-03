@@ -5,6 +5,8 @@ import { CustomWeekView } from "./views/custom-week-view"
 import { CustomMonthView } from "./views/custom-month-view"
 import type { AppointmentEvent, StaffMember, Client, SidebarMode } from "./types"
 import { Skeleton } from "../../ui/skeleton"
+import { format } from "date-fns"
+import { filterEvents, getEventColor } from "./calender-utils"
 
 interface CustomCalendarProps {
     events: AppointmentEvent[]
@@ -40,6 +42,10 @@ export function CustomCalendar({
         ...event,
         start: event.start instanceof Date ? event.start : new Date(event.start),
         end: event.end instanceof Date ? event.end : new Date(event.end),
+        date: event.date instanceof Date ? event.date : new Date(event.date),
+        startTime: event.startTime || format(new Date(event.start), "HH:mm"),
+        endTime: event.endTime || format(new Date(event.end), "HH:mm"),
+        color: event.color || getEventColor(event.type),
     }))
 
     // Calculate event duration in minutes
@@ -53,7 +59,8 @@ export function CustomCalendar({
     useEffect(() => {
         console.log("Calendar received events:", events.length)
         console.log("Processed events:", processedEvents.length)
-    }, [events, processedEvents.length])
+        console.log("Sample processed event:", processedEvents[0])
+    }, [events, processedEvents])
 
     if (isLoading) {
         return (
@@ -65,7 +72,7 @@ export function CustomCalendar({
 
     // Render the appropriate view based on activeView
     return (
-        <div className={`h-full w-full calendar-scrollbar ${spaceTheme ? "dark-calendar" : "light-theme"}`}>
+        <div className="h-full w-full calendar-scrollbar">
             {activeView === "day" && (
                 <CustomDayView
                     date={currentDate}
@@ -110,4 +117,3 @@ export function CustomCalendar({
 }
 
 export default CustomCalendar
-

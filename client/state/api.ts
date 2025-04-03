@@ -1,63 +1,58 @@
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth"
 import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { AppointmentEvent } from "../components/scheduler/calender/types"
+import { Invitation, Schedule } from "../types/prismaTypes"
 
-// Types
-export interface Invitation {
+
+export interface ScheduleInput {
+  agencyId: string
+  clientId: string
+  userId: string
+  date: Date
+  startTime: string
+  endTime: string
+  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELED"
+  type: "WEEKLY_CHECKUP" | "APPOINTMENT" | "HOME_VISIT" | "CHECKUP" | "EMERGENCY" | "ROUTINE" | "OTHER"
+  notes?: string
+  chargeRate?: number
+}
+
+export interface ScheduleUpdateInput extends Partial<ScheduleInput> {
   id: string
-  email: string
-  status: "PENDING" | "ACCEPTED" | "EXPIRED" | "CANCELED"
-  createdAt: string
-  expiresAt: string
-  token: string
-  inviter?: {
-    id: string
+}
+
+export interface ScheduleResponse {
+  id: string
+  title: string
+  start: Date
+  end: Date
+  date: Date
+  startTime: string
+  endTime: string
+  resourceId: string
+  clientId: string
+  type: string
+  status: string
+  notes?: string
+  color: string
+  careWorker: {
     firstName: string
     lastName: string
-    email: string
+  }
+  client: {
+    firstName: string
+    lastName: string
   }
 }
 
-export interface User {
-  id: string
-  cognitoId: string
-  email: string
-  firstName: string
-  lastName: string
-  role: string
-  createdAt?: string
-  updatedAt?: string
-  agencyId?: string
-  invitedById?: string
-  profile?: {
-    id: string
-    phone?: string
-    avatarUrl?: string
-    address?: string
+export interface SchedulesResponse {
+  data: ScheduleResponse[]
+  meta: {
+    total: number
+    limit: number
+    offset: number
   }
-  color?: string
-}
-
-export interface Client {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  status: "Pending" | "Active"
-  dateAdded: string
-  profile?: {
-    avatarUrl?: string
-  }
-  color?: string
-}
-
-export interface Notification {
-  id: string
-  type: "INVITATION" | "MESSAGE" | "ALERT"
-  content: string
-  createdAt: string
-  read: boolean
-  data?: any
 }
 
 // Create invitation input type
@@ -94,67 +89,6 @@ export interface Location {
   updatedAt?: string
 }
 
-// Schedule types
-export interface Schedule {
-  id: string
-  agencyId: string
-  clientId: string
-  userId: string
-  date: string
-  shiftStart: string
-  shiftEnd: string
-  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELED"
-  type: "WEEKLY_CHECKUP" | "APPOINTMENT" | "HOME_VISIT" | "OTHER"
-  notes?: string
-  chargeRate?: number
-  createdAt?: string
-  updatedAt?: string
-  client?: {
-    firstName: string
-    lastName: string
-  }
-  user?: {
-    firstName: string
-    lastName: string
-  }
-}
-
-export interface ScheduleInput {
-  agencyId: string
-  clientId: string
-  userId: string
-  date: Date
-  shiftStart: Date
-  shiftEnd: Date
-  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELED"
-  type: "WEEKLY_CHECKUP" | "APPOINTMENT" | "HOME_VISIT" | "OTHER"
-  notes?: string
-  chargeRate?: number
-}
-
-export interface ScheduleUpdateInput extends Partial<ScheduleInput> {
-  id: string
-}
-
-export interface ScheduleQueryParams {
-  status?: string
-  type?: string
-  agencyId?: string
-  startDate?: string
-  endDate?: string
-  limit?: number
-  offset?: number
-}
-
-export interface ScheduleResponse {
-  data: Schedule[]
-  meta: {
-    total: number
-    limit: number
-    offset: number
-  }
-}
-
 export interface UsersResponse {
   data: User[]
   meta: {
@@ -162,12 +96,7 @@ export interface UsersResponse {
   }
 }
 
-export interface ClientsResponse {
-  data: Client[]
-  meta: {
-    total: number
-  }
-}
+
 
 export interface UserQueryParams {
   role?: string
@@ -178,6 +107,74 @@ export interface UserQueryParams {
 export interface ClientQueryParams {
   status?: string
   userId?: string // Use userId to filter clients by user's agency
+}
+
+export interface DashboardData {
+  user: {
+    firstName: string;
+    role: string;
+    agency: {
+      id: string;
+      name: string;
+      isActive: boolean;
+      isSuspended: boolean;
+      hasScheduleV2: boolean;
+      hasEMAR: boolean;
+      hasFinance: boolean;
+      isWeek1And2ScheduleEnabled: boolean;
+      hasPoliciesAndProcedures: boolean;
+      isTestAccount: boolean;
+      address?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      phone?: string;
+      email?: string;
+      createdAt: string;
+      hasAdvancedReporting?: boolean;
+    };
+  };
+  agency: {
+    id: string;
+    name: string;
+    isActive: boolean;
+    isSuspended: boolean;
+    hasScheduleV2: boolean;
+    hasEMAR: boolean;
+    hasFinance: boolean;
+    isWeek1And2ScheduleEnabled: boolean;
+    hasPoliciesAndProcedures: boolean;
+    isTestAccount: boolean;
+  };
+  stats: {
+    totalClients: number;
+    totalCareWorkers: number;
+    totalOfficeStaff: number;
+    totalSchedules: number;
+    totalReports: number;
+    totalDocuments: number;
+    totalMileageRecords: number;
+    unreadNotifications: number;
+  };
+  schedules: Array<{
+    id: string;
+    clientName: string;
+    careWorkerName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    type: string;
+    status: string;
+    notes?: string;
+    title?: string;
+  }>;
+  notifications: Array<{
+    id: string;
+    title: string;
+    message: string;
+    type: 'SCHEDULE' | 'REPORT' | 'DOCUMENT' | 'SYSTEM' | 'ALERT';
+    createdAt: string;
+  }>;
 }
 
 export const api = createApi({
@@ -197,11 +194,11 @@ export const api = createApi({
     "Invitations",
     "Notifications",
     "InvitationsByEmail",
-    "Schedules",
-    "Schedule",
     "Locations",
     "Users",
     "Clients",
+"Schedule",
+"Dashboard"
   ],
   endpoints: (build) => ({
     // Get user
@@ -340,6 +337,54 @@ export const api = createApi({
       invalidatesTags: ["Invitations"],
     }),
 
+    // Get schedules with filtering
+    getSchedules: build.query<SchedulesResponse, {
+      status?: string
+      type?: string
+      userId?: string
+      startDate?: string
+      endDate?: string
+      agencyId?: string
+      limit?: number
+      offset?: number
+    }>({
+      query: (params) => ({
+        url: "/schedules",
+        method: "GET",
+        params,
+      }),
+      providesTags: [{ type: "Schedule", id: "LIST" }],
+    }),
+
+    // Create a new schedule
+    createSchedule: build.mutation<ScheduleResponse, ScheduleInput>({
+      query: (schedule) => ({
+        url: "/schedules",
+        method: "POST",
+        body: schedule,
+      }),
+      invalidatesTags: [{ type: "Schedule", id: "LIST" }],
+    }),
+
+    // Update a schedule
+    updateSchedule: build.mutation<ScheduleResponse, ScheduleUpdateInput>({
+      query: ({ id, ...schedule }) => ({
+        url: `/schedules/${id}`,
+        method: "PUT",
+        body: schedule,
+      }),
+      invalidatesTags: [{ type: "Schedule", id: "LIST" }],
+    }),
+
+    // Delete a schedule
+    deleteSchedule: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/schedules/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Schedule", id: "LIST" }],
+    }),
+
     // Get locations
     getLocationsByUserId: build.query<Location[], string>({
       query: (userId) => `/locations/user/${userId}`,
@@ -356,69 +401,10 @@ export const api = createApi({
       invalidatesTags: ["Invitations"],
     }),
 
-    // Get all schedules with filtering
-    getSchedules: build.query<ScheduleResponse, ScheduleQueryParams>({
-      query: (params) => {
-        const { status, type, limit = 100, offset = 0 } = params
-        let queryString = `/schedules?limit=${limit}&offset=${offset}`
-
-        if (status) queryString += `&status=${status}`
-        if (type) queryString += `&type=${type}`
-
-        return queryString
-      },
-      providesTags: (result) =>
-        result
-          ? [...result.data.map(({ id }) => ({ type: "Schedules" as const, id })), { type: "Schedules", id: "LIST" }]
-          : [{ type: "Schedules", id: "LIST" }],
-    }),
-
-    // Get schedules by date range
-    getSchedulesByDateRange: build.query<ScheduleResponse, ScheduleQueryParams>({
-      query: (params) => {
-        const { startDate, endDate, status, limit = 100, offset = 0 } = params
-        let queryString = `/schedules/date-range?startDate=${startDate}&endDate=${endDate}&limit=${limit}&offset=${offset}`
-
-        if (status) queryString += `&status=${status}`
-
-        return queryString
-      },
-      providesTags: [{ type: "Schedules", id: "DATE_RANGE" }],
-    }),
-
-    // Create a new schedule
-    createSchedule: build.mutation<Schedule, ScheduleInput>({
-      query: (schedule) => ({
-        url: "/schedules",
-        method: "POST",
-        body: schedule,
-      }),
-      invalidatesTags: [{ type: "Schedules", id: "LIST" }],
-    }),
-
-    // Update a schedule
-    updateSchedule: build.mutation<Schedule, ScheduleUpdateInput>({
-      query: ({ id, ...schedule }) => ({
-        url: `/schedules/${id}`,
-        method: "PUT",
-        body: schedule,
-      }),
-      invalidatesTags: (result, error, { id }) => [
-        { type: "Schedules", id: "LIST" },
-        { type: "Schedule", id },
-      ],
-    }),
-
-    // Delete a schedule
-    deleteSchedule: build.mutation<void, string>({
-      query: (id) => ({
-        url: `/schedules/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: (result, error, id) => [
-        { type: "Schedules", id: "LIST" },
-        { type: "Schedule", id },
-      ],
+    // Get dashboard data
+    getDashboardData: build.query<DashboardData, string>({
+      query: (userId) => `/api/dashboard/${userId}`,
+      providesTags: ["Dashboard"],
     }),
   }),
 })
@@ -436,8 +422,8 @@ export const {
   useCreateUserMutation,
   useGetLocationsByUserIdQuery,
   useGetSchedulesQuery,
-  useGetSchedulesByDateRangeQuery,
   useCreateScheduleMutation,
   useUpdateScheduleMutation,
   useDeleteScheduleMutation,
+  useGetDashboardDataQuery,
 } = api

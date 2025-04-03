@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { Role } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -110,8 +111,11 @@ export const getAllSchedulesByAgencyId = async (req: Request, res: Response): Pr
 export const getAllClientsByAgencyId = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const clients = await prisma.client.findMany({
-            where: { agencyId: id },
+        const clients = await prisma.user.findMany({
+            where: { 
+                agencyId: id,
+                role: Role.CLIENT
+            },
         });
         res.json(clients);
     } catch (error) {
