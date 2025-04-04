@@ -228,48 +228,40 @@ function Calendar({
     const weeks = renderCalendarGrid()
 
     return (
-        <div className={cn("p-3", className)}>
+        <div className={cn("p-3 border rounded-lg shadow-sm w-full max-w-full overflow-hidden", className)}>
             <div className={cn("space-y-4", classNames?.month)}>
-                <div className={cn("flex justify-center pt-1 relative items-center", classNames?.caption)}>
-                    <div className={cn("text-sm font-medium", classNames?.caption_label)}>
+                <div className={cn("flex justify-center pt-1 relative items-center w-full", classNames?.caption)}>
+                    <div className={cn("text-sm font-medium text-center flex-grow", classNames?.caption_label)}>
                         {getMonthName(currentMonth)} {currentMonth.getFullYear()}
                     </div>
                     <div className={cn("space-x-1 flex items-center", classNames?.nav)}>
-                        <button
+                        <div
                             onClick={prevMonth}
                             className={cn(
-                                buttonVariants({ variant: "outline" }),
-                                "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
-                                "absolute left-1",
-                                classNames?.nav_button,
-                                classNames?.nav_button_previous,
+                                "inline-flex items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                "cursor-pointer",
                             )}
-                            type="button"
                         >
                             <ChevronLeft className="h-4 w-4" />
-                        </button>
-                        <button
+                        </div>
+                        <div
                             onClick={nextMonth}
                             className={cn(
-                                buttonVariants({ variant: "outline" }),
-                                "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
-                                "absolute right-1",
-                                classNames?.nav_button,
-                                classNames?.nav_button_next,
+                                "inline-flex items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                "cursor-pointer",
                             )}
-                            type="button"
                         >
                             <ChevronRight className="h-4 w-4" />
-                        </button>
+                        </div>
                     </div>
                 </div>
                 <div className={cn("w-full", classNames?.table)}>
-                    <div className={cn("flex justify-between", classNames?.head_row)}>
+                    <div className={cn("flex justify-between w-full", classNames?.head_row)}>
                         {orderedWeekdays.map((day) => (
                             <div
                                 key={day}
                                 className={cn(
-                                    "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] text-center",
+                                    "text-muted-foreground rounded-md w-9 font-medium text-[0.8rem] text-center flex-shrink-0",
                                     classNames?.head_cell,
                                 )}
                             >
@@ -278,7 +270,7 @@ function Calendar({
                         ))}
                     </div>
                     {weeks.map((week, weekIndex) => (
-                        <div key={weekIndex} className={cn("flex w-full mt-2", classNames?.row)}>
+                        <div key={weekIndex} className={cn("flex w-full mt-2.5 flex-nowrap", classNames?.row)}>
                             {week.map((day, dayIndex) => {
                                 if (!day.date) {
                                     return (
@@ -289,14 +281,28 @@ function Calendar({
                                 const isSelected = isDateSelected(day.date)
                                 const isDayToday = isToday(day.date)
                                 const isDisabled = isDateDisabled(day.date)
+                                const isRangeStart =
+                                    selected &&
+                                    (selected as any).from &&
+                                    formatDateKey(day.date) === formatDateKey((selected as any).from)
+                                const isRangeEnd =
+                                    selected && (selected as any).to && formatDateKey(day.date) === formatDateKey((selected as any).to)
+                                const isInRange =
+                                    selected &&
+                                    (selected as any).from &&
+                                    (selected as any).to &&
+                                    day.date > (selected as any).from &&
+                                    day.date < (selected as any).to
 
                                 return (
                                     <div
                                         key={`${day.date.getFullYear()}-${day.date.getMonth()}-${day.date.getDate()}`}
                                         className={cn(
-                                            "relative h-9 w-9 p-0 text-center",
+                                            "relative h-9 w-9 p-0 text-center flex items-center justify-center flex-shrink-0",
                                             day.isOutside && classNames?.day_outside,
-                                            isSelected && "bg-accent",
+                                            isInRange && "bg-primary/20",
+                                            isRangeStart && "rounded-l-md [&>button]:rounded-l-md",
+                                            isRangeEnd && "rounded-r-md [&>button]:rounded-r-md",
                                             classNames?.cell,
                                         )}
                                     >
@@ -305,9 +311,11 @@ function Calendar({
                                             className={cn(
                                                 buttonVariants({ variant: "ghost" }),
                                                 "h-9 w-9 p-0 font-normal",
-                                                isSelected &&
-                                                "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-                                                isDayToday && !isSelected && "bg-accent text-accent-foreground",
+                                                (isSelected || isRangeStart || isRangeEnd) &&
+                                                "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground font-medium",
+                                                isRangeStart && "rounded-l-md",
+                                                isRangeEnd && "rounded-r-md",
+                                                isDayToday && !isSelected && !isRangeStart && !isRangeEnd && "bg-accent text-accent-foreground",
                                                 day.isOutside && "text-muted-foreground opacity-50",
                                                 isDisabled && "text-muted-foreground opacity-50 cursor-not-allowed",
                                                 classNames?.day,

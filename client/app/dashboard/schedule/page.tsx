@@ -10,6 +10,8 @@ import { setOfficeStaff } from "../../../state/slices/userSlice"
 import { setClients } from "../../../state/slices/userSlice"
 import { useAppSelector } from "../../../state/redux"
 import { setCareWorkers } from "../../../state/slices/userSlice"
+import { PlusCircle } from "lucide-react"
+import { Button } from "../../../components/ui/button"
 
 export default function SchedulerPage() {
     const [isCreating, setIsCreating] = useState(false)
@@ -68,7 +70,14 @@ export default function SchedulerPage() {
                         </p>
 
                     </div>
-
+                    <Button
+                        onClick={handleCreateNew}
+                        size="sm"
+                        className={`hidden sm:flex`}
+                    >
+                        <PlusCircle className="h-4 w-4 mr-1.5" />
+                        New Appointment
+                    </Button>
                 </div>
 
 

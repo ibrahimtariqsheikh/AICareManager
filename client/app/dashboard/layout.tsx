@@ -8,10 +8,11 @@ import { SidebarRight } from "../../components/sidebar/sidebar-right"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbLink, BreadcrumbSeparator } from "../../components/ui/breadcrumb"
 import { Separator } from "../../components/ui/separator"
 import { SidebarTrigger } from "../../components/ui/sidebar"
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useState, useMemo } from "react"
 import { useAuthenticator } from "@aws-amplify/ui-react"
 import { useAppDispatch, useAppSelector } from "../../state/redux";
 import { setUser, setOfficeStaff, setCareWorkers, setClients, setSidebarMode } from "../../state/slices/userSlice";
+import { setCurrentDate, setActiveView } from "../../state/slices/calendarSlice";
 import { useGetUserQuery, useGetFilteredUsersQuery } from "../../state/api";
 import { redirect } from "next/navigation"
 import * as React from "react"
@@ -28,13 +29,16 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     const pathname = usePathname()
     const dispatch = useAppDispatch()
     const { user, careWorkers, clients, officeStaff, sidebarMode } = useAppSelector((state) => state.user)
+    const { activeView, currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
     const { data: userInformation } = useGetUserQuery()
     const { data: filteredUsers } = useGetFilteredUsersQuery(userInformation?.userInfo?.id || "")
     const isSchedulePage = pathname === "/dashboard/schedule"
 
     const [isLoading, setIsLoading] = useState(true)
-    const [currentDate, setCurrentDate] = useState<Date>(new Date())
-    const [calendarView, setCalendarView] = useState<"day" | "week" | "month">("month")
+    const currentDate = useMemo(() => {
+        const date = new Date(currentDateStr)
+        return isNaN(date.getTime()) ? new Date() : date
+    }, [currentDateStr])
 
     useEffect(() => {
         if (userInformation) {
@@ -163,9 +167,14 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
         dispatch(setSidebarMode(mode))
     }
 
-    const handleViewChange = (view: string) => {
-        if (view === "day" || view === "week" || view === "month") {
-            setCalendarView(view)
+    const handleViewChange = (view: "day" | "week" | "month") => {
+        dispatch(setActiveView(view))
+    }
+
+    const handleDateChange = (date: Date) => {
+        // Ensure we're passing a valid Date object
+        if (date instanceof Date && !isNaN(date.getTime())) {
+            dispatch(setCurrentDate(date.toISOString()))
         }
     }
 
@@ -220,8 +229,9 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
                         deselectAllClients={handleDeselectAllClients}
                         setSidebarMode={handleSetSidebarMode}
                         currentDate={currentDate}
-                        onDateChange={setCurrentDate}
+                        onDateChange={handleDateChange}
                         onViewChange={handleViewChange}
+                        viewMode={activeView}
                     />
                 )}
             </div>

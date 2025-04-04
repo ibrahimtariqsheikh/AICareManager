@@ -139,17 +139,17 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
 
     return (
         <Sidebar className="border-r-0" {...props}>
-            <SidebarHeader className="px-4 py-3">
+            <SidebarHeader className="p-4 mt-2">
                 <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10">
-                        <Building2 className="h-5 w-5 text-primary" />
+                        <Building2 className="h-4 w-4 text-primary" />
                     </div>
                     <div className="flex flex-col">
                         <span className="text-sm font-medium">
-                            {user?.userInfo?.agency?.name || "Agency"}
+                            AI Care Manager
                         </span>
                         <span className="text-xs text-muted-foreground">
-                            {user?.userInfo?.agency?.isActive ? "Active" : "Inactive"}
+                            {user?.userInfo?.agency?.name || "Agency"}
                         </span>
                     </div>
                 </div>
@@ -170,15 +170,15 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         className={cn(
                                             "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                                             isActive
-                                                ? "bg-accent text-accent-foreground"
+                                                ? "bg-accent text-accent-foreground font-medium"
                                                 : "hover:bg-accent hover:text-accent-foreground"
                                         )}
                                     >
                                         <item.icon className="h-4 w-4" />
-                                        <span className="flex items-center gap-2">
+                                        <span className="flex items-center gap-2 text-xs justify-between w-full">
                                             {item.title}
                                             {item.isBeta && (
-                                                <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-[10px]">
+                                                <Badge variant="outline" className="bg-blue-800/10 text-blue-700 text-[10px]">
                                                     Beta
                                                 </Badge>
                                             )}

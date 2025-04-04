@@ -185,6 +185,82 @@ interface CreateUserInput {
     invitedById?: string;
 }
 
+// Medication interfaces
+export interface MedicationRecord {
+  id: string;
+  medicationId: string;
+  clientId: string;
+  userId: string;
+  dosage: string;
+  frequency: string;
+  startDate: Date;
+  endDate?: Date;
+  notes?: string;
+  morningDose: boolean;
+  lunchDose: boolean;
+  eveningDose: boolean;
+  bedtimeDose: boolean;
+  asNeededDose: boolean;
+  medication: {
+    name: string;
+    isSpecialist: boolean;
+    url: string;
+    source: string;
+  };
+}
+
+export interface MedicationAdministration {
+  id: string;
+  medicationRecordId: string;
+  administeredById: string;
+  administeredAt: Date;
+  doseType: 'MORNING' | 'LUNCH' | 'EVENING' | 'BEDTIME' | 'AS_NEEDED';
+  doseTaken: boolean;
+  notes?: string;
+  administeredBy: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
+// Report interfaces
+export interface Report {
+  id: string;
+  clientId: string;
+  userId: string;
+  condition: string;
+  summary: string;
+  checkInTime: Date;
+  checkOutTime?: Date;
+  checkInDistance?: number;
+  checkOutDistance?: number;
+  tasksCompleted: ReportTask[];
+  caregiver: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
+export interface ReportTask {
+  id: string;
+  reportId: string;
+  taskName: string;
+  completed: boolean;
+}
+
+// Document interfaces
+export interface Document {
+  id: string;
+  title: string;
+  fileUrl: string;
+  uploadedAt: Date;
+  userId?: string;
+  clientId?: string;
+  agencyId?: string;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -414,6 +490,122 @@ export const api = createApi({
       query: (userId) => `/api/dashboard/${userId}`,
       providesTags: ["Dashboard"],
     }),
+
+    // Medication endpoints
+    getMedicationRecords: build.query<MedicationRecord[], string>({
+      query: (clientId) => `/medications/client/${clientId}`,
+    }),
+
+    createMedicationRecord: build.mutation<MedicationRecord, Partial<MedicationRecord>>({
+      query: (data) => ({
+        url: '/medications/records',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    updateMedicationRecord: build.mutation<MedicationRecord, { id: string; data: Partial<MedicationRecord> }>({
+      query: ({ id, data }) => ({
+        url: `/medications/records/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+    }),
+
+    deleteMedicationRecord: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/medications/records/${id}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    recordMedicationAdministration: build.mutation<MedicationAdministration, Partial<MedicationAdministration>>({
+      query: (data) => ({
+        url: '/medications/administration',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    getMedicationAdministrationHistory: build.query<MedicationAdministration[], string>({
+      query: (medicationRecordId) => `/medications/administration/${medicationRecordId}`,
+    }),
+
+    // Report endpoints
+    createReport: build.mutation<Report, Partial<Report>>({
+      query: (data) => ({
+        url: '/reports',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    getClientReports: build.query<Report[], string>({
+      query: (clientId) => `/reports/client/${clientId}`,
+    }),
+
+    getCaregiverReports: build.query<Report[], string>({
+      query: (userId) => `/reports/caregiver/${userId}`,
+    }),
+
+    updateReport: build.mutation<Report, { id: string; data: Partial<Report> }>({
+      query: ({ id, data }) => ({
+        url: `/reports/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+    }),
+
+    updateReportTaskStatus: build.mutation<ReportTask, { taskId: string; completed: boolean }>({
+      query: ({ taskId, completed }) => ({
+        url: `/reports/task/${taskId}`,
+        method: 'PUT',
+        body: { completed },
+      }),
+    }),
+
+    deleteReport: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/reports/${id}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    // Document endpoints
+    uploadDocument: build.mutation<Document, Partial<Document>>({
+      query: (data) => ({
+        url: '/documents',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    getUserDocuments: build.query<Document[], string>({
+      query: (userId) => `/documents/user/${userId}`,
+    }),
+
+    getClientDocuments: build.query<Document[], string>({
+      query: (clientId) => `/documents/client/${clientId}`,
+    }),
+
+    getAgencyDocuments: build.query<Document[], string>({
+      query: (agencyId) => `/documents/agency/${agencyId}`,
+    }),
+
+    updateDocument: build.mutation<Document, { id: string; title: string }>({
+      query: ({ id, title }) => ({
+        url: `/documents/${id}`,
+        method: 'PUT',
+        body: { title },
+      }),
+    }),
+
+    deleteDocument: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/documents/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 })
 
@@ -434,4 +626,22 @@ export const {
   useUpdateScheduleMutation,
   useDeleteScheduleMutation,
   useGetDashboardDataQuery,
+  useGetMedicationRecordsQuery,
+  useCreateMedicationRecordMutation,
+  useUpdateMedicationRecordMutation,
+  useDeleteMedicationRecordMutation,
+  useRecordMedicationAdministrationMutation,
+  useGetMedicationAdministrationHistoryQuery,
+  useCreateReportMutation,
+  useGetClientReportsQuery,
+  useGetCaregiverReportsQuery,
+  useUpdateReportMutation,
+  useUpdateReportTaskStatusMutation,
+  useDeleteReportMutation,
+  useUploadDocumentMutation,
+  useGetUserDocumentsQuery,
+  useGetClientDocumentsQuery,
+  useGetAgencyDocumentsQuery,
+  useUpdateDocumentMutation,
+  useDeleteDocumentMutation,
 } = api

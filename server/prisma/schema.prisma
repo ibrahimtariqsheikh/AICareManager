@@ -14,6 +14,7 @@ model Invitation {
   email     String           @unique
   token     String           @unique
   role      Role
+  subRole   SubRole? // Added subRole field
   expiresAt DateTime
   status    InvitationStatus @default(PENDING)
   createdAt DateTime         @default(now())
@@ -46,6 +47,8 @@ model Agency {
   documents       Document[]               @relation("AgencyDocuments")
   incidentReports IncidentReport[]
   medications     MedicationDatabaseLink[]
+  visitTypes      VisitType[] // Added visit types
+  riskCategories  RiskCategory[] // Added risk categories
 }
 
 model ClientCareAssignment {
@@ -68,6 +71,7 @@ model User {
   firstName       String
   lastName        String
   role            Role
+  subRole         SubRole? // Added subRole field
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   sentInvitations Invitation[] @relation("SentInvitations")
@@ -100,6 +104,10 @@ model User {
   allergies      String?
   interests      String?
   history        String?
+  preferredName  String? // Added preferred name
+
+  // Communication preferences - NEW
+  communicationPreference CommunicationPreference?
 
   // Client care relationships
   careAssignments       ClientCareAssignment[] @relation("CareWorkerAssignments")
@@ -114,18 +122,47 @@ model User {
   clientMileage         MileageRecord[]        @relation("ClientMileage")
 
   // Other relationships
-  profile           Profile?
-  sentMessages      Message[]          @relation("MessageSender")
-  receivedMessages  Message[]          @relation("MessageReceiver")
-  medicationRecords MedicationRecord[]
-  mileageRecords    MileageRecord[]
-  documents         Document[]         @relation("UserDocuments")
-  incidentReports   IncidentReport[]
-  keyContacts       KeyContact[]
-  careOutcomes      CareOutcome[]
-  Invoice           Invoice[]
-  Document          Document[]
-  Notification      Notification[]
+  profile                   Profile?
+  sentMessages              Message[]                  @relation("MessageSender")
+  receivedMessages          Message[]                  @relation("MessageReceiver")
+  medicationRecords         MedicationRecord[]
+  mileageRecords            MileageRecord[]
+  documents                 Document[]                 @relation("UserDocuments")
+  incidentReports           IncidentReport[]
+  keyContacts               KeyContact[]
+  careOutcomes              CareOutcome[]
+  Invoice                   Invoice[]
+  Document                  Document[]
+  Notification              Notification[]
+  riskAssessments           RiskAssessment[] // Added risk assessments
+  familyAccess              FamilyAccess[] // Added family access
+  communicationLogs         CommunicationLog[] // Added communication logs
+  reminders                 Reminder[] // Added reminders
+  medicationAdministrations MedicationAdministration[] @relation("AdministeredMedications")
+}
+
+// NEW MODEL: Communication Preference
+model CommunicationPreference {
+  id     String  @id @default(cuid())
+  userId String  @unique
+  email  Boolean @default(true)
+  sms    Boolean @default(false)
+  phone  Boolean @default(true)
+  notes  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// NEW MODEL: Family Access
+model FamilyAccess {
+  id       String  @id @default(cuid())
+  clientId String
+  name     String
+  relation String
+  phone    String
+  email    String?
+
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
 model MedicationDatabaseLink {
@@ -142,6 +179,19 @@ model MedicationDatabaseLink {
 
 // ======== CARE DELIVERY MODELS ========
 
+// NEW MODEL: Visit Type
+model VisitType {
+  id          String   @id @default(cuid())
+  agencyId    String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  agency    Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  schedules Schedule[]
+}
+
 model Schedule {
   id         String       @id @default(cuid())
   agencyId   String
@@ -156,6 +206,10 @@ model Schedule {
   chargeRate Float?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
+
+  // Added visit type relationship
+  visitTypeId String?
+  visitType   VisitType? @relation(fields: [visitTypeId], references: [id], onDelete: SetNull)
 
   agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   client User   @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
@@ -175,6 +229,10 @@ model Report {
   checkInTime  DateTime
   checkOutTime DateTime?
   createdAt    DateTime  @default(now())
+
+  // Added location data
+  checkInDistance  Float?
+  checkOutDistance Float?
 
   tasksCompleted ReportTask[]
 
@@ -204,14 +262,39 @@ model MedicationRecord {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  medication MedicationDatabaseLink @relation(fields: [medicationId], references: [id], onDelete: Cascade)
-  client     User                   @relation("ClientMedications", fields: [clientId], references: [id], onDelete: Cascade, map: "MedicationRecord_client_fkey")
-  user       User                   @relation("CareWorkerMedications", fields: [userId], references: [id], onDelete: Cascade, map: "MedicationRecord_care_worker_fkey")
-  User       User                   @relation(fields: [userId], references: [id])
+  // Define which times this medication should be taken
+  morningDose  Boolean @default(false)
+  lunchDose    Boolean @default(false)
+  eveningDose  Boolean @default(false)
+  bedtimeDose  Boolean @default(false)
+  asNeededDose Boolean @default(false)
+
+  medication            MedicationDatabaseLink     @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  client                User                       @relation("ClientMedications", fields: [clientId], references: [id], onDelete: Cascade, map: "MedicationRecord_client_fkey")
+  user                  User                       @relation("CareWorkerMedications", fields: [userId], references: [id], onDelete: Cascade, map: "MedicationRecord_care_worker_fkey")
+  User                  User                       @relation(fields: [userId], references: [id])
+  administrationRecords MedicationAdministration[]
 
   @@index([medicationId])
   @@index([clientId])
   @@index([userId])
+}
+
+model MedicationAdministration {
+  id                 String   @id @default(cuid())
+  medicationRecordId String
+  administeredById   String
+  administeredAt     DateTime
+  doseType           DoseType
+  doseTaken          Boolean  @default(true)
+  notes              String?
+  createdAt          DateTime @default(now())
+
+  medicationRecord MedicationRecord @relation(fields: [medicationRecordId], references: [id], onDelete: Cascade)
+  administeredBy   User             @relation("AdministeredMedications", fields: [administeredById], references: [id], onDelete: Cascade)
+
+  @@index([medicationRecordId])
+  @@index([administeredById])
 }
 
 // ======== SHARED/SUPPORT MODELS ========
@@ -321,6 +404,59 @@ model CareOutcome {
   client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
+// NEW MODEL: Communication Log
+model CommunicationLog {
+  id        String   @id @default(cuid())
+  clientId  String
+  message   String
+  createdAt DateTime @default(now())
+
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+// NEW MODEL: Risk Category
+model RiskCategory {
+  id          String   @id @default(cuid())
+  agencyId    String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  agency          Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  riskAssessments RiskAssessment[]
+}
+
+// NEW MODEL: Risk Assessment
+model RiskAssessment {
+  id                 String   @id @default(cuid())
+  clientId           String
+  riskCategoryId     String
+  description        String
+  affectedParties    String
+  mitigationStrategy String
+  likelihood         Int // 1-5 scale
+  severity           Int // 1-5 scale
+  riskScore          Int // likelihood * severity
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  client       User         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  riskCategory RiskCategory @relation(fields: [riskCategoryId], references: [id], onDelete: Cascade)
+}
+
+// NEW MODEL: Reminder
+model Reminder {
+  id        String   @id @default(cuid())
+  clientId  String
+  title     String
+  message   String?
+  dueDate   DateTime
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
 model Notification {
   id        String           @id @default(cuid())
   userId    String
@@ -344,6 +480,35 @@ enum Role {
   OFFICE_STAFF
   CLIENT
   FAMILY
+}
+
+// NEW ENUM: SubRole
+enum SubRole {
+  // Office staff subroles
+  FINANCE_MANAGER
+  HR_MANAGER
+  CARE_MANAGER
+  SCHEDULING_COORDINATOR
+  OFFICE_ADMINISTRATOR
+  RECEPTIONIST
+  QUALITY_ASSURANCE_MANAGER
+  MARKETING_COORDINATOR
+  COMPLIANCE_OFFICER
+
+  // Care worker subroles
+  CAREGIVER
+  SENIOR_CAREGIVER
+  JUNIOR_CAREGIVER
+  TRAINEE_CAREGIVER
+  LIVE_IN_CAREGIVER
+  PART_TIME_CAREGIVER
+  SPECIALIZED_CAREGIVER
+  NURSING_ASSISTANT
+
+  // Client subroles
+  SERVICE_USER
+  FAMILY_AND_FRIENDS
+  OTHER
 }
 
 enum ScheduleStatus {
@@ -389,4 +554,12 @@ enum NotificationType {
   DOCUMENT
   SYSTEM
   ALERT
+}
+
+enum DoseType {
+  MORNING
+  LUNCH
+  EVENING
+  BEDTIME
+  AS_NEEDED
 }

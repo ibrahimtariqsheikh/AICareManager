@@ -13,6 +13,10 @@ import authReducer from "./slices/authSlice"
 import scheduleReducer from "./slices/scheduleSlice"
 import invitationReducer from "./slices/invitationSlice"
 import userReducer from "./slices/userSlice"
+import calendarReducer from "./slices/calendarSlice"
+import medicationReducer from "./slices/medicationSlice"
+import reportReducer from "./slices/reportSlice"
+import documentReducer from "./slices/documentSlice"
 /* REDUX STORE */
 const rootReducer = combineReducers({
   global: globalReducer,
@@ -20,13 +24,25 @@ const rootReducer = combineReducers({
   schedule: scheduleReducer,
   invitations: invitationReducer,
   user: userReducer,
+  calendar: calendarReducer,
+  medication: medicationReducer,
+  report: reportReducer,
+  document: documentReducer,
   [api.reducerPath]: api.reducer,
 })
 
 export const makeStore = () => {
   return configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          // Ignore these action types
+          ignoredActions: ['api/executeQuery/fulfilled', 'api/executeQuery/rejected'],
+          // Ignore these paths in the state
+          ignoredPaths: ['api.queries', 'api.mutations', 'api.subscriptions'],
+        },
+      }).concat(api.middleware),
   })
 }
 

@@ -243,9 +243,9 @@ const userSlice = createSlice({
         const events = payload.data.map((schedule: ScheduleResponse) => ({
           id: schedule.id,
           title: schedule.title,
-          start: new Date(schedule.start),
-          end: new Date(schedule.end),
-          date: new Date(schedule.date),
+          start: schedule.start,
+          end: schedule.end,
+          date: schedule.date,
           startTime: schedule.startTime,
           endTime: schedule.endTime,
           resourceId: schedule.resourceId,
@@ -256,7 +256,7 @@ const userSlice = createSlice({
           color: schedule.color || getEventColor(schedule.type),
           careWorker: schedule.careWorker,
           client: schedule.client,
-        })).map(serializeEvent)
+        }))
         
         state.events = events
         // Update filtered events when events change

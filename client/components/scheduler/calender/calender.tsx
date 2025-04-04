@@ -12,70 +12,31 @@ import { Button } from "../../ui/button"
 import type { AppointmentEvent } from "./types"
 import { useGetSchedulesQuery } from "../../../state/api"
 import { setEvents } from "../../../state/slices/userSlice"
+import { setClients, setCareWorkers, setOfficeStaff, setSidebarMode } from "../../../state/slices/userSlice"
+import { useAppSelector, useAppDispatch } from "../../../state/redux"
+import { setActiveView, setCurrentDate } from "../../../state/slices/calendarSlice"
 
 import { CalendarHeader } from "./calender-header"
 import { AppointmentForm } from "../appointment-form"
 
 import { CustomCalendar } from "./custom-calender"
 import type { CalendarProps, StaffMember, Client, SidebarMode } from "./types"
-import { setClients, setCareWorkers, setOfficeStaff, setSidebarMode } from "../../../state/slices/userSlice"
-import { useAppSelector, useAppDispatch } from "../../../state/redux"
-
 import { CalendarSidebar } from "./calender-sidebar"
 import { getRandomColor } from "./calender-utils"
 
-function deserializeEvent(event: any): AppointmentEvent {
-    try {
-        console.log('Deserializing event:', event);
-
-        // Helper function to safely parse dates
-        const parseDate = (dateStr: string): Date => {
-            try {
-                const date = new Date(dateStr);
-                if (isNaN(date.getTime())) {
-                    console.warn('Invalid date string:', dateStr);
-                    return new Date();
-                }
-                return date;
-            } catch (error) {
-                console.warn('Error parsing date:', dateStr, error);
-                return new Date();
-            }
-        };
-
-        // Parse the dates
-        const startDate = parseDate(event.start);
-        const endDate = parseDate(event.end);
-        const eventDate = parseDate(event.date);
-
-        const deserialized = {
-            ...event,
-            start: startDate,
-            end: endDate,
-            date: eventDate,
-            // Ensure these are strings in HH:mm format
-            startTime: event.startTime || format(startDate, "HH:mm"),
-            endTime: event.endTime || format(endDate, "HH:mm"),
-        };
-
-        console.log('Deserialized event:', deserialized);
-        return deserialized;
-    } catch (error) {
-        console.error('Error deserializing event:', error);
-        return {
-            ...event,
-            start: new Date(),
-            end: new Date(),
-            date: new Date(),
-            startTime: "00:00",
-            endTime: "00:00",
-        };
+// Helper function to deserialize an event
+function deserializeEvent(event: any) {
+    return {
+        ...event,
+        start: new Date(event.start),
+        end: new Date(event.end),
+        date: new Date(event.date),
     }
 }
 
 export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
-    const [currentDate, setCurrentDate] = useState(dateRange?.from || new Date())
-    const [activeView, setActiveView] = useState<"day" | "week" | "month">(view || "week")
+    const dispatch = useAppDispatch()
+    const { activeView, currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<AppointmentEvent | null>(null)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -83,7 +44,6 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const calendarRef = useRef<HTMLDivElement>(null)
     const { theme, setTheme } = useTheme()
     const searchInputRef = useRef<HTMLInputElement>(null)
-    const dispatch = useAppDispatch()
 
     // Get data from Redux store
     const {
@@ -98,6 +58,21 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
 
     // Get user info from Redux store
     const { user } = useAppSelector((state) => state.user)
+
+    // Convert currentDate string to Date object
+    const currentDate = useMemo(() => {
+        const date = new Date(currentDateStr)
+        return isNaN(date.getTime()) ? new Date() : date
+    }, [currentDateStr])
+
+    // Deserialize events for the calendar
+    const deserializedEvents = useMemo(() => {
+        return events.map(deserializeEvent)
+    }, [events])
+
+    const deserializedFilteredEvents = useMemo(() => {
+        return filteredEvents.map(deserializeEvent)
+    }, [filteredEvents])
 
     // Fetch schedules using the API hook
     const { data: schedulesData, isLoading: isSchedulesLoading } = useGetSchedulesQuery({
@@ -366,12 +341,19 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
             newDate = new Date()
         }
 
-        setCurrentDate(newDate)
+        dispatch(setCurrentDate(newDate.toISOString()))
     }
 
     // Handle view change
     const handleViewChange = (newView: "day" | "week" | "month") => {
-        setActiveView(newView)
+        dispatch(setActiveView(newView))
+    }
+
+    // Handle date change
+    const handleDateChange = (date: Date) => {
+        if (date instanceof Date && !isNaN(date.getTime())) {
+            dispatch(setCurrentDate(date.toISOString()))
+        }
     }
 
     const handleEventSelect = (event: any) => {
@@ -412,12 +394,6 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
         console.log("Event updated:", updatedEvent)
     }
 
-    // Handle direct date navigation
-    const handleDateSelect = (date: Date) => {
-        setCurrentDate(date)
-        setActiveView("day")
-    }
-
     // Handle form close with refresh
     const handleFormClose = () => {
         setIsFormOpen(false)
@@ -440,58 +416,6 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     // Check if we have any data
     const hasNoData = !isSchedulesLoading && !events.length && !filteredEvents.length
 
-    // Update the events and filteredEvents usage in the component
-    const deserializedEvents = events.map(deserializeEvent);
-    const deserializedFilteredEvents = filteredEvents.map(deserializeEvent);
-
-    // Add performance optimization to prevent unnecessary re-renders
-    const memoizedCalendar = useMemo(() => {
-        console.log('Rendering calendar with:', {
-            events: deserializedFilteredEvents.length,
-            currentDate: currentDate.toISOString(),
-            activeView,
-            isSchedulesLoading,
-            staffMembers: [...careWorkers, ...officeStaff].length,
-            isMobile,
-            sidebarMode,
-            clients: clients.length,
-            theme
-        });
-
-        // Log a sample event if available
-        if (deserializedFilteredEvents.length > 0) {
-            console.log('Sample event:', JSON.stringify(deserializedFilteredEvents[0], null, 2));
-        }
-
-        return (
-            <CustomCalendar
-                events={deserializedFilteredEvents}
-                currentDate={currentDate}
-                activeView={activeView}
-                onSelectEvent={handleEventSelect}
-                onEventUpdate={handleEventUpdate}
-                onNavigate={handleDateSelect}
-                isLoading={isSchedulesLoading}
-                staffMembers={[...careWorkers, ...officeStaff]}
-                isMobile={isMobile}
-                sidebarMode={sidebarMode}
-                clients={clients}
-                spaceTheme={theme === "dark"}
-            />
-        );
-    }, [
-        deserializedFilteredEvents,
-        currentDate,
-        activeView,
-        isSchedulesLoading,
-        careWorkers,
-        officeStaff,
-        isMobile,
-        sidebarMode,
-        clients,
-        theme,
-    ]);
-
     const isDark = theme === "dark"
 
     return (
@@ -506,48 +430,8 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
             )}
 
             {/* Header with improved spacing and visual hierarchy */}
-            <div className="flex items-center justify-between gap-2 mb-6 z-10 px-1">
-                <div className="flex items-center gap-2.5">
-                    <div className={`p-2 rounded-lg ${isDark ? "bg-slate-800/60" : "bg-slate-100"}`}>
-                        <CalendarIcon className={`h-5 w-5 ${isDark ? "text-green-400" : "text-emerald-500"}`} />
-                    </div>
-                    <h1 className={`text-xl font-semibold ${isDark ? "text-white" : "text-slate-800"}`}>Appointment Calendar</h1>
-                </div>
 
-                <div className="flex items-center gap-2">
-                    <Button
-                        onClick={handleCreateAppointment}
-                        size="sm"
-                        className={`hidden sm:flex`}
-                    >
-                        <PlusCircle className="h-4 w-4 mr-1.5" />
-                        New Appointment
-                    </Button>
 
-                </div>
-            </div>
-
-            {/* Calendar header with improved styling */}
-            <div
-                className={`rounded-t-xl overflow-hidden ${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border z-10 mb-1`}
-            >
-                <CalendarHeader
-                    activeView={activeView}
-                    handleViewChange={handleViewChange}
-                    handleNavigate={handleNavigate}
-                    formatDateRange={formatDateRange}
-                    sidebarMode={sidebarMode}
-                    setSidebarMode={handleSetSidebarMode}
-                    isSearchOpen={isSearchOpen}
-                    toggleSearch={toggleSearch}
-                    setEditingEvent={setEditingEvent}
-                    setIsFormOpen={setIsFormOpen}
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    searchInputRef={searchInputRef}
-
-                />
-            </div>
 
             {/* Main content area with improved layout */}
             <div className="flex flex-1 h-full relative z-10 gap-3 overflow-hidden">
@@ -579,7 +463,20 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
                             </div>
                         </div>
                     ) : (
-                        memoizedCalendar
+                        <CustomCalendar
+                            events={deserializedFilteredEvents}
+                            currentDate={currentDate}
+                            activeView={activeView}
+                            onSelectEvent={handleEventSelect}
+                            onEventUpdate={handleEventUpdate}
+                            onNavigate={handleDateChange}
+                            isLoading={isSchedulesLoading}
+                            staffMembers={[...careWorkers, ...officeStaff]}
+                            isMobile={isMobile}
+                            sidebarMode={sidebarMode}
+                            clients={clients}
+                            spaceTheme={theme === "dark"}
+                        />
                     )}
                 </div>
             </div>
