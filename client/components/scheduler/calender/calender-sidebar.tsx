@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar"
 import { Badge } from "../../ui/badge"
 import type { StaffMember, Client, SidebarMode } from "./types"
+import { getStaffColor } from "./calender-utils"
 
 interface CalendarSidebarProps {
     showSidebar: boolean
@@ -137,29 +138,29 @@ export function CalendarSidebar({
                                             Deselect All
                                         </Button>
                                     </div>
-                                    {clients.map((client) => (
-                                        <div
-                                            key={client.id}
-                                            className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100`}
-                                            onClick={() => toggleClientSelection(client.id)}
-                                        >
+                                    {clients.map((client) => {
+                                        const { staffColor, staffName } = getStaffColor(client)
+                                        return (
                                             <div
-                                                className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${client.selected ? "bg-primary" : "bg-gray-200"}`}
+                                                key={client.id}
+                                                className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100`}
+                                                onClick={() => toggleClientSelection(client.id)}
                                             >
-                                                {client.selected && <Check className="h-3 w-3 text-white" />}
+                                                <div
+                                                    className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${client.selected ? "bg-primary" : "bg-gray-200"}`}
+                                                >
+                                                    {client.selected && <Check className="h-3 w-3 text-white" />}
+                                                </div>
+                                                <Avatar className="h-6 w-6 mr-2">
+                                                    <AvatarImage src={client.avatar} alt={`${client.firstName} ${client.lastName}`} />
+                                                    <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staffColor }}>
+                                                        {staffName.split(" ").map((n) => n[0]).join("")}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <span className={`text-sm truncate font-medium`}>{`${client.firstName} ${client.lastName}`}</span>
                                             </div>
-                                            <Avatar className="h-6 w-6 mr-2">
-                                                <AvatarImage src={client.avatar} alt={client.name} />
-                                                <AvatarFallback className="text-xs text-white" style={{ backgroundColor: client.color }}>
-                                                    {client.name
-                                                        .split(" ")
-                                                        .map((n) => n[0])
-                                                        .join("")}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <span className={`text-sm truncate font-medium`}>{client.name}</span>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </CollapsibleContent>
                             </Collapsible>
                         </TabsContent>
@@ -209,31 +210,29 @@ export function CalendarSidebar({
                                             Deselect All
                                         </Button>
                                     </div>
-                                    {careWorkers.map((staff) => (
-                                        <div
-                                            key={staff.id}
-                                            className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100`}
-                                            onClick={() => toggleCareWorkerSelection(staff.id)}
-                                        >
+                                    {careWorkers.map((staff) => {
+                                        const { staffColor, staffName } = getStaffColor(staff)
+                                        return (
                                             <div
-                                                className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${staff.selected ? "bg-primary" : "bg-gray-200"}`}
+                                                key={staff.id}
+                                                className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100`}
+                                                onClick={() => toggleCareWorkerSelection(staff.id)}
                                             >
-                                                {staff.selected && <Check className="h-3 w-3 text-white" />}
+                                                <div
+                                                    className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${staff.selected ? "bg-primary" : "bg-gray-200"}`}
+                                                >
+                                                    {staff.selected && <Check className="h-3 w-3 text-white" />}
+                                                </div>
+                                                <Avatar className="h-6 w-6 mr-2">
+                                                    <AvatarImage src={staff.avatar} alt={`${staff.firstName} ${staff.lastName}`} />
+                                                    <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staffColor }}>
+                                                        {staffName.split(" ").map((n) => n[0]).join("")}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <span className={`text-sm truncate font-medium`}>{`${staff.firstName} ${staff.lastName}`}</span>
                                             </div>
-                                            <Avatar className="h-6 w-6 mr-2">
-                                                <AvatarImage src={staff.avatar} alt={staff.name} />
-                                                <AvatarFallback className="text-xs" style={{ backgroundColor: staff.color }}>
-                                                    <p className="text-white">
-                                                        {staff.name
-                                                            .split(" ")
-                                                            .map((n) => n[0])
-                                                            .join("")}
-                                                    </p>
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <span className={`text-sm truncate font-medium`}>{staff.name}</span>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </CollapsibleContent>
                             </Collapsible>
                         </TabsContent>
@@ -283,29 +282,29 @@ export function CalendarSidebar({
                                             Deselect All
                                         </Button>
                                     </div>
-                                    {officeStaff.map((staff) => (
-                                        <div
-                                            key={staff.id}
-                                            className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100`}
-                                            onClick={() => toggleOfficeStaffSelection(staff.id)}
-                                        >
+                                    {officeStaff.map((staff) => {
+                                        const { staffColor, staffName } = getStaffColor(staff)
+                                        return (
                                             <div
-                                                className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${staff.selected ? "bg-primary" : "bg-gray-200"}`}
+                                                key={staff.id}
+                                                className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-gray-100`}
+                                                onClick={() => toggleOfficeStaffSelection(staff.id)}
                                             >
-                                                {staff.selected && <Check className="h-3 w-3 text-white" />}
+                                                <div
+                                                    className={`w-4 h-4 rounded-sm mr-2 flex items-center justify-center ${staff.selected ? "bg-primary" : "bg-gray-200"}`}
+                                                >
+                                                    {staff.selected && <Check className="h-3 w-3 text-white" />}
+                                                </div>
+                                                <Avatar className="h-6 w-6 mr-2">
+                                                    <AvatarImage src={staff.avatar} alt={`${staff.firstName} ${staff.lastName}`} />
+                                                    <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staffColor }}>
+                                                        {staffName.split(" ").map((n) => n[0]).join("")}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <span className={`text-sm truncate font-medium`}>{`${staff.firstName} ${staff.lastName}`}</span>
                                             </div>
-                                            <Avatar className="h-6 w-6 mr-2">
-                                                <AvatarImage src={staff.avatar} alt={staff.name} />
-                                                <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staff.color }}>
-                                                    {staff.name
-                                                        .split(" ")
-                                                        .map((n) => n[0])
-                                                        .join("")}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <span className={`text-sm truncate font-medium`}>{staff.name}</span>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </CollapsibleContent>
                             </Collapsible>
                         </TabsContent>

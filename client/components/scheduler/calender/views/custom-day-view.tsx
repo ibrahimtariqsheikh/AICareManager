@@ -19,6 +19,7 @@ import { Button } from "../../../ui/button"
 import { cn } from "../../../../lib/utils"
 import { toast } from "sonner"
 import type { AppointmentEvent } from "../types"
+import { getStaffColor } from "../calender-utils"
 
 // ==============================
 // TYPES & INTERFACES
@@ -776,8 +777,7 @@ export function CustomDayView({
                                 const accentColor = getEventAccentColor(displayEvent)
                                 const typeLabel = getEventTypeLabel(displayEvent.type)
                                 const icon = getEventIcon(displayEvent.type)
-                                const staffMember = staffMembers.find((s) => s.id === event.resourceId)
-                                const staffColor = staffMember?.color || "#888888"
+                                const { staffColor, staffName } = getStaffColor(event, staffMembers)
                                 const duration = getEventDuration(displayEvent)
 
                                 // Determine content to show based on card size
@@ -896,10 +896,10 @@ export function CustomDayView({
                                                         className="w-3.5 h-3.5 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] text-white shadow-sm"
                                                         style={{ backgroundColor: staffColor }}
                                                     >
-                                                        {staffMember?.name?.[0] || "?"}
+                                                        {staffName}
                                                     </div>
                                                     <span className={`text-[10px] ${spaceTheme ? "text-slate-300" : "text-gray-600"} truncate`}>
-                                                        {staffMember?.name || "Staff"}
+                                                        {staffName}
                                                     </span>
                                                 </div>
                                             )}

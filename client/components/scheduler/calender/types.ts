@@ -1,6 +1,7 @@
 export interface StaffMember {
   id: string
-  name: string
+  firstName: string
+  lastName: string
   role: string
   color: string
   avatar?: string
@@ -9,7 +10,8 @@ export interface StaffMember {
 
 export interface Client {
   id: string
-  name: string
+  firstName: string
+  lastName: string
   color: string
   avatar?: string
   selected: boolean

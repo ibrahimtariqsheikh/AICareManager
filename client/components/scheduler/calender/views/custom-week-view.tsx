@@ -221,9 +221,11 @@ export function CustomWeekView({
     }
 
     // Get staff color
-    const getStaffColor = (event: AppointmentEvent) => {
-        const staff = staffMembers.find((s) => s.id === event.resourceId)
-        return staff?.color || "#888888"
+    const getStaffColor = (event: AppointmentEvent, staffMembers: any[]) => {
+        const staffMember = staffMembers.find((s) => s.id === event.resourceId)
+        const staffColor = staffMember?.color || "#888888"
+        const staffName = staffMember ? `${staffMember.firstName} ${staffMember.lastName}` : "Staff"
+        return { staffColor, staffName }
     }
 
     // Format time slot label
@@ -469,6 +471,8 @@ export function CustomWeekView({
                             // Use the display event for rendering (which will have updated times after drag)
                             const displayEvent = displayEvents[event.id] || event
 
+                            const { staffColor, staffName } = getStaffColor(event, staffMembers)
+
                             return (
                                 <motion.div
                                     key={event.id}
@@ -487,7 +491,7 @@ export function CustomWeekView({
                                         left: `${position.left - 20}px`, // Apply -20px offset for proper alignment
                                         height: `${position.height}px`,
                                         width: `${position.width}px`,
-                                        borderLeft: `3px solid ${getStaffColor(event)}`,
+                                        borderLeft: `3px solid ${staffColor}`,
                                         overflow: "hidden",
                                         zIndex: isDraggingRef.current ? 30 : 10,
                                         boxShadow: spaceTheme ? "0 2px 6px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.1)",
@@ -550,6 +554,14 @@ export function CustomWeekView({
                                             {event.title || "No staff assigned"}
                                         </div>
                                     )}
+                                    <div className="w-3.5 h-3.5 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] text-white shadow-sm"
+                                        style={{ backgroundColor: staffColor }}
+                                    >
+                                        {staffName?.[0] || "?"}
+                                    </div>
+                                    <span className={`text-[10px] ${spaceTheme ? "text-slate-300" : "text-gray-600"} truncate`}>
+                                        {staffName}
+                                    </span>
                                 </motion.div>
                             )
                         })}

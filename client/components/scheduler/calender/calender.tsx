@@ -206,7 +206,8 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const careWorkerMembers: StaffMember[] = useMemo(() => {
         return careWorkers.map((staff) => ({
             id: staff.id,
-            name: `${staff.firstName} ${staff.lastName}`,
+            firstName: staff.firstName,
+            lastName: staff.lastName,
             role: staff.role || "CARE_WORKER",
             color: staff.color || getRandomColor(staff.id),
             avatar: staff.profile?.avatarUrl || "",
@@ -217,7 +218,8 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const officeStaffMembers: StaffMember[] = useMemo(() => {
         return officeStaff.map((staff) => ({
             id: staff.id,
-            name: `${staff.firstName} ${staff.lastName}`,
+            firstName: staff.firstName,
+            lastName: staff.lastName,
             role: staff.role || "OFFICE_STAFF",
             color: staff.color || getRandomColor(staff.id),
             avatar: staff.profile?.avatarUrl || "",
@@ -229,7 +231,8 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
     const formattedClients: Client[] = useMemo(() => {
         return clients.map((client) => ({
             id: client.id,
-            name: `${client.firstName} ${client.lastName}`,
+            firstName: client.firstName,
+            lastName: client.lastName,
             color: client.color || getRandomColor(client.id),
             avatar: client.profile?.avatarUrl || "",
             selected: true,
@@ -548,43 +551,9 @@ export function Calendar({ view, onEventSelect, dateRange }: CalendarProps) {
 
             {/* Main content area with improved layout */}
             <div className="flex flex-1 h-full relative z-10 gap-3 overflow-hidden">
-                {/* Sidebar with improved styling */}
-                <div
-                    className={`${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border rounded-lg overflow-hidden transition-all duration-200 ease-in-out`}
-                    style={{ width: isMobile ? "0" : "280px", minWidth: isMobile ? "0" : "280px", opacity: isMobile ? 0 : 1 }}
-                >
-                    {!isMobile && (
-                        <CalendarSidebar
-                            showSidebar={true}
-                            sidebarMode={sidebarMode}
-                            staffMembers={[]}
-                            careWorkers={careWorkerMembers}
-                            officeStaff={officeStaffMembers}
-                            clients={formattedClients}
-
-                            toggleStaffSelection={() => { }}
-                            toggleCareWorkerSelection={handleToggleCareWorkerSelection}
-                            toggleOfficeStaffSelection={handleToggleOfficeStaffSelection}
-                            toggleClientSelection={handleToggleClientSelection}
-
-                            selectAllStaff={() => { }}
-                            deselectAllStaff={() => { }}
-                            selectAllCareWorkers={handleSelectAllCareWorkers}
-                            deselectAllCareWorkers={handleDeselectAllCareWorkers}
-                            selectAllOfficeStaff={handleSelectAllOfficeStaff}
-                            deselectAllOfficeStaff={handleDeselectAllOfficeStaff}
-                            selectAllClients={handleSelectAllClients}
-                            deselectAllClients={handleDeselectAllClients}
-                            setSidebarMode={handleSetSidebarMode}
-
-                        />
-                    )}
-                </div>
-
                 {/* Main calendar area with improved styling */}
                 <div
-                    className={`flex-1 h-full overflow-hidden ${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border rounded-lg`}
-                    ref={calendarRef}
+                    className={`${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border rounded-lg overflow-hidden transition-all duration-200 ease-in-out flex-1`}
                 >
                     {hasNoData ? (
                         <div className="flex-1 h-full flex flex-col items-center justify-center p-8">

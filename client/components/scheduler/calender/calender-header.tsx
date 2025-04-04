@@ -145,6 +145,7 @@ export function CalendarHeader({
 
             <div className="flex items-center justify-between">
                 <Tabs
+                    defaultValue={activeView}
                     value={activeView}
                     onValueChange={(value) => handleViewChange(value as "day" | "week" | "month")}
                     className="w-auto"

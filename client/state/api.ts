@@ -15,7 +15,6 @@ export interface ScheduleInput {
   status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELED"
   type: "WEEKLY_CHECKUP" | "APPOINTMENT" | "HOME_VISIT" | "CHECKUP" | "EMERGENCY" | "ROUTINE" | "OTHER"
   notes?: string
-  chargeRate?: number
 }
 
 export interface ScheduleUpdateInput extends Partial<ScheduleInput> {

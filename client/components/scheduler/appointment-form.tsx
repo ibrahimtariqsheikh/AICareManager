@@ -51,7 +51,6 @@ const formSchema = z.object({
         required_error: "Please select a status",
     }),
     notes: z.string().optional(),
-    chargeRate: z.number().optional(),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -270,7 +269,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                 type: data.type,
                 status: data.status,
                 notes: data.notes || "",
-                chargeRate: data.chargeRate,
             }
 
             let response
@@ -686,30 +684,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                 <SelectItem value="CANCELED">Canceled</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="chargeRate"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Charge Rate (£)</FormLabel>
-                                        <FormControl>
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                min="0"
-                                                className={`w-full rounded-md border px-3 py-2 ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
-                                                {...field}
-                                                onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>Optional charge rate for this appointment</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}

@@ -21,16 +21,16 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
       <Authenticator.Provider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SidebarProvider>
+        <SidebarProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             {children}
-          </SidebarProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </SidebarProvider>
       </Authenticator.Provider>
     </StoreProvider>
   );

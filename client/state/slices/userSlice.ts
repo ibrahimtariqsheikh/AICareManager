@@ -283,7 +283,8 @@ function updateFilteredEvents(state: UserState) {
     // Format staff members for filtering
     const careWorkerMembers = state.careWorkers.map((staff) => ({
         id: staff.id,
-        name: `${staff.firstName} ${staff.lastName}`,
+        firstName: staff.firstName,
+        lastName: staff.lastName,
         role: staff.role || "CARE_WORKER",
         color: staff.color || "#000000",
         avatar: staff.profile?.avatarUrl || "",
@@ -292,7 +293,8 @@ function updateFilteredEvents(state: UserState) {
 
     const officeStaffMembers = state.officeStaff.map((staff) => ({
         id: staff.id,
-        name: `${staff.firstName} ${staff.lastName}`,
+        firstName: staff.firstName,
+        lastName: staff.lastName,
         role: staff.role || "OFFICE_STAFF",
         color: staff.color || "#000000",
         avatar: staff.profile?.avatarUrl || "",
@@ -302,7 +304,8 @@ function updateFilteredEvents(state: UserState) {
     // Format clients for filtering
     const formattedClients = state.clients.map((client) => ({
         id: client.id,
-        name: `${client.firstName} ${client.lastName}`,
+        firstName: client.firstName,
+        lastName: client.lastName,
         color: client.color || "#000000",
         avatar: client.profile?.avatarUrl || "",
         selected: true, // Set all clients as selected by default

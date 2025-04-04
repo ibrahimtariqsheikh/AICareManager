@@ -362,7 +362,7 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="p-2 max-w-[98%] mx-auto">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -413,10 +413,6 @@ export default function DashboardPage() {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                        <Button>
-                            <CalendarClock className="h-4 w-4 mr-2" />
-                            New Schedule
-                        </Button>
                     </div>
                 </div>
             </motion.div>
@@ -425,11 +421,11 @@ export default function DashboardPage() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
             >
                 {stats.map((stat) => (
                     <motion.div key={stat.title} variants={itemVariants}>
-                        <Card className="overflow-hidden hover:shadow-md transition-shadow">
+                        <Card className="overflow-hidden hover:shadow-md transition-shadow p-2">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-base font-medium">{stat.title}</CardTitle>
                                 <div className={`p-2 rounded-full ${stat.bgColor}`}>
@@ -453,10 +449,10 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="mb-8"
+                className="mb-6"
             >
                 <Card>
-                    <CardHeader className="pb-3">
+                    <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                             <div>
                                 <CardTitle className="text-xl flex items-center">
@@ -574,7 +570,7 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 lg:grid-cols-3 gap-4"
             >
                 <Card className="lg:col-span-2">
                     <CardHeader className="pb-3">

@@ -235,10 +235,12 @@ export function CustomMonthView({
         }
     }
 
-    // Get staff color
-    const getStaffColor = (event: AppointmentEvent) => {
-        const staff = staffMembers.find((s) => s.id === event.resourceId)
-        return staff?.color || "#888888"
+    // Get staff color and name
+    const getStaffColor = (event: AppointmentEvent, staffMembers: any[]) => {
+        const staffMember = staffMembers.find((s) => s.id === event.resourceId)
+        const staffColor = staffMember?.color || "#888888"
+        const staffName = staffMember ? `${staffMember.firstName} ${staffMember.lastName}` : "Staff"
+        return { staffColor, staffName }
     }
 
     // Handle drag start
@@ -513,8 +515,8 @@ export function CustomMonthView({
 
     // Get staff name
     const getStaffName = (event: AppointmentEvent) => {
-        const staff = staffMembers.find((s) => s.id === event.resourceId)
-        return staff?.name || "Unassigned"
+        const { staffName } = getStaffColor(event, staffMembers)
+        return staffName
     }
 
     const tooltipClass = spaceTheme
@@ -636,7 +638,7 @@ export function CustomMonthView({
                                         const isActive = activeEvent === event.id
                                         const isHovered = hoveredEvent === event.id
                                         const displayEvent = displayEvents[event.id] || event
-                                        const staffName = getStaffName(displayEvent)
+                                        const { staffName } = getStaffColor(displayEvent, staffMembers)
                                         const eventIcon = getEventIcon(displayEvent)
 
                                         return (
@@ -652,7 +654,7 @@ export function CustomMonthView({
                                                     isHovered ? "brightness-95" : "",
                                                 )}
                                                 style={{
-                                                    borderLeftColor: getStaffColor(displayEvent),
+                                                    borderLeftColor: getStaffColor(displayEvent, staffMembers).staffColor,
                                                     borderLeftWidth: "4px",
                                                     boxShadow: isActive
                                                         ? spaceTheme
@@ -708,7 +710,7 @@ export function CustomMonthView({
                                                     <div className="flex items-center gap-1 mt-1">
                                                         <div
                                                             className="w-3 h-3 rounded-full flex-shrink-0"
-                                                            style={{ backgroundColor: getStaffColor(displayEvent) }}
+                                                            style={{ backgroundColor: getStaffColor(displayEvent, staffMembers).staffColor }}
                                                         />
                                                         <span className={`text-[10px] truncate ${spaceTheme ? "text-zinc-400" : "text-gray-500"}`}>
                                                             {staffName}
@@ -736,7 +738,7 @@ export function CustomMonthView({
                                                 spaceTheme ? "border-blue-500/80 bg-blue-900/30" : "border-blue-500/80 bg-blue-100/70",
                                             )}
                                             style={{
-                                                borderLeftColor: getStaffColor(eventBeingDragged),
+                                                borderLeftColor: getStaffColor(eventBeingDragged, staffMembers).staffColor,
                                                 borderLeftWidth: "4px",
                                             }}
                                         >

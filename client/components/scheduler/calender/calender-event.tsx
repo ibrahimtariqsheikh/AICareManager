@@ -3,6 +3,7 @@
 import moment from "moment"
 import { Home, Video, Building2, Phone, User } from 'lucide-react'
 import { type StaffMember } from "./types"
+import { getStaffColor } from "./calender-utils"
 
 interface CustomEventComponentProps {
     event: any
@@ -18,11 +19,7 @@ export function CustomEventComponent({ event, staffMembers, getEventDurationInMi
 
     // Find staff member for this event
     const staffMember = staffMembers.find((s) => s.id === event.resourceId)
-    const staffInitials = staffMember?.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-    const staffColor = staffMember?.color || "#888888"
+    const { staffColor, staffName } = getStaffColor(event, staffMembers)
 
     let iconComponent = null
 
@@ -80,7 +77,7 @@ export function CustomEventComponent({ event, staffMembers, getEventDurationInMi
 
             {/* Staff indicator - small circle at the right side */}
             <div className="mt-1">
-                <span className="text-xs text-gray-500">{staffMember?.name}</span>
+                <span className="text-xs text-gray-500">{staffName}</span>
             </div>
         </div>
     )
