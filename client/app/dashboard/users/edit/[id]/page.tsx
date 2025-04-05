@@ -206,26 +206,27 @@ export default function EditUserPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
-    // New state for managing contacts, family access, medications, and documents
-    const [newContact, setNewContact] = useState({ name: "", phone: "", relationship: "" })
-    const [newFamilyAccess, setNewFamilyAccess] = useState({ name: "", phone: "", relationship: "" })
-    const [newMedication, setNewMedication] = useState({ name: "", dosage: "", type: "", frequency: "", notes: "" })
-    const [newDocument, setNewDocument] = useState({
-        name: "",
-        type: "",
-        uploadDate: new Date().toISOString().split("T")[0],
-    })
-    const [showNewContactForm, setShowNewContactForm] = useState(false)
-    const [showNewMedicationForm, setShowNewMedicationForm] = useState(false)
-    const [showNewDocumentForm, setShowNewDocumentForm] = useState(false)
+
 
     // Queries
-    const { data: userData } = useGetUserByIdQuery(userId || "", { skip: !userId })
+    const { data: userData, isLoading, error } = useGetUserByIdQuery(userId || "", {
+        skip: !userId,
+        refetchOnMountOrArgChange: true
+    })
 
     // Initialize form data when user data is loaded
     useEffect(() => {
         if (userData?.data) {
             setFormData(userData.data)
+            // Reset form values
+            basicInfoForm.reset({
+                firstName: userData.data.firstName,
+                lastName: userData.data.lastName,
+                email: userData.data.email,
+                role: userData.data.role as Role,
+                subRole: userData.data.subRole as SubRole,
+                agencyId: userData.data.agencyId
+            })
         }
     }, [userData])
 
@@ -436,70 +437,46 @@ export default function EditUserPage() {
         },
     })
 
-    // Initialize form data when user data is loaded
-    useEffect(() => {
-        if (userData?.data) {
-            basicInfoForm.reset({
-                firstName: userData.data.firstName,
-                lastName: userData.data.lastName,
-                email: userData.data.email,
-                role: userData.data.role as Role,
-                subRole: userData.data.subRole as SubRole | undefined,
-                agencyId: userData.data.agencyId || "",
-            });
-        }
-    }, [userData, basicInfoForm]);
-
-    const handleSubmit = basicInfoForm.handleSubmit(async (data) => {
-        setIsSaving(true)
-        try {
-            await updateUser({
-                id: userId,
-                ...data
-            }).unwrap()
-            toast.success("User updated successfully")
-            router.push('/dashboard/users')
-        } catch (error) {
-            console.error("Error updating user:", error)
-            toast.error("Failed to update user")
-        } finally {
-            setIsSaving(false)
-        }
-    })
-
-    if (!userId) {
-        return null // Will be redirected by useEffect
-    }
-
-    if (isSaving) {
+    // Handle loading state
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <Card className="w-full max-w-md p-6">
-                    <div className="flex flex-col items-center justify-center space-y-4">
-                        <LoadingSpinner />
-                        <p className="text-lg font-medium">Saving user data...</p>
-                    </div>
+                <LoadingSpinner />
+                <p className="ml-2">Loading user data...</p>
+            </div>
+        )
+    }
+
+    // Handle error state
+    if (error) {
+        return (
+            <div className="p-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Error Loading User</CardTitle>
+                        <CardDescription>There was an error loading the user data. Please try again later.</CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                        <Button onClick={() => router.push("/dashboard/users")}>
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back to Users
+                        </Button>
+                    </CardFooter>
                 </Card>
             </div>
         )
     }
 
+    // Handle case where user is not found
     if (!userData?.data) {
         return (
-            <div className="container mx-auto py-10">
-                <Card className="max-w-md mx-auto">
+            <div className="p-6">
+                <Card>
                     <CardHeader>
-                        <div className="flex items-center justify-center mb-4">
-                            <div className="rounded-full bg-red-100 p-3">
-                                <AlertCircle className="h-6 w-6 text-red-600" />
-                            </div>
-                        </div>
-                        <CardTitle className="text-center">User Not Found</CardTitle>
-                        <CardDescription className="text-center">
-                            The user you are looking for does not exist or you don't have permission to view it.
-                        </CardDescription>
+                        <CardTitle>User Not Found</CardTitle>
+                        <CardDescription>The user you are looking for does not exist.</CardDescription>
                     </CardHeader>
-                    <CardFooter className="flex justify-center">
+                    <CardFooter>
                         <Button onClick={() => router.push("/dashboard/users")}>
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Back to Users
@@ -568,7 +545,22 @@ export default function EditUserPage() {
                         size="sm"
                         variant="outline"
                         className="border-amber-300 hover:bg-amber-100"
-                        onClick={handleSubmit}
+                        onClick={basicInfoForm.handleSubmit(async (data) => {
+                            setIsSaving(true)
+                            try {
+                                await updateUser({
+                                    id: userId,
+                                    ...data
+                                }).unwrap()
+                                toast.success("User updated successfully")
+                                router.push('/dashboard/users')
+                            } catch (error) {
+                                console.error("Error updating user:", error)
+                                toast.error("Failed to update user")
+                            } finally {
+                                setIsSaving(false)
+                            }
+                        })}
                         disabled={isSaving}
                     >
                         Save Now
@@ -576,7 +568,22 @@ export default function EditUserPage() {
                 </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} id="basicInfoForm" className="space-y-6">
+            <form onSubmit={basicInfoForm.handleSubmit(async (data) => {
+                setIsSaving(true)
+                try {
+                    await updateUser({
+                        id: userId,
+                        ...data
+                    }).unwrap()
+                    toast.success("User updated successfully")
+                    router.push('/dashboard/users')
+                } catch (error) {
+                    console.error("Error updating user:", error)
+                    toast.error("Failed to update user")
+                } finally {
+                    setIsSaving(false)
+                }
+            })} id="basicInfoForm" className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Sidebar */}
                     <div className="lg:col-span-1 space-y-6">
@@ -794,7 +801,22 @@ export default function EditUserPage() {
                                             </CardHeader>
                                             <CardContent>
                                                 <Form {...basicInfoForm}>
-                                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                                    <form onSubmit={basicInfoForm.handleSubmit(async (data) => {
+                                                        setIsSaving(true)
+                                                        try {
+                                                            await updateUser({
+                                                                id: userId,
+                                                                ...data
+                                                            }).unwrap()
+                                                            toast.success("User updated successfully")
+                                                            router.push('/dashboard/users')
+                                                        } catch (error) {
+                                                            console.error("Error updating user:", error)
+                                                            toast.error("Failed to update user")
+                                                        } finally {
+                                                            setIsSaving(false)
+                                                        }
+                                                    })} className="space-y-6">
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                             <FormField
                                                                 control={basicInfoForm.control}

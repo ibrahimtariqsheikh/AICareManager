@@ -77,6 +77,7 @@ const navigation: NavigationSection[] = [
                 icon: UsersIcon,
                 href: "/dashboard/users",
             },
+
             {
                 title: "Analytics",
                 icon: BarChart3,
@@ -87,6 +88,14 @@ const navigation: NavigationSection[] = [
                 icon: Calendar,
                 href: "/dashboard/schedule",
             },
+
+
+            {
+                title: "Emar",
+                icon: BarChart3,
+                href: "/dashboard/emar",
+            },
+
             {
                 title: "Invites",
                 icon: Mail,
