@@ -54,10 +54,16 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-export function MedicationDialog() {
+interface MedicationDialogProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    medication?: any;
+}
+
+export function MedicationDialog({ open, onOpenChange, medication }: MedicationDialogProps) {
     const dispatch = useAppDispatch()
-    const isOpen = useAppSelector(state => state.medication.isMedicationDialogOpen)
     const selectedMedication = useAppSelector(state => state.medication.selectedMedication)
+    const currentMedication = medication || selectedMedication
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -76,17 +82,17 @@ export function MedicationDialog() {
 
     // Initialize form when medication changes
     useEffect(() => {
-        if (selectedMedication) {
+        if (currentMedication) {
             form.reset({
-                name: selectedMedication.name,
-                dosage: selectedMedication.dosage,
-                instructions: selectedMedication.instructions,
-                reason: selectedMedication.reason,
-                route: selectedMedication.route,
-                frequency: selectedMedication.frequency,
-                times: selectedMedication.times,
-                days: selectedMedication.days,
-                notes: selectedMedication.notes || "",
+                name: currentMedication.name,
+                dosage: currentMedication.dosage,
+                instructions: currentMedication.instructions,
+                reason: currentMedication.reason,
+                route: currentMedication.route,
+                frequency: currentMedication.frequency,
+                times: currentMedication.times,
+                days: currentMedication.days,
+                notes: currentMedication.notes || "",
             })
         } else {
             form.reset({
@@ -101,7 +107,7 @@ export function MedicationDialog() {
                 notes: "",
             })
         }
-    }, [selectedMedication, isOpen, form])
+    }, [currentMedication, open, form])
 
     const onSubmit = async (values: FormValues) => {
         try {
@@ -113,24 +119,27 @@ export function MedicationDialog() {
                 })
                 .join(', ')
 
-            if (selectedMedication) {
-                dispatch(updateMedication({
-                    ...selectedMedication,
+            if (currentMedication) {
+                await dispatch(updateMedication({
+                    ...currentMedication,
                     ...values,
                     schedule
                 }))
                 toast.success("Medication updated successfully")
             } else {
-                dispatch(addMedication({
+                await dispatch(addMedication({
                     ...values,
                     schedule
                 }))
                 toast.success("Medication added successfully")
             }
 
-            dispatch(setMedicationDialogOpen(false))
+            // Only close the dialog after successful submission
+            onOpenChange(false)
         } catch (error) {
+            console.error('Error saving medication:', error)
             toast.error("Failed to save medication")
+            // Don't close the dialog on error
         }
     }
 
@@ -168,12 +177,12 @@ export function MedicationDialog() {
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => dispatch(setMedicationDialogOpen(open))}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>{selectedMedication ? "Edit Medication" : "Add New Medication"}</DialogTitle>
+                    <DialogTitle>{currentMedication ? "Edit Medication" : "Add New Medication"}</DialogTitle>
                     <DialogDescription>
-                        {selectedMedication ? "Update the medication details below." : "Enter the details of the new medication."}
+                        {currentMedication ? "Update the medication details below." : "Enter the details of the new medication."}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -381,7 +390,7 @@ export function MedicationDialog() {
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() => dispatch(setMedicationDialogOpen(false))}
+                                onClick={() => onOpenChange(false)}
                             >
                                 Cancel
                             </Button>
@@ -398,4 +407,4 @@ export function MedicationDialog() {
             </DialogContent>
         </Dialog>
     )
-}
+} 

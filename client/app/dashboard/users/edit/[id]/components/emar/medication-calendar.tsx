@@ -51,56 +51,42 @@ export function MedicationCalendar({ currentDate }: MedicationCalendarProps) {
                 if (!medication) return null
 
                 return (
-                    <div key={entry.id} className="space-y-2">
+                    <div key={entry.id} className="space-y-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="text-lg font-medium">{medication.name}</h3>
+                                <h3 className="font-medium">{medication.name}</h3>
                                 <p className="text-sm text-muted-foreground">{medication.dosage}</p>
                             </div>
                             <Button
+                                variant="outline"
                                 size="sm"
                                 onClick={() => handleAdminister(medication.id)}
-                                className="bg-slate-600 hover:bg-slate-700"
                             >
                                 Administer
                             </Button>
                         </div>
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full border-collapse">
-                                <thead>
-                                    <tr>
-                                        <th className="p-2 border-b text-left">Time</th>
-                                        {days.map((day) => (
-                                            <th key={day.toString()} className="p-2 border-b text-center min-w-[40px]">
-                                                <div className="text-sm">{format(day, "d")}</div>
-                                                <div className="text-xs text-muted-foreground">{format(day, "EEE")}</div>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {entry.times.map((time: string, timeIndex: number) => (
-                                        <tr key={`${entry.id}-${time}`} className={timeIndex % 2 === 0 ? "bg-muted/30" : ""}>
-                                            <td className="p-2 border-b font-medium">{format(new Date(`2000-01-01T${time}`), "h:mm a")}</td>
-                                            {days.map((day) => {
-                                                const dayOfMonth = day.getDate()
-                                                const status = entry.status[dayOfMonth] || "not_scheduled"
+                        <div className="grid grid-cols-7 gap-2">
+                            {days.map((day) => {
+                                const date = day.getDate()
+                                const status = entry.status[date] || "not_scheduled"
+                                const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
 
-                                                return (
-                                                    <td key={`${entry.id}-${time}-${day.toString()}`} className="p-2 border-b text-center">
-                                                        <div className="flex justify-center">{getStatusIcon(status)}</div>
-                                                    </td>
-                                                )
-                                            })}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                return (
+                                    <div
+                                        key={date}
+                                        className={`flex flex-col items-center p-2 rounded-md ${isToday ? 'bg-slate-100' : ''
+                                            }`}
+                                    >
+                                        <span className="text-sm font-medium">{date}</span>
+                                        <div className="mt-1">{getStatusIcon(status)}</div>
+                                    </div>
+                                )
+                            })}
                         </div>
                     </div>
                 )
             })}
         </div>
     )
-}
+} 

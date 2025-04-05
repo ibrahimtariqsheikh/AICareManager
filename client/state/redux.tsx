@@ -18,6 +18,7 @@ import medicationReducer from "./slices/medicationSlice"
 import reportReducer from "./slices/reportSlice"
 import documentReducer from "./slices/documentSlice"
 import agencyReducer from "./slices/agencySlice"
+import patientReducer from "./slices/patientSlice"
 /* REDUX STORE */
 const rootReducer = combineReducers({
   global: globalReducer,
@@ -30,6 +31,8 @@ const rootReducer = combineReducers({
   medication: medicationReducer,
   report: reportReducer,
   document: documentReducer,
+  patient: patientReducer,
+
   [api.reducerPath]: api.reducer,
 })
 

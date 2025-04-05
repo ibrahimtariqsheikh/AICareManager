@@ -9,20 +9,30 @@ import { useAppDispatch } from "@/state/redux"
 
 
 interface MedicationCardProps {
-    medication: Medication
+    medication: Medication;
+    onEdit?: () => void;
+    onAdminister?: () => void;
 }
 
-export function MedicationCard({ medication }: MedicationCardProps) {
+export function MedicationCard({ medication, onEdit, onAdminister }: MedicationCardProps) {
     const dispatch = useAppDispatch()
 
     const handleEdit = () => {
-        dispatch(setSelectedMedication(medication))
-        dispatch(setMedicationDialogOpen(true))
+        if (onEdit) {
+            onEdit()
+        } else {
+            dispatch(setSelectedMedication(medication))
+            dispatch(setMedicationDialogOpen(true))
+        }
     }
 
     const handleAdminister = () => {
-        dispatch(setSelectedMedication(medication))
-        dispatch(setAdministrationDialogOpen(true))
+        if (onAdminister) {
+            onAdminister()
+        } else {
+            dispatch(setSelectedMedication(medication))
+            dispatch(setAdministrationDialogOpen(true))
+        }
     }
 
     return (
@@ -68,4 +78,4 @@ export function MedicationCard({ medication }: MedicationCardProps) {
             </CardFooter>
         </Card>
     )
-}
+} 

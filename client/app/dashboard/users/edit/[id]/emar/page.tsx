@@ -3,40 +3,56 @@
 import { useState } from "react"
 import { format, addMonths, subMonths } from "date-fns"
 import { ChevronLeft, ChevronRight, Plus, Pill, FileText, Printer, Search } from "lucide-react"
+import { useParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
-import { MedicationDialog } from "./components/medication-dialog"
-import { AdministrationDialog } from "./components/administration-dialog"
-import { MedicationCard } from "./components/medication-card"
-import { MedicationTable } from "./components/medication-table"
-import { MedicationCalendar } from "./components/medication-calendar"
-import { PatientHeader } from "./components/patient-header"
-
-interface Medication {
-    id: string;
-    name: string;
-    dosage: string;
-    instructions: string;
-    reason: string;
-    route: string;
-    frequency: string;
-    times: string[];
-    days: string[];
-    schedule: string;
-}
+import { MedicationDialog } from "../components/emar/medication-dialog"
+import { AdministrationDialog } from "../components/emar/administration-dialog"
+import { MedicationCard } from "../components/emar/medication-card"
+import { MedicationTable } from "../components/emar/medication-table"
+import { MedicationCalendar } from "../components/emar/medication-calendar"
+import { PatientHeader } from "../components/emar/patient-header"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 export default function EMARPage() {
+    const params = useParams()
+    const userId = params.id as string
     const [currentDate, setCurrentDate] = useState(new Date())
     const [currentView, setCurrentView] = useState<"scheduled" | "prn">("scheduled")
     const [isMedicationDialogOpen, setIsMedicationDialogOpen] = useState(false)
     const [isAdministrationDialogOpen, setIsAdministrationDialogOpen] = useState(false)
     const [selectedMedication, setSelectedMedication] = useState<any>(null)
-    const [isDarkMode, setIsDarkMode] = useState(false)
+
+    // Mock user data
+    const mockUser = {
+        id: userId,
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        profile: {
+            avatarUrl: "/placeholder.svg?height=80&width=80",
+            careLevel: "Medium",
+            age: "72",
+            room: "203B",
+            admissionDate: "Jan 15, 2023",
+            phone: "(555) 123-4567",
+            dateOfBirth: "May 10, 1951",
+            gender: "Male",
+            medicalInfo: {
+                primaryDiagnosis: "Hypertension, Type 2 Diabetes",
+                allergies: "Penicillin, Shellfish",
+                primaryPhysician: "Dr. Sarah Johnson",
+                bloodType: "O+"
+            }
+        }
+    }
+
+    const user = mockUser
+    const isLoading = false
 
     // Navigate to previous month
     const goToPreviousMonth = () => {
@@ -49,7 +65,7 @@ export default function EMARPage() {
     }
 
     // Open medication dialog
-    const openMedicationDialog = (medication: Medication | null = null) => {
+    const openMedicationDialog = (medication: any = null) => {
         setSelectedMedication(medication)
         setIsMedicationDialogOpen(true)
     }
@@ -60,13 +76,60 @@ export default function EMARPage() {
         setIsAdministrationDialogOpen(true)
     }
 
+    // Mock medications
+    const mockMedications = [
+        {
+            id: "med1",
+            name: "Lisinopril",
+            dosage: "10mg",
+            frequency: "Once daily",
+            route: "Oral",
+            startDate: "2023-01-20",
+            endDate: "2023-12-31",
+            instructions: "Take with food in the morning",
+            isPRN: false,
+            reason: "Hypertension",
+            times: ["08:00"],
+            days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            schedule: "8:00am"
+        },
+        {
+            id: "med2",
+            name: "Metformin",
+            dosage: "500mg",
+            frequency: "Twice daily",
+            route: "Oral",
+            startDate: "2023-01-15",
+            endDate: null,
+            instructions: "Take with meals",
+            isPRN: false,
+            reason: "Type 2 Diabetes",
+            times: ["08:00", "19:00"],
+            days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            schedule: "8:00am, 7:00pm"
+        },
+        {
+            id: "med3",
+            name: "Acetaminophen",
+            dosage: "500mg",
+            frequency: "As needed",
+            route: "Oral",
+            startDate: "2023-01-10",
+            endDate: null,
+            instructions: "Take for pain, not to exceed 4000mg in 24 hours",
+            isPRN: true,
+            reason: "Pain relief",
+            times: ["As needed"],
+            days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            schedule: "PRN"
+        }
+    ]
+
     return (
-        <div className={`min-h-screen`}>
-
-
+        <div className="min-h-screen">
             <main className="container mx-auto py-6 px-4 max-w-7xl">
                 {/* Patient Information */}
-                <PatientHeader />
+                <PatientHeader user={user} />
 
                 {/* Main Content */}
                 <div className="mt-6">
@@ -91,19 +154,19 @@ export default function EMARPage() {
                                             <div className="space-y-2">
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Date of Birth</span>
-                                                    <span className="text-sm">March 1, 2001</span>
+                                                    <span className="text-sm">{user.profile?.dateOfBirth || "Not specified"}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Gender</span>
-                                                    <span className="text-sm">Male</span>
+                                                    <span className="text-sm">{user.profile?.gender || "Not specified"}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Room</span>
-                                                    <span className="text-sm">A1</span>
+                                                    <span className="text-sm">{user.profile?.room || "Not assigned"}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Admission Date</span>
-                                                    <span className="text-sm">Jan 1, 2022</span>
+                                                    <span className="text-sm">{user.profile?.admissionDate || "Not specified"}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -113,19 +176,19 @@ export default function EMARPage() {
                                             <div className="space-y-2">
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Primary Diagnosis</span>
-                                                    <span className="text-sm">Hypertension, Diabetes Type 2</span>
+                                                    <span className="text-sm">{user.profile?.medicalInfo?.primaryDiagnosis || "Not specified"}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Allergies</span>
-                                                    <span className="text-sm">Penicillin, Shellfish</span>
+                                                    <span className="text-sm">{user.profile?.medicalInfo?.allergies || "None reported"}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Primary Physician</span>
-                                                    <span className="text-sm">Dr. Sarah Johnson</span>
+                                                    <span className="text-sm">{user.profile?.medicalInfo?.primaryPhysician || "Not specified"}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Blood Type</span>
-                                                    <span className="text-sm">O+</span>
+                                                    <span className="text-sm">{user.profile?.medicalInfo?.bloodType || "Not specified"}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -147,65 +210,12 @@ export default function EMARPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <MedicationCard
-                                            medication={{
-                                                id: "1",
-                                                name: "Hydrocortisone",
-                                                dosage: "5mg",
-                                                instructions: "Take 1 Tab by Mouth Twice Daily",
-                                                reason: "A chemical found in tobacco for...",
-                                                route: "Oral",
-                                                frequency: "BID",
-                                                times: ["08:00", "13:00"],
-                                                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                                                schedule: "8:00am, 1:00pm"
-                                            }}
-                                        />
-
-                                        <MedicationCard
-                                            medication={{
-                                                id: "2",
-                                                name: "Lisinopril",
-                                                dosage: "10mg",
-                                                instructions: "Take 1 Tab by Mouth Once Daily",
-                                                reason: "Hypertension",
-                                                route: "Oral",
-                                                frequency: "QD",
-                                                times: ["08:00"],
-                                                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                                                schedule: "8:00am"
-                                            }}
-                                        />
-
-                                        <MedicationCard
-                                            medication={{
-                                                id: "3",
-                                                name: "Metformin",
-                                                dosage: "500mg",
-                                                instructions: "Take 1 Tab by Mouth Twice Daily",
-                                                reason: "Diabetes Type 2",
-                                                route: "Oral",
-                                                frequency: "BID",
-                                                times: ["08:00", "19:00"],
-                                                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                                                schedule: "8:00am, 7:00pm"
-                                            }}
-                                        />
-
-                                        <MedicationCard
-                                            medication={{
-                                                id: "4",
-                                                name: "Aspirin",
-                                                dosage: "81mg",
-                                                instructions: "Take 1 Tab by Mouth Once Daily",
-                                                reason: "Blood Thinner",
-                                                route: "Oral",
-                                                frequency: "QD",
-                                                times: ["08:00"],
-                                                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                                                schedule: "8:00am"
-                                            }}
-                                        />
+                                        {mockMedications.map(med => (
+                                            <MedicationCard
+                                                key={med.id}
+                                                medication={med}
+                                            />
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -277,9 +287,7 @@ export default function EMARPage() {
                                         </div>
                                     </div>
 
-                                    <MedicationCalendar
-                                        currentDate={currentDate}
-                                    />
+                                    <MedicationCalendar currentDate={currentDate} />
                                 </CardContent>
 
                                 <CardFooter className="flex justify-between border-t pt-6">
@@ -297,11 +305,18 @@ export default function EMARPage() {
             </main>
 
             {/* Medication Dialog */}
-            <MedicationDialog />
+            <MedicationDialog
+                open={isMedicationDialogOpen}
+                onOpenChange={setIsMedicationDialogOpen}
+                medication={selectedMedication}
+            />
 
             {/* Administration Dialog */}
-            <AdministrationDialog />
+            <AdministrationDialog
+                open={isAdministrationDialogOpen}
+                onOpenChange={setIsAdministrationDialogOpen}
+                medication={selectedMedication}
+            />
         </div>
     )
-}
-
+} 

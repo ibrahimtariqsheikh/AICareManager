@@ -34,6 +34,7 @@ import {
     UserCog,
     X,
     Mail,
+    Pill,
 } from "lucide-react"
 import { toast } from "sonner"
 import { motion } from "framer-motion"
@@ -63,6 +64,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import EMARPage from "./components/emar/page"
 
 // Define Role and SubRole types
 type Role = "SOFTWARE_OWNER" | "ADMIN" | "CARE_WORKER" | "OFFICE_STAFF" | "CLIENT" | "FAMILY"
@@ -205,8 +207,6 @@ export default function EditUserPage() {
     const [activeTab, setActiveTab] = useState("basic")
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-
-
 
     // Queries
     const { data: userData, isLoading, error } = useGetUserByIdQuery(userId || "", {
@@ -491,6 +491,25 @@ export default function EditUserPage() {
 
     return (
         <div className="container mx-auto py-6 px-4 md:px-6">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-4">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => router.back()}
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                    <h1 className="text-2xl font-bold">Edit User</h1>
+                </div>
+                <Button
+                    onClick={() => router.push(`/dashboard/users/edit/${id}/emar`)}
+                    className="bg-blue-600 hover:bg-blue-700"
+                >
+                    <Pill className="mr-2 h-4 w-4" />
+                    EMAR
+                </Button>
+            </div>
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                 <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16 border-2 border-white shadow-md">
@@ -764,34 +783,15 @@ export default function EditUserPage() {
                         <Card>
                             <CardHeader className="pb-4">
                                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                    <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
-                                        <TabsTrigger value="basic" className="flex items-center gap-1">
-                                            <User className="h-4 w-4" />
-                                            <span className="hidden md:inline">Basic</span>
-                                        </TabsTrigger>
-                                        <TabsTrigger value="contact" className="flex items-center gap-1">
-                                            <Phone className="h-4 w-4" />
-                                            <span className="hidden md:inline">Contact</span>
-                                        </TabsTrigger>
-                                        <TabsTrigger value="medical" className="flex items-center gap-1">
-                                            <Heart className="h-4 w-4" />
-                                            <span className="hidden md:inline">Medical</span>
-                                        </TabsTrigger>
-                                        <TabsTrigger value="preferences" className="flex items-center gap-1">
-                                            <Settings className="h-4 w-4" />
-                                            <span className="hidden md:inline">Preferences</span>
-                                        </TabsTrigger>
-                                        <TabsTrigger value="risk" className="flex items-center gap-1">
-                                            <ShieldAlert className="h-4 w-4" />
-                                            <span className="hidden md:inline">Risk</span>
-                                        </TabsTrigger>
-                                        <TabsTrigger value="documents" className="flex items-center gap-1">
-                                            <FileText className="h-4 w-4" />
-                                            <span className="hidden md:inline">Documents</span>
-                                        </TabsTrigger>
+                                    <TabsList className="grid w-full grid-cols-5 max-w-3xl">
+                                        <TabsTrigger value="profile">Profile</TabsTrigger>
+                                        <TabsTrigger value="medical">Medical</TabsTrigger>
+                                        <TabsTrigger value="documents">Documents</TabsTrigger>
+                                        <TabsTrigger value="risk">Risk</TabsTrigger>
+                                        <TabsTrigger value="emar">EMAR</TabsTrigger>
                                     </TabsList>
 
-                                    <TabsContent value="basic" className="mt-4 space-y-6">
+                                    <TabsContent value="profile" className="mt-4 space-y-6">
                                         <Card>
                                             <CardHeader className="pb-3">
                                                 <CardTitle className="text-lg flex items-center">
@@ -1248,6 +1248,10 @@ export default function EditUserPage() {
                                                 </Form>
                                             </CardContent>
                                         </Card>
+                                    </TabsContent>
+
+                                    <TabsContent value="emar">
+                                        {user ? <EMARPage user={user} /> : <LoadingSpinner />}
                                     </TabsContent>
 
                                     <TabsContent value="preferences" className="mt-4 space-y-6">
