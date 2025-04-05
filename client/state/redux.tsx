@@ -17,9 +17,11 @@ import calendarReducer from "./slices/calendarSlice"
 import medicationReducer from "./slices/medicationSlice"
 import reportReducer from "./slices/reportSlice"
 import documentReducer from "./slices/documentSlice"
+import agencyReducer from "./slices/agencySlice"
 /* REDUX STORE */
 const rootReducer = combineReducers({
   global: globalReducer,
+  agency: agencyReducer,
   auth: authReducer,
   schedule: scheduleReducer,
   invitations: invitationReducer,

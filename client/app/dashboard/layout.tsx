@@ -9,11 +9,10 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbL
 import { Separator } from "../../components/ui/separator"
 import { SidebarTrigger } from "../../components/ui/sidebar"
 import { ReactNode, useEffect, useState, useMemo } from "react"
-import { useAuthenticator } from "@aws-amplify/ui-react"
 import { useAppDispatch, useAppSelector } from "../../state/redux";
 import { setUser, setOfficeStaff, setCareWorkers, setClients, setSidebarMode } from "../../state/slices/userSlice";
 import { setCurrentDate, setActiveView } from "../../state/slices/calendarSlice";
-import { useGetUserQuery, useGetFilteredUsersQuery } from "../../state/api";
+import { useGetUserQuery, useGetAgencyUsersQuery } from "../../state/api";
 import { redirect } from "next/navigation"
 import * as React from "react"
 import type { SidebarMode } from "../../components/scheduler/calender/types"
@@ -31,7 +30,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     const { user, careWorkers, clients, officeStaff, sidebarMode } = useAppSelector((state) => state.user)
     const { activeView, currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
     const { data: userInformation } = useGetUserQuery()
-    const { data: filteredUsers } = useGetFilteredUsersQuery(userInformation?.userInfo?.id || "")
+    const { data: agencyUsers } = useGetAgencyUsersQuery(userInformation?.userInfo?.agencyId || "")
     const isSchedulePage = pathname === "/dashboard/schedule"
 
     const [isLoading, setIsLoading] = useState(true)
@@ -48,12 +47,16 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }, [userInformation, dispatch])
 
     useEffect(() => {
-        if (filteredUsers) {
-            dispatch(setCareWorkers(filteredUsers.careWorkers))
-            dispatch(setOfficeStaff(filteredUsers.officeStaff))
-            dispatch(setClients(filteredUsers.clients))
+        if (agencyUsers?.data) {
+            const careWorkers = agencyUsers.data.filter((user: any) => user.role === "CARE_WORKER")
+            const officeStaff = agencyUsers.data.filter((user: any) => user.role === "OFFICE_STAFF")
+            const clients = agencyUsers.data.filter((user: any) => user.role === "CLIENT")
+
+            dispatch(setCareWorkers(careWorkers))
+            dispatch(setOfficeStaff(officeStaff))
+            dispatch(setClients(clients))
         }
-    }, [filteredUsers, dispatch])
+    }, [agencyUsers, dispatch])
 
     if (isLoading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>
@@ -92,7 +95,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
 
     // Handle toggle functions
     const handleToggleCareWorkerSelection = (staffId: string) => {
-        const updatedCareWorkers = careWorkers.map((worker) => ({
+        const updatedCareWorkers = careWorkers.map((worker: any) => ({
             ...worker,
             selected: worker.id === staffId ? !worker.selected : worker.selected,
         }))
@@ -100,7 +103,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleToggleOfficeStaffSelection = (staffId: string) => {
-        const updatedOfficeStaff = officeStaff.map((staff) => ({
+        const updatedOfficeStaff = officeStaff.map((staff: any) => ({
             ...staff,
             selected: staff.id === staffId ? !staff.selected : staff.selected,
         }))
@@ -108,7 +111,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleToggleClientSelection = (clientId: string) => {
-        const updatedClients = clients.map((client) => ({
+        const updatedClients = clients.map((client: any) => ({
             ...client,
             selected: client.id === clientId ? !client.selected : client.selected,
         }))
@@ -116,7 +119,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleSelectAllCareWorkers = () => {
-        const updatedCareWorkers = careWorkers.map((worker) => ({
+        const updatedCareWorkers = careWorkers.map((worker: any) => ({
             ...worker,
             selected: true,
         }))
@@ -124,7 +127,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleDeselectAllCareWorkers = () => {
-        const updatedCareWorkers = careWorkers.map((worker) => ({
+        const updatedCareWorkers = careWorkers.map((worker: any) => ({
             ...worker,
             selected: false,
         }))
@@ -132,7 +135,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleSelectAllOfficeStaff = () => {
-        const updatedOfficeStaff = officeStaff.map((staff) => ({
+        const updatedOfficeStaff = officeStaff.map((staff: any) => ({
             ...staff,
             selected: true,
         }))
@@ -140,7 +143,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleDeselectAllOfficeStaff = () => {
-        const updatedOfficeStaff = officeStaff.map((staff) => ({
+        const updatedOfficeStaff = officeStaff.map((staff: any) => ({
             ...staff,
             selected: false,
         }))
@@ -148,7 +151,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleSelectAllClients = () => {
-        const updatedClients = clients.map((client) => ({
+        const updatedClients = clients.map((client: any) => ({
             ...client,
             selected: true,
         }))
@@ -156,7 +159,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }
 
     const handleDeselectAllClients = () => {
-        const updatedClients = clients.map((client) => ({
+        const updatedClients = clients.map((client: any) => ({
             ...client,
             selected: false,
         }))

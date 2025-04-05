@@ -1,5 +1,6 @@
-import type { Request, Response } from "express";
-import { PrismaClient, Role } from "@prisma/client";
+import { Request, Response } from "express";
+import { PrismaClient, Role, SubRole } from "@prisma/client";
+import crypto from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -82,21 +83,53 @@ export const getFilteredUsers = async (req: Request, res: Response): Promise<voi
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { cognitoId, email, firstName, lastName, role } = req.body;
-        console.log("cognitoId", cognitoId);
-        console.log("email", email);
+        const { email, role, subRole, firstName, lastName, cognitoId, agencyId } = req.body;
+
+        // Validate required fields
+        if (!email || !role) {
+            res.status(400).json({ error: "Email and role are required" });
+            return;
+        }
+
+        // Validate role
+        if (!Object.values(Role).includes(role)) {
+            res.status(400).json({ error: "Invalid role" });
+            return;
+        }
+
+        // Validate subrole if provided
+        if (subRole && !Object.values(SubRole).includes(subRole)) {
+            res.status(400).json({ error: "Invalid subrole" });
+            return;
+        }
+
+        // Check if user already exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (existingUser) {
+            res.status(400).json({ error: "User already exists" });
+            return;
+        }
+
+        // Create user in database
         const user = await prisma.user.create({
-            data: { 
-                cognitoId, 
-                email, 
-                firstName, 
-                lastName, 
-                role: role as Role 
+            data: {
+                email,
+                firstName: firstName || "",
+                lastName: lastName || "",
+                role,
+                subRole,
+                cognitoId: cognitoId || crypto.randomBytes(16).toString("hex"),
+                agencyId
             },
         });
+
         res.status(201).json(user);
     } catch (error) {
-        res.status(500).json({ message: "Error creating user", error: error });
+        console.error("Error creating user:", error);
+        res.status(500).json({ error: "Failed to create user" });
     }
 };
 
@@ -212,6 +245,172 @@ export const getClients = async (req: Request, res: Response): Promise<void> => 
     console.error("Error fetching clients:", error);
     res.status(500).json({ message: "Error fetching clients", error });
   }
+};
+
+// Get users by agency
+export const getAgencyUsers = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { agencyId } = req.params;
+        
+        if (!agencyId) {
+            res.status(400).json({ error: "Agency ID is required" });
+            return;
+        }
+
+        const users = await prisma.user.findMany({
+            where: {
+                agencyId: agencyId
+            },
+            include: {
+                profile: {
+                    select: {
+                        avatarUrl: true,
+                        phone: true,
+                    },
+                },
+            },
+            orderBy: {
+                firstName: "asc",
+            },
+        });
+
+        // Add color field for UI
+        const usersWithColor = users.map((user) => ({
+            ...user,
+            color: getRandomColor(user.id),
+        }));
+
+        res.json({
+            data: usersWithColor,
+            meta: {
+                total: users.length,
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching agency users:", error);
+        res.status(500).json({ error: "Failed to fetch agency users" });
+    }
+};
+
+// Get user by ID
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+
+        const user = await prisma.user.findUnique({
+            where: { id },
+            include: {
+                profile: {
+                    select: {
+                        avatarUrl: true,
+                        phone: true,
+                    },
+                },
+                agency: true,
+            },
+        });
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        // Add color field for UI
+        const userWithColor = {
+            ...user,
+            color: getRandomColor(user.id),
+        };
+
+        res.json({
+            data: userWithColor,
+            meta: {
+                total: 1,
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        res.status(500).json({ message: "Error fetching user", error });
+    }
+};
+
+// Update user
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { email, role, subRole, firstName, lastName, agencyId } = req.body;
+
+        // Validate role if provided
+        if (role && !Object.values(Role).includes(role)) {
+            res.status(400).json({ error: "Invalid role" });
+            return;
+        }
+
+        // Validate subrole if provided
+        if (subRole && !Object.values(SubRole).includes(subRole)) {
+            res.status(400).json({ error: "Invalid subrole" });
+            return;
+        }
+
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+            where: { id },
+        });
+
+        if (!existingUser) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+
+        // Check if email is being changed and if it's already taken
+        if (email && email !== existingUser.email) {
+            const emailTaken = await prisma.user.findUnique({
+                where: { email },
+            });
+
+            if (emailTaken) {
+                res.status(400).json({ error: "Email already taken" });
+                return;
+            }
+        }
+
+        // Update user in database
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: {
+                email: email || undefined,
+                firstName: firstName || undefined,
+                lastName: lastName || undefined,
+                role: role || undefined,
+                subRole: subRole || undefined,
+                agencyId: agencyId || undefined,
+            },
+            include: {
+                profile: {
+                    select: {
+                        avatarUrl: true,
+                        phone: true,
+                    },
+                },
+                agency: true,
+            },
+        });
+
+        // Add color field for UI
+        const userWithColor = {
+            ...updatedUser,
+            color: getRandomColor(updatedUser.id),
+        };
+
+        res.json({
+            data: userWithColor,
+            meta: {
+                total: 1,
+            },
+        });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).json({ error: "Failed to update user" });
+    }
 };
 
 // Helper function to get a random color based on ID

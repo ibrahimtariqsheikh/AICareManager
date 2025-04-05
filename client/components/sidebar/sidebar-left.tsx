@@ -14,6 +14,7 @@ import {
     Sun,
     Building2,
     Bot,
+    Mail,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -47,19 +48,7 @@ interface NavigationSection {
     items: NavigationItem[]
 }
 
-// Teams data
-const teams = [
-    {
-        name: "AI Care Manager ",
-        logo: Command,
-        plan: "Enterprise",
-    },
-    {
-        name: "AI Care Manager",
-        logo: Command,
-        plan: "Startup",
-    },
-]
+
 
 // Navigation data
 const navigation: NavigationSection[] = [
@@ -97,6 +86,11 @@ const navigation: NavigationSection[] = [
                 title: "Schedule",
                 icon: Calendar,
                 href: "/dashboard/schedule",
+            },
+            {
+                title: "Invites",
+                icon: Mail,
+                href: "/dashboard/invites",
             },
         ],
     },

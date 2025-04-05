@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
 import { useMediaQuery } from "../../../hooks/use-mobile"
 import { User } from "../../../types/prismaTypes"
-import { useGetFilteredUsersQuery, useGetUserQuery } from "../../../state/api"
+import { useGetUsersQuery, useGetUserQuery } from "../../../state/api"
 import { useDispatch } from "react-redux"
 import { setOfficeStaff } from "../../../state/slices/userSlice"
 import { setClients } from "../../../state/slices/userSlice"
@@ -30,16 +30,19 @@ export default function SchedulerPage() {
     const isDesktop = useMediaQuery("(min-width: 768px)")
     const { careWorkers, clients, officeStaff } = useAppSelector((state: any) => state.user)
     const { data: authUser } = useGetUserQuery()
-
-    const { data: filteredUsers } = useGetFilteredUsersQuery(authUser?.userInfo?.id || "")
+    const { data: usersResponse } = useGetUsersQuery({
+        agencyId: authUser?.userInfo?.agencyId || "",
+        role: "CARE_WORKER,CLIENT,OFFICE_STAFF"
+    })
 
     useEffect(() => {
-        if (filteredUsers) {
-            dispatch(setCareWorkers(filteredUsers.careWorkers))
-            dispatch(setClients(filteredUsers.clients))
-            dispatch(setOfficeStaff(filteredUsers.officeStaff))
+        if (usersResponse?.data) {
+            const users = usersResponse.data
+            dispatch(setCareWorkers(users.filter(user => user.role === "CARE_WORKER")))
+            dispatch(setClients(users.filter(user => user.role === "CLIENT")))
+            dispatch(setOfficeStaff(users.filter(user => user.role === "OFFICE_STAFF")))
         }
-    }, [filteredUsers])
+    }, [usersResponse])
 
 
 

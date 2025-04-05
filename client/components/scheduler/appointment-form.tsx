@@ -20,7 +20,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, For
 import { useAppSelector, useAppDispatch } from "../../state/redux"
 import { addEvent, updateEvent, deleteEvent } from "../../state/slices/userSlice"
 import { v4 as uuidv4 } from "uuid"
-import { useCreateScheduleMutation, useUpdateScheduleMutation, useDeleteScheduleMutation, useGetFilteredUsersQuery } from "../../state/api"
+import { useCreateScheduleMutation, useUpdateScheduleMutation, useDeleteScheduleMutation, useGetUsersQuery, useGetUserQuery } from "../../state/api"
 import { FetchUserAttributesOutput } from "@aws-amplify/auth"
 
 const formSchema = z.object({
@@ -112,9 +112,22 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     const agencyId = user?.userInfo?.agencyId || ""
 
     // Load filtered users when form opens
-    const { data: filteredUsers } = useGetFilteredUsersQuery(user?.userInfo?.id || '', {
-        skip: !user?.userInfo?.id
+    const { data: usersResponse } = useGetUsersQuery({
+        agencyId: user?.userInfo?.agencyId || "",
+        role: "CARE_WORKER,CLIENT,OFFICE_STAFF"
+    }, {
+        skip: !user?.userInfo?.agencyId
     })
+
+    const filteredUsers = useMemo(() => {
+        if (!usersResponse?.data) return { careWorkers: [], clients: [], officeStaff: [] }
+        const users = usersResponse.data
+        return {
+            careWorkers: users.filter(user => user.role === "CARE_WORKER"),
+            clients: users.filter(user => user.role === "CLIENT"),
+            officeStaff: users.filter(user => user.role === "OFFICE_STAFF")
+        }
+    }, [usersResponse])
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),

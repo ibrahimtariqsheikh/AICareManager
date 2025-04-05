@@ -1,207 +1,108 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Button } from "../ui/button"
-import { Plus, Bell, RefreshCw, Users, UserPlus, Briefcase, Search } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Plus, Bell, RefreshCw, Users, UserPlus, Briefcase, Search, Badge } from 'lucide-react'
 import { toast } from "sonner"
 import {
     useGetUserQuery,
     useGetUserInvitationsQuery,
-    useCreateInvitationMutation,
+    useCreateUserMutation,
     useCancelInvitationMutation,
     useGetInvitationsByEmailQuery,
-} from "../../state/api"
+    useGetAgencyUsersQuery,
+} from "@/state/api"
 import { UserTable } from "./user-table"
-import { AddUserDialog } from "./add-user-dialog"
-import { LoadingSpinner } from "../ui/loading-spinner"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { NotificationsDialog } from "./notifications-diaglog"
-import { Input } from "../ui/input"
-import { AvatarGroup } from "../ui/avatar-group"
-import { Avatar, AvatarFallback } from "../ui/avatar"
-
+import { Input } from "@/components/ui/input"
+import { Role, User, SubRole } from "@/types/prismaTypes"
+import { AddUsersNewDialog } from "./add-users-new-dialog"
+import { getCurrentUser } from "aws-amplify/auth"
+import { useDispatch, useSelector } from "react-redux"
+import { setClients, setOfficeStaff, setCareWorkers } from "@/state/slices/agencySlice"
+import { v4 as uuidv4 } from "uuid"
+import { useAppSelector } from "@/state/redux"
+import { UserTableUser } from "./user-table-user"
 
 export function UserDashboard() {
     // State
-    const [isAddUserOpen, setIsAddUserOpen] = useState(false)
-    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
-    const [activeUserType, setActiveUserType] = useState("CLIENT")
-    const [isRefreshing, setIsRefreshing] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
-    const [filteredInvitations, setFilteredInvitations] = useState<any[]>([])
+    const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false)
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [activeUserType, setActiveUserType] = useState<Role>("CLIENT")
 
-    // Queries
-    const { data: authUser, isLoading: isUserLoading } = useGetUserQuery()
+    // Redux
+    const dispatch = useDispatch()
+    const { data: userData } = useGetUserQuery()
+    const { clients, officeStaff, careWorkers } = useAppSelector((state) => state.agency)
+    const { data: agencyUsers, isLoading: isLoadingUsers, refetch: refetchUsers } = useGetAgencyUsersQuery(userData?.userInfo?.agencyId || "")
+    const { data: invitations, isLoading: isInvitationsLoading } = useGetUserInvitationsQuery(userData?.userInfo?.id || "")
+    const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation()
 
-    const {
-        data: invitationsSent = [],
-        isLoading: isInvitationsLoading,
-        refetch: refetchInvitations,
-        error: invitationsError,
-    } = useGetUserInvitationsQuery(authUser?.userInfo?.id || "", {
-        skip: !authUser?.userInfo?.id,
-    })
 
-    const {
-        data: invitationsReceived = [],
-        isLoading: isReceivedInvitationsLoading,
-        refetch: refetchReceivedInvitations,
-    } = useGetInvitationsByEmailQuery(authUser?.userInfo?.email || "", {
-        skip: !authUser?.userInfo?.email,
-    })
+    // Filter users based on search query and user type
+    const filteredUsers = (() => {
+        const users = activeUserType === "CLIENT" ? clients :
+            activeUserType === "CARE_WORKER" ? careWorkers :
+                officeStaff
 
-    // Mutations
-    const [createInvitation, { isLoading: isCreatingInvitation }] = useCreateInvitationMutation()
-    const [cancelInvitation, { isLoading: isCancellingInvitation }] = useCancelInvitationMutation()
-
-    // Combined loading state
-    const isLoading = isUserLoading || isInvitationsLoading || isCreatingInvitation || isCancellingInvitation
-
-    // Filter users by role and status
-    const filterUsersByRole = (role: string) => {
-        if (!Array.isArray(invitationsSent)) {
-            console.error("invitationsSent is not an array:", invitationsSent)
-            return []
-        }
-
-        return invitationsSent.filter((invitation: any) => {
-            if (!invitation || typeof invitation !== "object") {
-                console.error("Invalid invitation object:", invitation)
-                return false
-            }
-            return invitation.role === role
+        return users.filter((user: User) => {
+            const matchesSearch = user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                user.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
+            return matchesSearch
         })
-    }
+    })()
 
-    // Filter by search query
-    const filterBySearch = (invitations: any[]) => {
-        if (!searchQuery) return invitations
-
-        return invitations.filter((invitation) => invitation.email.toLowerCase().includes(searchQuery.toLowerCase()))
-    }
-
-    // Update filtered invitations when search query or active user type changes
+    // Update Redux state when agency users are fetched
     useEffect(() => {
-        const roleFiltered = filterUsersByRole(activeUserType)
-        const searchFiltered = filterBySearch(roleFiltered)
-        setFilteredInvitations(searchFiltered)
-    }, [searchQuery, activeUserType, invitationsSent])
-
-    // Count users by role
-    const clientCount = filterUsersByRole("CLIENT").length
-    const careWorkerCount = filterUsersByRole("CARE_WORKER").length
-    const officeStaffCount = filterUsersByRole("OFFICE_STAFF").length
+        if (agencyUsers?.data) {
+            const users = agencyUsers.data as User[]
+            dispatch(setClients(users.filter(user => user.role === "CLIENT")))
+            dispatch(setOfficeStaff(users.filter(user => user.role === "OFFICE_STAFF")))
+            dispatch(setCareWorkers(users.filter(user => user.role === "CARE_WORKER")))
+        }
+    }, [agencyUsers?.data, dispatch])
 
     // Handle refresh
     const handleRefresh = async () => {
         setIsRefreshing(true)
         try {
-            // Comment out actual API calls
-            // await refetchInvitations()
-            // await refetchReceivedInvitations()
-
-            // Simulate refresh delay
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-
-            toast.success("Data refreshed successfully")
+            await refetchUsers()
+            toast.success("Users refreshed successfully")
         } catch (error) {
-            toast.error("Failed to refresh data")
+            toast.error("Failed to refresh users")
         } finally {
             setIsRefreshing(false)
         }
     }
 
-    // Handle add user
-    const handleAddUser = async (email: string, role: string) => {
-        if (email) {
-            try {
-                // Comment out actual API call
-                // await createInvitation({
-                //     inviterUserId: authUser.userInfo.id,
-                //     email: email,
-                //     role: role,
-                //     expirationDays: 7,
-                // }).unwrap()
-
-                // Simulate API call delay
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-
-                toast.success(`Invitation sent to ${email}`)
-                setIsAddUserOpen(false)
-
-                // Add the new invitation to the local state for demo purposes
-                const newInvitation = {
-                    id: `temp-${Date.now()}`,
-                    email: email,
-                    role: role,
-                    status: "PENDING",
-                    createdAt: new Date().toISOString(),
-                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-                }
-
-                // This is just for UI demonstration - in a real app, you'd refetch from the API
-                if (Array.isArray(invitationsSent)) {
-                    const updatedInvitations = [...invitationsSent, newInvitation]
-                    // Force a re-render with the new invitation
-                    const roleFiltered = updatedInvitations.filter((inv: any) => inv.role === activeUserType)
-                    const searchFiltered = filterBySearch(roleFiltered)
-                    setFilteredInvitations(searchFiltered)
-                }
-            } catch (error: any) {
-                toast.error(error.data?.error || "Failed to send invitation")
-            }
-        }
-    }
-
-    // Handle send invite (resend)
-    const handleSendInvite = async (invitation: any) => {
+    // Handle creating user
+    const handleAddUser = async (firstName: string, lastName: string, agencyId: string, email: string, role: Role, subRole?: SubRole) => {
         try {
-            // Comment out actual API call
-            // await createInvitation({
-            //     inviterUserId: authUser.userInfo.id,
-            //     email: invitation.email,
-            //     role: invitation.role,
-            //     expirationDays: 7,
-            // }).unwrap()
-
-            // Simulate API call delay
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-
-            toast.success(`Invitation resent to ${invitation.email}`)
-        } catch (error: any) {
-            toast.error(error.data?.error || "Failed to resend invitation")
+            await createUser({
+                email,
+                role,
+                subRole,
+                firstName,
+                lastName,
+                cognitoId: uuidv4(),
+                agencyId
+            })
+            setIsAddUserDialogOpen(false)
+            toast.success("User created successfully")
+            await refetchUsers()
+        } catch (error) {
+            console.error("Failed to create user:", error)
+            toast.error("Failed to create user")
         }
     }
 
-    // Handle cancel invitation
-    const handleCancelInvitation = async (invitation: any) => {
-        try {
-            // Comment out actual API call
-            // await cancelInvitation({
-            //     invitationId: invitation.id,
-            //     userId: authUser.userInfo.id,
-            // }).unwrap()
-
-            // Simulate API call delay
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-
-            toast.success(`Invitation to ${invitation.email} has been cancelled`)
-
-            // This is just for UI demonstration - in a real app, you'd refetch from the API
-            if (Array.isArray(invitationsSent)) {
-                const updatedInvitations = invitationsSent.filter((inv) => inv.id !== invitation.id)
-                // Force a re-render without the cancelled invitation
-                const roleFiltered = updatedInvitations.filter((inv: any) => inv.role === activeUserType)
-                const searchFiltered = filterBySearch(roleFiltered)
-                setFilteredInvitations(searchFiltered)
-            }
-        } catch (error: any) {
-            toast.error(error.data?.error || "Failed to cancel invitation")
-        }
-    }
-
-    if (isUserLoading) {
+    if (isLoadingUsers) {
         return <LoadingSpinner />
     }
 
@@ -210,22 +111,25 @@ export function UserDashboard() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold">User Management</h1>
-                    <p className="text-gray-500 mt-1">Manage your team members and invitations</p>
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-2xl font-bold">Users</h1>
+                        <div className="text-gray-500 text-sm bg-gray-100 px-2 py-1 rounded-md">{userData?.userInfo?.role}</div>
+                    </div>
+                    <p className="text-gray-500 mt-1">Manage the users in your agency. Edit, delete, and add users as needed.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <Input
-                            placeholder="Search emails..."
+                            placeholder="Search users..."
                             className="pl-9 h-9 w-[220px]"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
 
-                    <Button onClick={() => setIsAddUserOpen(true)} className="bg-gray-900 hover:bg-gray-800">
-                        <Plus className="h-4 w-4 mr-1" />
+                    <Button onClick={() => setIsAddUserDialogOpen(true)}>
+                        <UserPlus className="h-4 w-4 mr-2" />
                         Add User
                     </Button>
 
@@ -236,9 +140,9 @@ export function UserDashboard() {
 
                     <Button size="icon" variant="ghost" onClick={() => setIsNotificationsOpen(true)} className="relative">
                         <Bell className="h-4 w-4" />
-                        {invitationsReceived.length > 0 && (
+                        {invitations && invitations.length > 0 && (
                             <span className="absolute -right-1 -top-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                                {invitationsReceived.length}
+                                {invitations.length}
                             </span>
                         )}
                     </Button>
@@ -252,21 +156,21 @@ export function UserDashboard() {
                     onClick={() => setActiveUserType("CLIENT")}
                 >
                     <Users className="h-4 w-4" />
-                    Clients ({clientCount})
+                    Clients ({clients.length})
                 </button>
                 <button
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CARE_WORKER" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
                     onClick={() => setActiveUserType("CARE_WORKER")}
                 >
                     <UserPlus className="h-4 w-4" />
-                    Care Workers ({careWorkerCount})
+                    Care Workers ({careWorkers.length})
                 </button>
                 <button
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "OFFICE_STAFF" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
                     onClick={() => setActiveUserType("OFFICE_STAFF")}
                 >
                     <Briefcase className="h-4 w-4" />
-                    Office Staff ({officeStaffCount})
+                    Office Staff ({officeStaff.length})
                 </button>
             </div>
 
@@ -301,35 +205,28 @@ export function UserDashboard() {
 
                 <Card className="border-gray-200 shadow-sm">
                     <CardContent className="p-0">
-                        <UserTable
-                            invitations={
-                                filteredInvitations.length > 0 ? filteredInvitations : filterBySearch(filterUsersByRole(activeUserType))
-                            }
-                            isLoading={isInvitationsLoading}
-                            onSendInvite={handleSendInvite}
-                            onCancelInvitation={handleCancelInvitation}
-                            isCreatingInvitation={isCreatingInvitation}
-                            isCancellingInvitation={isCancellingInvitation}
+                        <UserTableUser
+                            users={filteredUsers}
+                            isLoading={isLoadingUsers}
                         />
                     </CardContent>
                 </Card>
             </div>
 
             {/* Dialogs */}
-            <AddUserDialog
-                isOpen={isAddUserOpen}
-                setIsOpen={setIsAddUserOpen}
+            <AddUsersNewDialog
+                open={isAddUserDialogOpen}
+                onOpenChange={setIsAddUserDialogOpen}
                 onAddUser={handleAddUser}
-                isLoading={isCreatingInvitation}
+                isCreatingUser={isCreatingUser}
             />
 
             <NotificationsDialog
                 isOpen={isNotificationsOpen}
                 setIsOpen={setIsNotificationsOpen}
-                invitations={invitationsReceived}
-                isLoading={isReceivedInvitationsLoading}
+                invitations={invitations || []}
+                isLoading={isInvitationsLoading}
             />
         </div>
     )
 }
-

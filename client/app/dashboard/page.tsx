@@ -362,7 +362,7 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="p-2 max-w-[98%] mx-auto">
+        <div className="p-2">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}

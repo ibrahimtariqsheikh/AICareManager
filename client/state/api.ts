@@ -2,7 +2,9 @@ import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth"
 import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { AppointmentEvent } from "../components/scheduler/calender/types"
-import { Invitation, Schedule, Role } from "../types/prismaTypes"
+import { Invitation, Schedule, Role, SubRole } from "../types/prismaTypes"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { Profile } from "@/types/profileTypes"
 
 
 export interface ScheduleInput {
@@ -59,6 +61,7 @@ export interface CreateInvitationInput {
   inviterUserId: string
   email: string
   role: string
+  subRole?: string
   expirationDays: number
 }
 
@@ -176,13 +179,34 @@ export interface DashboardData {
   }>;
 }
 
-interface CreateUserInput {
+export interface User {
+    id: string
+    email: string
+    firstName: string
+    lastName: string
+    role: string
+    subRole?: string
+    cognitoId: string
+    agencyId: string
+    createdAt: string
+    updatedAt: string
+    status: string
+    profile?: Profile
+    agency?: {
+        id: string
+        name: string
+    }
+}
+
+export interface CreateUserInput {
     email: string;
     firstName: string;
     lastName: string;
     role: Role;
+    subRole?: SubRole;
     cognitoId: string;
     invitedById?: string;
+    agencyId?: string;
 }
 
 // Medication interfaces
@@ -261,6 +285,35 @@ export interface Document {
   agencyId?: string;
 }
 
+// Add new interfaces for user update
+export interface UpdateUserInput {
+    id: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    role?: Role;
+    subRole?: SubRole;
+    agencyId?: string;
+}
+
+export interface UserResponse {
+    data: User & {
+        color: string;
+        profile?: {
+            avatarUrl?: string;
+            phone?: string;
+        };
+        agency?: {
+            id: string;
+            name: string;
+            [key: string]: any;
+        };
+    };
+    meta: {
+        total: number;
+    };
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -282,7 +335,9 @@ export const api = createApi({
     "Users",
     "Clients",
 "Schedule",
-"Dashboard"
+"Dashboard",
+"User",
+"Agency"
   ],
   endpoints: (build) => ({
     // Get user
@@ -399,6 +454,14 @@ export const api = createApi({
     // Verify invitation token
     verifyInvitation: build.query<Invitation, string>({
       query: (token) => `/invitations/verify/${token}`,
+    }),
+
+    // Get agency users
+    getAgencyUsers: build.query<UsersResponse, string>({
+      query: (agencyId) => ({
+        url: `/users/agency/${agencyId}`,
+        method: 'GET',
+      }),
     }),
 
     // Create a new invitation
@@ -606,42 +669,45 @@ export const api = createApi({
         method: 'DELETE',
       }),
     }),
+
+    // Get user by ID
+    getUserById: build.query<UserResponse, string>({
+      query: (id) => ({
+        url: `/users/id/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+
+    // Update user
+    updateUser: build.mutation<UserResponse, UpdateUserInput>({
+      query: ({ id, ...body }) => ({
+        url: `/users/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 })
 
 export const {
   useGetUserQuery,
   useGetUsersQuery,
-  useGetFilteredUsersQuery,
+  useGetAgencyUsersQuery,
   useGetUserInvitationsQuery,
-  useVerifyInvitationQuery,
   useCreateInvitationMutation,
   useCancelInvitationMutation,
   useGetInvitationsByEmailQuery,
+  useVerifyInvitationQuery,
   useAcceptInvitationMutation,
-  useCreateUserMutation,
-  useGetLocationsByUserIdQuery,
   useGetSchedulesQuery,
   useCreateScheduleMutation,
   useUpdateScheduleMutation,
   useDeleteScheduleMutation,
+  useGetLocationsByUserIdQuery,
   useGetDashboardDataQuery,
-  useGetMedicationRecordsQuery,
-  useCreateMedicationRecordMutation,
-  useUpdateMedicationRecordMutation,
-  useDeleteMedicationRecordMutation,
-  useRecordMedicationAdministrationMutation,
-  useGetMedicationAdministrationHistoryQuery,
-  useCreateReportMutation,
-  useGetClientReportsQuery,
-  useGetCaregiverReportsQuery,
-  useUpdateReportMutation,
-  useUpdateReportTaskStatusMutation,
-  useDeleteReportMutation,
-  useUploadDocumentMutation,
-  useGetUserDocumentsQuery,
-  useGetClientDocumentsQuery,
-  useGetAgencyDocumentsQuery,
-  useUpdateDocumentMutation,
-  useDeleteDocumentMutation,
+  useCreateUserMutation,
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
 } = api

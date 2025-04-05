@@ -1,9 +1,9 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, type PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
 import type { User } from "../../types/prismaTypes"
 import { api } from "../api"
 import type { AppointmentEvent, SidebarMode } from "../../components/scheduler/calender/types"
 import { filterEvents } from "../../components/scheduler/calender/calender-utils"
-import type { ScheduleResponse } from "../api"
+import type { ScheduleResponse, UserResponse } from "../api"
 
 // This will help serialize and deserialize dates
 function serializeEvent(event: AppointmentEvent): any {
@@ -118,6 +118,7 @@ interface UserState {
   sidebarMode: SidebarMode;
   loading: boolean;
   error: string | null;
+  currentUser: User | null;
 }
 
 // Initial state
@@ -143,6 +144,7 @@ const initialState: UserState = {
   sidebarMode: "clients",
   loading: false,
   error: null,
+  currentUser: null,
 }
 
 // User Slice
@@ -212,26 +214,40 @@ const userSlice = createSlice({
     clearUserError: (state) => {
       state.error = null
     },
+    setCurrentUser: (state, action: PayloadAction<User>) => {
+      state.currentUser = action.payload
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
       // Handle getFilteredUsers
-      .addMatcher(api.endpoints.getFilteredUsers.matchPending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addMatcher(api.endpoints.getFilteredUsers.matchFulfilled, (state, { payload }) => {
-        state.loading = false
-        state.officeStaff = payload.officeStaff
-        state.careWorkers = payload.careWorkers
-        state.clients = payload.clients
-        // Update filtered events when users change
-        updateFilteredEvents(state)
-      })
-      .addMatcher(api.endpoints.getFilteredUsers.matchRejected, (state, { error }) => {
-        state.loading = false
-        state.error = error.message || "Failed to fetch users"
-      })
+      .addMatcher(
+        (action) => action.type.endsWith('/pending'),
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/fulfilled'),
+        (state, action: PayloadAction<UserResponse>) => {
+          state.loading = false;
+          state.currentUser = action.payload.data;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/rejected'),
+        (state, action: PayloadAction<string>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
       // Handle getSchedules
       .addMatcher(api.endpoints.getSchedules.matchPending, (state) => {
         state.loading = true
@@ -266,6 +282,18 @@ const userSlice = createSlice({
         state.loading = false
         state.error = error.message || "Failed to fetch schedules"
       })
+      .addMatcher(api.endpoints.updateUser.matchPending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addMatcher(api.endpoints.updateUser.matchFulfilled, (state, action) => {
+        state.loading = false
+        state.currentUser = action.payload.data
+      })
+      .addMatcher(api.endpoints.updateUser.matchRejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || "Failed to update user"
+      });
   },
 })
 
@@ -364,6 +392,9 @@ export const {
   deleteEvent,
   clearUserError,
   setUser,
+  setCurrentUser,
+  setLoading,
+  setError,
 } = userSlice.actions
 export default userSlice.reducer
 

@@ -5,6 +5,8 @@ import StoreProvider from "../state/redux";
 import { Amplify } from "aws-amplify";
 import { ThemeProvider } from "../components/theme-provider";
 import { SidebarProvider } from "../components/ui/sidebar-provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 
 // Configure Amplify
 Amplify.configure({
@@ -18,6 +20,8 @@ Amplify.configure({
 });
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <StoreProvider>
       <Authenticator.Provider>
@@ -28,7 +32,9 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
           </ThemeProvider>
         </SidebarProvider>
       </Authenticator.Provider>
