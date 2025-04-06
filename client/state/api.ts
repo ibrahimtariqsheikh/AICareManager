@@ -5,6 +5,15 @@ import { AppointmentEvent } from "../components/scheduler/calender/types"
 import { Invitation, Schedule, Role, SubRole } from "../types/prismaTypes"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Profile } from "@/types/profileTypes"
+import { 
+  Agency, 
+  IncidentReport, 
+  KeyContact, 
+  CareOutcome, 
+  RiskAssessment, 
+  FamilyAccess, 
+  CommunicationLog 
+} from "@/types/userTypes"
 
 
 export interface ScheduleInput {
@@ -191,11 +200,29 @@ export interface User {
     createdAt: string
     updatedAt: string
     status: string
+    addressLine1?: string
+    addressLine2?: string
+    townOrCity?: string
+    county?: string
+    postalCode?: string
+    country?: string
+    phoneNumber?: string
+    languages?: string
+    interests?: string
+    likesDislikes?: string
+    allergies?: string
+    history?: string
     profile?: Profile
     agency?: {
         id: string
         name: string
     }
+    nhsNumber?: string
+    dnraOrder?: boolean
+    chargeRate?: number
+    mobility?: string
+    preferredName?: string
+    propertyAccess?: string
 }
 
 export interface CreateUserInput {
@@ -312,6 +339,39 @@ export interface UserResponse {
     meta: {
         total: number;
     };
+}
+
+export interface UserAllDetailsResponse {
+  data: User & {
+    addressLine1?: string;
+    addressLine2?: string;
+    townOrCity?: string;
+    county?: string;
+    postalCode?: string;
+    country?: string;
+    phoneNumber?: string;
+    languages?: string;
+    interests?: string;
+    likesDislikes?: string;
+    allergies?: string;
+    history?: string;
+    profile?: Profile;
+    agency?: Agency;
+    medicationRecords?: MedicationRecord[];
+    documents?: Document[];
+    incidentReports?: IncidentReport[];
+    keyContacts?: KeyContact[];
+    careOutcomes?: CareOutcome[];
+    riskAssessments?: RiskAssessment[];
+    familyAccess?: FamilyAccess[];
+    communicationLogs?: CommunicationLog[];
+    nhsNumber?: string;
+    dnraOrder?: boolean;
+    chargeRate?: number;
+    mobility?: string;
+    preferredName?: string;
+    propertyAccess?: string;
+  };
 }
 
 export const api = createApi({
@@ -688,6 +748,15 @@ export const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
+    // Get all user details by ID
+    getUserAllDetails: build.query<UserAllDetailsResponse, string>({
+      query: (id) => ({
+        url: `/users/all/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
   }),
 })
 
@@ -710,4 +779,5 @@ export const {
   useCreateUserMutation,
   useGetUserByIdQuery,
   useUpdateUserMutation,
+  useGetUserAllDetailsQuery,
 } = api

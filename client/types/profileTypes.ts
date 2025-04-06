@@ -18,13 +18,15 @@ export interface Medication {
 }
 
 export interface RiskAssessment {
+    id: string
     category: string
     description: string
+    affectedParties: string
+    mitigationStrategy: string
     likelihood: number
     severity: number
-    score: number
-    affectedParties: string
-    managementPlan: string
+    createdAt: string
+    updatedAt: string
 }
 
 export interface Document {
@@ -36,32 +38,40 @@ export interface Document {
 
 export interface Profile {
     id: string
-    userId: string
-    avatarUrl?: string
-    phone?: string
+    firstName: string
+    lastName: string
+    email: string
+    role: string
+    subRole?: string
+    agencyId?: string
+    addressLine1?: string
+    addressLine2?: string
+    townOrCity?: string
+    county?: string
+    postalCode?: string
+    country?: string
+    phoneNumber?: string
     alternatePhone?: string
-    address?: string
-    city?: string
-    state?: string
-    zipCode?: string
-    emergencyContact?: string
-    emergencyPhone?: string
-    language?: string
+    languages?: string
+    secondaryLanguage?: string
     timezone?: string
     notificationPreferences?: string
-    preferredName?: string
-    dateOfBirth?: string
-    communicationPreference?: string
-    allergies?: string
     interests?: string
-    hobbies?: string
-    mobility?: string
-    likes?: string
-    dislikes?: string
-    medicalHistory?: string
-    emergencyContacts?: EmergencyContact[]
-    familyAccess?: FamilyAccess[]
-    medications?: Medication[]
-    riskAssessments?: RiskAssessment[]
-    documents?: Document[]
+    likesDislikes?: string
+    dietaryRequirements?: string
+    allergies?: string
+    history?: string
+    medicalNotes?: string
+    dateOfBirth?: string
+    gender?: string
+    room?: string
+    admissionDate?: string
+    medicalInfo?: {
+        primaryDiagnosis?: string
+        allergies?: string
+        primaryPhysician?: string
+        bloodType?: string
+        medicalConditions?: string
+        medicalNotes?: string
+    }
 } 

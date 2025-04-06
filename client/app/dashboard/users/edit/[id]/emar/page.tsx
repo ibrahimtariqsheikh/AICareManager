@@ -1,15 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useParams, useSearchParams } from "next/navigation"
 import { format, addMonths, subMonths } from "date-fns"
 import { ChevronLeft, ChevronRight, Plus, Pill, FileText, Printer, Search } from "lucide-react"
-import { useParams } from "next/navigation"
+import type { UserAllDetailsResponse } from "@/state/api"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 import { MedicationDialog } from "../components/emar/medication-dialog"
 import { AdministrationDialog } from "../components/emar/administration-dialog"
 import { MedicationCard } from "../components/emar/medication-card"
@@ -17,42 +19,111 @@ import { MedicationTable } from "../components/emar/medication-table"
 import { MedicationCalendar } from "../components/emar/medication-calendar"
 import { PatientHeader } from "../components/emar/patient-header"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import type { User as UserType } from "@/types/prismaTypes"
+import type { Medication } from "@/state/slices/medicationSlice"
+import { Skeleton } from "@/components/ui/skeleton"
+
+function LoadingSkeleton() {
+    return (
+        <div className="min-h-screen">
+            <main className="container mx-auto py-6 px-4 max-w-7xl">
+                {/* Patient Header Skeleton */}
+                <Card className="overflow-hidden mb-6">
+                    <CardContent className="p-6">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div className="flex items-center space-x-4">
+                                <Skeleton className="h-20 w-20 rounded-full" />
+                                <div className="space-y-2">
+                                    <Skeleton className="h-8 w-48" />
+                                    <Skeleton className="h-4 w-32" />
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <Skeleton className="h-9 w-24" />
+                                <Skeleton className="h-9 w-24" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Tabs Skeleton */}
+                <div className="space-y-4">
+                    <div className="flex gap-4">
+                        <Skeleton className="h-10 w-24" />
+                        <Skeleton className="h-10 w-24" />
+                        <Skeleton className="h-10 w-24" />
+                        <Skeleton className="h-10 w-24" />
+                    </div>
+
+                    {/* Content Skeleton */}
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-6 w-48" />
+                            <Skeleton className="h-4 w-64" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-4">
+                                    <Skeleton className="h-5 w-32" />
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-full" />
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <Skeleton className="h-5 w-32" />
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-full" />
+                                        <Skeleton className="h-4 w-full" />
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </main>
+        </div>
+    )
+}
 
 export default function EMARPage() {
-    const params = useParams()
-    const userId = params.id as string
     const [currentDate, setCurrentDate] = useState(new Date())
+    const [user, setUser] = useState<UserType | null>(null)
     const [currentView, setCurrentView] = useState<"scheduled" | "prn">("scheduled")
     const [isMedicationDialogOpen, setIsMedicationDialogOpen] = useState(false)
     const [isAdministrationDialogOpen, setIsAdministrationDialogOpen] = useState(false)
-    const [selectedMedication, setSelectedMedication] = useState<any>(null)
+    const [selectedMedication, setSelectedMedication] = useState<Medication | null>(null)
+    const params = useParams()
+    const searchParams = useSearchParams()
 
-    // Mock user data
-    const mockUser = {
-        id: userId,
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        profile: {
-            avatarUrl: "/placeholder.svg?height=80&width=80",
-            careLevel: "Medium",
-            age: "72",
-            room: "203B",
-            admissionDate: "Jan 15, 2023",
-            phone: "(555) 123-4567",
-            dateOfBirth: "May 10, 1951",
-            gender: "Male",
-            medicalInfo: {
-                primaryDiagnosis: "Hypertension, Type 2 Diabetes",
-                allergies: "Penicillin, Shellfish",
-                primaryPhysician: "Dr. Sarah Johnson",
-                bloodType: "O+"
+    useEffect(() => {
+        const userData = searchParams.get('user')
+        if (userData) {
+            try {
+                const parsedUser = JSON.parse(userData)
+                // Ensure we have the profile data
+                if (!parsedUser.profile) {
+                    parsedUser.profile = {
+                        firstName: parsedUser.firstName,
+                        lastName: parsedUser.lastName,
+                        email: parsedUser.email,
+                        phoneNumber: parsedUser.phoneNumber,
+                        room: parsedUser.room,
+                        admissionDate: parsedUser.admissionDate,
+                        medicalInfo: parsedUser.medicalInfo || {},
+                        careLevel: parsedUser.careLevel || "Low",
+                        age: parsedUser.age,
+                        avatarUrl: parsedUser.avatarUrl
+                    }
+                }
+                setUser(parsedUser)
+            } catch (error) {
+                console.error('Error parsing user data:', error)
             }
         }
-    }
-
-    const user = mockUser
-    const isLoading = false
+    }, [searchParams])
 
     // Navigate to previous month
     const goToPreviousMonth = () => {
@@ -65,30 +136,27 @@ export default function EMARPage() {
     }
 
     // Open medication dialog
-    const openMedicationDialog = (medication: any = null) => {
+    const openMedicationDialog = (medication: Medication | null = null) => {
         setSelectedMedication(medication)
         setIsMedicationDialogOpen(true)
     }
 
     // Open administration dialog
-    const openAdministrationDialog = (medication: any) => {
+    const openAdministrationDialog = (medication: Medication) => {
         setSelectedMedication(medication)
         setIsAdministrationDialogOpen(true)
     }
 
-    // Mock medications
-    const mockMedications = [
+    // Mock medications (we'll replace this with real data later)
+    const mockMedications: Medication[] = [
         {
             id: "med1",
             name: "Lisinopril",
             dosage: "10mg",
-            frequency: "Once daily",
-            route: "Oral",
-            startDate: "2023-01-20",
-            endDate: "2023-12-31",
             instructions: "Take with food in the morning",
-            isPRN: false,
             reason: "Hypertension",
+            route: "Oral",
+            frequency: "Once daily",
             times: ["08:00"],
             days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
             schedule: "8:00am"
@@ -97,13 +165,10 @@ export default function EMARPage() {
             id: "med2",
             name: "Metformin",
             dosage: "500mg",
-            frequency: "Twice daily",
-            route: "Oral",
-            startDate: "2023-01-15",
-            endDate: null,
             instructions: "Take with meals",
-            isPRN: false,
             reason: "Type 2 Diabetes",
+            route: "Oral",
+            frequency: "Twice daily",
             times: ["08:00", "19:00"],
             days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
             schedule: "8:00am, 7:00pm"
@@ -112,18 +177,19 @@ export default function EMARPage() {
             id: "med3",
             name: "Acetaminophen",
             dosage: "500mg",
-            frequency: "As needed",
-            route: "Oral",
-            startDate: "2023-01-10",
-            endDate: null,
             instructions: "Take for pain, not to exceed 4000mg in 24 hours",
-            isPRN: true,
             reason: "Pain relief",
+            route: "Oral",
+            frequency: "As needed",
             times: ["As needed"],
             days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
             schedule: "PRN"
         }
     ]
+
+    if (!user) {
+        return <LoadingSkeleton />
+    }
 
     return (
         <div className="min-h-screen">
@@ -133,7 +199,7 @@ export default function EMARPage() {
 
                 {/* Main Content */}
                 <div className="mt-6">
-                    <Tabs defaultValue="medlog" className="w-full">
+                    <Tabs defaultValue="overview" className="w-full">
                         <TabsList className="grid grid-cols-4 w-full max-w-3xl">
                             <TabsTrigger value="overview">Overview</TabsTrigger>
                             <TabsTrigger value="medication">Medication</TabsTrigger>
@@ -183,10 +249,6 @@ export default function EMARPage() {
                                                     <span className="text-sm">{user.profile?.medicalInfo?.allergies || "None reported"}</span>
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <span className="text-sm text-muted-foreground">Primary Physician</span>
-                                                    <span className="text-sm">{user.profile?.medicalInfo?.primaryPhysician || "Not specified"}</span>
-                                                </div>
-                                                <div className="flex justify-between">
                                                     <span className="text-sm text-muted-foreground">Blood Type</span>
                                                     <span className="text-sm">{user.profile?.medicalInfo?.bloodType || "Not specified"}</span>
                                                 </div>
@@ -214,6 +276,8 @@ export default function EMARPage() {
                                             <MedicationCard
                                                 key={med.id}
                                                 medication={med}
+                                                onEdit={() => openMedicationDialog(med)}
+                                                onAdminister={() => openAdministrationDialog(med)}
                                             />
                                         ))}
                                     </div>
@@ -228,6 +292,20 @@ export default function EMARPage() {
                                     <CardDescription>Scheduled medications for administration</CardDescription>
                                 </CardHeader>
                                 <CardContent>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center space-x-2">
+                                            <Switch
+                                                id="scheduled"
+                                                checked={currentView === "scheduled"}
+                                                onCheckedChange={(checked) => setCurrentView(checked ? "scheduled" : "prn")}
+                                            />
+                                            <Label htmlFor="scheduled">Scheduled</Label>
+                                        </div>
+                                        <Button>
+                                            <Printer className="h-4 w-4 mr-2" />
+                                            Print
+                                        </Button>
+                                    </div>
                                     <MedicationTable />
                                 </CardContent>
                             </Card>
@@ -250,73 +328,26 @@ export default function EMARPage() {
                                         </Button>
                                     </div>
                                 </CardHeader>
-
                                 <CardContent>
-                                    <div className="flex space-x-2 mb-4">
-                                        <Button
-                                            variant={currentView === "scheduled" ? "default" : "outline"}
-                                            onClick={() => setCurrentView("scheduled")}
-                                            className={currentView === "scheduled" ? "bg-blue-600 hover:bg-blue-700" : ""}
-                                        >
-                                            Scheduled
-                                        </Button>
-                                        <Button
-                                            variant={currentView === "prn" ? "default" : "outline"}
-                                            onClick={() => setCurrentView("prn")}
-                                            className={currentView === "prn" ? "bg-blue-600 hover:bg-blue-700" : ""}
-                                        >
-                                            PRN
-                                        </Button>
-                                        <div className="ml-auto flex items-center space-x-4">
-                                            <div className="flex items-center space-x-1">
-                                                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                                                <span className="text-sm">Taken</span>
-                                            </div>
-                                            <div className="flex items-center space-x-1">
-                                                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                                <span className="text-sm">Not taken</span>
-                                            </div>
-                                            <div className="flex items-center space-x-1">
-                                                <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-                                                <span className="text-sm">Not reported</span>
-                                            </div>
-                                            <div className="flex items-center space-x-1">
-                                                <div className="w-3 h-3 rounded-full border border-gray-300"></div>
-                                                <span className="text-sm">Not scheduled</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <MedicationCalendar currentDate={currentDate} />
                                 </CardContent>
-
-                                <CardFooter className="flex justify-between border-t pt-6">
-                                    <Button variant="outline">
-                                        <Printer className="mr-2 h-4 w-4" /> Print Report
-                                    </Button>
-                                    <Button className="bg-blue-600 hover:bg-blue-700">
-                                        <FileText className="mr-2 h-4 w-4" /> Export Data
-                                    </Button>
-                                </CardFooter>
                             </Card>
                         </TabsContent>
                     </Tabs>
                 </div>
+
+                {/* Dialogs */}
+                <MedicationDialog
+                    open={isMedicationDialogOpen}
+                    onOpenChange={setIsMedicationDialogOpen}
+                    medication={selectedMedication}
+                />
+                <AdministrationDialog
+                    open={isAdministrationDialogOpen}
+                    onOpenChange={setIsAdministrationDialogOpen}
+                    medication={selectedMedication}
+                />
             </main>
-
-            {/* Medication Dialog */}
-            <MedicationDialog
-                open={isMedicationDialogOpen}
-                onOpenChange={setIsMedicationDialogOpen}
-                medication={selectedMedication}
-            />
-
-            {/* Administration Dialog */}
-            <AdministrationDialog
-                open={isAdministrationDialogOpen}
-                onOpenChange={setIsAdministrationDialogOpen}
-                medication={selectedMedication}
-            />
         </div>
     )
 } 

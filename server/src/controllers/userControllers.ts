@@ -292,6 +292,31 @@ export const getAgencyUsers = async (req: Request, res: Response): Promise<void>
     }
 };
 
+export const getUserAllDetails = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const user = await prisma.user.findUnique({
+            where: { id },
+            include: {
+                profile: true,
+                agency: true,
+                medicationRecords: true,
+                documents: true,
+                incidentReports: true,
+                keyContacts: true,
+                careOutcomes: true,
+                riskAssessments: true,
+                familyAccess: true,
+                communicationLogs: true,
+            },
+        });
+        res.json({data: user}); 
+    } catch (error) {
+        console.error("Error fetching user all details:", error);
+        res.status(500).json({ error: "Failed to fetch user all details" });
+    }
+};
+
 // Get user by ID
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
     try {

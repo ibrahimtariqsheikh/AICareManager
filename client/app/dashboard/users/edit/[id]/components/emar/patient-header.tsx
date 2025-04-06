@@ -28,14 +28,26 @@ export function PatientHeader({ user }: PatientHeaderProps) {
         }
     }
 
-    const fullName = `${user.firstName} ${user.lastName}`
-    const initials = `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`
+    if (!user) {
+        return (
+            <Card className="overflow-hidden">
+                <CardContent className="p-6">
+                    <div className="flex items-center justify-center">
+                        <p className="text-muted-foreground">Loading patient information...</p>
+                    </div>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    const fullName = `${user.profile?.firstName || ''} ${user.profile?.lastName || ''}`
+    const initials = `${user.profile?.firstName?.[0] || ''}${user.profile?.lastName?.[0] || ''}`
     const careLevel = user.profile?.careLevel || "Low"
     const age = user.profile?.age || "Not specified"
     const room = user.profile?.room || "Not assigned"
     const admissionDate = user.profile?.admissionDate || "Not specified"
-    const phone = user.profile?.phone || "No phone"
-    const email = user.email || "No email"
+    const phone = user.profile?.phoneNumber || "No phone"
+    const email = user.profile?.email || "No email"
     const primaryPhysician = user.profile?.medicalInfo?.primaryPhysician || "Not specified"
     const primaryDiagnosis = user.profile?.medicalInfo?.primaryDiagnosis || "Not specified"
     const allergies = user.profile?.medicalInfo?.allergies || "None reported"

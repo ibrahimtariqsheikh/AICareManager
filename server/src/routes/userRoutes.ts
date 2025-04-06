@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createUser, getUsers, getUser, getFilteredUsers, getAgencyUsers, getUserById, updateUser } from "../controllers/userControllers"
+import { createUser, getUsers, getUser, getFilteredUsers, getAgencyUsers, getUserById, updateUser, getUserAllDetails } from "../controllers/userControllers"
 
 const router = Router()
 
@@ -17,6 +17,9 @@ router.get("/filtered/:inviterId", getFilteredUsers)
 
 // Get a specific user by ID
 router.get("/id/:id", getUserById)
+
+// Get all details of a user by ID
+router.get("/all/:id", getUserAllDetails)
 
 // Update a user
 router.put("/:id", updateUser)

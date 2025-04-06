@@ -91,12 +91,6 @@ const navigation: NavigationSection[] = [
 
 
             {
-                title: "Emar",
-                icon: BarChart3,
-                href: "/dashboard/emar",
-            },
-
-            {
                 title: "Invites",
                 icon: Mail,
                 href: "/dashboard/invites",

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Calendar, Edit, Mail, Phone } from "lucide-react"
-import { useGetUserByIdQuery } from "@/state/api"
+import { useGetUserAllDetailsQuery } from "@/state/api"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { EmergencyContact, Medication, RiskAssessment } from "@/types/profileTypes"
 
@@ -18,7 +18,7 @@ export default function UserProfilePage() {
     const userId = Array.isArray(id) ? id[0] : id
 
     // Queries
-    const { data: userData, isLoading } = useGetUserByIdQuery(userId || "")
+    const { data: userAllDetails, isLoading } = useGetUserAllDetailsQuery(userId || "")
 
     // Format subrole for display
     const formatSubrole = (subrole?: string) => {
@@ -43,10 +43,127 @@ export default function UserProfilePage() {
     }
 
     if (isLoading) {
-        return <LoadingSpinner />
+        return (
+            <div className="p-6">
+                {/* Header Skeleton */}
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                        <div className="h-9 w-9 bg-muted rounded animate-pulse" />
+                        <div className="h-8 w-32 bg-muted rounded animate-pulse" />
+                    </div>
+                    <div className="h-9 w-24 bg-muted rounded animate-pulse" />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Sidebar Skeleton */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-card rounded-lg shadow-sm p-6">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="h-24 w-24 bg-muted rounded-full animate-pulse" />
+                                <div className="space-y-2 text-center">
+                                    <div className="h-4 w-32 bg-muted rounded animate-pulse" />
+                                    <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                </div>
+                                <div className="flex gap-2">
+                                    <div className="h-6 w-20 bg-muted rounded animate-pulse" />
+                                    <div className="h-6 w-24 bg-muted rounded animate-pulse" />
+                                </div>
+                            </div>
+
+                            <div className="h-[1px] bg-muted my-6" />
+
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="h-4 w-4 bg-muted rounded animate-pulse" />
+                                    <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="h-4 w-4 bg-muted rounded animate-pulse" />
+                                    <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                </div>
+                                <div className="flex items-start gap-2">
+                                    <div className="h-4 w-4 bg-muted rounded animate-pulse mt-0.5" />
+                                    <div className="space-y-1">
+                                        <div className="h-3 w-48 bg-muted rounded animate-pulse" />
+                                        <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                        <div className="h-3 w-36 bg-muted rounded animate-pulse" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="h-[1px] bg-muted my-6" />
+
+                            <div className="space-y-2">
+                                <div className="h-9 w-full bg-muted rounded animate-pulse" />
+                                <div className="h-9 w-full bg-muted rounded animate-pulse" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content Skeleton */}
+                    <div className="lg:col-span-3">
+                        <div className="bg-card rounded-lg shadow-sm">
+                            <div className="p-6">
+                                {/* Tabs Skeleton */}
+                                <div className="grid grid-cols-4 gap-2 mb-6">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <div key={i} className="h-10 bg-muted rounded animate-pulse" />
+                                    ))}
+                                </div>
+
+                                {/* Content Skeleton */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Basic Information Card */}
+                                    <div className="bg-card rounded-lg shadow-sm p-4">
+                                        <div className="h-5 w-32 bg-muted rounded animate-pulse mb-4" />
+                                        <div className="space-y-4">
+                                            {[1, 2, 3, 4].map((i) => (
+                                                <div key={i} className="flex justify-between">
+                                                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                                                    <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Contact Information Card */}
+                                    <div className="bg-card rounded-lg shadow-sm p-4">
+                                        <div className="h-5 w-32 bg-muted rounded animate-pulse mb-4" />
+                                        <div className="space-y-4">
+                                            {[1, 2, 3].map((i) => (
+                                                <div key={i} className="flex justify-between">
+                                                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                                                    <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Key Contacts Skeleton */}
+                                <div className="mt-6">
+                                    <div className="h-5 w-32 bg-muted rounded animate-pulse mb-4" />
+                                    <div className="space-y-4">
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="flex justify-between items-center">
+                                                <div className="space-y-2">
+                                                    <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                                                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                                                </div>
+                                                <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
-    if (!userData) {
+    if (!userAllDetails?.data) {
         return (
             <div className="p-6">
                 <Card>
@@ -65,6 +182,10 @@ export default function UserProfilePage() {
         )
     }
 
+    const userData = userAllDetails.data
+
+
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -74,7 +195,7 @@ export default function UserProfilePage() {
                     </Button>
                     <h1 className="text-2xl font-bold">User Profile</h1>
                 </div>
-                <Button onClick={() => router.push(`/users/edit/${userId}`)}>
+                <Button onClick={() => router.push(`/dashboard/users/edit/${userId}`)}>
                     <Edit className="h-4 w-4 mr-2" />
                     Edit User
                 </Button>
@@ -88,40 +209,40 @@ export default function UserProfilePage() {
                             <div className="flex flex-col items-center gap-4">
                                 <Avatar className="h-24 w-24">
                                     <AvatarImage
-                                        src={userData.data.profile?.avatarUrl || ""}
-                                        alt={`${userData.data.firstName} ${userData.data.lastName}`}
+                                        src=""
+                                        alt={`${userData.firstName} ${userData.lastName}`}
                                     />
                                     <AvatarFallback className="text-2xl">
-                                        {userData.data.firstName?.[0]}
-                                        {userData.data.lastName?.[0]}
+                                        {userData.firstName?.[0]}
+                                        {userData.lastName?.[0]}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="text-center">
                                     <h2 className="font-medium">
-                                        {userData.data.firstName} {userData.data.lastName}
+                                        {userData.firstName} {userData.lastName}
                                     </h2>
-                                    <p className="text-sm text-muted-foreground">{userData.data.email}</p>
+                                    <p className="text-sm text-muted-foreground">{userData.email}</p>
                                 </div>
                                 <div className="flex flex-wrap gap-2 justify-center">
-                                    <Badge className={getRoleBadgeColor(userData.data.role)}>{userData.data.role}</Badge>
-                                    {userData.data.subRole && <Badge variant="outline">{formatSubrole(userData.data.subRole)}</Badge>}
+                                    <Badge className={getRoleBadgeColor(userData.role)}>{userData.role}</Badge>
+                                    {userData.subRole && <Badge variant="outline">{formatSubrole(userData.subRole)}</Badge>}
                                 </div>
                             </div>
 
                             <Separator className="my-6" />
 
                             <div className="space-y-4">
-                                {userData.data.profile?.phone && (
+                                {userData.phoneNumber && (
                                     <div className="flex items-center gap-2">
                                         <Phone className="h-4 w-4 text-muted-foreground" />
-                                        <span className="text-sm">{userData.data.profile.phone}</span>
+                                        <span className="text-sm">{userData.phoneNumber}</span>
                                     </div>
                                 )}
                                 <div className="flex items-center gap-2">
                                     <Mail className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-sm">{userData.data.email}</span>
+                                    <span className="text-sm">{userData.email}</span>
                                 </div>
-                                {userData.data.profile?.address && (
+                                {userData.addressLine1 && (
                                     <div className="flex items-start gap-2">
                                         <div className="flex-shrink-0 mt-0.5">
                                             <svg
@@ -141,10 +262,11 @@ export default function UserProfilePage() {
                                             </svg>
                                         </div>
                                         <div className="text-sm">
-                                            <p>{userData.data.profile.address}</p>
-                                            {userData.data.profile.city && userData.data.profile.state && (
+                                            <p>{userData.addressLine1}</p>
+                                            {userData.addressLine2 && <p>{userData.addressLine2}</p>}
+                                            {userData.townOrCity && userData.county && (
                                                 <p>
-                                                    {userData.data.profile.city}, {userData.data.profile.state} {userData.data.profile.zipCode}
+                                                    {userData.townOrCity}, {userData.county} {userData.postalCode}
                                                 </p>
                                             )}
                                         </div>
@@ -172,14 +294,14 @@ export default function UserProfilePage() {
                 <div className="lg:col-span-3">
                     <Card>
                         <CardHeader>
-                            <Tabs defaultValue="overview" className="w-full">
+                            <Tabs defaultValue="profile" className="w-full">
                                 <TabsList className="grid w-full grid-cols-4">
-                                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                                    <TabsTrigger value="profile">Profile</TabsTrigger>
                                     <TabsTrigger value="personal">Personal</TabsTrigger>
                                     <TabsTrigger value="medical">Medical</TabsTrigger>
                                     <TabsTrigger value="risk">Risk Assessment</TabsTrigger>
                                 </TabsList>
-                                <TabsContent value="overview" className="space-y-6">
+                                <TabsContent value="profile" className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <Card>
                                             <CardHeader className="pb-2">
@@ -189,19 +311,19 @@ export default function UserProfilePage() {
                                                 <dl className="space-y-2">
                                                     <div className="flex justify-between">
                                                         <dt className="text-sm font-medium text-muted-foreground">Client ID</dt>
-                                                        <dd className="text-sm">{userData.data.id.substring(0, 8)}...</dd>
+                                                        <dd className="text-sm">{userData.id.substring(0, 8)}...</dd>
                                                     </div>
                                                     <div className="flex justify-between">
                                                         <dt className="text-sm font-medium text-muted-foreground">Preferred Name</dt>
-                                                        <dd className="text-sm">{userData.data.profile?.preferredName || "Not provided"}</dd>
+                                                        <dd className="text-sm">{userData.preferredName || "Not provided"}</dd>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <dt className="text-sm font-medium text-muted-foreground">Date of Birth</dt>
-                                                        <dd className="text-sm">{userData.data.profile?.dateOfBirth || "Not provided"}</dd>
+                                                        <dt className="text-sm font-medium text-muted-foreground">NHS Number</dt>
+                                                        <dd className="text-sm">{userData.nhsNumber || "Not provided"}</dd>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <dt className="text-sm font-medium text-muted-foreground">Communication Preference</dt>
-                                                        <dd className="text-sm">{userData.data.profile?.communicationPreference || "Not provided"}</dd>
+                                                        <dt className="text-sm font-medium text-muted-foreground">DNRA Order</dt>
+                                                        <dd className="text-sm">{userData.dnraOrder ? "Yes" : "No"}</dd>
                                                     </div>
                                                 </dl>
                                             </CardContent>
@@ -215,15 +337,15 @@ export default function UserProfilePage() {
                                                 <dl className="space-y-2">
                                                     <div className="flex justify-between">
                                                         <dt className="text-sm font-medium text-muted-foreground">Address</dt>
-                                                        <dd className="text-sm">{userData.data.profile?.address || "Not provided"}</dd>
+                                                        <dd className="text-sm">{userData.addressLine1 || "Not provided"}</dd>
                                                     </div>
                                                     <div className="flex justify-between">
                                                         <dt className="text-sm font-medium text-muted-foreground">Phone</dt>
-                                                        <dd className="text-sm">{userData.data.profile?.phone || "Not provided"}</dd>
+                                                        <dd className="text-sm">{userData.phoneNumber || "Not provided"}</dd>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <dt className="text-sm font-medium text-muted-foreground">Alternate Phone</dt>
-                                                        <dd className="text-sm">{userData.data.profile?.alternatePhone || "Not provided"}</dd>
+                                                        <dt className="text-sm font-medium text-muted-foreground">Languages</dt>
+                                                        <dd className="text-sm">{userData.languages || "Not provided"}</dd>
                                                     </div>
                                                 </dl>
                                             </CardContent>
@@ -236,11 +358,11 @@ export default function UserProfilePage() {
                                         </CardHeader>
                                         <CardContent>
                                             <div className="space-y-4">
-                                                {userData.data.profile?.emergencyContacts?.map((contact: EmergencyContact, index: number) => (
+                                                {userData.keyContacts?.map((contact, index) => (
                                                     <div key={index} className="flex justify-between items-center">
                                                         <div>
                                                             <p className="text-sm font-medium">{contact.name}</p>
-                                                            <p className="text-sm text-muted-foreground">{contact.relationship}</p>
+                                                            <p className="text-sm text-muted-foreground">{contact.relation}</p>
                                                         </div>
                                                         <p className="text-sm">{contact.phone}</p>
                                                     </div>
@@ -259,19 +381,19 @@ export default function UserProfilePage() {
                                             <dl className="space-y-2">
                                                 <div className="flex justify-between">
                                                     <dt className="text-sm font-medium text-muted-foreground">Language</dt>
-                                                    <dd className="text-sm">{userData.data.profile?.language || "English"}</dd>
+                                                    <dd className="text-sm">{userData.languages || "English"}</dd>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <dt className="text-sm font-medium text-muted-foreground">Allergies</dt>
-                                                    <dd className="text-sm">{userData.data.profile?.allergies || "None"}</dd>
+                                                    <dd className="text-sm">{userData.allergies || "None"}</dd>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <dt className="text-sm font-medium text-muted-foreground">Interests</dt>
-                                                    <dd className="text-sm">{userData.data.profile?.interests || "Not provided"}</dd>
+                                                    <dd className="text-sm">{userData.interests || "Not provided"}</dd>
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <dt className="text-sm font-medium text-muted-foreground">Hobbies</dt>
-                                                    <dd className="text-sm">{userData.data.profile?.hobbies || "Not provided"}</dd>
+                                                    <dt className="text-sm font-medium text-muted-foreground">Likes & Dislikes</dt>
+                                                    <dd className="text-sm">{userData.likesDislikes || "Not provided"}</dd>
                                                 </div>
                                             </dl>
                                         </CardContent>
@@ -285,15 +407,15 @@ export default function UserProfilePage() {
                                             <dl className="space-y-2">
                                                 <div className="flex justify-between">
                                                     <dt className="text-sm font-medium text-muted-foreground">Mobility Level</dt>
-                                                    <dd className="text-sm">{userData.data.profile?.mobility || "Not provided"}</dd>
+                                                    <dd className="text-sm">{userData.mobility || "Not provided"}</dd>
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <dt className="text-sm font-medium text-muted-foreground">Likes</dt>
-                                                    <dd className="text-sm">{userData.data.profile?.likes || "Not provided"}</dd>
+                                                    <dt className="text-sm font-medium text-muted-foreground">Property Access</dt>
+                                                    <dd className="text-sm">{userData.propertyAccess || "Not provided"}</dd>
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <dt className="text-sm font-medium text-muted-foreground">Dislikes</dt>
-                                                    <dd className="text-sm">{userData.data.profile?.dislikes || "Not provided"}</dd>
+                                                    <dt className="text-sm font-medium text-muted-foreground">Charge Rate</dt>
+                                                    <dd className="text-sm">£{userData.chargeRate || "Not provided"}</dd>
                                                 </div>
                                             </dl>
                                         </CardContent>
@@ -307,14 +429,16 @@ export default function UserProfilePage() {
                                         </CardHeader>
                                         <CardContent>
                                             <div className="space-y-4">
-                                                {userData.data.profile?.medications?.map((med: Medication, index: number) => (
+                                                {userData.medicationRecords?.map((med, index) => (
                                                     <div key={index} className="flex justify-between items-center">
                                                         <div>
-                                                            <p className="text-sm font-medium">{med.name}</p>
-                                                            <p className="text-sm text-muted-foreground">{med.type}</p>
+                                                            <p className="text-sm font-medium">{med.medication?.name}</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {med.medication?.isSpecialist ? "Specialist" : "Regular"}
+                                                            </p>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="text-sm">{med.dosage}mg</p>
+                                                            <p className="text-sm">{med.dosage}</p>
                                                             <p className="text-sm text-muted-foreground">{med.frequency}</p>
                                                         </div>
                                                     </div>
@@ -329,7 +453,7 @@ export default function UserProfilePage() {
                                         </CardHeader>
                                         <CardContent>
                                             <div className="text-sm text-muted-foreground">
-                                                {userData.data.profile?.medicalHistory || "No medical history recorded"}
+                                                {userData.history || "No medical history recorded"}
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -342,15 +466,15 @@ export default function UserProfilePage() {
                                         </CardHeader>
                                         <CardContent>
                                             <div className="space-y-4">
-                                                {userData.data.profile?.riskAssessments?.map((risk: RiskAssessment, index: number) => (
+                                                {userData.riskAssessments?.map((risk, index) => (
                                                     <div key={index} className="border rounded-lg p-4">
                                                         <div className="flex justify-between items-start">
                                                             <div>
-                                                                <h4 className="font-medium">{risk.category}</h4>
+                                                                <h4 className="font-medium">General</h4>
                                                                 <p className="text-sm text-muted-foreground">{risk.description}</p>
                                                             </div>
                                                             <div className="text-right">
-                                                                <p className="text-sm">Risk Score: {risk.score}</p>
+                                                                <p className="text-sm">Risk Score: {risk.riskScore}</p>
                                                                 <p className="text-sm text-muted-foreground">
                                                                     Likelihood: {risk.likelihood} | Severity: {risk.severity}
                                                                 </p>
@@ -362,7 +486,7 @@ export default function UserProfilePage() {
                                                         </div>
                                                         <div className="mt-2">
                                                             <p className="text-sm font-medium">Management Plan:</p>
-                                                            <p className="text-sm text-muted-foreground">{risk.managementPlan}</p>
+                                                            <p className="text-sm text-muted-foreground">{risk.mitigationStrategy}</p>
                                                         </div>
                                                     </div>
                                                 ))}

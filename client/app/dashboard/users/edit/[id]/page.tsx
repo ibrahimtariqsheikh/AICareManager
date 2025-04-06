@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,7 +22,6 @@ import {
     Languages,
     LifeBuoy,
     Phone,
-    Plus,
     Save,
     Settings,
     ShieldAlert,
@@ -32,17 +29,15 @@ import {
     Upload,
     User,
     UserCog,
-    X,
     Mail,
     Pill,
+    Plus,
 } from "lucide-react"
 import { toast } from "sonner"
 import { motion } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
-import type { EmergencyContact, Medication, RiskAssessment, Document } from "@/types/profileTypes"
-import { useGetUserByIdQuery, useUpdateUserMutation } from "@/state/api"
+import { useGetUserByIdQuery, useUpdateUserMutation, useGetUserAllDetailsQuery } from "@/state/api"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -56,14 +51,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import EMARPage from "./components/emar/page"
 
 // Define Role and SubRole types
@@ -96,32 +84,34 @@ const basicInfoSchema = z.object({
     lastName: z.string().min(1, "Last name is required"),
     email: z.string().email("Invalid email address"),
     role: z.enum(["SOFTWARE_OWNER", "ADMIN", "CARE_WORKER", "OFFICE_STAFF", "CLIENT", "FAMILY"]),
-    subRole: z.enum([
-        // Office staff subroles
-        "FINANCE_MANAGER",
-        "HR_MANAGER",
-        "CARE_MANAGER",
-        "SCHEDULING_COORDINATOR",
-        "OFFICE_ADMINISTRATOR",
-        "RECEPTIONIST",
-        "QUALITY_ASSURANCE_MANAGER",
-        "MARKETING_COORDINATOR",
-        "COMPLIANCE_OFFICER",
-        // Care worker subroles
-        "CAREGIVER",
-        "SENIOR_CAREGIVER",
-        "JUNIOR_CAREGIVER",
-        "TRAINEE_CAREGIVER",
-        "LIVE_IN_CAREGIVER",
-        "PART_TIME_CAREGIVER",
-        "SPECIALIZED_CAREGIVER",
-        "NURSING_ASSISTANT",
-        // Client subroles
-        "SERVICE_USER",
-        "FAMILY_AND_FRIENDS",
-        "OTHER"
-    ]).optional(),
-    agencyId: z.string().optional()
+    subRole: z
+        .enum([
+            // Office staff subroles
+            "FINANCE_MANAGER",
+            "HR_MANAGER",
+            "CARE_MANAGER",
+            "SCHEDULING_COORDINATOR",
+            "OFFICE_ADMINISTRATOR",
+            "RECEPTIONIST",
+            "QUALITY_ASSURANCE_MANAGER",
+            "MARKETING_COORDINATOR",
+            "COMPLIANCE_OFFICER",
+            // Care worker subroles
+            "CAREGIVER",
+            "SENIOR_CAREGIVER",
+            "JUNIOR_CAREGIVER",
+            "TRAINEE_CAREGIVER",
+            "LIVE_IN_CAREGIVER",
+            "PART_TIME_CAREGIVER",
+            "SPECIALIZED_CAREGIVER",
+            "NURSING_ASSISTANT",
+            // Client subroles
+            "SERVICE_USER",
+            "FAMILY_AND_FRIENDS",
+            "OTHER",
+        ])
+        .optional(),
+    agencyId: z.string().optional(),
 })
 
 const addressSchema = z.object({
@@ -204,54 +194,308 @@ export default function EditUserPage() {
 
     // State
     const [formData, setFormData] = useState<Partial<UserType>>({})
-    const [activeTab, setActiveTab] = useState("basic")
+    const [activeTab, setActiveTab] = useState("profile")
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+    const [emergencyContacts, setEmergencyContacts] = useState<Array<{ name: string; phone: string; relationship: string }>>([])
 
     // Queries
-    const { data: userData, isLoading, error } = useGetUserByIdQuery(userId || "", {
+    const {
+        data: userData,
+        isLoading,
+        error,
+    } = useGetUserByIdQuery(userId || "", {
         skip: !userId,
-        refetchOnMountOrArgChange: true
+        refetchOnMountOrArgChange: true,
+    })
+
+    // Add getUserAllDetails query
+    const {
+        data: userAllDetails,
+        isLoading: isLoadingAllDetails,
+        error: errorAllDetails,
+    } = useGetUserAllDetailsQuery(userId || "", {
+        skip: !userId,
+        refetchOnMountOrArgChange: true,
+    })
+
+    // Add console logs for debugging
+    useEffect(() => {
+        console.log("=== User Edit Page Debug Info ===")
+        console.log("User ID:", userId)
+        console.log("User All Details:", userAllDetails)
+
+        if (userAllDetails?.data) {
+            console.log("User Data:", userAllDetails.data)
+            // Log all the important fields from the API response
+            console.log("First Name:", userAllDetails.data.firstName)
+            console.log("Last Name:", userAllDetails.data.lastName)
+            console.log("Email:", userAllDetails.data.email)
+            console.log("Role:", userAllDetails.data.role)
+            console.log("SubRole:", userAllDetails.data.subRole)
+            console.log("Agency ID:", userAllDetails.data.agencyId)
+            console.log("Address Line 1:", userAllDetails.data.addressLine1)
+            console.log("Address Line 2:", userAllDetails.data.addressLine2)
+            console.log("Town/City:", userAllDetails.data.townOrCity)
+            console.log("County:", userAllDetails.data.county)
+            console.log("Postal Code:", userAllDetails.data.postalCode)
+            console.log("Phone Number:", userAllDetails.data.phoneNumber)
+            console.log("NHS Number:", userAllDetails.data.nhsNumber)
+            console.log("DNRA Order:", userAllDetails.data.dnraOrder)
+            console.log("Charge Rate:", userAllDetails.data.chargeRate)
+            console.log("Mobility:", userAllDetails.data.mobility)
+            console.log("Likes/Dislikes:", userAllDetails.data.likesDislikes)
+            console.log("Languages:", userAllDetails.data.languages)
+            console.log("Allergies:", userAllDetails.data.allergies)
+            console.log("Interests:", userAllDetails.data.interests)
+            console.log("History:", userAllDetails.data.history)
+            console.log("Preferred Name:", userAllDetails.data.preferredName)
+
+            // Log related entities
+            console.log("Agency:", userAllDetails.data.agency)
+            console.log("Medication Records:", userAllDetails.data.medicationRecords)
+            console.log("Documents:", userAllDetails.data.documents)
+            console.log("Key Contacts:", userAllDetails.data.keyContacts)
+            console.log("Risk Assessments:", userAllDetails.data.riskAssessments)
+            console.log("Family Access:", userAllDetails.data.familyAccess)
+            console.log("Communication Logs:", userAllDetails.data.communicationLogs)
+        }
+
+        if (error) {
+            console.error("API Error:", error)
+        }
+
+        if (errorAllDetails) {
+            console.error("All Details API Error:", errorAllDetails)
+        }
+    }, [isLoading, isLoadingAllDetails, error, errorAllDetails, userAllDetails, userId])
+
+    // Form hooks
+    const basicInfoForm = useForm<z.infer<typeof basicInfoSchema>>({
+        resolver: zodResolver(basicInfoSchema),
+        defaultValues: {
+            firstName: "",
+            lastName: "",
+            email: "",
+            role: "CLIENT" as Role,
+            subRole: undefined,
+            agencyId: undefined,
+        },
+    })
+
+    const addressForm = useForm<z.infer<typeof addressSchema>>({
+        resolver: zodResolver(addressSchema),
+        defaultValues: {
+            address: "",
+            city: "",
+            state: "",
+            zipCode: "",
+            country: "",
+        },
+    })
+
+    const contactForm = useForm<z.infer<typeof contactSchema>>({
+        resolver: zodResolver(contactSchema),
+        defaultValues: {
+            phone: "",
+            alternatePhone: "",
+        },
+    })
+
+    const emergencyContactForm = useForm<z.infer<typeof emergencyContactSchema>>({
+        resolver: zodResolver(emergencyContactSchema),
+        defaultValues: {
+            name: "",
+            phone: "",
+            relationship: "",
+        },
+    })
+
+    const medicationForm = useForm<z.infer<typeof medicationSchema>>({
+        resolver: zodResolver(medicationSchema),
+        defaultValues: {
+            name: "",
+            dosage: "",
+            type: "",
+            frequency: "",
+            notes: "",
+        },
+    })
+
+    const medicalInfoForm = useForm<z.infer<typeof medicalInfoSchema>>({
+        resolver: zodResolver(medicalInfoSchema),
+        defaultValues: {
+            allergies: "",
+            medicalConditions: "",
+            medicalNotes: "",
+        },
+    })
+
+    const preferencesForm = useForm<z.infer<typeof preferencesSchema>>({
+        resolver: zodResolver(preferencesSchema),
+        defaultValues: {
+            language: "",
+            secondaryLanguage: "",
+            timezone: "",
+            notificationPreferences: "",
+            interests: "",
+            hobbies: "",
+            dietaryRequirements: "",
+        },
+    })
+
+    const riskAssessmentForm = useForm<z.infer<typeof riskAssessmentSchema>>({
+        resolver: zodResolver(riskAssessmentSchema),
+        defaultValues: {
+            category: "",
+            description: "",
+            affectedParties: "",
+            managementPlan: "",
+            likelihood: "",
+            severity: "",
+        },
+    })
+
+    const documentForm = useForm<z.infer<typeof documentSchema>>({
+        resolver: zodResolver(documentSchema),
+        defaultValues: {
+            name: "",
+            type: "",
+            uploadDate: new Date().toISOString().split("T")[0],
+        },
     })
 
     // Initialize form data when user data is loaded
     useEffect(() => {
-        if (userData?.data) {
-            setFormData(userData.data)
-            // Reset form values
-            basicInfoForm.reset({
-                firstName: userData.data.firstName,
-                lastName: userData.data.lastName,
-                email: userData.data.email,
-                role: userData.data.role as Role,
-                subRole: userData.data.subRole as SubRole,
-                agencyId: userData.data.agencyId
-            })
-        }
-    }, [userData])
+        if (userAllDetails?.data) {
+            const userData = userAllDetails.data
+            console.log("Initializing form data with:", userData)
+            setFormData(userData)
 
-    // Track unsaved changes
-    useEffect(() => {
-        if (userData?.data && formData && Object.keys(formData).length > 0) {
-            setHasUnsavedChanges(JSON.stringify(userData.data) !== JSON.stringify(formData))
-        }
-    }, [userData, formData])
-
-    // Warn before leaving with unsaved changes
-    useEffect(() => {
-        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (hasUnsavedChanges) {
-                e.preventDefault()
-                e.returnValue = ""
+            // Reset basic info form with user data
+            basicInfoForm.setValue("firstName", userData.firstName || "")
+            basicInfoForm.setValue("lastName", userData.lastName || "")
+            basicInfoForm.setValue("email", userData.email || "")
+            basicInfoForm.setValue("role", userData.role as Role)
+            if (userData.subRole) {
+                basicInfoForm.setValue("subRole", userData.subRole as SubRole)
             }
-        }
+            basicInfoForm.setValue("agencyId", userData.agencyId || "")
 
-        window.addEventListener("beforeunload", handleBeforeUnload)
-        return () => window.removeEventListener("beforeunload", handleBeforeUnload)
-    }, [hasUnsavedChanges])
+            // Reset address form with user data
+            addressForm.setValue("address", userData.addressLine1 || "")
+            addressForm.setValue("city", userData.townOrCity || "")
+            addressForm.setValue("state", userData.county || "")
+            addressForm.setValue("zipCode", userData.postalCode || "")
+            addressForm.setValue("country", "Canada") // Default to Canada if not specified
+
+            // Reset contact form with user data
+            contactForm.setValue("phone", userData.phoneNumber || "")
+            contactForm.setValue("alternatePhone", "") // No alternate phone in the response
+
+            // Reset medical info form with user data
+            medicalInfoForm.setValue("allergies", userData.allergies || "")
+            medicalInfoForm.setValue("medicalConditions", userData.history || "")
+            medicalInfoForm.setValue("medicalNotes", "")
+
+            // Add NHS Number and DNRA Order
+            if (userData.nhsNumber) {
+                handleInputChange("nhsNumber", userData.nhsNumber)
+            }
+            if (userData.dnraOrder !== undefined) {
+                handleInputChange("dnraOrder", userData.dnraOrder)
+            }
+
+            // Add mobility, likes/dislikes, and preferred name
+            if (userData.mobility) {
+                handleInputChange("mobility", userData.mobility)
+            }
+            if (userData.likesDislikes) {
+                handleInputChange("likesDislikes", userData.likesDislikes)
+            }
+            if (userData.preferredName) {
+                handleInputChange("preferredName", userData.preferredName)
+            }
+
+            // Add charge rate
+            if (userData.chargeRate) {
+                handleInputChange("chargeRate", userData.chargeRate.toString())
+            }
+
+            // Add property access
+            if (userData.propertyAccess) {
+                handleInputChange("propertyAccess", userData.propertyAccess)
+            }
+
+            // Reset emergency contact form if available
+            if (userData.keyContacts && userData.keyContacts.length > 0) {
+                setEmergencyContacts(userData.keyContacts.map(contact => ({
+                    name: contact.name || "",
+                    phone: contact.phone || "",
+                    relationship: contact.relation || ""
+                })))
+            }
+
+            // Reset medication form if available
+            if (userData.medicationRecords && userData.medicationRecords.length > 0) {
+                const latestMedication = userData.medicationRecords[0]
+                medicationForm.setValue("name", latestMedication.medication?.name || "")
+                medicationForm.setValue("dosage", latestMedication.dosage || "")
+                medicationForm.setValue("type", latestMedication.medication?.isSpecialist ? "Specialist" : "Regular")
+                medicationForm.setValue("frequency", latestMedication.frequency || "")
+                medicationForm.setValue("notes", latestMedication.notes || "")
+            }
+
+            // Reset preferences form with user data
+            preferencesForm.setValue("language", userData.languages || "")
+            preferencesForm.setValue("interests", userData.interests || "")
+            preferencesForm.setValue("hobbies", userData.likesDislikes || "")
+
+            // Reset risk assessment form if available
+            if (userData.riskAssessments && userData.riskAssessments.length > 0) {
+                const latestAssessment = userData.riskAssessments[0]
+                // For now, we'll use a default category since we don't have the risk category name
+                riskAssessmentForm.setValue("category", "General")
+                riskAssessmentForm.setValue("description", latestAssessment.description || "")
+                riskAssessmentForm.setValue("affectedParties", latestAssessment.affectedParties || "")
+                riskAssessmentForm.setValue("managementPlan", latestAssessment.mitigationStrategy || "")
+                riskAssessmentForm.setValue("likelihood", latestAssessment.likelihood?.toString() || "")
+                riskAssessmentForm.setValue("severity", latestAssessment.severity?.toString() || "")
+            }
+
+            // Reset document form if available
+            if (userData.documents && userData.documents.length > 0) {
+                const latestDocument = userData.documents[0]
+                documentForm.setValue("name", latestDocument.title || "")
+                documentForm.setValue("type", latestDocument.fileUrl?.split('.').pop() || "")
+                documentForm.setValue(
+                    "uploadDate",
+                    latestDocument.uploadedAt
+                        ? new Date(latestDocument.uploadedAt).toISOString().split("T")[0]
+                        : new Date().toISOString().split("T")[0],
+                )
+            }
+
+            // Log the form values after setting them
+            console.log("Form values after initialization:")
+            console.log("Basic Info Form:", basicInfoForm.getValues())
+            console.log("Address Form:", addressForm.getValues())
+            console.log("Contact Form:", contactForm.getValues())
+        }
+    }, [
+        userAllDetails,
+        basicInfoForm,
+        addressForm,
+        contactForm,
+        emergencyContactForm,
+        medicalInfoForm,
+        medicationForm,
+        preferencesForm,
+        riskAssessmentForm,
+        documentForm,
+    ])
 
     // Handle input change
-    const handleInputChange = (name: string, value: string) => {
+    const handleInputChange = (name: string, value: any) => {
         if (name.includes(".")) {
             // Handle nested properties
             const [parent, child] = name.split(".")
@@ -342,109 +586,109 @@ export default function EditUserPage() {
         }
     }
 
-    // Form hooks
-    const basicInfoForm = useForm<z.infer<typeof basicInfoSchema>>({
-        resolver: zodResolver(basicInfoSchema),
-        defaultValues: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            role: "CLIENT" as Role,
-            subRole: undefined,
-            agencyId: undefined
-        }
-    })
-
-    const addressForm = useForm<z.infer<typeof addressSchema>>({
-        resolver: zodResolver(addressSchema),
-        defaultValues: {
-            address: formData.profile?.address || "",
-            city: formData.profile?.city || "",
-            state: formData.profile?.state || "",
-            zipCode: formData.profile?.zipCode || "",
-            country: formData.profile?.country || "",
-        },
-    })
-
-    const contactForm = useForm<z.infer<typeof contactSchema>>({
-        resolver: zodResolver(contactSchema),
-        defaultValues: {
-            phone: formData.profile?.phone || "",
-            alternatePhone: formData.profile?.alternatePhone || "",
-        },
-    })
-
-    const emergencyContactForm = useForm<z.infer<typeof emergencyContactSchema>>({
-        resolver: zodResolver(emergencyContactSchema),
-        defaultValues: {
-            name: "",
-            phone: "",
-            relationship: "",
-        },
-    })
-
-    const medicationForm = useForm<z.infer<typeof medicationSchema>>({
-        resolver: zodResolver(medicationSchema),
-        defaultValues: {
-            name: "",
-            dosage: "",
-            type: "",
-            frequency: "",
-            notes: "",
-        },
-    })
-
-    const medicalInfoForm = useForm<z.infer<typeof medicalInfoSchema>>({
-        resolver: zodResolver(medicalInfoSchema),
-        defaultValues: {
-            allergies: formData.profile?.allergies || "",
-            medicalConditions: formData.profile?.medicalConditions || "",
-            medicalNotes: formData.profile?.medicalNotes || "",
-        },
-    })
-
-    const preferencesForm = useForm<z.infer<typeof preferencesSchema>>({
-        resolver: zodResolver(preferencesSchema),
-        defaultValues: {
-            language: formData.profile?.language || "",
-            secondaryLanguage: formData.profile?.secondaryLanguage || "",
-            timezone: formData.profile?.timezone || "",
-            notificationPreferences: formData.profile?.notificationPreferences || "",
-            interests: formData.profile?.interests || "",
-            hobbies: formData.profile?.hobbies || "",
-            dietaryRequirements: formData.profile?.dietaryRequirements || "",
-        },
-    })
-
-    const riskAssessmentForm = useForm<z.infer<typeof riskAssessmentSchema>>({
-        resolver: zodResolver(riskAssessmentSchema),
-        defaultValues: {
-            category: "",
-            description: "",
-            affectedParties: "",
-            managementPlan: "",
-            likelihood: "",
-            severity: "",
-        },
-    })
-
-    const documentForm = useForm<z.infer<typeof documentSchema>>({
-        resolver: zodResolver(documentSchema),
-        defaultValues: {
-            name: "",
-            type: "",
-            uploadDate: new Date().toISOString().split("T")[0],
-        },
-    })
-
     // Handle loading state
-    if (isLoading) {
+    if (isLoading || isLoadingAllDetails) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <LoadingSpinner />
-                <p className="ml-2">Loading user data...</p>
+            <div className="p-6">
+                {/* Header Skeleton */}
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                        <div className="h-9 w-9 bg-muted rounded animate-pulse" />
+                        <div className="h-8 w-32 bg-muted rounded animate-pulse" />
+                    </div>
+                    <div className="h-9 w-24 bg-muted rounded animate-pulse" />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Sidebar Skeleton */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-card rounded-lg shadow-sm p-6">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="h-24 w-24 bg-muted rounded-full animate-pulse" />
+                                <div className="space-y-2 text-center">
+                                    <div className="h-4 w-32 bg-muted rounded animate-pulse" />
+                                    <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                </div>
+                                <div className="flex gap-2">
+                                    <div className="h-6 w-20 bg-muted rounded animate-pulse" />
+                                    <div className="h-6 w-24 bg-muted rounded animate-pulse" />
+                                </div>
+                            </div>
+
+                            <div className="h-[1px] bg-muted my-6" />
+
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="h-4 w-4 bg-muted rounded animate-pulse" />
+                                    <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="h-4 w-4 bg-muted rounded animate-pulse" />
+                                    <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                </div>
+                                <div className="flex items-start gap-2">
+                                    <div className="h-4 w-4 bg-muted rounded animate-pulse mt-0.5" />
+                                    <div className="space-y-1">
+                                        <div className="h-3 w-48 bg-muted rounded animate-pulse" />
+                                        <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                        <div className="h-3 w-36 bg-muted rounded animate-pulse" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Main Content Skeleton */}
+                    <div className="lg:col-span-3">
+                        <div className="bg-card rounded-lg shadow-sm">
+                            <div className="p-6">
+                                {/* Tabs Skeleton */}
+                                <div className="grid grid-cols-4 gap-2 mb-6">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <div key={i} className="h-10 bg-muted rounded animate-pulse" />
+                                    ))}
+                                </div>
+
+                                {/* Form Fields Skeleton */}
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                            <div className="h-10 w-full bg-muted rounded animate-pulse" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                            <div className="h-10 w-full bg-muted rounded animate-pulse" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                        <div className="h-10 w-full bg-muted rounded animate-pulse" />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                            <div className="h-10 w-full bg-muted rounded animate-pulse" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                            <div className="h-10 w-full bg-muted rounded animate-pulse" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                        <div className="h-32 w-full bg-muted rounded animate-pulse" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        )
+        );
     }
 
     // Handle error state
@@ -489,21 +733,45 @@ export default function EditUserPage() {
 
     const user = userData.data
 
+    const handleAddEmergencyContact = () => {
+        setEmergencyContacts(prev => [...prev, { name: "", phone: "", relationship: "" }])
+    }
+
+    const handleEmergencyContactChange = (index: number, field: string, value: string) => {
+        setEmergencyContacts(prev => {
+            const newContacts = [...prev]
+            newContacts[index] = { ...newContacts[index], [field]: value }
+            return newContacts
+        })
+    }
+
+    const handleRemoveEmergencyContact = (index: number) => {
+        setEmergencyContacts(prev => prev.filter((_, i) => i !== index))
+    }
+
     return (
         <div className="container mx-auto py-6 px-4 md:px-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-4">
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => router.back()}
-                    >
+                    <Button variant="outline" size="icon" onClick={() => router.back()}>
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <h1 className="text-2xl font-bold">Edit User</h1>
                 </div>
                 <Button
-                    onClick={() => router.push(`/dashboard/users/edit/${id}/emar`)}
+                    onClick={() => {
+                        const userData = {
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            email: user.email,
+                            profile: user.profile
+                        }
+                        const queryString = new URLSearchParams({
+                            user: JSON.stringify(userData)
+                        }).toString()
+                        router.push(`/dashboard/users/edit/${id}/emar?${queryString}`)
+                    }}
                     className="bg-blue-600 hover:bg-blue-700"
                 >
                     <Pill className="mr-2 h-4 w-4" />
@@ -534,15 +802,15 @@ export default function EditUserPage() {
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back
                     </Button>
-                    <Button type="submit" form="basicInfoForm" disabled={isSaving} className="flex-1 md:flex-none">
+                    <Button type="submit" form="basicInfoForm" disabled={isSaving}>
                         {isSaving ? (
                             <>
-                                <LoadingSpinner className="mr-2 h-4 w-4" />
+                                <LoadingSpinner />
                                 Saving...
                             </>
                         ) : (
                             <>
-                                <Save className="mr-2 h-4 w-4" />
+                                <Save className="h-4 w-4 mr-2" />
                                 Save Changes
                             </>
                         )}
@@ -550,59 +818,26 @@ export default function EditUserPage() {
                 </div>
             </div>
 
-            {hasUnsavedChanges && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md mb-6 flex items-center justify-between"
-                >
-                    <div className="flex items-center">
-                        <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
-                        <p>You have unsaved changes. Don't forget to save before leaving this page.</p>
-                    </div>
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-amber-300 hover:bg-amber-100"
-                        onClick={basicInfoForm.handleSubmit(async (data) => {
-                            setIsSaving(true)
-                            try {
-                                await updateUser({
-                                    id: userId,
-                                    ...data
-                                }).unwrap()
-                                toast.success("User updated successfully")
-                                router.push('/dashboard/users')
-                            } catch (error) {
-                                console.error("Error updating user:", error)
-                                toast.error("Failed to update user")
-                            } finally {
-                                setIsSaving(false)
-                            }
-                        })}
-                        disabled={isSaving}
-                    >
-                        Save Now
-                    </Button>
-                </motion.div>
-            )}
-
-            <form onSubmit={basicInfoForm.handleSubmit(async (data) => {
-                setIsSaving(true)
-                try {
-                    await updateUser({
-                        id: userId,
-                        ...data
-                    }).unwrap()
-                    toast.success("User updated successfully")
-                    router.push('/dashboard/users')
-                } catch (error) {
-                    console.error("Error updating user:", error)
-                    toast.error("Failed to update user")
-                } finally {
-                    setIsSaving(false)
-                }
-            })} id="basicInfoForm" className="space-y-6">
+            <form
+                onSubmit={basicInfoForm.handleSubmit(async (data) => {
+                    setIsSaving(true)
+                    try {
+                        await updateUser({
+                            id: userId,
+                            ...data,
+                        }).unwrap()
+                        toast.success("User updated successfully")
+                        router.push("/dashboard/users")
+                    } catch (error) {
+                        console.error("Error updating user:", error)
+                        toast.error("Failed to update user")
+                    } finally {
+                        setIsSaving(false)
+                    }
+                })}
+                id="basicInfoForm"
+                className="space-y-6"
+            >
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Sidebar */}
                     <div className="lg:col-span-1 space-y-6">
@@ -783,12 +1018,13 @@ export default function EditUserPage() {
                         <Card>
                             <CardHeader className="pb-4">
                                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                    <TabsList className="grid w-full grid-cols-5 max-w-3xl">
+                                    <TabsList className="grid w-full grid-cols-6 max-w-3xl">
                                         <TabsTrigger value="profile">Profile</TabsTrigger>
+                                        <TabsTrigger value="contact">Contact</TabsTrigger>
                                         <TabsTrigger value="medical">Medical</TabsTrigger>
                                         <TabsTrigger value="documents">Documents</TabsTrigger>
                                         <TabsTrigger value="risk">Risk</TabsTrigger>
-                                        <TabsTrigger value="emar">EMAR</TabsTrigger>
+                                        <TabsTrigger value="preferences">Preferences</TabsTrigger>
                                     </TabsList>
 
                                     <TabsContent value="profile" className="mt-4 space-y-6">
@@ -801,22 +1037,7 @@ export default function EditUserPage() {
                                             </CardHeader>
                                             <CardContent>
                                                 <Form {...basicInfoForm}>
-                                                    <form onSubmit={basicInfoForm.handleSubmit(async (data) => {
-                                                        setIsSaving(true)
-                                                        try {
-                                                            await updateUser({
-                                                                id: userId,
-                                                                ...data
-                                                            }).unwrap()
-                                                            toast.success("User updated successfully")
-                                                            router.push('/dashboard/users')
-                                                        } catch (error) {
-                                                            console.error("Error updating user:", error)
-                                                            toast.error("Failed to update user")
-                                                        } finally {
-                                                            setIsSaving(false)
-                                                        }
-                                                    })} className="space-y-6">
+                                                    <div className="space-y-6">
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                             <FormField
                                                                 control={basicInfoForm.control}
@@ -864,7 +1085,7 @@ export default function EditUserPage() {
                                                                     <FormItem>
                                                                         <FormLabel>Role</FormLabel>
                                                                         <FormControl>
-                                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled>
                                                                                 <FormControl>
                                                                                     <SelectTrigger>
                                                                                         <SelectValue placeholder="Select role" />
@@ -888,7 +1109,7 @@ export default function EditUserPage() {
                                                                     <FormItem>
                                                                         <FormLabel>Subrole</FormLabel>
                                                                         <FormControl>
-                                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled>
                                                                                 <FormControl>
                                                                                     <SelectTrigger>
                                                                                         <SelectValue placeholder="Select subrole" />
@@ -914,15 +1135,88 @@ export default function EditUserPage() {
                                                                     <FormItem>
                                                                         <FormLabel>Agency ID</FormLabel>
                                                                         <FormControl>
-                                                                            <Input {...field} />
+                                                                            <Input {...field} disabled />
                                                                         </FormControl>
                                                                         <FormMessage />
                                                                     </FormItem>
                                                                 )}
                                                             />
                                                         </div>
-                                                    </form>
+                                                        <Button
+                                                            type="submit"
+                                                            className="w-full"
+                                                            onClick={basicInfoForm.handleSubmit(async (data) => {
+                                                                setIsSaving(true)
+                                                                try {
+                                                                    await updateUser({
+                                                                        id: userId,
+                                                                        ...data,
+                                                                    }).unwrap()
+                                                                    toast.success("User updated successfully")
+                                                                    router.push("/dashboard/users")
+                                                                } catch (error) {
+                                                                    console.error("Error updating user:", error)
+                                                                    toast.error("Failed to update user")
+                                                                } finally {
+                                                                    setIsSaving(false)
+                                                                }
+                                                            })}
+                                                        >
+                                                            <Save className="h-4 w-4 mr-2" />
+                                                            Save Changes
+                                                        </Button>
+                                                    </div>
                                                 </Form>
+                                                <div className="mt-6">
+                                                    <h3 className="text-lg font-medium">Additional Information</h3>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="preferredName">Preferred Name</Label>
+                                                            <Input
+                                                                id="preferredName"
+                                                                value={formData.preferredName || ""}
+                                                                onChange={(e) => handleInputChange("preferredName", e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="nhsNumber">NHS Number</Label>
+                                                            <Input
+                                                                id="nhsNumber"
+                                                                value={formData.nhsNumber || ""}
+                                                                onChange={(e) => handleInputChange("nhsNumber", e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="chargeRate">Charge Rate (£)</Label>
+                                                            <Input
+                                                                id="chargeRate"
+                                                                type="number"
+                                                                value={formData.chargeRate || ""}
+                                                                onChange={(e) => handleInputChange("chargeRate", e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="propertyAccess">Property Access</Label>
+                                                            <Input
+                                                                id="propertyAccess"
+                                                                value={formData.propertyAccess || ""}
+                                                                onChange={(e) => handleInputChange("propertyAccess", e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2 md:col-span-2">
+                                                            <div className="flex items-center space-x-2">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    id="dnraOrder"
+                                                                    checked={formData.dnraOrder || false}
+                                                                    onChange={(e) => handleInputChange("dnraOrder", e.target.checked)}
+                                                                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                                                />
+                                                                <Label htmlFor="dnraOrder">DNRA Order</Label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     </TabsContent>
@@ -1061,51 +1355,58 @@ export default function EditUserPage() {
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <Form {...emergencyContactForm}>
-                                                    <form className="space-y-6">
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                            <FormField
-                                                                control={emergencyContactForm.control}
-                                                                name="name"
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormLabel>Name</FormLabel>
-                                                                        <FormControl>
-                                                                            <Input {...field} />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
+                                                <div className="space-y-6">
+                                                    {emergencyContacts.map((contact, index) => (
+                                                        <div key={index} className="border rounded-lg p-4 space-y-4">
+                                                            <div className="flex justify-between items-center">
+                                                                <h3 className="font-medium">Emergency Contact {index + 1}</h3>
+                                                                {emergencyContacts.length > 1 && (
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        onClick={() => handleRemoveEmergencyContact(index)}
+                                                                    >
+                                                                        <Trash className="h-4 w-4" />
+                                                                    </Button>
                                                                 )}
-                                                            />
-                                                            <FormField
-                                                                control={emergencyContactForm.control}
-                                                                name="phone"
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormLabel>Phone</FormLabel>
-                                                                        <FormControl>
-                                                                            <Input {...field} />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                            <FormField
-                                                                control={emergencyContactForm.control}
-                                                                name="relationship"
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormLabel>Relationship</FormLabel>
-                                                                        <FormControl>
-                                                                            <Input {...field} />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
+                                                            </div>
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                <div className="space-y-2">
+                                                                    <Label htmlFor={`name-${index}`}>Name</Label>
+                                                                    <Input
+                                                                        id={`name-${index}`}
+                                                                        value={contact.name}
+                                                                        onChange={(e) => handleEmergencyContactChange(index, "name", e.target.value)}
+                                                                    />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <Label htmlFor={`phone-${index}`}>Phone</Label>
+                                                                    <Input
+                                                                        id={`phone-${index}`}
+                                                                        value={contact.phone}
+                                                                        onChange={(e) => handleEmergencyContactChange(index, "phone", e.target.value)}
+                                                                    />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <Label htmlFor={`relationship-${index}`}>Relationship</Label>
+                                                                    <Input
+                                                                        id={`relationship-${index}`}
+                                                                        value={contact.relationship}
+                                                                        onChange={(e) => handleEmergencyContactChange(index, "relationship", e.target.value)}
+                                                                    />
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </form>
-                                                </Form>
+                                                    ))}
+                                                    <Button
+                                                        variant="outline"
+                                                        className="w-full"
+                                                        onClick={handleAddEmergencyContact}
+                                                    >
+                                                        <Plus className="h-4 w-4 mr-2" />
+                                                        Add Emergency Contact
+                                                    </Button>
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     </TabsContent>
@@ -1251,7 +1552,82 @@ export default function EditUserPage() {
                                     </TabsContent>
 
                                     <TabsContent value="emar">
-                                        {user ? <EMARPage user={user} /> : <LoadingSpinner />}
+                                        {isLoadingAllDetails ? (
+                                            <div className="min-h-screen flex items-center justify-center">
+                                                <LoadingSpinner />
+                                            </div>
+                                        ) : errorAllDetails ? (
+                                            <div className="min-h-screen flex items-center justify-center">
+                                                <Card>
+                                                    <CardHeader>
+                                                        <CardTitle>Error</CardTitle>
+                                                        <CardDescription>Failed to load user details</CardDescription>
+                                                    </CardHeader>
+                                                </Card>
+                                            </div>
+                                        ) : !userAllDetails?.data ? (
+                                            <div className="min-h-screen flex items-center justify-center">
+                                                <Card>
+                                                    <CardHeader>
+                                                        <CardTitle>Error</CardTitle>
+                                                        <CardDescription>User details not found</CardDescription>
+                                                    </CardHeader>
+                                                </Card>
+                                            </div>
+                                        ) : (
+                                            <EMARPage user={userAllDetails.data} />
+                                        )}
+                                    </TabsContent>
+
+                                    <TabsContent value="preferences" className="mt-4 space-y-6">
+                                        <Card>
+                                            <CardHeader className="pb-3">
+                                                <CardTitle className="text-lg flex items-center">
+                                                    <Heart className="h-5 w-5 mr-2 text-primary" />
+                                                    Client Preferences
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="grid grid-cols-1 gap-6">
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="mobility">Mobility</Label>
+                                                        <Textarea
+                                                            id="mobility"
+                                                            value={formData.mobility || ""}
+                                                            onChange={(e) => handleInputChange("mobility", e.target.value)}
+                                                            placeholder="Describe mobility status"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="likesDislikes">Likes & Dislikes</Label>
+                                                        <Textarea
+                                                            id="likesDislikes"
+                                                            value={formData.likesDislikes || ""}
+                                                            onChange={(e) => handleInputChange("likesDislikes", e.target.value)}
+                                                            placeholder="Describe likes and dislikes"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="languages">Languages</Label>
+                                                        <Input
+                                                            id="languages"
+                                                            value={formData.languages || ""}
+                                                            onChange={(e) => handleInputChange("languages", e.target.value)}
+                                                            placeholder="Languages spoken"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="interests">Interests</Label>
+                                                        <Textarea
+                                                            id="interests"
+                                                            value={formData.interests || ""}
+                                                            onChange={(e) => handleInputChange("interests", e.target.value)}
+                                                            placeholder="Describe interests and hobbies"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
                                     </TabsContent>
 
                                     <TabsContent value="preferences" className="mt-4 space-y-6">
@@ -1579,7 +1955,7 @@ export default function EditUserPage() {
                                 <Button variant="outline" type="button" onClick={() => router.back()}>
                                     Cancel
                                 </Button>
-                                <Button type="submit" disabled={isSaving || !hasUnsavedChanges}>
+                                <Button type="submit" disabled={isSaving}>
                                     {isSaving ? (
                                         <>
                                             <LoadingSpinner />

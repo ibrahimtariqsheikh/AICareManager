@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { api, Invitation, Client, CreateInvitationInput, CancelInvitationInput } from "../api";
+import { api,  } from "../api";
 
 interface InvitationState {
   loading: boolean;

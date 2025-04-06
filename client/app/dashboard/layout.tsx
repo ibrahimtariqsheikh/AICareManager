@@ -16,6 +16,8 @@ import { useGetUserQuery, useGetAgencyUsersQuery } from "../../state/api";
 import { redirect } from "next/navigation"
 import * as React from "react"
 import type { SidebarMode } from "../../components/scheduler/calender/types"
+import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -59,7 +61,46 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     }, [agencyUsers, dispatch])
 
     if (isLoading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>
+        return (
+            <div className="flex h-screen">
+                <div className="flex h-full w-full">
+                    {/* Left sidebar skeleton */}
+                    <div className="flex h-full">
+                        <div className="w-64 bg-muted animate-pulse" />
+                        <div className="w-12 bg-muted/50 animate-pulse" />
+                    </div>
+
+                    {/* Main content skeleton */}
+                    <main className="flex-1 overflow-y-auto">
+                        {/* Header skeleton */}
+                        <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
+                            <div className="flex flex-1 items-center gap-2 px-3">
+                                <div className="h-6 w-6 bg-muted rounded animate-pulse" />
+                                <div className="h-4 w-[1px] bg-muted mr-2" />
+                                <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                <div className="h-4 w-4 bg-muted rounded animate-pulse" />
+                                <div className="h-4 w-32 bg-muted rounded animate-pulse" />
+                            </div>
+                        </header>
+
+                        {/* Content area skeleton */}
+                        <div className="flex flex-1 flex-col gap-4 p-4">
+                            <div className="h-8 w-48 bg-muted rounded animate-pulse" />
+                            <div className="grid gap-4">
+                                <div className="h-32 bg-muted rounded animate-pulse" />
+                                <div className="h-32 bg-muted rounded animate-pulse" />
+                                <div className="h-32 bg-muted rounded animate-pulse" />
+                            </div>
+                        </div>
+                    </main>
+
+                    {/* Right sidebar skeleton (only shown on schedule page) */}
+                    {isSchedulePage && (
+                        <div className="w-80 bg-muted animate-pulse" />
+                    )}
+                </div>
+            </div>
+        );
     }
 
     if (!user) {
