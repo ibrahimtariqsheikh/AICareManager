@@ -90,18 +90,24 @@ const config: Config = {
           "66%": { transform: "translate(-30px, 30px) scale(0.9) rotate(240deg)" },
           "100%": { transform: "translate(0, 0) scale(1) rotate(360deg)" },
         },
-        blob: {
-          "0%, 100%": { borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" },
-          "25%": { borderRadius: "30% 60% 70% 40% / 50% 60% 30% 60%" },
-          "50%": { borderRadius: "50% 60% 30% 70% / 40% 30% 70% 60%" },
-          "75%": { borderRadius: "40% 60% 70% 30% / 60% 70% 40% 30%" },
+        "pop-blob": {
+          "0%": { transform: "scale(0.9)" },
+          "50%": { transform: "scale(1.1)" },
+          "100%": { transform: "scale(0.9)" },
+        },
+        "blob": {
+          "0%": { transform: "translate(0px, 0px) scale(1)" },
+          "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+          "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+          "100%": { transform: "translate(0px, 0px) scale(1)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         float: "float 15s ease-in-out infinite alternate",
-        blob: "blob 8s ease-in-out infinite",
+        "pop-blob": "pop-blob 3s ease-in-out infinite",
+        "blob": "blob 7s ease-in-out infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

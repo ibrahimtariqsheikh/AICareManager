@@ -22,7 +22,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${font.className} antialiased`} suppressHydrationWarning>
         <Providers>
-          <div className="dark:noise-bg w-full">{children}</div>
+          <div className="dark:noise-bg w-full font-sans">{children}</div>
         </Providers>
         <Toaster />
       </body>

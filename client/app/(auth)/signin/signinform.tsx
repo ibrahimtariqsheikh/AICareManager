@@ -121,7 +121,8 @@ const SigninForm: React.FC<SigninFormProps> = ({
                             <FormItem>
                                 <FormLabel className="text-sm font-medium">Username</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="name@example.com" className="h-11 px-3 rounded-md" {...field} />
+                                    <Input
+                                        placeholder="yourname@aicaremanager.com" className="h-11" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -135,27 +136,33 @@ const SigninForm: React.FC<SigninFormProps> = ({
                             <FormItem>
                                 <div className="flex items-center justify-between">
                                     <FormLabel className="text-sm font-medium">Password</FormLabel>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        onClick={toggleForm}
+                                        className="text-sm text-gray-500 hover:text-gray-700 hover:bg-transparent px-0 h-auto"
+                                    >
+                                        Forgot your password?
+                                    </Button>
                                 </div>
                                 <FormControl>
                                     <div className="relative">
                                         <Input
                                             type={showPassword ? "text" : "password"}
                                             placeholder="Enter your password"
-                                            className="h-11 px-3 rounded-md"
+                                            className="h-11"
                                             {...field}
                                         />
-                                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                                            <button
-                                                type="button"
-                                                className="text-gray-500"
-                                                onClick={(e) => {
-                                                    e.preventDefault()
-                                                    setShowPassword(!showPassword)
-                                                }}
-                                            >
-                                                {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                                            </button>
-                                        </div>
+                                        <button
+                                            type="button"
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                setShowPassword(!showPassword)
+                                            }}
+                                        >
+                                            {showPassword ? <Eye className="w-4 h-4 text-gray-500" /> : <EyeOff className="w-4 h-4 text-gray-500" />}
+                                        </button>
                                     </div>
                                 </FormControl>
                                 <FormMessage />
@@ -165,7 +172,7 @@ const SigninForm: React.FC<SigninFormProps> = ({
 
                     <Button
                         type="submit"
-                        className="w-full h-11 bg-black text-white hover:bg-black/90 rounded-md"
+                        className="w-full h-11 bg-gradient-to-r from-blue-700/90 via-blue-600/90 to-blue-500/90 text-white hover:from-blue-800/90 hover:via-blue-700/90 hover:to-blue-600/90 transition-all duration-200 rounded-lg shadow-sm"
                         disabled={loading}
                     >
                         {loading ? (
@@ -177,26 +184,6 @@ const SigninForm: React.FC<SigninFormProps> = ({
                             "Sign In"
                         )}
                     </Button>
-
-                    <div className="text-center mt-6 space-y-2">
-                        <p className="text-sm text-gray-500">
-                            Need to verify your account?{" "}
-                            <button
-                                type="button"
-                                onClick={toggleVerificationForm}
-                                className="text-gray-700 font-medium hover:underline"
-                            >
-                                Verify Account
-                            </button>
-                        </p>
-
-                        <p className="text-sm text-gray-500">
-                            Forgot your password?{" "}
-                            <button type="button" onClick={toggleForm} className="text-gray-700 font-medium hover:underline">
-                                Reset Password
-                            </button>
-                        </p>
-                    </div>
                 </form>
             </Form>
         </div>
