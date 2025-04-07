@@ -20,6 +20,7 @@ import { NotificationsDialog } from "./notifications-diaglog"
 import { Input } from "../ui/input"
 import { AvatarGroup } from "../ui/avatar-group"
 import { Avatar, AvatarFallback } from "../ui/avatar"
+import { InvitesTable } from "./invites-table"
 
 
 export function InvitesDashboard() {
@@ -301,7 +302,7 @@ export function InvitesDashboard() {
 
                 <Card className="border-gray-200 shadow-sm">
                     <CardContent className="p-0">
-                        <UserTable
+                        <InvitesTable
                             users={
                                 filteredInvitations.length > 0 ? filteredInvitations : filterBySearch(filterUsersByRole(activeUserType))
                             }

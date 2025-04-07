@@ -3,13 +3,11 @@
 import { useState } from "react"
 import { useAppSelector } from "../../state/redux"
 import { useGetDashboardDataQuery } from "../../state/api"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "../../components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card"
 import {
     Users,
     Calendar,
     FileText,
-    Car,
-    UserCheck,
     ClipboardList,
     Building2,
     ArrowUpRight,
@@ -18,24 +16,32 @@ import {
     AlertCircle,
     Filter,
     ChevronRight,
-    MoreHorizontal,
-    CalendarClock,
-    Bell,
+    Search,
 } from "lucide-react"
 import { Progress } from "../../components/ui/progress"
 import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu"
-import { motion, AnimatePresence } from "framer-motion"
 import { Skeleton } from "../../components/ui/skeleton"
+import {
+    LineChart,
+    Line,
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from "recharts"
 
 export default function DashboardPage() {
     const { user } = useAppSelector((state) => state.user)
@@ -81,8 +87,8 @@ export default function DashboardPage() {
                     <Skeleton className="h-4 w-1/2" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[...Array(6)].map((_, i) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[...Array(4)].map((_, i) => (
                         <Card key={i} className="overflow-hidden">
                             <CardHeader className="pb-2">
                                 <Skeleton className="h-4 w-1/2" />
@@ -135,7 +141,7 @@ export default function DashboardPage() {
                         </p>
                         <button
                             onClick={() => window.location.reload()}
-                            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 rounded-md transition-colors"
+                            className="w-full bg-green-600 text-white hover:bg-green-700 py-2 rounded-md transition-colors"
                         >
                             Refresh Page
                         </button>
@@ -183,69 +189,6 @@ export default function DashboardPage() {
         return totalEntities > 0 ? Math.round((value / totalEntities) * 100) : 0
     }
 
-    const stats = [
-        {
-            title: "Clients",
-            value: dashboardData.stats.totalClients,
-            icon: Users,
-            color: "text-blue-500",
-            bgColor: "bg-blue-100",
-            percentage: getPercentage(dashboardData.stats.totalClients),
-            progressColor: "bg-blue-500",
-            trend: "+5% from last month",
-        },
-        {
-            title: "Care Workers",
-            value: dashboardData.stats.totalCareWorkers,
-            icon: UserCheck,
-            color: "text-green-500",
-            bgColor: "bg-green-100",
-            percentage: getPercentage(dashboardData.stats.totalCareWorkers),
-            progressColor: "bg-green-500",
-            trend: "+2% from last month",
-        },
-        {
-            title: "Schedules",
-            value: dashboardData.stats.totalSchedules,
-            icon: Calendar,
-            color: "text-purple-500",
-            bgColor: "bg-purple-100",
-            percentage: getPercentage(dashboardData.stats.totalSchedules),
-            progressColor: "bg-purple-500",
-            trend: "+12% from last month",
-        },
-        {
-            title: "Reports",
-            value: dashboardData.stats.totalReports,
-            icon: FileText,
-            color: "text-orange-500",
-            bgColor: "bg-orange-100",
-            percentage: getPercentage(dashboardData.stats.totalReports),
-            progressColor: "bg-orange-500",
-            trend: "+8% from last month",
-        },
-        {
-            title: "Mileage Records",
-            value: dashboardData.stats.totalMileageRecords,
-            icon: Car,
-            color: "text-red-500",
-            bgColor: "bg-red-100",
-            percentage: getPercentage(dashboardData.stats.totalMileageRecords),
-            progressColor: "bg-red-500",
-            trend: "+3% from last month",
-        },
-        {
-            title: "Documents",
-            value: dashboardData.stats.totalDocuments,
-            icon: ClipboardList,
-            color: "text-yellow-500",
-            bgColor: "bg-yellow-100",
-            percentage: getPercentage(dashboardData.stats.totalDocuments),
-            progressColor: "bg-yellow-500",
-            trend: "+7% from last month",
-        },
-    ]
-
     // Get feature status for agency
     const getFeatureStatus = (isEnabled: boolean | undefined) => {
         return isEnabled ? (
@@ -261,49 +204,49 @@ export default function DashboardPage() {
 
     // Filter schedules based on selected filter
     const filteredSchedules = dashboardData.schedules.filter((schedule) => {
-        if (scheduleFilter === "all") return true;
+        if (scheduleFilter === "all") return true
         if (scheduleFilter === "today") {
-            const today = new Date();
-            const scheduleDate = new Date(schedule.date);
+            const today = new Date()
+            const scheduleDate = new Date(schedule.date)
             return (
                 scheduleDate.getDate() === today.getDate() &&
                 scheduleDate.getMonth() === today.getMonth() &&
                 scheduleDate.getFullYear() === today.getFullYear()
-            );
+            )
         }
         if (scheduleFilter === "tomorrow") {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const scheduleDate = new Date(schedule.date);
+            const tomorrow = new Date()
+            tomorrow.setDate(tomorrow.getDate() + 1)
+            const scheduleDate = new Date(schedule.date)
             return (
                 scheduleDate.getDate() === tomorrow.getDate() &&
                 scheduleDate.getMonth() === tomorrow.getMonth() &&
                 scheduleDate.getFullYear() === tomorrow.getFullYear()
-            );
+            )
         }
         if (scheduleFilter === "pending") {
-            return schedule.status === "PENDING";
+            return schedule.status === "PENDING"
         }
-        return true;
-    });
+        return true
+    })
 
     // Function to get schedule type badge
     const getScheduleTypeBadge = (type: string) => {
         switch (type) {
             case "HOME_VISIT":
-                return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-0">Home Visit</Badge>;
+                return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-0">Home Visit</Badge>
             case "MEDICATION":
-                return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-0">Medication</Badge>;
+                return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-0">Medication</Badge>
             case "THERAPY":
-                return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 border-0">Therapy</Badge>;
+                return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 border-0">Therapy</Badge>
             case "APPOINTMENT":
-                return <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 border-0">Appointment</Badge>;
+                return <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 border-0">Appointment</Badge>
             case "SHOPPING":
-                return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border-0">Shopping</Badge>;
+                return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border-0">Shopping</Badge>
             default:
-                return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 border-0">{type}</Badge>;
+                return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 border-0">{type}</Badge>
         }
-    };
+    }
 
     // Function to get schedule status badge
     const getScheduleStatusBadge = (status: string) => {
@@ -313,315 +256,349 @@ export default function DashboardPage() {
                     <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                         Confirmed
                     </Badge>
-                );
+                )
             case "PENDING":
                 return (
                     <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
                         Pending
                     </Badge>
-                );
+                )
             case "CANCELED":
                 return (
                     <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
                         Canceled
                     </Badge>
-                );
+                )
             case "COMPLETED":
                 return (
                     <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                         Completed
                     </Badge>
-                );
+                )
             default:
-                return <Badge variant="outline">{status}</Badge>;
+                return <Badge variant="outline">{status}</Badge>
         }
-    };
+    }
 
     // Function to format date in a user-friendly way
     const formatScheduleDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const now = new Date();
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        const date = new Date(dateString)
+        const now = new Date()
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
 
         if (
             date.getDate() === now.getDate() &&
             date.getMonth() === now.getMonth() &&
             date.getFullYear() === now.getFullYear()
         ) {
-            return "Today";
+            return "Today"
         } else if (
             date.getDate() === tomorrow.getDate() &&
             date.getMonth() === tomorrow.getMonth() &&
             date.getFullYear() === tomorrow.getFullYear()
         ) {
-            return "Tomorrow";
+            return "Tomorrow"
         } else {
-            return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+            return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
         }
-    };
+    }
+
+    // Add this before the return statement:
+    const admissionData = [
+        { name: 'Jan', admissions: 65, discharges: 45 },
+        { name: 'Feb', admissions: 59, discharges: 48 },
+        { name: 'Mar', admissions: 80, discharges: 40 },
+        { name: 'Apr', admissions: 81, discharges: 65 },
+        { name: 'May', admissions: 56, discharges: 52 },
+        { name: 'Jun', admissions: 55, discharges: 45 },
+        { name: 'Jul', admissions: 40, discharges: 35 },
+        { name: 'Aug', admissions: 45, discharges: 30 },
+        { name: 'Sep', admissions: 50, discharges: 40 },
+        { name: 'Oct', admissions: 55, discharges: 45 },
+        { name: 'Nov', admissions: 60, discharges: 50 },
+        { name: 'Dec', admissions: 65, discharges: 55 },
+    ]
+
+    const doctorScheduleData = [
+        { name: 'Mon', available: 72, unavailable: 24, leave: 16 },
+        { name: 'Tue', available: 70, unavailable: 26, leave: 14 },
+        { name: 'Wed', available: 75, unavailable: 20, leave: 15 },
+        { name: 'Thu', available: 68, unavailable: 28, leave: 14 },
+        { name: 'Fri', available: 65, unavailable: 30, leave: 15 },
+        { name: 'Sat', available: 60, unavailable: 35, leave: 15 },
+        { name: 'Sun', available: 55, unavailable: 40, leave: 15 },
+    ]
 
     return (
-        <div className="p-2">
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="mb-8"
-            >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
-                    <div>
-                        <div className="flex items-center space-x-2">
-                            <h1 className="text-3xl font-bold">Welcome, {dashboardData.user.firstName}!</h1>
-                            <Badge variant="outline" className="ml-2 bg-primary/10 text-primary border-primary/20">
-                                {dashboardData.user.role}
-                            </Badge>
-                        </div>
-                        <p className="text-muted-foreground mt-1">Here's an overview of your agency's activities and statistics</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="outline" size="icon" className="relative">
-                                        <Bell className="h-4 w-4" />
-                                        {dashboardData.notifications.length > 0 && (
-                                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
-                                                {dashboardData.notifications.length}
-                                            </span>
-                                        )}
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    {dashboardData.notifications.length > 0 ? (
-                                        <div className="space-y-2">
-                                            {dashboardData.notifications.map((notification) => (
-                                                <div key={notification.id} className="flex items-start space-x-2">
-                                                    <div className="flex-1">
-                                                        <p className="text-sm font-medium">{notification.title}</p>
-                                                        <p className="text-xs text-muted-foreground">{notification.message}</p>
-                                                    </div>
-                                                    <span className="text-xs text-muted-foreground">
-                                                        {new Date(notification.createdAt).toLocaleTimeString()}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p>No new notifications</p>
-                                    )}
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    </div>
+        <div className="p-6 bg-white">
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+                <p className="text-gray-600">Overview of all your detailed of patients and your income</p>
+            </div>
+
+            <div className="flex justify-between items-center mb-6">
+                <div></div>
+                <div className="flex gap-2">
                 </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
-            >
-                {stats.map((stat) => (
-                    <motion.div key={stat.title} variants={itemVariants}>
-                        <Card className="overflow-hidden hover:shadow-md transition-shadow p-2">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-base font-medium">{stat.title}</CardTitle>
-                                <div className={`p-2 rounded-full ${stat.bgColor}`}>
-                                    <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex items-baseline space-x-2 mb-1">
-                                    <div className="text-3xl font-bold">{stat.value}</div>
-                                    <div className="text-xs text-muted-foreground">{stat.percentage}% of total</div>
-                                </div>
-                                <div className="text-xs text-green-600 mb-2">{stat.trend}</div>
-                                <Progress value={stat.percentage} className={`h-1 ${stat.progressColor}`} />
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))}
-            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <Card className="border border-gray-200 shadow-sm">
+                    <CardContent className="p-6">
+                        <div className="flex items-center mb-4">
+                            <div className="p-2 rounded-md bg-gray-100">
+                                <Users className="h-5 w-5 text-gray-700" />
+                            </div>
+                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Patients</h3>
+                        </div>
+                        <div className="flex justify-between items-baseline mb-1">
+                            <div className="text-3xl font-bold text-gray-800">{dashboardData.stats.totalClients}</div>
+                            <div className="flex items-center text-green-600 text-sm">
+                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                                +12%
+                            </div>
+                        </div>
+                        <div className="text-sm text-gray-500">Patient increase in 7 days.</div>
+                        <div className="flex justify-end mt-2">
+                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                                See details
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="mb-6"
-            >
-                <Card>
-                    <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle className="text-xl flex items-center">
-                                    <Calendar className="h-5 w-5 mr-2 text-primary" />
-                                    Upcoming Schedules
-                                </CardTitle>
-                                <CardDescription>View and manage your upcoming appointments and schedules</CardDescription>
+                <Card className="border border-gray-200 shadow-sm">
+                    <CardContent className="p-6">
+                        <div className="flex items-center mb-4">
+                            <div className="p-2 rounded-md bg-gray-100">
+                                <Calendar className="h-5 w-5 text-gray-700" />
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" size="sm" className="h-8">
-                                            <Filter className="h-3.5 w-3.5 mr-1" />
-                                            Filter
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => setScheduleFilter("all")}>All Schedules</DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setScheduleFilter("today")}>Today Only</DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setScheduleFilter("tomorrow")}>Tomorrow Only</DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setScheduleFilter("pending")}>Pending Approval</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Appointment</h3>
+                        </div>
+                        <div className="flex justify-between items-baseline mb-1">
+                            <div className="text-3xl font-bold text-gray-800">{dashboardData.stats.totalSchedules}</div>
+                            <div className="flex items-center text-green-600 text-sm">
+                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                                +10%
                             </div>
+                        </div>
+                        <div className="text-sm text-gray-500">Appointment increase in 7 days.</div>
+                        <div className="flex justify-end mt-2">
+                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                                See details
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="border border-gray-200 shadow-sm">
+                    <CardContent className="p-6">
+                        <div className="flex items-center mb-4">
+                            <div className="p-2 rounded-md bg-gray-100">
+                                <FileText className="h-5 w-5 text-gray-700" />
+                            </div>
+                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Income</h3>
+                        </div>
+                        <div className="flex justify-between items-baseline mb-1">
+                            <div className="text-3xl font-bold text-gray-800">$7,209.29</div>
+                            <div className="flex items-center text-green-600 text-sm">
+                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                                +24%
+                            </div>
+                        </div>
+                        <div className="text-sm text-gray-500">Treatments increase in 7 days.</div>
+                        <div className="flex justify-end mt-2">
+                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                                See details
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="border border-gray-200 shadow-sm">
+                    <CardContent className="p-6">
+                        <div className="flex items-center mb-4">
+                            <div className="p-2 rounded-md bg-gray-100">
+                                <ClipboardList className="h-5 w-5 text-gray-700" />
+                            </div>
+                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Treatments</h3>
+                        </div>
+                        <div className="flex justify-between items-baseline mb-1">
+                            <div className="text-3xl font-bold text-gray-800">234</div>
+                            <div className="flex items-center text-green-600 text-sm">
+                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                                +11%
+                            </div>
+                        </div>
+                        <div className="text-sm text-gray-500">Income increase in 7 days.</div>
+                        <div className="flex justify-end mt-2">
+                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                                See details
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <Card className="border border-gray-200 shadow-sm lg:col-span-2">
+                    <CardHeader className="border-b border-gray-100 pb-4">
+                        <div className="flex items-center">
+                            <Activity className="h-5 w-5 mr-2 text-gray-700" />
+                            <CardTitle className="text-lg font-medium text-gray-800">Admission and Discharge Trends</CardTitle>
                         </div>
                     </CardHeader>
-                    <CardContent>
-                        <AnimatePresence>
-                            {filteredSchedules.length === 0 ? (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="text-center py-8"
-                                >
-                                    <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                                    <h3 className="text-lg font-medium mb-1">No Upcoming Schedules</h3>
-                                    <p className="text-muted-foreground">There are no schedules matching your current filter.</p>
-                                </motion.div>
-                            ) : (
-                                <div className="space-y-4">
-                                    {filteredSchedules.map((schedule, index) => (
-                                        <motion.div
-                                            key={schedule.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            className="flex items-center p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors"
-                                        >
-                                            <div className="flex-shrink-0 mr-4">
-                                                <div className="text-center">
-                                                    <div className="text-sm font-medium">{formatScheduleDate(schedule.date)}</div>
-                                                    <div className="text-xs text-muted-foreground">
-                                                        {schedule.startTime} - {schedule.endTime}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex-grow">
-                                                <div className="flex items-center mb-1">
-                                                    <h4 className="font-medium">{schedule.title}</h4>
-                                                    <div className="ml-2">{getScheduleTypeBadge(schedule.type)}</div>
-                                                </div>
-                                                <div className="flex items-center text-sm text-muted-foreground">
-                                                    <div className="flex items-center mr-4">
-                                                        <Avatar className="h-5 w-5 mr-1">
-                                                            <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={schedule.clientName} />
-                                                            <AvatarFallback>{schedule.clientName.charAt(0)}</AvatarFallback>
-                                                        </Avatar>
-                                                        <span>Client: {schedule.clientName}</span>
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        <Avatar className="h-5 w-5 mr-1">
-                                                            <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={schedule.careWorkerName} />
-                                                            <AvatarFallback>{schedule.careWorkerName.charAt(0)}</AvatarFallback>
-                                                        </Avatar>
-                                                        <span>Care Worker: {schedule.careWorkerName}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex-shrink-0 ml-4 flex items-center space-x-2">
-                                                {getScheduleStatusBadge(schedule.status)}
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                        <DropdownMenuItem>Edit Schedule</DropdownMenuItem>
-                                                        <DropdownMenuItem>Cancel Schedule</DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            )}
-                        </AnimatePresence>
+                    <CardContent className="p-6">
+                        <div className="flex items-center justify-end mb-4 gap-4">
+                            <div className="flex items-center">
+                                <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                <span className="text-sm text-gray-600">Admissions</span>
+                            </div>
+                            <div className="flex items-center">
+                                <div className="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
+                                <span className="text-sm text-gray-600">Discharges</span>
+                            </div>
+                        </div>
+                        <div className="h-[300px] relative">
+                            <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={admissionData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="admissions" stroke="#10B981" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="discharges" stroke="#6B7280" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
                     </CardContent>
-                    <CardFooter className="flex justify-between border-t pt-4">
-                        <p className="text-sm text-muted-foreground">
-                            Showing {filteredSchedules.length} of {dashboardData.schedules.length} schedules
-                        </p>
-                        <Button variant="outline" size="sm" onClick={() => (window.location.href = "/schedule")}>
-                            View All Schedules
-                            <ChevronRight className="h-4 w-4 ml-1" />
-                        </Button>
-                    </CardFooter>
                 </Card>
-            </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-4"
-            >
-                <Card className="lg:col-span-2">
-                    <CardHeader className="pb-3">
+                <Card className="border border-gray-200 shadow-sm">
+                    <CardHeader className="border-b border-gray-100 pb-4">
+                        <div className="flex items-center">
+                            <Calendar className="h-5 w-5 mr-2 text-gray-700" />
+                            <CardTitle className="text-lg font-medium text-gray-800">Doctor's Schedule</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                        <div className="grid grid-cols-3 gap-2 mb-6">
+                            <div className="bg-gray-50 p-3 rounded-md text-center">
+                                <div className="text-gray-600 text-sm mb-1">Available</div>
+                                <div className="text-2xl font-bold text-gray-800">72</div>
+                                <div className="text-xs text-gray-500">Total</div>
+                            </div>
+                            <div className="bg-gray-50 p-3 rounded-md text-center">
+                                <div className="text-gray-600 text-sm mb-1">Unavailable</div>
+                                <div className="text-2xl font-bold text-gray-800">24</div>
+                                <div className="text-xs text-gray-500">Total</div>
+                            </div>
+                            <div className="bg-gray-50 p-3 rounded-md text-center">
+                                <div className="text-gray-600 text-sm mb-1">Leave</div>
+                                <div className="text-2xl font-bold text-gray-800">16</div>
+                                <div className="text-xs text-gray-500">Total</div>
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
+                            <h4 className="text-sm font-medium text-gray-700 mb-3">List of Doctor</h4>
+                            <div className="space-y-4">
+                                {[
+                                    { name: "Omar Bergson", specialty: "Anesthesiology", status: "CONFIRMED" },
+                                    { name: "Wilson Dias", specialty: "Dermatology", status: "PENDING" },
+                                    { name: "Arlene Cooper", specialty: "General Surgery", status: "CONFIRMED" },
+                                ].map((doctor, index) => (
+                                    <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
+                                        <div className="flex items-center">
+                                            <Avatar className="h-10 w-10 border border-gray-200">
+                                                <AvatarImage src={`/placeholder.svg?height=40&width=40`} alt={doctor.name} />
+                                                <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                            <div className="ml-3">
+                                                <h5 className="font-medium text-gray-800">{doctor.name}</h5>
+                                                <p className="text-sm text-gray-600">{doctor.specialty}</p>
+                                            </div>
+                                        </div>
+                                        <div>{getScheduleStatusBadge(doctor.status)}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <Card className="border border-gray-200 shadow-sm lg:col-span-2">
+                    <CardHeader className="border-b border-gray-100 pb-4">
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-xl flex items-center">
-                                <Building2 className="h-5 w-5 mr-2 text-primary" />
-                                Agency Information
-                            </CardTitle>
-                            <Badge variant={dashboardData.user.agency.isActive ? "default" : "destructive"}>
+                            <div className="flex items-center">
+                                <Building2 className="h-5 w-5 mr-2 text-gray-700" />
+                                <CardTitle className="text-lg font-medium text-gray-800">Agency Information</CardTitle>
+                            </div>
+                            <Badge
+                                variant={dashboardData.user.agency.isActive ? "default" : "destructive"}
+                                className="bg-green-100 text-green-800 hover:bg-green-200 border-0"
+                            >
                                 {dashboardData.user.agency.isActive ? "Active" : "Inactive"}
                             </Badge>
                         </div>
-                        <CardDescription>Details about your care agency and enabled features</CardDescription>
+                        <CardDescription className="text-gray-600 mt-1">
+                            Details about your care agency and enabled features
+                        </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6">
                         <Tabs defaultValue="details" className="w-full">
-                            <TabsList className="mb-4">
-                                <TabsTrigger value="details">Details</TabsTrigger>
-                                <TabsTrigger value="features">Features</TabsTrigger>
-                                <TabsTrigger value="billing">Billing</TabsTrigger>
+                            <TabsList className="mb-4 bg-gray-100">
+                                <TabsTrigger value="details" className="data-[state=active]:bg-white">
+                                    Details
+                                </TabsTrigger>
+                                <TabsTrigger value="features" className="data-[state=active]:bg-white">
+                                    Features
+                                </TabsTrigger>
+                                <TabsTrigger value="billing" className="data-[state=active]:bg-white">
+                                    Billing
+                                </TabsTrigger>
                             </TabsList>
                             <TabsContent value="details">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-4">
                                         <div>
-                                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Agency Name</h3>
-                                            <p className="text-lg font-medium">{dashboardData.user.agency.name}</p>
+                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Agency Name</h3>
+                                            <p className="text-lg font-medium text-gray-800">{dashboardData.user.agency.name}</p>
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Created</h3>
-                                            <p className="text-base">{new Date(dashboardData.user.agency.createdAt).toLocaleDateString()}</p>
+                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Created</h3>
+                                            <p className="text-base text-gray-800">
+                                                {new Date(dashboardData.user.agency.createdAt).toLocaleDateString()}
+                                            </p>
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Account Type</h3>
-                                            <p className="text-base">
+                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Account Type</h3>
+                                            <p className="text-base text-gray-800">
                                                 {dashboardData.user.agency.isTestAccount ? "Test Account" : "Production Account"}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="space-y-4">
                                         <div>
-                                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Address</h3>
-                                            <p className="text-base">{dashboardData.user.agency.address || "123 Main Street, Suite 101"}</p>
-                                            <p className="text-base">
-                                                {dashboardData.user.agency.city || "San Francisco"}, {dashboardData.user.agency.state || "CA"} {dashboardData.user.agency.zipCode || "94105"}
+                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Address</h3>
+                                            <p className="text-base text-gray-800">
+                                                {dashboardData.user.agency.address || "123 Main Street, Suite 101"}
+                                            </p>
+                                            <p className="text-base text-gray-800">
+                                                {dashboardData.user.agency.city || "San Francisco"}, {dashboardData.user.agency.state || "CA"}{" "}
+                                                {dashboardData.user.agency.zipCode || "94105"}
                                             </p>
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Contact</h3>
-                                            <p className="text-base">{dashboardData.user.agency.phone || "(555) 123-4567"}</p>
-                                            <p className="text-base">{dashboardData.user.agency.email || "contact@careagency.com"}</p>
+                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Contact</h3>
+                                            <p className="text-base text-gray-800">{dashboardData.user.agency.phone || "(555) 123-4567"}</p>
+                                            <p className="text-base text-gray-800">
+                                                {dashboardData.user.agency.email || "contact@careagency.com"}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -629,60 +606,60 @@ export default function DashboardPage() {
                             <TabsContent value="features">
                                 <div className="space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                                            <span>Schedule V2</span>
+                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
+                                            <span className="text-gray-800">Schedule V2</span>
                                             {getFeatureStatus(dashboardData.user.agency.hasScheduleV2)}
                                         </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                                            <span>EMAR</span>
+                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
+                                            <span className="text-gray-800">EMAR</span>
                                             {getFeatureStatus(dashboardData.user.agency.hasEMAR)}
                                         </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                                            <span>Finance</span>
+                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
+                                            <span className="text-gray-800">Finance</span>
                                             {getFeatureStatus(dashboardData.user.agency.hasFinance)}
                                         </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                                            <span>Policies & Procedures</span>
+                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
+                                            <span className="text-gray-800">Policies & Procedures</span>
                                             {getFeatureStatus(dashboardData.user.agency.hasPoliciesAndProcedures)}
                                         </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                                            <span>Week 1/2 Schedule</span>
+                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
+                                            <span className="text-gray-800">Week 1/2 Schedule</span>
                                             {getFeatureStatus(dashboardData.user.agency.isWeek1And2ScheduleEnabled)}
                                         </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                                            <span>Advanced Reporting</span>
+                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
+                                            <span className="text-gray-800">Advanced Reporting</span>
                                             {getFeatureStatus(dashboardData.user.agency.hasAdvancedReporting)}
                                         </div>
                                     </div>
-                                    <Button variant="outline" size="sm" className="mt-2">
+                                    <Button variant="outline" size="sm" className="mt-2 bg-white border-gray-200">
                                         Request Feature Access
                                     </Button>
                                 </div>
                             </TabsContent>
                             <TabsContent value="billing">
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-3 rounded-lg border border-border">
+                                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
                                         <div>
-                                            <h3 className="font-medium">Current Plan</h3>
-                                            <p className="text-sm text-muted-foreground">Professional Plan</p>
+                                            <h3 className="font-medium text-gray-800">Current Plan</h3>
+                                            <p className="text-sm text-gray-600">Professional Plan</p>
                                         </div>
-                                        <Badge>Active</Badge>
+                                        <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-0">Active</Badge>
                                     </div>
-                                    <div className="flex items-center justify-between p-3 rounded-lg border border-border">
+                                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
                                         <div>
-                                            <h3 className="font-medium">Next Billing Date</h3>
-                                            <p className="text-sm text-muted-foreground">May 15, 2023</p>
+                                            <h3 className="font-medium text-gray-800">Next Billing Date</h3>
+                                            <p className="text-sm text-gray-600">May 15, 2025</p>
                                         </div>
-                                        <Button variant="outline" size="sm">
+                                        <Button variant="outline" size="sm" className="bg-white border-gray-200">
                                             View Invoice
                                         </Button>
                                     </div>
-                                    <div className="flex items-center justify-between p-3 rounded-lg border border-border">
+                                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
                                         <div>
-                                            <h3 className="font-medium">Payment Method</h3>
-                                            <p className="text-sm text-muted-foreground">Visa ending in 4242</p>
+                                            <h3 className="font-medium text-gray-800">Payment Method</h3>
+                                            <p className="text-sm text-gray-600">Visa ending in 4242</p>
                                         </div>
-                                        <Button variant="outline" size="sm">
+                                        <Button variant="outline" size="sm" className="bg-white border-gray-200">
                                             Update
                                         </Button>
                                     </div>
@@ -692,45 +669,194 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-xl flex items-center">
-                            <Activity className="h-5 w-5 mr-2 text-primary" />
-                            Quick Actions
-                        </CardTitle>
-                        <CardDescription>Common tasks and shortcuts</CardDescription>
+                <Card className="border border-gray-200 shadow-sm">
+                    <CardHeader className="border-b border-gray-100 pb-4">
+                        <div className="flex items-center">
+                            <Activity className="h-5 w-5 mr-2 text-gray-700" />
+                            <CardTitle className="text-lg font-medium text-gray-800">Stats Breakdown</CardTitle>
+                        </div>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        {[
-                            { title: "Schedule Appointment", icon: Calendar, href: "/schedule" },
-                            { title: "Add New Client", icon: Users, href: "/clients/new" },
-                            { title: "Create Report", icon: FileText, href: "/reports/new" },
-                            { title: "Upload Document", icon: ClipboardList, href: "/documents/upload" },
-                        ].map((action, index) => (
-                            <motion.button
-                                key={index}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => (window.location.href = action.href)}
-                                className="flex items-center justify-between w-full p-3 rounded-lg border border-border hover:bg-accent transition-colors"
-                            >
-                                <div className="flex items-center">
-                                    <div className="p-2 rounded-full bg-primary/10 mr-3">
-                                        <action.icon className="h-4 w-4 text-primary" />
-                                    </div>
-                                    <span>{action.title}</span>
+                    <CardContent className="p-6">
+                        <div className="space-y-4">
+                            <div className="p-3 border border-gray-200 rounded-md">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="font-medium text-gray-800">Clients</span>
+                                    <span className="text-green-600 text-sm">+5% from last month</span>
                                 </div>
-                                <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
-                            </motion.button>
-                        ))}
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalClients}</span>
+                                    <span className="text-sm text-gray-600">
+                                        {getPercentage(dashboardData.stats.totalClients)}% of total
+                                    </span>
+                                </div>
+                                <Progress value={getPercentage(dashboardData.stats.totalClients)} className="h-1 bg-gray-100" />
+                            </div>
+
+                            <div className="p-3 border border-gray-200 rounded-md">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="font-medium text-gray-800">Care Workers</span>
+                                    <span className="text-green-600 text-sm">+2% from last month</span>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalCareWorkers}</span>
+                                    <span className="text-sm text-gray-600">
+                                        {getPercentage(dashboardData.stats.totalCareWorkers)}% of total
+                                    </span>
+                                </div>
+                                <Progress value={getPercentage(dashboardData.stats.totalCareWorkers)} className="h-1 bg-gray-100" />
+                            </div>
+
+                            <div className="p-3 border border-gray-200 rounded-md">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="font-medium text-gray-800">Schedules</span>
+                                    <span className="text-green-600 text-sm">+12% from last month</span>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalSchedules}</span>
+                                    <span className="text-sm text-gray-600">
+                                        {getPercentage(dashboardData.stats.totalSchedules)}% of total
+                                    </span>
+                                </div>
+                                <Progress value={getPercentage(dashboardData.stats.totalSchedules)} className="h-1 bg-gray-100" />
+                            </div>
+
+                            <div className="p-3 border border-gray-200 rounded-md">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="font-medium text-gray-800">Reports</span>
+                                    <span className="text-green-600 text-sm">+8% from last month</span>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalReports}</span>
+                                    <span className="text-sm text-gray-600">
+                                        {getPercentage(dashboardData.stats.totalReports)}% of total
+                                    </span>
+                                </div>
+                                <Progress value={getPercentage(dashboardData.stats.totalReports)} className="h-1 bg-gray-100" />
+                            </div>
+
+                            <div className="p-3 border border-gray-200 rounded-md">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="font-medium text-gray-800">Mileage Records</span>
+                                    <span className="text-green-600 text-sm">+3% from last month</span>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalMileageRecords}</span>
+                                    <span className="text-sm text-gray-600">
+                                        {getPercentage(dashboardData.stats.totalMileageRecords)}% of total
+                                    </span>
+                                </div>
+                                <Progress value={getPercentage(dashboardData.stats.totalMileageRecords)} className="h-1 bg-gray-100" />
+                            </div>
+
+                            <div className="p-3 border border-gray-200 rounded-md">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="font-medium text-gray-800">Documents</span>
+                                    <span className="text-green-600 text-sm">+7% from last month</span>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalDocuments}</span>
+                                    <span className="text-sm text-gray-600">
+                                        {getPercentage(dashboardData.stats.totalDocuments)}% of total
+                                    </span>
+                                </div>
+                                <Progress value={getPercentage(dashboardData.stats.totalDocuments)} className="h-1 bg-gray-100" />
+                            </div>
+                        </div>
                     </CardContent>
-                    <CardFooter className="border-t pt-4">
-                        <Button variant="outline" className="w-full" onClick={() => (window.location.href = "/settings")}>
-                            View All Actions
-                        </Button>
-                    </CardFooter>
                 </Card>
-            </motion.div>
+            </div>
+
+            <Card className="border border-gray-200 shadow-sm mb-6">
+                <CardHeader className="border-b border-gray-100 pb-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <ClipboardList className="h-5 w-5 mr-2 text-gray-700" />
+                            <CardTitle className="text-lg font-medium text-gray-800">Upcoming Appointments</CardTitle>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="relative">
+                                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <input
+                                    type="text"
+                                    placeholder="Search appointments..."
+                                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                />
+                            </div>
+                            <Button variant="outline" className="bg-white border-gray-200">
+                                <Filter className="h-4 w-4 mr-2" />
+                                Filter
+                            </Button>
+                            <Button variant="outline" className="bg-white border-gray-200">
+                                Export
+                            </Button>
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-b border-gray-100">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment Type</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Care Worker</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-100">
+                            {dashboardData.schedules
+                                .filter(schedule => new Date(schedule.date) >= new Date())
+                                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                                .slice(0, 5)
+                                .map((schedule) => (
+                                    <tr key={schedule.id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarFallback>{schedule.clientName[0]}</AvatarFallback>
+                                                </Avatar>
+                                                <div className="ml-3">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {schedule.clientName}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <Badge variant="outline" className={`${schedule.type === "APPOINTMENT"
+                                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                                : schedule.type === "WEEKLY_CHECKUP"
+                                                    ? "bg-green-50 text-green-700 border-green-200"
+                                                    : "bg-amber-50 text-amber-700 border-amber-200"
+                                                }`}>
+                                                {schedule.type.replace("_", " ")}
+                                            </Badge>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">{new Date(schedule.date).toLocaleDateString()}</div>
+                                            <div className="text-sm text-gray-500">{schedule.startTime} - {schedule.endTime}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">
+                                                {schedule.careWorkerName}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <Badge variant="outline" className={`${schedule.status === "CONFIRMED"
+                                                ? "bg-green-50 text-green-700 border-green-200"
+                                                : schedule.status === "PENDING"
+                                                    ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                                                    : "bg-red-50 text-red-700 border-red-200"
+                                                }`}>
+                                                {schedule.status}
+                                            </Badge>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                </CardContent>
+            </Card>
         </div>
     )
 }

@@ -24,6 +24,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
@@ -175,7 +176,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         <span className="flex items-center gap-2 text-xs justify-between w-full">
                                             {item.title}
                                             {item.isBeta && (
-                                                <Badge variant="outline" className="bg-blue-800/10 text-blue-700 text-[10px]">
+                                                <Badge variant="outline" className="bg-primary/10 text-primary text-[10px]">
                                                     Beta
                                                 </Badge>
                                             )}
@@ -187,44 +188,48 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                     </div>
                 ))}
             </SidebarContent>
-            <SidebarFooter className="border-t px-4 py-3">
+            <SidebarFooter className="border-t py-4">
                 <div className="flex items-center justify-between">
                     <DropdownMenu open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="flex items-center gap-2 px-2">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarFallback>
-                                        {user?.userInfo?.firstName?.[0]}
-                                        {user?.userInfo?.lastName?.[0]}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div className="flex flex-col items-start">
-                                    <span className="text-sm font-medium">
-                                        {user?.userInfo?.firstName} {user?.userInfo?.lastName}
-                                    </span>
-                                    <span className="text-xs text-muted-foreground">
-                                        {user?.userInfo?.email}
-                                    </span>
-                                </div>
-                            </Button>
+                            <div className="w-full cursor-pointer">
+                                <Button variant="ghost" className="flex items-center gap-2 w-full justify-start">
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarFallback>
+                                            {user?.userInfo?.firstName?.[0]}
+                                            {user?.userInfo?.lastName?.[0]}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-col items-start">
+                                        <span className="text-sm font-medium">
+                                            {user?.userInfo?.firstName} {user?.userInfo?.lastName}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">
+                                            {user?.userInfo?.email}
+                                        </span>
+                                    </div>
+                                </Button>
+                            </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuContent align="start" className="w-56">
                             <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
                                 {theme === "dark" ? (
                                     <>
-                                        <Sun className="mr-2 h-4 w-4" />
-                                        <span>Light Mode</span>
+                                        <Sun className="mr-2 h-3 w-3" />
+                                        <span className="text-sm font-medium">Light Mode</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Moon className="mr-2 h-4 w-4" />
-                                        <span>Dark Mode</span>
+                                        <Moon className="mr-2 h-3 w-3" />
+                                        <span className="text-sm font-medium">Dark Mode</span>
                                     </>
                                 )}
+
                             </DropdownMenuItem>
+                            <div className="border-b border-border w-[90%] mx-auto my-2" />
                             <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                                <LogOut className="mr-2 h-4 w-4" />
-                                <span>Logout</span>
+                                <LogOut className="mr-2 h-3 w-3" />
+                                <span className="text-sm font-medium">Logout</span>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -234,4 +239,3 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
         </Sidebar>
     )
 }
-

@@ -1,11 +1,12 @@
 "use client"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+
+import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { UserActionsMenu } from "./users-actions-menu"
 import type { User } from "@/types/prismaTypes"
-// import { useDeleteUserMutation } from "@/state/api"
+import { PaginationControls } from "./pagination-controls"
 
 interface UserTableUserProps {
     users: User[]
@@ -13,12 +14,14 @@ interface UserTableUserProps {
 }
 
 export function UserTableUser({ users, isLoading }: UserTableUserProps) {
-    //   const [deleteUser] = useDeleteUserMutation()
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
 
     // Handle user deletion
     const handleDeleteUser = async (userId: string) => {
         try {
-            //   await deleteUser(userId)
+            // await deleteUser(userId)
             return Promise.resolve()
         } catch (error) {
             return Promise.reject(error)
@@ -53,6 +56,23 @@ export function UserTableUser({ users, isLoading }: UserTableUserProps) {
         return `${firstName?.[0] || ""}${lastName?.[0] || ""}`
     }
 
+    // Calculate pagination
+    const totalPages = Math.ceil(users.length / pageSize)
+    const startIndex = (currentPage - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    const paginatedUsers = users.slice(startIndex, endIndex)
+
+    // Handle page change
+    const goToPage = (page: number) => {
+        setCurrentPage(page)
+    }
+
+    // Handle page size change
+    const handlePageSizeChange = (size: number) => {
+        setPageSize(size)
+        setCurrentPage(1)
+    }
+
     if (isLoading) {
         return (
             <div className="p-4">
@@ -80,54 +100,63 @@ export function UserTableUser({ users, isLoading }: UserTableUserProps) {
     }
 
     return (
-        <div className="overflow-x-auto">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Subrole</TableHead>
-                        <TableHead>Added</TableHead>
-                        <TableHead className="w-[80px]"></TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {users.map((user) => (
-                        <TableRow key={user.id} className="hover:bg-muted/50">
-                            <TableCell className="font-medium">
-                                <div className="flex items-center gap-3">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage src={user.profile?.avatarUrl || ""} alt={`${user.firstName} ${user.lastName}`} />
-                                        <AvatarFallback>{getInitials(user.firstName, user.lastName)}</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <div className="font-medium">
-                                            {user.firstName} {user.lastName}
+        <div className="space-y-4">
+            <div className="overflow-x-auto">
+                <table className="w-full">
+                    <thead>
+                        <tr className="border-b border-gray-100">
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subrole</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Added</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-100">
+                        {paginatedUsers.map((user) => (
+                            <tr key={user.id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar className="h-8 w-8">
+                                            <AvatarImage src={user.profile?.avatarUrl || ""} alt={`${user.firstName} ${user.lastName}`} />
+                                            <AvatarFallback>{getInitials(user.firstName, user.lastName)}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <div className="font-medium text-gray-800">
+                                                {user.firstName} {user.lastName}
+                                            </div>
+                                            {user.role === "CLIENT" && user.clientId && (
+                                                <div className="text-xs text-gray-500">ID: {user.clientId.substring(0, 8)}</div>
+                                            )}
                                         </div>
-                                        {user.role === "CLIENT" && user.clientId && (
-                                            <div className="text-xs text-muted-foreground">ID: {user.clientId.substring(0, 8)}</div>
-                                        )}
                                     </div>
-                                </div>
-                            </TableCell>
-                            <TableCell>{user.email}</TableCell>
-                            <TableCell>{getStatusBadge(user.status || "Active")}</TableCell>
-                            <TableCell>
-                                {user.subRole ? (
-                                    <span className="text-sm">{user.subRole.replace(/_/g, " ")}</span>
-                                ) : (
-                                    <span className="text-sm text-muted-foreground">None</span>
-                                )}
-                            </TableCell>
-                            <TableCell>{formatDate(user.createdAt)}</TableCell>
-                            <TableCell>
-                                <UserActionsMenu user={user} onDeleteUser={handleDeleteUser} />
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.email}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(user.status || "Active")}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                    {user.subRole ? user.subRole.replace(/_/g, " ") : "None"}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{formatDate(user.createdAt)}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <UserActionsMenu user={user} onDeleteUser={handleDeleteUser} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            <PaginationControls
+                currentPage={currentPage}
+                totalPages={totalPages}
+                pageSize={pageSize}
+                totalItems={users.length}
+                startIndex={startIndex}
+                endIndex={endIndex}
+                onPageChange={goToPage}
+                onPageSizeChange={handlePageSizeChange}
+            />
         </div>
     )
 }
