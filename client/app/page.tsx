@@ -3,30 +3,11 @@
 import { useAuthenticator } from "@aws-amplify/ui-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
 import { useTheme } from "next-themes"
 import Navbar from "../components/Navbar"
-import {
-  MessageSquare,
-  FileText,
-  Filter,
-  Pill,
-  Clock,
-  Users,
-  Hospital,
-  Heart,
-  Building,
-  Activity,
-  Stethoscope,
-} from "lucide-react"
-import { Section, staggerChildren } from "../components/homepage/section"
-import { FeatureGrid } from "../components/homepage/feature-grid"
-import { TestimonialCarousel } from "../components/homepage/testimonial"
-import { GradientHeading } from "../components/homepage/gradient-heading"
-import { CTAButton } from "../components/homepage/cta-button"
+import { MessageSquare, FileText, Filter, Pill, Clock, Users } from "lucide-react"
 import { HeroSection } from "../components/homepage/hero-section"
-import { AnimatedGradientBlob } from "../components/homepage/animated-gradient-blob"
-import { BookDemoSection } from "../components/homepage/book-demo-section"
+
 import { Spotlight } from "../components/ui/spotlight-new"
 // Feature data
 const features = [
@@ -68,56 +49,6 @@ const features = [
   },
 ]
 
-// Trusted organizations with logos
-const trustedOrganizations = [
-  { name: "Care Quality Commission", icon: <Hospital className="h-5 w-5 mr-2" /> },
-  { name: "NHS Providers", icon: <Heart className="h-5 w-5 mr-2" /> },
-  { name: "Care England", icon: <Building className="h-5 w-5 mr-2" /> },
-  { name: "National Care Forum", icon: <Activity className="h-5 w-5 mr-2" /> },
-  { name: "Skills for Care", icon: <Stethoscope className="h-5 w-5 mr-2" /> },
-]
-
-// Testimonials
-const testimonials = [
-  {
-    quote:
-      "This platform has revolutionized how we manage care services. The AI assistance is a game-changer for our staff.",
-    author: "Sarah Johnson",
-    role: "Care Home Manager",
-    rating: 5,
-  },
-  {
-    quote: "The medication management system alone has saved us countless hours and significantly reduced errors.",
-    author: "Dr. Michael Chen",
-    role: "Healthcare Director",
-    rating: 5,
-  },
-  {
-    quote: "Our care workers love the mobile app. It's made reporting and communication so much more efficient.",
-    author: "Emma Rodriguez",
-    role: "Operations Manager",
-    rating: 4,
-  },
-]
-
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6 },
-  },
-}
-
-const scaleUp = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5 },
-  },
-}
-
 // Update the Home component to respect light/dark mode
 export default function Home() {
   const router = useRouter()
@@ -132,19 +63,44 @@ export default function Home() {
   useEffect(() => {
     if (user) {
       console.log("user", user)
-
     }
   }, [user, router])
 
   if (!mounted) return null
 
   return (
-    <div
-      className={`min-h-screen w-full overflow-visible ${theme === "dark" ? "bg-gradient-to-b from-stone-950 to-black" : "bg-gradient-to-b from-orange-50/30 to-white"}`}
-    >
+    <div className="min-h-screen w-full overflow-visible">
+      {/* Subtle background container */}
+      <div
+        className={`fixed inset-0 -z-10 ${theme === "dark"
+            ? "bg-gradient-to-b from-stone-950 to-black"
+            : "bg-gradient-to-b from-orange-50/70 via-orange-50/30 to-white"
+          }`}
+      >
+        {/* Subtle pattern overlay */}
+        <div
+          className={`absolute inset-0 opacity-5 ${theme === "dark"
+              ? "bg-[url('/assets/subtle-pattern-dark.png')]"
+              : "bg-[url('/assets/subtle-pattern-light.png')]"
+            }`}
+        />
+
+        {/* Soft glow effect */}
+        <div
+          className={`absolute inset-0 ${theme === "dark"
+              ? "bg-gradient-radial from-stone-800/20 to-transparent"
+              : "bg-gradient-radial from-orange-200/20 to-transparent"
+            }`}
+          style={{
+            backgroundSize: "100% 100%",
+            backgroundPosition: "center center",
+          }}
+        />
+      </div>
+
       <Navbar />
 
-      {/* Hero Section with Spotlight */}
+      {/* Main content */}
       <div className="relative">
         {theme === "dark" && <Spotlight />}
         <HeroSection
@@ -155,9 +111,6 @@ export default function Home() {
           onDashboardClick={() => router.push("/dashboard")}
         />
       </div>
-
-
-
     </div>
   )
 }

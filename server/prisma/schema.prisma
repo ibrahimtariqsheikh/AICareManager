@@ -49,6 +49,8 @@ model Agency {
   medications     MedicationDatabaseLink[]
   visitTypes      VisitType[] // Added visit types
   riskCategories  RiskCategory[] // Added risk categories
+
+  Report Report[]
 }
 
 model ClientCareAssignment {
@@ -139,6 +141,7 @@ model User {
   communicationLogs         CommunicationLog[] // Added communication logs
   reminders                 Reminder[] // Added reminders
   medicationAdministrations MedicationAdministration[] @relation("AdministeredMedications")
+  reportEdits               ReportEdit[] // Added report edits relation
 }
 
 // NEW MODEL: Communication Preference
@@ -223,6 +226,7 @@ model Schedule {
 model Report {
   id           String    @id @default(cuid())
   clientId     String
+  agencyId     String
   userId       String
   condition    String
   summary      String
@@ -230,23 +234,85 @@ model Report {
   checkOutTime DateTime?
   createdAt    DateTime  @default(now())
 
-  // Added location data
+  // Location data
   checkInDistance  Float?
   checkOutDistance Float?
+  checkInLocation  String? // Added for storing location name/address
+  checkOutLocation String? // Added for storing location name/address
 
-  tasksCompleted ReportTask[]
+  // Client signature
+  hasSignature      Boolean @default(false) // Added for tracking if signature was obtained
+  signatureImageUrl String? // Added for storing signature image URL
 
-  client    User @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
-  caregiver User @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
+  // Report status and metadata
+  status         ReportStatus @default(COMPLETED)
+  lastEditedAt   DateTime?
+  lastEditedBy   String?
+  lastEditReason String?
+
+  // Related data
+  tasksCompleted            ReportTask[]
+  alerts                    ReportAlert[] // Added relation to alerts
+  bodyMapObservations       BodyMapObservation[] // Added relation to body map
+  medicationAdministrations MedicationAdministration[] // Added relation to medication administrations
+  editHistory               ReportEdit[]
+
+  client    User   @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
+  caregiver User   @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
+  agency    Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
 }
 
 model ReportTask {
-  id        String  @id @default(cuid())
-  reportId  String
-  taskName  String
-  completed Boolean @default(false)
+  id          String    @id @default(cuid())
+  reportId    String
+  taskName    String
+  completed   Boolean   @default(false)
+  notes       String? // Added for task-specific notes
+  taskIcon    String? // Added for storing icon type
+  taskType    String? // Added for categorizing tasks
+  completedAt DateTime? // Added timestamp for when task was completed
 
   report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+// New model for report alerts
+model ReportAlert {
+  id         String        @id @default(cuid())
+  reportId   String
+  type       AlertType
+  message    String
+  severity   AlertSeverity
+  createdAt  DateTime      @default(now())
+  resolved   Boolean       @default(false)
+  resolvedAt DateTime?
+  resolvedBy String?
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+// New model for body map observations
+model BodyMapObservation {
+  id        String   @id @default(cuid())
+  reportId  String
+  bodyPart  String
+  condition String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+// New model for tracking report edits
+model ReportEdit {
+  id          String   @id @default(cuid())
+  reportId    String
+  editedBy    String
+  editedAt    DateTime @default(now())
+  reason      String
+  changesJson String // JSON string containing changes made
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  editor User   @relation(fields: [editedBy], references: [id], onDelete: Cascade)
 }
 
 model MedicationRecord {
@@ -292,6 +358,8 @@ model MedicationAdministration {
 
   medicationRecord MedicationRecord @relation(fields: [medicationRecordId], references: [id], onDelete: Cascade)
   administeredBy   User             @relation("AdministeredMedications", fields: [administeredById], references: [id], onDelete: Cascade)
+  report           Report?          @relation(fields: [reportId], references: [id])
+  reportId         String?
 
   @@index([medicationRecordId])
   @@index([administeredById])
@@ -562,4 +630,28 @@ enum DoseType {
   EVENING
   BEDTIME
   AS_NEEDED
+}
+
+enum ReportStatus {
+  DRAFT
+  COMPLETED
+  EDITED
+  FLAGGED
+  REVIEWED
+}
+
+enum AlertType {
+  MEDICATION
+  INCIDENT
+  HEALTH_CHANGE
+  BEHAVIOR
+  MISSED_TASK
+  OTHER
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }

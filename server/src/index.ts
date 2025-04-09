@@ -38,11 +38,7 @@ app.use("/users", userRoutes);
 app.use("/agencies", agencyRoutes);
 app.use("/invitations", invitationRoutes);
 app.use("/schedules", scheduleRoutes);
-app.use("/api/users", userRoutes)
-app.use("/api/invitations", invitationRoutes)
-app.use("/api/schedules", scheduleRoutes)
-app.use("/api/dashboard", dashboardRoutes)
-app.use("/api/reports", reportRoutes)
+app.use("/reports", reportRoutes);
 
 /* SERVER */
 app.listen(PORT, () => {

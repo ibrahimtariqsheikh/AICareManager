@@ -83,7 +83,7 @@ export function ReportDetailView({ report, open, onOpenChange, onEdit, onAIImpro
                             <div className="flex items-center gap-3">
                                 <Avatar className="h-10 w-10">
                                     <AvatarImage src={report.careWorkerAvatar} alt={report.careWorkerName} />
-                                    <AvatarFallback>{report.careWorkerName.charAt(0)}</AvatarFallback>
+                                    <AvatarFallback>{report.careWorkerName ? report.careWorkerName.charAt(0) : 'CW'}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex flex-col">
                                     <span className="text-sm text-muted-foreground">Care Worker</span>
@@ -105,7 +105,7 @@ export function ReportDetailView({ report, open, onOpenChange, onEdit, onAIImpro
                                 <div className="flex items-center gap-2">
                                     <Calendar className="h-4 w-4 text-muted-foreground" />
                                     <span className="text-sm font-medium">Date:</span>
-                                    <span className="text-sm">{format(new Date(report.date), "EEEE, MMMM d, yyyy")}</span>
+                                    <span className="text-sm">{format(new Date(report.checkInTime), "EEEE, MMMM d, yyyy")}</span>
                                 </div>
 
                                 <div className="flex items-center gap-2">
@@ -158,7 +158,7 @@ export function ReportDetailView({ report, open, onOpenChange, onEdit, onAIImpro
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, delay: 0.3 }}>
                             <h3 className="text-sm font-medium mb-3">Tasks Completed</h3>
                             <div className="flex flex-wrap gap-2">
-                                {report.tasks.map((task: any, index: number) => (
+                                {report.tasksCompleted?.map((task: any, index: number) => (
                                     <motion.div
                                         key={task.id}
                                         initial={{ opacity: 0, scale: 0.8 }}
@@ -166,8 +166,8 @@ export function ReportDetailView({ report, open, onOpenChange, onEdit, onAIImpro
                                         transition={{ duration: 0.2, delay: 0.1 * index }}
                                     >
                                         <Badge variant="secondary" className="flex items-center">
-                                            {getTaskIcon(task.icon)}
-                                            <span className="ml-1">{task.name}</span>
+                                            {getTaskIcon(task.taskName.toLowerCase())}
+                                            <span className="ml-1">{task.taskName}</span>
                                         </Badge>
                                     </motion.div>
                                 ))}
@@ -202,10 +202,10 @@ export function ReportDetailView({ report, open, onOpenChange, onEdit, onAIImpro
                                                 <CardContent className="p-4 flex items-start gap-2">
                                                     <AlertCircle
                                                         className={`h-5 w-5 flex-shrink-0 ${alert.severity === "high"
-                                                                ? "text-red-500"
-                                                                : alert.severity === "medium"
-                                                                    ? "text-amber-500"
-                                                                    : "text-blue-500"
+                                                            ? "text-red-500"
+                                                            : alert.severity === "medium"
+                                                                ? "text-amber-500"
+                                                                : "text-blue-500"
                                                             }`}
                                                     />
                                                     <div>

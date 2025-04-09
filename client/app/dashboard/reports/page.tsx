@@ -23,6 +23,7 @@ import {
     Users,
     Utensils,
     X,
+    Plus,
 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -36,12 +37,12 @@ import { motion, AnimatePresence } from "framer-motion"
 import { AnimatedListItem } from "./components/animated-list-item"
 import { AnimatedCard } from "./components/animated-card"
 import { AnimatedButton } from "./components/animated-button"
-import { Report } from "@/state/api"
+import { Report, useGetAgencyReportsQuery } from "@/state/api"
 import { RootState } from "@/state/redux"
+import { useAppSelector } from "@/state/redux"
 
 export default function ReportsPage() {
-    const dispatch = useDispatch()
-    const { reports } = useSelector((state: RootState) => state.report)
+    const { user } = useAppSelector((state) => state.user)
     const [searchQuery, setSearchQuery] = useState("")
     const [activeTab, setActiveTab] = useState("visits")
     const [selectedReport, setSelectedReportState] = useState<Report | null>(null)
@@ -49,52 +50,44 @@ export default function ReportsPage() {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [isAIDialogOpen, setIsAIDialogOpen] = useState(false)
     const [filterOptions, setFilterOptions] = useState({
-        dateFrom: "",
-        dateTo: "",
-        careWorker: "",
-        client: "",
-        taskType: "",
-        alertType: "",
-        hasSignature: false,
-        hasMissedMedication: false,
+        status: "all",
+        dateRange: "all",
     })
     const [isFilterOpen, setIsFilterOpen] = useState(false)
 
+    const {
+        data: reports = [],
+        isLoading,
+        error,
+    } = useGetAgencyReportsQuery(user?.userInfo?.agencyId || "", {
+        skip: !user?.userInfo?.agencyId,
+    })
+
     // Filter reports based on search query and filter options
-    const filteredReports = reports.filter((report) => {
+    const filteredReports = reports?.filter((report) => {
         // Search query filtering
         if (searchQuery) {
             const query = searchQuery.toLowerCase()
-            const matchesClient = report.client.firstName.toLowerCase().includes(query) ||
-                report.client.lastName.toLowerCase().includes(query)
-            const matchesCareWorker = report.caregiver.firstName.toLowerCase().includes(query) ||
-                report.caregiver.lastName.toLowerCase().includes(query)
-            const matchesSummary = report.summary.toLowerCase().includes(query)
+            const clientName = `${report.client.firstName} ${report.client.lastName}`.toLowerCase()
+            const caregiverName = `${report.caregiver.firstName} ${report.caregiver.lastName}`.toLowerCase()
+            const condition = report.condition.toLowerCase()
+            const summary = report.summary.toLowerCase()
 
-            if (!(matchesClient || matchesCareWorker || matchesSummary)) {
-                return false
-            }
+            return (
+                clientName.includes(query) ||
+                caregiverName.includes(query) ||
+                condition.includes(query) ||
+                summary.includes(query)
+            )
         }
 
-        // Filter options filtering
-        if (filterOptions.dateFrom && new Date(report.checkInTime) < new Date(filterOptions.dateFrom)) {
-            return false
+        // Filter options
+        if (filterOptions.status !== "all") {
+            // Add status filtering logic here if needed
         }
 
-        if (filterOptions.dateTo && new Date(report.checkInTime) > new Date(filterOptions.dateTo)) {
-            return false
-        }
-
-        if (filterOptions.careWorker && report.caregiver.id !== filterOptions.careWorker) {
-            return false
-        }
-
-        if (filterOptions.client && report.clientId !== filterOptions.client) {
-            return false
-        }
-
-        if (filterOptions.taskType && !report.tasksCompleted.some((task) => task.taskName === filterOptions.taskType)) {
-            return false
+        if (filterOptions.dateRange !== "all") {
+            // Add date range filtering logic here if needed
         }
 
         return true
@@ -126,14 +119,8 @@ export default function ReportsPage() {
     // Reset filters
     const resetFilters = () => {
         setFilterOptions({
-            dateFrom: "",
-            dateTo: "",
-            careWorker: "",
-            client: "",
-            taskType: "",
-            alertType: "",
-            hasSignature: false,
-            hasMissedMedication: false,
+            status: "all",
+            dateRange: "all",
         })
         setIsFilterOpen(false)
     }
@@ -152,6 +139,25 @@ export default function ReportsPage() {
             default:
                 return <FileText className="h-4 w-4" />
         }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[80vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-[80vh]">
+                <div className="text-center">
+                    <h2 className="text-xl font-semibold text-red-600">Error Loading Reports</h2>
+                    <p className="text-gray-600 mt-2">Please try again later</p>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -215,8 +221,8 @@ export default function ReportsPage() {
                                     <Input
                                         id="dateFrom"
                                         type="date"
-                                        value={filterOptions.dateFrom}
-                                        onChange={(e) => setFilterOptions({ ...filterOptions, dateFrom: e.target.value })}
+                                        value={filterOptions.dateRange}
+                                        onChange={(e) => setFilterOptions({ ...filterOptions, dateRange: e.target.value })}
                                     />
                                 </div>
 
@@ -225,22 +231,22 @@ export default function ReportsPage() {
                                     <Input
                                         id="dateTo"
                                         type="date"
-                                        value={filterOptions.dateTo}
-                                        onChange={(e) => setFilterOptions({ ...filterOptions, dateTo: e.target.value })}
+                                        value={filterOptions.dateRange}
+                                        onChange={(e) => setFilterOptions({ ...filterOptions, dateRange: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="space-y-2">
                                     <Label htmlFor="careWorker">Care Worker</Label>
                                     <Select
-                                        value={filterOptions.careWorker}
-                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, careWorker: value })}
+                                        value={filterOptions.status}
+                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, status: value })}
                                     >
                                         <SelectTrigger id="careWorker">
                                             <SelectValue placeholder="Select care worker" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="1">Sarah Smith</SelectItem>
+                                            <SelectItem value="all">All</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -248,14 +254,14 @@ export default function ReportsPage() {
                                 <div className="space-y-2">
                                     <Label htmlFor="client">Client</Label>
                                     <Select
-                                        value={filterOptions.client}
-                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, client: value })}
+                                        value={filterOptions.status}
+                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, status: value })}
                                     >
                                         <SelectTrigger id="client">
                                             <SelectValue placeholder="Select client" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="1">John Doe</SelectItem>
+                                            <SelectItem value="all">All</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -263,15 +269,14 @@ export default function ReportsPage() {
                                 <div className="space-y-2">
                                     <Label htmlFor="taskType">Task Type</Label>
                                     <Select
-                                        value={filterOptions.taskType}
-                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, taskType: value })}
+                                        value={filterOptions.status}
+                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, status: value })}
                                     >
                                         <SelectTrigger id="taskType">
                                             <SelectValue placeholder="Select task type" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="Medication">Medication</SelectItem>
-                                            <SelectItem value="Personal Care">Personal Care</SelectItem>
+                                            <SelectItem value="all">All</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -279,16 +284,14 @@ export default function ReportsPage() {
                                 <div className="space-y-2">
                                     <Label htmlFor="alertType">Alert Type</Label>
                                     <Select
-                                        value={filterOptions.alertType}
-                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, alertType: value })}
+                                        value={filterOptions.status}
+                                        onValueChange={(value) => setFilterOptions({ ...filterOptions, status: value })}
                                     >
                                         <SelectTrigger id="alertType">
                                             <SelectValue placeholder="Select alert type" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="medication">Medication Alert</SelectItem>
-                                            <SelectItem value="incident">Incident Alert</SelectItem>
-                                            <SelectItem value="other">Other Alert</SelectItem>
+                                            <SelectItem value="all">All</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -296,9 +299,9 @@ export default function ReportsPage() {
                                 <div className="flex items-center space-x-2 pt-6">
                                     <Checkbox
                                         id="hasSignature"
-                                        checked={filterOptions.hasSignature}
+                                        checked={filterOptions.status === "signed"}
                                         onCheckedChange={(checked) =>
-                                            setFilterOptions({ ...filterOptions, hasSignature: checked === true })
+                                            setFilterOptions({ ...filterOptions, status: checked ? "signed" : "all" })
                                         }
                                     />
                                     <Label htmlFor="hasSignature">Has Client Signature</Label>
@@ -307,9 +310,9 @@ export default function ReportsPage() {
                                 <div className="flex items-center space-x-2 pt-6">
                                     <Checkbox
                                         id="hasMissedMedication"
-                                        checked={filterOptions.hasMissedMedication}
+                                        checked={filterOptions.status === "missed"}
                                         onCheckedChange={(checked) =>
-                                            setFilterOptions({ ...filterOptions, hasMissedMedication: checked === true })
+                                            setFilterOptions({ ...filterOptions, status: checked ? "missed" : "all" })
                                         }
                                     />
                                     <Label htmlFor="hasMissedMedication">Missed Medication</Label>

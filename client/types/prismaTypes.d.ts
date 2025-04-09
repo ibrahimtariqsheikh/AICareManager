@@ -69,6 +69,21 @@ export type Report = $Result.DefaultSelection<Prisma.$ReportPayload>
  */
 export type ReportTask = $Result.DefaultSelection<Prisma.$ReportTaskPayload>
 /**
+ * Model ReportAlert
+ * 
+ */
+export type ReportAlert = $Result.DefaultSelection<Prisma.$ReportAlertPayload>
+/**
+ * Model BodyMapObservation
+ * 
+ */
+export type BodyMapObservation = $Result.DefaultSelection<Prisma.$BodyMapObservationPayload>
+/**
+ * Model ReportEdit
+ * 
+ */
+export type ReportEdit = $Result.DefaultSelection<Prisma.$ReportEditPayload>
+/**
  * Model MedicationRecord
  * 
  */
@@ -259,6 +274,39 @@ export const DoseType: {
 
 export type DoseType = (typeof DoseType)[keyof typeof DoseType]
 
+
+export const ReportStatus: {
+  DRAFT: 'DRAFT',
+  COMPLETED: 'COMPLETED',
+  EDITED: 'EDITED',
+  FLAGGED: 'FLAGGED',
+  REVIEWED: 'REVIEWED'
+};
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const AlertType: {
+  MEDICATION: 'MEDICATION',
+  INCIDENT: 'INCIDENT',
+  HEALTH_CHANGE: 'HEALTH_CHANGE',
+  BEHAVIOR: 'BEHAVIOR',
+  MISSED_TASK: 'MISSED_TASK',
+  OTHER: 'OTHER'
+};
+
+export type AlertType = (typeof AlertType)[keyof typeof AlertType]
+
+
+export const AlertSeverity: {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+export type AlertSeverity = (typeof AlertSeverity)[keyof typeof AlertSeverity]
+
 }
 
 export type Role = $Enums.Role
@@ -296,6 +344,18 @@ export const NotificationType: typeof $Enums.NotificationType
 export type DoseType = $Enums.DoseType
 
 export const DoseType: typeof $Enums.DoseType
+
+export type ReportStatus = $Enums.ReportStatus
+
+export const ReportStatus: typeof $Enums.ReportStatus
+
+export type AlertType = $Enums.AlertType
+
+export const AlertType: typeof $Enums.AlertType
+
+export type AlertSeverity = $Enums.AlertSeverity
+
+export const AlertSeverity: typeof $Enums.AlertSeverity
 
 /**
  * ##  Prisma Client ʲˢ
@@ -531,6 +591,36 @@ export class PrismaClient<
     * ```
     */
   get reportTask(): Prisma.ReportTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reportAlert`: Exposes CRUD operations for the **ReportAlert** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReportAlerts
+    * const reportAlerts = await prisma.reportAlert.findMany()
+    * ```
+    */
+  get reportAlert(): Prisma.ReportAlertDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.bodyMapObservation`: Exposes CRUD operations for the **BodyMapObservation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BodyMapObservations
+    * const bodyMapObservations = await prisma.bodyMapObservation.findMany()
+    * ```
+    */
+  get bodyMapObservation(): Prisma.BodyMapObservationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reportEdit`: Exposes CRUD operations for the **ReportEdit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReportEdits
+    * const reportEdits = await prisma.reportEdit.findMany()
+    * ```
+    */
+  get reportEdit(): Prisma.ReportEditDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.medicationRecord`: Exposes CRUD operations for the **MedicationRecord** model.
@@ -1132,6 +1222,9 @@ export namespace Prisma {
     Schedule: 'Schedule',
     Report: 'Report',
     ReportTask: 'ReportTask',
+    ReportAlert: 'ReportAlert',
+    BodyMapObservation: 'BodyMapObservation',
+    ReportEdit: 'ReportEdit',
     MedicationRecord: 'MedicationRecord',
     MedicationAdministration: 'MedicationAdministration',
     Invoice: 'Invoice',
@@ -1165,7 +1258,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "invitation" | "agency" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "visitType" | "schedule" | "report" | "reportTask" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
+      modelProps: "invitation" | "agency" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1980,6 +2073,228 @@ export namespace Prisma {
           count: {
             args: Prisma.ReportTaskCountArgs<ExtArgs>
             result: $Utils.Optional<ReportTaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReportAlert: {
+        payload: Prisma.$ReportAlertPayload<ExtArgs>
+        fields: Prisma.ReportAlertFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReportAlertFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReportAlertFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>
+          }
+          findFirst: {
+            args: Prisma.ReportAlertFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReportAlertFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>
+          }
+          findMany: {
+            args: Prisma.ReportAlertFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>[]
+          }
+          create: {
+            args: Prisma.ReportAlertCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>
+          }
+          createMany: {
+            args: Prisma.ReportAlertCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReportAlertCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>[]
+          }
+          delete: {
+            args: Prisma.ReportAlertDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>
+          }
+          update: {
+            args: Prisma.ReportAlertUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReportAlertDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReportAlertUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReportAlertUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReportAlertUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportAlertPayload>
+          }
+          aggregate: {
+            args: Prisma.ReportAlertAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReportAlert>
+          }
+          groupBy: {
+            args: Prisma.ReportAlertGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReportAlertGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReportAlertCountArgs<ExtArgs>
+            result: $Utils.Optional<ReportAlertCountAggregateOutputType> | number
+          }
+        }
+      }
+      BodyMapObservation: {
+        payload: Prisma.$BodyMapObservationPayload<ExtArgs>
+        fields: Prisma.BodyMapObservationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BodyMapObservationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BodyMapObservationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>
+          }
+          findFirst: {
+            args: Prisma.BodyMapObservationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BodyMapObservationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>
+          }
+          findMany: {
+            args: Prisma.BodyMapObservationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>[]
+          }
+          create: {
+            args: Prisma.BodyMapObservationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>
+          }
+          createMany: {
+            args: Prisma.BodyMapObservationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BodyMapObservationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>[]
+          }
+          delete: {
+            args: Prisma.BodyMapObservationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>
+          }
+          update: {
+            args: Prisma.BodyMapObservationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>
+          }
+          deleteMany: {
+            args: Prisma.BodyMapObservationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BodyMapObservationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BodyMapObservationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>[]
+          }
+          upsert: {
+            args: Prisma.BodyMapObservationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BodyMapObservationPayload>
+          }
+          aggregate: {
+            args: Prisma.BodyMapObservationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBodyMapObservation>
+          }
+          groupBy: {
+            args: Prisma.BodyMapObservationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BodyMapObservationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BodyMapObservationCountArgs<ExtArgs>
+            result: $Utils.Optional<BodyMapObservationCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReportEdit: {
+        payload: Prisma.$ReportEditPayload<ExtArgs>
+        fields: Prisma.ReportEditFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReportEditFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReportEditFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>
+          }
+          findFirst: {
+            args: Prisma.ReportEditFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReportEditFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>
+          }
+          findMany: {
+            args: Prisma.ReportEditFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>[]
+          }
+          create: {
+            args: Prisma.ReportEditCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>
+          }
+          createMany: {
+            args: Prisma.ReportEditCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReportEditCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>[]
+          }
+          delete: {
+            args: Prisma.ReportEditDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>
+          }
+          update: {
+            args: Prisma.ReportEditUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReportEditDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReportEditUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReportEditUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReportEditUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportEditPayload>
+          }
+          aggregate: {
+            args: Prisma.ReportEditAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReportEdit>
+          }
+          groupBy: {
+            args: Prisma.ReportEditGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReportEditGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReportEditCountArgs<ExtArgs>
+            result: $Utils.Optional<ReportEditCountAggregateOutputType> | number
           }
         }
       }
@@ -3188,6 +3503,9 @@ export namespace Prisma {
     schedule?: ScheduleOmit
     report?: ReportOmit
     reportTask?: ReportTaskOmit
+    reportAlert?: ReportAlertOmit
+    bodyMapObservation?: BodyMapObservationOmit
+    reportEdit?: ReportEditOmit
     medicationRecord?: MedicationRecordOmit
     medicationAdministration?: MedicationAdministrationOmit
     invoice?: InvoiceOmit
@@ -3306,6 +3624,7 @@ export namespace Prisma {
     medications: number
     visitTypes: number
     riskCategories: number
+    Report: number
   }
 
   export type AgencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3318,6 +3637,7 @@ export namespace Prisma {
     medications?: boolean | AgencyCountOutputTypeCountMedicationsArgs
     visitTypes?: boolean | AgencyCountOutputTypeCountVisitTypesArgs
     riskCategories?: boolean | AgencyCountOutputTypeCountRiskCategoriesArgs
+    Report?: boolean | AgencyCountOutputTypeCountReportArgs
   }
 
   // Custom InputTypes
@@ -3394,6 +3714,13 @@ export namespace Prisma {
     where?: RiskCategoryWhereInput
   }
 
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountReportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportWhereInput
+  }
+
 
   /**
    * Count Type UserCountOutputType
@@ -3428,6 +3755,7 @@ export namespace Prisma {
     communicationLogs: number
     reminders: number
     medicationAdministrations: number
+    reportEdits: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3459,6 +3787,7 @@ export namespace Prisma {
     communicationLogs?: boolean | UserCountOutputTypeCountCommunicationLogsArgs
     reminders?: boolean | UserCountOutputTypeCountRemindersArgs
     medicationAdministrations?: boolean | UserCountOutputTypeCountMedicationAdministrationsArgs
+    reportEdits?: boolean | UserCountOutputTypeCountReportEditsArgs
   }
 
   // Custom InputTypes
@@ -3668,6 +3997,13 @@ export namespace Prisma {
     where?: MedicationAdministrationWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReportEditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportEditWhereInput
+  }
+
 
   /**
    * Count Type MedicationDatabaseLinkCountOutputType
@@ -3737,10 +4073,18 @@ export namespace Prisma {
 
   export type ReportCountOutputType = {
     tasksCompleted: number
+    alerts: number
+    bodyMapObservations: number
+    medicationAdministrations: number
+    editHistory: number
   }
 
   export type ReportCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tasksCompleted?: boolean | ReportCountOutputTypeCountTasksCompletedArgs
+    alerts?: boolean | ReportCountOutputTypeCountAlertsArgs
+    bodyMapObservations?: boolean | ReportCountOutputTypeCountBodyMapObservationsArgs
+    medicationAdministrations?: boolean | ReportCountOutputTypeCountMedicationAdministrationsArgs
+    editHistory?: boolean | ReportCountOutputTypeCountEditHistoryArgs
   }
 
   // Custom InputTypes
@@ -3759,6 +4103,34 @@ export namespace Prisma {
    */
   export type ReportCountOutputTypeCountTasksCompletedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReportTaskWhereInput
+  }
+
+  /**
+   * ReportCountOutputType without action
+   */
+  export type ReportCountOutputTypeCountAlertsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportAlertWhereInput
+  }
+
+  /**
+   * ReportCountOutputType without action
+   */
+  export type ReportCountOutputTypeCountBodyMapObservationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BodyMapObservationWhereInput
+  }
+
+  /**
+   * ReportCountOutputType without action
+   */
+  export type ReportCountOutputTypeCountMedicationAdministrationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MedicationAdministrationWhereInput
+  }
+
+  /**
+   * ReportCountOutputType without action
+   */
+  export type ReportCountOutputTypeCountEditHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportEditWhereInput
   }
 
 
@@ -5167,6 +5539,7 @@ export namespace Prisma {
     medications?: boolean | Agency$medicationsArgs<ExtArgs>
     visitTypes?: boolean | Agency$visitTypesArgs<ExtArgs>
     riskCategories?: boolean | Agency$riskCategoriesArgs<ExtArgs>
+    Report?: boolean | Agency$ReportArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agency"]>
 
@@ -5226,6 +5599,7 @@ export namespace Prisma {
     medications?: boolean | Agency$medicationsArgs<ExtArgs>
     visitTypes?: boolean | Agency$visitTypesArgs<ExtArgs>
     riskCategories?: boolean | Agency$riskCategoriesArgs<ExtArgs>
+    Report?: boolean | Agency$ReportArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5243,6 +5617,7 @@ export namespace Prisma {
       medications: Prisma.$MedicationDatabaseLinkPayload<ExtArgs>[]
       visitTypes: Prisma.$VisitTypePayload<ExtArgs>[]
       riskCategories: Prisma.$RiskCategoryPayload<ExtArgs>[]
+      Report: Prisma.$ReportPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5660,6 +6035,7 @@ export namespace Prisma {
     medications<T extends Agency$medicationsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$medicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationDatabaseLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     visitTypes<T extends Agency$visitTypesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$visitTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     riskCategories<T extends Agency$riskCategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$riskCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Report<T extends Agency$ReportArgs<ExtArgs> = {}>(args?: Subset<T, Agency$ReportArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6302,6 +6678,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RiskCategoryScalarFieldEnum | RiskCategoryScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.Report
+   */
+  export type Agency$ReportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Report
+     */
+    omit?: ReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    where?: ReportWhereInput
+    orderBy?: ReportOrderByWithRelationInput | ReportOrderByWithRelationInput[]
+    cursor?: ReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportScalarFieldEnum | ReportScalarFieldEnum[]
   }
 
   /**
@@ -7819,6 +8219,7 @@ export namespace Prisma {
     communicationLogs?: boolean | User$communicationLogsArgs<ExtArgs>
     reminders?: boolean | User$remindersArgs<ExtArgs>
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
+    reportEdits?: boolean | User$reportEditsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -7959,6 +8360,7 @@ export namespace Prisma {
     communicationLogs?: boolean | User$communicationLogsArgs<ExtArgs>
     reminders?: boolean | User$remindersArgs<ExtArgs>
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
+    reportEdits?: boolean | User$reportEditsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8005,6 +8407,7 @@ export namespace Prisma {
       communicationLogs: Prisma.$CommunicationLogPayload<ExtArgs>[]
       reminders: Prisma.$ReminderPayload<ExtArgs>[]
       medicationAdministrations: Prisma.$MedicationAdministrationPayload<ExtArgs>[]
+      reportEdits: Prisma.$ReportEditPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8463,6 +8866,7 @@ export namespace Prisma {
     communicationLogs<T extends User$communicationLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$communicationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunicationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reminders<T extends User$remindersArgs<ExtArgs> = {}>(args?: Subset<T, User$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     medicationAdministrations<T extends User$medicationAdministrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$medicationAdministrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationAdministrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reportEdits<T extends User$reportEditsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportEditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9663,6 +10067,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MedicationAdministrationScalarFieldEnum | MedicationAdministrationScalarFieldEnum[]
+  }
+
+  /**
+   * User.reportEdits
+   */
+  export type User$reportEditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    where?: ReportEditWhereInput
+    orderBy?: ReportEditOrderByWithRelationInput | ReportEditOrderByWithRelationInput[]
+    cursor?: ReportEditWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportEditScalarFieldEnum | ReportEditScalarFieldEnum[]
   }
 
   /**
@@ -15305,6 +15733,7 @@ export namespace Prisma {
   export type ReportMinAggregateOutputType = {
     id: string | null
     clientId: string | null
+    agencyId: string | null
     userId: string | null
     condition: string | null
     summary: string | null
@@ -15313,11 +15742,20 @@ export namespace Prisma {
     createdAt: Date | null
     checkInDistance: number | null
     checkOutDistance: number | null
+    checkInLocation: string | null
+    checkOutLocation: string | null
+    hasSignature: boolean | null
+    signatureImageUrl: string | null
+    status: $Enums.ReportStatus | null
+    lastEditedAt: Date | null
+    lastEditedBy: string | null
+    lastEditReason: string | null
   }
 
   export type ReportMaxAggregateOutputType = {
     id: string | null
     clientId: string | null
+    agencyId: string | null
     userId: string | null
     condition: string | null
     summary: string | null
@@ -15326,11 +15764,20 @@ export namespace Prisma {
     createdAt: Date | null
     checkInDistance: number | null
     checkOutDistance: number | null
+    checkInLocation: string | null
+    checkOutLocation: string | null
+    hasSignature: boolean | null
+    signatureImageUrl: string | null
+    status: $Enums.ReportStatus | null
+    lastEditedAt: Date | null
+    lastEditedBy: string | null
+    lastEditReason: string | null
   }
 
   export type ReportCountAggregateOutputType = {
     id: number
     clientId: number
+    agencyId: number
     userId: number
     condition: number
     summary: number
@@ -15339,6 +15786,14 @@ export namespace Prisma {
     createdAt: number
     checkInDistance: number
     checkOutDistance: number
+    checkInLocation: number
+    checkOutLocation: number
+    hasSignature: number
+    signatureImageUrl: number
+    status: number
+    lastEditedAt: number
+    lastEditedBy: number
+    lastEditReason: number
     _all: number
   }
 
@@ -15356,6 +15811,7 @@ export namespace Prisma {
   export type ReportMinAggregateInputType = {
     id?: true
     clientId?: true
+    agencyId?: true
     userId?: true
     condition?: true
     summary?: true
@@ -15364,11 +15820,20 @@ export namespace Prisma {
     createdAt?: true
     checkInDistance?: true
     checkOutDistance?: true
+    checkInLocation?: true
+    checkOutLocation?: true
+    hasSignature?: true
+    signatureImageUrl?: true
+    status?: true
+    lastEditedAt?: true
+    lastEditedBy?: true
+    lastEditReason?: true
   }
 
   export type ReportMaxAggregateInputType = {
     id?: true
     clientId?: true
+    agencyId?: true
     userId?: true
     condition?: true
     summary?: true
@@ -15377,11 +15842,20 @@ export namespace Prisma {
     createdAt?: true
     checkInDistance?: true
     checkOutDistance?: true
+    checkInLocation?: true
+    checkOutLocation?: true
+    hasSignature?: true
+    signatureImageUrl?: true
+    status?: true
+    lastEditedAt?: true
+    lastEditedBy?: true
+    lastEditReason?: true
   }
 
   export type ReportCountAggregateInputType = {
     id?: true
     clientId?: true
+    agencyId?: true
     userId?: true
     condition?: true
     summary?: true
@@ -15390,6 +15864,14 @@ export namespace Prisma {
     createdAt?: true
     checkInDistance?: true
     checkOutDistance?: true
+    checkInLocation?: true
+    checkOutLocation?: true
+    hasSignature?: true
+    signatureImageUrl?: true
+    status?: true
+    lastEditedAt?: true
+    lastEditedBy?: true
+    lastEditReason?: true
     _all?: true
   }
 
@@ -15482,6 +15964,7 @@ export namespace Prisma {
   export type ReportGroupByOutputType = {
     id: string
     clientId: string
+    agencyId: string
     userId: string
     condition: string
     summary: string
@@ -15490,6 +15973,14 @@ export namespace Prisma {
     createdAt: Date
     checkInDistance: number | null
     checkOutDistance: number | null
+    checkInLocation: string | null
+    checkOutLocation: string | null
+    hasSignature: boolean
+    signatureImageUrl: string | null
+    status: $Enums.ReportStatus
+    lastEditedAt: Date | null
+    lastEditedBy: string | null
+    lastEditReason: string | null
     _count: ReportCountAggregateOutputType | null
     _avg: ReportAvgAggregateOutputType | null
     _sum: ReportSumAggregateOutputType | null
@@ -15514,6 +16005,7 @@ export namespace Prisma {
   export type ReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clientId?: boolean
+    agencyId?: boolean
     userId?: boolean
     condition?: boolean
     summary?: boolean
@@ -15522,15 +16014,29 @@ export namespace Prisma {
     createdAt?: boolean
     checkInDistance?: boolean
     checkOutDistance?: boolean
+    checkInLocation?: boolean
+    checkOutLocation?: boolean
+    hasSignature?: boolean
+    signatureImageUrl?: boolean
+    status?: boolean
+    lastEditedAt?: boolean
+    lastEditedBy?: boolean
+    lastEditReason?: boolean
     tasksCompleted?: boolean | Report$tasksCompletedArgs<ExtArgs>
+    alerts?: boolean | Report$alertsArgs<ExtArgs>
+    bodyMapObservations?: boolean | Report$bodyMapObservationsArgs<ExtArgs>
+    medicationAdministrations?: boolean | Report$medicationAdministrationsArgs<ExtArgs>
+    editHistory?: boolean | Report$editHistoryArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     caregiver?: boolean | UserDefaultArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
     _count?: boolean | ReportCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["report"]>
 
   export type ReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clientId?: boolean
+    agencyId?: boolean
     userId?: boolean
     condition?: boolean
     summary?: boolean
@@ -15539,13 +16045,23 @@ export namespace Prisma {
     createdAt?: boolean
     checkInDistance?: boolean
     checkOutDistance?: boolean
+    checkInLocation?: boolean
+    checkOutLocation?: boolean
+    hasSignature?: boolean
+    signatureImageUrl?: boolean
+    status?: boolean
+    lastEditedAt?: boolean
+    lastEditedBy?: boolean
+    lastEditReason?: boolean
     client?: boolean | UserDefaultArgs<ExtArgs>
     caregiver?: boolean | UserDefaultArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["report"]>
 
   export type ReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clientId?: boolean
+    agencyId?: boolean
     userId?: boolean
     condition?: boolean
     summary?: boolean
@@ -15554,13 +16070,23 @@ export namespace Prisma {
     createdAt?: boolean
     checkInDistance?: boolean
     checkOutDistance?: boolean
+    checkInLocation?: boolean
+    checkOutLocation?: boolean
+    hasSignature?: boolean
+    signatureImageUrl?: boolean
+    status?: boolean
+    lastEditedAt?: boolean
+    lastEditedBy?: boolean
+    lastEditReason?: boolean
     client?: boolean | UserDefaultArgs<ExtArgs>
     caregiver?: boolean | UserDefaultArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["report"]>
 
   export type ReportSelectScalar = {
     id?: boolean
     clientId?: boolean
+    agencyId?: boolean
     userId?: boolean
     condition?: boolean
     summary?: boolean
@@ -15569,34 +16095,55 @@ export namespace Prisma {
     createdAt?: boolean
     checkInDistance?: boolean
     checkOutDistance?: boolean
+    checkInLocation?: boolean
+    checkOutLocation?: boolean
+    hasSignature?: boolean
+    signatureImageUrl?: boolean
+    status?: boolean
+    lastEditedAt?: boolean
+    lastEditedBy?: boolean
+    lastEditReason?: boolean
   }
 
-  export type ReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "userId" | "condition" | "summary" | "checkInTime" | "checkOutTime" | "createdAt" | "checkInDistance" | "checkOutDistance", ExtArgs["result"]["report"]>
+  export type ReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "agencyId" | "userId" | "condition" | "summary" | "checkInTime" | "checkOutTime" | "createdAt" | "checkInDistance" | "checkOutDistance" | "checkInLocation" | "checkOutLocation" | "hasSignature" | "signatureImageUrl" | "status" | "lastEditedAt" | "lastEditedBy" | "lastEditReason", ExtArgs["result"]["report"]>
   export type ReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tasksCompleted?: boolean | Report$tasksCompletedArgs<ExtArgs>
+    alerts?: boolean | Report$alertsArgs<ExtArgs>
+    bodyMapObservations?: boolean | Report$bodyMapObservationsArgs<ExtArgs>
+    medicationAdministrations?: boolean | Report$medicationAdministrationsArgs<ExtArgs>
+    editHistory?: boolean | Report$editHistoryArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     caregiver?: boolean | UserDefaultArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
     _count?: boolean | ReportCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | UserDefaultArgs<ExtArgs>
     caregiver?: boolean | UserDefaultArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }
   export type ReportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | UserDefaultArgs<ExtArgs>
     caregiver?: boolean | UserDefaultArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
   }
 
   export type $ReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Report"
     objects: {
       tasksCompleted: Prisma.$ReportTaskPayload<ExtArgs>[]
+      alerts: Prisma.$ReportAlertPayload<ExtArgs>[]
+      bodyMapObservations: Prisma.$BodyMapObservationPayload<ExtArgs>[]
+      medicationAdministrations: Prisma.$MedicationAdministrationPayload<ExtArgs>[]
+      editHistory: Prisma.$ReportEditPayload<ExtArgs>[]
       client: Prisma.$UserPayload<ExtArgs>
       caregiver: Prisma.$UserPayload<ExtArgs>
+      agency: Prisma.$AgencyPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       clientId: string
+      agencyId: string
       userId: string
       condition: string
       summary: string
@@ -15605,6 +16152,14 @@ export namespace Prisma {
       createdAt: Date
       checkInDistance: number | null
       checkOutDistance: number | null
+      checkInLocation: string | null
+      checkOutLocation: string | null
+      hasSignature: boolean
+      signatureImageUrl: string | null
+      status: $Enums.ReportStatus
+      lastEditedAt: Date | null
+      lastEditedBy: string | null
+      lastEditReason: string | null
     }, ExtArgs["result"]["report"]>
     composites: {}
   }
@@ -16000,8 +16555,13 @@ export namespace Prisma {
   export interface Prisma__ReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     tasksCompleted<T extends Report$tasksCompletedArgs<ExtArgs> = {}>(args?: Subset<T, Report$tasksCompletedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    alerts<T extends Report$alertsArgs<ExtArgs> = {}>(args?: Subset<T, Report$alertsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bodyMapObservations<T extends Report$bodyMapObservationsArgs<ExtArgs> = {}>(args?: Subset<T, Report$bodyMapObservationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    medicationAdministrations<T extends Report$medicationAdministrationsArgs<ExtArgs> = {}>(args?: Subset<T, Report$medicationAdministrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationAdministrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    editHistory<T extends Report$editHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Report$editHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     caregiver<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16033,6 +16593,7 @@ export namespace Prisma {
   interface ReportFieldRefs {
     readonly id: FieldRef<"Report", 'String'>
     readonly clientId: FieldRef<"Report", 'String'>
+    readonly agencyId: FieldRef<"Report", 'String'>
     readonly userId: FieldRef<"Report", 'String'>
     readonly condition: FieldRef<"Report", 'String'>
     readonly summary: FieldRef<"Report", 'String'>
@@ -16041,6 +16602,14 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Report", 'DateTime'>
     readonly checkInDistance: FieldRef<"Report", 'Float'>
     readonly checkOutDistance: FieldRef<"Report", 'Float'>
+    readonly checkInLocation: FieldRef<"Report", 'String'>
+    readonly checkOutLocation: FieldRef<"Report", 'String'>
+    readonly hasSignature: FieldRef<"Report", 'Boolean'>
+    readonly signatureImageUrl: FieldRef<"Report", 'String'>
+    readonly status: FieldRef<"Report", 'ReportStatus'>
+    readonly lastEditedAt: FieldRef<"Report", 'DateTime'>
+    readonly lastEditedBy: FieldRef<"Report", 'String'>
+    readonly lastEditReason: FieldRef<"Report", 'String'>
   }
     
 
@@ -16461,6 +17030,102 @@ export namespace Prisma {
   }
 
   /**
+   * Report.alerts
+   */
+  export type Report$alertsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    where?: ReportAlertWhereInput
+    orderBy?: ReportAlertOrderByWithRelationInput | ReportAlertOrderByWithRelationInput[]
+    cursor?: ReportAlertWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportAlertScalarFieldEnum | ReportAlertScalarFieldEnum[]
+  }
+
+  /**
+   * Report.bodyMapObservations
+   */
+  export type Report$bodyMapObservationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    where?: BodyMapObservationWhereInput
+    orderBy?: BodyMapObservationOrderByWithRelationInput | BodyMapObservationOrderByWithRelationInput[]
+    cursor?: BodyMapObservationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BodyMapObservationScalarFieldEnum | BodyMapObservationScalarFieldEnum[]
+  }
+
+  /**
+   * Report.medicationAdministrations
+   */
+  export type Report$medicationAdministrationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicationAdministration
+     */
+    select?: MedicationAdministrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicationAdministration
+     */
+    omit?: MedicationAdministrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicationAdministrationInclude<ExtArgs> | null
+    where?: MedicationAdministrationWhereInput
+    orderBy?: MedicationAdministrationOrderByWithRelationInput | MedicationAdministrationOrderByWithRelationInput[]
+    cursor?: MedicationAdministrationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MedicationAdministrationScalarFieldEnum | MedicationAdministrationScalarFieldEnum[]
+  }
+
+  /**
+   * Report.editHistory
+   */
+  export type Report$editHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    where?: ReportEditWhereInput
+    orderBy?: ReportEditOrderByWithRelationInput | ReportEditOrderByWithRelationInput[]
+    cursor?: ReportEditWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportEditScalarFieldEnum | ReportEditScalarFieldEnum[]
+  }
+
+  /**
    * Report without action
    */
   export type ReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16494,6 +17159,10 @@ export namespace Prisma {
     reportId: string | null
     taskName: string | null
     completed: boolean | null
+    notes: string | null
+    taskIcon: string | null
+    taskType: string | null
+    completedAt: Date | null
   }
 
   export type ReportTaskMaxAggregateOutputType = {
@@ -16501,6 +17170,10 @@ export namespace Prisma {
     reportId: string | null
     taskName: string | null
     completed: boolean | null
+    notes: string | null
+    taskIcon: string | null
+    taskType: string | null
+    completedAt: Date | null
   }
 
   export type ReportTaskCountAggregateOutputType = {
@@ -16508,6 +17181,10 @@ export namespace Prisma {
     reportId: number
     taskName: number
     completed: number
+    notes: number
+    taskIcon: number
+    taskType: number
+    completedAt: number
     _all: number
   }
 
@@ -16517,6 +17194,10 @@ export namespace Prisma {
     reportId?: true
     taskName?: true
     completed?: true
+    notes?: true
+    taskIcon?: true
+    taskType?: true
+    completedAt?: true
   }
 
   export type ReportTaskMaxAggregateInputType = {
@@ -16524,6 +17205,10 @@ export namespace Prisma {
     reportId?: true
     taskName?: true
     completed?: true
+    notes?: true
+    taskIcon?: true
+    taskType?: true
+    completedAt?: true
   }
 
   export type ReportTaskCountAggregateInputType = {
@@ -16531,6 +17216,10 @@ export namespace Prisma {
     reportId?: true
     taskName?: true
     completed?: true
+    notes?: true
+    taskIcon?: true
+    taskType?: true
+    completedAt?: true
     _all?: true
   }
 
@@ -16611,6 +17300,10 @@ export namespace Prisma {
     reportId: string
     taskName: string
     completed: boolean
+    notes: string | null
+    taskIcon: string | null
+    taskType: string | null
+    completedAt: Date | null
     _count: ReportTaskCountAggregateOutputType | null
     _min: ReportTaskMinAggregateOutputType | null
     _max: ReportTaskMaxAggregateOutputType | null
@@ -16635,6 +17328,10 @@ export namespace Prisma {
     reportId?: boolean
     taskName?: boolean
     completed?: boolean
+    notes?: boolean
+    taskIcon?: boolean
+    taskType?: boolean
+    completedAt?: boolean
     report?: boolean | ReportDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reportTask"]>
 
@@ -16643,6 +17340,10 @@ export namespace Prisma {
     reportId?: boolean
     taskName?: boolean
     completed?: boolean
+    notes?: boolean
+    taskIcon?: boolean
+    taskType?: boolean
+    completedAt?: boolean
     report?: boolean | ReportDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reportTask"]>
 
@@ -16651,6 +17352,10 @@ export namespace Prisma {
     reportId?: boolean
     taskName?: boolean
     completed?: boolean
+    notes?: boolean
+    taskIcon?: boolean
+    taskType?: boolean
+    completedAt?: boolean
     report?: boolean | ReportDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reportTask"]>
 
@@ -16659,9 +17364,13 @@ export namespace Prisma {
     reportId?: boolean
     taskName?: boolean
     completed?: boolean
+    notes?: boolean
+    taskIcon?: boolean
+    taskType?: boolean
+    completedAt?: boolean
   }
 
-  export type ReportTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reportId" | "taskName" | "completed", ExtArgs["result"]["reportTask"]>
+  export type ReportTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reportId" | "taskName" | "completed" | "notes" | "taskIcon" | "taskType" | "completedAt", ExtArgs["result"]["reportTask"]>
   export type ReportTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     report?: boolean | ReportDefaultArgs<ExtArgs>
   }
@@ -16682,6 +17391,10 @@ export namespace Prisma {
       reportId: string
       taskName: string
       completed: boolean
+      notes: string | null
+      taskIcon: string | null
+      taskType: string | null
+      completedAt: Date | null
     }, ExtArgs["result"]["reportTask"]>
     composites: {}
   }
@@ -17110,6 +17823,10 @@ export namespace Prisma {
     readonly reportId: FieldRef<"ReportTask", 'String'>
     readonly taskName: FieldRef<"ReportTask", 'String'>
     readonly completed: FieldRef<"ReportTask", 'Boolean'>
+    readonly notes: FieldRef<"ReportTask", 'String'>
+    readonly taskIcon: FieldRef<"ReportTask", 'String'>
+    readonly taskType: FieldRef<"ReportTask", 'String'>
+    readonly completedAt: FieldRef<"ReportTask", 'DateTime'>
   }
     
 
@@ -17521,6 +18238,3266 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ReportTaskInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReportAlert
+   */
+
+  export type AggregateReportAlert = {
+    _count: ReportAlertCountAggregateOutputType | null
+    _min: ReportAlertMinAggregateOutputType | null
+    _max: ReportAlertMaxAggregateOutputType | null
+  }
+
+  export type ReportAlertMinAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    type: $Enums.AlertType | null
+    message: string | null
+    severity: $Enums.AlertSeverity | null
+    createdAt: Date | null
+    resolved: boolean | null
+    resolvedAt: Date | null
+    resolvedBy: string | null
+  }
+
+  export type ReportAlertMaxAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    type: $Enums.AlertType | null
+    message: string | null
+    severity: $Enums.AlertSeverity | null
+    createdAt: Date | null
+    resolved: boolean | null
+    resolvedAt: Date | null
+    resolvedBy: string | null
+  }
+
+  export type ReportAlertCountAggregateOutputType = {
+    id: number
+    reportId: number
+    type: number
+    message: number
+    severity: number
+    createdAt: number
+    resolved: number
+    resolvedAt: number
+    resolvedBy: number
+    _all: number
+  }
+
+
+  export type ReportAlertMinAggregateInputType = {
+    id?: true
+    reportId?: true
+    type?: true
+    message?: true
+    severity?: true
+    createdAt?: true
+    resolved?: true
+    resolvedAt?: true
+    resolvedBy?: true
+  }
+
+  export type ReportAlertMaxAggregateInputType = {
+    id?: true
+    reportId?: true
+    type?: true
+    message?: true
+    severity?: true
+    createdAt?: true
+    resolved?: true
+    resolvedAt?: true
+    resolvedBy?: true
+  }
+
+  export type ReportAlertCountAggregateInputType = {
+    id?: true
+    reportId?: true
+    type?: true
+    message?: true
+    severity?: true
+    createdAt?: true
+    resolved?: true
+    resolvedAt?: true
+    resolvedBy?: true
+    _all?: true
+  }
+
+  export type ReportAlertAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportAlert to aggregate.
+     */
+    where?: ReportAlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportAlerts to fetch.
+     */
+    orderBy?: ReportAlertOrderByWithRelationInput | ReportAlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReportAlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportAlerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportAlerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReportAlerts
+    **/
+    _count?: true | ReportAlertCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReportAlertMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReportAlertMaxAggregateInputType
+  }
+
+  export type GetReportAlertAggregateType<T extends ReportAlertAggregateArgs> = {
+        [P in keyof T & keyof AggregateReportAlert]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReportAlert[P]>
+      : GetScalarType<T[P], AggregateReportAlert[P]>
+  }
+
+
+
+
+  export type ReportAlertGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportAlertWhereInput
+    orderBy?: ReportAlertOrderByWithAggregationInput | ReportAlertOrderByWithAggregationInput[]
+    by: ReportAlertScalarFieldEnum[] | ReportAlertScalarFieldEnum
+    having?: ReportAlertScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReportAlertCountAggregateInputType | true
+    _min?: ReportAlertMinAggregateInputType
+    _max?: ReportAlertMaxAggregateInputType
+  }
+
+  export type ReportAlertGroupByOutputType = {
+    id: string
+    reportId: string
+    type: $Enums.AlertType
+    message: string
+    severity: $Enums.AlertSeverity
+    createdAt: Date
+    resolved: boolean
+    resolvedAt: Date | null
+    resolvedBy: string | null
+    _count: ReportAlertCountAggregateOutputType | null
+    _min: ReportAlertMinAggregateOutputType | null
+    _max: ReportAlertMaxAggregateOutputType | null
+  }
+
+  type GetReportAlertGroupByPayload<T extends ReportAlertGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReportAlertGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReportAlertGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReportAlertGroupByOutputType[P]>
+            : GetScalarType<T[P], ReportAlertGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReportAlertSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    type?: boolean
+    message?: boolean
+    severity?: boolean
+    createdAt?: boolean
+    resolved?: boolean
+    resolvedAt?: boolean
+    resolvedBy?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reportAlert"]>
+
+  export type ReportAlertSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    type?: boolean
+    message?: boolean
+    severity?: boolean
+    createdAt?: boolean
+    resolved?: boolean
+    resolvedAt?: boolean
+    resolvedBy?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reportAlert"]>
+
+  export type ReportAlertSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    type?: boolean
+    message?: boolean
+    severity?: boolean
+    createdAt?: boolean
+    resolved?: boolean
+    resolvedAt?: boolean
+    resolvedBy?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reportAlert"]>
+
+  export type ReportAlertSelectScalar = {
+    id?: boolean
+    reportId?: boolean
+    type?: boolean
+    message?: boolean
+    severity?: boolean
+    createdAt?: boolean
+    resolved?: boolean
+    resolvedAt?: boolean
+    resolvedBy?: boolean
+  }
+
+  export type ReportAlertOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reportId" | "type" | "message" | "severity" | "createdAt" | "resolved" | "resolvedAt" | "resolvedBy", ExtArgs["result"]["reportAlert"]>
+  export type ReportAlertInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
+  export type ReportAlertIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
+  export type ReportAlertIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
+
+  export type $ReportAlertPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReportAlert"
+    objects: {
+      report: Prisma.$ReportPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      reportId: string
+      type: $Enums.AlertType
+      message: string
+      severity: $Enums.AlertSeverity
+      createdAt: Date
+      resolved: boolean
+      resolvedAt: Date | null
+      resolvedBy: string | null
+    }, ExtArgs["result"]["reportAlert"]>
+    composites: {}
+  }
+
+  type ReportAlertGetPayload<S extends boolean | null | undefined | ReportAlertDefaultArgs> = $Result.GetResult<Prisma.$ReportAlertPayload, S>
+
+  type ReportAlertCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReportAlertFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReportAlertCountAggregateInputType | true
+    }
+
+  export interface ReportAlertDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReportAlert'], meta: { name: 'ReportAlert' } }
+    /**
+     * Find zero or one ReportAlert that matches the filter.
+     * @param {ReportAlertFindUniqueArgs} args - Arguments to find a ReportAlert
+     * @example
+     * // Get one ReportAlert
+     * const reportAlert = await prisma.reportAlert.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReportAlertFindUniqueArgs>(args: SelectSubset<T, ReportAlertFindUniqueArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReportAlert that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReportAlertFindUniqueOrThrowArgs} args - Arguments to find a ReportAlert
+     * @example
+     * // Get one ReportAlert
+     * const reportAlert = await prisma.reportAlert.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReportAlertFindUniqueOrThrowArgs>(args: SelectSubset<T, ReportAlertFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportAlert that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAlertFindFirstArgs} args - Arguments to find a ReportAlert
+     * @example
+     * // Get one ReportAlert
+     * const reportAlert = await prisma.reportAlert.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReportAlertFindFirstArgs>(args?: SelectSubset<T, ReportAlertFindFirstArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportAlert that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAlertFindFirstOrThrowArgs} args - Arguments to find a ReportAlert
+     * @example
+     * // Get one ReportAlert
+     * const reportAlert = await prisma.reportAlert.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReportAlertFindFirstOrThrowArgs>(args?: SelectSubset<T, ReportAlertFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReportAlerts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAlertFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReportAlerts
+     * const reportAlerts = await prisma.reportAlert.findMany()
+     * 
+     * // Get first 10 ReportAlerts
+     * const reportAlerts = await prisma.reportAlert.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reportAlertWithIdOnly = await prisma.reportAlert.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReportAlertFindManyArgs>(args?: SelectSubset<T, ReportAlertFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReportAlert.
+     * @param {ReportAlertCreateArgs} args - Arguments to create a ReportAlert.
+     * @example
+     * // Create one ReportAlert
+     * const ReportAlert = await prisma.reportAlert.create({
+     *   data: {
+     *     // ... data to create a ReportAlert
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReportAlertCreateArgs>(args: SelectSubset<T, ReportAlertCreateArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReportAlerts.
+     * @param {ReportAlertCreateManyArgs} args - Arguments to create many ReportAlerts.
+     * @example
+     * // Create many ReportAlerts
+     * const reportAlert = await prisma.reportAlert.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReportAlertCreateManyArgs>(args?: SelectSubset<T, ReportAlertCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReportAlerts and returns the data saved in the database.
+     * @param {ReportAlertCreateManyAndReturnArgs} args - Arguments to create many ReportAlerts.
+     * @example
+     * // Create many ReportAlerts
+     * const reportAlert = await prisma.reportAlert.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReportAlerts and only return the `id`
+     * const reportAlertWithIdOnly = await prisma.reportAlert.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReportAlertCreateManyAndReturnArgs>(args?: SelectSubset<T, ReportAlertCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReportAlert.
+     * @param {ReportAlertDeleteArgs} args - Arguments to delete one ReportAlert.
+     * @example
+     * // Delete one ReportAlert
+     * const ReportAlert = await prisma.reportAlert.delete({
+     *   where: {
+     *     // ... filter to delete one ReportAlert
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReportAlertDeleteArgs>(args: SelectSubset<T, ReportAlertDeleteArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReportAlert.
+     * @param {ReportAlertUpdateArgs} args - Arguments to update one ReportAlert.
+     * @example
+     * // Update one ReportAlert
+     * const reportAlert = await prisma.reportAlert.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReportAlertUpdateArgs>(args: SelectSubset<T, ReportAlertUpdateArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReportAlerts.
+     * @param {ReportAlertDeleteManyArgs} args - Arguments to filter ReportAlerts to delete.
+     * @example
+     * // Delete a few ReportAlerts
+     * const { count } = await prisma.reportAlert.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReportAlertDeleteManyArgs>(args?: SelectSubset<T, ReportAlertDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportAlerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAlertUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReportAlerts
+     * const reportAlert = await prisma.reportAlert.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReportAlertUpdateManyArgs>(args: SelectSubset<T, ReportAlertUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportAlerts and returns the data updated in the database.
+     * @param {ReportAlertUpdateManyAndReturnArgs} args - Arguments to update many ReportAlerts.
+     * @example
+     * // Update many ReportAlerts
+     * const reportAlert = await prisma.reportAlert.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReportAlerts and only return the `id`
+     * const reportAlertWithIdOnly = await prisma.reportAlert.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReportAlertUpdateManyAndReturnArgs>(args: SelectSubset<T, ReportAlertUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReportAlert.
+     * @param {ReportAlertUpsertArgs} args - Arguments to update or create a ReportAlert.
+     * @example
+     * // Update or create a ReportAlert
+     * const reportAlert = await prisma.reportAlert.upsert({
+     *   create: {
+     *     // ... data to create a ReportAlert
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReportAlert we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReportAlertUpsertArgs>(args: SelectSubset<T, ReportAlertUpsertArgs<ExtArgs>>): Prisma__ReportAlertClient<$Result.GetResult<Prisma.$ReportAlertPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReportAlerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAlertCountArgs} args - Arguments to filter ReportAlerts to count.
+     * @example
+     * // Count the number of ReportAlerts
+     * const count = await prisma.reportAlert.count({
+     *   where: {
+     *     // ... the filter for the ReportAlerts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReportAlertCountArgs>(
+      args?: Subset<T, ReportAlertCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReportAlertCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReportAlert.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAlertAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReportAlertAggregateArgs>(args: Subset<T, ReportAlertAggregateArgs>): Prisma.PrismaPromise<GetReportAlertAggregateType<T>>
+
+    /**
+     * Group by ReportAlert.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportAlertGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReportAlertGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReportAlertGroupByArgs['orderBy'] }
+        : { orderBy?: ReportAlertGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReportAlertGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReportAlertGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReportAlert model
+   */
+  readonly fields: ReportAlertFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReportAlert.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReportAlertClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    report<T extends ReportDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReportDefaultArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReportAlert model
+   */ 
+  interface ReportAlertFieldRefs {
+    readonly id: FieldRef<"ReportAlert", 'String'>
+    readonly reportId: FieldRef<"ReportAlert", 'String'>
+    readonly type: FieldRef<"ReportAlert", 'AlertType'>
+    readonly message: FieldRef<"ReportAlert", 'String'>
+    readonly severity: FieldRef<"ReportAlert", 'AlertSeverity'>
+    readonly createdAt: FieldRef<"ReportAlert", 'DateTime'>
+    readonly resolved: FieldRef<"ReportAlert", 'Boolean'>
+    readonly resolvedAt: FieldRef<"ReportAlert", 'DateTime'>
+    readonly resolvedBy: FieldRef<"ReportAlert", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReportAlert findUnique
+   */
+  export type ReportAlertFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportAlert to fetch.
+     */
+    where: ReportAlertWhereUniqueInput
+  }
+
+  /**
+   * ReportAlert findUniqueOrThrow
+   */
+  export type ReportAlertFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportAlert to fetch.
+     */
+    where: ReportAlertWhereUniqueInput
+  }
+
+  /**
+   * ReportAlert findFirst
+   */
+  export type ReportAlertFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportAlert to fetch.
+     */
+    where?: ReportAlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportAlerts to fetch.
+     */
+    orderBy?: ReportAlertOrderByWithRelationInput | ReportAlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportAlerts.
+     */
+    cursor?: ReportAlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportAlerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportAlerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportAlerts.
+     */
+    distinct?: ReportAlertScalarFieldEnum | ReportAlertScalarFieldEnum[]
+  }
+
+  /**
+   * ReportAlert findFirstOrThrow
+   */
+  export type ReportAlertFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportAlert to fetch.
+     */
+    where?: ReportAlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportAlerts to fetch.
+     */
+    orderBy?: ReportAlertOrderByWithRelationInput | ReportAlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportAlerts.
+     */
+    cursor?: ReportAlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportAlerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportAlerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportAlerts.
+     */
+    distinct?: ReportAlertScalarFieldEnum | ReportAlertScalarFieldEnum[]
+  }
+
+  /**
+   * ReportAlert findMany
+   */
+  export type ReportAlertFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportAlerts to fetch.
+     */
+    where?: ReportAlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportAlerts to fetch.
+     */
+    orderBy?: ReportAlertOrderByWithRelationInput | ReportAlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReportAlerts.
+     */
+    cursor?: ReportAlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportAlerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportAlerts.
+     */
+    skip?: number
+    distinct?: ReportAlertScalarFieldEnum | ReportAlertScalarFieldEnum[]
+  }
+
+  /**
+   * ReportAlert create
+   */
+  export type ReportAlertCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReportAlert.
+     */
+    data: XOR<ReportAlertCreateInput, ReportAlertUncheckedCreateInput>
+  }
+
+  /**
+   * ReportAlert createMany
+   */
+  export type ReportAlertCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReportAlerts.
+     */
+    data: ReportAlertCreateManyInput | ReportAlertCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportAlert createManyAndReturn
+   */
+  export type ReportAlertCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReportAlerts.
+     */
+    data: ReportAlertCreateManyInput | ReportAlertCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReportAlert update
+   */
+  export type ReportAlertUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReportAlert.
+     */
+    data: XOR<ReportAlertUpdateInput, ReportAlertUncheckedUpdateInput>
+    /**
+     * Choose, which ReportAlert to update.
+     */
+    where: ReportAlertWhereUniqueInput
+  }
+
+  /**
+   * ReportAlert updateMany
+   */
+  export type ReportAlertUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReportAlerts.
+     */
+    data: XOR<ReportAlertUpdateManyMutationInput, ReportAlertUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportAlerts to update
+     */
+    where?: ReportAlertWhereInput
+    /**
+     * Limit how many ReportAlerts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportAlert updateManyAndReturn
+   */
+  export type ReportAlertUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * The data used to update ReportAlerts.
+     */
+    data: XOR<ReportAlertUpdateManyMutationInput, ReportAlertUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportAlerts to update
+     */
+    where?: ReportAlertWhereInput
+    /**
+     * Limit how many ReportAlerts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReportAlert upsert
+   */
+  export type ReportAlertUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReportAlert to update in case it exists.
+     */
+    where: ReportAlertWhereUniqueInput
+    /**
+     * In case the ReportAlert found by the `where` argument doesn't exist, create a new ReportAlert with this data.
+     */
+    create: XOR<ReportAlertCreateInput, ReportAlertUncheckedCreateInput>
+    /**
+     * In case the ReportAlert was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReportAlertUpdateInput, ReportAlertUncheckedUpdateInput>
+  }
+
+  /**
+   * ReportAlert delete
+   */
+  export type ReportAlertDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+    /**
+     * Filter which ReportAlert to delete.
+     */
+    where: ReportAlertWhereUniqueInput
+  }
+
+  /**
+   * ReportAlert deleteMany
+   */
+  export type ReportAlertDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportAlerts to delete
+     */
+    where?: ReportAlertWhereInput
+    /**
+     * Limit how many ReportAlerts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportAlert without action
+   */
+  export type ReportAlertDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportAlert
+     */
+    select?: ReportAlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportAlert
+     */
+    omit?: ReportAlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportAlertInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BodyMapObservation
+   */
+
+  export type AggregateBodyMapObservation = {
+    _count: BodyMapObservationCountAggregateOutputType | null
+    _min: BodyMapObservationMinAggregateOutputType | null
+    _max: BodyMapObservationMaxAggregateOutputType | null
+  }
+
+  export type BodyMapObservationMinAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    bodyPart: string | null
+    condition: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type BodyMapObservationMaxAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    bodyPart: string | null
+    condition: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type BodyMapObservationCountAggregateOutputType = {
+    id: number
+    reportId: number
+    bodyPart: number
+    condition: number
+    notes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type BodyMapObservationMinAggregateInputType = {
+    id?: true
+    reportId?: true
+    bodyPart?: true
+    condition?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type BodyMapObservationMaxAggregateInputType = {
+    id?: true
+    reportId?: true
+    bodyPart?: true
+    condition?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type BodyMapObservationCountAggregateInputType = {
+    id?: true
+    reportId?: true
+    bodyPart?: true
+    condition?: true
+    notes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type BodyMapObservationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BodyMapObservation to aggregate.
+     */
+    where?: BodyMapObservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BodyMapObservations to fetch.
+     */
+    orderBy?: BodyMapObservationOrderByWithRelationInput | BodyMapObservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BodyMapObservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BodyMapObservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BodyMapObservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BodyMapObservations
+    **/
+    _count?: true | BodyMapObservationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BodyMapObservationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BodyMapObservationMaxAggregateInputType
+  }
+
+  export type GetBodyMapObservationAggregateType<T extends BodyMapObservationAggregateArgs> = {
+        [P in keyof T & keyof AggregateBodyMapObservation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBodyMapObservation[P]>
+      : GetScalarType<T[P], AggregateBodyMapObservation[P]>
+  }
+
+
+
+
+  export type BodyMapObservationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BodyMapObservationWhereInput
+    orderBy?: BodyMapObservationOrderByWithAggregationInput | BodyMapObservationOrderByWithAggregationInput[]
+    by: BodyMapObservationScalarFieldEnum[] | BodyMapObservationScalarFieldEnum
+    having?: BodyMapObservationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BodyMapObservationCountAggregateInputType | true
+    _min?: BodyMapObservationMinAggregateInputType
+    _max?: BodyMapObservationMaxAggregateInputType
+  }
+
+  export type BodyMapObservationGroupByOutputType = {
+    id: string
+    reportId: string
+    bodyPart: string
+    condition: string
+    notes: string | null
+    createdAt: Date
+    _count: BodyMapObservationCountAggregateOutputType | null
+    _min: BodyMapObservationMinAggregateOutputType | null
+    _max: BodyMapObservationMaxAggregateOutputType | null
+  }
+
+  type GetBodyMapObservationGroupByPayload<T extends BodyMapObservationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BodyMapObservationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BodyMapObservationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BodyMapObservationGroupByOutputType[P]>
+            : GetScalarType<T[P], BodyMapObservationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BodyMapObservationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    bodyPart?: boolean
+    condition?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bodyMapObservation"]>
+
+  export type BodyMapObservationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    bodyPart?: boolean
+    condition?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bodyMapObservation"]>
+
+  export type BodyMapObservationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    bodyPart?: boolean
+    condition?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bodyMapObservation"]>
+
+  export type BodyMapObservationSelectScalar = {
+    id?: boolean
+    reportId?: boolean
+    bodyPart?: boolean
+    condition?: boolean
+    notes?: boolean
+    createdAt?: boolean
+  }
+
+  export type BodyMapObservationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reportId" | "bodyPart" | "condition" | "notes" | "createdAt", ExtArgs["result"]["bodyMapObservation"]>
+  export type BodyMapObservationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
+  export type BodyMapObservationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
+  export type BodyMapObservationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
+
+  export type $BodyMapObservationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BodyMapObservation"
+    objects: {
+      report: Prisma.$ReportPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      reportId: string
+      bodyPart: string
+      condition: string
+      notes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["bodyMapObservation"]>
+    composites: {}
+  }
+
+  type BodyMapObservationGetPayload<S extends boolean | null | undefined | BodyMapObservationDefaultArgs> = $Result.GetResult<Prisma.$BodyMapObservationPayload, S>
+
+  type BodyMapObservationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BodyMapObservationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BodyMapObservationCountAggregateInputType | true
+    }
+
+  export interface BodyMapObservationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BodyMapObservation'], meta: { name: 'BodyMapObservation' } }
+    /**
+     * Find zero or one BodyMapObservation that matches the filter.
+     * @param {BodyMapObservationFindUniqueArgs} args - Arguments to find a BodyMapObservation
+     * @example
+     * // Get one BodyMapObservation
+     * const bodyMapObservation = await prisma.bodyMapObservation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BodyMapObservationFindUniqueArgs>(args: SelectSubset<T, BodyMapObservationFindUniqueArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BodyMapObservation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BodyMapObservationFindUniqueOrThrowArgs} args - Arguments to find a BodyMapObservation
+     * @example
+     * // Get one BodyMapObservation
+     * const bodyMapObservation = await prisma.bodyMapObservation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BodyMapObservationFindUniqueOrThrowArgs>(args: SelectSubset<T, BodyMapObservationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BodyMapObservation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BodyMapObservationFindFirstArgs} args - Arguments to find a BodyMapObservation
+     * @example
+     * // Get one BodyMapObservation
+     * const bodyMapObservation = await prisma.bodyMapObservation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BodyMapObservationFindFirstArgs>(args?: SelectSubset<T, BodyMapObservationFindFirstArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BodyMapObservation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BodyMapObservationFindFirstOrThrowArgs} args - Arguments to find a BodyMapObservation
+     * @example
+     * // Get one BodyMapObservation
+     * const bodyMapObservation = await prisma.bodyMapObservation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BodyMapObservationFindFirstOrThrowArgs>(args?: SelectSubset<T, BodyMapObservationFindFirstOrThrowArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BodyMapObservations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BodyMapObservationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BodyMapObservations
+     * const bodyMapObservations = await prisma.bodyMapObservation.findMany()
+     * 
+     * // Get first 10 BodyMapObservations
+     * const bodyMapObservations = await prisma.bodyMapObservation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const bodyMapObservationWithIdOnly = await prisma.bodyMapObservation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BodyMapObservationFindManyArgs>(args?: SelectSubset<T, BodyMapObservationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BodyMapObservation.
+     * @param {BodyMapObservationCreateArgs} args - Arguments to create a BodyMapObservation.
+     * @example
+     * // Create one BodyMapObservation
+     * const BodyMapObservation = await prisma.bodyMapObservation.create({
+     *   data: {
+     *     // ... data to create a BodyMapObservation
+     *   }
+     * })
+     * 
+     */
+    create<T extends BodyMapObservationCreateArgs>(args: SelectSubset<T, BodyMapObservationCreateArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BodyMapObservations.
+     * @param {BodyMapObservationCreateManyArgs} args - Arguments to create many BodyMapObservations.
+     * @example
+     * // Create many BodyMapObservations
+     * const bodyMapObservation = await prisma.bodyMapObservation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BodyMapObservationCreateManyArgs>(args?: SelectSubset<T, BodyMapObservationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BodyMapObservations and returns the data saved in the database.
+     * @param {BodyMapObservationCreateManyAndReturnArgs} args - Arguments to create many BodyMapObservations.
+     * @example
+     * // Create many BodyMapObservations
+     * const bodyMapObservation = await prisma.bodyMapObservation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BodyMapObservations and only return the `id`
+     * const bodyMapObservationWithIdOnly = await prisma.bodyMapObservation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BodyMapObservationCreateManyAndReturnArgs>(args?: SelectSubset<T, BodyMapObservationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BodyMapObservation.
+     * @param {BodyMapObservationDeleteArgs} args - Arguments to delete one BodyMapObservation.
+     * @example
+     * // Delete one BodyMapObservation
+     * const BodyMapObservation = await prisma.bodyMapObservation.delete({
+     *   where: {
+     *     // ... filter to delete one BodyMapObservation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BodyMapObservationDeleteArgs>(args: SelectSubset<T, BodyMapObservationDeleteArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BodyMapObservation.
+     * @param {BodyMapObservationUpdateArgs} args - Arguments to update one BodyMapObservation.
+     * @example
+     * // Update one BodyMapObservation
+     * const bodyMapObservation = await prisma.bodyMapObservation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BodyMapObservationUpdateArgs>(args: SelectSubset<T, BodyMapObservationUpdateArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BodyMapObservations.
+     * @param {BodyMapObservationDeleteManyArgs} args - Arguments to filter BodyMapObservations to delete.
+     * @example
+     * // Delete a few BodyMapObservations
+     * const { count } = await prisma.bodyMapObservation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BodyMapObservationDeleteManyArgs>(args?: SelectSubset<T, BodyMapObservationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BodyMapObservations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BodyMapObservationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BodyMapObservations
+     * const bodyMapObservation = await prisma.bodyMapObservation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BodyMapObservationUpdateManyArgs>(args: SelectSubset<T, BodyMapObservationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BodyMapObservations and returns the data updated in the database.
+     * @param {BodyMapObservationUpdateManyAndReturnArgs} args - Arguments to update many BodyMapObservations.
+     * @example
+     * // Update many BodyMapObservations
+     * const bodyMapObservation = await prisma.bodyMapObservation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BodyMapObservations and only return the `id`
+     * const bodyMapObservationWithIdOnly = await prisma.bodyMapObservation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BodyMapObservationUpdateManyAndReturnArgs>(args: SelectSubset<T, BodyMapObservationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BodyMapObservation.
+     * @param {BodyMapObservationUpsertArgs} args - Arguments to update or create a BodyMapObservation.
+     * @example
+     * // Update or create a BodyMapObservation
+     * const bodyMapObservation = await prisma.bodyMapObservation.upsert({
+     *   create: {
+     *     // ... data to create a BodyMapObservation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BodyMapObservation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BodyMapObservationUpsertArgs>(args: SelectSubset<T, BodyMapObservationUpsertArgs<ExtArgs>>): Prisma__BodyMapObservationClient<$Result.GetResult<Prisma.$BodyMapObservationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BodyMapObservations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BodyMapObservationCountArgs} args - Arguments to filter BodyMapObservations to count.
+     * @example
+     * // Count the number of BodyMapObservations
+     * const count = await prisma.bodyMapObservation.count({
+     *   where: {
+     *     // ... the filter for the BodyMapObservations we want to count
+     *   }
+     * })
+    **/
+    count<T extends BodyMapObservationCountArgs>(
+      args?: Subset<T, BodyMapObservationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BodyMapObservationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BodyMapObservation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BodyMapObservationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BodyMapObservationAggregateArgs>(args: Subset<T, BodyMapObservationAggregateArgs>): Prisma.PrismaPromise<GetBodyMapObservationAggregateType<T>>
+
+    /**
+     * Group by BodyMapObservation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BodyMapObservationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BodyMapObservationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BodyMapObservationGroupByArgs['orderBy'] }
+        : { orderBy?: BodyMapObservationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BodyMapObservationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBodyMapObservationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BodyMapObservation model
+   */
+  readonly fields: BodyMapObservationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BodyMapObservation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BodyMapObservationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    report<T extends ReportDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReportDefaultArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BodyMapObservation model
+   */ 
+  interface BodyMapObservationFieldRefs {
+    readonly id: FieldRef<"BodyMapObservation", 'String'>
+    readonly reportId: FieldRef<"BodyMapObservation", 'String'>
+    readonly bodyPart: FieldRef<"BodyMapObservation", 'String'>
+    readonly condition: FieldRef<"BodyMapObservation", 'String'>
+    readonly notes: FieldRef<"BodyMapObservation", 'String'>
+    readonly createdAt: FieldRef<"BodyMapObservation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BodyMapObservation findUnique
+   */
+  export type BodyMapObservationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * Filter, which BodyMapObservation to fetch.
+     */
+    where: BodyMapObservationWhereUniqueInput
+  }
+
+  /**
+   * BodyMapObservation findUniqueOrThrow
+   */
+  export type BodyMapObservationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * Filter, which BodyMapObservation to fetch.
+     */
+    where: BodyMapObservationWhereUniqueInput
+  }
+
+  /**
+   * BodyMapObservation findFirst
+   */
+  export type BodyMapObservationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * Filter, which BodyMapObservation to fetch.
+     */
+    where?: BodyMapObservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BodyMapObservations to fetch.
+     */
+    orderBy?: BodyMapObservationOrderByWithRelationInput | BodyMapObservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BodyMapObservations.
+     */
+    cursor?: BodyMapObservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BodyMapObservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BodyMapObservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BodyMapObservations.
+     */
+    distinct?: BodyMapObservationScalarFieldEnum | BodyMapObservationScalarFieldEnum[]
+  }
+
+  /**
+   * BodyMapObservation findFirstOrThrow
+   */
+  export type BodyMapObservationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * Filter, which BodyMapObservation to fetch.
+     */
+    where?: BodyMapObservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BodyMapObservations to fetch.
+     */
+    orderBy?: BodyMapObservationOrderByWithRelationInput | BodyMapObservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BodyMapObservations.
+     */
+    cursor?: BodyMapObservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BodyMapObservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BodyMapObservations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BodyMapObservations.
+     */
+    distinct?: BodyMapObservationScalarFieldEnum | BodyMapObservationScalarFieldEnum[]
+  }
+
+  /**
+   * BodyMapObservation findMany
+   */
+  export type BodyMapObservationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * Filter, which BodyMapObservations to fetch.
+     */
+    where?: BodyMapObservationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BodyMapObservations to fetch.
+     */
+    orderBy?: BodyMapObservationOrderByWithRelationInput | BodyMapObservationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BodyMapObservations.
+     */
+    cursor?: BodyMapObservationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BodyMapObservations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BodyMapObservations.
+     */
+    skip?: number
+    distinct?: BodyMapObservationScalarFieldEnum | BodyMapObservationScalarFieldEnum[]
+  }
+
+  /**
+   * BodyMapObservation create
+   */
+  export type BodyMapObservationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BodyMapObservation.
+     */
+    data: XOR<BodyMapObservationCreateInput, BodyMapObservationUncheckedCreateInput>
+  }
+
+  /**
+   * BodyMapObservation createMany
+   */
+  export type BodyMapObservationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BodyMapObservations.
+     */
+    data: BodyMapObservationCreateManyInput | BodyMapObservationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BodyMapObservation createManyAndReturn
+   */
+  export type BodyMapObservationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * The data used to create many BodyMapObservations.
+     */
+    data: BodyMapObservationCreateManyInput | BodyMapObservationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BodyMapObservation update
+   */
+  export type BodyMapObservationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BodyMapObservation.
+     */
+    data: XOR<BodyMapObservationUpdateInput, BodyMapObservationUncheckedUpdateInput>
+    /**
+     * Choose, which BodyMapObservation to update.
+     */
+    where: BodyMapObservationWhereUniqueInput
+  }
+
+  /**
+   * BodyMapObservation updateMany
+   */
+  export type BodyMapObservationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BodyMapObservations.
+     */
+    data: XOR<BodyMapObservationUpdateManyMutationInput, BodyMapObservationUncheckedUpdateManyInput>
+    /**
+     * Filter which BodyMapObservations to update
+     */
+    where?: BodyMapObservationWhereInput
+    /**
+     * Limit how many BodyMapObservations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BodyMapObservation updateManyAndReturn
+   */
+  export type BodyMapObservationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * The data used to update BodyMapObservations.
+     */
+    data: XOR<BodyMapObservationUpdateManyMutationInput, BodyMapObservationUncheckedUpdateManyInput>
+    /**
+     * Filter which BodyMapObservations to update
+     */
+    where?: BodyMapObservationWhereInput
+    /**
+     * Limit how many BodyMapObservations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BodyMapObservation upsert
+   */
+  export type BodyMapObservationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BodyMapObservation to update in case it exists.
+     */
+    where: BodyMapObservationWhereUniqueInput
+    /**
+     * In case the BodyMapObservation found by the `where` argument doesn't exist, create a new BodyMapObservation with this data.
+     */
+    create: XOR<BodyMapObservationCreateInput, BodyMapObservationUncheckedCreateInput>
+    /**
+     * In case the BodyMapObservation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BodyMapObservationUpdateInput, BodyMapObservationUncheckedUpdateInput>
+  }
+
+  /**
+   * BodyMapObservation delete
+   */
+  export type BodyMapObservationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+    /**
+     * Filter which BodyMapObservation to delete.
+     */
+    where: BodyMapObservationWhereUniqueInput
+  }
+
+  /**
+   * BodyMapObservation deleteMany
+   */
+  export type BodyMapObservationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BodyMapObservations to delete
+     */
+    where?: BodyMapObservationWhereInput
+    /**
+     * Limit how many BodyMapObservations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BodyMapObservation without action
+   */
+  export type BodyMapObservationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BodyMapObservation
+     */
+    select?: BodyMapObservationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BodyMapObservation
+     */
+    omit?: BodyMapObservationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BodyMapObservationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReportEdit
+   */
+
+  export type AggregateReportEdit = {
+    _count: ReportEditCountAggregateOutputType | null
+    _min: ReportEditMinAggregateOutputType | null
+    _max: ReportEditMaxAggregateOutputType | null
+  }
+
+  export type ReportEditMinAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    editedBy: string | null
+    editedAt: Date | null
+    reason: string | null
+    changesJson: string | null
+  }
+
+  export type ReportEditMaxAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    editedBy: string | null
+    editedAt: Date | null
+    reason: string | null
+    changesJson: string | null
+  }
+
+  export type ReportEditCountAggregateOutputType = {
+    id: number
+    reportId: number
+    editedBy: number
+    editedAt: number
+    reason: number
+    changesJson: number
+    _all: number
+  }
+
+
+  export type ReportEditMinAggregateInputType = {
+    id?: true
+    reportId?: true
+    editedBy?: true
+    editedAt?: true
+    reason?: true
+    changesJson?: true
+  }
+
+  export type ReportEditMaxAggregateInputType = {
+    id?: true
+    reportId?: true
+    editedBy?: true
+    editedAt?: true
+    reason?: true
+    changesJson?: true
+  }
+
+  export type ReportEditCountAggregateInputType = {
+    id?: true
+    reportId?: true
+    editedBy?: true
+    editedAt?: true
+    reason?: true
+    changesJson?: true
+    _all?: true
+  }
+
+  export type ReportEditAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportEdit to aggregate.
+     */
+    where?: ReportEditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportEdits to fetch.
+     */
+    orderBy?: ReportEditOrderByWithRelationInput | ReportEditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReportEditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportEdits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportEdits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReportEdits
+    **/
+    _count?: true | ReportEditCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReportEditMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReportEditMaxAggregateInputType
+  }
+
+  export type GetReportEditAggregateType<T extends ReportEditAggregateArgs> = {
+        [P in keyof T & keyof AggregateReportEdit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReportEdit[P]>
+      : GetScalarType<T[P], AggregateReportEdit[P]>
+  }
+
+
+
+
+  export type ReportEditGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportEditWhereInput
+    orderBy?: ReportEditOrderByWithAggregationInput | ReportEditOrderByWithAggregationInput[]
+    by: ReportEditScalarFieldEnum[] | ReportEditScalarFieldEnum
+    having?: ReportEditScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReportEditCountAggregateInputType | true
+    _min?: ReportEditMinAggregateInputType
+    _max?: ReportEditMaxAggregateInputType
+  }
+
+  export type ReportEditGroupByOutputType = {
+    id: string
+    reportId: string
+    editedBy: string
+    editedAt: Date
+    reason: string
+    changesJson: string
+    _count: ReportEditCountAggregateOutputType | null
+    _min: ReportEditMinAggregateOutputType | null
+    _max: ReportEditMaxAggregateOutputType | null
+  }
+
+  type GetReportEditGroupByPayload<T extends ReportEditGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReportEditGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReportEditGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReportEditGroupByOutputType[P]>
+            : GetScalarType<T[P], ReportEditGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReportEditSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    editedBy?: boolean
+    editedAt?: boolean
+    reason?: boolean
+    changesJson?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+    editor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reportEdit"]>
+
+  export type ReportEditSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    editedBy?: boolean
+    editedAt?: boolean
+    reason?: boolean
+    changesJson?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+    editor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reportEdit"]>
+
+  export type ReportEditSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    editedBy?: boolean
+    editedAt?: boolean
+    reason?: boolean
+    changesJson?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+    editor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reportEdit"]>
+
+  export type ReportEditSelectScalar = {
+    id?: boolean
+    reportId?: boolean
+    editedBy?: boolean
+    editedAt?: boolean
+    reason?: boolean
+    changesJson?: boolean
+  }
+
+  export type ReportEditOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reportId" | "editedBy" | "editedAt" | "reason" | "changesJson", ExtArgs["result"]["reportEdit"]>
+  export type ReportEditInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+    editor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReportEditIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+    editor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReportEditIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+    editor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ReportEditPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReportEdit"
+    objects: {
+      report: Prisma.$ReportPayload<ExtArgs>
+      editor: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      reportId: string
+      editedBy: string
+      editedAt: Date
+      reason: string
+      changesJson: string
+    }, ExtArgs["result"]["reportEdit"]>
+    composites: {}
+  }
+
+  type ReportEditGetPayload<S extends boolean | null | undefined | ReportEditDefaultArgs> = $Result.GetResult<Prisma.$ReportEditPayload, S>
+
+  type ReportEditCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReportEditFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReportEditCountAggregateInputType | true
+    }
+
+  export interface ReportEditDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReportEdit'], meta: { name: 'ReportEdit' } }
+    /**
+     * Find zero or one ReportEdit that matches the filter.
+     * @param {ReportEditFindUniqueArgs} args - Arguments to find a ReportEdit
+     * @example
+     * // Get one ReportEdit
+     * const reportEdit = await prisma.reportEdit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReportEditFindUniqueArgs>(args: SelectSubset<T, ReportEditFindUniqueArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReportEdit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReportEditFindUniqueOrThrowArgs} args - Arguments to find a ReportEdit
+     * @example
+     * // Get one ReportEdit
+     * const reportEdit = await prisma.reportEdit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReportEditFindUniqueOrThrowArgs>(args: SelectSubset<T, ReportEditFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportEdit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportEditFindFirstArgs} args - Arguments to find a ReportEdit
+     * @example
+     * // Get one ReportEdit
+     * const reportEdit = await prisma.reportEdit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReportEditFindFirstArgs>(args?: SelectSubset<T, ReportEditFindFirstArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportEdit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportEditFindFirstOrThrowArgs} args - Arguments to find a ReportEdit
+     * @example
+     * // Get one ReportEdit
+     * const reportEdit = await prisma.reportEdit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReportEditFindFirstOrThrowArgs>(args?: SelectSubset<T, ReportEditFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReportEdits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportEditFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReportEdits
+     * const reportEdits = await prisma.reportEdit.findMany()
+     * 
+     * // Get first 10 ReportEdits
+     * const reportEdits = await prisma.reportEdit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reportEditWithIdOnly = await prisma.reportEdit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReportEditFindManyArgs>(args?: SelectSubset<T, ReportEditFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReportEdit.
+     * @param {ReportEditCreateArgs} args - Arguments to create a ReportEdit.
+     * @example
+     * // Create one ReportEdit
+     * const ReportEdit = await prisma.reportEdit.create({
+     *   data: {
+     *     // ... data to create a ReportEdit
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReportEditCreateArgs>(args: SelectSubset<T, ReportEditCreateArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReportEdits.
+     * @param {ReportEditCreateManyArgs} args - Arguments to create many ReportEdits.
+     * @example
+     * // Create many ReportEdits
+     * const reportEdit = await prisma.reportEdit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReportEditCreateManyArgs>(args?: SelectSubset<T, ReportEditCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReportEdits and returns the data saved in the database.
+     * @param {ReportEditCreateManyAndReturnArgs} args - Arguments to create many ReportEdits.
+     * @example
+     * // Create many ReportEdits
+     * const reportEdit = await prisma.reportEdit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReportEdits and only return the `id`
+     * const reportEditWithIdOnly = await prisma.reportEdit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReportEditCreateManyAndReturnArgs>(args?: SelectSubset<T, ReportEditCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReportEdit.
+     * @param {ReportEditDeleteArgs} args - Arguments to delete one ReportEdit.
+     * @example
+     * // Delete one ReportEdit
+     * const ReportEdit = await prisma.reportEdit.delete({
+     *   where: {
+     *     // ... filter to delete one ReportEdit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReportEditDeleteArgs>(args: SelectSubset<T, ReportEditDeleteArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReportEdit.
+     * @param {ReportEditUpdateArgs} args - Arguments to update one ReportEdit.
+     * @example
+     * // Update one ReportEdit
+     * const reportEdit = await prisma.reportEdit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReportEditUpdateArgs>(args: SelectSubset<T, ReportEditUpdateArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReportEdits.
+     * @param {ReportEditDeleteManyArgs} args - Arguments to filter ReportEdits to delete.
+     * @example
+     * // Delete a few ReportEdits
+     * const { count } = await prisma.reportEdit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReportEditDeleteManyArgs>(args?: SelectSubset<T, ReportEditDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportEdits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportEditUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReportEdits
+     * const reportEdit = await prisma.reportEdit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReportEditUpdateManyArgs>(args: SelectSubset<T, ReportEditUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportEdits and returns the data updated in the database.
+     * @param {ReportEditUpdateManyAndReturnArgs} args - Arguments to update many ReportEdits.
+     * @example
+     * // Update many ReportEdits
+     * const reportEdit = await prisma.reportEdit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReportEdits and only return the `id`
+     * const reportEditWithIdOnly = await prisma.reportEdit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReportEditUpdateManyAndReturnArgs>(args: SelectSubset<T, ReportEditUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReportEdit.
+     * @param {ReportEditUpsertArgs} args - Arguments to update or create a ReportEdit.
+     * @example
+     * // Update or create a ReportEdit
+     * const reportEdit = await prisma.reportEdit.upsert({
+     *   create: {
+     *     // ... data to create a ReportEdit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReportEdit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReportEditUpsertArgs>(args: SelectSubset<T, ReportEditUpsertArgs<ExtArgs>>): Prisma__ReportEditClient<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReportEdits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportEditCountArgs} args - Arguments to filter ReportEdits to count.
+     * @example
+     * // Count the number of ReportEdits
+     * const count = await prisma.reportEdit.count({
+     *   where: {
+     *     // ... the filter for the ReportEdits we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReportEditCountArgs>(
+      args?: Subset<T, ReportEditCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReportEditCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReportEdit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportEditAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReportEditAggregateArgs>(args: Subset<T, ReportEditAggregateArgs>): Prisma.PrismaPromise<GetReportEditAggregateType<T>>
+
+    /**
+     * Group by ReportEdit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportEditGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReportEditGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReportEditGroupByArgs['orderBy'] }
+        : { orderBy?: ReportEditGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReportEditGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReportEditGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReportEdit model
+   */
+  readonly fields: ReportEditFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReportEdit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReportEditClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    report<T extends ReportDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReportDefaultArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    editor<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReportEdit model
+   */ 
+  interface ReportEditFieldRefs {
+    readonly id: FieldRef<"ReportEdit", 'String'>
+    readonly reportId: FieldRef<"ReportEdit", 'String'>
+    readonly editedBy: FieldRef<"ReportEdit", 'String'>
+    readonly editedAt: FieldRef<"ReportEdit", 'DateTime'>
+    readonly reason: FieldRef<"ReportEdit", 'String'>
+    readonly changesJson: FieldRef<"ReportEdit", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReportEdit findUnique
+   */
+  export type ReportEditFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportEdit to fetch.
+     */
+    where: ReportEditWhereUniqueInput
+  }
+
+  /**
+   * ReportEdit findUniqueOrThrow
+   */
+  export type ReportEditFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportEdit to fetch.
+     */
+    where: ReportEditWhereUniqueInput
+  }
+
+  /**
+   * ReportEdit findFirst
+   */
+  export type ReportEditFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportEdit to fetch.
+     */
+    where?: ReportEditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportEdits to fetch.
+     */
+    orderBy?: ReportEditOrderByWithRelationInput | ReportEditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportEdits.
+     */
+    cursor?: ReportEditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportEdits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportEdits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportEdits.
+     */
+    distinct?: ReportEditScalarFieldEnum | ReportEditScalarFieldEnum[]
+  }
+
+  /**
+   * ReportEdit findFirstOrThrow
+   */
+  export type ReportEditFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportEdit to fetch.
+     */
+    where?: ReportEditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportEdits to fetch.
+     */
+    orderBy?: ReportEditOrderByWithRelationInput | ReportEditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportEdits.
+     */
+    cursor?: ReportEditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportEdits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportEdits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportEdits.
+     */
+    distinct?: ReportEditScalarFieldEnum | ReportEditScalarFieldEnum[]
+  }
+
+  /**
+   * ReportEdit findMany
+   */
+  export type ReportEditFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportEdits to fetch.
+     */
+    where?: ReportEditWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportEdits to fetch.
+     */
+    orderBy?: ReportEditOrderByWithRelationInput | ReportEditOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReportEdits.
+     */
+    cursor?: ReportEditWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportEdits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportEdits.
+     */
+    skip?: number
+    distinct?: ReportEditScalarFieldEnum | ReportEditScalarFieldEnum[]
+  }
+
+  /**
+   * ReportEdit create
+   */
+  export type ReportEditCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReportEdit.
+     */
+    data: XOR<ReportEditCreateInput, ReportEditUncheckedCreateInput>
+  }
+
+  /**
+   * ReportEdit createMany
+   */
+  export type ReportEditCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReportEdits.
+     */
+    data: ReportEditCreateManyInput | ReportEditCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportEdit createManyAndReturn
+   */
+  export type ReportEditCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReportEdits.
+     */
+    data: ReportEditCreateManyInput | ReportEditCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReportEdit update
+   */
+  export type ReportEditUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReportEdit.
+     */
+    data: XOR<ReportEditUpdateInput, ReportEditUncheckedUpdateInput>
+    /**
+     * Choose, which ReportEdit to update.
+     */
+    where: ReportEditWhereUniqueInput
+  }
+
+  /**
+   * ReportEdit updateMany
+   */
+  export type ReportEditUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReportEdits.
+     */
+    data: XOR<ReportEditUpdateManyMutationInput, ReportEditUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportEdits to update
+     */
+    where?: ReportEditWhereInput
+    /**
+     * Limit how many ReportEdits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportEdit updateManyAndReturn
+   */
+  export type ReportEditUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * The data used to update ReportEdits.
+     */
+    data: XOR<ReportEditUpdateManyMutationInput, ReportEditUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportEdits to update
+     */
+    where?: ReportEditWhereInput
+    /**
+     * Limit how many ReportEdits to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReportEdit upsert
+   */
+  export type ReportEditUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReportEdit to update in case it exists.
+     */
+    where: ReportEditWhereUniqueInput
+    /**
+     * In case the ReportEdit found by the `where` argument doesn't exist, create a new ReportEdit with this data.
+     */
+    create: XOR<ReportEditCreateInput, ReportEditUncheckedCreateInput>
+    /**
+     * In case the ReportEdit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReportEditUpdateInput, ReportEditUncheckedUpdateInput>
+  }
+
+  /**
+   * ReportEdit delete
+   */
+  export type ReportEditDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
+    /**
+     * Filter which ReportEdit to delete.
+     */
+    where: ReportEditWhereUniqueInput
+  }
+
+  /**
+   * ReportEdit deleteMany
+   */
+  export type ReportEditDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportEdits to delete
+     */
+    where?: ReportEditWhereInput
+    /**
+     * Limit how many ReportEdits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportEdit without action
+   */
+  export type ReportEditDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportEdit
+     */
+    select?: ReportEditSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportEdit
+     */
+    omit?: ReportEditOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportEditInclude<ExtArgs> | null
   }
 
 
@@ -18798,6 +22775,7 @@ export namespace Prisma {
     doseTaken: boolean | null
     notes: string | null
     createdAt: Date | null
+    reportId: string | null
   }
 
   export type MedicationAdministrationMaxAggregateOutputType = {
@@ -18809,6 +22787,7 @@ export namespace Prisma {
     doseTaken: boolean | null
     notes: string | null
     createdAt: Date | null
+    reportId: string | null
   }
 
   export type MedicationAdministrationCountAggregateOutputType = {
@@ -18820,6 +22799,7 @@ export namespace Prisma {
     doseTaken: number
     notes: number
     createdAt: number
+    reportId: number
     _all: number
   }
 
@@ -18833,6 +22813,7 @@ export namespace Prisma {
     doseTaken?: true
     notes?: true
     createdAt?: true
+    reportId?: true
   }
 
   export type MedicationAdministrationMaxAggregateInputType = {
@@ -18844,6 +22825,7 @@ export namespace Prisma {
     doseTaken?: true
     notes?: true
     createdAt?: true
+    reportId?: true
   }
 
   export type MedicationAdministrationCountAggregateInputType = {
@@ -18855,6 +22837,7 @@ export namespace Prisma {
     doseTaken?: true
     notes?: true
     createdAt?: true
+    reportId?: true
     _all?: true
   }
 
@@ -18939,6 +22922,7 @@ export namespace Prisma {
     doseTaken: boolean
     notes: string | null
     createdAt: Date
+    reportId: string | null
     _count: MedicationAdministrationCountAggregateOutputType | null
     _min: MedicationAdministrationMinAggregateOutputType | null
     _max: MedicationAdministrationMaxAggregateOutputType | null
@@ -18967,8 +22951,10 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: boolean
     createdAt?: boolean
+    reportId?: boolean
     medicationRecord?: boolean | MedicationRecordDefaultArgs<ExtArgs>
     administeredBy?: boolean | UserDefaultArgs<ExtArgs>
+    report?: boolean | MedicationAdministration$reportArgs<ExtArgs>
   }, ExtArgs["result"]["medicationAdministration"]>
 
   export type MedicationAdministrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -18980,8 +22966,10 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: boolean
     createdAt?: boolean
+    reportId?: boolean
     medicationRecord?: boolean | MedicationRecordDefaultArgs<ExtArgs>
     administeredBy?: boolean | UserDefaultArgs<ExtArgs>
+    report?: boolean | MedicationAdministration$reportArgs<ExtArgs>
   }, ExtArgs["result"]["medicationAdministration"]>
 
   export type MedicationAdministrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -18993,8 +22981,10 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: boolean
     createdAt?: boolean
+    reportId?: boolean
     medicationRecord?: boolean | MedicationRecordDefaultArgs<ExtArgs>
     administeredBy?: boolean | UserDefaultArgs<ExtArgs>
+    report?: boolean | MedicationAdministration$reportArgs<ExtArgs>
   }, ExtArgs["result"]["medicationAdministration"]>
 
   export type MedicationAdministrationSelectScalar = {
@@ -19006,20 +22996,24 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: boolean
     createdAt?: boolean
+    reportId?: boolean
   }
 
-  export type MedicationAdministrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "medicationRecordId" | "administeredById" | "administeredAt" | "doseType" | "doseTaken" | "notes" | "createdAt", ExtArgs["result"]["medicationAdministration"]>
+  export type MedicationAdministrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "medicationRecordId" | "administeredById" | "administeredAt" | "doseType" | "doseTaken" | "notes" | "createdAt" | "reportId", ExtArgs["result"]["medicationAdministration"]>
   export type MedicationAdministrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     medicationRecord?: boolean | MedicationRecordDefaultArgs<ExtArgs>
     administeredBy?: boolean | UserDefaultArgs<ExtArgs>
+    report?: boolean | MedicationAdministration$reportArgs<ExtArgs>
   }
   export type MedicationAdministrationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     medicationRecord?: boolean | MedicationRecordDefaultArgs<ExtArgs>
     administeredBy?: boolean | UserDefaultArgs<ExtArgs>
+    report?: boolean | MedicationAdministration$reportArgs<ExtArgs>
   }
   export type MedicationAdministrationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     medicationRecord?: boolean | MedicationRecordDefaultArgs<ExtArgs>
     administeredBy?: boolean | UserDefaultArgs<ExtArgs>
+    report?: boolean | MedicationAdministration$reportArgs<ExtArgs>
   }
 
   export type $MedicationAdministrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19027,6 +23021,7 @@ export namespace Prisma {
     objects: {
       medicationRecord: Prisma.$MedicationRecordPayload<ExtArgs>
       administeredBy: Prisma.$UserPayload<ExtArgs>
+      report: Prisma.$ReportPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -19037,6 +23032,7 @@ export namespace Prisma {
       doseTaken: boolean
       notes: string | null
       createdAt: Date
+      reportId: string | null
     }, ExtArgs["result"]["medicationAdministration"]>
     composites: {}
   }
@@ -19433,6 +23429,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     medicationRecord<T extends MedicationRecordDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MedicationRecordDefaultArgs<ExtArgs>>): Prisma__MedicationRecordClient<$Result.GetResult<Prisma.$MedicationRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     administeredBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    report<T extends MedicationAdministration$reportArgs<ExtArgs> = {}>(args?: Subset<T, MedicationAdministration$reportArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19470,6 +23467,7 @@ export namespace Prisma {
     readonly doseTaken: FieldRef<"MedicationAdministration", 'Boolean'>
     readonly notes: FieldRef<"MedicationAdministration", 'String'>
     readonly createdAt: FieldRef<"MedicationAdministration", 'DateTime'>
+    readonly reportId: FieldRef<"MedicationAdministration", 'String'>
   }
     
 
@@ -19863,6 +23861,25 @@ export namespace Prisma {
      * Limit how many MedicationAdministrations to delete.
      */
     limit?: number
+  }
+
+  /**
+   * MedicationAdministration.report
+   */
+  export type MedicationAdministration$reportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Report
+     */
+    select?: ReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Report
+     */
+    omit?: ReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportInclude<ExtArgs> | null
+    where?: ReportWhereInput
   }
 
   /**
@@ -34372,6 +38389,7 @@ export namespace Prisma {
   export const ReportScalarFieldEnum: {
     id: 'id',
     clientId: 'clientId',
+    agencyId: 'agencyId',
     userId: 'userId',
     condition: 'condition',
     summary: 'summary',
@@ -34379,7 +38397,15 @@ export namespace Prisma {
     checkOutTime: 'checkOutTime',
     createdAt: 'createdAt',
     checkInDistance: 'checkInDistance',
-    checkOutDistance: 'checkOutDistance'
+    checkOutDistance: 'checkOutDistance',
+    checkInLocation: 'checkInLocation',
+    checkOutLocation: 'checkOutLocation',
+    hasSignature: 'hasSignature',
+    signatureImageUrl: 'signatureImageUrl',
+    status: 'status',
+    lastEditedAt: 'lastEditedAt',
+    lastEditedBy: 'lastEditedBy',
+    lastEditReason: 'lastEditReason'
   };
 
   export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
@@ -34389,10 +38415,53 @@ export namespace Prisma {
     id: 'id',
     reportId: 'reportId',
     taskName: 'taskName',
-    completed: 'completed'
+    completed: 'completed',
+    notes: 'notes',
+    taskIcon: 'taskIcon',
+    taskType: 'taskType',
+    completedAt: 'completedAt'
   };
 
   export type ReportTaskScalarFieldEnum = (typeof ReportTaskScalarFieldEnum)[keyof typeof ReportTaskScalarFieldEnum]
+
+
+  export const ReportAlertScalarFieldEnum: {
+    id: 'id',
+    reportId: 'reportId',
+    type: 'type',
+    message: 'message',
+    severity: 'severity',
+    createdAt: 'createdAt',
+    resolved: 'resolved',
+    resolvedAt: 'resolvedAt',
+    resolvedBy: 'resolvedBy'
+  };
+
+  export type ReportAlertScalarFieldEnum = (typeof ReportAlertScalarFieldEnum)[keyof typeof ReportAlertScalarFieldEnum]
+
+
+  export const BodyMapObservationScalarFieldEnum: {
+    id: 'id',
+    reportId: 'reportId',
+    bodyPart: 'bodyPart',
+    condition: 'condition',
+    notes: 'notes',
+    createdAt: 'createdAt'
+  };
+
+  export type BodyMapObservationScalarFieldEnum = (typeof BodyMapObservationScalarFieldEnum)[keyof typeof BodyMapObservationScalarFieldEnum]
+
+
+  export const ReportEditScalarFieldEnum: {
+    id: 'id',
+    reportId: 'reportId',
+    editedBy: 'editedBy',
+    editedAt: 'editedAt',
+    reason: 'reason',
+    changesJson: 'changesJson'
+  };
+
+  export type ReportEditScalarFieldEnum = (typeof ReportEditScalarFieldEnum)[keyof typeof ReportEditScalarFieldEnum]
 
 
   export const MedicationRecordScalarFieldEnum: {
@@ -34425,7 +38494,8 @@ export namespace Prisma {
     doseType: 'doseType',
     doseTaken: 'doseTaken',
     notes: 'notes',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    reportId: 'reportId'
   };
 
   export type MedicationAdministrationScalarFieldEnum = (typeof MedicationAdministrationScalarFieldEnum)[keyof typeof MedicationAdministrationScalarFieldEnum]
@@ -34730,6 +38800,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ReportStatus'
+   */
+  export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportStatus[]'
+   */
+  export type ListEnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertType'
+   */
+  export type EnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertType[]'
+   */
+  export type ListEnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertSeverity'
+   */
+  export type EnumAlertSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertSeverity'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertSeverity[]'
+   */
+  export type ListEnumAlertSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertSeverity[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DoseType'
    */
   export type EnumDoseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DoseType'>
@@ -34902,6 +39014,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkListRelationFilter
     visitTypes?: VisitTypeListRelationFilter
     riskCategories?: RiskCategoryListRelationFilter
+    Report?: ReportListRelationFilter
   }
 
   export type AgencyOrderByWithRelationInput = {
@@ -34926,6 +39039,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkOrderByRelationAggregateInput
     visitTypes?: VisitTypeOrderByRelationAggregateInput
     riskCategories?: RiskCategoryOrderByRelationAggregateInput
+    Report?: ReportOrderByRelationAggregateInput
   }
 
   export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -34953,6 +39067,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkListRelationFilter
     visitTypes?: VisitTypeListRelationFilter
     riskCategories?: RiskCategoryListRelationFilter
+    Report?: ReportListRelationFilter
   }, "id">
 
   export type AgencyOrderByWithAggregationInput = {
@@ -35116,6 +39231,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogListRelationFilter
     reminders?: ReminderListRelationFilter
     medicationAdministrations?: MedicationAdministrationListRelationFilter
+    reportEdits?: ReportEditListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -35181,6 +39297,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogOrderByRelationAggregateInput
     reminders?: ReminderOrderByRelationAggregateInput
     medicationAdministrations?: MedicationAdministrationOrderByRelationAggregateInput
+    reportEdits?: ReportEditOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -35249,6 +39366,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogListRelationFilter
     reminders?: ReminderListRelationFilter
     medicationAdministrations?: MedicationAdministrationListRelationFilter
+    reportEdits?: ReportEditListRelationFilter
   }, "id" | "cognitoId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -35688,6 +39806,7 @@ export namespace Prisma {
     NOT?: ReportWhereInput | ReportWhereInput[]
     id?: StringFilter<"Report"> | string
     clientId?: StringFilter<"Report"> | string
+    agencyId?: StringFilter<"Report"> | string
     userId?: StringFilter<"Report"> | string
     condition?: StringFilter<"Report"> | string
     summary?: StringFilter<"Report"> | string
@@ -35696,14 +39815,28 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Report"> | Date | string
     checkInDistance?: FloatNullableFilter<"Report"> | number | null
     checkOutDistance?: FloatNullableFilter<"Report"> | number | null
+    checkInLocation?: StringNullableFilter<"Report"> | string | null
+    checkOutLocation?: StringNullableFilter<"Report"> | string | null
+    hasSignature?: BoolFilter<"Report"> | boolean
+    signatureImageUrl?: StringNullableFilter<"Report"> | string | null
+    status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
+    lastEditedAt?: DateTimeNullableFilter<"Report"> | Date | string | null
+    lastEditedBy?: StringNullableFilter<"Report"> | string | null
+    lastEditReason?: StringNullableFilter<"Report"> | string | null
     tasksCompleted?: ReportTaskListRelationFilter
+    alerts?: ReportAlertListRelationFilter
+    bodyMapObservations?: BodyMapObservationListRelationFilter
+    medicationAdministrations?: MedicationAdministrationListRelationFilter
+    editHistory?: ReportEditListRelationFilter
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     caregiver?: XOR<UserScalarRelationFilter, UserWhereInput>
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
   }
 
   export type ReportOrderByWithRelationInput = {
     id?: SortOrder
     clientId?: SortOrder
+    agencyId?: SortOrder
     userId?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
@@ -35712,9 +39845,22 @@ export namespace Prisma {
     createdAt?: SortOrder
     checkInDistance?: SortOrderInput | SortOrder
     checkOutDistance?: SortOrderInput | SortOrder
+    checkInLocation?: SortOrderInput | SortOrder
+    checkOutLocation?: SortOrderInput | SortOrder
+    hasSignature?: SortOrder
+    signatureImageUrl?: SortOrderInput | SortOrder
+    status?: SortOrder
+    lastEditedAt?: SortOrderInput | SortOrder
+    lastEditedBy?: SortOrderInput | SortOrder
+    lastEditReason?: SortOrderInput | SortOrder
     tasksCompleted?: ReportTaskOrderByRelationAggregateInput
+    alerts?: ReportAlertOrderByRelationAggregateInput
+    bodyMapObservations?: BodyMapObservationOrderByRelationAggregateInput
+    medicationAdministrations?: MedicationAdministrationOrderByRelationAggregateInput
+    editHistory?: ReportEditOrderByRelationAggregateInput
     client?: UserOrderByWithRelationInput
     caregiver?: UserOrderByWithRelationInput
+    agency?: AgencyOrderByWithRelationInput
   }
 
   export type ReportWhereUniqueInput = Prisma.AtLeast<{
@@ -35723,6 +39869,7 @@ export namespace Prisma {
     OR?: ReportWhereInput[]
     NOT?: ReportWhereInput | ReportWhereInput[]
     clientId?: StringFilter<"Report"> | string
+    agencyId?: StringFilter<"Report"> | string
     userId?: StringFilter<"Report"> | string
     condition?: StringFilter<"Report"> | string
     summary?: StringFilter<"Report"> | string
@@ -35731,14 +39878,28 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Report"> | Date | string
     checkInDistance?: FloatNullableFilter<"Report"> | number | null
     checkOutDistance?: FloatNullableFilter<"Report"> | number | null
+    checkInLocation?: StringNullableFilter<"Report"> | string | null
+    checkOutLocation?: StringNullableFilter<"Report"> | string | null
+    hasSignature?: BoolFilter<"Report"> | boolean
+    signatureImageUrl?: StringNullableFilter<"Report"> | string | null
+    status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
+    lastEditedAt?: DateTimeNullableFilter<"Report"> | Date | string | null
+    lastEditedBy?: StringNullableFilter<"Report"> | string | null
+    lastEditReason?: StringNullableFilter<"Report"> | string | null
     tasksCompleted?: ReportTaskListRelationFilter
+    alerts?: ReportAlertListRelationFilter
+    bodyMapObservations?: BodyMapObservationListRelationFilter
+    medicationAdministrations?: MedicationAdministrationListRelationFilter
+    editHistory?: ReportEditListRelationFilter
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     caregiver?: XOR<UserScalarRelationFilter, UserWhereInput>
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
   }, "id">
 
   export type ReportOrderByWithAggregationInput = {
     id?: SortOrder
     clientId?: SortOrder
+    agencyId?: SortOrder
     userId?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
@@ -35747,6 +39908,14 @@ export namespace Prisma {
     createdAt?: SortOrder
     checkInDistance?: SortOrderInput | SortOrder
     checkOutDistance?: SortOrderInput | SortOrder
+    checkInLocation?: SortOrderInput | SortOrder
+    checkOutLocation?: SortOrderInput | SortOrder
+    hasSignature?: SortOrder
+    signatureImageUrl?: SortOrderInput | SortOrder
+    status?: SortOrder
+    lastEditedAt?: SortOrderInput | SortOrder
+    lastEditedBy?: SortOrderInput | SortOrder
+    lastEditReason?: SortOrderInput | SortOrder
     _count?: ReportCountOrderByAggregateInput
     _avg?: ReportAvgOrderByAggregateInput
     _max?: ReportMaxOrderByAggregateInput
@@ -35760,6 +39929,7 @@ export namespace Prisma {
     NOT?: ReportScalarWhereWithAggregatesInput | ReportScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Report"> | string
     clientId?: StringWithAggregatesFilter<"Report"> | string
+    agencyId?: StringWithAggregatesFilter<"Report"> | string
     userId?: StringWithAggregatesFilter<"Report"> | string
     condition?: StringWithAggregatesFilter<"Report"> | string
     summary?: StringWithAggregatesFilter<"Report"> | string
@@ -35768,6 +39938,14 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Report"> | Date | string
     checkInDistance?: FloatNullableWithAggregatesFilter<"Report"> | number | null
     checkOutDistance?: FloatNullableWithAggregatesFilter<"Report"> | number | null
+    checkInLocation?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    checkOutLocation?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    hasSignature?: BoolWithAggregatesFilter<"Report"> | boolean
+    signatureImageUrl?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    status?: EnumReportStatusWithAggregatesFilter<"Report"> | $Enums.ReportStatus
+    lastEditedAt?: DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
+    lastEditedBy?: StringNullableWithAggregatesFilter<"Report"> | string | null
+    lastEditReason?: StringNullableWithAggregatesFilter<"Report"> | string | null
   }
 
   export type ReportTaskWhereInput = {
@@ -35778,6 +39956,10 @@ export namespace Prisma {
     reportId?: StringFilter<"ReportTask"> | string
     taskName?: StringFilter<"ReportTask"> | string
     completed?: BoolFilter<"ReportTask"> | boolean
+    notes?: StringNullableFilter<"ReportTask"> | string | null
+    taskIcon?: StringNullableFilter<"ReportTask"> | string | null
+    taskType?: StringNullableFilter<"ReportTask"> | string | null
+    completedAt?: DateTimeNullableFilter<"ReportTask"> | Date | string | null
     report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
   }
 
@@ -35786,6 +39968,10 @@ export namespace Prisma {
     reportId?: SortOrder
     taskName?: SortOrder
     completed?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    taskIcon?: SortOrderInput | SortOrder
+    taskType?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
     report?: ReportOrderByWithRelationInput
   }
 
@@ -35797,6 +39983,10 @@ export namespace Prisma {
     reportId?: StringFilter<"ReportTask"> | string
     taskName?: StringFilter<"ReportTask"> | string
     completed?: BoolFilter<"ReportTask"> | boolean
+    notes?: StringNullableFilter<"ReportTask"> | string | null
+    taskIcon?: StringNullableFilter<"ReportTask"> | string | null
+    taskType?: StringNullableFilter<"ReportTask"> | string | null
+    completedAt?: DateTimeNullableFilter<"ReportTask"> | Date | string | null
     report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
   }, "id">
 
@@ -35805,6 +39995,10 @@ export namespace Prisma {
     reportId?: SortOrder
     taskName?: SortOrder
     completed?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    taskIcon?: SortOrderInput | SortOrder
+    taskType?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
     _count?: ReportTaskCountOrderByAggregateInput
     _max?: ReportTaskMaxOrderByAggregateInput
     _min?: ReportTaskMinOrderByAggregateInput
@@ -35818,6 +40012,208 @@ export namespace Prisma {
     reportId?: StringWithAggregatesFilter<"ReportTask"> | string
     taskName?: StringWithAggregatesFilter<"ReportTask"> | string
     completed?: BoolWithAggregatesFilter<"ReportTask"> | boolean
+    notes?: StringNullableWithAggregatesFilter<"ReportTask"> | string | null
+    taskIcon?: StringNullableWithAggregatesFilter<"ReportTask"> | string | null
+    taskType?: StringNullableWithAggregatesFilter<"ReportTask"> | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"ReportTask"> | Date | string | null
+  }
+
+  export type ReportAlertWhereInput = {
+    AND?: ReportAlertWhereInput | ReportAlertWhereInput[]
+    OR?: ReportAlertWhereInput[]
+    NOT?: ReportAlertWhereInput | ReportAlertWhereInput[]
+    id?: StringFilter<"ReportAlert"> | string
+    reportId?: StringFilter<"ReportAlert"> | string
+    type?: EnumAlertTypeFilter<"ReportAlert"> | $Enums.AlertType
+    message?: StringFilter<"ReportAlert"> | string
+    severity?: EnumAlertSeverityFilter<"ReportAlert"> | $Enums.AlertSeverity
+    createdAt?: DateTimeFilter<"ReportAlert"> | Date | string
+    resolved?: BoolFilter<"ReportAlert"> | boolean
+    resolvedAt?: DateTimeNullableFilter<"ReportAlert"> | Date | string | null
+    resolvedBy?: StringNullableFilter<"ReportAlert"> | string | null
+    report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
+  }
+
+  export type ReportAlertOrderByWithRelationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    createdAt?: SortOrder
+    resolved?: SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    resolvedBy?: SortOrderInput | SortOrder
+    report?: ReportOrderByWithRelationInput
+  }
+
+  export type ReportAlertWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReportAlertWhereInput | ReportAlertWhereInput[]
+    OR?: ReportAlertWhereInput[]
+    NOT?: ReportAlertWhereInput | ReportAlertWhereInput[]
+    reportId?: StringFilter<"ReportAlert"> | string
+    type?: EnumAlertTypeFilter<"ReportAlert"> | $Enums.AlertType
+    message?: StringFilter<"ReportAlert"> | string
+    severity?: EnumAlertSeverityFilter<"ReportAlert"> | $Enums.AlertSeverity
+    createdAt?: DateTimeFilter<"ReportAlert"> | Date | string
+    resolved?: BoolFilter<"ReportAlert"> | boolean
+    resolvedAt?: DateTimeNullableFilter<"ReportAlert"> | Date | string | null
+    resolvedBy?: StringNullableFilter<"ReportAlert"> | string | null
+    report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
+  }, "id">
+
+  export type ReportAlertOrderByWithAggregationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    createdAt?: SortOrder
+    resolved?: SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    resolvedBy?: SortOrderInput | SortOrder
+    _count?: ReportAlertCountOrderByAggregateInput
+    _max?: ReportAlertMaxOrderByAggregateInput
+    _min?: ReportAlertMinOrderByAggregateInput
+  }
+
+  export type ReportAlertScalarWhereWithAggregatesInput = {
+    AND?: ReportAlertScalarWhereWithAggregatesInput | ReportAlertScalarWhereWithAggregatesInput[]
+    OR?: ReportAlertScalarWhereWithAggregatesInput[]
+    NOT?: ReportAlertScalarWhereWithAggregatesInput | ReportAlertScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReportAlert"> | string
+    reportId?: StringWithAggregatesFilter<"ReportAlert"> | string
+    type?: EnumAlertTypeWithAggregatesFilter<"ReportAlert"> | $Enums.AlertType
+    message?: StringWithAggregatesFilter<"ReportAlert"> | string
+    severity?: EnumAlertSeverityWithAggregatesFilter<"ReportAlert"> | $Enums.AlertSeverity
+    createdAt?: DateTimeWithAggregatesFilter<"ReportAlert"> | Date | string
+    resolved?: BoolWithAggregatesFilter<"ReportAlert"> | boolean
+    resolvedAt?: DateTimeNullableWithAggregatesFilter<"ReportAlert"> | Date | string | null
+    resolvedBy?: StringNullableWithAggregatesFilter<"ReportAlert"> | string | null
+  }
+
+  export type BodyMapObservationWhereInput = {
+    AND?: BodyMapObservationWhereInput | BodyMapObservationWhereInput[]
+    OR?: BodyMapObservationWhereInput[]
+    NOT?: BodyMapObservationWhereInput | BodyMapObservationWhereInput[]
+    id?: StringFilter<"BodyMapObservation"> | string
+    reportId?: StringFilter<"BodyMapObservation"> | string
+    bodyPart?: StringFilter<"BodyMapObservation"> | string
+    condition?: StringFilter<"BodyMapObservation"> | string
+    notes?: StringNullableFilter<"BodyMapObservation"> | string | null
+    createdAt?: DateTimeFilter<"BodyMapObservation"> | Date | string
+    report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
+  }
+
+  export type BodyMapObservationOrderByWithRelationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    bodyPart?: SortOrder
+    condition?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    report?: ReportOrderByWithRelationInput
+  }
+
+  export type BodyMapObservationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BodyMapObservationWhereInput | BodyMapObservationWhereInput[]
+    OR?: BodyMapObservationWhereInput[]
+    NOT?: BodyMapObservationWhereInput | BodyMapObservationWhereInput[]
+    reportId?: StringFilter<"BodyMapObservation"> | string
+    bodyPart?: StringFilter<"BodyMapObservation"> | string
+    condition?: StringFilter<"BodyMapObservation"> | string
+    notes?: StringNullableFilter<"BodyMapObservation"> | string | null
+    createdAt?: DateTimeFilter<"BodyMapObservation"> | Date | string
+    report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
+  }, "id">
+
+  export type BodyMapObservationOrderByWithAggregationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    bodyPart?: SortOrder
+    condition?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: BodyMapObservationCountOrderByAggregateInput
+    _max?: BodyMapObservationMaxOrderByAggregateInput
+    _min?: BodyMapObservationMinOrderByAggregateInput
+  }
+
+  export type BodyMapObservationScalarWhereWithAggregatesInput = {
+    AND?: BodyMapObservationScalarWhereWithAggregatesInput | BodyMapObservationScalarWhereWithAggregatesInput[]
+    OR?: BodyMapObservationScalarWhereWithAggregatesInput[]
+    NOT?: BodyMapObservationScalarWhereWithAggregatesInput | BodyMapObservationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BodyMapObservation"> | string
+    reportId?: StringWithAggregatesFilter<"BodyMapObservation"> | string
+    bodyPart?: StringWithAggregatesFilter<"BodyMapObservation"> | string
+    condition?: StringWithAggregatesFilter<"BodyMapObservation"> | string
+    notes?: StringNullableWithAggregatesFilter<"BodyMapObservation"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BodyMapObservation"> | Date | string
+  }
+
+  export type ReportEditWhereInput = {
+    AND?: ReportEditWhereInput | ReportEditWhereInput[]
+    OR?: ReportEditWhereInput[]
+    NOT?: ReportEditWhereInput | ReportEditWhereInput[]
+    id?: StringFilter<"ReportEdit"> | string
+    reportId?: StringFilter<"ReportEdit"> | string
+    editedBy?: StringFilter<"ReportEdit"> | string
+    editedAt?: DateTimeFilter<"ReportEdit"> | Date | string
+    reason?: StringFilter<"ReportEdit"> | string
+    changesJson?: StringFilter<"ReportEdit"> | string
+    report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
+    editor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ReportEditOrderByWithRelationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    editedBy?: SortOrder
+    editedAt?: SortOrder
+    reason?: SortOrder
+    changesJson?: SortOrder
+    report?: ReportOrderByWithRelationInput
+    editor?: UserOrderByWithRelationInput
+  }
+
+  export type ReportEditWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReportEditWhereInput | ReportEditWhereInput[]
+    OR?: ReportEditWhereInput[]
+    NOT?: ReportEditWhereInput | ReportEditWhereInput[]
+    reportId?: StringFilter<"ReportEdit"> | string
+    editedBy?: StringFilter<"ReportEdit"> | string
+    editedAt?: DateTimeFilter<"ReportEdit"> | Date | string
+    reason?: StringFilter<"ReportEdit"> | string
+    changesJson?: StringFilter<"ReportEdit"> | string
+    report?: XOR<ReportScalarRelationFilter, ReportWhereInput>
+    editor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ReportEditOrderByWithAggregationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    editedBy?: SortOrder
+    editedAt?: SortOrder
+    reason?: SortOrder
+    changesJson?: SortOrder
+    _count?: ReportEditCountOrderByAggregateInput
+    _max?: ReportEditMaxOrderByAggregateInput
+    _min?: ReportEditMinOrderByAggregateInput
+  }
+
+  export type ReportEditScalarWhereWithAggregatesInput = {
+    AND?: ReportEditScalarWhereWithAggregatesInput | ReportEditScalarWhereWithAggregatesInput[]
+    OR?: ReportEditScalarWhereWithAggregatesInput[]
+    NOT?: ReportEditScalarWhereWithAggregatesInput | ReportEditScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReportEdit"> | string
+    reportId?: StringWithAggregatesFilter<"ReportEdit"> | string
+    editedBy?: StringWithAggregatesFilter<"ReportEdit"> | string
+    editedAt?: DateTimeWithAggregatesFilter<"ReportEdit"> | Date | string
+    reason?: StringWithAggregatesFilter<"ReportEdit"> | string
+    changesJson?: StringWithAggregatesFilter<"ReportEdit"> | string
   }
 
   export type MedicationRecordWhereInput = {
@@ -35954,8 +40350,10 @@ export namespace Prisma {
     doseTaken?: BoolFilter<"MedicationAdministration"> | boolean
     notes?: StringNullableFilter<"MedicationAdministration"> | string | null
     createdAt?: DateTimeFilter<"MedicationAdministration"> | Date | string
+    reportId?: StringNullableFilter<"MedicationAdministration"> | string | null
     medicationRecord?: XOR<MedicationRecordScalarRelationFilter, MedicationRecordWhereInput>
     administeredBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    report?: XOR<ReportNullableScalarRelationFilter, ReportWhereInput> | null
   }
 
   export type MedicationAdministrationOrderByWithRelationInput = {
@@ -35967,8 +40365,10 @@ export namespace Prisma {
     doseTaken?: SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    reportId?: SortOrderInput | SortOrder
     medicationRecord?: MedicationRecordOrderByWithRelationInput
     administeredBy?: UserOrderByWithRelationInput
+    report?: ReportOrderByWithRelationInput
   }
 
   export type MedicationAdministrationWhereUniqueInput = Prisma.AtLeast<{
@@ -35983,8 +40383,10 @@ export namespace Prisma {
     doseTaken?: BoolFilter<"MedicationAdministration"> | boolean
     notes?: StringNullableFilter<"MedicationAdministration"> | string | null
     createdAt?: DateTimeFilter<"MedicationAdministration"> | Date | string
+    reportId?: StringNullableFilter<"MedicationAdministration"> | string | null
     medicationRecord?: XOR<MedicationRecordScalarRelationFilter, MedicationRecordWhereInput>
     administeredBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    report?: XOR<ReportNullableScalarRelationFilter, ReportWhereInput> | null
   }, "id">
 
   export type MedicationAdministrationOrderByWithAggregationInput = {
@@ -35996,6 +40398,7 @@ export namespace Prisma {
     doseTaken?: SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    reportId?: SortOrderInput | SortOrder
     _count?: MedicationAdministrationCountOrderByAggregateInput
     _max?: MedicationAdministrationMaxOrderByAggregateInput
     _min?: MedicationAdministrationMinOrderByAggregateInput
@@ -36013,6 +40416,7 @@ export namespace Prisma {
     doseTaken?: BoolWithAggregatesFilter<"MedicationAdministration"> | boolean
     notes?: StringNullableWithAggregatesFilter<"MedicationAdministration"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"MedicationAdministration"> | Date | string
+    reportId?: StringNullableWithAggregatesFilter<"MedicationAdministration"> | string | null
   }
 
   export type InvoiceWhereInput = {
@@ -36976,6 +41380,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateInput = {
@@ -37000,6 +41405,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUpdateInput = {
@@ -37024,6 +41430,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateInput = {
@@ -37048,6 +41455,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateManyInput = {
@@ -37210,6 +41618,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -37273,6 +41682,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserUpdateInput = {
@@ -37336,6 +41746,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -37399,6 +41810,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -37878,14 +42290,28 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
     tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
   }
 
   export type ReportUncheckedCreateInput = {
     id?: string
     clientId: string
+    agencyId: string
     userId: string
     condition: string
     summary: string
@@ -37894,7 +42320,19 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
     tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
   }
 
   export type ReportUpdateInput = {
@@ -37906,14 +42344,28 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
@@ -37922,12 +42374,25 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
   }
 
   export type ReportCreateManyInput = {
     id?: string
     clientId: string
+    agencyId: string
     userId: string
     condition: string
     summary: string
@@ -37936,6 +42401,14 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
   }
 
   export type ReportUpdateManyMutationInput = {
@@ -37947,11 +42420,20 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReportUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
@@ -37960,12 +42442,24 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReportTaskCreateInput = {
     id?: string
     taskName: string
     completed?: boolean
+    notes?: string | null
+    taskIcon?: string | null
+    taskType?: string | null
+    completedAt?: Date | string | null
     report: ReportCreateNestedOneWithoutTasksCompletedInput
   }
 
@@ -37974,12 +42468,20 @@ export namespace Prisma {
     reportId: string
     taskName: string
     completed?: boolean
+    notes?: string | null
+    taskIcon?: string | null
+    taskType?: string | null
+    completedAt?: Date | string | null
   }
 
   export type ReportTaskUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     taskName?: StringFieldUpdateOperationsInput | string
     completed?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    taskIcon?: NullableStringFieldUpdateOperationsInput | string | null
+    taskType?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     report?: ReportUpdateOneRequiredWithoutTasksCompletedNestedInput
   }
 
@@ -37988,6 +42490,10 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     taskName?: StringFieldUpdateOperationsInput | string
     completed?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    taskIcon?: NullableStringFieldUpdateOperationsInput | string | null
+    taskType?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ReportTaskCreateManyInput = {
@@ -37995,12 +42501,20 @@ export namespace Prisma {
     reportId: string
     taskName: string
     completed?: boolean
+    notes?: string | null
+    taskIcon?: string | null
+    taskType?: string | null
+    completedAt?: Date | string | null
   }
 
   export type ReportTaskUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     taskName?: StringFieldUpdateOperationsInput | string
     completed?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    taskIcon?: NullableStringFieldUpdateOperationsInput | string | null
+    taskType?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ReportTaskUncheckedUpdateManyInput = {
@@ -38008,6 +42522,216 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     taskName?: StringFieldUpdateOperationsInput | string
     completed?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    taskIcon?: NullableStringFieldUpdateOperationsInput | string | null
+    taskType?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportAlertCreateInput = {
+    id?: string
+    type: $Enums.AlertType
+    message: string
+    severity: $Enums.AlertSeverity
+    createdAt?: Date | string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    report: ReportCreateNestedOneWithoutAlertsInput
+  }
+
+  export type ReportAlertUncheckedCreateInput = {
+    id?: string
+    reportId: string
+    type: $Enums.AlertType
+    message: string
+    severity: $Enums.AlertSeverity
+    createdAt?: Date | string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+  }
+
+  export type ReportAlertUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: EnumAlertSeverityFieldUpdateOperationsInput | $Enums.AlertSeverity
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    report?: ReportUpdateOneRequiredWithoutAlertsNestedInput
+  }
+
+  export type ReportAlertUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: EnumAlertSeverityFieldUpdateOperationsInput | $Enums.AlertSeverity
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ReportAlertCreateManyInput = {
+    id?: string
+    reportId: string
+    type: $Enums.AlertType
+    message: string
+    severity: $Enums.AlertSeverity
+    createdAt?: Date | string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+  }
+
+  export type ReportAlertUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: EnumAlertSeverityFieldUpdateOperationsInput | $Enums.AlertSeverity
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ReportAlertUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: EnumAlertSeverityFieldUpdateOperationsInput | $Enums.AlertSeverity
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type BodyMapObservationCreateInput = {
+    id?: string
+    bodyPart: string
+    condition: string
+    notes?: string | null
+    createdAt?: Date | string
+    report: ReportCreateNestedOneWithoutBodyMapObservationsInput
+  }
+
+  export type BodyMapObservationUncheckedCreateInput = {
+    id?: string
+    reportId: string
+    bodyPart: string
+    condition: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BodyMapObservationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bodyPart?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    report?: ReportUpdateOneRequiredWithoutBodyMapObservationsNestedInput
+  }
+
+  export type BodyMapObservationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    bodyPart?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BodyMapObservationCreateManyInput = {
+    id?: string
+    reportId: string
+    bodyPart: string
+    condition: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BodyMapObservationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bodyPart?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BodyMapObservationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    bodyPart?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportEditCreateInput = {
+    id?: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
+    report: ReportCreateNestedOneWithoutEditHistoryInput
+    editor: UserCreateNestedOneWithoutReportEditsInput
+  }
+
+  export type ReportEditUncheckedCreateInput = {
+    id?: string
+    reportId: string
+    editedBy: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
+  }
+
+  export type ReportEditUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
+    report?: ReportUpdateOneRequiredWithoutEditHistoryNestedInput
+    editor?: UserUpdateOneRequiredWithoutReportEditsNestedInput
+  }
+
+  export type ReportEditUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    editedBy?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ReportEditCreateManyInput = {
+    id?: string
+    reportId: string
+    editedBy: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
+  }
+
+  export type ReportEditUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ReportEditUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    editedBy?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicationRecordCreateInput = {
@@ -38155,6 +42879,7 @@ export namespace Prisma {
     createdAt?: Date | string
     medicationRecord: MedicationRecordCreateNestedOneWithoutAdministrationRecordsInput
     administeredBy: UserCreateNestedOneWithoutMedicationAdministrationsInput
+    report?: ReportCreateNestedOneWithoutMedicationAdministrationsInput
   }
 
   export type MedicationAdministrationUncheckedCreateInput = {
@@ -38166,6 +42891,7 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: string | null
     createdAt?: Date | string
+    reportId?: string | null
   }
 
   export type MedicationAdministrationUpdateInput = {
@@ -38177,6 +42903,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     medicationRecord?: MedicationRecordUpdateOneRequiredWithoutAdministrationRecordsNestedInput
     administeredBy?: UserUpdateOneRequiredWithoutMedicationAdministrationsNestedInput
+    report?: ReportUpdateOneWithoutMedicationAdministrationsNestedInput
   }
 
   export type MedicationAdministrationUncheckedUpdateInput = {
@@ -38188,6 +42915,7 @@ export namespace Prisma {
     doseTaken?: BoolFieldUpdateOperationsInput | boolean
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MedicationAdministrationCreateManyInput = {
@@ -38199,6 +42927,7 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: string | null
     createdAt?: Date | string
+    reportId?: string | null
   }
 
   export type MedicationAdministrationUpdateManyMutationInput = {
@@ -38219,6 +42948,7 @@ export namespace Prisma {
     doseTaken?: BoolFieldUpdateOperationsInput | boolean
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InvoiceCreateInput = {
@@ -39295,6 +44025,12 @@ export namespace Prisma {
     none?: RiskCategoryWhereInput
   }
 
+  export type ReportListRelationFilter = {
+    every?: ReportWhereInput
+    some?: ReportWhereInput
+    none?: ReportWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -39328,6 +44064,10 @@ export namespace Prisma {
   }
 
   export type RiskCategoryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReportOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -39482,12 +44222,6 @@ export namespace Prisma {
     none?: ClientCareAssignmentWhereInput
   }
 
-  export type ReportListRelationFilter = {
-    every?: ReportWhereInput
-    some?: ReportWhereInput
-    none?: ReportWhereInput
-  }
-
   export type MedicationRecordListRelationFilter = {
     every?: MedicationRecordWhereInput
     some?: MedicationRecordWhereInput
@@ -39553,15 +44287,17 @@ export namespace Prisma {
     none?: MedicationAdministrationWhereInput
   }
 
+  export type ReportEditListRelationFilter = {
+    every?: ReportEditWhereInput
+    some?: ReportEditWhereInput
+    none?: ReportEditWhereInput
+  }
+
   export type InvitationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ClientCareAssignmentOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ReportOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -39602,6 +44338,10 @@ export namespace Prisma {
   }
 
   export type MedicationAdministrationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReportEditOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -39962,19 +44702,47 @@ export namespace Prisma {
     _max?: NestedEnumScheduleTypeFilter<$PrismaModel>
   }
 
+  export type EnumReportStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusFilter<$PrismaModel> | $Enums.ReportStatus
+  }
+
   export type ReportTaskListRelationFilter = {
     every?: ReportTaskWhereInput
     some?: ReportTaskWhereInput
     none?: ReportTaskWhereInput
   }
 
+  export type ReportAlertListRelationFilter = {
+    every?: ReportAlertWhereInput
+    some?: ReportAlertWhereInput
+    none?: ReportAlertWhereInput
+  }
+
+  export type BodyMapObservationListRelationFilter = {
+    every?: BodyMapObservationWhereInput
+    some?: BodyMapObservationWhereInput
+    none?: BodyMapObservationWhereInput
+  }
+
   export type ReportTaskOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReportAlertOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BodyMapObservationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ReportCountOrderByAggregateInput = {
     id?: SortOrder
     clientId?: SortOrder
+    agencyId?: SortOrder
     userId?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
@@ -39983,6 +44751,14 @@ export namespace Prisma {
     createdAt?: SortOrder
     checkInDistance?: SortOrder
     checkOutDistance?: SortOrder
+    checkInLocation?: SortOrder
+    checkOutLocation?: SortOrder
+    hasSignature?: SortOrder
+    signatureImageUrl?: SortOrder
+    status?: SortOrder
+    lastEditedAt?: SortOrder
+    lastEditedBy?: SortOrder
+    lastEditReason?: SortOrder
   }
 
   export type ReportAvgOrderByAggregateInput = {
@@ -39993,6 +44769,7 @@ export namespace Prisma {
   export type ReportMaxOrderByAggregateInput = {
     id?: SortOrder
     clientId?: SortOrder
+    agencyId?: SortOrder
     userId?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
@@ -40001,11 +44778,20 @@ export namespace Prisma {
     createdAt?: SortOrder
     checkInDistance?: SortOrder
     checkOutDistance?: SortOrder
+    checkInLocation?: SortOrder
+    checkOutLocation?: SortOrder
+    hasSignature?: SortOrder
+    signatureImageUrl?: SortOrder
+    status?: SortOrder
+    lastEditedAt?: SortOrder
+    lastEditedBy?: SortOrder
+    lastEditReason?: SortOrder
   }
 
   export type ReportMinOrderByAggregateInput = {
     id?: SortOrder
     clientId?: SortOrder
+    agencyId?: SortOrder
     userId?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
@@ -40014,11 +44800,29 @@ export namespace Prisma {
     createdAt?: SortOrder
     checkInDistance?: SortOrder
     checkOutDistance?: SortOrder
+    checkInLocation?: SortOrder
+    checkOutLocation?: SortOrder
+    hasSignature?: SortOrder
+    signatureImageUrl?: SortOrder
+    status?: SortOrder
+    lastEditedAt?: SortOrder
+    lastEditedBy?: SortOrder
+    lastEditReason?: SortOrder
   }
 
   export type ReportSumOrderByAggregateInput = {
     checkInDistance?: SortOrder
     checkOutDistance?: SortOrder
+  }
+
+  export type EnumReportStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReportStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportStatusFilter<$PrismaModel>
+    _max?: NestedEnumReportStatusFilter<$PrismaModel>
   }
 
   export type ReportScalarRelationFilter = {
@@ -40031,6 +44835,10 @@ export namespace Prisma {
     reportId?: SortOrder
     taskName?: SortOrder
     completed?: SortOrder
+    notes?: SortOrder
+    taskIcon?: SortOrder
+    taskType?: SortOrder
+    completedAt?: SortOrder
   }
 
   export type ReportTaskMaxOrderByAggregateInput = {
@@ -40038,6 +44846,10 @@ export namespace Prisma {
     reportId?: SortOrder
     taskName?: SortOrder
     completed?: SortOrder
+    notes?: SortOrder
+    taskIcon?: SortOrder
+    taskType?: SortOrder
+    completedAt?: SortOrder
   }
 
   export type ReportTaskMinOrderByAggregateInput = {
@@ -40045,6 +44857,134 @@ export namespace Prisma {
     reportId?: SortOrder
     taskName?: SortOrder
     completed?: SortOrder
+    notes?: SortOrder
+    taskIcon?: SortOrder
+    taskType?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type EnumAlertTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeFilter<$PrismaModel> | $Enums.AlertType
+  }
+
+  export type EnumAlertSeverityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertSeverity | EnumAlertSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertSeverityFilter<$PrismaModel> | $Enums.AlertSeverity
+  }
+
+  export type ReportAlertCountOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    createdAt?: SortOrder
+    resolved?: SortOrder
+    resolvedAt?: SortOrder
+    resolvedBy?: SortOrder
+  }
+
+  export type ReportAlertMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    createdAt?: SortOrder
+    resolved?: SortOrder
+    resolvedAt?: SortOrder
+    resolvedBy?: SortOrder
+  }
+
+  export type ReportAlertMinOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    createdAt?: SortOrder
+    resolved?: SortOrder
+    resolvedAt?: SortOrder
+    resolvedBy?: SortOrder
+  }
+
+  export type EnumAlertTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeWithAggregatesFilter<$PrismaModel> | $Enums.AlertType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertTypeFilter<$PrismaModel>
+    _max?: NestedEnumAlertTypeFilter<$PrismaModel>
+  }
+
+  export type EnumAlertSeverityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertSeverity | EnumAlertSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertSeverityWithAggregatesFilter<$PrismaModel> | $Enums.AlertSeverity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertSeverityFilter<$PrismaModel>
+    _max?: NestedEnumAlertSeverityFilter<$PrismaModel>
+  }
+
+  export type BodyMapObservationCountOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    bodyPart?: SortOrder
+    condition?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BodyMapObservationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    bodyPart?: SortOrder
+    condition?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BodyMapObservationMinOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    bodyPart?: SortOrder
+    condition?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReportEditCountOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    editedBy?: SortOrder
+    editedAt?: SortOrder
+    reason?: SortOrder
+    changesJson?: SortOrder
+  }
+
+  export type ReportEditMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    editedBy?: SortOrder
+    editedAt?: SortOrder
+    reason?: SortOrder
+    changesJson?: SortOrder
+  }
+
+  export type ReportEditMinOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    editedBy?: SortOrder
+    editedAt?: SortOrder
+    reason?: SortOrder
+    changesJson?: SortOrder
   }
 
   export type MedicationDatabaseLinkScalarRelationFilter = {
@@ -40121,6 +45061,11 @@ export namespace Prisma {
     isNot?: MedicationRecordWhereInput
   }
 
+  export type ReportNullableScalarRelationFilter = {
+    is?: ReportWhereInput | null
+    isNot?: ReportWhereInput | null
+  }
+
   export type MedicationAdministrationCountOrderByAggregateInput = {
     id?: SortOrder
     medicationRecordId?: SortOrder
@@ -40130,6 +45075,7 @@ export namespace Prisma {
     doseTaken?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+    reportId?: SortOrder
   }
 
   export type MedicationAdministrationMaxOrderByAggregateInput = {
@@ -40141,6 +45087,7 @@ export namespace Prisma {
     doseTaken?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+    reportId?: SortOrder
   }
 
   export type MedicationAdministrationMinOrderByAggregateInput = {
@@ -40152,6 +45099,7 @@ export namespace Prisma {
     doseTaken?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+    reportId?: SortOrder
   }
 
   export type EnumDoseTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -40778,6 +45726,13 @@ export namespace Prisma {
     connect?: RiskCategoryWhereUniqueInput | RiskCategoryWhereUniqueInput[]
   }
 
+  export type ReportCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
+    createMany?: ReportCreateManyAgencyInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
@@ -40839,6 +45794,13 @@ export namespace Prisma {
     connectOrCreate?: RiskCategoryCreateOrConnectWithoutAgencyInput | RiskCategoryCreateOrConnectWithoutAgencyInput[]
     createMany?: RiskCategoryCreateManyAgencyInputEnvelope
     connect?: RiskCategoryWhereUniqueInput | RiskCategoryWhereUniqueInput[]
+  }
+
+  export type ReportUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
+    createMany?: ReportCreateManyAgencyInputEnvelope
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -40971,6 +45933,20 @@ export namespace Prisma {
     deleteMany?: RiskCategoryScalarWhereInput | RiskCategoryScalarWhereInput[]
   }
 
+  export type ReportUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutAgencyInput | ReportUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ReportCreateManyAgencyInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutAgencyInput | ReportUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutAgencyInput | ReportUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
@@ -41095,6 +46071,20 @@ export namespace Prisma {
     update?: RiskCategoryUpdateWithWhereUniqueWithoutAgencyInput | RiskCategoryUpdateWithWhereUniqueWithoutAgencyInput[]
     updateMany?: RiskCategoryUpdateManyWithWhereWithoutAgencyInput | RiskCategoryUpdateManyWithWhereWithoutAgencyInput[]
     deleteMany?: RiskCategoryScalarWhereInput | RiskCategoryScalarWhereInput[]
+  }
+
+  export type ReportUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
+    upsert?: ReportUpsertWithWhereUniqueWithoutAgencyInput | ReportUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ReportCreateManyAgencyInputEnvelope
+    set?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    disconnect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    delete?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+    update?: ReportUpdateWithWhereUniqueWithoutAgencyInput | ReportUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ReportUpdateManyWithWhereWithoutAgencyInput | ReportUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutClientAssignmentsInput = {
@@ -41345,6 +46335,13 @@ export namespace Prisma {
     connect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
   }
 
+  export type ReportEditCreateNestedManyWithoutEditorInput = {
+    create?: XOR<ReportEditCreateWithoutEditorInput, ReportEditUncheckedCreateWithoutEditorInput> | ReportEditCreateWithoutEditorInput[] | ReportEditUncheckedCreateWithoutEditorInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutEditorInput | ReportEditCreateOrConnectWithoutEditorInput[]
+    createMany?: ReportEditCreateManyEditorInputEnvelope
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+  }
+
   export type InvitationUncheckedCreateNestedManyWithoutInviterInput = {
     create?: XOR<InvitationCreateWithoutInviterInput, InvitationUncheckedCreateWithoutInviterInput> | InvitationCreateWithoutInviterInput[] | InvitationUncheckedCreateWithoutInviterInput[]
     connectOrCreate?: InvitationCreateOrConnectWithoutInviterInput | InvitationCreateOrConnectWithoutInviterInput[]
@@ -41551,6 +46548,13 @@ export namespace Prisma {
     connectOrCreate?: MedicationAdministrationCreateOrConnectWithoutAdministeredByInput | MedicationAdministrationCreateOrConnectWithoutAdministeredByInput[]
     createMany?: MedicationAdministrationCreateManyAdministeredByInputEnvelope
     connect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+  }
+
+  export type ReportEditUncheckedCreateNestedManyWithoutEditorInput = {
+    create?: XOR<ReportEditCreateWithoutEditorInput, ReportEditUncheckedCreateWithoutEditorInput> | ReportEditCreateWithoutEditorInput[] | ReportEditUncheckedCreateWithoutEditorInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutEditorInput | ReportEditCreateOrConnectWithoutEditorInput[]
+    createMany?: ReportEditCreateManyEditorInputEnvelope
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -42005,6 +47009,20 @@ export namespace Prisma {
     deleteMany?: MedicationAdministrationScalarWhereInput | MedicationAdministrationScalarWhereInput[]
   }
 
+  export type ReportEditUpdateManyWithoutEditorNestedInput = {
+    create?: XOR<ReportEditCreateWithoutEditorInput, ReportEditUncheckedCreateWithoutEditorInput> | ReportEditCreateWithoutEditorInput[] | ReportEditUncheckedCreateWithoutEditorInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutEditorInput | ReportEditCreateOrConnectWithoutEditorInput[]
+    upsert?: ReportEditUpsertWithWhereUniqueWithoutEditorInput | ReportEditUpsertWithWhereUniqueWithoutEditorInput[]
+    createMany?: ReportEditCreateManyEditorInputEnvelope
+    set?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    disconnect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    delete?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    update?: ReportEditUpdateWithWhereUniqueWithoutEditorInput | ReportEditUpdateWithWhereUniqueWithoutEditorInput[]
+    updateMany?: ReportEditUpdateManyWithWhereWithoutEditorInput | ReportEditUpdateManyWithWhereWithoutEditorInput[]
+    deleteMany?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
+  }
+
   export type InvitationUncheckedUpdateManyWithoutInviterNestedInput = {
     create?: XOR<InvitationCreateWithoutInviterInput, InvitationUncheckedCreateWithoutInviterInput> | InvitationCreateWithoutInviterInput[] | InvitationUncheckedCreateWithoutInviterInput[]
     connectOrCreate?: InvitationCreateOrConnectWithoutInviterInput | InvitationCreateOrConnectWithoutInviterInput[]
@@ -42417,6 +47435,20 @@ export namespace Prisma {
     deleteMany?: MedicationAdministrationScalarWhereInput | MedicationAdministrationScalarWhereInput[]
   }
 
+  export type ReportEditUncheckedUpdateManyWithoutEditorNestedInput = {
+    create?: XOR<ReportEditCreateWithoutEditorInput, ReportEditUncheckedCreateWithoutEditorInput> | ReportEditCreateWithoutEditorInput[] | ReportEditUncheckedCreateWithoutEditorInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutEditorInput | ReportEditCreateOrConnectWithoutEditorInput[]
+    upsert?: ReportEditUpsertWithWhereUniqueWithoutEditorInput | ReportEditUpsertWithWhereUniqueWithoutEditorInput[]
+    createMany?: ReportEditCreateManyEditorInputEnvelope
+    set?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    disconnect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    delete?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    update?: ReportEditUpdateWithWhereUniqueWithoutEditorInput | ReportEditUpdateWithWhereUniqueWithoutEditorInput[]
+    updateMany?: ReportEditUpdateManyWithWhereWithoutEditorInput | ReportEditUpdateManyWithWhereWithoutEditorInput[]
+    deleteMany?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutCommunicationPreferenceInput = {
     create?: XOR<UserCreateWithoutCommunicationPreferenceInput, UserUncheckedCreateWithoutCommunicationPreferenceInput>
     connectOrCreate?: UserCreateOrConnectWithoutCommunicationPreferenceInput
@@ -42626,6 +47658,34 @@ export namespace Prisma {
     connect?: ReportTaskWhereUniqueInput | ReportTaskWhereUniqueInput[]
   }
 
+  export type ReportAlertCreateNestedManyWithoutReportInput = {
+    create?: XOR<ReportAlertCreateWithoutReportInput, ReportAlertUncheckedCreateWithoutReportInput> | ReportAlertCreateWithoutReportInput[] | ReportAlertUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportAlertCreateOrConnectWithoutReportInput | ReportAlertCreateOrConnectWithoutReportInput[]
+    createMany?: ReportAlertCreateManyReportInputEnvelope
+    connect?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+  }
+
+  export type BodyMapObservationCreateNestedManyWithoutReportInput = {
+    create?: XOR<BodyMapObservationCreateWithoutReportInput, BodyMapObservationUncheckedCreateWithoutReportInput> | BodyMapObservationCreateWithoutReportInput[] | BodyMapObservationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: BodyMapObservationCreateOrConnectWithoutReportInput | BodyMapObservationCreateOrConnectWithoutReportInput[]
+    createMany?: BodyMapObservationCreateManyReportInputEnvelope
+    connect?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+  }
+
+  export type MedicationAdministrationCreateNestedManyWithoutReportInput = {
+    create?: XOR<MedicationAdministrationCreateWithoutReportInput, MedicationAdministrationUncheckedCreateWithoutReportInput> | MedicationAdministrationCreateWithoutReportInput[] | MedicationAdministrationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: MedicationAdministrationCreateOrConnectWithoutReportInput | MedicationAdministrationCreateOrConnectWithoutReportInput[]
+    createMany?: MedicationAdministrationCreateManyReportInputEnvelope
+    connect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+  }
+
+  export type ReportEditCreateNestedManyWithoutReportInput = {
+    create?: XOR<ReportEditCreateWithoutReportInput, ReportEditUncheckedCreateWithoutReportInput> | ReportEditCreateWithoutReportInput[] | ReportEditUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutReportInput | ReportEditCreateOrConnectWithoutReportInput[]
+    createMany?: ReportEditCreateManyReportInputEnvelope
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+  }
+
   export type UserCreateNestedOneWithoutClientReportsInput = {
     create?: XOR<UserCreateWithoutClientReportsInput, UserUncheckedCreateWithoutClientReportsInput>
     connectOrCreate?: UserCreateOrConnectWithoutClientReportsInput
@@ -42638,11 +47698,49 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type AgencyCreateNestedOneWithoutReportInput = {
+    create?: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutReportInput
+    connect?: AgencyWhereUniqueInput
+  }
+
   export type ReportTaskUncheckedCreateNestedManyWithoutReportInput = {
     create?: XOR<ReportTaskCreateWithoutReportInput, ReportTaskUncheckedCreateWithoutReportInput> | ReportTaskCreateWithoutReportInput[] | ReportTaskUncheckedCreateWithoutReportInput[]
     connectOrCreate?: ReportTaskCreateOrConnectWithoutReportInput | ReportTaskCreateOrConnectWithoutReportInput[]
     createMany?: ReportTaskCreateManyReportInputEnvelope
     connect?: ReportTaskWhereUniqueInput | ReportTaskWhereUniqueInput[]
+  }
+
+  export type ReportAlertUncheckedCreateNestedManyWithoutReportInput = {
+    create?: XOR<ReportAlertCreateWithoutReportInput, ReportAlertUncheckedCreateWithoutReportInput> | ReportAlertCreateWithoutReportInput[] | ReportAlertUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportAlertCreateOrConnectWithoutReportInput | ReportAlertCreateOrConnectWithoutReportInput[]
+    createMany?: ReportAlertCreateManyReportInputEnvelope
+    connect?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+  }
+
+  export type BodyMapObservationUncheckedCreateNestedManyWithoutReportInput = {
+    create?: XOR<BodyMapObservationCreateWithoutReportInput, BodyMapObservationUncheckedCreateWithoutReportInput> | BodyMapObservationCreateWithoutReportInput[] | BodyMapObservationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: BodyMapObservationCreateOrConnectWithoutReportInput | BodyMapObservationCreateOrConnectWithoutReportInput[]
+    createMany?: BodyMapObservationCreateManyReportInputEnvelope
+    connect?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+  }
+
+  export type MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput = {
+    create?: XOR<MedicationAdministrationCreateWithoutReportInput, MedicationAdministrationUncheckedCreateWithoutReportInput> | MedicationAdministrationCreateWithoutReportInput[] | MedicationAdministrationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: MedicationAdministrationCreateOrConnectWithoutReportInput | MedicationAdministrationCreateOrConnectWithoutReportInput[]
+    createMany?: MedicationAdministrationCreateManyReportInputEnvelope
+    connect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+  }
+
+  export type ReportEditUncheckedCreateNestedManyWithoutReportInput = {
+    create?: XOR<ReportEditCreateWithoutReportInput, ReportEditUncheckedCreateWithoutReportInput> | ReportEditCreateWithoutReportInput[] | ReportEditUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutReportInput | ReportEditCreateOrConnectWithoutReportInput[]
+    createMany?: ReportEditCreateManyReportInputEnvelope
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+  }
+
+  export type EnumReportStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ReportStatus
   }
 
   export type ReportTaskUpdateManyWithoutReportNestedInput = {
@@ -42657,6 +47755,62 @@ export namespace Prisma {
     update?: ReportTaskUpdateWithWhereUniqueWithoutReportInput | ReportTaskUpdateWithWhereUniqueWithoutReportInput[]
     updateMany?: ReportTaskUpdateManyWithWhereWithoutReportInput | ReportTaskUpdateManyWithWhereWithoutReportInput[]
     deleteMany?: ReportTaskScalarWhereInput | ReportTaskScalarWhereInput[]
+  }
+
+  export type ReportAlertUpdateManyWithoutReportNestedInput = {
+    create?: XOR<ReportAlertCreateWithoutReportInput, ReportAlertUncheckedCreateWithoutReportInput> | ReportAlertCreateWithoutReportInput[] | ReportAlertUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportAlertCreateOrConnectWithoutReportInput | ReportAlertCreateOrConnectWithoutReportInput[]
+    upsert?: ReportAlertUpsertWithWhereUniqueWithoutReportInput | ReportAlertUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: ReportAlertCreateManyReportInputEnvelope
+    set?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    disconnect?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    delete?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    connect?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    update?: ReportAlertUpdateWithWhereUniqueWithoutReportInput | ReportAlertUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: ReportAlertUpdateManyWithWhereWithoutReportInput | ReportAlertUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: ReportAlertScalarWhereInput | ReportAlertScalarWhereInput[]
+  }
+
+  export type BodyMapObservationUpdateManyWithoutReportNestedInput = {
+    create?: XOR<BodyMapObservationCreateWithoutReportInput, BodyMapObservationUncheckedCreateWithoutReportInput> | BodyMapObservationCreateWithoutReportInput[] | BodyMapObservationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: BodyMapObservationCreateOrConnectWithoutReportInput | BodyMapObservationCreateOrConnectWithoutReportInput[]
+    upsert?: BodyMapObservationUpsertWithWhereUniqueWithoutReportInput | BodyMapObservationUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: BodyMapObservationCreateManyReportInputEnvelope
+    set?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    disconnect?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    delete?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    connect?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    update?: BodyMapObservationUpdateWithWhereUniqueWithoutReportInput | BodyMapObservationUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: BodyMapObservationUpdateManyWithWhereWithoutReportInput | BodyMapObservationUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: BodyMapObservationScalarWhereInput | BodyMapObservationScalarWhereInput[]
+  }
+
+  export type MedicationAdministrationUpdateManyWithoutReportNestedInput = {
+    create?: XOR<MedicationAdministrationCreateWithoutReportInput, MedicationAdministrationUncheckedCreateWithoutReportInput> | MedicationAdministrationCreateWithoutReportInput[] | MedicationAdministrationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: MedicationAdministrationCreateOrConnectWithoutReportInput | MedicationAdministrationCreateOrConnectWithoutReportInput[]
+    upsert?: MedicationAdministrationUpsertWithWhereUniqueWithoutReportInput | MedicationAdministrationUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: MedicationAdministrationCreateManyReportInputEnvelope
+    set?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    disconnect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    delete?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    connect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    update?: MedicationAdministrationUpdateWithWhereUniqueWithoutReportInput | MedicationAdministrationUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: MedicationAdministrationUpdateManyWithWhereWithoutReportInput | MedicationAdministrationUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: MedicationAdministrationScalarWhereInput | MedicationAdministrationScalarWhereInput[]
+  }
+
+  export type ReportEditUpdateManyWithoutReportNestedInput = {
+    create?: XOR<ReportEditCreateWithoutReportInput, ReportEditUncheckedCreateWithoutReportInput> | ReportEditCreateWithoutReportInput[] | ReportEditUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutReportInput | ReportEditCreateOrConnectWithoutReportInput[]
+    upsert?: ReportEditUpsertWithWhereUniqueWithoutReportInput | ReportEditUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: ReportEditCreateManyReportInputEnvelope
+    set?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    disconnect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    delete?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    update?: ReportEditUpdateWithWhereUniqueWithoutReportInput | ReportEditUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: ReportEditUpdateManyWithWhereWithoutReportInput | ReportEditUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
   }
 
   export type UserUpdateOneRequiredWithoutClientReportsNestedInput = {
@@ -42675,6 +47829,14 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCareReportsInput, UserUpdateWithoutCareReportsInput>, UserUncheckedUpdateWithoutCareReportsInput>
   }
 
+  export type AgencyUpdateOneRequiredWithoutReportNestedInput = {
+    create?: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutReportInput
+    upsert?: AgencyUpsertWithoutReportInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutReportInput, AgencyUpdateWithoutReportInput>, AgencyUncheckedUpdateWithoutReportInput>
+  }
+
   export type ReportTaskUncheckedUpdateManyWithoutReportNestedInput = {
     create?: XOR<ReportTaskCreateWithoutReportInput, ReportTaskUncheckedCreateWithoutReportInput> | ReportTaskCreateWithoutReportInput[] | ReportTaskUncheckedCreateWithoutReportInput[]
     connectOrCreate?: ReportTaskCreateOrConnectWithoutReportInput | ReportTaskCreateOrConnectWithoutReportInput[]
@@ -42689,6 +47851,62 @@ export namespace Prisma {
     deleteMany?: ReportTaskScalarWhereInput | ReportTaskScalarWhereInput[]
   }
 
+  export type ReportAlertUncheckedUpdateManyWithoutReportNestedInput = {
+    create?: XOR<ReportAlertCreateWithoutReportInput, ReportAlertUncheckedCreateWithoutReportInput> | ReportAlertCreateWithoutReportInput[] | ReportAlertUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportAlertCreateOrConnectWithoutReportInput | ReportAlertCreateOrConnectWithoutReportInput[]
+    upsert?: ReportAlertUpsertWithWhereUniqueWithoutReportInput | ReportAlertUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: ReportAlertCreateManyReportInputEnvelope
+    set?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    disconnect?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    delete?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    connect?: ReportAlertWhereUniqueInput | ReportAlertWhereUniqueInput[]
+    update?: ReportAlertUpdateWithWhereUniqueWithoutReportInput | ReportAlertUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: ReportAlertUpdateManyWithWhereWithoutReportInput | ReportAlertUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: ReportAlertScalarWhereInput | ReportAlertScalarWhereInput[]
+  }
+
+  export type BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput = {
+    create?: XOR<BodyMapObservationCreateWithoutReportInput, BodyMapObservationUncheckedCreateWithoutReportInput> | BodyMapObservationCreateWithoutReportInput[] | BodyMapObservationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: BodyMapObservationCreateOrConnectWithoutReportInput | BodyMapObservationCreateOrConnectWithoutReportInput[]
+    upsert?: BodyMapObservationUpsertWithWhereUniqueWithoutReportInput | BodyMapObservationUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: BodyMapObservationCreateManyReportInputEnvelope
+    set?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    disconnect?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    delete?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    connect?: BodyMapObservationWhereUniqueInput | BodyMapObservationWhereUniqueInput[]
+    update?: BodyMapObservationUpdateWithWhereUniqueWithoutReportInput | BodyMapObservationUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: BodyMapObservationUpdateManyWithWhereWithoutReportInput | BodyMapObservationUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: BodyMapObservationScalarWhereInput | BodyMapObservationScalarWhereInput[]
+  }
+
+  export type MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput = {
+    create?: XOR<MedicationAdministrationCreateWithoutReportInput, MedicationAdministrationUncheckedCreateWithoutReportInput> | MedicationAdministrationCreateWithoutReportInput[] | MedicationAdministrationUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: MedicationAdministrationCreateOrConnectWithoutReportInput | MedicationAdministrationCreateOrConnectWithoutReportInput[]
+    upsert?: MedicationAdministrationUpsertWithWhereUniqueWithoutReportInput | MedicationAdministrationUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: MedicationAdministrationCreateManyReportInputEnvelope
+    set?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    disconnect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    delete?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    connect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
+    update?: MedicationAdministrationUpdateWithWhereUniqueWithoutReportInput | MedicationAdministrationUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: MedicationAdministrationUpdateManyWithWhereWithoutReportInput | MedicationAdministrationUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: MedicationAdministrationScalarWhereInput | MedicationAdministrationScalarWhereInput[]
+  }
+
+  export type ReportEditUncheckedUpdateManyWithoutReportNestedInput = {
+    create?: XOR<ReportEditCreateWithoutReportInput, ReportEditUncheckedCreateWithoutReportInput> | ReportEditCreateWithoutReportInput[] | ReportEditUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportEditCreateOrConnectWithoutReportInput | ReportEditCreateOrConnectWithoutReportInput[]
+    upsert?: ReportEditUpsertWithWhereUniqueWithoutReportInput | ReportEditUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: ReportEditCreateManyReportInputEnvelope
+    set?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    disconnect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    delete?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
+    update?: ReportEditUpdateWithWhereUniqueWithoutReportInput | ReportEditUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: ReportEditUpdateManyWithWhereWithoutReportInput | ReportEditUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
+  }
+
   export type ReportCreateNestedOneWithoutTasksCompletedInput = {
     create?: XOR<ReportCreateWithoutTasksCompletedInput, ReportUncheckedCreateWithoutTasksCompletedInput>
     connectOrCreate?: ReportCreateOrConnectWithoutTasksCompletedInput
@@ -42701,6 +47919,70 @@ export namespace Prisma {
     upsert?: ReportUpsertWithoutTasksCompletedInput
     connect?: ReportWhereUniqueInput
     update?: XOR<XOR<ReportUpdateToOneWithWhereWithoutTasksCompletedInput, ReportUpdateWithoutTasksCompletedInput>, ReportUncheckedUpdateWithoutTasksCompletedInput>
+  }
+
+  export type ReportCreateNestedOneWithoutAlertsInput = {
+    create?: XOR<ReportCreateWithoutAlertsInput, ReportUncheckedCreateWithoutAlertsInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutAlertsInput
+    connect?: ReportWhereUniqueInput
+  }
+
+  export type EnumAlertTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AlertType
+  }
+
+  export type EnumAlertSeverityFieldUpdateOperationsInput = {
+    set?: $Enums.AlertSeverity
+  }
+
+  export type ReportUpdateOneRequiredWithoutAlertsNestedInput = {
+    create?: XOR<ReportCreateWithoutAlertsInput, ReportUncheckedCreateWithoutAlertsInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutAlertsInput
+    upsert?: ReportUpsertWithoutAlertsInput
+    connect?: ReportWhereUniqueInput
+    update?: XOR<XOR<ReportUpdateToOneWithWhereWithoutAlertsInput, ReportUpdateWithoutAlertsInput>, ReportUncheckedUpdateWithoutAlertsInput>
+  }
+
+  export type ReportCreateNestedOneWithoutBodyMapObservationsInput = {
+    create?: XOR<ReportCreateWithoutBodyMapObservationsInput, ReportUncheckedCreateWithoutBodyMapObservationsInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutBodyMapObservationsInput
+    connect?: ReportWhereUniqueInput
+  }
+
+  export type ReportUpdateOneRequiredWithoutBodyMapObservationsNestedInput = {
+    create?: XOR<ReportCreateWithoutBodyMapObservationsInput, ReportUncheckedCreateWithoutBodyMapObservationsInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutBodyMapObservationsInput
+    upsert?: ReportUpsertWithoutBodyMapObservationsInput
+    connect?: ReportWhereUniqueInput
+    update?: XOR<XOR<ReportUpdateToOneWithWhereWithoutBodyMapObservationsInput, ReportUpdateWithoutBodyMapObservationsInput>, ReportUncheckedUpdateWithoutBodyMapObservationsInput>
+  }
+
+  export type ReportCreateNestedOneWithoutEditHistoryInput = {
+    create?: XOR<ReportCreateWithoutEditHistoryInput, ReportUncheckedCreateWithoutEditHistoryInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutEditHistoryInput
+    connect?: ReportWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReportEditsInput = {
+    create?: XOR<UserCreateWithoutReportEditsInput, UserUncheckedCreateWithoutReportEditsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportEditsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ReportUpdateOneRequiredWithoutEditHistoryNestedInput = {
+    create?: XOR<ReportCreateWithoutEditHistoryInput, ReportUncheckedCreateWithoutEditHistoryInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutEditHistoryInput
+    upsert?: ReportUpsertWithoutEditHistoryInput
+    connect?: ReportWhereUniqueInput
+    update?: XOR<XOR<ReportUpdateToOneWithWhereWithoutEditHistoryInput, ReportUpdateWithoutEditHistoryInput>, ReportUncheckedUpdateWithoutEditHistoryInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReportEditsNestedInput = {
+    create?: XOR<UserCreateWithoutReportEditsInput, UserUncheckedCreateWithoutReportEditsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReportEditsInput
+    upsert?: UserUpsertWithoutReportEditsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReportEditsInput, UserUpdateWithoutReportEditsInput>, UserUncheckedUpdateWithoutReportEditsInput>
   }
 
   export type MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordInput = {
@@ -42813,6 +48095,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type ReportCreateNestedOneWithoutMedicationAdministrationsInput = {
+    create?: XOR<ReportCreateWithoutMedicationAdministrationsInput, ReportUncheckedCreateWithoutMedicationAdministrationsInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutMedicationAdministrationsInput
+    connect?: ReportWhereUniqueInput
+  }
+
   export type EnumDoseTypeFieldUpdateOperationsInput = {
     set?: $Enums.DoseType
   }
@@ -42831,6 +48119,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutMedicationAdministrationsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMedicationAdministrationsInput, UserUpdateWithoutMedicationAdministrationsInput>, UserUncheckedUpdateWithoutMedicationAdministrationsInput>
+  }
+
+  export type ReportUpdateOneWithoutMedicationAdministrationsNestedInput = {
+    create?: XOR<ReportCreateWithoutMedicationAdministrationsInput, ReportUncheckedCreateWithoutMedicationAdministrationsInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutMedicationAdministrationsInput
+    upsert?: ReportUpsertWithoutMedicationAdministrationsInput
+    disconnect?: ReportWhereInput | boolean
+    delete?: ReportWhereInput | boolean
+    connect?: ReportWhereUniqueInput
+    update?: XOR<XOR<ReportUpdateToOneWithWhereWithoutMedicationAdministrationsInput, ReportUpdateWithoutMedicationAdministrationsInput>, ReportUncheckedUpdateWithoutMedicationAdministrationsInput>
   }
 
   export type AgencyCreateNestedOneWithoutInvoicesInput = {
@@ -43474,6 +48772,57 @@ export namespace Prisma {
     _max?: NestedEnumScheduleTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumReportStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusFilter<$PrismaModel> | $Enums.ReportStatus
+  }
+
+  export type NestedEnumReportStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportStatus | EnumReportStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportStatus[] | ListEnumReportStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReportStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportStatusFilter<$PrismaModel>
+    _max?: NestedEnumReportStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAlertTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeFilter<$PrismaModel> | $Enums.AlertType
+  }
+
+  export type NestedEnumAlertSeverityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertSeverity | EnumAlertSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertSeverityFilter<$PrismaModel> | $Enums.AlertSeverity
+  }
+
+  export type NestedEnumAlertTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeWithAggregatesFilter<$PrismaModel> | $Enums.AlertType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertTypeFilter<$PrismaModel>
+    _max?: NestedEnumAlertTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAlertSeverityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertSeverity | EnumAlertSeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertSeverity[] | ListEnumAlertSeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertSeverityWithAggregatesFilter<$PrismaModel> | $Enums.AlertSeverity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertSeverityFilter<$PrismaModel>
+    _max?: NestedEnumAlertSeverityFilter<$PrismaModel>
+  }
+
   export type NestedEnumDoseTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.DoseType | EnumDoseTypeFieldRefInput<$PrismaModel>
     in?: $Enums.DoseType[] | ListEnumDoseTypeFieldRefInput<$PrismaModel>
@@ -43645,6 +48994,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -43707,6 +49057,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -43785,6 +49136,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -43847,6 +49199,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutAgencyInput = {
@@ -43909,6 +49262,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutAgencyInput = {
@@ -43971,6 +49325,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutAgencyInput = {
@@ -44225,6 +49580,68 @@ export namespace Prisma {
 
   export type RiskCategoryCreateManyAgencyInputEnvelope = {
     data: RiskCategoryCreateManyAgencyInput | RiskCategoryCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReportCreateWithoutAgencyInput = {
+    id?: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
+    client: UserCreateNestedOneWithoutClientReportsInput
+    caregiver: UserCreateNestedOneWithoutCareReportsInput
+  }
+
+  export type ReportUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    clientId: string
+    userId: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
+  }
+
+  export type ReportCreateOrConnectWithoutAgencyInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type ReportCreateManyAgencyInputEnvelope = {
+    data: ReportCreateManyAgencyInput | ReportCreateManyAgencyInput[]
     skipDuplicates?: boolean
   }
 
@@ -44519,6 +49936,47 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RiskCategory"> | Date | string
   }
 
+  export type ReportUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: ReportWhereUniqueInput
+    update: XOR<ReportUpdateWithoutAgencyInput, ReportUncheckedUpdateWithoutAgencyInput>
+    create: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type ReportUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: ReportWhereUniqueInput
+    data: XOR<ReportUpdateWithoutAgencyInput, ReportUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type ReportUpdateManyWithWhereWithoutAgencyInput = {
+    where: ReportScalarWhereInput
+    data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type ReportScalarWhereInput = {
+    AND?: ReportScalarWhereInput | ReportScalarWhereInput[]
+    OR?: ReportScalarWhereInput[]
+    NOT?: ReportScalarWhereInput | ReportScalarWhereInput[]
+    id?: StringFilter<"Report"> | string
+    clientId?: StringFilter<"Report"> | string
+    agencyId?: StringFilter<"Report"> | string
+    userId?: StringFilter<"Report"> | string
+    condition?: StringFilter<"Report"> | string
+    summary?: StringFilter<"Report"> | string
+    checkInTime?: DateTimeFilter<"Report"> | Date | string
+    checkOutTime?: DateTimeNullableFilter<"Report"> | Date | string | null
+    createdAt?: DateTimeFilter<"Report"> | Date | string
+    checkInDistance?: FloatNullableFilter<"Report"> | number | null
+    checkOutDistance?: FloatNullableFilter<"Report"> | number | null
+    checkInLocation?: StringNullableFilter<"Report"> | string | null
+    checkOutLocation?: StringNullableFilter<"Report"> | string | null
+    hasSignature?: BoolFilter<"Report"> | boolean
+    signatureImageUrl?: StringNullableFilter<"Report"> | string | null
+    status?: EnumReportStatusFilter<"Report"> | $Enums.ReportStatus
+    lastEditedAt?: DateTimeNullableFilter<"Report"> | Date | string | null
+    lastEditedBy?: StringNullableFilter<"Report"> | string | null
+    lastEditReason?: StringNullableFilter<"Report"> | string | null
+  }
+
   export type UserCreateWithoutClientAssignmentsInput = {
     id?: string
     cognitoId: string
@@ -44579,6 +50037,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutClientAssignmentsInput = {
@@ -44641,6 +50100,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutClientAssignmentsInput = {
@@ -44708,6 +50168,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCareAssignmentsInput = {
@@ -44770,6 +50231,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCareAssignmentsInput = {
@@ -44848,6 +50310,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientAssignmentsInput = {
@@ -44910,6 +50373,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutCareAssignmentsInput = {
@@ -44983,6 +50447,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareAssignmentsInput = {
@@ -45045,6 +50510,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type InvitationCreateWithoutInviterInput = {
@@ -45100,6 +50566,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutUsersInput = {
@@ -45123,6 +50590,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutUsersInput = {
@@ -45190,6 +50658,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutInvitedUsersInput = {
@@ -45252,6 +50721,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutInvitedUsersInput = {
@@ -45319,6 +50789,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutInvitedByInput = {
@@ -45381,6 +50852,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutInvitedByInput = {
@@ -45555,13 +51027,27 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
     tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
     client: UserCreateNestedOneWithoutClientReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
   }
 
   export type ReportUncheckedCreateWithoutCaregiverInput = {
     id?: string
     clientId: string
+    agencyId: string
     condition: string
     summary: string
     checkInTime: Date | string
@@ -45569,7 +51055,19 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
     tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
   }
 
   export type ReportCreateOrConnectWithoutCaregiverInput = {
@@ -45591,12 +51089,26 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
     tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
   }
 
   export type ReportUncheckedCreateWithoutClientInput = {
     id?: string
+    agencyId: string
     userId: string
     condition: string
     summary: string
@@ -45605,7 +51117,19 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
     tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
   }
 
   export type ReportCreateOrConnectWithoutClientInput = {
@@ -46231,6 +51755,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     medicationRecord: MedicationRecordCreateNestedOneWithoutAdministrationRecordsInput
+    report?: ReportCreateNestedOneWithoutMedicationAdministrationsInput
   }
 
   export type MedicationAdministrationUncheckedCreateWithoutAdministeredByInput = {
@@ -46241,6 +51766,7 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: string | null
     createdAt?: Date | string
+    reportId?: string | null
   }
 
   export type MedicationAdministrationCreateOrConnectWithoutAdministeredByInput = {
@@ -46250,6 +51776,32 @@ export namespace Prisma {
 
   export type MedicationAdministrationCreateManyAdministeredByInputEnvelope = {
     data: MedicationAdministrationCreateManyAdministeredByInput | MedicationAdministrationCreateManyAdministeredByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReportEditCreateWithoutEditorInput = {
+    id?: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
+    report: ReportCreateNestedOneWithoutEditHistoryInput
+  }
+
+  export type ReportEditUncheckedCreateWithoutEditorInput = {
+    id?: string
+    reportId: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
+  }
+
+  export type ReportEditCreateOrConnectWithoutEditorInput = {
+    where: ReportEditWhereUniqueInput
+    create: XOR<ReportEditCreateWithoutEditorInput, ReportEditUncheckedCreateWithoutEditorInput>
+  }
+
+  export type ReportEditCreateManyEditorInputEnvelope = {
+    data: ReportEditCreateManyEditorInput | ReportEditCreateManyEditorInput[]
     skipDuplicates?: boolean
   }
 
@@ -46316,6 +51868,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutUsersInput = {
@@ -46339,6 +51892,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutInvitedUsersInput = {
@@ -46412,6 +51966,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedUsersInput = {
@@ -46474,6 +52029,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutInvitedByInput = {
@@ -46608,22 +52164,6 @@ export namespace Prisma {
   export type ReportUpdateManyWithWhereWithoutCaregiverInput = {
     where: ReportScalarWhereInput
     data: XOR<ReportUpdateManyMutationInput, ReportUncheckedUpdateManyWithoutCaregiverInput>
-  }
-
-  export type ReportScalarWhereInput = {
-    AND?: ReportScalarWhereInput | ReportScalarWhereInput[]
-    OR?: ReportScalarWhereInput[]
-    NOT?: ReportScalarWhereInput | ReportScalarWhereInput[]
-    id?: StringFilter<"Report"> | string
-    clientId?: StringFilter<"Report"> | string
-    userId?: StringFilter<"Report"> | string
-    condition?: StringFilter<"Report"> | string
-    summary?: StringFilter<"Report"> | string
-    checkInTime?: DateTimeFilter<"Report"> | Date | string
-    checkOutTime?: DateTimeNullableFilter<"Report"> | Date | string | null
-    createdAt?: DateTimeFilter<"Report"> | Date | string
-    checkInDistance?: FloatNullableFilter<"Report"> | number | null
-    checkOutDistance?: FloatNullableFilter<"Report"> | number | null
   }
 
   export type ReportUpsertWithWhereUniqueWithoutClientInput = {
@@ -47119,6 +52659,35 @@ export namespace Prisma {
     doseTaken?: BoolFilter<"MedicationAdministration"> | boolean
     notes?: StringNullableFilter<"MedicationAdministration"> | string | null
     createdAt?: DateTimeFilter<"MedicationAdministration"> | Date | string
+    reportId?: StringNullableFilter<"MedicationAdministration"> | string | null
+  }
+
+  export type ReportEditUpsertWithWhereUniqueWithoutEditorInput = {
+    where: ReportEditWhereUniqueInput
+    update: XOR<ReportEditUpdateWithoutEditorInput, ReportEditUncheckedUpdateWithoutEditorInput>
+    create: XOR<ReportEditCreateWithoutEditorInput, ReportEditUncheckedCreateWithoutEditorInput>
+  }
+
+  export type ReportEditUpdateWithWhereUniqueWithoutEditorInput = {
+    where: ReportEditWhereUniqueInput
+    data: XOR<ReportEditUpdateWithoutEditorInput, ReportEditUncheckedUpdateWithoutEditorInput>
+  }
+
+  export type ReportEditUpdateManyWithWhereWithoutEditorInput = {
+    where: ReportEditScalarWhereInput
+    data: XOR<ReportEditUpdateManyMutationInput, ReportEditUncheckedUpdateManyWithoutEditorInput>
+  }
+
+  export type ReportEditScalarWhereInput = {
+    AND?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
+    OR?: ReportEditScalarWhereInput[]
+    NOT?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
+    id?: StringFilter<"ReportEdit"> | string
+    reportId?: StringFilter<"ReportEdit"> | string
+    editedBy?: StringFilter<"ReportEdit"> | string
+    editedAt?: DateTimeFilter<"ReportEdit"> | Date | string
+    reason?: StringFilter<"ReportEdit"> | string
+    changesJson?: StringFilter<"ReportEdit"> | string
   }
 
   export type UserCreateWithoutCommunicationPreferenceInput = {
@@ -47181,6 +52750,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationPreferenceInput = {
@@ -47243,6 +52813,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationPreferenceInput = {
@@ -47321,6 +52892,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationPreferenceInput = {
@@ -47383,6 +52955,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutFamilyAccessInput = {
@@ -47445,6 +53018,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutFamilyAccessInput = {
@@ -47507,6 +53081,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutFamilyAccessInput = {
@@ -47585,6 +53160,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFamilyAccessInput = {
@@ -47647,6 +53223,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type AgencyCreateWithoutMedicationsInput = {
@@ -47670,6 +53247,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMedicationsInput = {
@@ -47693,6 +53271,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMedicationsInput = {
@@ -47781,6 +53360,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMedicationsInput = {
@@ -47804,6 +53384,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type MedicationRecordUpsertWithWhereUniqueWithoutMedicationInput = {
@@ -47843,6 +53424,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutVisitTypesInput = {
@@ -47866,6 +53448,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutVisitTypesInput = {
@@ -47947,6 +53530,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutVisitTypesInput = {
@@ -47970,6 +53554,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput = {
@@ -48032,6 +53617,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutSchedulesInput = {
@@ -48055,6 +53641,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutSchedulesInput = {
@@ -48122,6 +53709,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutClientSchedulesInput = {
@@ -48184,6 +53772,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutClientSchedulesInput = {
@@ -48251,6 +53840,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerSchedulesInput = {
@@ -48313,6 +53903,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerSchedulesInput = {
@@ -48381,6 +53972,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutSchedulesInput = {
@@ -48404,6 +53996,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientSchedulesInput = {
@@ -48477,6 +54070,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientSchedulesInput = {
@@ -48539,6 +54133,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerSchedulesInput = {
@@ -48612,6 +54207,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerSchedulesInput = {
@@ -48674,18 +54270,27 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type ReportTaskCreateWithoutReportInput = {
     id?: string
     taskName: string
     completed?: boolean
+    notes?: string | null
+    taskIcon?: string | null
+    taskType?: string | null
+    completedAt?: Date | string | null
   }
 
   export type ReportTaskUncheckedCreateWithoutReportInput = {
     id?: string
     taskName: string
     completed?: boolean
+    notes?: string | null
+    taskIcon?: string | null
+    taskType?: string | null
+    completedAt?: Date | string | null
   }
 
   export type ReportTaskCreateOrConnectWithoutReportInput = {
@@ -48695,6 +54300,122 @@ export namespace Prisma {
 
   export type ReportTaskCreateManyReportInputEnvelope = {
     data: ReportTaskCreateManyReportInput | ReportTaskCreateManyReportInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReportAlertCreateWithoutReportInput = {
+    id?: string
+    type: $Enums.AlertType
+    message: string
+    severity: $Enums.AlertSeverity
+    createdAt?: Date | string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+  }
+
+  export type ReportAlertUncheckedCreateWithoutReportInput = {
+    id?: string
+    type: $Enums.AlertType
+    message: string
+    severity: $Enums.AlertSeverity
+    createdAt?: Date | string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+  }
+
+  export type ReportAlertCreateOrConnectWithoutReportInput = {
+    where: ReportAlertWhereUniqueInput
+    create: XOR<ReportAlertCreateWithoutReportInput, ReportAlertUncheckedCreateWithoutReportInput>
+  }
+
+  export type ReportAlertCreateManyReportInputEnvelope = {
+    data: ReportAlertCreateManyReportInput | ReportAlertCreateManyReportInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BodyMapObservationCreateWithoutReportInput = {
+    id?: string
+    bodyPart: string
+    condition: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BodyMapObservationUncheckedCreateWithoutReportInput = {
+    id?: string
+    bodyPart: string
+    condition: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type BodyMapObservationCreateOrConnectWithoutReportInput = {
+    where: BodyMapObservationWhereUniqueInput
+    create: XOR<BodyMapObservationCreateWithoutReportInput, BodyMapObservationUncheckedCreateWithoutReportInput>
+  }
+
+  export type BodyMapObservationCreateManyReportInputEnvelope = {
+    data: BodyMapObservationCreateManyReportInput | BodyMapObservationCreateManyReportInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MedicationAdministrationCreateWithoutReportInput = {
+    id?: string
+    administeredAt: Date | string
+    doseType: $Enums.DoseType
+    doseTaken?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+    medicationRecord: MedicationRecordCreateNestedOneWithoutAdministrationRecordsInput
+    administeredBy: UserCreateNestedOneWithoutMedicationAdministrationsInput
+  }
+
+  export type MedicationAdministrationUncheckedCreateWithoutReportInput = {
+    id?: string
+    medicationRecordId: string
+    administeredById: string
+    administeredAt: Date | string
+    doseType: $Enums.DoseType
+    doseTaken?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type MedicationAdministrationCreateOrConnectWithoutReportInput = {
+    where: MedicationAdministrationWhereUniqueInput
+    create: XOR<MedicationAdministrationCreateWithoutReportInput, MedicationAdministrationUncheckedCreateWithoutReportInput>
+  }
+
+  export type MedicationAdministrationCreateManyReportInputEnvelope = {
+    data: MedicationAdministrationCreateManyReportInput | MedicationAdministrationCreateManyReportInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReportEditCreateWithoutReportInput = {
+    id?: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
+    editor: UserCreateNestedOneWithoutReportEditsInput
+  }
+
+  export type ReportEditUncheckedCreateWithoutReportInput = {
+    id?: string
+    editedBy: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
+  }
+
+  export type ReportEditCreateOrConnectWithoutReportInput = {
+    where: ReportEditWhereUniqueInput
+    create: XOR<ReportEditCreateWithoutReportInput, ReportEditUncheckedCreateWithoutReportInput>
+  }
+
+  export type ReportEditCreateManyReportInputEnvelope = {
+    data: ReportEditCreateManyReportInput | ReportEditCreateManyReportInput[]
     skipDuplicates?: boolean
   }
 
@@ -48758,6 +54479,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutClientReportsInput = {
@@ -48820,6 +54542,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutClientReportsInput = {
@@ -48887,6 +54610,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCareReportsInput = {
@@ -48949,11 +54673,65 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCareReportsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCareReportsInput, UserUncheckedCreateWithoutCareReportsInput>
+  }
+
+  export type AgencyCreateWithoutReportInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutReportInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutReportInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
   }
 
   export type ReportTaskUpsertWithWhereUniqueWithoutReportInput = {
@@ -48980,6 +54758,101 @@ export namespace Prisma {
     reportId?: StringFilter<"ReportTask"> | string
     taskName?: StringFilter<"ReportTask"> | string
     completed?: BoolFilter<"ReportTask"> | boolean
+    notes?: StringNullableFilter<"ReportTask"> | string | null
+    taskIcon?: StringNullableFilter<"ReportTask"> | string | null
+    taskType?: StringNullableFilter<"ReportTask"> | string | null
+    completedAt?: DateTimeNullableFilter<"ReportTask"> | Date | string | null
+  }
+
+  export type ReportAlertUpsertWithWhereUniqueWithoutReportInput = {
+    where: ReportAlertWhereUniqueInput
+    update: XOR<ReportAlertUpdateWithoutReportInput, ReportAlertUncheckedUpdateWithoutReportInput>
+    create: XOR<ReportAlertCreateWithoutReportInput, ReportAlertUncheckedCreateWithoutReportInput>
+  }
+
+  export type ReportAlertUpdateWithWhereUniqueWithoutReportInput = {
+    where: ReportAlertWhereUniqueInput
+    data: XOR<ReportAlertUpdateWithoutReportInput, ReportAlertUncheckedUpdateWithoutReportInput>
+  }
+
+  export type ReportAlertUpdateManyWithWhereWithoutReportInput = {
+    where: ReportAlertScalarWhereInput
+    data: XOR<ReportAlertUpdateManyMutationInput, ReportAlertUncheckedUpdateManyWithoutReportInput>
+  }
+
+  export type ReportAlertScalarWhereInput = {
+    AND?: ReportAlertScalarWhereInput | ReportAlertScalarWhereInput[]
+    OR?: ReportAlertScalarWhereInput[]
+    NOT?: ReportAlertScalarWhereInput | ReportAlertScalarWhereInput[]
+    id?: StringFilter<"ReportAlert"> | string
+    reportId?: StringFilter<"ReportAlert"> | string
+    type?: EnumAlertTypeFilter<"ReportAlert"> | $Enums.AlertType
+    message?: StringFilter<"ReportAlert"> | string
+    severity?: EnumAlertSeverityFilter<"ReportAlert"> | $Enums.AlertSeverity
+    createdAt?: DateTimeFilter<"ReportAlert"> | Date | string
+    resolved?: BoolFilter<"ReportAlert"> | boolean
+    resolvedAt?: DateTimeNullableFilter<"ReportAlert"> | Date | string | null
+    resolvedBy?: StringNullableFilter<"ReportAlert"> | string | null
+  }
+
+  export type BodyMapObservationUpsertWithWhereUniqueWithoutReportInput = {
+    where: BodyMapObservationWhereUniqueInput
+    update: XOR<BodyMapObservationUpdateWithoutReportInput, BodyMapObservationUncheckedUpdateWithoutReportInput>
+    create: XOR<BodyMapObservationCreateWithoutReportInput, BodyMapObservationUncheckedCreateWithoutReportInput>
+  }
+
+  export type BodyMapObservationUpdateWithWhereUniqueWithoutReportInput = {
+    where: BodyMapObservationWhereUniqueInput
+    data: XOR<BodyMapObservationUpdateWithoutReportInput, BodyMapObservationUncheckedUpdateWithoutReportInput>
+  }
+
+  export type BodyMapObservationUpdateManyWithWhereWithoutReportInput = {
+    where: BodyMapObservationScalarWhereInput
+    data: XOR<BodyMapObservationUpdateManyMutationInput, BodyMapObservationUncheckedUpdateManyWithoutReportInput>
+  }
+
+  export type BodyMapObservationScalarWhereInput = {
+    AND?: BodyMapObservationScalarWhereInput | BodyMapObservationScalarWhereInput[]
+    OR?: BodyMapObservationScalarWhereInput[]
+    NOT?: BodyMapObservationScalarWhereInput | BodyMapObservationScalarWhereInput[]
+    id?: StringFilter<"BodyMapObservation"> | string
+    reportId?: StringFilter<"BodyMapObservation"> | string
+    bodyPart?: StringFilter<"BodyMapObservation"> | string
+    condition?: StringFilter<"BodyMapObservation"> | string
+    notes?: StringNullableFilter<"BodyMapObservation"> | string | null
+    createdAt?: DateTimeFilter<"BodyMapObservation"> | Date | string
+  }
+
+  export type MedicationAdministrationUpsertWithWhereUniqueWithoutReportInput = {
+    where: MedicationAdministrationWhereUniqueInput
+    update: XOR<MedicationAdministrationUpdateWithoutReportInput, MedicationAdministrationUncheckedUpdateWithoutReportInput>
+    create: XOR<MedicationAdministrationCreateWithoutReportInput, MedicationAdministrationUncheckedCreateWithoutReportInput>
+  }
+
+  export type MedicationAdministrationUpdateWithWhereUniqueWithoutReportInput = {
+    where: MedicationAdministrationWhereUniqueInput
+    data: XOR<MedicationAdministrationUpdateWithoutReportInput, MedicationAdministrationUncheckedUpdateWithoutReportInput>
+  }
+
+  export type MedicationAdministrationUpdateManyWithWhereWithoutReportInput = {
+    where: MedicationAdministrationScalarWhereInput
+    data: XOR<MedicationAdministrationUpdateManyMutationInput, MedicationAdministrationUncheckedUpdateManyWithoutReportInput>
+  }
+
+  export type ReportEditUpsertWithWhereUniqueWithoutReportInput = {
+    where: ReportEditWhereUniqueInput
+    update: XOR<ReportEditUpdateWithoutReportInput, ReportEditUncheckedUpdateWithoutReportInput>
+    create: XOR<ReportEditCreateWithoutReportInput, ReportEditUncheckedCreateWithoutReportInput>
+  }
+
+  export type ReportEditUpdateWithWhereUniqueWithoutReportInput = {
+    where: ReportEditWhereUniqueInput
+    data: XOR<ReportEditUpdateWithoutReportInput, ReportEditUncheckedUpdateWithoutReportInput>
+  }
+
+  export type ReportEditUpdateManyWithWhereWithoutReportInput = {
+    where: ReportEditScalarWhereInput
+    data: XOR<ReportEditUpdateManyMutationInput, ReportEditUncheckedUpdateManyWithoutReportInput>
   }
 
   export type UserUpsertWithoutClientReportsInput = {
@@ -49053,6 +54926,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientReportsInput = {
@@ -49115,6 +54989,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutCareReportsInput = {
@@ -49188,6 +55063,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareReportsInput = {
@@ -49250,6 +55126,66 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+  }
+
+  export type AgencyUpsertWithoutReportInput = {
+    update: XOR<AgencyUpdateWithoutReportInput, AgencyUncheckedUpdateWithoutReportInput>
+    create: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutReportInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutReportInput, AgencyUncheckedUpdateWithoutReportInput>
+  }
+
+  export type AgencyUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type ReportCreateWithoutTasksCompletedInput = {
@@ -49261,13 +55197,27 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
   }
 
   export type ReportUncheckedCreateWithoutTasksCompletedInput = {
     id?: string
     clientId: string
+    agencyId: string
     userId: string
     condition: string
     summary: string
@@ -49276,6 +55226,18 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
   }
 
   export type ReportCreateOrConnectWithoutTasksCompletedInput = {
@@ -49303,13 +55265,27 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateWithoutTasksCompletedInput = {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
@@ -49318,6 +55294,646 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
+  }
+
+  export type ReportCreateWithoutAlertsInput = {
+    id?: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
+    client: UserCreateNestedOneWithoutClientReportsInput
+    caregiver: UserCreateNestedOneWithoutCareReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
+  }
+
+  export type ReportUncheckedCreateWithoutAlertsInput = {
+    id?: string
+    clientId: string
+    agencyId: string
+    userId: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
+  }
+
+  export type ReportCreateOrConnectWithoutAlertsInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutAlertsInput, ReportUncheckedCreateWithoutAlertsInput>
+  }
+
+  export type ReportUpsertWithoutAlertsInput = {
+    update: XOR<ReportUpdateWithoutAlertsInput, ReportUncheckedUpdateWithoutAlertsInput>
+    create: XOR<ReportCreateWithoutAlertsInput, ReportUncheckedCreateWithoutAlertsInput>
+    where?: ReportWhereInput
+  }
+
+  export type ReportUpdateToOneWithWhereWithoutAlertsInput = {
+    where?: ReportWhereInput
+    data: XOR<ReportUpdateWithoutAlertsInput, ReportUncheckedUpdateWithoutAlertsInput>
+  }
+
+  export type ReportUpdateWithoutAlertsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
+    client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
+    caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutAlertsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
+  }
+
+  export type ReportCreateWithoutBodyMapObservationsInput = {
+    id?: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
+    client: UserCreateNestedOneWithoutClientReportsInput
+    caregiver: UserCreateNestedOneWithoutCareReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
+  }
+
+  export type ReportUncheckedCreateWithoutBodyMapObservationsInput = {
+    id?: string
+    clientId: string
+    agencyId: string
+    userId: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
+  }
+
+  export type ReportCreateOrConnectWithoutBodyMapObservationsInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutBodyMapObservationsInput, ReportUncheckedCreateWithoutBodyMapObservationsInput>
+  }
+
+  export type ReportUpsertWithoutBodyMapObservationsInput = {
+    update: XOR<ReportUpdateWithoutBodyMapObservationsInput, ReportUncheckedUpdateWithoutBodyMapObservationsInput>
+    create: XOR<ReportCreateWithoutBodyMapObservationsInput, ReportUncheckedCreateWithoutBodyMapObservationsInput>
+    where?: ReportWhereInput
+  }
+
+  export type ReportUpdateToOneWithWhereWithoutBodyMapObservationsInput = {
+    where?: ReportWhereInput
+    data: XOR<ReportUpdateWithoutBodyMapObservationsInput, ReportUncheckedUpdateWithoutBodyMapObservationsInput>
+  }
+
+  export type ReportUpdateWithoutBodyMapObservationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
+    client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
+    caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutBodyMapObservationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
+  }
+
+  export type ReportCreateWithoutEditHistoryInput = {
+    id?: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
+    client: UserCreateNestedOneWithoutClientReportsInput
+    caregiver: UserCreateNestedOneWithoutCareReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
+  }
+
+  export type ReportUncheckedCreateWithoutEditHistoryInput = {
+    id?: string
+    clientId: string
+    agencyId: string
+    userId: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutReportInput
+  }
+
+  export type ReportCreateOrConnectWithoutEditHistoryInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutEditHistoryInput, ReportUncheckedCreateWithoutEditHistoryInput>
+  }
+
+  export type UserCreateWithoutReportEditsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    Document?: DocumentCreateNestedManyWithoutClientInput
+    Notification?: NotificationCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+  }
+
+  export type UserUncheckedCreateWithoutReportEditsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+  }
+
+  export type UserCreateOrConnectWithoutReportEditsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReportEditsInput, UserUncheckedCreateWithoutReportEditsInput>
+  }
+
+  export type ReportUpsertWithoutEditHistoryInput = {
+    update: XOR<ReportUpdateWithoutEditHistoryInput, ReportUncheckedUpdateWithoutEditHistoryInput>
+    create: XOR<ReportCreateWithoutEditHistoryInput, ReportUncheckedCreateWithoutEditHistoryInput>
+    where?: ReportWhereInput
+  }
+
+  export type ReportUpdateToOneWithWhereWithoutEditHistoryInput = {
+    where?: ReportWhereInput
+    data: XOR<ReportUpdateWithoutEditHistoryInput, ReportUncheckedUpdateWithoutEditHistoryInput>
+  }
+
+  export type ReportUpdateWithoutEditHistoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
+    caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutEditHistoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+  }
+
+  export type UserUpsertWithoutReportEditsInput = {
+    update: XOR<UserUpdateWithoutReportEditsInput, UserUncheckedUpdateWithoutReportEditsInput>
+    create: XOR<UserCreateWithoutReportEditsInput, UserUncheckedCreateWithoutReportEditsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReportEditsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReportEditsInput, UserUncheckedUpdateWithoutReportEditsInput>
+  }
+
+  export type UserUpdateWithoutReportEditsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    Document?: DocumentUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReportEditsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
   }
 
   export type MedicationDatabaseLinkCreateWithoutMedicationRecordInput = {
@@ -49403,6 +56019,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutClientMedicationsInput = {
@@ -49465,6 +56082,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutClientMedicationsInput = {
@@ -49532,6 +56150,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMedicationsInput = {
@@ -49594,6 +56213,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMedicationsInput = {
@@ -49661,6 +56281,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutMedicationRecordsInput = {
@@ -49723,6 +56344,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutMedicationRecordsInput = {
@@ -49738,6 +56360,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     administeredBy: UserCreateNestedOneWithoutMedicationAdministrationsInput
+    report?: ReportCreateNestedOneWithoutMedicationAdministrationsInput
   }
 
   export type MedicationAdministrationUncheckedCreateWithoutMedicationRecordInput = {
@@ -49748,6 +56371,7 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: string | null
     createdAt?: Date | string
+    reportId?: string | null
   }
 
   export type MedicationAdministrationCreateOrConnectWithoutMedicationRecordInput = {
@@ -49860,6 +56484,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMedicationsInput = {
@@ -49922,6 +56547,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerMedicationsInput = {
@@ -49995,6 +56621,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMedicationsInput = {
@@ -50057,6 +56684,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutMedicationRecordsInput = {
@@ -50130,6 +56758,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationRecordsInput = {
@@ -50192,6 +56821,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type MedicationAdministrationUpsertWithWhereUniqueWithoutMedicationRecordInput = {
@@ -50314,6 +56944,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutMedicationAdministrationsInput = {
@@ -50376,11 +57007,69 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutMedicationAdministrationsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutMedicationAdministrationsInput, UserUncheckedCreateWithoutMedicationAdministrationsInput>
+  }
+
+  export type ReportCreateWithoutMedicationAdministrationsInput = {
+    id?: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditCreateNestedManyWithoutReportInput
+    client: UserCreateNestedOneWithoutClientReportsInput
+    caregiver: UserCreateNestedOneWithoutCareReportsInput
+    agency: AgencyCreateNestedOneWithoutReportInput
+  }
+
+  export type ReportUncheckedCreateWithoutMedicationAdministrationsInput = {
+    id?: string
+    clientId: string
+    agencyId: string
+    userId: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+    tasksCompleted?: ReportTaskUncheckedCreateNestedManyWithoutReportInput
+    alerts?: ReportAlertUncheckedCreateNestedManyWithoutReportInput
+    bodyMapObservations?: BodyMapObservationUncheckedCreateNestedManyWithoutReportInput
+    editHistory?: ReportEditUncheckedCreateNestedManyWithoutReportInput
+  }
+
+  export type ReportCreateOrConnectWithoutMedicationAdministrationsInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutMedicationAdministrationsInput, ReportUncheckedCreateWithoutMedicationAdministrationsInput>
   }
 
   export type MedicationRecordUpsertWithoutAdministrationRecordsInput = {
@@ -50504,6 +57193,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationAdministrationsInput = {
@@ -50566,6 +57256,70 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+  }
+
+  export type ReportUpsertWithoutMedicationAdministrationsInput = {
+    update: XOR<ReportUpdateWithoutMedicationAdministrationsInput, ReportUncheckedUpdateWithoutMedicationAdministrationsInput>
+    create: XOR<ReportCreateWithoutMedicationAdministrationsInput, ReportUncheckedCreateWithoutMedicationAdministrationsInput>
+    where?: ReportWhereInput
+  }
+
+  export type ReportUpdateToOneWithWhereWithoutMedicationAdministrationsInput = {
+    where?: ReportWhereInput
+    data: XOR<ReportUpdateWithoutMedicationAdministrationsInput, ReportUncheckedUpdateWithoutMedicationAdministrationsInput>
+  }
+
+  export type ReportUpdateWithoutMedicationAdministrationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
+    client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
+    caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutMedicationAdministrationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
   }
 
   export type AgencyCreateWithoutInvoicesInput = {
@@ -50589,6 +57343,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutInvoicesInput = {
@@ -50612,6 +57367,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutInvoicesInput = {
@@ -50679,6 +57435,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutInvoiceInput = {
@@ -50741,6 +57498,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutInvoiceInput = {
@@ -50780,6 +57538,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutInvoicesInput = {
@@ -50803,6 +57562,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutInvoiceInput = {
@@ -50876,6 +57636,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoiceInput = {
@@ -50938,6 +57699,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type AgencyCreateWithoutMileageRecordsInput = {
@@ -50961,6 +57723,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMileageRecordsInput = {
@@ -50984,6 +57747,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMileageRecordsInput = {
@@ -51051,6 +57815,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutClientMileageInput = {
@@ -51113,6 +57878,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutClientMileageInput = {
@@ -51180,6 +57946,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMileageInput = {
@@ -51242,6 +58009,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMileageInput = {
@@ -51309,6 +58077,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutMileageRecordsInput = {
@@ -51371,6 +58140,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutMileageRecordsInput = {
@@ -51410,6 +58180,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMileageRecordsInput = {
@@ -51433,6 +58204,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientMileageInput = {
@@ -51506,6 +58278,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMileageInput = {
@@ -51568,6 +58341,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerMileageInput = {
@@ -51641,6 +58415,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMileageInput = {
@@ -51703,6 +58478,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutMileageRecordsInput = {
@@ -51776,6 +58552,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMileageRecordsInput = {
@@ -51838,6 +58615,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutDocumentsInput = {
@@ -51900,6 +58678,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -51962,6 +58741,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -52029,6 +58809,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutDocumentInput = {
@@ -52091,6 +58872,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutDocumentInput = {
@@ -52119,6 +58901,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutDocumentsInput = {
@@ -52142,6 +58925,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutDocumentsInput = {
@@ -52220,6 +59004,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -52282,6 +59067,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutDocumentInput = {
@@ -52355,6 +59141,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentInput = {
@@ -52417,6 +59204,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type AgencyUpsertWithoutDocumentsInput = {
@@ -52451,6 +59239,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutDocumentsInput = {
@@ -52474,6 +59263,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutProfileInput = {
@@ -52536,6 +59326,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -52598,6 +59389,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -52676,6 +59468,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -52738,6 +59531,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutIncidentReportsInput = {
@@ -52800,6 +59594,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutIncidentReportsInput = {
@@ -52862,6 +59657,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutIncidentReportsInput = {
@@ -52890,6 +59686,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutIncidentReportsInput = {
@@ -52913,6 +59710,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutIncidentReportsInput = {
@@ -52991,6 +59789,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutIncidentReportsInput = {
@@ -53053,6 +59852,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type AgencyUpsertWithoutIncidentReportsInput = {
@@ -53087,6 +59887,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutIncidentReportsInput = {
@@ -53110,6 +59911,7 @@ export namespace Prisma {
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutSentMessagesInput = {
@@ -53172,6 +59974,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutSentMessagesInput = {
@@ -53234,6 +60037,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutSentMessagesInput = {
@@ -53301,6 +60105,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutReceivedMessagesInput = {
@@ -53363,6 +60168,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutReceivedMessagesInput = {
@@ -53441,6 +60247,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentMessagesInput = {
@@ -53503,6 +60310,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUpsertWithoutReceivedMessagesInput = {
@@ -53576,6 +60384,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
@@ -53638,6 +60447,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutKeyContactsInput = {
@@ -53700,6 +60510,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutKeyContactsInput = {
@@ -53762,6 +60573,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutKeyContactsInput = {
@@ -53840,6 +60652,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKeyContactsInput = {
@@ -53902,6 +60715,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutCareOutcomesInput = {
@@ -53964,6 +60778,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCareOutcomesInput = {
@@ -54026,6 +60841,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCareOutcomesInput = {
@@ -54104,6 +60920,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareOutcomesInput = {
@@ -54166,6 +60983,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutCommunicationLogsInput = {
@@ -54228,6 +61046,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationLogsInput = {
@@ -54290,6 +61109,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationLogsInput = {
@@ -54368,6 +61188,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -54430,6 +61251,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type AgencyCreateWithoutRiskCategoriesInput = {
@@ -54453,6 +61275,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRiskCategoriesInput = {
@@ -54476,6 +61299,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRiskCategoriesInput = {
@@ -54551,6 +61375,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRiskCategoriesInput = {
@@ -54574,6 +61399,7 @@ export namespace Prisma {
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type RiskAssessmentUpsertWithWhereUniqueWithoutRiskCategoryInput = {
@@ -54652,6 +61478,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutRiskAssessmentsInput = {
@@ -54714,6 +61541,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutRiskAssessmentsInput = {
@@ -54813,6 +61641,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRiskAssessmentsInput = {
@@ -54875,6 +61704,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type RiskCategoryUpsertWithoutRiskAssessmentsInput = {
@@ -54964,6 +61794,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutRemindersInput = {
@@ -55026,6 +61857,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutRemindersInput = {
@@ -55104,6 +61936,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRemindersInput = {
@@ -55166,6 +61999,7 @@ export namespace Prisma {
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateWithoutNotificationInput = {
@@ -55228,6 +62062,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
   }
 
   export type UserUncheckedCreateWithoutNotificationInput = {
@@ -55290,6 +62125,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
   }
 
   export type UserCreateOrConnectWithoutNotificationInput = {
@@ -55368,6 +62204,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationInput = {
@@ -55430,6 +62267,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserCreateManyAgencyInput = {
@@ -55543,6 +62381,27 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type ReportCreateManyAgencyInput = {
+    id?: string
+    clientId: string
+    userId: string
+    condition: string
+    summary: string
+    checkInTime: Date | string
+    checkOutTime?: Date | string | null
+    createdAt?: Date | string
+    checkInDistance?: number | null
+    checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
+  }
+
   export type UserUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
@@ -55603,6 +62462,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgencyInput = {
@@ -55665,6 +62525,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAgencyInput = {
@@ -55943,6 +62804,79 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReportUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
+    client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
+    caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
+  }
+
+  export type ReportUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkOutTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type InvitationCreateManyInviterInput = {
     id?: string
     email: string
@@ -56035,6 +62969,7 @@ export namespace Prisma {
   export type ReportCreateManyCaregiverInput = {
     id?: string
     clientId: string
+    agencyId: string
     condition: string
     summary: string
     checkInTime: Date | string
@@ -56042,10 +62977,19 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
   }
 
   export type ReportCreateManyClientInput = {
     id?: string
+    agencyId: string
     userId: string
     condition: string
     summary: string
@@ -56054,6 +62998,14 @@ export namespace Prisma {
     createdAt?: Date | string
     checkInDistance?: number | null
     checkOutDistance?: number | null
+    checkInLocation?: string | null
+    checkOutLocation?: string | null
+    hasSignature?: boolean
+    signatureImageUrl?: string | null
+    status?: $Enums.ReportStatus
+    lastEditedAt?: Date | string | null
+    lastEditedBy?: string | null
+    lastEditReason?: string | null
   }
 
   export type MedicationRecordCreateManyUserInput = {
@@ -56235,6 +63187,15 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: string | null
     createdAt?: Date | string
+    reportId?: string | null
+  }
+
+  export type ReportEditCreateManyEditorInput = {
+    id?: string
+    reportId: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
   }
 
   export type InvitationUpdateWithoutInviterInput = {
@@ -56330,6 +63291,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedByInput = {
@@ -56392,6 +63354,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutInvitedByInput = {
@@ -56573,13 +63536,27 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateWithoutCaregiverInput = {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56587,12 +63564,25 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateManyWithoutCaregiverInput = {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56600,6 +63590,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReportUpdateWithoutClientInput = {
@@ -56611,12 +63609,26 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     tasksCompleted?: ReportTaskUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUpdateManyWithoutReportNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
@@ -56625,11 +63637,24 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     tasksCompleted?: ReportTaskUncheckedUpdateManyWithoutReportNestedInput
+    alerts?: ReportAlertUncheckedUpdateManyWithoutReportNestedInput
+    bodyMapObservations?: BodyMapObservationUncheckedUpdateManyWithoutReportNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutReportNestedInput
+    editHistory?: ReportEditUncheckedUpdateManyWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateManyWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
+    agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
@@ -56638,6 +63663,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checkInDistance?: NullableFloatFieldUpdateOperationsInput | number | null
     checkOutDistance?: NullableFloatFieldUpdateOperationsInput | number | null
+    checkInLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    checkOutLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    hasSignature?: BoolFieldUpdateOperationsInput | boolean
+    signatureImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+    lastEditedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MedicationRecordUpdateWithoutUserInput = {
@@ -57266,6 +64299,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     medicationRecord?: MedicationRecordUpdateOneRequiredWithoutAdministrationRecordsNestedInput
+    report?: ReportUpdateOneWithoutMedicationAdministrationsNestedInput
   }
 
   export type MedicationAdministrationUncheckedUpdateWithoutAdministeredByInput = {
@@ -57276,6 +64310,7 @@ export namespace Prisma {
     doseTaken?: BoolFieldUpdateOperationsInput | boolean
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByInput = {
@@ -57286,6 +64321,31 @@ export namespace Prisma {
     doseTaken?: BoolFieldUpdateOperationsInput | boolean
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ReportEditUpdateWithoutEditorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
+    report?: ReportUpdateOneRequiredWithoutEditHistoryNestedInput
+  }
+
+  export type ReportEditUncheckedUpdateWithoutEditorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ReportEditUncheckedUpdateManyWithoutEditorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicationRecordCreateManyMedicationInput = {
@@ -57431,24 +64491,192 @@ export namespace Prisma {
     id?: string
     taskName: string
     completed?: boolean
+    notes?: string | null
+    taskIcon?: string | null
+    taskType?: string | null
+    completedAt?: Date | string | null
+  }
+
+  export type ReportAlertCreateManyReportInput = {
+    id?: string
+    type: $Enums.AlertType
+    message: string
+    severity: $Enums.AlertSeverity
+    createdAt?: Date | string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+  }
+
+  export type BodyMapObservationCreateManyReportInput = {
+    id?: string
+    bodyPart: string
+    condition: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type MedicationAdministrationCreateManyReportInput = {
+    id?: string
+    medicationRecordId: string
+    administeredById: string
+    administeredAt: Date | string
+    doseType: $Enums.DoseType
+    doseTaken?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReportEditCreateManyReportInput = {
+    id?: string
+    editedBy: string
+    editedAt?: Date | string
+    reason: string
+    changesJson: string
   }
 
   export type ReportTaskUpdateWithoutReportInput = {
     id?: StringFieldUpdateOperationsInput | string
     taskName?: StringFieldUpdateOperationsInput | string
     completed?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    taskIcon?: NullableStringFieldUpdateOperationsInput | string | null
+    taskType?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ReportTaskUncheckedUpdateWithoutReportInput = {
     id?: StringFieldUpdateOperationsInput | string
     taskName?: StringFieldUpdateOperationsInput | string
     completed?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    taskIcon?: NullableStringFieldUpdateOperationsInput | string | null
+    taskType?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ReportTaskUncheckedUpdateManyWithoutReportInput = {
     id?: StringFieldUpdateOperationsInput | string
     taskName?: StringFieldUpdateOperationsInput | string
     completed?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    taskIcon?: NullableStringFieldUpdateOperationsInput | string | null
+    taskType?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportAlertUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: EnumAlertSeverityFieldUpdateOperationsInput | $Enums.AlertSeverity
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ReportAlertUncheckedUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: EnumAlertSeverityFieldUpdateOperationsInput | $Enums.AlertSeverity
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ReportAlertUncheckedUpdateManyWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: EnumAlertSeverityFieldUpdateOperationsInput | $Enums.AlertSeverity
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type BodyMapObservationUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bodyPart?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BodyMapObservationUncheckedUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bodyPart?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BodyMapObservationUncheckedUpdateManyWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bodyPart?: StringFieldUpdateOperationsInput | string
+    condition?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MedicationAdministrationUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    administeredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doseType?: EnumDoseTypeFieldUpdateOperationsInput | $Enums.DoseType
+    doseTaken?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    medicationRecord?: MedicationRecordUpdateOneRequiredWithoutAdministrationRecordsNestedInput
+    administeredBy?: UserUpdateOneRequiredWithoutMedicationAdministrationsNestedInput
+  }
+
+  export type MedicationAdministrationUncheckedUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicationRecordId?: StringFieldUpdateOperationsInput | string
+    administeredById?: StringFieldUpdateOperationsInput | string
+    administeredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doseType?: EnumDoseTypeFieldUpdateOperationsInput | $Enums.DoseType
+    doseTaken?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MedicationAdministrationUncheckedUpdateManyWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicationRecordId?: StringFieldUpdateOperationsInput | string
+    administeredById?: StringFieldUpdateOperationsInput | string
+    administeredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    doseType?: EnumDoseTypeFieldUpdateOperationsInput | $Enums.DoseType
+    doseTaken?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportEditUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
+    editor?: UserUpdateOneRequiredWithoutReportEditsNestedInput
+  }
+
+  export type ReportEditUncheckedUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    editedBy?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ReportEditUncheckedUpdateManyWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    editedBy?: StringFieldUpdateOperationsInput | string
+    editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    changesJson?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicationAdministrationCreateManyMedicationRecordInput = {
@@ -57459,6 +64687,7 @@ export namespace Prisma {
     doseTaken?: boolean
     notes?: string | null
     createdAt?: Date | string
+    reportId?: string | null
   }
 
   export type MedicationAdministrationUpdateWithoutMedicationRecordInput = {
@@ -57469,6 +64698,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     administeredBy?: UserUpdateOneRequiredWithoutMedicationAdministrationsNestedInput
+    report?: ReportUpdateOneWithoutMedicationAdministrationsNestedInput
   }
 
   export type MedicationAdministrationUncheckedUpdateWithoutMedicationRecordInput = {
@@ -57479,6 +64709,7 @@ export namespace Prisma {
     doseTaken?: BoolFieldUpdateOperationsInput | boolean
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MedicationAdministrationUncheckedUpdateManyWithoutMedicationRecordInput = {
@@ -57489,6 +64720,7 @@ export namespace Prisma {
     doseTaken?: BoolFieldUpdateOperationsInput | boolean
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RiskAssessmentCreateManyRiskCategoryInput = {

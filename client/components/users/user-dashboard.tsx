@@ -10,28 +10,24 @@ import {
     useGetUserQuery,
     useGetUserInvitationsQuery,
     useCreateUserMutation,
-    useCancelInvitationMutation,
-    useGetInvitationsByEmailQuery,
     useGetAgencyUsersQuery,
 } from "@/state/api"
-import { UserTable } from "./user-table"
+
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { NotificationsDialog } from "./notifications-diaglog"
-import { Input } from "@/components/ui/input"
 import { Role, User, SubRole } from "@/types/prismaTypes"
 import { AddUsersNewDialog } from "./add-users-new-dialog"
-import { getCurrentUser } from "aws-amplify/auth"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { setClients, setOfficeStaff, setCareWorkers } from "@/state/slices/agencySlice"
 import { v4 as uuidv4 } from "uuid"
 import { useAppSelector } from "@/state/redux"
 import { UserTableUser } from "./user-table-user"
+import { Input } from "../ui/input"
 
 export function UserDashboard() {
     // State
     const [searchQuery, setSearchQuery] = useState("")
     const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false)
-    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [activeUserType, setActiveUserType] = useState<Role>("CLIENT")
 
@@ -40,11 +36,8 @@ export function UserDashboard() {
     const { data: userData } = useGetUserQuery()
     const { clients, officeStaff, careWorkers } = useAppSelector((state) => state.agency)
     const { data: agencyUsers, isLoading: isLoadingUsers, refetch: refetchUsers } = useGetAgencyUsersQuery(userData?.userInfo?.agencyId || "")
-    const { data: invitations, isLoading: isInvitationsLoading } = useGetUserInvitationsQuery(userData?.userInfo?.id || "")
     const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation()
 
-
-    // Filter users based on search query and user type
     const filteredUsers = (() => {
         const users = activeUserType === "CLIENT" ? clients :
             activeUserType === "CARE_WORKER" ? careWorkers :
@@ -58,7 +51,6 @@ export function UserDashboard() {
         })
     })()
 
-    // Update Redux state when agency users are fetched
     useEffect(() => {
         if (agencyUsers?.data) {
             const users = agencyUsers.data as User[]
@@ -68,18 +60,6 @@ export function UserDashboard() {
         }
     }, [agencyUsers?.data, dispatch])
 
-    // Handle refresh
-    const handleRefresh = async () => {
-        setIsRefreshing(true)
-        try {
-            await refetchUsers()
-            toast.success("Users refreshed successfully")
-        } catch (error) {
-            toast.error("Failed to refresh users")
-        } finally {
-            setIsRefreshing(false)
-        }
-    }
 
     // Handle creating user
     const handleAddUser = async (firstName: string, lastName: string, agencyId: string, email: string, role: Role, subRole?: SubRole) => {
@@ -112,40 +92,24 @@ export function UserDashboard() {
             <div className="flex justify-between items-center">
                 <div>
                     <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-bold">Users</h1>
-                        <div className="text-gray-500 text-sm bg-gray-100 px-2 py-1 rounded-md">{userData?.userInfo?.role}</div>
+                        <h1 className="text-2xl font-bold">User Management</h1>
+
                     </div>
-                    <p className="text-gray-500 mt-1">Manage the users in your agency. Edit, delete, and add users as needed.</p>
+                    <p className="text-gray-500 mt-1">Manage the users in your agency and their account permissions here.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                            placeholder="Search users..."
-                            className="pl-9 h-9 w-[220px]"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
+                        <Input type="text" id="medium-input" className="shadow-none block w-full p-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search users..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
 
-                    <Button onClick={() => setIsAddUserDialogOpen(true)}>
+                    <Button onClick={() => setIsAddUserDialogOpen(true)} variant={"outline"}>
                         <UserPlus className="h-4 w-4 mr-2" />
                         Add User
                     </Button>
 
-                    <Button size="icon" variant="ghost" onClick={handleRefresh} disabled={isRefreshing}>
-                        <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-                        <span className="sr-only">Refresh</span>
-                    </Button>
 
-                    <Button size="icon" variant="ghost" onClick={() => setIsNotificationsOpen(true)} className="relative">
-                        <Bell className="h-4 w-4" />
-                        {invitations && invitations.length > 0 && (
-                            <span className="absolute -right-1 -top-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                                {invitations.length}
-                            </span>
-                        )}
-                    </Button>
+
                 </div>
             </div>
 
@@ -203,7 +167,7 @@ export function UserDashboard() {
                     )}
                 </div>
 
-                <Card className="border-gray-200 shadow-sm">
+                <Card className="shadow-none border-0">
                     <CardContent className="p-0">
                         <UserTableUser
                             users={filteredUsers}
@@ -221,12 +185,7 @@ export function UserDashboard() {
                 isCreatingUser={isCreatingUser}
             />
 
-            <NotificationsDialog
-                isOpen={isNotificationsOpen}
-                setIsOpen={setIsNotificationsOpen}
-                invitations={invitations || []}
-                isLoading={isInvitationsLoading}
-            />
+
         </div>
     )
 }

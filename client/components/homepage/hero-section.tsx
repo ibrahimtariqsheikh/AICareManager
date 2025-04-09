@@ -11,7 +11,8 @@ import { Section } from "./section"
 import { CTAButton } from "./cta-button"
 import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
-import { AnimatedBadge } from "../ui/animated-badge" // Import the AnimatedBadge component
+import { Button as MovingBorderButton } from "../ui/moving-border"
+import Link from "next/link"
 
 interface HeroSectionProps {
     title: string
@@ -41,7 +42,9 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
             <motion.div className="max-w-4xl mx-auto text-center space-y-8" variants={fadeIn}>
                 {/* Replace the old badge with the AnimatedBadge component */}
                 <div className="flex justify-center">
-                    <AnimatedBadge text="Next generation homecare management" />
+                    <div className="text-sm font-medium text-blue-500 bg-blue-500/10 px-4 py-2 rounded-lg">
+                        Level Up Your Care Management with AI
+                    </div>
                 </div>
 
                 <motion.h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight px-2" variants={fadeIn}>
@@ -71,6 +74,15 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                         </Button>
                     </motion.div>
                 )}
+
+                <div className="flex justify-center items-center space-x-4 mt-4">
+                    <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary">
+                        Home
+                    </Link>
+                    <Link href="/pricing" className="text-sm font-medium text-muted-foreground hover:text-primary">
+                        Pricing
+                    </Link>
+                </div>
             </motion.div>
 
             {/* Floating dashboard preview */}

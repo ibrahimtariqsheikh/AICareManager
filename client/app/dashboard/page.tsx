@@ -192,7 +192,7 @@ export default function DashboardPage() {
     // Get feature status for agency
     const getFeatureStatus = (isEnabled: boolean | undefined) => {
         return isEnabled ? (
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                 <CheckCircle2 className="h-3 w-3 mr-1" /> Enabled
             </Badge>
         ) : (
@@ -354,7 +354,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
                             <div className="text-3xl font-bold text-gray-800">{dashboardData.stats.totalClients}</div>
-                            <div className="flex items-center text-green-600 text-sm">
+                            <div className="flex items-center text-blue-600 text-sm">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +12%
                             </div>
@@ -378,7 +378,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
                             <div className="text-3xl font-bold text-gray-800">{dashboardData.stats.totalSchedules}</div>
-                            <div className="flex items-center text-green-600 text-sm">
+                            <div className="flex items-center text-blue-600 text-sm">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +10%
                             </div>
@@ -402,7 +402,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
                             <div className="text-3xl font-bold text-gray-800">$7,209.29</div>
-                            <div className="flex items-center text-green-600 text-sm">
+                            <div className="flex items-center text-blue-600 text-sm">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +24%
                             </div>
@@ -426,7 +426,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
                             <div className="text-3xl font-bold text-gray-800">234</div>
-                            <div className="flex items-center text-green-600 text-sm">
+                            <div className="flex items-center text-blue-600 text-sm">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +11%
                             </div>
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                     <CardContent className="p-6">
                         <div className="flex items-center justify-end mb-4 gap-4">
                             <div className="flex items-center">
-                                <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
                                 <span className="text-sm text-gray-600">Admissions</span>
                             </div>
                             <div className="flex items-center">
@@ -468,7 +468,7 @@ export default function DashboardPage() {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Line type="monotone" dataKey="admissions" stroke="#10B981" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="admissions" stroke="#3B82F6" strokeWidth={2} />
                                     <Line type="monotone" dataKey="discharges" stroke="#6B7280" strokeWidth={2} />
                                 </LineChart>
                             </ResponsiveContainer>
@@ -540,7 +540,7 @@ export default function DashboardPage() {
                             </div>
                             <Badge
                                 variant={dashboardData.user.agency.isActive ? "default" : "destructive"}
-                                className="bg-green-100 text-green-800 hover:bg-green-200 border-0"
+                                className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-0"
                             >
                                 {dashboardData.user.agency.isActive ? "Active" : "Inactive"}
                             </Badge>
@@ -643,7 +643,7 @@ export default function DashboardPage() {
                                             <h3 className="font-medium text-gray-800">Current Plan</h3>
                                             <p className="text-sm text-gray-600">Professional Plan</p>
                                         </div>
-                                        <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-0">Active</Badge>
+                                        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-0">Active</Badge>
                                     </div>
                                     <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
                                         <div>
@@ -681,7 +681,7 @@ export default function DashboardPage() {
                             <div className="p-3 border border-gray-200 rounded-md">
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="font-medium text-gray-800">Clients</span>
-                                    <span className="text-green-600 text-sm">+5% from last month</span>
+                                    <span className="text-blue-600 text-sm">+5% from last month</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalClients}</span>
@@ -695,7 +695,7 @@ export default function DashboardPage() {
                             <div className="p-3 border border-gray-200 rounded-md">
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="font-medium text-gray-800">Care Workers</span>
-                                    <span className="text-green-600 text-sm">+2% from last month</span>
+                                    <span className="text-blue-600 text-sm">+2% from last month</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalCareWorkers}</span>
@@ -709,7 +709,7 @@ export default function DashboardPage() {
                             <div className="p-3 border border-gray-200 rounded-md">
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="font-medium text-gray-800">Schedules</span>
-                                    <span className="text-green-600 text-sm">+12% from last month</span>
+                                    <span className="text-blue-600 text-sm">+12% from last month</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalSchedules}</span>
@@ -723,7 +723,7 @@ export default function DashboardPage() {
                             <div className="p-3 border border-gray-200 rounded-md">
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="font-medium text-gray-800">Reports</span>
-                                    <span className="text-green-600 text-sm">+8% from last month</span>
+                                    <span className="text-blue-600 text-sm">+8% from last month</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalReports}</span>
@@ -737,7 +737,7 @@ export default function DashboardPage() {
                             <div className="p-3 border border-gray-200 rounded-md">
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="font-medium text-gray-800">Mileage Records</span>
-                                    <span className="text-green-600 text-sm">+3% from last month</span>
+                                    <span className="text-blue-600 text-sm">+3% from last month</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalMileageRecords}</span>
@@ -751,7 +751,7 @@ export default function DashboardPage() {
                             <div className="p-3 border border-gray-200 rounded-md">
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="font-medium text-gray-800">Documents</span>
-                                    <span className="text-green-600 text-sm">+7% from last month</span>
+                                    <span className="text-blue-600 text-sm">+7% from last month</span>
                                 </div>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalDocuments}</span>
@@ -779,7 +779,7 @@ export default function DashboardPage() {
                                 <input
                                     type="text"
                                     placeholder="Search appointments..."
-                                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </div>
                             <Button variant="outline" className="bg-white border-gray-200">
@@ -843,7 +843,7 @@ export default function DashboardPage() {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <Badge variant="outline" className={`${schedule.status === "CONFIRMED"
-                                                ? "bg-green-50 text-green-700 border-green-200"
+                                                ? "bg-blue-50 text-blue-700 border-blue-200"
                                                 : schedule.status === "PENDING"
                                                     ? "bg-yellow-50 text-yellow-700 border-yellow-200"
                                                     : "bg-red-50 text-red-700 border-red-200"

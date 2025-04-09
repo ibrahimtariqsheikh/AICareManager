@@ -400,10 +400,11 @@ export const api = createApi({
     "Locations",
     "Users",
     "Clients",
-"Schedule",
-"Dashboard",
-"User",
-"Agency"
+    "Schedule",
+    "Dashboard",
+    "User",
+    "Agency",
+    "Reports"
   ],
   endpoints: (build) => ({
     // Get user
@@ -435,6 +436,10 @@ export const api = createApi({
           return { error: error.message || "Could not fetch user data" }
         }
       },
+    }),
+    getAgencyReports: build.query<Report[], string>({
+      query: (agencyId) => `/reports/agency/${agencyId}`,
+      providesTags: ["Reports"],
     }),
 
     // Get users with filtering
@@ -683,6 +688,7 @@ export const api = createApi({
         method: 'PUT',
         body: data,
       }),
+      invalidatesTags: ["Reports"],
     }),
 
     updateReportTaskStatus: build.mutation<ReportTask, { taskId: string; completed: boolean }>({
@@ -786,60 +792,6 @@ export const {
   useGetUserByIdQuery,
   useUpdateUserMutation,
   useGetUserAllDetailsQuery,
+  useGetAgencyReportsQuery,
+  useUpdateReportMutation,
 } = api
-
-// Report API endpoints
-export const reportApi = {
-  getReports: async (): Promise<Report[]> => {
-    const response = await fetch('/api/reports');
-    if (!response.ok) {
-      throw new Error('Failed to fetch reports');
-    }
-    return response.json();
-  },
-
-  getReportById: async (id: string): Promise<Report> => {
-    const response = await fetch(`/api/reports/${id}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch report');
-    }
-    return response.json();
-  },
-
-  createReport: async (report: Omit<Report, 'id'>): Promise<Report> => {
-    const response = await fetch('/api/reports', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(report),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to create report');
-    }
-    return response.json();
-  },
-
-  updateReport: async (id: string, report: Partial<Report>): Promise<Report> => {
-    const response = await fetch(`/api/reports/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(report),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to update report');
-    }
-    return response.json();
-  },
-
-  deleteReport: async (id: string): Promise<void> => {
-    const response = await fetch(`/api/reports/${id}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete report');
-    }
-  },
-};
