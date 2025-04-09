@@ -10,6 +10,7 @@ import agencyRoutes from "./routes/agencyRoutes";
 import invitationRoutes from "./routes/invitationRoutes";
 import scheduleRoutes from "./routes/scheduleRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes"
+import reportRoutes from "./routes/reportRoutes";
 
 
 /* CONFIGURATIONS */
@@ -41,6 +42,7 @@ app.use("/api/users", userRoutes)
 app.use("/api/invitations", invitationRoutes)
 app.use("/api/schedules", scheduleRoutes)
 app.use("/api/dashboard", dashboardRoutes)
+app.use("/api/reports", reportRoutes)
 
 /* SERVER */
 app.listen(PORT, () => {

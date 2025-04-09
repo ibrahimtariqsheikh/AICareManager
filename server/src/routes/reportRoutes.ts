@@ -1,24 +1,47 @@
-import express from 'express';
+import express, { Request, Response, Router } from 'express';
 import {
+  getReports,
+  getReportById,
   createReport,
-  getClientReports,
-  getCaregiverReports,
   updateReport,
-  updateTaskStatus,
-  deleteReport
+  deleteReport,
 } from '../controllers/reportController';
-import { authMiddleware } from '../middleware/authMiddleware';
 
-const router = express.Router();
+const router: Router = express.Router();
 
-// Report routes
-router.post('/', authMiddleware(['CARE_WORKER']), createReport);
-router.get('/client/:clientId', authMiddleware(['ADMIN', 'CARE_WORKER']), getClientReports);
-router.get('/caregiver/:userId', authMiddleware(['ADMIN', 'CARE_WORKER']), getCaregiverReports);
-router.put('/:id', authMiddleware(['CARE_WORKER']), updateReport);
-router.delete('/:id', authMiddleware(['ADMIN']), deleteReport);
+router.get('/', (req: Request, res: Response) => {
+  getReports(req, res).catch(err => {
+    console.error('Error in getReports:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  });
+});
 
-// Task routes
-router.put('/task/:taskId', authMiddleware(['CARE_WORKER']), updateTaskStatus);
+router.get('/:id', (req: Request, res: Response) => {
+  getReportById(req, res).catch(err => {
+    console.error('Error in getReportById:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  });
+});
 
-export default router; 
+router.post('/', (req: Request, res: Response) => {
+  createReport(req, res).catch(err => {
+    console.error('Error in createReport:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  });
+});
+
+router.put('/:id', (req: Request, res: Response) => {
+  updateReport(req, res).catch(err => {
+    console.error('Error in updateReport:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  });
+});
+
+router.delete('/:id', (req: Request, res: Response) => {
+  deleteReport(req, res).catch(err => {
+    console.error('Error in deleteReport:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  });
+});
+
+export default router;

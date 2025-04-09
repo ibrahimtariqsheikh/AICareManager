@@ -15,6 +15,7 @@ import {
     Building2,
     Bot,
     Mail,
+    File,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -80,9 +81,9 @@ const navigation: NavigationSection[] = [
             },
 
             {
-                title: "Analytics",
-                icon: BarChart3,
-                href: "/dashboard/analytics",
+                title: "Reports",
+                icon: File,
+                href: "/dashboard/reports",
             },
             {
                 title: "Schedule",

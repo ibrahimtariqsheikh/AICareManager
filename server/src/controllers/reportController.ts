@@ -3,20 +3,72 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Create a new care report with tasks
-export const createReport = async (req: Request, res: Response): Promise<void> => {
+export const getReports = async (req: Request, res: Response) => {
   try {
-    const {
-      clientId,
-      userId,
-      condition,
-      summary,
-      checkInTime,
-      checkOutTime,
-      checkInDistance,
-      checkOutDistance,
-      tasks
-    } = req.body;
+    const reports = await prisma.report.findMany({
+      include: {
+        tasksCompleted: true,
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        caregiver: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+    res.json(reports);
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+};
+
+export const getReportById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const report = await prisma.report.findUnique({
+      where: { id },
+      include: {
+        tasksCompleted: true,
+        client: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        caregiver: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    if (!report) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+
+    res.json(report);
+  } catch (error) {
+    console.error('Error fetching report:', error);
+    res.status(500).json({ error: 'Failed to fetch report' });
+  }
+};
+
+export const createReport = async (req: Request, res: Response) => {
+  try {
+    const { clientId, userId, condition, summary, checkInTime, checkOutTime, checkInDistance, checkOutDistance, tasksCompleted } = req.body;
 
     const report = await prisma.report.create({
       data: {
@@ -29,137 +81,94 @@ export const createReport = async (req: Request, res: Response): Promise<void> =
         checkInDistance,
         checkOutDistance,
         tasksCompleted: {
-          create: tasks.map((task: string) => ({
-            taskName: task,
-            completed: false
-          }))
-        }
+          create: tasksCompleted.map((task: any) => ({
+            taskName: task.taskName,
+            completed: task.completed,
+          })),
+        },
       },
-      include: {
-        tasksCompleted: true
-      }
-    });
-
-    res.status(201).json(report);
-  } catch (error) {
-    console.error('Create report error:', error);
-    res.status(500).json({ error: 'Failed to create report' });
-  }
-};
-
-// Get all reports for a client
-export const getClientReports = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { clientId } = req.params;
-    const reports = await prisma.report.findMany({
-      where: { clientId },
       include: {
         tasksCompleted: true,
         caregiver: {
           select: {
             id: true,
             firstName: true,
-            lastName: true
-          }
-        }
+            lastName: true,
+          },
+        },
       },
-      orderBy: {
-        checkInTime: 'desc'
-      }
     });
 
-    res.status(200).json(reports);
+    res.status(201).json(report);
   } catch (error) {
-    console.error('Get client reports error:', error);
-    res.status(500).json({ error: 'Failed to fetch reports' });
+    console.error('Error creating report:', error);
+    res.status(500).json({ error: 'Failed to create report' });
   }
 };
 
-// Get all reports by a caregiver
-export const getCaregiverReports = async (req: Request, res: Response): Promise<void> => {
+export const updateReport = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
-    const reports = await prisma.report.findMany({
-      where: { userId },
+    const { id } = req.params;
+    const { condition, summary, checkInTime, checkOutTime, checkInDistance, checkOutDistance, tasksCompleted } = req.body;
+
+    // First, delete existing tasks
+    await prisma.reportTask.deleteMany({
+      where: { reportId: id },
+    });
+
+    // Then update the report and create new tasks
+    const report = await prisma.report.update({
+      where: { id },
+      data: {
+        condition,
+        summary,
+        checkInTime: new Date(checkInTime),
+        checkOutTime: checkOutTime ? new Date(checkOutTime) : null,
+        checkInDistance,
+        checkOutDistance,
+        tasksCompleted: {
+          create: tasksCompleted.map((task: any) => ({
+            taskName: task.taskName,
+            completed: task.completed,
+          })),
+        },
+      },
       include: {
         tasksCompleted: true,
-        client: {
+        caregiver: {
           select: {
             id: true,
             firstName: true,
-            lastName: true
-          }
-        }
+            lastName: true,
+          },
+        },
       },
-      orderBy: {
-        checkInTime: 'desc'
-      }
     });
 
-    res.status(200).json(reports);
+    res.json(report);
   } catch (error) {
-    console.error('Get caregiver reports error:', error);
-    res.status(500).json({ error: 'Failed to fetch reports' });
-  }
-};
-
-// Update a report
-export const updateReport = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-
-    if (updateData.checkInTime) {
-      updateData.checkInTime = new Date(updateData.checkInTime);
-    }
-    if (updateData.checkOutTime) {
-      updateData.checkOutTime = new Date(updateData.checkOutTime);
-    }
-
-    const report = await prisma.report.update({
-      where: { id },
-      data: updateData,
-      include: {
-        tasksCompleted: true
-      }
-    });
-
-    res.status(200).json(report);
-  } catch (error) {
-    console.error('Update report error:', error);
+    console.error('Error updating report:', error);
     res.status(500).json({ error: 'Failed to update report' });
   }
 };
 
-// Update task completion status
-export const updateTaskStatus = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { taskId } = req.params;
-    const { completed } = req.body;
-
-    const task = await prisma.reportTask.update({
-      where: { id: taskId },
-      data: { completed }
-    });
-
-    res.status(200).json(task);
-  } catch (error) {
-    console.error('Update task status error:', error);
-    res.status(500).json({ error: 'Failed to update task status' });
-  }
-};
-
-// Delete a report
-export const deleteReport = async (req: Request, res: Response): Promise<void> => {
+export const deleteReport = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
+    // Delete tasks first due to foreign key constraint
+    await prisma.reportTask.deleteMany({
+      where: { reportId: id },
+    });
+
+    // Then delete the report
     await prisma.report.delete({
-      where: { id }
+      where: { id },
     });
 
     res.status(204).send();
   } catch (error) {
-    console.error('Delete report error:', error);
+    console.error('Error deleting report:', error);
     res.status(500).json({ error: 'Failed to delete report' });
   }
-}; 
+};

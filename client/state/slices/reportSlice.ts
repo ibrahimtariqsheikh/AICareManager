@@ -2,17 +2,52 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Report, ReportTask } from '../api';
 
 interface ReportState {
+  reports: Report[];
   selectedReport: Report | null;
-  clientReports: Report[];
-  caregiverReports: Report[];
   isLoading: boolean;
   error: string | null;
 }
 
+const dummyReport: Report = {
+  id: "1",
+  clientId: "1",
+  userId: "1",
+  condition: "Good",
+  summary: "Regular checkup completed successfully",
+  checkInTime: "2024-04-09T10:00:00.000Z",
+  checkOutTime: "2024-04-09T11:30:00.000Z",
+  checkInDistance: 0,
+  checkOutDistance: 0,
+  tasksCompleted: [
+    {
+      id: "1",
+      reportId: "1",
+      taskName: "Medication",
+      completed: true
+    },
+    {
+      id: "2",
+      reportId: "1",
+      taskName: "Personal Care",
+      completed: true
+    }
+  ],
+  client: {
+    id: "1",
+    firstName: "John",
+    lastName: "Doe"
+  },
+  caregiver: {
+    id: "1",
+    firstName: "Sarah",
+    lastName: "Smith"
+  },
+  hasSignature: true
+};
+
 const initialState: ReportState = {
+  reports: [dummyReport],
   selectedReport: null,
-  clientReports: [],
-  caregiverReports: [],
   isLoading: false,
   error: null,
 };
@@ -21,23 +56,11 @@ const reportSlice = createSlice({
   name: 'report',
   initialState,
   reducers: {
+    setReports: (state, action: PayloadAction<Report[]>) => {
+      state.reports = action.payload;
+    },
     setSelectedReport: (state, action: PayloadAction<Report | null>) => {
       state.selectedReport = action.payload;
-    },
-    setClientReports: (state, action: PayloadAction<Report[]>) => {
-      state.clientReports = action.payload;
-    },
-    setCaregiverReports: (state, action: PayloadAction<Report[]>) => {
-      state.caregiverReports = action.payload;
-    },
-    updateTaskStatus: (state, action: PayloadAction<{ reportId: string; taskId: string; completed: boolean }>) => {
-      const { reportId, taskId, completed } = action.payload;
-      if (state.selectedReport?.id === reportId) {
-        const task = state.selectedReport.tasksCompleted.find(t => t.id === taskId);
-        if (task) {
-          task.completed = completed;
-        }
-      }
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -45,23 +68,29 @@ const reportSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    clearReportState: (state) => {
-      state.selectedReport = null;
-      state.clientReports = [];
-      state.caregiverReports = [];
-      state.error = null;
+    updateReport: (state, action: PayloadAction<Report>) => {
+      const index = state.reports.findIndex(report => report.id === action.payload.id);
+      if (index !== -1) {
+        state.reports[index] = action.payload;
+      }
+    },
+    addReport: (state, action: PayloadAction<Report>) => {
+      state.reports.push(action.payload);
+    },
+    deleteReport: (state, action: PayloadAction<string>) => {
+      state.reports = state.reports.filter(report => report.id !== action.payload);
     },
   },
 });
 
 export const {
+  setReports,
   setSelectedReport,
-  setClientReports,
-  setCaregiverReports,
-  updateTaskStatus,
   setLoading,
   setError,
-  clearReportState,
+  updateReport,
+  addReport,
+  deleteReport,
 } = reportSlice.actions;
 
 export default reportSlice.reducer; 
