@@ -3,13 +3,13 @@ import { useEffect } from "react"
 import { CustomDayView } from "./views/custom-day-view"
 import { CustomWeekView } from "./views/custom-week-view"
 import { CustomMonthView } from "./views/custom-month-view"
-import type { AppointmentEvent, StaffMember, Client, SidebarMode } from "./types"
+import type { AppointmentEvent, StaffMember, Client, SidebarMode, ProcessedCalendarEvent } from "./types"
 import { Skeleton } from "../../ui/skeleton"
 import { format } from "date-fns"
 import { filterEvents, getEventColor } from "./calender-utils"
+import { useAppSelector } from "@/state/redux"
 
 interface CustomCalendarProps {
-    events: AppointmentEvent[]
     currentDate: Date
     activeView: "day" | "week" | "month"
     onSelectEvent: (event: any) => void
@@ -21,10 +21,11 @@ interface CustomCalendarProps {
     sidebarMode: SidebarMode
     clients: Client[]
     spaceTheme?: boolean
+    events: ProcessedCalendarEvent[]
+    getEventTypeLabel: (type: string) => string
 }
 
 export function CustomCalendar({
-    events,
     currentDate,
     activeView,
     onSelectEvent,
@@ -36,19 +37,9 @@ export function CustomCalendar({
     sidebarMode,
     clients,
     spaceTheme,
+    events,
+    getEventTypeLabel,
 }: CustomCalendarProps) {
-    // Ensure dates are properly parsed
-    const processedEvents = events.map((event) => ({
-        ...event,
-        start: event.start instanceof Date ? event.start : new Date(event.start),
-        end: event.end instanceof Date ? event.end : new Date(event.end),
-        date: event.date instanceof Date ? event.date : new Date(event.date),
-        startTime: event.startTime || format(new Date(event.start), "HH:mm"),
-        endTime: event.endTime || format(new Date(event.end), "HH:mm"),
-        color: event.color || getEventColor(event.type),
-    }))
-
-    // Calculate event duration in minutes
     const getEventDurationInMinutes = (event: AppointmentEvent) => {
         const start = new Date(event.start)
         const end = new Date(event.end)
@@ -58,9 +49,8 @@ export function CustomCalendar({
     // Log events for debugging
     useEffect(() => {
         console.log("Calendar received events:", events.length)
-        console.log("Processed events:", processedEvents.length)
-        console.log("Sample processed event:", processedEvents[0])
-    }, [events, processedEvents])
+        console.log("Sample processed event:", events[0])
+    }, [events])
 
     if (isLoading) {
         return (
@@ -76,21 +66,20 @@ export function CustomCalendar({
             {activeView === "day" && (
                 <CustomDayView
                     date={currentDate}
-                    events={processedEvents}
+                    events={events}
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
                     staffMembers={staffMembers}
                     getEventDurationInMinutes={getEventDurationInMinutes}
                     spaceTheme={spaceTheme}
-                    clients={clients}
-                    sidebarMode={sidebarMode}
+
                 />
             )}
 
             {activeView === "week" && (
                 <CustomWeekView
                     date={currentDate}
-                    events={processedEvents}
+                    events={events}
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
                     staffMembers={staffMembers}
@@ -102,11 +91,12 @@ export function CustomCalendar({
             {activeView === "month" && (
                 <CustomMonthView
                     date={currentDate}
-                    events={processedEvents}
+                    events={events}
                     onSelectEvent={onSelectEvent}
                     onDateSelect={onNavigate}
                     staffMembers={staffMembers}
                     getEventDurationInMinutes={getEventDurationInMinutes}
+                    getEventTypeLabel={getEventTypeLabel}
                     spaceTheme={spaceTheme}
                     clients={clients}
                     sidebarMode={sidebarMode}

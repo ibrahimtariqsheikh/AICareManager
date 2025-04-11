@@ -39,8 +39,8 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
 
     return (
         <Section className="pt-20 pb-16 md:pt-32 md:pb-24 relative z-10">
-            <motion.div className="max-w-4xl mx-auto text-center space-y-8" variants={fadeIn}>
-                {/* Replace the old badge with the AnimatedBadge component */}
+            <motion.div className=" mx-auto text-center space-y-8" variants={fadeIn}>
+
                 <div className="flex justify-center">
                     <div className="text-sm font-medium text-blue-500 bg-blue-500/10 px-4 py-2 rounded-lg">
                         Level Up Your Care Management with AI
@@ -48,13 +48,63 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                 </div>
 
                 <motion.h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight px-2" variants={fadeIn}>
-                    <span className={theme === "dark" ? "text-white" : "text-black"}>{regularWords}</span>{" "}
-                    <span className="text-primary">{highlightedWords}</span>
+                    {title
+                        .split(" ")
+                        .map((word, index) => (
+                            <motion.span
+                                key={index}
+                                initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
+                                animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                                transition={{
+                                    duration: 0.3,
+                                    delay: index * 0.1,
+                                    ease: "easeInOut",
+                                }}
+                                className={`mr-2 inline-block ${index >= words.length - 2 ? "text-primary" : theme === "dark" ? "text-white" : "text-black"
+                                    }`}
+                            >
+                                {word}
+                            </motion.span>
+                        ))}
                 </motion.h1>
 
-                <motion.p className="text-md md:text-lg text-muted-foreground max-w-2xl mx-auto" variants={fadeIn}>
+                <motion.p className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-600 dark:text-neutral-400" variants={fadeIn}>
                     {subtitle}
                 </motion.p>
+
+                {/* Floating dashboard preview */}
+                <motion.div
+                    className="max-w-5xl mx-auto relative"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                >
+                    <motion.div
+                        initial={{
+                            opacity: 0,
+                            y: 10,
+                        }}
+                        animate={{
+                            opacity: 1,
+                            y: 0,
+                        }}
+                        transition={{
+                            duration: 0.3,
+                            delay: 1.2,
+                        }}
+                        className="relative z-10  rounded-3xl border border-neutral-200 bg-neutral-100 p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+                    >
+                        <div className="w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-700">
+                            <Image
+                                src="/assets/dashboard-preview.png"
+                                alt="Landing page preview"
+                                className="aspect-[16/9] h-auto w-full object-cover"
+                                height={1000}
+                                width={1000}
+                            />
+                        </div>
+                    </motion.div>
+                </motion.div>
 
                 {isAuthenticated ? (
                     <motion.div className="flex flex-col items-center gap-4" variants={fadeIn}>
@@ -75,36 +125,10 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                     </motion.div>
                 )}
 
-                <div className="flex justify-center items-center space-x-4 mt-4">
-                    <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary">
-                        Home
-                    </Link>
-                    <Link href="/pricing" className="text-sm font-medium text-muted-foreground hover:text-primary">
-                        Pricing
-                    </Link>
-                </div>
+
             </motion.div>
 
-            {/* Floating dashboard preview */}
-            <motion.div
-                className="mt-16 max-w-5xl mx-auto relative"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-            >
-                <div
-                    className={`relative ${theme === "dark" ? "shadow-2xl shadow-blue-500/10" : "shadow-lg shadow-blue-500/5"} rounded-xl overflow-hidden border ${theme === "dark" ? "border-white/10" : "border-gray-100"} backdrop-blur-sm`}
-                >
-                    <Image
-                        src={image || "/placeholder.svg"}
-                        alt="Dashboard Preview"
-                        width={1200}
-                        height={600}
-                        className="w-full h-auto rounded-xl"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
-                </div>
-            </motion.div>
+
         </Section>
     )
 }

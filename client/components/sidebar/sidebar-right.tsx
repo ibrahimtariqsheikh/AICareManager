@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, ChevronDown, ChevronUp, Filter, Calendar as CalendarIcon, CalendarDays, CalendarRange } from "lucide-react"
+import { Check, ChevronDown, ChevronUp, Filter, Calendar as CalendarIcon, CalendarDays, CalendarRange, X } from "lucide-react"
 import { Button } from "../ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
 import { ScrollArea } from "../ui/scroll-area"
@@ -16,6 +16,7 @@ import { DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/d
 import { Dialog } from "../ui/dialog"
 import { PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Popover } from "../ui/popover"
+import { setIsHidden } from "@/state/slices/scheduleSlice"
 
 interface SidebarRightProps {
     sidebarMode: SidebarMode
@@ -75,7 +76,7 @@ export function SidebarRight({
         }
     }
 
-    const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+
 
 
 
@@ -85,6 +86,9 @@ export function SidebarRight({
 
     return (
         <div className="w-80 border-l border-gray-200 h-full overflow-hidden flex flex-col">
+            <div className="flex items-center justify-end p-2">
+                <Button variant="ghost" size="icon" onClick={() => dispatch(setIsHidden(true))}><X className="h-4 w-4" /></Button>
+            </div>
 
             {/* Calendar Section */}
             <div className="p-4 border-b border-gray-200">

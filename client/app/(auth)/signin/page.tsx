@@ -134,7 +134,7 @@ const SigninPage = () => {
 
     return (
         <motion.div
-            className="flex min-h-screen w-full"
+            className="flex min-h-screen w-full bg-[#F2F2F7]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}

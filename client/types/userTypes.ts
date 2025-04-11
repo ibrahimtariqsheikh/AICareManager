@@ -67,13 +67,3 @@ export interface CommunicationLog {
   createdAt: string;
 }
 
-export interface User {
-    id: string
-    firstName: string
-    lastName: string
-    email: string
-    role: 'SOFTWARE_OWNER' | 'OFFICE_STAFF'| 'CARE_WORKER' | 'CLIENT'
-    agencyId?: string
-    createdAt: string
-    updatedAt: string
-} 

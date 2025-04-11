@@ -18,10 +18,11 @@ import { toast } from "sonner"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "../ui/form"
 
 import { useAppSelector, useAppDispatch } from "../../state/redux"
-import { addEvent, updateEvent, deleteEvent } from "../../state/slices/userSlice"
-import { v4 as uuidv4 } from "uuid"
+import { addEvent, updateEvent, deleteEvent } from "../../state/slices/scheduleSlice"
+import { setClients, setOfficeStaff } from "../../state/slices/userSlice"
+
 import { useCreateScheduleMutation, useUpdateScheduleMutation, useDeleteScheduleMutation, useGetUsersQuery, useGetUserQuery } from "../../state/api"
-import { FetchUserAttributesOutput } from "@aws-amplify/auth"
+
 
 const formSchema = z.object({
     agencyId: z
@@ -78,23 +79,12 @@ const generateTimeOptions = () => {
     return options
 }
 
-interface UserInfo {
-    agencyId: string
-    cognitoId: string
-    email: string
-    firstName: string
-    lastName: string
-    role: string
-    id: string
-}
 
-interface AuthState {
-    user: FetchUserAttributesOutput | null
-}
+
 
 export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTheme = false }: AppointmentFormProps) {
-    const [clients, setClients] = useState<any[]>([])
-    const [staff, setStaff] = useState<any[]>([])
+
+
     const [availableStaff, setAvailableStaff] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -107,32 +97,18 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     const [updateSchedule] = useUpdateScheduleMutation()
     const [deleteSchedule] = useDeleteScheduleMutation()
 
-    // Get data from Redux store
-    const { careWorkers, clients: reduxClients, events, user } = useAppSelector((state) => state.user)
-    const agencyId = user?.userInfo?.agencyId || ""
+    const user = useAppSelector((state: any) => state.user.user)
 
-    // Load filtered users when form opens
-    const { data: usersResponse } = useGetUsersQuery({
-        agencyId: user?.userInfo?.agencyId || "",
-        role: "CARE_WORKER,CLIENT,OFFICE_STAFF"
-    }, {
-        skip: !user?.userInfo?.agencyId
-    })
+    const { careWorkers, clients, officeStaff } = useAppSelector((state: any) => state.user)
+    console.log('Care workers:', careWorkers)
+    console.log('Clients:', clients)
+    console.log('Office staff:', officeStaff)
 
-    const filteredUsers = useMemo(() => {
-        if (!usersResponse?.data) return { careWorkers: [], clients: [], officeStaff: [] }
-        const users = usersResponse.data
-        return {
-            careWorkers: users.filter(user => user.role === "CARE_WORKER"),
-            clients: users.filter(user => user.role === "CLIENT"),
-            officeStaff: users.filter(user => user.role === "OFFICE_STAFF")
-        }
-    }, [usersResponse])
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            agencyId,
+            agencyId: user?.userInfo?.agencyId || "",
             clientId: "",
             userId: "",
             date: new Date(),
@@ -144,7 +120,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         },
     })
 
-    // Update available end times when start time changes
+
     useEffect(() => {
         const startTime = form.watch("startTime")
         if (startTime) {
@@ -179,25 +155,24 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     // Initialize clients and staff from Redux store
     useEffect(() => {
         console.log('Initializing clients and staff')
-        console.log('Redux clients:', reduxClients)
+        console.log('Redux clients:', clients)
         console.log('Care workers:', careWorkers)
-        console.log('Filtered users:', filteredUsers)
 
-        if (filteredUsers) {
-            setClients(filteredUsers.clients || [])
-            setStaff(filteredUsers.careWorkers || [])
-            setAvailableStaff(filteredUsers.careWorkers || [])
+        if (clients) {
+            setClients(clients || [])
+            setOfficeStaff(officeStaff || [])
+            setAvailableStaff(careWorkers || [])
         } else {
-            setClients(reduxClients || [])
-            setStaff(careWorkers || [])
+            setClients(clients || [])
+            setOfficeStaff(officeStaff || [])
             setAvailableStaff(careWorkers || [])
         }
 
         // Set agency ID from auth state
-        if (agencyId) {
-            form.setValue("agencyId", agencyId)
+        if (user?.userInfo?.agencyId) {
+            form.setValue("agencyId", user?.userInfo?.agencyId)
         }
-    }, [reduxClients, careWorkers, agencyId, form, filteredUsers])
+    }, [clients, careWorkers, user?.userInfo?.agencyId, form])
 
     // Populate form with event data when editing
     useEffect(() => {
@@ -207,7 +182,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             const appointmentDate = new Date(event.date || startDate)
 
             form.reset({
-                agencyId: event.agencyId || agencyId,
+                agencyId: event.agencyId || user?.userInfo?.agencyId,
                 clientId: event.clientId,
                 userId: event.userId || event.resourceId,
                 date: appointmentDate,
@@ -221,7 +196,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             // Set the current month to the event's month
             setCurrentMonth(appointmentDate)
         }
-    }, [event, isNew, agencyId, form])
+    }, [event, isNew, user?.userInfo?.agencyId, form])
 
     // Add click outside handler for calendar
     useEffect(() => {
@@ -262,11 +237,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             endDateTime.setHours(endHour, endMinute)
 
             // Find the selected care worker and client for additional data
-            const careWorker = careWorkers.find((worker) => worker.id === data.userId)
-            const client = reduxClients.find((client) => client.id === data.clientId)
+            const careWorker = careWorkers.find((worker: any) => worker.id === data.userId)
+            const client = clients.find((client: any) => client.id === data.clientId)
 
             console.log('Selected client:', client)
-            console.log('Available clients:', reduxClients)
+            console.log('Available clients:', clients)
             console.log('Selected clientId:', data.clientId)
 
             // Create a title that includes both care worker and client names
@@ -304,13 +279,13 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                 date: data.date,
                 startTime: data.startTime,
                 endTime: data.endTime,
-                resourceId: response.resourceId,
+                resourceId: response.userId,
                 clientId: response.clientId,
                 type: response.type,
                 status: response.status,
                 notes: response.notes || "",
                 color: response.color,
-                careWorker: response.careWorker,
+                careWorker: response.user,
                 client: response.client,
             }
 
@@ -410,7 +385,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                {clients.map((client) => (
+                                                {clients.map((client: any) => (
                                                     <SelectItem key={client.id} value={client.id}>
                                                         {client.firstName} {client.lastName}
                                                     </SelectItem>

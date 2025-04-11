@@ -69,27 +69,27 @@ export default function Home() {
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen w-full overflow-visible">
+    <div className="min-h-screen w-full overflow-visible bg-[#F2F2F7]">
       {/* Subtle background container */}
       <div
         className={`fixed inset-0 -z-10 ${theme === "dark"
-            ? "bg-gradient-to-b from-stone-950 to-black"
-            : "bg-gradient-to-b from-orange-50/70 via-orange-50/30 to-white"
+          ? "bg-gradient-to-b from-stone-950 to-black"
+          : "bg-gradient-to-b from-orange-50/70 via-orange-50/30 to-white"
           }`}
       >
         {/* Subtle pattern overlay */}
         <div
           className={`absolute inset-0 opacity-5 ${theme === "dark"
-              ? "bg-[url('/assets/subtle-pattern-dark.png')]"
-              : "bg-[url('/assets/subtle-pattern-light.png')]"
+            ? "bg-[url('/assets/subtle-pattern-dark.png')]"
+            : "bg-[url('/assets/subtle-pattern-light.png')]"
             }`}
         />
 
         {/* Soft glow effect */}
         <div
           className={`absolute inset-0 ${theme === "dark"
-              ? "bg-gradient-radial from-stone-800/20 to-transparent"
-              : "bg-gradient-radial from-orange-200/20 to-transparent"
+            ? "bg-gradient-radial from-stone-800/20 to-transparent"
+            : "bg-gradient-radial from-orange-200/20 to-transparent"
             }`}
           style={{
             backgroundSize: "100% 100%",
@@ -101,7 +101,7 @@ export default function Home() {
       <Navbar />
 
       {/* Main content */}
-      <div className="relative">
+      <div className="relative ">
         {theme === "dark" && <Spotlight />}
         <HeroSection
           title="Transform Your Healthcare with Our AI-Powered Platform"

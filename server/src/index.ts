@@ -39,7 +39,7 @@ app.use("/agencies", agencyRoutes);
 app.use("/invitations", invitationRoutes);
 app.use("/schedules", scheduleRoutes);
 app.use("/reports", reportRoutes);
-
+app.use("/dashboard", dashboardRoutes);
 /* SERVER */
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

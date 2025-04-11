@@ -140,8 +140,8 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
         <Sidebar className="border-r-0" {...props}>
             <SidebarHeader className="p-4 mt-2">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10">
-                        <Building2 className="h-4 w-4 text-primary" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-black/10">
+                        <Building2 className="h-4 w-4 text-black" />
                     </div>
                     <div className="flex flex-col">
                         <span className="text-sm font-medium">

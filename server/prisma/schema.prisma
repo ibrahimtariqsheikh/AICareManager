@@ -228,6 +228,7 @@ model Report {
   clientId     String
   agencyId     String
   userId       String
+  title        String?
   condition    String
   summary      String
   checkInTime  DateTime

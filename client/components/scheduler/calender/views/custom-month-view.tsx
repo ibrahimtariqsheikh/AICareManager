@@ -1,11 +1,10 @@
 "use client"
 
 import type React from "react"
-
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import moment from "moment"
 import { motion } from "framer-motion"
-import { ChevronDown, Calendar, Clock, MapPin, User, Users } from "lucide-react"
+import { ChevronDown, Calendar, Clock, MapPin, User, Users, Home, Video, Building2, Phone, GripVertical } from "lucide-react"
 import type { AppointmentEvent } from "../types"
 import { Button } from "../../../ui/button"
 import { cn } from "../../../../lib/utils"
@@ -18,6 +17,7 @@ interface CustomMonthViewProps {
     onDateSelect: (date: Date) => void
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
+    getEventTypeLabel: (type: string) => string
     spaceTheme?: boolean
     clients?: any[]
     eventTypes?: any[]
@@ -40,31 +40,21 @@ export function CustomMonthView({
     onDateSelect,
     staffMembers,
     getEventDurationInMinutes,
+    getEventTypeLabel,
     spaceTheme = false,
-    clients,
-    eventTypes,
-    sidebarMode,
-    toggleStaffSelection,
-    toggleClientSelection,
-    toggleEventTypeSelection,
-    selectAllStaff,
-    deselectAllStaff,
-    selectAllClients,
-    deselectAllClients,
-    toggleSidebarMode,
     onEventUpdate,
 }: CustomMonthViewProps) {
     const [calendar, setCalendar] = useState<Date[][]>([])
-    const [expandedDays, setExpandedDays] = useState<{ [key: string]: boolean }>({})
+    const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({})
     const [activeEvent, setActiveEvent] = useState<string | null>(null)
     const [isDragging, setIsDragging] = useState(false)
     const [dragTooltip, setDragTooltip] = useState<{ eventId: string; date: string; time: string } | null>(null)
     const [ghostEvent, setGhostEvent] = useState<{ id: string; dayStr: string } | null>(null)
-    const eventRefs = useRef<{ [key: string]: HTMLElement }>({})
-    const dayRefs = useRef<{ [key: string]: HTMLElement }>({})
+    const eventRefs = useRef<Record<string, HTMLElement>>({})
+    const dayRefs = useRef<Record<string, HTMLElement>>({})
     const calendarRef = useRef<HTMLDivElement>(null)
     const gridRef = useRef<HTMLDivElement>(null)
-    const [displayEvents, setDisplayEvents] = useState<{ [key: string]: AppointmentEvent }>({})
+    const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
     const [highlightedDay, setHighlightedDay] = useState<string | null>(null)
     const [eventBeingDragged, setEventBeingDragged] = useState<AppointmentEvent | null>(null)
     const [originalEventPosition, setOriginalEventPosition] = useState<{
@@ -72,7 +62,6 @@ export function CustomMonthView({
         event: AppointmentEvent
     } | null>(null)
     const dragEventTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-    const [dragConstraints, setDragConstraints] = useState({ top: 0, left: 0, right: 0, bottom: 0 })
     const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
 
     // Generate calendar days for the month
@@ -100,12 +89,47 @@ export function CustomMonthView({
 
     // Initialize display events
     useEffect(() => {
-        const eventMap: { [key: string]: AppointmentEvent } = {}
+        const eventMap: Record<string, AppointmentEvent> = {}
         events.forEach((event) => {
             eventMap[event.id] = { ...event }
         })
         setDisplayEvents(eventMap)
     }, [events])
+
+    // Cleanup function for drag operations
+    const cleanupDragState = useCallback(() => {
+        if (dragEventTimeoutRef.current) {
+            clearTimeout(dragEventTimeoutRef.current)
+        }
+
+        setActiveEvent(null)
+        setIsDragging(false)
+        setDragTooltip(null)
+        setHighlightedDay(null)
+        setGhostEvent(null)
+        setEventBeingDragged(null)
+        setOriginalEventPosition(null)
+        document.body.style.userSelect = ""
+        document.body.style.cursor = ""
+    }, [])
+
+    // Cancel the current drag operation and reset to original state
+    const cancelDrag = useCallback(() => {
+        if (originalEventPosition) {
+            // Revert the event to its original position
+            if (eventBeingDragged) {
+                toast.error("Drag cancelled - reverted to original position")
+            }
+        }
+        cleanupDragState()
+    }, [originalEventPosition, eventBeingDragged, cleanupDragState])
+
+    // Handle pointer up globally to catch if mouse released outside calendar
+    const handlePointerUp = useCallback(() => {
+        if (isDragging && !ghostEvent) {
+            cancelDrag()
+        }
+    }, [isDragging, ghostEvent, cancelDrag])
 
     // Reset drag state when component unmounts or when drag is complete
     useEffect(() => {
@@ -126,28 +150,10 @@ export function CustomMonthView({
             window.removeEventListener("pointerup", handlePointerUp)
             document.body.style.cursor = ""
         }
-    }, [isDragging])
-
-    // Handle pointer up globally to catch if mouse released outside calendar
-    const handlePointerUp = () => {
-        if (isDragging && !ghostEvent) {
-            cancelDrag()
-        }
-    }
-
-    // Cancel the current drag operation and reset to original state
-    const cancelDrag = () => {
-        if (originalEventPosition) {
-            // Revert the event to its original position
-            if (eventBeingDragged) {
-                toast.error("Drag cancelled - reverted to original position")
-            }
-        }
-        cleanupDragState()
-    }
+    }, [isDragging, handlePointerUp, cancelDrag])
 
     // Get events for a specific day
-    const getEventsForDay = (day: Date) => {
+    const getEventsForDay = useCallback((day: Date) => {
         const dateStr = moment(day).format("YYYY-MM-DD")
 
         return events.filter((event) => {
@@ -158,129 +164,70 @@ export function CustomMonthView({
 
             return moment(event.start).isSame(day, "day")
         })
-    }
+    }, [events, isDragging, activeEvent, ghostEvent])
 
     // Toggle expanded day view
-    const toggleDayExpand = (dateStr: string, e: React.MouseEvent) => {
+    const toggleDayExpand = useCallback((dateStr: string, e: React.MouseEvent) => {
         e.stopPropagation()
         setExpandedDays((prev) => ({
             ...prev,
             [dateStr]: !prev[dateStr],
         }))
-    }
+    }, [])
 
     // Format event time with precise minutes
-    const formatEventTime = (event: AppointmentEvent) => {
+    const formatEventTime = useCallback((event: AppointmentEvent) => {
         return moment(event.start).format("h:mm A")
-    }
+    }, [])
 
     // Format date and time for tooltip
-    const formatDateTimeForTooltip = (date: Date | string, event: AppointmentEvent) => {
-        const dateObj = date instanceof Date ? date : new Date(date);
-        const dateText = moment(dateObj).format("ddd, MMM D");
-        const timeText = moment(event.start instanceof Date ? event.start : new Date(event.start)).format("h:mm A");
-        return { dateText, timeText };
-    }
+    const formatDateTimeForTooltip = useCallback((date: Date | string, event: AppointmentEvent) => {
+        const dateObj = date instanceof Date ? date : new Date(date)
+        const dateText = moment(dateObj).format("ddd, MMM D")
+        const timeText = moment(event.start instanceof Date ? event.start : new Date(event.start)).format("h:mm A")
+        return { dateText, timeText }
+    }, [])
 
     // Get event background based on type and theme
-    const getEventBackground = (event: AppointmentEvent) => {
+    const getEventBackgroundColor = useCallback((event: AppointmentEvent, isActive: boolean, isHovered: boolean) => {
         if (spaceTheme) {
-            switch (event.type) {
-                case "HOME_VISIT":
-                    return "bg-green-900/30 border-l-4 border-green-500"
-                case "VIDEO_CALL":
-                    return "bg-blue-900/30 border-l-4 border-blue-500"
-                case "HOSPITAL":
-                    return "bg-green-900/30 border-l-4 border-green-500"
-                case "IN_PERSON":
-                    return "bg-amber-900/30 border-l-4 border-amber-500"
-                case "AUDIO_CALL":
-                    return "bg-red-900/30 border-l-4 border-red-500"
-                default:
-                    return "bg-zinc-800/30 border-l-4 border-zinc-700"
-            }
+            return isActive ? "bg-slate-800/60" : isHovered ? "bg-slate-800/40" : "bg-slate-800/30"
         } else {
-            switch (event.type) {
-                case "HOME_VISIT":
-                    return "bg-green-50 border-l-4 border-green-500"
-                case "VIDEO_CALL":
-                    return "bg-blue-50 border-l-4 border-blue-500"
-                case "HOSPITAL":
-                    return "bg-green-50 border-l-4 border-green-500"
-                case "IN_PERSON":
-                    return "bg-amber-50 border-l-4 border-amber-500"
-                case "AUDIO_CALL":
-                    return "bg-red-50 border-l-4 border-red-500"
-                default:
-                    return "bg-gray-50 border-l-4 border-gray-500"
-            }
+            return isActive ? "bg-gray-100" : isHovered ? "bg-gray-50/80" : "bg-gray-50"
         }
-    }
+    }, [spaceTheme])
+
+    const getEventAccentColor = useCallback((event: AppointmentEvent) => {
+        return "rgb(107, 114, 128)"
+    }, [])
 
     // Get event icon based on type
-    const getEventIcon = (event: AppointmentEvent) => {
+    const getEventIcon = useCallback((event: AppointmentEvent) => {
         switch (event.type) {
             case "HOME_VISIT":
-                return <MapPin className="h-3 w-3" />
+                return <Home className="h-3.5 w-3.5" />
             case "VIDEO_CALL":
-                return <Users className="h-3 w-3" />
+                return <Video className="h-3.5 w-3.5" />
             case "HOSPITAL":
-                return <MapPin className="h-3 w-3" />
-            case "IN_PERSON":
-                return <User className="h-3 w-3" />
+                return <Building2 className="h-3.5 w-3.5" />
             case "AUDIO_CALL":
-                return <User className="h-3 w-3" />
+                return <Phone className="h-3.5 w-3.5" />
+            case "IN_PERSON":
+                return <User className="h-3.5 w-3.5" />
             default:
-                return <Calendar className="h-3 w-3" />
+                return <Calendar className="h-3.5 w-3.5" />
         }
-    }
+    }, [])
 
     // Get staff color and name
-    const getStaffColor = (event: AppointmentEvent, staffMembers: any[]) => {
+    const getStaffInfo = useCallback((event: AppointmentEvent) => {
         const staffMember = staffMembers.find((s) => s.id === event.resourceId)
-        const staffColor = staffMember?.color || "#888888"
         const staffName = staffMember ? `${staffMember.firstName} ${staffMember.lastName}` : "Staff"
-        return { staffColor, staffName }
-    }
-
-    // Handle drag start
-    const handleDragStart = (eventId: string, e: MouseEvent | PointerEvent | TouchEvent) => {
-        if (!displayEvents[eventId]) return
-
-        // Set cursor style for the whole document
-        document.body.style.cursor = "grabbing"
-
-        // Prevent text selection during drag
-        document.body.style.userSelect = "none"
-
-        // Get event and day
-        const event = displayEvents[eventId]
-        const dateStr = moment(event.start).format("YYYY-MM-DD")
-
-        // Store original event position for possible revert
-        setOriginalEventPosition({
-            dateStr,
-            event: { ...event },
-        })
-
-        // Store event being dragged
-        setEventBeingDragged(event)
-
-        // Set active event
-        setActiveEvent(eventId)
-        setIsDragging(true)
-
-        // Update ghost event and highlighted day
-        setGhostEvent({ id: eventId, dayStr: dateStr })
-        setHighlightedDay(dateStr)
-
-        // Set tooltip with date and time
-        const { dateText, timeText } = formatDateTimeForTooltip(event.start, event)
-        setDragTooltip({ eventId, date: dateText, time: timeText })
-    }
+        return { staffName }
+    }, [staffMembers])
 
     // Find day cell under pointer with grid-aligned snapping
-    const findDayUnderPointer = (clientX: number, clientY: number): { dateStr: string; element: HTMLElement } | null => {
+    const findDayUnderPointer = useCallback((clientX: number, clientY: number): { dateStr: string; element: HTMLElement } | null => {
         // Get all day cells
         const dayCells = Object.entries(dayRefs.current).map(([dateStr, element]) => {
             const rect = element.getBoundingClientRect()
@@ -319,10 +266,46 @@ export function CustomMonthView({
         }
 
         return null
-    }
+    }, [])
+
+    // Handle drag start
+    const handleDragStart = useCallback((eventId: string, e: MouseEvent | PointerEvent | TouchEvent) => {
+        if (!displayEvents[eventId]) return
+
+        // Set cursor style for the whole document
+        document.body.style.cursor = "grabbing"
+
+        // Prevent text selection during drag
+        document.body.style.userSelect = "none"
+
+        // Get event and day
+        const event = displayEvents[eventId]
+        const dateStr = moment(event.start).format("YYYY-MM-DD")
+
+        // Store original event position for possible revert
+        setOriginalEventPosition({
+            dateStr,
+            event: { ...event },
+        })
+
+        // Store event being dragged
+        setEventBeingDragged(event)
+
+        // Set active event
+        setActiveEvent(eventId)
+        setIsDragging(true)
+
+        // Update ghost event and highlighted day
+        setGhostEvent({ id: eventId, dayStr: dateStr })
+        setHighlightedDay(dateStr)
+
+        // Set tooltip with date and time
+        const { dateText, timeText } = formatDateTimeForTooltip(event.start, event)
+        setDragTooltip({ eventId, date: dateText, time: timeText })
+    }, [displayEvents, formatDateTimeForTooltip])
 
     // Handle drag
-    const handleDrag = (eventId: string, info: any) => {
+    const handleDrag = useCallback((eventId: string, info: any) => {
         if (!isDragging || !activeEvent || !displayEvents[eventId] || !eventBeingDragged) return
 
         // Get client coordinates
@@ -352,10 +335,10 @@ export function CustomMonthView({
                 }
             }, 50) // Small timeout for performance
         }
-    }
+    }, [isDragging, activeEvent, displayEvents, eventBeingDragged, findDayUnderPointer, highlightedDay, formatDateTimeForTooltip])
 
     // Handle drag end with precise grid snapping
-    const handleDragEnd = (eventId: string, info: any) => {
+    const handleDragEnd = useCallback((eventId: string, info: any) => {
         document.body.style.cursor = ""
 
         if (!isDragging || !activeEvent || !displayEvents[eventId] || !eventBeingDragged) {
@@ -367,7 +350,7 @@ export function CustomMonthView({
         const clientX = info.point.x
         const clientY = info.point.y
 
-        // Find which day the event was dropped on with strict grid alignment
+        // Find which day the event was dropped on
         const target = findDayUnderPointer(clientX, clientY)
 
         if (!target || !target.dateStr) {
@@ -434,388 +417,339 @@ export function CustomMonthView({
 
         // Clean up drag state
         cleanupDragState()
-    }
-
-    // Clean up all drag-related state
-    const cleanupDragState = () => {
-        if (dragEventTimeoutRef.current) {
-            clearTimeout(dragEventTimeoutRef.current)
-        }
-
-        setActiveEvent(null)
-        setIsDragging(false)
-        setDragTooltip(null)
-        setHighlightedDay(null)
-        setGhostEvent(null)
-        setEventBeingDragged(null)
-        setOriginalEventPosition(null)
-        document.body.style.userSelect = ""
-        document.body.style.cursor = ""
-    }
+    }, [isDragging, activeEvent, displayEvents, eventBeingDragged, findDayUnderPointer, cancelDrag, cleanupDragState, onEventUpdate])
 
     // Handle click on a day cell
-    const handleDayClick = (day: Date) => {
+    const handleDayClick = useCallback((day: Date) => {
         if (!isDragging) {
             onDateSelect(day)
         }
-    }
+    }, [isDragging, onDateSelect])
 
     // Handle click on an event
-    const handleEventClick = (event: AppointmentEvent, e: React.MouseEvent) => {
+    const handleEventClick = useCallback((event: AppointmentEvent, e: React.MouseEvent) => {
         if (!isDragging) {
             e.stopPropagation()
             onSelectEvent(event)
         }
-    }
-
-    // Add this useEffect to set proper drag constraints based on the grid layout
-    useEffect(() => {
-        if (gridRef.current) {
-            // Set a resize observer to update constraints when grid size changes
-            const resizeObserver = new ResizeObserver(() => {
-                if (gridRef.current) {
-                    const gridRect = gridRef.current.getBoundingClientRect()
-                    const cellWidth = gridRect.width / 7 // 7 days per week
-
-                    // Update the drag constraints to snap to day cells
-                    setDragConstraints({
-                        top: 0,
-                        left: 0,
-                        right: gridRect.width,
-                        bottom: gridRect.height,
-                    })
-                }
-            })
-
-            resizeObserver.observe(gridRef.current)
-
-            return () => {
-                if (gridRef.current) {
-                    resizeObserver.unobserve(gridRef.current)
-                }
-            }
-        }
-    }, [])
-
-    // Add this function to get the exact day cell position for snapping
-    const getDayCellPosition = (dateStr: string) => {
-        const element = dayRefs.current[dateStr]
-        if (!element || !gridRef.current) return null
-
-        const gridRect = gridRef.current.getBoundingClientRect()
-        const cellRect = element.getBoundingClientRect()
-
-        return {
-            x: cellRect.left - gridRect.left + cellRect.width / 2,
-            y: cellRect.top - gridRect.top + cellRect.height / 2,
-            width: cellRect.width,
-            height: cellRect.height,
-        }
-    }
-
-    // Get staff name
-    const getStaffName = (event: AppointmentEvent) => {
-        const { staffName } = getStaffColor(event, staffMembers)
-        return staffName
-    }
+    }, [isDragging, onSelectEvent])
 
     const tooltipClass = spaceTheme
         ? "bg-slate-800 text-white border border-slate-700"
         : "bg-white text-black border border-gray-200"
 
-    return (
-        <div className="h-full flex flex-col" ref={calendarRef}>
-            {/* Month and year header */}
-            <div className={`flex justify-center items-center py-2 ${spaceTheme ? "text-white" : "text-gray-800"}`}>
-                <h2 className="text-xl font-semibold">{moment(date).format("MMMM YYYY")}</h2>
-            </div>
+    const getEventDuration = useCallback((event: AppointmentEvent) => {
+        const duration = getEventDurationInMinutes(event)
+        if (duration < 60) {
+            return `${duration} min`
+        }
+        const hours = Math.floor(duration / 60)
+        const minutes = duration % 60
+        return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
+    }, [getEventDurationInMinutes])
 
-            {/* Day headers */}
+    // Render event component
+    const renderEvent = useCallback((event: AppointmentEvent, isExpanded: boolean) => {
+        const isActive = activeEvent === event.id
+        const isHovered = hoveredEvent === event.id
+        const displayEvent = displayEvents[event.id] || event
+        const { staffName } = getStaffInfo(displayEvent)
+        const eventIcon = getEventIcon(displayEvent)
+
+        return (
             <div
-                className={`grid grid-cols-7 ${spaceTheme ? "bg-zinc-900 border-zinc-800" : "bg-gray-50 border-gray-200"} border-b rounded-t-lg`}
+                key={event.id}
+                ref={(el) => {
+                    if (el) eventRefs.current[event.id] = el
+                }}
+                className={cn(
+                    "text-xs p-2 rounded-lg shadow-sm cursor-grab active:cursor-grabbing event-card transition-all",
+                    getEventBackgroundColor(displayEvent, isActive, isHovered),
+                    spaceTheme ? "text-white border-slate-700" : "text-black border-gray-200",
+                    "border"
+                )}
+                style={{
+                    borderLeftWidth: "4px",
+                    boxShadow: isActive
+                        ? spaceTheme
+                            ? "0 8px 16px rgba(0,0,0,0.4)"
+                            : "0 8px 16px rgba(0,0,0,0.2)"
+                        : spaceTheme
+                            ? "0 2px 4px rgba(0,0,0,0.3)"
+                            : "0 1px 2px rgba(0,0,0,0.1)",
+                    transform: isActive ? "scale(1.02)" : "scale(1)",
+                    zIndex: isActive ? 50 : isHovered ? 20 : 10,
+                    position: "relative",
+                }}
+                onMouseEnter={() => setHoveredEvent(event.id)}
+                onMouseLeave={() => setHoveredEvent(null)}
             >
-                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
-                    <div
-                        key={i}
-                        className={`py-3 text-center text-sm font-medium ${spaceTheme ? "text-zinc-400" : "text-gray-500"
-                            } ${i === 0 || i === 6 ? (spaceTheme ? "text-zinc-500" : "text-gray-400") : ""}`}
-                    >
-                        {day}
+                {/* Draggable wrapper */}
+                <motion.div
+                    className="absolute inset-0 z-10"
+                    drag
+                    dragConstraints={gridRef}
+                    dragElastic={0}
+                    dragMomentum={false}
+                    dragSnapToOrigin={false}
+                    dragTransition={{
+                        bounceStiffness: 600,
+                        bounceDamping: 20,
+                    }}
+                    onDragStart={(e) => handleDragStart(event.id, e as MouseEvent | PointerEvent | TouchEvent)}
+                    onDrag={(_, info) => handleDrag(event.id, info)}
+                    onDragEnd={(_, info) => handleDragEnd(event.id, info)}
+                    onClick={(e) => handleEventClick(event, e)}
+                    whileDrag={{
+                        scale: 1.05,
+                        zIndex: 100,
+                        boxShadow: spaceTheme ? "0 10px 20px rgba(0,0,0,0.5)" : "0 10px 20px rgba(0,0,0,0.3)",
+                    }}
+                />
+
+                {/* Event content with improved layout */}
+                <div className="flex flex-col relative z-0">
+                    <div className="flex items-center gap-1 mb-1">
+                        {eventIcon}
+                        <span className="font-medium truncate">{displayEvent.title}</span>
                     </div>
-                ))}
+
+                    <div className="text-[10px] opacity-70">
+                        {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
+                    </div>
+
+                    <div className="text-[10px] opacity-60">
+                        {getEventTypeLabel(displayEvent.type)} • {getEventDuration(displayEvent)}
+                    </div>
+
+                    {/* Staff info */}
+                    <div className="flex items-center gap-1 mt-1">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0 bg-gray-300" />
+                        <span className="text-[10px] truncate">
+                            {staffName}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        )
+    }, [
+        activeEvent, hoveredEvent, displayEvents, getStaffInfo, getEventIcon,
+        getEventBackgroundColor, spaceTheme, handleDragStart,
+        handleDrag, handleDragEnd, handleEventClick, getEventTypeLabel, getEventDuration
+    ])
+
+    // Render ghost event
+    const renderGhostEvent = useCallback((dateStr: string) => {
+        if (!isDragging || !ghostEvent || ghostEvent.dayStr !== dateStr || !activeEvent || !eventBeingDragged) {
+            return null
+        }
+
+        return (
+            <div
+                className={cn(
+                    "text-xs p-1.5 rounded-md border-2 border-dashed",
+                    getEventBackgroundColor(eventBeingDragged, false, false),
+                    spaceTheme ? "border-slate-500/80 bg-slate-900/30" : "border-gray-500/80 bg-gray-100/70",
+                )}
+                style={{
+                    borderLeftWidth: "4px",
+                }}
+            >
+                <div className="flex flex-col">
+                    <div className={`font-medium truncate ${spaceTheme ? "text-white" : ""}`}>
+                        {eventBeingDragged.title}
+                    </div>
+                    <div className="flex items-center gap-1 mt-1">
+                        <Clock className="h-3 w-3" />
+                        <span className={`${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
+                            {formatEventTime(eventBeingDragged)}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        )
+    }, [isDragging, ghostEvent, activeEvent, eventBeingDragged, getEventBackgroundColor, spaceTheme, getStaffInfo, formatEventTime])
+
+    return (
+        <div className="h-full flex flex-col p-4">
+            <div className="flex justify-center items-center mb-3">
+                <h3
+                    className={`text-lg font-semibold text-center px-3 py-1.5 rounded-full `}
+                >
+                    {moment(date).format("MMMM YYYY")}
+                </h3>
             </div>
 
-            {/* Calendar grid */}
-            <div className="flex-1 overflow-y-auto">
-                <div
-                    className={`grid grid-cols-7 auto-rows-fr h-full ${spaceTheme ? "bg-black" : "bg-white"
-                        } rounded-b-lg shadow-sm`}
-                    ref={gridRef}
-                >
-                    {calendar.flat().map((day, i) => {
-                        const dateStr = moment(day).format("YYYY-MM-DD")
-                        const isCurrentMonth = moment(day).isSame(date, "month")
-                        const isToday = moment(day).isSame(moment(), "day")
-                        const isWeekend = moment(day).day() === 0 || moment(day).day() === 6
-                        const dayEvents = getEventsForDay(day)
-                        const hasEvents = dayEvents.length > 0
-                        const isExpanded = expandedDays[dateStr]
-                        const isHighlighted = highlightedDay === dateStr && isDragging
+            <div className="flex flex-col flex-1 h-full overflow-hidden">
+                {/* Controls and info row */}
+                <div className="flex justify-end items-center mb-3 gap-2">
+                    <div
+                        className={cn(
+                            "text-xs flex items-center gap-1 px-3 py-1.5 rounded-full",
+                            spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100/70"
+                        )}
+                    >
+                        <GripVertical className="h-3 w-3" />
+                        <span>Drag events to reschedule</span>
+                    </div>
+                    <div
+                        className={cn(
+                            "text-xs flex items-center gap-1 px-2.5 py-1 rounded-full",
+                            spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
+                        )}
+                    >
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>
+                            {events.length} {events.length === 1 ? "event" : "events"}
+                        </span>
+                    </div>
+                </div>
 
-                        // Determine how many events to show before "more" button
-                        const eventsToShow = isExpanded ? dayEvents : dayEvents.slice(0, 2)
-                        const hasMore = dayEvents.length > 2 && !isExpanded
-
-                        return (
+                {/* Calendar grid */}
+                <div className="h-full flex flex-col" ref={calendarRef}>
+                    {/* Day headers */}
+                    <div
+                        className={`grid grid-cols-7 ${spaceTheme ? "bg-zinc-900 border-zinc-800" : "bg-gray-50 border-gray-200"} border-b rounded-t-lg`}
+                    >
+                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
                             <div
                                 key={i}
-                                ref={(el) => {
-                                    if (el) dayRefs.current[dateStr] = el
-                                }}
-                                data-date={dateStr}
-                                className={cn(
-                                    "border-b border-r p-1 relative transition-colors duration-100",
-                                    isCurrentMonth
-                                        ? spaceTheme
-                                            ? isWeekend
-                                                ? "bg-zinc-950"
-                                                : "bg-black"
-                                            : isWeekend
-                                                ? "bg-gray-50"
-                                                : "bg-white"
-                                        : spaceTheme
-                                            ? "bg-zinc-950/70 text-zinc-600"
-                                            : "bg-gray-50/70 text-gray-400",
-                                    isToday
-                                        ? spaceTheme
-                                            ? "ring-2 ring-inset ring-green-600/30"
-                                            : "ring-2 ring-inset ring-blue-500/30"
-                                        : "",
-                                    hasEvents ? "min-h-[100px]" : "min-h-[60px]",
-                                    isHighlighted ? (spaceTheme ? "bg-zinc-800/40" : "bg-blue-100/60") : "",
-                                    spaceTheme ? "border-zinc-800 text-white" : "border-gray-200",
-                                    "hover:bg-opacity-90 transition-all",
-                                )}
-                                onClick={() => handleDayClick(day)}
+                                className={`py-3 text-center text-sm font-medium ${spaceTheme ? "text-zinc-400" : "text-gray-500"
+                                    } ${i === 0 || i === 6 ? (spaceTheme ? "text-zinc-500" : "text-gray-400") : ""}`}
                             >
-                                {/* Day number with better styling */}
-                                <div className="flex justify-between items-center mb-1">
+                                {day}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Calendar grid */}
+                    <div className="flex-1 overflow-y-auto">
+                        <div
+                            className={`grid grid-cols-7 auto-rows-fr h-full ${spaceTheme ? "bg-black" : "bg-white"
+                                } rounded-b-lg shadow-sm`}
+                            ref={gridRef}
+                        >
+                            {calendar.flat().map((day, i) => {
+                                const dateStr = moment(day).format("YYYY-MM-DD")
+                                const isCurrentMonth = moment(day).isSame(date, "month")
+                                const isToday = moment(day).isSame(moment(), "day")
+                                const isWeekend = moment(day).day() === 0 || moment(day).day() === 6
+                                const dayEvents = getEventsForDay(day)
+                                const hasEvents = dayEvents.length > 0
+                                const isExpanded = expandedDays[dateStr]
+                                const isHighlighted = highlightedDay === dateStr && isDragging
+
+                                // Determine how many events to show before "more" button
+                                const eventsToShow = isExpanded ? dayEvents : dayEvents.slice(0, 2)
+                                const hasMore = dayEvents.length > 2 && !isExpanded
+
+                                return (
                                     <div
+                                        key={i}
+                                        ref={(el) => {
+                                            if (el) dayRefs.current[dateStr] = el
+                                        }}
+                                        data-date={dateStr}
                                         className={cn(
-                                            "text-sm font-medium rounded-full w-7 h-7 flex items-center justify-center",
+                                            "border-b border-r p-1 relative transition-colors duration-100",
+                                            isCurrentMonth
+                                                ? spaceTheme
+                                                    ? isWeekend
+                                                        ? "bg-zinc-950"
+                                                        : "bg-black"
+                                                    : isWeekend
+                                                        ? "bg-gray-50"
+                                                        : "bg-white"
+                                                : spaceTheme
+                                                    ? "bg-zinc-950/70 text-zinc-600"
+                                                    : "bg-gray-50/70 text-gray-400",
                                             isToday
                                                 ? spaceTheme
-                                                    ? "bg-green-600 text-white"
-                                                    : "bg-blue-500 text-white"
-                                                : isCurrentMonth
-                                                    ? spaceTheme
-                                                        ? "text-white"
-                                                        : "text-gray-700"
-                                                    : spaceTheme
-                                                        ? "text-zinc-600"
-                                                        : "text-gray-400",
+                                                    ? "ring-2 ring-inset ring-green-600/30"
+                                                    : "ring-2 ring-inset ring-blue-500/30"
+                                                : "",
+                                            hasEvents ? "min-h-[100px]" : "min-h-[60px]",
+                                            isHighlighted ? (spaceTheme ? "bg-zinc-800/40" : "bg-blue-100/60") : "",
+                                            spaceTheme ? "border-zinc-800 text-white" : "border-gray-200",
+                                            "hover:bg-opacity-90 transition-all",
                                         )}
+                                        onClick={() => handleDayClick(day)}
                                     >
-                                        {moment(day).date()}
-                                    </div>
-
-                                    {/* Show event count badge if there are events */}
-                                    {hasEvents && !isExpanded && (
-                                        <div
-                                            className={cn(
-                                                "text-xs px-1.5 py-0.5 rounded-full",
-                                                spaceTheme ? "bg-zinc-800 text-zinc-300" : "bg-gray-100 text-gray-600",
-                                            )}
-                                        >
-                                            {dayEvents.length}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Events */}
-                                <div className="mt-1 space-y-1.5">
-                                    {eventsToShow.map((event) => {
-                                        const isActive = activeEvent === event.id
-                                        const isHovered = hoveredEvent === event.id
-                                        const displayEvent = displayEvents[event.id] || event
-                                        const { staffName } = getStaffColor(displayEvent, staffMembers)
-                                        const eventIcon = getEventIcon(displayEvent)
-
-                                        return (
+                                        {/* Day number with better styling */}
+                                        <div className="flex justify-between items-center mb-1">
                                             <div
-                                                key={event.id}
-                                                ref={(el) => {
-                                                    if (el) eventRefs.current[event.id] = el
-                                                }}
                                                 className={cn(
-                                                    "text-xs p-1.5 rounded-md cursor-grab active:cursor-grabbing event-card transition-all",
-                                                    getEventBackground(displayEvent),
-                                                    isActive ? "ring-2 ring-primary shadow-lg" : "",
-                                                    isHovered ? "brightness-95" : "",
-                                                )}
-                                                style={{
-                                                    borderLeftColor: getStaffColor(displayEvent, staffMembers).staffColor,
-                                                    borderLeftWidth: "4px",
-                                                    boxShadow: isActive
+                                                    "text-sm font-medium rounded-full w-7 h-7 flex items-center justify-center",
+                                                    isToday
                                                         ? spaceTheme
-                                                            ? "0 8px 16px rgba(0,0,0,0.4)"
-                                                            : "0 8px 16px rgba(0,0,0,0.2)"
-                                                        : spaceTheme
-                                                            ? "0 2px 4px rgba(0,0,0,0.3)"
-                                                            : "0 1px 2px rgba(0,0,0,0.1)",
-                                                    transform: isActive ? "scale(1.02)" : "scale(1)",
-                                                    zIndex: isActive ? 50 : isHovered ? 20 : 10,
-                                                    position: "relative",
-                                                }}
-                                                onMouseEnter={() => setHoveredEvent(event.id)}
-                                                onMouseLeave={() => setHoveredEvent(null)}
+                                                            ? "bg-green-600 text-white"
+                                                            : "bg-blue-500 text-white"
+                                                        : isCurrentMonth
+                                                            ? spaceTheme
+                                                                ? "text-white"
+                                                                : "text-gray-700"
+                                                            : spaceTheme
+                                                                ? "text-zinc-600"
+                                                                : "text-gray-400",
+                                                )}
                                             >
-                                                {/* Draggable wrapper */}
-                                                <motion.div
-                                                    className="absolute inset-0 z-10"
-                                                    drag
-                                                    dragConstraints={gridRef}
-                                                    dragElastic={0}
-                                                    dragMomentum={false}
-                                                    dragSnapToOrigin={false}
-                                                    dragTransition={{
-                                                        bounceStiffness: 600,
-                                                        bounceDamping: 20,
-                                                    }}
-                                                    onDragStart={(e) => handleDragStart(event.id, e as MouseEvent | PointerEvent | TouchEvent)}
-                                                    onDrag={(_, info) => handleDrag(event.id, info)}
-                                                    onDragEnd={(_, info) => handleDragEnd(event.id, info)}
-                                                    onClick={(e) => handleEventClick(event, e)}
-                                                    whileDrag={{
-                                                        scale: 1.05,
-                                                        zIndex: 100,
-                                                        boxShadow: spaceTheme ? "0 10px 20px rgba(0,0,0,0.5)" : "0 10px 20px rgba(0,0,0,0.3)",
-                                                    }}
-                                                />
-
-                                                {/* Event content with improved layout */}
-                                                <div className="flex flex-col relative z-0">
-                                                    <div className="flex items-center gap-1 mb-0.5">
-                                                        <div className={`font-medium truncate flex-1 ${spaceTheme ? "text-white" : ""}`}>
-                                                            {displayEvent.title}
-                                                        </div>
-                                                    </div>
-
-                                                    <div className={`flex items-center gap-1 ${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
-                                                        <Clock className="h-3 w-3" />
-                                                        <span className="text-[10px]">{formatEventTime(displayEvent)}</span>
-                                                    </div>
-
-                                                    {/* Staff info */}
-                                                    <div className="flex items-center gap-1 mt-1">
-                                                        <div
-                                                            className="w-3 h-3 rounded-full flex-shrink-0"
-                                                            style={{ backgroundColor: getStaffColor(displayEvent, staffMembers).staffColor }}
-                                                        />
-                                                        <span className={`text-[10px] truncate ${spaceTheme ? "text-zinc-400" : "text-gray-500"}`}>
-                                                            {staffName}
-                                                        </span>
-                                                    </div>
-
-                                                    {/* Event type */}
-                                                    <div
-                                                        className={`flex items-center gap-1 mt-1 ${spaceTheme ? "text-zinc-400" : "text-gray-500"}`}
-                                                    >
-                                                        {eventIcon}
-                                                        <span className="text-[10px]">{displayEvent.type.replace(/_/g, " ").toLowerCase()}</span>
-                                                    </div>
-                                                </div>
+                                                {moment(day).date()}
                                             </div>
-                                        )
-                                    })}
 
-                                    {/* Ghost event placeholder during drag with improved styling */}
-                                    {isDragging && ghostEvent && ghostEvent.dayStr === dateStr && activeEvent && eventBeingDragged && (
-                                        <div
-                                            className={cn(
-                                                "text-xs p-1.5 rounded-md border-2 border-dashed",
-                                                getEventBackground(eventBeingDragged),
-                                                spaceTheme ? "border-blue-500/80 bg-blue-900/30" : "border-blue-500/80 bg-blue-100/70",
+                                            {/* Show event count badge if there are events */}
+                                            {hasEvents && !isExpanded && (
+                                                <div
+                                                    className={cn(
+                                                        "text-xs px-1.5 py-0.5 rounded-full",
+                                                        spaceTheme ? "bg-zinc-800 text-zinc-300" : "bg-gray-100 text-gray-600",
+                                                    )}
+                                                >
+                                                    {dayEvents.length}
+                                                </div>
                                             )}
-                                            style={{
-                                                borderLeftColor: getStaffColor(eventBeingDragged, staffMembers).staffColor,
-                                                borderLeftWidth: "4px",
-                                            }}
-                                        >
-                                            <div className="flex flex-col">
-                                                <div className={`font-medium truncate ${spaceTheme ? "text-white" : ""}`}>
-                                                    {eventBeingDragged.title}
-                                                </div>
-                                                <div className="flex items-center gap-1 mt-1">
-                                                    <Clock className="h-3 w-3" />
-                                                    <span className={`${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
-                                                        {formatEventTime(eventBeingDragged)}
-                                                    </span>
-                                                </div>
-                                            </div>
                                         </div>
-                                    )}
 
-                                    {/* Show more button with improved styling */}
-                                    {hasMore && (
-                                        <Button
-                                            variant={spaceTheme ? "outline" : "ghost"}
-                                            size="sm"
-                                            className={`text-xs w-full h-6 mt-1 ${spaceTheme
-                                                ? "border-zinc-800 text-zinc-300 hover:bg-zinc-800/50"
-                                                : "border-gray-200 hover:bg-gray-50"
-                                                }`}
-                                            onClick={(e) => toggleDayExpand(dateStr, e)}
-                                        >
-                                            +{dayEvents.length - 2} more
-                                            <ChevronDown className="h-3 w-3 ml-1" />
-                                        </Button>
-                                    )}
+                                        {/* Events */}
+                                        <div className="mt-1 space-y-1.5">
+                                            {eventsToShow.map((event) => renderEvent(event, isExpanded))}
 
-                                    {/* Show less button with improved styling */}
-                                    {isExpanded && (
-                                        <Button
-                                            variant={spaceTheme ? "outline" : "ghost"}
-                                            size="sm"
-                                            className={`text-xs w-full h-6 mt-1 ${spaceTheme
-                                                ? "border-zinc-800 text-zinc-300 hover:bg-zinc-800/50"
-                                                : "border-gray-200 hover:bg-gray-50"
-                                                }`}
-                                            onClick={(e) => toggleDayExpand(dateStr, e)}
-                                        >
-                                            Show less
-                                            <ChevronDown className="h-3 w-3 ml-1 rotate-180" />
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        )
-                    })}
+                                            {/* Ghost event placeholder during drag */}
+                                            {renderGhostEvent(dateStr)}
+                                            {/* Show "more" button if not expanded */}
+                                            {hasMore && (
+                                                <button
+                                                    className={cn(
+                                                        "text-[10px] flex items-center gap-1 text-left underline underline-offset-2",
+                                                        spaceTheme ? "text-zinc-400 hover:text-zinc-200" : "text-gray-500 hover:text-gray-800"
+                                                    )}
+                                                    onClick={(e) => toggleDayExpand(dateStr, e)}
+                                                >
+                                                    <ChevronDown className="h-3 w-3" />
+                                                    Show {dayEvents.length - 2} more
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Enhanced tooltip showing current drag date AND time */}
-            {isDragging && activeEvent && dragTooltip && (
+            {/* Tooltip */}
+            {dragTooltip && (
                 <div
-                    className={`fixed px-3 py-2 rounded-md ${tooltipClass} text-xs font-semibold shadow-xl z-[100] pointer-events-none`}
+                    className={`fixed z-50 px-2 py-1 rounded-md text-xs font-medium shadow-sm ${tooltipClass}`}
                     style={{
-                        top: `${document.documentElement.scrollTop + 10}px`,
-                        left: `${document.documentElement.scrollLeft + 10}px`,
-                        opacity: 0.95,
-                        transform: "translate(10px, 10px)", // Offset from cursor
+                        top: "12px",
+                        left: "50%",
+                        transform: "translateX(-50%)",
                     }}
                 >
-                    <div className="flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>{dragTooltip.date}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-1 text-xs opacity-80">
-                        <Clock className="h-3 w-3" />
-                        <span>{dragTooltip.time}</span>
-                    </div>
+                    {dragTooltip.date} • {dragTooltip.time}
                 </div>
             )}
         </div>
     )
 }
-

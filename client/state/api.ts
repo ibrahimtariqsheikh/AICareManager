@@ -1,19 +1,10 @@
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth"
 import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { AppointmentEvent } from "../components/scheduler/calender/types"
-import { Invitation, Schedule, Role, SubRole } from "../types/prismaTypes"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { Profile } from "@/types/profileTypes"
-import { 
-  Agency, 
-  IncidentReport, 
-  KeyContact, 
-  CareOutcome, 
-  RiskAssessment, 
-  FamilyAccess, 
-  CommunicationLog 
-} from "@/types/userTypes"
+
+import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration } from "../types/prismaTypes"
+import { DashboardData } from "@/app/dashboard/types"
+
 
 
 export interface ScheduleInput {
@@ -33,27 +24,36 @@ export interface ScheduleUpdateInput extends Partial<ScheduleInput> {
 }
 
 export interface ScheduleResponse {
-  id: string
-  title: string
-  start: Date
-  end: Date
-  date: Date
-  startTime: string
-  endTime: string
-  resourceId: string
-  clientId: string
-  type: string
-  status: string
-  notes?: string
-  color: string
-  careWorker: {
-    firstName: string
-    lastName: string
-  }
-  client: {
-    firstName: string
-    lastName: string
-  }
+    id: string
+    agencyId: string
+    clientId: string
+    userId: string
+    date: string
+    startTime: string
+    endTime: string
+    status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELED"
+    type: "WEEKLY_CHECKUP" | "APPOINTMENT" | "HOME_VISIT" | "CHECKUP" | "EMERGENCY" | "ROUTINE" | "OTHER"
+    notes?: string
+    chargeRate?: number
+    createdAt: string
+    updatedAt: string
+    visitTypeId?: string
+    title: string
+    client: {
+        id: string
+        firstName: string
+        lastName: string
+        [key: string]: any
+    }
+    user: {
+        id: string
+        firstName: string
+        lastName: string
+        [key: string]: any
+    }
+    start?: Date
+    end?: Date
+    color: string
 }
 
 export interface SchedulesResponse {
@@ -65,7 +65,7 @@ export interface SchedulesResponse {
   }
 }
 
-// Create invitation input type
+// // Create invitation input type
 export interface CreateInvitationInput {
   inviterUserId: string
   email: string
@@ -74,31 +74,31 @@ export interface CreateInvitationInput {
   expirationDays: number
 }
 
-// Cancel invitation input type
+// // Cancel invitation input type
 export interface CancelInvitationInput {
   invitationId: string
   userId: string
 }
 
-// Accept invitation input type
+// // Accept invitation input type
 export interface AcceptInvitationInput {
   invitationId: string
   userId: string
 }
 
-// Add Location interface that was missing
-export interface Location {
-  id: string
-  name: string
-  address: string
-  city: string
-  state: string
-  zipCode: string
-  country: string
-  agencyId: string
-  createdAt?: string
-  updatedAt?: string
-}
+// // Add Location interface that was missing
+// export interface Location {
+//   id: string
+//   name: string
+//   address: string
+//   city: string
+//   state: string
+//   zipCode: string
+//   country: string
+//   agencyId: string
+//   createdAt?: string
+//   updatedAt?: string
+// }
 
 export interface UsersResponse {
   data: User[]
@@ -114,116 +114,81 @@ export interface UserQueryParams {
   agencyId?: string
 }
 
-// Update the ClientQueryParams interface in your API file
-export interface ClientQueryParams {
-  status?: string
-  userId?: string // Use userId to filter clients by user's agency
-}
+// // Update the ClientQueryParams interface in your API file
+// export interface ClientQueryParams {
+//   status?: string
+//   userId?: string // Use userId to filter clients by user's agency
+// }
 
-export interface DashboardData {
-  user: {
-    firstName: string;
-    role: string;
-    agency: {
-      id: string;
-      name: string;
-      isActive: boolean;
-      isSuspended: boolean;
-      hasScheduleV2: boolean;
-      hasEMAR: boolean;
-      hasFinance: boolean;
-      isWeek1And2ScheduleEnabled: boolean;
-      hasPoliciesAndProcedures: boolean;
-      isTestAccount: boolean;
-      address?: string;
-      city?: string;
-      state?: string;
-      zipCode?: string;
-      phone?: string;
-      email?: string;
-      createdAt: string;
-      hasAdvancedReporting?: boolean;
-    };
-  };
-  agency: {
-    id: string;
-    name: string;
-    isActive: boolean;
-    isSuspended: boolean;
-    hasScheduleV2: boolean;
-    hasEMAR: boolean;
-    hasFinance: boolean;
-    isWeek1And2ScheduleEnabled: boolean;
-    hasPoliciesAndProcedures: boolean;
-    isTestAccount: boolean;
-  };
-  stats: {
-    totalClients: number;
-    totalCareWorkers: number;
-    totalOfficeStaff: number;
-    totalSchedules: number;
-    totalReports: number;
-    totalDocuments: number;
-    totalMileageRecords: number;
-    unreadNotifications: number;
-  };
-  schedules: Array<{
-    id: string;
-    clientName: string;
-    careWorkerName: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    type: string;
-    status: string;
-    notes?: string;
-    title?: string;
-  }>;
-  notifications: Array<{
-    id: string;
-    title: string;
-    message: string;
-    type: 'SCHEDULE' | 'REPORT' | 'DOCUMENT' | 'SYSTEM' | 'ALERT';
-    createdAt: string;
-  }>;
-}
+// export interface DashboardData {
+//   user: {
+//     firstName: string;
+//     role: string;
+//     agency: {
+//       id: string;
+//       name: string;
+//       isActive: boolean;
+//       isSuspended: boolean;
+//       hasScheduleV2: boolean;
+//       hasEMAR: boolean;
+//       hasFinance: boolean;
+//       isWeek1And2ScheduleEnabled: boolean;
+//       hasPoliciesAndProcedures: boolean;
+//       isTestAccount: boolean;
+//       address?: string;
+//       city?: string;
+//       state?: string;
+//       zipCode?: string;
+//       phone?: string;
+//       email?: string;
+//       createdAt: string;
+//       hasAdvancedReporting?: boolean;
+//     };
+//   };
+//   agency: {
+//     id: string;
+//     name: string;
+//     isActive: boolean;
+//     isSuspended: boolean;
+//     hasScheduleV2: boolean;
+//     hasEMAR: boolean;
+//     hasFinance: boolean;
+//     isWeek1And2ScheduleEnabled: boolean;
+//     hasPoliciesAndProcedures: boolean;
+//     isTestAccount: boolean;
+//   };
+//   stats: {
+//     totalClients: number;
+//     totalCareWorkers: number;
+//     totalOfficeStaff: number;
+//     totalSchedules: number;
+//     totalReports: number;
+//     totalDocuments: number;
+//     totalMileageRecords: number;
+//     unreadNotifications: number;
+//   };
+//   schedules: Array<{
+//     id: string;
+//     clientName: string;
+//     careWorkerName: string;
+//     date: string;
+//     startTime: string;
+//     endTime: string;
+//     type: string;
+//     status: string;
+//     notes?: string;
+//     title?: string;
+//   }>;
+//   notifications: Array<{
+//     id: string;
+//     title: string;
+//     message: string;
+//     type: 'SCHEDULE' | 'REPORT' | 'DOCUMENT' | 'SYSTEM' | 'ALERT';
+//     createdAt: string;
+//   }>;
+// }
 
-export interface User {
-    id: string
-    email: string
-    firstName: string
-    lastName: string
-    role: string
-    subRole?: string
-    cognitoId: string
-    agencyId: string
-    createdAt: string
-    updatedAt: string
-    status: string
-    addressLine1?: string
-    addressLine2?: string
-    townOrCity?: string
-    county?: string
-    postalCode?: string
-    country?: string
-    phoneNumber?: string
-    languages?: string
-    interests?: string
-    likesDislikes?: string
-    allergies?: string
-    history?: string
-    profile?: Profile
-    agency?: {
-        id: string
-        name: string
-    }
-    nhsNumber?: string
-    dnraOrder?: boolean
-    chargeRate?: number
-    mobility?: string
-    preferredName?: string
-    propertyAccess?: string
-}
+
 
 export interface CreateUserInput {
     email: string;
@@ -236,89 +201,89 @@ export interface CreateUserInput {
     agencyId?: string;
 }
 
-// Medication interfaces
-export interface MedicationRecord {
-  id: string;
-  medicationId: string;
-  clientId: string;
-  userId: string;
-  dosage: string;
-  frequency: string;
-  startDate: Date;
-  endDate?: Date;
-  notes?: string;
-  morningDose: boolean;
-  lunchDose: boolean;
-  eveningDose: boolean;
-  bedtimeDose: boolean;
-  asNeededDose: boolean;
-  medication: {
-    name: string;
-    isSpecialist: boolean;
-    url: string;
-    source: string;
-  };
-}
+// // Medication interfaces
+// export interface MedicationRecord {
+//   id: string;
+//   medicationId: string;
+//   clientId: string;
+//   userId: string;
+//   dosage: string;
+//   frequency: string;
+//   startDate: Date;
+//   endDate?: Date;
+//   notes?: string;
+//   morningDose: boolean;
+//   lunchDose: boolean;
+//   eveningDose: boolean;
+//   bedtimeDose: boolean;
+//   asNeededDose: boolean;
+//   medication: {
+//     name: string;
+//     isSpecialist: boolean;
+//     url: string;
+//     source: string;
+//   };
+// }
 
-export interface MedicationAdministration {
-  id: string;
-  medicationRecordId: string;
-  administeredById: string;
-  administeredAt: Date;
-  doseType: 'MORNING' | 'LUNCH' | 'EVENING' | 'BEDTIME' | 'AS_NEEDED';
-  doseTaken: boolean;
-  notes?: string;
-  administeredBy: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-}
+// export interface MedicationAdministration {
+//   id: string;
+//   medicationRecordId: string;
+//   administeredById: string;
+//   administeredAt: Date;
+//   doseType: 'MORNING' | 'LUNCH' | 'EVENING' | 'BEDTIME' | 'AS_NEEDED';
+//   doseTaken: boolean;
+//   notes?: string;
+//   administeredBy: {
+//     id: string;
+//     firstName: string;
+//     lastName: string;
+//   };
+// }
 
-// Report interfaces
-export interface Report {
-  id: string;
-  clientId: string;
-  userId: string;
-  condition: string;
-  summary: string;
-  checkInTime: string;
-  checkOutTime: string | null;
-  checkInDistance?: number;
-  checkOutDistance?: number;
-  tasksCompleted: ReportTask[];
-  client: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-  caregiver: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-  hasSignature?: boolean;
-}
+// // Report interfaces
+// export interface Report {
+//   id: string;
+//   clientId: string;
+//   userId: string;
+//   condition: string;
+//   summary: string;
+//   checkInTime: string;
+//   checkOutTime: string | null;
+//   checkInDistance?: number;
+//   checkOutDistance?: number;
+//   tasksCompleted: ReportTask[];
+//   client: {
+//     id: string;
+//     firstName: string;
+//     lastName: string;
+//   };
+//   caregiver: {
+//     id: string;
+//     firstName: string;
+//     lastName: string;
+//   };
+//   hasSignature?: boolean;
+// }
 
-export interface ReportTask {
-  id: string;
-  reportId: string;
-  taskName: string;
-  completed: boolean;
-}
+// export interface ReportTask {
+//   id: string;
+//   reportId: string;
+//   taskName: string;
+//   completed: boolean;
+// }
 
-// Document interfaces
-export interface Document {
-  id: string;
-  title: string;
-  fileUrl: string;
-  uploadedAt: Date;
-  userId?: string;
-  clientId?: string;
-  agencyId?: string;
-}
+// // Document interfaces
+// export interface Document {
+//   id: string;
+//   title: string;
+//   fileUrl: string;
+//   uploadedAt: Date;
+//   userId?: string;
+//   clientId?: string;
+//   agencyId?: string;
+// }
 
-// Add new interfaces for user update
+// // Add new interfaces for user update
 export interface UpdateUserInput {
     id: string;
     email?: string;
@@ -457,6 +422,12 @@ export const api = createApi({
       providesTags: ["Users"],
     }),
 
+    getReportById: build.query<Report, string>({
+      query: (id) => `/reports/${id}`,
+      providesTags: ["Reports"],
+    }),
+
+
 
     //create user
     createUser: build.mutation<User, CreateUserInput>({
@@ -531,6 +502,13 @@ export const api = createApi({
     getAgencyUsers: build.query<UsersResponse, string>({
       query: (agencyId) => ({
         url: `/users/agency/${agencyId}`,
+        method: 'GET',
+      }),
+    }),
+
+    getAgencySchedules: build.query<Schedule[], string>({
+      query: (agencyId) => ({
+        url: `/schedules/agency/${agencyId}`,
         method: 'GET',
       }),
     }),
@@ -621,7 +599,7 @@ export const api = createApi({
 
     // Get dashboard data
     getDashboardData: build.query<DashboardData, string>({
-      query: (userId) => `/api/dashboard/${userId}`,
+      query: (userId) => `/dashboard/${userId}`,
       providesTags: ["Dashboard"],
     }),
 
@@ -794,4 +772,6 @@ export const {
   useGetUserAllDetailsQuery,
   useGetAgencyReportsQuery,
   useUpdateReportMutation,
+  useGetReportByIdQuery,
+  useGetAgencySchedulesQuery,
 } = api

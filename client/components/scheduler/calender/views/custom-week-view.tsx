@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import moment from "moment"
-import { motion, type PanInfo } from "framer-motion"
+import { motion } from "framer-motion"
 import { toast } from "sonner"
 import type { AppointmentEvent } from "../types"
 import { cn } from "../../../../lib/utils"
+import { Home, Video, Building2, Phone, User, Calendar, GripVertical } from "lucide-react"
+import { useAppSelector } from "@/state/redux"
 
 interface CustomWeekViewProps {
     date: Date
@@ -17,558 +19,646 @@ interface CustomWeekViewProps {
     spaceTheme?: boolean
 }
 
-export function CustomWeekView({
-    date,
-    events,
-    onSelectEvent,
-    staffMembers,
-    getEventDurationInMinutes,
-    onEventUpdate,
-    spaceTheme = false,
-}: CustomWeekViewProps) {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const gridRef = useRef<HTMLDivElement>(null)
-    const [weekDays, setWeekDays] = useState<Date[]>([])
-    const [timeSlots, setTimeSlots] = useState<string[]>([])
-    const [eventPositions, setEventPositions] = useState<{ [key: string]: any }>({})
-    const [displayEvents, setDisplayEvents] = useState<{ [key: string]: AppointmentEvent }>({}) // Store display events
-    const [gridDimensions, setGridDimensions] = useState({
-        slotHeight: 40,
-        dayWidth: 0,
-        timeGutterWidth: 60,
-        totalHeight: 0,
-        totalWidth: 0,
+export function CustomWeekView(props: CustomWeekViewProps) {
+    const {
+        date,
+        events,
+        onSelectEvent,
+        staffMembers,
+        getEventDurationInMinutes,
+        onEventUpdate,
+        spaceTheme = false
+    } = props
+
+    // Get current date from Redux store
+    const { currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
+    const currentDate = new Date(currentDateStr)
+
+    // ====================== CONSTANTS ======================
+    const HOURS = {
+        START: 7,  // 7 AM
+        END: 19    // 7 PM
+    }
+    const CELL_HEIGHT = 40 // pixels per 30-min slot
+    const TIME_COLUMN_WIDTH = 60 // pixels for time gutter
+
+    // ====================== REFS ======================
+    const calendarContainerRef = useRef<HTMLDivElement>(null)
+    const gridContainerRef = useRef<HTMLDivElement>(null)
+    const isCurrentlyDragging = useRef(false)
+    const eventElementsRef = useRef<Record<string, HTMLElement>>({})
+    const resizeObserverRef = useRef<ResizeObserver | null>(null)
+
+    // ====================== STATE ======================
+    const [daysOfWeek, setDaysOfWeek] = useState<Date[]>([])
+    const [timeIntervals, setTimeIntervals] = useState<string[]>([])
+    const [eventLayoutData, setEventLayoutData] = useState<Record<string, any>>({})
+    const [calendarDimensions, setCalendarDimensions] = useState({
+        dayColumnWidth: 0,
+        totalGridWidth: 0,
+        totalGridHeight: 0
+    })
+    const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
+
+    // ====================== DRAG AND DROP ======================
+    interface DraggedEventState {
+        event: AppointmentEvent | null
+        originalPosition: any | null
+        currentDayIndex: number | null
+        currentMinutes: number | null
+    }
+
+    // Track the event being dragged and its original position
+    const [draggedEvent, setDraggedEvent] = useState<DraggedEventState>({
+        event: null,
+        originalPosition: null,
+        currentDayIndex: null,
+        currentMinutes: null
     })
 
-    // Hours to display (7am to 7pm)
-    const startHour = 7
-    const endHour = 19
-
-    // Generate week days and time slots
+    // ====================== SETUP CALENDAR GRID ======================
+    // Generate days and time intervals
     useEffect(() => {
-        // Generate week days
-        const startOfWeek = moment(date).startOf("week")
-        const days: Date[] = []
+        // Create array of days for this week
+        const firstDayOfWeek = moment(date).startOf("week")
+        const days = Array.from({ length: 7 }, (_, i) =>
+            firstDayOfWeek.clone().add(i, "days").toDate()
+        )
+        setDaysOfWeek(days)
 
-        for (let i = 0; i < 7; i++) {
-            days.push(startOfWeek.clone().add(i, "days").toDate())
+        // Create array of time slots
+        const intervals = []
+        for (let hour = HOURS.START; hour <= HOURS.END; hour++) {
+            intervals.push(`${hour}:00`)
+            intervals.push(`${hour}:30`)
         }
-        setWeekDays(days)
+        setTimeIntervals(intervals)
+    }, [date])
 
-        // Generate time slots
-        const slots: string[] = []
-        for (let hour = startHour; hour <= endHour; hour++) {
-            slots.push(`${hour}:00`)
-            slots.push(`${hour}:30`)
-        }
-        setTimeSlots(slots)
-    }, [date, startHour, endHour])
-
-    // Initialize display events
+    // Add resize observer to handle screen size changes
     useEffect(() => {
-        console.log('Initializing display events for week view');
-        const eventMap: { [key: string]: AppointmentEvent } = {};
-        events.forEach((event) => {
-            // Ensure dates are properly parsed
-            const processedEvent = {
-                ...event,
-                start: moment(event.start).toDate(),
-                end: moment(event.end).toDate(),
-                date: moment(event.date).toDate(),
-            };
-            console.log('Processing event:', event.id, 'Start:', processedEvent.start.toISOString());
-            eventMap[event.id] = processedEvent;
-        });
-        setDisplayEvents(eventMap);
-    }, [events]);
+        if (!gridContainerRef.current) return
 
-    // Calculate grid dimensions and event positions
-    useEffect(() => {
-        if (!containerRef.current || !gridRef.current || weekDays.length === 0) return;
+        // Create a new ResizeObserver
+        resizeObserverRef.current = new ResizeObserver(() => {
+            if (!gridContainerRef.current || daysOfWeek.length === 0) return
 
-        console.log('Calculating grid dimensions and event positions');
-        const containerWidth = gridRef.current.offsetWidth;
-        const timeGutterWidth = 60;
-        const dayWidth = (containerWidth - timeGutterWidth) / 7;
-        const slotHeight = 40;
-        const totalHeight = timeSlots.length * slotHeight;
+            const gridWidth = gridContainerRef.current.offsetWidth
+            const dayColumnWidth = (gridWidth - TIME_COLUMN_WIDTH) / 7
+            const totalGridHeight = timeIntervals.length * CELL_HEIGHT
 
-        setGridDimensions({
-            slotHeight,
-            dayWidth,
-            timeGutterWidth,
-            totalHeight,
-            totalWidth: containerWidth,
-        });
+            setCalendarDimensions({
+                dayColumnWidth,
+                totalGridWidth: gridWidth,
+                totalGridHeight
+            })
+        })
 
-        const positions: { [key: string]: any } = {};
-        const currentWeek = moment(date).startOf('week');
+        // Start observing the grid container
+        resizeObserverRef.current.observe(gridContainerRef.current)
 
-        events.forEach((event) => {
-            const eventStart = moment(event.start);
-            const eventEnd = moment(event.end);
-
-            // Skip events outside the current week
-            if (!eventStart.isSame(currentWeek, "week")) {
-                console.log('Skipping event outside current week:', event.id);
-                return;
+        // Cleanup on unmount
+        return () => {
+            if (resizeObserverRef.current) {
+                resizeObserverRef.current.disconnect()
             }
-
-            // Calculate day index (0-6)
-            const dayIndex = eventStart.day();
-            console.log('Event day index:', event.id, dayIndex);
-
-            // Calculate top position based on time
-            const startHourDecimal = eventStart.hours() + eventStart.minutes() / 60;
-            const endHourDecimal = eventEnd.hours() + eventEnd.minutes() / 60;
-
-            // Skip events outside the visible time range
-            if (endHourDecimal < startHour || startHourDecimal > endHour) {
-                console.log('Skipping event outside visible time range:', event.id);
-                return;
-            }
-
-            // Clamp event times to visible range
-            const clampedStartHour = Math.max(startHourDecimal, startHour);
-            const clampedEndHour = Math.min(endHourDecimal, endHour);
-
-            // Calculate minutes from start of day
-            const startMinutes = (clampedStartHour - startHour) * 60;
-            const endMinutes = (clampedEndHour - startHour) * 60;
-            const durationMinutes = endMinutes - startMinutes;
-
-            // Calculate exact pixel positions
-            const top = Math.round((startMinutes / 30) * slotHeight);
-            const height = Math.round((durationMinutes / 30) * slotHeight);
-
-            // Ensure minimum height for visibility
-            const minHeight = 20;
-            const finalHeight = Math.max(height, minHeight);
-
-            // Calculate left position based on day
-            const left = timeGutterWidth + dayIndex * dayWidth;
-            const width = dayWidth - 4; // 4px for gap
-
-            positions[event.id] = {
-                top,
-                left,
-                height: finalHeight,
-                width,
-                dayIndex,
-                startMinutes,
-                durationMinutes,
-                originalEvent: { ...event },
-                // Store original times for reference
-                originalStartHour: eventStart.hours(),
-                originalStartMinute: eventStart.minutes(),
-                originalEndHour: eventEnd.hours(),
-                originalEndMinute: eventEnd.minutes(),
-            };
-        });
-
-        console.log('Calculated positions for events:', Object.keys(positions).length);
-        setEventPositions(positions);
-    }, [events, weekDays, date, timeSlots, startHour, endHour, containerRef, gridRef]);
-
-    // Scroll to current time on initial render
-    useEffect(() => {
-        if (!containerRef.current) return
-
-        const now = new Date()
-        const currentHour = now.getHours()
-
-        if (currentHour >= startHour && currentHour <= endHour) {
-            const minutesSinceStart = (currentHour - startHour) * 60 + now.getMinutes()
-            const scrollPosition = (minutesSinceStart / 30) * gridDimensions.slotHeight - 100 // 100px offset to show context
-
-            containerRef.current.scrollTop = Math.max(0, scrollPosition)
         }
-    }, [gridDimensions.slotHeight])
+    }, [daysOfWeek, timeIntervals])
+
+    // Update event positions when calendar dimensions change
+    useEffect(() => {
+        if (!gridContainerRef.current || daysOfWeek.length === 0) return
+
+        const { dayColumnWidth } = calendarDimensions
+        const positions: Record<string, any> = {}
+        const weekStart = moment(daysOfWeek[0]).startOf('day')
+        const weekEnd = moment(daysOfWeek[6]).endOf('day')
+
+        events.forEach(event => {
+            try {
+                const eventStart = moment(event.start)
+                const eventEnd = moment(event.end)
+
+                // Skip invalid dates or events outside the week
+                if (!eventStart.isValid() || !eventEnd.isValid() ||
+                    eventEnd.isBefore(weekStart) || eventStart.isAfter(weekEnd)) {
+                    return
+                }
+
+                // Find which day column this event belongs to
+                const dayIndex = eventStart.day()
+
+                // Get event time details
+                const startTime = {
+                    hour: eventStart.hours(),
+                    minute: eventStart.minutes()
+                }
+                const endTime = {
+                    hour: eventEnd.hours(),
+                    minute: eventEnd.minutes()
+                }
+
+                // Skip events outside visible hours
+                const startDecimal = startTime.hour + startTime.minute / 60
+                const endDecimal = endTime.hour + endTime.minute / 60
+                if (endDecimal <= HOURS.START || startDecimal >= HOURS.END) {
+                    return
+                }
+
+                // Calculate visible portion of event
+                const visibleStart = Math.max(startDecimal, HOURS.START)
+                const visibleEnd = Math.min(endDecimal, HOURS.END)
+
+                // Convert to minutes from start of calendar view
+                const startMinutes = (visibleStart - HOURS.START) * 60
+                const endMinutes = (visibleEnd - HOURS.START) * 60
+                const durationMinutes = endMinutes - startMinutes
+
+                // Convert to pixels
+                const top = (startMinutes / 30) * CELL_HEIGHT
+                const height = Math.max((durationMinutes / 30) * CELL_HEIGHT, 20) // min height 20px
+                const left = TIME_COLUMN_WIDTH + (dayIndex * dayColumnWidth) - 10
+                const width = dayColumnWidth - 4 // 4px gap
+
+                positions[event.id] = {
+                    top,
+                    left,
+                    height,
+                    width,
+                    dayIndex,
+                    startMinutes,
+                    durationMinutes,
+                    eventData: { ...event },
+                    // Store original time for drag calculations
+                    originalTimes: {
+                        startHour: startTime.hour,
+                        startMinute: startTime.minute,
+                        endHour: endTime.hour,
+                        endMinute: endTime.minute
+                    }
+                }
+            } catch (error) {
+                console.error(`Error positioning event ${event.id}:`, error)
+            }
+        })
+
+        setEventLayoutData(positions)
+    }, [events, daysOfWeek, calendarDimensions])
+
+    // ====================== DRAG AND DROP ======================
+    // Custom drag start handler
+    const handleDragStart = (event: AppointmentEvent, position: any) => {
+        isCurrentlyDragging.current = true
+        setDraggedEvent({
+            event,
+            originalPosition: position,
+            currentDayIndex: position.dayIndex,
+            currentMinutes: position.startMinutes
+        })
+    }
+
+    // Custom drag handler - updates position while dragging
+    const handleDrag = (
+        e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent,
+        draggedState: DraggedEventState,
+        info: { offset: { x: number, y: number } }
+    ) => {
+        if (!gridContainerRef.current || !draggedState.event) return
+
+        const { dayColumnWidth } = calendarDimensions
+        const originalPosition = draggedState.originalPosition
+
+        // Calculate day column movement
+        const newLeft = originalPosition.left + info.offset.x
+        const newDayIndex = Math.max(0, Math.min(6,
+            Math.floor((newLeft - TIME_COLUMN_WIDTH + (dayColumnWidth / 2)) / dayColumnWidth)
+        ))
+
+        // Calculate time movement
+        const newTop = Math.max(0, originalPosition.top + info.offset.y)
+        const newMinutes = Math.floor((newTop / CELL_HEIGHT) * 30)
+
+        // Update current position in state
+        setDraggedEvent(prev => ({
+            ...prev,
+            currentDayIndex: newDayIndex,
+            currentMinutes: newMinutes
+        }))
+
+        // Update event position in real-time for visual feedback
+        if (eventElementsRef.current[draggedState.event.id]) {
+            const element = eventElementsRef.current[draggedState.event.id]
+
+            // Position exactly at day column
+            const snappedLeft = TIME_COLUMN_WIDTH + (newDayIndex * dayColumnWidth)
+            element.style.left = `${snappedLeft}px`
+            element.style.top = `${newTop}px`
+        }
+    }
+
+    // Custom drag end handler
+    const handleDragEnd = (dragInfo: { offset: { x: number, y: number } }) => {
+        if (!gridContainerRef.current || !draggedEvent.event || draggedEvent.currentDayIndex === null) {
+            isCurrentlyDragging.current = false
+            return
+        }
+
+        const { dayColumnWidth } = calendarDimensions
+        const event = draggedEvent.event
+        const originalPosition = draggedEvent.originalPosition
+        const newDayIndex = draggedEvent.currentDayIndex
+
+        // Get time with 10-minute snapping
+        const newMinutes = draggedEvent.currentMinutes || 0
+        const snappedMinutes = Math.round(newMinutes / 10) * 10
+
+        const newHours = HOURS.START + Math.floor(snappedMinutes / 60)
+        const newMinutesValue = snappedMinutes % 60
+
+        // Create new start date
+        const newStartDate = moment(daysOfWeek[newDayIndex])
+            .hour(newHours)
+            .minute(newMinutesValue)
+            .second(0)
+            .millisecond(0)
+
+        // Create new end date by adding original duration
+        const newEndDate = moment(newStartDate)
+            .add(originalPosition.durationMinutes, 'minutes')
+
+        // Ensure end time doesn't exceed calendar bounds
+        if (newEndDate.hour() > HOURS.END) {
+            newEndDate.hour(HOURS.END).minute(0)
+        }
+
+        // Create updated event
+        const updatedEvent: AppointmentEvent = {
+            ...event,
+            start: newStartDate.toDate(),
+            end: newEndDate.toDate(),
+            date: newStartDate.toDate()
+        }
+
+        // Calculate final position for visual update
+        const updatedPosition = {
+            ...originalPosition,
+            top: (snappedMinutes / 30) * CELL_HEIGHT,
+            left: TIME_COLUMN_WIDTH + (newDayIndex * dayColumnWidth),
+            dayIndex: newDayIndex
+        }
+
+        // Update the event layout data
+        setEventLayoutData(prev => ({
+            ...prev,
+            [event.id]: updatedPosition
+        }))
+
+        // Call onEventUpdate if provided
+        if (onEventUpdate) {
+            onEventUpdate(updatedEvent)
+            toast.success("Appointment updated")
+        }
+
+        // Reset drag state
+        setDraggedEvent({
+            event: null,
+            originalPosition: null,
+            currentDayIndex: null,
+            currentMinutes: null
+        })
+
+        // Reset dragging flag
+        setTimeout(() => {
+            isCurrentlyDragging.current = false
+        }, 100)
+    }
+
+    // ====================== UTILITIES ======================
+    // Format time label (e.g. "8 AM", "2:30 PM")
+    const formatTimeLabel = (timeSlot: string): string => {
+        const [hourStr, minuteStr] = timeSlot.split(":")
+        const hour = parseInt(hourStr, 10)
+        return `${hour % 12 || 12}${minuteStr === "00" ? "" : ":30"} ${hour >= 12 ? "PM" : "AM"}`
+    }
 
     // Get event background color based on type
-    const getEventBackground = (event: AppointmentEvent) => {
+    const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
         if (spaceTheme) {
-            switch (event.type) {
-                case "HOME_VISIT":
-                    return "bg-green-900/30"
-                case "VIDEO_CALL":
-                    return "bg-blue-900/30"
-                case "HOSPITAL":
-                    return "bg-green-900/30"
-                case "IN_PERSON":
-                    return "bg-amber-900/30"
-                case "AUDIO_CALL":
-                    return "bg-red-900/30"
-                default:
-                    return "bg-zinc-800/30"
-            }
+            return isActive ? "bg-slate-800/60" : isHovered ? "bg-slate-800/40" : "bg-slate-800/30"
         } else {
-            switch (event.type) {
-                case "HOME_VISIT":
-                    return "bg-green-50"
-                case "VIDEO_CALL":
-                    return "bg-blue-50"
-                case "HOSPITAL":
-                    return "bg-green-50"
-                case "IN_PERSON":
-                    return "bg-amber-50"
-                case "AUDIO_CALL":
-                    return "bg-red-50"
-                default:
-                    return "bg-gray-50"
-            }
+            return isActive ? "bg-gray-100" : isHovered ? "bg-gray-50/80" : "bg-gray-50"
         }
     }
 
-    // Get staff color
-    const getStaffColor = (event: AppointmentEvent, staffMembers: any[]) => {
-        const staffMember = staffMembers.find((s) => s.id === event.resourceId)
-        const staffColor = staffMember?.color || "#888888"
-        const staffName = staffMember ? `${staffMember.firstName} ${staffMember.lastName}` : "Staff"
-        return { staffColor, staffName }
+    // Get event icon based on type
+    const getEventIcon = (type: string) => {
+        switch (type) {
+            case "HOME_VISIT":
+                return <Home className="h-3.5 w-3.5" />
+            case "VIDEO_CALL":
+                return <Video className="h-3.5 w-3.5" />
+            case "HOSPITAL":
+                return <Building2 className="h-3.5 w-3.5" />
+            case "AUDIO_CALL":
+                return <Phone className="h-3.5 w-3.5" />
+            case "IN_PERSON":
+                return <User className="h-3.5 w-3.5" />
+            default:
+                return <Calendar className="h-3.5 w-3.5" />
+        }
     }
 
-    // Format time slot label
-    const formatTimeSlot = (timeSlot: string) => {
-        const [hour, minute] = timeSlot.split(":")
-        const hourNum = Number.parseInt(hour)
-        return `${hourNum % 12 || 12}${minute === "00" ? "" : ":30"} ${hourNum >= 12 ? "PM" : "AM"}`
+    // Get event type label
+    const getEventTypeLabel = (type: string) => {
+        switch (type) {
+            case "HOME_VISIT":
+                return "Home Visit"
+            case "VIDEO_CALL":
+                return "Video Call"
+            case "HOSPITAL":
+                return "Hospital"
+            case "IN_PERSON":
+                return "In-Person"
+            case "AUDIO_CALL":
+                return "Audio Call"
+            default:
+                return type
+        }
     }
 
-    // Check if a time slot has events
-    const hasEventsInTimeSlot = (day: Date, slotIndex: number) => {
-        const slotStart = moment(day)
-            .hour(Math.floor(slotIndex / 2) + startHour)
+    const getEventDuration = (event: AppointmentEvent) => {
+        const duration = getEventDurationInMinutes(event)
+        if (duration < 60) {
+            return `${duration} min`
+        }
+        const hours = Math.floor(duration / 60)
+        const minutes = duration % 60
+        return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
+    }
+
+    // Check if a time slot has events (for styling)
+    const hasEventsInCell = (day: Date, slotIndex: number): boolean => {
+        const cellStart = moment(day)
+            .hour(Math.floor(slotIndex / 2) + HOURS.START)
             .minute((slotIndex % 2) * 30)
-        const slotEnd = moment(slotStart).add(30, "minutes")
+        const cellEnd = moment(cellStart).add(30, "minutes")
 
-        return events.some((event) => {
+        return events.some(event => {
             const eventStart = moment(event.start)
             const eventEnd = moment(event.end)
 
-            // Check if this event is on this day
+            // Skip if not on the same day
             if (!eventStart.isSame(day, "day")) return false
 
-            // Check if event overlaps with this time slot
+            // Check for overlap
             return (
-                (eventStart.isSameOrAfter(slotStart) && eventStart.isBefore(slotEnd)) ||
-                (eventEnd.isAfter(slotStart) && eventEnd.isSameOrBefore(slotEnd)) ||
-                (eventStart.isSameOrBefore(slotStart) && eventEnd.isSameOrAfter(slotEnd))
+                (eventStart.isSameOrAfter(cellStart) && eventStart.isBefore(cellEnd)) ||
+                (eventEnd.isAfter(cellStart) && eventEnd.isSameOrBefore(cellEnd)) ||
+                (eventStart.isSameOrBefore(cellStart) && eventEnd.isSameOrAfter(cellEnd))
             )
         })
     }
 
-    // Snap time to 15-minute intervals
-    const snapTimeToGrid = useCallback((minutes: number): number => {
-        return Math.floor(minutes / 10) * 10
-    }, [])
+    // Auto-scroll to current time on initial load
+    useEffect(() => {
+        if (!calendarContainerRef.current) return
 
-    // Handle drag end for events
-    const handleDragEnd = useCallback(
-        (event: AppointmentEvent, info: PanInfo, position: any) => {
-            if (!gridRef.current) return
+        const now = new Date()
+        const currentHour = now.getHours()
 
-            // Calculate new day and time based on position
-            const { dayWidth, slotHeight, timeGutterWidth } = gridDimensions
+        if (currentHour >= HOURS.START && currentHour <= HOURS.END) {
+            const minutesFromStart = (currentHour - HOURS.START) * 60 + now.getMinutes()
+            const scrollPosition = (minutesFromStart / 30) * CELL_HEIGHT - 100 // Show 100px above current time
+            calendarContainerRef.current.scrollTop = Math.max(0, scrollPosition)
+        }
+    }, [timeIntervals])
 
-            // Calculate new day index
-            const newLeft = position.left + info.offset.x
-            const rawDayIndex = Math.floor((newLeft - timeGutterWidth + 20) / dayWidth) // Add 20 to account for the offset
-            const dayIndex = Math.max(0, Math.min(6, rawDayIndex))
-
-            // Calculate new start time with exact 10-minute snapping
-            const newTop = Math.max(0, position.top + info.offset.y)
-            const minutesFromStart = Math.floor((newTop / slotHeight) * 30)
-            const startHourOffset = Math.floor(minutesFromStart / 60)
-            const startMinuteOffset = minutesFromStart % 60
-
-            // Ensure we snap to exactly 10-minute intervals
-            const roundedStartMinute = Math.floor(startMinuteOffset / 10) * 10
-
-            // Ensure we don't go beyond the visible time range
-            const clampedStartHour = Math.min(startHour + startHourOffset, endHour - 0.5)
-
-            // Create new start and end dates
-            const newStartDate = moment(weekDays[dayIndex])
-                .hour(clampedStartHour)
-                .minute(roundedStartMinute)
-                .second(0)
-                .millisecond(0)
-
-            // Maintain the original duration but ensure it's a multiple of 10 minutes
-            const originalDurationMinutes = position.durationMinutes
-            const roundedDurationMinutes = Math.floor(originalDurationMinutes / 10) * 10
-            const newEndDate = moment(newStartDate).add(roundedDurationMinutes, "minutes")
-
-            // Ensure end time doesn't exceed the visible range
-            if (newEndDate.hour() > endHour) {
-                newEndDate.hour(endHour).minute(0)
-            }
-
-            // Create updated event
-            const updatedEvent: AppointmentEvent = {
-                ...event,
-                start: newStartDate.toDate(),
-                end: newEndDate.toDate(),
-            }
-
-            // Update the display event immediately to reflect the new times in the UI
-            setDisplayEvents((prev) => ({
-                ...prev,
-                [event.id]: updatedEvent,
-            }))
-
-            // Recalculate position values with precise snapping
-            const updatedStartMinutes = (newStartDate.hour() - startHour) * 60 + newStartDate.minute()
-            const updatedEndMinutes = (newEndDate.hour() - startHour) * 60 + newEndDate.minute()
-            const updatedDurationMinutes = updatedEndMinutes - updatedStartMinutes
-
-            // Calculate exact pixel positions - ensure they align with grid
-            const updatedTop = Math.floor(updatedStartMinutes / 30) * slotHeight
-            const updatedHeight = Math.floor(updatedDurationMinutes / 30) * slotHeight
-
-            // Ensure minimum height for visibility
-            const minHeight = 20
-            const finalHeight = Math.max(updatedHeight, minHeight)
-
-            // Calculate exact column position
-            const exactColumnLeft = timeGutterWidth + dayIndex * dayWidth
-
-            // Update event positions
-            const updatedPositions = { ...eventPositions }
-            updatedPositions[event.id] = {
-                ...position,
-                top: updatedTop,
-                left: exactColumnLeft,
-                height: finalHeight,
-                width: dayWidth - 4, // Ensure consistent width
-                dayIndex,
-                startMinutes: updatedStartMinutes,
-                durationMinutes: updatedDurationMinutes,
-                originalEvent: { ...updatedEvent },
-            }
-
-            setEventPositions(updatedPositions)
-
-            // Call onEventUpdate if provided
-            if (onEventUpdate) {
-                onEventUpdate(updatedEvent)
-                toast.success("Event updated successfully")
-            }
-        },
-        [gridDimensions, weekDays, startHour, endHour, onEventUpdate, eventPositions, setEventPositions, setDisplayEvents],
-    )
-
-    // Track if we're dragging to prevent click after drag
-    const isDraggingRef = useRef(false)
-    const eventRefs = useRef<{ [key: string]: HTMLElement }>({})
-
+    // ====================== RENDERING ======================
     return (
-        <div className="h-full flex flex-col">
-            {/* Day headers */}
-            <div className={`flex border-b ${spaceTheme ? "border-zinc-800" : ""}`}>
-                <div className={`w-[60px] flex-shrink-0 ${spaceTheme ? "text-zinc-400" : ""}`}></div>
-                <div className="flex-1 grid grid-cols-7">
-                    {weekDays.map((day, i) => {
-                        const isToday = moment(day).isSame(moment(), "day")
-                        return (
-                            <div
-                                key={i}
-                                className={cn(
-                                    "p-2 text-center border-r",
-                                    isToday ? (spaceTheme ? "bg-zinc-900" : "bg-blue-50") : "",
-                                    spaceTheme ? "border-zinc-800 text-white" : "",
-                                )}
-                            >
-                                <div className={cn("text-xs", spaceTheme ? "text-zinc-400" : "text-gray-500")}>
-                                    {moment(day).format("ddd").toUpperCase()}
-                                </div>
-                                <div
-                                    className={cn(
-                                        "text-sm font-medium mt-1",
-                                        isToday ? (spaceTheme ? "text-green-400" : "text-blue-500") : spaceTheme ? "text-white" : "",
-                                    )}
-                                >
-                                    {moment(day).format("D")}
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
+        <div className="h-full flex flex-col p-4">
+            <div className="flex justify-center items-center mb-3">
+                <h3
+                    className={cn(
+                        "text-lg font-semibold text-center px-3 py-1.5 rounded-full",
+
+                    )}
+                >
+                    {moment(currentDate).startOf('week').format("MMM D")} - {moment(currentDate).endOf('week').format("MMM D, YYYY")}
+                </h3>
             </div>
 
-            {/* Time grid */}
-            <div
-                className={`flex-1 overflow-y-auto ${spaceTheme ? "scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900" : ""}`}
-                ref={containerRef}
-            >
-                <div className="flex relative min-h-full">
-                    {/* Time gutter */}
-                    <div className={`w-[60px] flex-shrink-0 border-r ${spaceTheme ? "border-zinc-800" : ""}`}>
-                        {timeSlots.map((slot, i) => (
-                            <div
-                                key={i}
-                                className={cn("h-[40px] text-xs text-right pr-2 pt-1", spaceTheme ? "text-zinc-400" : "text-gray-500")}
-                            >
-                                {i % 2 === 0 && formatTimeSlot(slot)}
-                            </div>
-                        ))}
+            <div className="flex flex-col flex-1 h-full overflow-hidden">
+                {/* Controls and info row */}
+                <div className="flex justify-end items-center mb-3 gap-2">
+                    <div
+                        className={cn(
+                            "text-xs flex items-center gap-1 px-3 py-1.5 rounded-full",
+                            spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100/70"
+                        )}
+                    >
+                        <GripVertical className="h-3 w-3" />
+                        <span>Drag events to reschedule</span>
+                    </div>
+                    <div
+                        className={cn(
+                            "text-xs flex items-center gap-1 px-2.5 py-1 rounded-full",
+                            spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
+                        )}
+                    >
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>
+                            {events.length} {events.length === 1 ? "event" : "events"}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Calendar grid */}
+                <div className="h-full flex flex-col">
+                    {/* ===== HEADER ROW WITH DAY NAMES ===== */}
+                    <div className={cn("flex border-b", spaceTheme && "border-zinc-800")}>
+                        {/* Empty cell above time column */}
+                        <div className={cn("w-[60px] flex-shrink-0", spaceTheme && "text-zinc-400")} />
+
+                        {/* Day header cells */}
+                        <div className="flex-1 grid grid-cols-7">
+                            {daysOfWeek.map((day, index) => {
+                                const isToday = moment(day).isSame(moment(), "day")
+                                return (
+                                    <div
+                                        key={index}
+                                        className={cn(
+                                            "p-2 text-center border-r",
+                                            isToday && (spaceTheme ? "bg-zinc-900" : "bg-blue-50"),
+                                            spaceTheme && "border-zinc-800 text-white"
+                                        )}
+                                    >
+                                        {/* Day abbreviation */}
+                                        <div className={cn("text-xs", spaceTheme ? "text-zinc-400" : "text-gray-500")}>
+                                            {moment(day).format("ddd").toUpperCase()}
+                                        </div>
+
+                                        {/* Day number */}
+                                        <div className={cn(
+                                            "text-sm font-medium mt-1",
+                                            isToday
+                                                ? (spaceTheme ? "text-green-400" : "text-blue-500")
+                                                : spaceTheme ? "text-white" : ""
+                                        )}>
+                                            {moment(day).format("D")}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
 
-                    {/* Day columns */}
-                    <div className="flex-1 grid grid-cols-7 relative" ref={gridRef}>
-                        {/* Time slot grid */}
-                        {weekDays.map((day, dayIndex) => (
-                            <div key={dayIndex} className={`border-r ${spaceTheme ? "border-zinc-800" : ""}`}>
-                                {timeSlots.map((slot, slotIndex) => {
-                                    const hasEvents = hasEventsInTimeSlot(day, slotIndex)
+                    {/* ===== SCROLLABLE TIME GRID ===== */}
+                    <div
+                        ref={calendarContainerRef}
+                        className={cn(
+                            "flex-1 overflow-y-auto",
+                            spaceTheme ? "scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900" : "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                        )}
+                    >
+                        <div className={cn(
+                            "flex relative min-h-full",
+                            spaceTheme ? "bg-zinc-900" : "bg-gray-50"
+                        )}>
+                            {/* Left time labels column */}
+                            <div className={cn("w-[60px] flex-shrink-0 border-r", spaceTheme ? "border-zinc-800" : "border-gray-200")}>
+                                {timeIntervals.map((timeSlot, index) => (
+                                    <div
+                                        key={index}
+                                        className={cn(
+                                            "h-[40px] text-xs text-right pr-2 relative",
+                                            spaceTheme ? "text-zinc-400" : "text-gray-500",
+                                            index % 2 === 0 ? "text-[12px]" : "text-[10px]" // Make hour labels bolder, half-hours smaller
+                                        )}
+                                    >
+                                        {/* Show only hour labels centered on the line */}
+                                        {index % 2 === 0 && (
+                                            <div className="absolute right-2 -top-[1px]">
+                                                {formatTimeLabel(timeSlot)}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Calendar grid */}
+                            <div className="flex-1 grid grid-cols-7 relative" ref={gridContainerRef}>
+                                {/* Grid cells background */}
+                                {daysOfWeek.map((day, dayIndex) => (
+                                    <div key={dayIndex} className={cn("border-r", spaceTheme ? "border-zinc-800" : "border-gray-200")}>
+                                        {timeIntervals.map((_, slotIndex) => {
+                                            const hasEvents = hasEventsInCell(day, slotIndex)
+                                            const isHourLine = slotIndex % 2 === 0
+                                            const isHalfHourLine = slotIndex % 2 === 1
+
+                                            return (
+                                                <div
+                                                    key={slotIndex}
+                                                    className={cn(
+                                                        "h-[40px] border-b",
+                                                        isHourLine && "border-b",
+                                                        spaceTheme ? "border-zinc-800" : "border-gray-200"
+                                                    )}
+                                                />
+                                            )
+                                        })}
+                                    </div>
+                                ))}
+
+                                {/* Current time indicator */}
+                                {daysOfWeek.some(day => moment(day).isSame(moment(), "day")) && (
+                                    <div
+                                        className={cn(
+                                            "absolute left-0 right-0 border-t-2 z-10",
+                                            spaceTheme ? "border-green-500" : "border-red-500"
+                                        )}
+                                        style={{
+                                            top: (() => {
+                                                const now = new Date()
+                                                const hour = now.getHours()
+                                                const minute = now.getMinutes()
+
+                                                if (hour < HOURS.START || hour > HOURS.END) return 0
+
+                                                const minutesFromStart = (hour - HOURS.START) * 60 + minute
+                                                return (minutesFromStart / 30) * CELL_HEIGHT
+                                            })()
+                                        }}
+                                    >
+                                        <div className={cn(
+                                            "w-2 h-2 rounded-full -mt-1 -ml-1",
+                                            spaceTheme ? "bg-green-500" : "bg-red-500"
+                                        )} />
+                                    </div>
+                                )}
+
+                                {/* Event cards */}
+                                {events.map(event => {
+                                    const position = eventLayoutData[event.id]
+                                    if (!position) return null // Skip if position not calculated
+
+                                    const isDragging = draggedEvent.event?.id === event.id
+                                    const isHovered = hoveredEvent === event.id
+
                                     return (
-                                        <div
-                                            key={slotIndex}
+                                        <motion.div
+                                            key={event.id}
+                                            ref={element => {
+                                                if (element) eventElementsRef.current[event.id] = element
+                                            }}
                                             className={cn(
-                                                "h-[40px] border-b",
-                                                slotIndex % 2 === 0
-                                                    ? spaceTheme
-                                                        ? "border-zinc-800"
-                                                        : "border-gray-200"
-                                                    : spaceTheme
-                                                        ? "border-zinc-900"
-                                                        : "border-gray-100",
-                                                hasEvents ? "" : spaceTheme ? "bg-zinc-900" : "bg-gray-50/30",
+                                                "absolute rounded-lg shadow-sm text-xs p-2 cursor-grab border",
+                                                getEventBackground(event, isDragging, isHovered),
+                                                spaceTheme ? "text-white border-slate-700" : "text-black border-gray-200"
                                             )}
-                                        ></div>
+                                            style={{
+                                                top: `${position.top}px`,
+                                                left: `${position.left}px`,
+                                                height: `${position.height}px`,
+                                                width: `${position.width}px`,
+                                                zIndex: isDragging ? 30 : 10,
+                                                boxShadow: isDragging
+                                                    ? (spaceTheme ? "0 4px 12px rgba(0,0,0,0.5)" : "0 4px 12px rgba(0,0,0,0.2)")
+                                                    : (spaceTheme ? "0 2px 6px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.1)"),
+                                                transform: isDragging ? "scale(1.02)" : "scale(1)",
+                                                opacity: isDragging ? 0.9 : 1,
+                                                transition: "box-shadow 0.2s, transform 0.2s, opacity 0.2s"
+                                            }}
+                                            onMouseDown={(e) => {
+                                                if (e.button !== 0) return
+                                                handleDragStart(event, position)
+                                            }}
+                                            onMouseEnter={() => setHoveredEvent(event.id)}
+                                            onMouseLeave={() => setHoveredEvent(null)}
+                                            onClick={e => {
+                                                if (!isCurrentlyDragging.current) {
+                                                    e.stopPropagation()
+                                                    onSelectEvent(event)
+                                                }
+                                            }}
+                                        >
+                                            <div className="flex items-center gap-1 mb-1">
+                                                {getEventIcon(event.type)}
+                                                <span className="font-medium truncate">{event.title}</span>
+                                            </div>
+                                            <div className={cn("text-[10px]", spaceTheme ? "text-slate-300" : "text-gray-500")}>
+                                                {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                            </div>
+                                            <div className={cn("text-[10px]", spaceTheme ? "text-slate-300" : "text-gray-500")}>
+                                                {getEventTypeLabel(event.type)} • {getEventDuration(event)}
+                                            </div>
+                                        </motion.div>
                                     )
                                 })}
                             </div>
-                        ))}
-
-                        {/* Current time indicator */}
-                        {weekDays.some((day) => moment(day).isSame(moment(), "day")) && (
-                            <div
-                                className={`absolute left-0 right-0 border-t-2 z-10 ${spaceTheme ? "border-green-500" : "border-red-500"}`}
-                                style={{
-                                    top: (() => {
-                                        const now = new Date()
-                                        const currentHour = now.getHours()
-                                        const currentMinute = now.getMinutes()
-
-                                        if (currentHour < startHour || currentHour > endHour) return 0
-
-                                        const minutesSinceStart = (currentHour - startHour) * 60 + currentMinute
-                                        return Math.round((minutesSinceStart / 30) * gridDimensions.slotHeight)
-                                    })(),
-                                }}
-                            >
-                                <div className={`w-2 h-2 rounded-full -mt-1 -ml-1 ${spaceTheme ? "bg-green-500" : "bg-red-500"}`}></div>
-                            </div>
-                        )}
-
-                        {/* Events */}
-                        {events.map((event) => {
-                            const position = eventPositions[event.id]
-                            if (!position) return null
-
-                            // Use the display event for rendering (which will have updated times after drag)
-                            const displayEvent = displayEvents[event.id] || event
-
-                            const { staffColor, staffName } = getStaffColor(event, staffMembers)
-
-                            return (
-                                <motion.div
-                                    key={event.id}
-                                    ref={(el) => {
-                                        if (el) {
-                                            eventRefs.current[event.id] = el;
-                                        }
-                                    }}
-                                    className={cn(
-                                        "absolute rounded p-1 text-xs overflow-hidden cursor-move event-card",
-                                        getEventBackground(event),
-                                        "transition-shadow duration-200",
-                                    )}
-                                    style={{
-                                        top: `${position.top}px`,
-                                        left: `${position.left - 20}px`, // Apply -20px offset for proper alignment
-                                        height: `${position.height}px`,
-                                        width: `${position.width}px`,
-                                        borderLeft: `3px solid ${staffColor}`,
-                                        overflow: "hidden",
-                                        zIndex: isDraggingRef.current ? 30 : 10,
-                                        boxShadow: spaceTheme ? "0 2px 6px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.1)",
-                                    }}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{
-                                        opacity: 1,
-                                        scale: 1,
-                                        transition: { type: "spring", stiffness: 300, damping: 30 },
-                                    }}
-                                    whileHover={{
-                                        zIndex: 20,
-                                        boxShadow: spaceTheme ? "0 4px 10px rgba(0,0,0,0.4)" : "0 4px 8px rgba(0,0,0,0.15)",
-                                        scale: 1.02,
-                                        transition: { duration: 0.2 },
-                                    }}
-                                    drag
-                                    dragConstraints={gridRef}
-                                    dragElastic={0}
-                                    dragMomentum={false}
-                                    dragSnapToOrigin={false}
-                                    onDragStart={() => {
-                                        isDraggingRef.current = true
-                                    }}
-                                    onDrag={(_, info) => {
-                                        // Apply snapping during drag for visual feedback
-                                        const { slotHeight } = gridDimensions
-                                        const minutesFromStart = Math.floor(((position.top + info.offset.y) / slotHeight) * 30)
-                                        const snappedMinutes = Math.floor(minutesFromStart / 10) * 10
-                                        const snappedTop = (snappedMinutes / 30) * slotHeight
-
-                                        // Update the transform to snap to grid lines during drag
-                                        const dragElement = eventRefs.current[event.id]
-                                        if (dragElement) {
-                                            const snapDiff = snappedTop - (position.top + info.offset.y)
-                                            dragElement.style.transform = `translate3d(${info.offset.x}px, ${info.offset.y + snapDiff}px, 0)`
-                                        }
-                                    }}
-                                    onDragEnd={(_, dragInfo) => {
-                                        handleDragEnd(event, dragInfo, position)
-                                        // Reset dragging state after a short delay
-                                        setTimeout(() => {
-                                            isDraggingRef.current = false
-                                        }, 100)
-                                    }}
-                                    onClick={(e) => {
-                                        // Only trigger select if not dragging
-                                        if (!isDraggingRef.current) {
-                                            e.stopPropagation()
-                                            onSelectEvent(event)
-                                        }
-                                    }}
-                                >
-                                    <div className={`font-medium truncate ${spaceTheme ? "text-white" : ""}`}>{displayEvent.title}</div>
-                                    <div className={`text-[10px] ${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
-                                        {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
-                                    </div>
-                                    {position.height > 60 && (
-                                        <div className={`mt-1 truncate text-[10px] ${spaceTheme ? "text-zinc-300" : "text-gray-500"}`}>
-                                            {event.title || "No staff assigned"}
-                                        </div>
-                                    )}
-                                    <div className="w-3.5 h-3.5 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] text-white shadow-sm"
-                                        style={{ backgroundColor: staffColor }}
-                                    >
-                                        {staffName?.[0] || "?"}
-                                    </div>
-                                    <span className={`text-[10px] ${spaceTheme ? "text-slate-300" : "text-gray-600"} truncate`}>
-                                        {staffName}
-                                    </span>
-                                </motion.div>
-                            )
-                        })}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     )
 }
-

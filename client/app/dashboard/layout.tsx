@@ -10,7 +10,7 @@ import { Separator } from "../../components/ui/separator"
 import { SidebarTrigger } from "../../components/ui/sidebar"
 import { ReactNode, useEffect, useState, useMemo } from "react"
 import { useAppDispatch, useAppSelector } from "../../state/redux";
-import { setUser, setOfficeStaff, setCareWorkers, setClients, setSidebarMode } from "../../state/slices/userSlice";
+import { setUser, setOfficeStaff, setCareWorkers, setClients } from "../../state/slices/userSlice";
 import { setCurrentDate, setActiveView } from "../../state/slices/calendarSlice";
 import { useGetUserQuery, useGetAgencyUsersQuery } from "../../state/api";
 import { redirect } from "next/navigation"
@@ -18,6 +18,7 @@ import * as React from "react"
 import type { SidebarMode } from "../../components/scheduler/calender/types"
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { setSidebarMode } from "@/state/slices/scheduleSlice";
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -29,7 +30,8 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, params }: DashboardLayoutProps) {
     const pathname = usePathname()
     const dispatch = useAppDispatch()
-    const { user, careWorkers, clients, officeStaff, sidebarMode } = useAppSelector((state) => state.user)
+    const { user, careWorkers, clients, officeStaff } = useAppSelector((state) => state.user)
+    const { sidebarMode, isHidden } = useAppSelector((state) => state.schedule)
     const { activeView, currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
     const { data: userInformation } = useGetUserQuery()
     const { data: agencyUsers } = useGetAgencyUsersQuery(userInformation?.userInfo?.agencyId || "")
@@ -256,7 +258,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
                         {children}
                     </div>
                 </main>
-                {isSchedulePage && (
+                {isSchedulePage && !isHidden && (
                     <SidebarRight
                         sidebarMode={sidebarMode}
                         careWorkers={careWorkers}

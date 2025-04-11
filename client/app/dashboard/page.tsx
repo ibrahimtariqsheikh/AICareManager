@@ -47,6 +47,8 @@ export default function DashboardPage() {
     const { user } = useAppSelector((state) => state.user)
     const [scheduleFilter, setScheduleFilter] = useState("all")
 
+    console.log("user?.userInfo?.id", user?.userInfo?.id)
+
     const {
         data: dashboardData,
         isLoading,
@@ -54,6 +56,8 @@ export default function DashboardPage() {
     } = useGetDashboardDataQuery(user?.userInfo?.id || "", {
         skip: !user?.userInfo?.id,
     })
+
+    console.log(dashboardData)
 
     // Animation variants for staggered animations
     const containerVariants = {
@@ -136,6 +140,7 @@ export default function DashboardPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {error ? JSON.stringify(error) : null}
                         <p className="text-sm text-muted-foreground text-center mb-4">
                             Please try refreshing the page or contact support if the problem persists.
                         </p>
@@ -331,7 +336,7 @@ export default function DashboardPage() {
     ]
 
     return (
-        <div className="p-6 bg-white">
+        <div className="p-6 ">
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
                 <p className="text-gray-600">Overview of all your detailed of patients and your income</p>
@@ -572,7 +577,7 @@ export default function DashboardPage() {
                                         <div>
                                             <h3 className="text-sm font-medium text-gray-500 mb-1">Created</h3>
                                             <p className="text-base text-gray-800">
-                                                {new Date(dashboardData.user.agency.createdAt).toLocaleDateString()}
+                                                {dashboardData.user.agency.createdAt ? new Date(dashboardData.user.agency.createdAt).toLocaleDateString() : "N/A"}
                                             </p>
                                         </div>
                                         <div>

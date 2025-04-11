@@ -7,7 +7,7 @@ export interface CalendarState {
 
 const initialState: CalendarState = {
     currentDate: new Date().toISOString(),
-    activeView: "week",
+    activeView: "day",
 }
 
 export const calendarSlice = createSlice({

@@ -15,7 +15,8 @@ import { CalendarIcon } from "lucide-react"
 import { toast } from "sonner"
 import { motion, AnimatePresence } from "framer-motion"
 import { useUpdateReportMutation, useGetAgencyUsersQuery } from "@/state/api"
-import { User } from "@/types/userTypes"
+import { User } from "@/types/prismaTypes"
+
 
 interface ReportEditDialogProps {
     report: any
@@ -30,7 +31,7 @@ export function ReportEditDialog({ report, open, onOpenChange, onSuccess }: Repo
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [updateReport] = useUpdateReportMutation()
     const { data: agencyUsersResponse } = useGetAgencyUsersQuery(report.agencyId)
-    const agencyUsers: User[] = (agencyUsersResponse?.data || []) as User[]
+    const agencyUsers = (agencyUsersResponse?.data || []) as User[]
 
     const handleSave = async () => {
         if (!editReason) {

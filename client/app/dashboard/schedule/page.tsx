@@ -1,21 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
-import { useMediaQuery } from "../../../hooks/use-mobile"
-import { User } from "../../../types/prismaTypes"
-import { useGetUsersQuery, useGetUserQuery } from "../../../state/api"
 import { useDispatch } from "react-redux"
-import { setOfficeStaff } from "../../../state/slices/userSlice"
-import { setClients } from "../../../state/slices/userSlice"
-import { useAppSelector } from "../../../state/redux"
-import { setCareWorkers } from "../../../state/slices/userSlice"
-import { PlusCircle } from "lucide-react"
+import { PlusCircle, X } from "lucide-react"
 import { Button } from "../../../components/ui/button"
+import { useAppDispatch, useAppSelector } from "@/state/redux"
+import { AppointmentForm } from "@/components/scheduler/appointment-form"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { toggleRightSidebar } from "@/state/slices/scheduleSlice"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export default function SchedulerPage() {
-    const [isCreating, setIsCreating] = useState(false)
-    const [selectedEvent, setSelectedEvent] = useState<any>(null)
     const [view, setView] = useState<"day" | "week" | "month">("week")
     const [dateRange, setDateRange] = useState<{
         from: Date | undefined
@@ -24,100 +21,27 @@ export default function SchedulerPage() {
         from: new Date(),
         to: undefined,
     })
+    const dispatch = useAppDispatch()
 
-    const dispatch = useDispatch()
-    const isDesktop = useMediaQuery("(min-width: 768px)")
-    const { careWorkers, clients, officeStaff } = useAppSelector((state: any) => state.user)
-    const { data: authUser, isLoading: isLoadingUser } = useGetUserQuery()
-    const { data: usersResponse, isLoading: isLoadingUsers } = useGetUsersQuery({
-        agencyId: authUser?.userInfo?.agencyId || "",
-        role: "CARE_WORKER,CLIENT,OFFICE_STAFF"
-    })
-
-    const isLoading = isLoadingUser || isLoadingUsers
-
-    useEffect(() => {
-        if (usersResponse?.data) {
-            const users = usersResponse.data
-            dispatch(setCareWorkers(users.filter(user => user.role === "CARE_WORKER")))
-            dispatch(setClients(users.filter(user => user.role === "CLIENT")))
-            dispatch(setOfficeStaff(users.filter(user => user.role === "OFFICE_STAFF")))
-        }
-    }, [usersResponse])
+    const user = useAppSelector((state) => state.user.user)
+    const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
+    const [editingEvent, setEditingEvent] = useState<any>(null)
 
     const handleEventSelect = (event: any) => {
-        setSelectedEvent(event)
-        setIsCreating(false)
+        setEditingEvent(event)
+        setIsAppointmentFormOpen(true)
     }
 
-    const handleCreateNew = () => {
-        setSelectedEvent(null)
-        setIsCreating(true)
-    }
-
-    const handleCloseForm = () => {
-        setIsCreating(false)
-        setSelectedEvent(null)
-    }
-
-    if (isLoading) {
-        return (
-            <div className="p-6">
-                {/* Header Skeleton */}
-                <div className="flex items-center justify-between mb-6">
-                    <div className="space-y-2">
-                        <div className="h-8 w-40 bg-muted rounded animate-pulse" />
-                        <div className="h-4 w-64 bg-muted rounded animate-pulse" />
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="h-9 w-32 bg-muted rounded animate-pulse" />
-                        <div className="h-9 w-9 bg-muted rounded animate-pulse" />
-                    </div>
-                </div>
-
-                {/* Calendar View Toggle Skeleton */}
-                <div className="flex items-center gap-2 mb-6">
-                    {["Day", "Week", "Month"].map((view) => (
-                        <div key={view} className="h-9 w-20 bg-muted rounded animate-pulse" />
-                    ))}
-                </div>
-
-                {/* Calendar Grid Skeleton */}
-                <div className="grid grid-cols-7 gap-2 mb-4">
-                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                        <div key={day} className="h-8 bg-muted rounded animate-pulse" />
-                    ))}
-                </div>
-
-                <div className="grid grid-cols-7 gap-2">
-                    {Array.from({ length: 35 }).map((_, i) => (
-                        <div key={i} className="aspect-square bg-muted rounded animate-pulse" />
-                    ))}
-                </div>
-
-                {/* Sidebar Skeleton */}
-                <div className="fixed right-0 top-0 h-full w-80 border-l bg-card p-6 hidden lg:block">
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <div className="h-5 w-32 bg-muted rounded animate-pulse" />
-                            <div className="h-10 w-full bg-muted rounded animate-pulse" />
-                        </div>
-                        <div className="space-y-2">
-                            <div className="h-5 w-32 bg-muted rounded animate-pulse" />
-                            <div className="h-10 w-full bg-muted rounded animate-pulse" />
-                        </div>
-                        <div className="space-y-2">
-                            <div className="h-5 w-32 bg-muted rounded animate-pulse" />
-                            <div className="h-32 w-full bg-muted rounded animate-pulse" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    const handleFormClose = () => {
+        setIsAppointmentFormOpen(false)
+        setEditingEvent(null)
     }
 
     return (
-        <div className="container mx-auto py-4 min-h-screen min-w-full">
+        <div className="relative container mx-auto py-4 min-h-screen min-w-full">
+            <div className="absolute top-0 right-0">
+                <Button variant="ghost" size="icon" onClick={() => dispatch(toggleRightSidebar())}><SidebarTrigger className="h-4 w-4" /></Button>
+            </div>
             <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex flex-col gap-2">
@@ -128,9 +52,9 @@ export default function SchedulerPage() {
                         </p>
                     </div>
                     <Button
-                        onClick={handleCreateNew}
+                        onClick={() => setIsAppointmentFormOpen(true)}
                         size="sm"
-                        className={`hidden sm:flex`}
+                        className="hidden sm:flex"
                     >
                         <PlusCircle className="h-4 w-4 mr-1.5" />
                         New Appointment
@@ -138,6 +62,20 @@ export default function SchedulerPage() {
                 </div>
 
                 <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
+
+                <Dialog open={isAppointmentFormOpen} onOpenChange={setIsAppointmentFormOpen}>
+                    <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-auto">
+                        <VisuallyHidden>
+                            <DialogTitle>{editingEvent?.id ? "Edit Appointment" : "New Appointment"}</DialogTitle>
+                        </VisuallyHidden>
+                        <AppointmentForm
+                            isOpen={true}
+                            onClose={handleFormClose}
+                            event={editingEvent}
+                            isNew={!editingEvent?.id}
+                        />
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     )

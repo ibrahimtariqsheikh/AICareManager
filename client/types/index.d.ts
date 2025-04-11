@@ -89,15 +89,80 @@ declare global {
   }
 
   interface User {
+    lastName: ReactNode;
+    firstName: ReactNode;
     cognitoInfo: AuthUser;
     userInfo: {
       id: string;
       username: string;
       email: string;
       role: string;
+      firstName: string;
+      lastName: string;
     };
     userRole: JsonObject | JsonPrimitive | JsonArray;
   }
+
+  interface Report {
+    id: string;
+    clientId: string;
+    agencyId: string;
+    userId: string;
+    condition: string;
+    summary: string;
+    checkInTime: Date;
+    checkOutTime?: Date;
+    createdAt: Date;
+    checkInDistance?: number;
+    checkOutDistance?: number;
+    checkInLocation?: string;
+    checkOutLocation?: string;
+    hasSignature: boolean;
+    signatureImageUrl?: string;
+    status: ReportStatus;
+    lastEditedAt?: Date;
+    lastEditedBy?: string;
+    lastEditReason?: string;
+    tasksCompleted: ReportTask[];
+    alerts: ReportAlert[];
+    bodyMapObservations: BodyMapObservation[];
+    medicationAdministrations: MedicationAdministration[];
+    editHistory: ReportEdit[];
+    client: User;
+    caregiver: User;
+    agency: Agency;
+  }
+
+}
+
+export interface Report {
+  id: string;
+  clientId: string;
+  agencyId: string;
+  userId: string;
+  condition: string;
+  summary: string;
+  checkInTime: Date;
+  checkOutTime?: Date;
+  createdAt: Date;
+  checkInDistance?: number;
+  checkOutDistance?: number;
+  checkInLocation?: string;
+  checkOutLocation?: string;
+  hasSignature: boolean;
+  signatureImageUrl?: string;
+  status: ReportStatus;
+  lastEditedAt?: Date;
+  lastEditedBy?: string;
+  lastEditReason?: string;
+  tasksCompleted: ReportTask[];
+  alerts: ReportAlert[];
+  bodyMapObservations: BodyMapObservation[];
+  medicationAdministrations: MedicationAdministration[];
+  editHistory: ReportEdit[];
+  client: User;
+  caregiver: User;
+  agency: Agency;
 }
 
 export {};
