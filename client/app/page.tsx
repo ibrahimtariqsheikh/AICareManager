@@ -69,7 +69,7 @@ export default function Home() {
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen w-full overflow-visible bg-[#F2F2F7]">
+    <div className="min-h-screen w-full overflow-visible ">
       {/* Subtle background container */}
       <div
         className={`fixed inset-0 -z-10 ${theme === "dark"

@@ -81,7 +81,7 @@ const SignupPage = ({ params }: { params: Promise<{ id: string }> }) => {
     }
 
     return (
-        <div className="flex min-h-screen w-full bg-[#F2F2F7]">
+        <div className="flex min-h-screen w-full ">
             {/* Left side - Dark panel with logo and testimonial */}
             <div className="hidden md:flex w-1/2 bg-black text-white flex-col justify-between p-10">
                 <div className="flex items-center gap-2">

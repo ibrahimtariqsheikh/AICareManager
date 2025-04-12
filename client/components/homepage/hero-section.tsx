@@ -94,9 +94,9 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                         }}
                         className="relative z-10  rounded-3xl border border-neutral-200 bg-neutral-100 p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900"
                     >
-                        <div className="w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-700">
+                        <div className="w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-700 layer-blur-md">
                             <Image
-                                src="/assets/dashboard-preview.png"
+                                src={image}
                                 alt="Landing page preview"
                                 className="aspect-[16/9] h-auto w-full object-cover"
                                 height={1000}
@@ -106,24 +106,7 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
                     </motion.div>
                 </motion.div>
 
-                {isAuthenticated ? (
-                    <motion.div className="flex flex-col items-center gap-4" variants={fadeIn}>
-                        <CTAButton onClick={onDashboardClick}>Go to Dashboard</CTAButton>
-                    </motion.div>
-                ) : (
-                    <motion.div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto" variants={fadeIn}>
-                        <div className="flex-1">
-                            <Input
-                                type="email"
-                                placeholder="Enter your email"
-                                className={`h-9 backdrop-blur-sm ${theme === "dark" ? "bg-white/10 dark:bg-black/20" : "bg-gray-50"} border-blue-500/20 focus:border-blue-500/50 transition-all`}
-                            />
-                        </div>
-                        <Button onClick={() => router.push("/dashboard")} className="">
-                            Book a Demo
-                        </Button>
-                    </motion.div>
-                )}
+
 
 
             </motion.div>
