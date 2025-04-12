@@ -572,39 +572,9 @@ export function CustomMonthView({
 
     return (
         <div className="h-full flex flex-col p-4">
-            <div className="flex justify-center items-center mb-3">
-                <h3
-                    className={`text-lg font-semibold text-center px-3 py-1.5 rounded-full `}
-                >
-                    {moment(date).format("MMMM YYYY")}
-                </h3>
-            </div>
+
 
             <div className="flex flex-col flex-1 h-full overflow-hidden">
-                {/* Controls and info row */}
-                <div className="flex justify-end items-center mb-3 gap-2">
-                    <div
-                        className={cn(
-                            "text-xs flex items-center gap-1 px-3 py-1.5 rounded-full",
-                            spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100/70"
-                        )}
-                    >
-                        <GripVertical className="h-3 w-3" />
-                        <span>Drag events to reschedule</span>
-                    </div>
-                    <div
-                        className={cn(
-                            "text-xs flex items-center gap-1 px-2.5 py-1 rounded-full",
-                            spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
-                        )}
-                    >
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>
-                            {events.length} {events.length === 1 ? "event" : "events"}
-                        </span>
-                    </div>
-                </div>
-
                 {/* Calendar grid */}
                 <div className="h-full flex flex-col" ref={calendarRef}>
                     {/* Day headers */}

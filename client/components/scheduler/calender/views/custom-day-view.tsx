@@ -1,29 +1,13 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import {
-    ChevronLeft,
-    ChevronRight,
-    Home,
-    Video,
-    Building2,
-    Phone,
-    User,
-    Clock,
-    Calendar,
-    MoreVertical,
-    Maximize2,
-    Minimize2,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { useAppSelector } from "@/state/redux"
+import { useAppSelector, useAppDispatch } from "@/state/redux"
 
 // Define types
 export interface AppointmentEvent {
@@ -57,16 +41,19 @@ interface CustomDayViewProps {
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
     min?: Date
     max?: Date
-    clients?: Client[] // Make clients a prop instead of using Redux
+    clients?: Client[]
     spaceTheme?: boolean
     showSidebar?: boolean
     slotHeight?: number
     minutesPerSlot?: number
-    sidebarMode?: string
     initialHeight?: number | string
     initialWidth?: number | string
     staffMembers?: any[]
     getEventDurationInMinutes?: (event: any) => number
+    currentView: string
+    currentDate?: Date
+    onDateChange?: (date: Date) => void
+    onViewChange?: (view: "day" | "week" | "month") => void
 }
 
 export function CustomDayView({
@@ -89,8 +76,13 @@ export function CustomDayView({
         const end = moment(event.end)
         return end.diff(start, "minutes")
     },
+    currentView,
+    currentDate,
+    onDateChange,
+    onViewChange,
 }: CustomDayViewProps) {
-    // Get clients from props or Redux as fallback
+    const dispatch = useAppDispatch()
+    const activeView = useAppSelector((state) => state.calendar.activeView)
     const reduxClients = useAppSelector((state) => state.user.clients || [])
     const clients = propClients || reduxClients
 
@@ -98,7 +90,6 @@ export function CustomDayView({
     const containerRef = useRef<HTMLDivElement>(null)
     const timelineRef = useRef<HTMLDivElement>(null)
     const headerRef = useRef<HTMLDivElement>(null)
-    const resizeHandleRef = useRef<HTMLDivElement>(null)
     const calendarContainerRef = useRef<HTMLDivElement>(null)
 
     // State
@@ -109,7 +100,6 @@ export function CustomDayView({
     const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
     const [calendarHeight, setCalendarHeight] = useState<string | number>(initialHeight)
     const [calendarWidth, setCalendarWidth] = useState<string | number>(initialWidth)
-    const [isResizing, setIsResizing] = useState<boolean>(false)
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
     const [originalDimensions, setOriginalDimensions] = useState<{ height: string | number; width: string | number }>({
         height: initialHeight,
@@ -121,7 +111,33 @@ export function CustomDayView({
     const endHour = max.getHours()
     const slotsPerHour = 60 / minutesPerSlot
     const slotWidth = 100 // Width of each time slot in pixels
-    const rowHeight = 80 // Fixed height for each client row
+
+    // Calculate dynamic row height based on calendar height and number of clients
+    const getRowHeight = () => {
+        if (typeof calendarHeight === "number") {
+            // Subtract header height (33px) and any other fixed heights
+            const availableHeight = calendarHeight - 33
+            return Math.max(60, Math.floor(availableHeight / (clients.length + 2 || 1))) // +2 for Labor Costs and Daily Notes
+        }
+        return 80 // Default height if calendarHeight is not a number
+    }
+
+    const rowHeight = getRowHeight()
+
+    // Calculate total height needed based on number of clients
+    const MIN_HEIGHT = 200 // Minimum height to maintain usability
+    const EXTRA_PADDING = 30 // Extra space after last client
+    const totalHeight =
+        clients.length > 0
+            ? (clients.length + 2) * rowHeight + 120 + EXTRA_PADDING // +2 for Labor Costs and Daily Notes, 120px for header and controls + extra padding
+            : MIN_HEIGHT // Use minimum height when no clients
+
+    // Update calendar height if it's not explicitly set
+    useEffect(() => {
+        if (typeof initialHeight === "string" && initialHeight === "100%") {
+            setCalendarHeight(totalHeight)
+        }
+    }, [clients.length, rowHeight, initialHeight])
 
     // Generate time slots
     const timeSlots = Array.from({ length: (endHour - startHour) * slotsPerHour + 1 }, (_, i) => {
@@ -317,108 +333,6 @@ export function CustomDayView({
         }
     }, [spaceTheme])
 
-    // Resize handlers
-    const handleResizeStart = useCallback((e: React.MouseEvent<HTMLDivElement> | MouseEvent) => {
-        e.preventDefault()
-        setIsResizing(true)
-        document.body.style.cursor = "nwse-resize"
-        document.addEventListener("mousemove", handleResize)
-        document.addEventListener("mouseup", handleResizeEnd)
-    }, [])
-
-    const handleResize = useCallback(
-        (e: MouseEvent) => {
-            if (!calendarContainerRef.current || !isResizing) return
-
-            const container = calendarContainerRef.current.getBoundingClientRect()
-            const newWidth = Math.max(600, e.clientX - container.left)
-            const newHeight = Math.max(400, e.clientY - container.top)
-
-            setCalendarWidth(newWidth)
-            setCalendarHeight(newHeight)
-
-            // Force re-render for event positions
-            setEventPositions((prev) => ({ ...prev }))
-        },
-        [isResizing],
-    )
-
-    const handleResizeEnd = useCallback(() => {
-        setIsResizing(false)
-        document.body.style.cursor = ""
-        document.removeEventListener("mousemove", handleResize)
-        document.removeEventListener("mouseup", handleResizeEnd)
-    }, [handleResize])
-
-    // Set up resize handlers
-    useEffect(() => {
-        const resizeHandle = resizeHandleRef.current
-        if (resizeHandle) {
-            resizeHandle.addEventListener("mousedown", handleResizeStart)
-        }
-
-        return () => {
-            if (resizeHandle) {
-                resizeHandle.removeEventListener("mousedown", handleResizeStart)
-            }
-            document.removeEventListener("mousemove", handleResize)
-            document.removeEventListener("mouseup", handleResizeEnd)
-        }
-    }, [handleResizeStart, handleResize, handleResizeEnd])
-
-    // Toggle fullscreen function
-    const toggleFullscreen = useCallback(() => {
-        if (!isFullscreen) {
-            // Save current dimensions before going fullscreen
-            setOriginalDimensions({
-                height: calendarHeight,
-                width: calendarWidth,
-            })
-
-            // Set to fullscreen
-            setCalendarHeight("100vh")
-            setCalendarWidth("100%")
-            setIsFullscreen(true)
-        } else {
-            // Restore original dimensions
-            setCalendarHeight(originalDimensions.height)
-            setCalendarWidth(originalDimensions.width)
-            setIsFullscreen(false)
-        }
-
-        // Force re-render for event positions
-        setEventPositions((prev) => ({ ...prev }))
-    }, [isFullscreen, calendarHeight, calendarWidth, originalDimensions])
-
-    // Scroll controls
-    const scrollLeft = () => {
-        if (containerRef.current) {
-            containerRef.current.scrollLeft -= 300
-        }
-    }
-
-    const scrollRight = () => {
-        if (containerRef.current) {
-            containerRef.current.scrollLeft += 300
-        }
-    }
-
-    // Time formatting helpers
-    const formatTimeFromMinutes = (minutesFromStart: number) => {
-        const hours = Math.floor(minutesFromStart / 60) + startHour
-        const minutes = minutesFromStart % 60
-        const displayHours = hours % 12 === 0 ? 12 : hours % 12
-        const amPm = hours >= 12 ? "PM" : "AM"
-        return `${displayHours}:${minutes.toString().padStart(2, "0")} ${amPm}`
-    }
-
-    // Get client name from client ID
-    const getClientName = (clientId: string) => {
-        if (clientId === "unallocated") return "Unallocated"
-        const client = clients.find((c) => c.id === clientId)
-        return client ? `${client.firstName} ${client.lastName}` : "Unknown Client"
-    }
-
     // Drag event handlers
     const handleDragStart = (eventId: string, clientId: string) => {
         setActiveEvent(eventId)
@@ -489,6 +403,11 @@ export function CustomDayView({
                 left: updatedLeft,
                 startMinutes: clampedMinutes,
                 originalEvent: updatedEvent,
+                // Maintain the track and other positioning properties
+                track: prev[eventId].track,
+                height: prev[eventId].height,
+                top: prev[eventId].top,
+                totalTracks: prev[eventId].totalTracks,
             },
         }))
 
@@ -611,9 +530,22 @@ export function CustomDayView({
         ? "bg-slate-800 text-white border border-slate-700"
         : "bg-white text-black border border-gray-200"
     const clientSidebarClass = spaceTheme ? "bg-slate-900 border-slate-700" : "bg-gray-50 border-gray-200"
-    const resizeButtonClass = spaceTheme
-        ? "absolute bottom-3 right-3 z-30 bg-slate-800 hover:bg-slate-700 text-white rounded-full p-1.5 shadow-md"
-        : "absolute bottom-3 right-3 z-30 bg-white hover:bg-gray-100 rounded-full p-1.5 shadow-md"
+
+    // Time formatting helpers
+    const formatTimeFromMinutes = (minutesFromStart: number) => {
+        const hours = Math.floor(minutesFromStart / 60) + startHour
+        const minutes = minutesFromStart % 60
+        const displayHours = hours % 12 === 0 ? 12 : hours % 12
+        const amPm = hours >= 12 ? "PM" : "AM"
+        return `${displayHours}:${minutes.toString().padStart(2, "0")} ${amPm}`
+    }
+
+    // Get client name from client ID
+    const getClientName = (clientId: string) => {
+        if (clientId === "unallocated") return "Unallocated"
+        const client = clients.find((c) => c.id === clientId)
+        return client ? `${client.firstName} ${client.lastName}` : "Unknown Client"
+    }
 
     return (
         <div
@@ -621,99 +553,49 @@ export function CustomDayView({
             className="relative p-4"
             style={{
                 width: calendarWidth,
-                height: calendarHeight,
+                height: totalHeight + 50,
                 maxWidth: "100%",
-                transition: isResizing ? "none" : "width 0.3s, height 0.3s",
                 position: "relative",
+                overflow: "hidden",
             }}
         >
-            {/* Date header */}
-            <div className="flex justify-center items-center mb-3">
-                <h3 className={`text-lg font-semibold text-center px-3 py-1.5 rounded-full ${headerTextClass}`}>
-                    {moment(date).format("dddd, MMMM D, YYYY")}
-                </h3>
-            </div>
-
-            <div className="flex flex-col flex-1 h-full overflow-hidden" style={{ height: "calc(100% - 60px)" }}>
-                {/* Scroll controls and information display */}
-                <div className="flex justify-between items-center mb-3 gap-2">
-                    <div className="flex items-center gap-2">
-                        <div
-                            className={`text-xs ${spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
-                                } flex items-center gap-1 px-2.5 py-1 rounded-full`}
-                        >
-                            <Calendar className="h-3.5 w-3.5" />
-                            <span>
-                                {Object.values(displayEvents).length} {Object.values(displayEvents).length === 1 ? "event" : "events"}
-                            </span>
-                        </div>
-
-                        <div
-                            className={`text-xs ${spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100/70"
-                                } flex items-center gap-1 px-3 py-1.5 rounded-full`}
-                        >
-                            <Clock className="h-3 w-3" />
-                            <span>
-                                {startHour}:00 - {endHour}:00
-                            </span>
-                        </div>
-
-                        {/* Display current width and height */}
-                        <div
-                            className={`text-xs ${spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
-                                } flex items-center gap-1 px-2.5 py-1 rounded-full`}
-                        >
-                            <span>
-                                {typeof calendarWidth === "number" ? `${Math.round(calendarWidth)}px` : calendarWidth} ×
-                                {typeof calendarHeight === "number" ? `${Math.round(calendarHeight)}px` : calendarHeight}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <Button
-                            variant={spaceTheme ? "outline" : "secondary"}
-                            size="sm"
-                            onClick={scrollLeft}
-                            className={`flex items-center gap-1 ${spaceTheme ? "border-slate-700 bg-slate-800/50 hover:bg-slate-800" : ""
-                                }`}
-                        >
-                            <ChevronLeft className="h-3.5 w-3.5" />
-                            <span>Earlier</span>
-                        </Button>
-
-                        <Button
-                            variant={spaceTheme ? "outline" : "secondary"}
-                            size="sm"
-                            onClick={scrollRight}
-                            className={`flex items-center gap-1 ${spaceTheme ? "border-slate-700 bg-slate-800/50 hover:bg-slate-800" : ""
-                                }`}
-                        >
-                            <span>Later</span>
-                            <ChevronRight className="h-3.5 w-3.5" />
-                        </Button>
-                    </div>
-                </div>
-
+            <div className="flex flex-col flex-1" style={{ height: `calc(${totalHeight}px - 60px)` }}>
                 {/* Main timeline container */}
-                <div className={`flex flex-1 border rounded-xl shadow-md ${timelineClass} h-full overflow-hidden`}>
+                <div className={`flex flex-1 border rounded-xl shadow- ${timelineClass} h-full overflow-hidden`}>
                     {/* Client sidebar */}
                     {showSidebar && (
-                        <div className={`w-48 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`}>
-                            {/* Unallocated section */}
-                            <div className={`p-3 border-b ${clientSidebarClass} sticky top-0 z-10`}>
-                                <div className="flex items-center justify-between">
-                                    <div className="font-medium">Unallocated</div>
-                                    <div className={`text-xs px-1.5 py-0.5 rounded-full ${spaceTheme ? "bg-slate-800" : "bg-gray-200"}`}>
-                                        {eventsByClient["unallocated"]?.length || 0}
-                                    </div>
-                                </div>
+                        <div className={`w-48 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`} style={{ height: "100%" }}>
+                            {/* Clients */}
+                            <div className="h-8 font-semibold flex items-center justify-center text-sm gap-2 border-b text-neutral-600">
+                                <p>Clients</p>
                             </div>
 
-                            {/* Clients */}
+                            <div
+                                className="font-semibold flex items-center justify-center text-sm gap-2 border-b text-neutral-600"
+                                style={{ height: `${rowHeight}px` }}
+                            >
+                                <p>Labor Costs</p>
+                            </div>
+                            <div
+                                className="font-semibold flex items-center justify-center text-sm gap-2 border-b text-neutral-600"
+                                style={{ height: `${rowHeight}px` }}
+                            >
+                                <p>Daily Notes</p>
+                            </div>
+
+                            {/* Client list */}
                             {clients.map((client) => (
-                                <div key={client.id} className={`p-3 border-b ${clientSidebarClass} hover:bg-opacity-80`}>
-                                    <div className="flex items-center justify-between">
+                                <div
+                                    key={client.id}
+                                    className={`border-b ${clientSidebarClass} hover:bg-opacity-80`}
+                                    style={{
+                                        height: `${rowHeight}px`,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: "0 12px",
+                                    }}
+                                >
+                                    <div className="flex items-center justify-between w-full">
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-6 w-6">
                                                 <AvatarImage
@@ -746,7 +628,7 @@ export function CustomDayView({
                     )}
 
                     {/* Timeline section */}
-                    <div className="flex-1 relative overflow-hidden flex flex-col">
+                    <div className="flex-1 relative overflow-hidden flex flex-col" style={{ height: "100%" }}>
                         {/* Fixed time header - separate scrollable container */}
                         <div
                             ref={headerRef}
@@ -796,13 +678,42 @@ export function CustomDayView({
                                             className={`absolute top-0 bottom-0 border-r ${isHourMark ? hourLineClass : isHalfHourMark ? halfHourLineClass : gridLineClass}`}
                                             style={{
                                                 left: `${i * slotWidth}px`,
-                                                borderRightWidth: isHourMark ? "2px" : "1px",
+                                                borderRightWidth: isHourMark ? "2px" : "1.5px",
                                                 height: "100%",
                                                 zIndex: 1,
                                             }}
                                         />
                                     )
                                 })}
+
+                                {/* Labor Costs row grid line */}
+                                <div
+                                    className={`absolute w-full border-b ${gridLineClass}`}
+                                    style={{
+                                        top: `${rowHeight}px`,
+                                        height: "1px",
+                                        zIndex: 2,
+                                    }}
+                                />
+
+                                {/* Daily Notes row grid line */}
+                                <div
+                                    className={`absolute w-full border-b ${gridLineClass}`}
+                                    style={{
+                                        top: `${1 * rowHeight}px`,
+                                        height: "1px",
+                                        zIndex: 2,
+                                    }}
+                                />
+                                {/* Daily Notes row grid line */}
+                                <div
+                                    className={`absolute w-full border-b ${gridLineClass}`}
+                                    style={{
+                                        top: `${2 * rowHeight}px`,
+                                        height: "1px",
+                                        zIndex: 2,
+                                    }}
+                                />
 
                                 {/* Current time indicator */}
                                 {moment(new Date()).isSame(date, "day") && (
@@ -820,82 +731,26 @@ export function CustomDayView({
                                         </div>
                                     </div>
                                 )}
+                                <div className="absolute w-full border-b" style={{ top: `${rowHeight}px`, height: "1px", zIndex: 2 }} />
 
                                 {/* Client rows with clear boundaries */}
-                                <div className="relative" style={{ height: `${(clients.length + 1) * rowHeight}px` }}>
-                                    {/* Unallocated row */}
-                                    <div
-                                        className="client-row absolute w-full border-b-2"
-                                        style={{
-                                            top: 0,
-                                            height: `${rowHeight}px`,
-                                            borderColor: spaceTheme ? "#1e293b" : "#e2e8f0",
-                                            zIndex: 2,
-                                        }}
-                                    >
-                                        <div className="client-name-label">Unallocated</div>
-                                        {eventsByClient["unallocated"].map((event) => {
-                                            const pos = eventPositions[event.id]
-                                            if (!pos) return null
-
-                                            const isActive = activeEvent === event.id
-                                            const isHovered = hoveredEvent === event.id
-
-                                            return (
-                                                <motion.div
-                                                    key={event.id}
-                                                    className={cn(
-                                                        "absolute p-2 text-xs rounded-md shadow-md border",
-                                                        getEventBackground(event, isActive, isHovered),
-                                                        getEventBorderColor(event),
-                                                        "cursor-grab active:cursor-grabbing",
-                                                    )}
-                                                    style={{
-                                                        left: `${pos.left || 0}px`,
-                                                        width: `${pos.width || 50}px`,
-                                                        top: "24px", // Adjusted to make room for client name
-                                                        height: `${rowHeight - 32}px`, // Constrain to row height
-                                                        zIndex: isActive ? 50 : 10,
-                                                        overflow: "hidden",
-                                                    }}
-                                                    drag="x"
-                                                    dragConstraints={timelineRef}
-                                                    dragMomentum={false}
-                                                    onDragStart={() => handleDragStart(event.id, "unallocated")}
-                                                    onDrag={(e, info) => handleDrag(event.id, info)}
-                                                    onDragEnd={(e, info) => handleDragEnd(event.id, info, "unallocated")}
-                                                    onMouseEnter={() => setHoveredEvent(event.id)}
-                                                    onMouseLeave={() => setHoveredEvent(null)}
-                                                    onClick={() => onSelectEvent(event)}
-                                                    whileDrag={{ scale: 1.05 }}
-                                                >
-                                                    <div className="flex items-center gap-1 font-medium truncate">
-                                                        {getEventIcon(event.type)}
-                                                        <span>{event.title}</span>
-                                                    </div>
-                                                    <div className="text-[10px] mt-1 text-muted-foreground">
-                                                        {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
-                                                    </div>
-                                                </motion.div>
-                                            )
-                                        })}
-                                    </div>
-
+                                <div className="relative" style={{ height: `${(clients.length + 2) * rowHeight}px` }}>
                                     {/* Client rows */}
                                     {clients.map((client, index) => (
                                         <div
                                             key={client.id}
                                             className="client-row absolute w-full border-b-2"
                                             style={{
-                                                top: `${(index + 1) * rowHeight}px`,
+                                                top: `${(0 + 2) * rowHeight}px`,
                                                 height: `${rowHeight}px`,
                                                 borderColor: spaceTheme ? "#1e293b" : "#e2e8f0",
                                                 zIndex: 2,
                                             }}
                                         >
-                                            <div className="client-name-label">
+                                            {/* <div className="client-name-label">
                                                 {client.firstName} {client.lastName}
-                                            </div>
+                                            </div> */}
+
                                             {eventsByClient[client.id]?.map((event) => {
                                                 const pos = eventPositions[event.id]
                                                 if (!pos) return null
@@ -915,8 +770,8 @@ export function CustomDayView({
                                                         style={{
                                                             left: `${pos.left || 0}px`,
                                                             width: `${pos.width || 50}px`,
-                                                            top: "24px", // Adjusted to make room for client name
-                                                            height: `${rowHeight - 32}px`, // Constrain to row height
+                                                            top: 0, // Adjusted to make room for client name
+                                                            height: `${rowHeight - 0}px`, // Constrain to row height
                                                             zIndex: isActive ? 50 : 10,
                                                             overflow: "hidden",
                                                         }}
@@ -958,14 +813,6 @@ export function CustomDayView({
                     {dragTooltip.time}
                 </div>
             )}
-
-            {/* Resize Button */}
-            <button onClick={toggleFullscreen} className={resizeButtonClass}>
-                {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-            </button>
-
-            {/* Resize Handle */}
-            <div ref={resizeHandleRef} className="resize-handle bottom-0 right-0 w-4 h-4" style={{ position: "absolute" }} />
         </div>
     )
 }

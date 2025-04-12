@@ -3,7 +3,6 @@ import { api } from "../api"
 import type { ScheduleResponse } from "../api"
 import type { AppointmentEvent, SidebarMode } from "../../components/scheduler/calender/types"
 import { filterEvents } from "../../components/scheduler/calender/calender-utils"
-import type { User } from "../../types/prismaTypes"
 
 // This will help serialize and deserialize dates
 function serializeEvent(event: AppointmentEvent): any {

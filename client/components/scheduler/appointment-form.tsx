@@ -174,7 +174,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         }
     }, [clients, careWorkers, user?.userInfo?.agencyId, form])
 
-    // Populate form with event data when editing
+
     useEffect(() => {
         if (event && !isNew) {
             const startDate = new Date(event.shiftStart || event.start)
@@ -240,10 +240,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             const careWorker = careWorkers.find((worker: any) => worker.id === data.userId)
             const client = clients.find((client: any) => client.id === data.clientId)
 
-            console.log('Selected client:', client)
-            console.log('Available clients:', clients)
-            console.log('Selected clientId:', data.clientId)
-
             // Create a title that includes both care worker and client names
             const title = `${client ? `${client.firstName} ${client.lastName}` : "Client"} with ${careWorker ? `${careWorker.firstName} ${careWorker.lastName}` : "Care Worker"}`
 
@@ -260,45 +256,59 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             }
 
             let response
-            if (isNew) {
-                response = await createSchedule(scheduleData).unwrap()
-                console.log("Created new appointment:", response)
-                toast.success("Appointment created successfully")
-            } else {
-                response = await updateSchedule({ id: event.id, ...scheduleData }).unwrap()
-                console.log("Updated appointment:", response)
-                toast.success("Appointment updated successfully")
-            }
+            try {
+                if (isNew) {
+                    response = await createSchedule(scheduleData).unwrap()
+                    console.log("Created new appointment:", response)
+                    toast.success("Appointment created successfully")
+                } else {
+                    response = await updateSchedule({ id: event.id, ...scheduleData }).unwrap()
+                    console.log("Updated appointment:", response)
+                    toast.success("Appointment updated successfully")
+                }
 
-            // Dispatch to Redux store
-            const eventData = {
-                id: response.id,
-                title: response.title,
-                start: startDateTime,
-                end: endDateTime,
-                date: data.date,
-                startTime: data.startTime,
-                endTime: data.endTime,
-                resourceId: response.userId,
-                clientId: response.clientId,
-                type: response.type,
-                status: response.status,
-                notes: response.notes || "",
-                color: response.color,
-                careWorker: response.user,
-                client: response.client,
-            }
+                // Dispatch to Redux store
+                const eventData = {
+                    id: response.id,
+                    title: response.title,
+                    start: startDateTime,
+                    end: endDateTime,
+                    date: data.date,
+                    startTime: data.startTime,
+                    endTime: data.endTime,
+                    resourceId: response.userId,
+                    clientId: response.clientId,
+                    type: response.type,
+                    status: response.status,
+                    notes: response.notes || "",
+                    color: response.color,
+                    careWorker: response.user,
+                    client: response.client,
+                }
 
-            if (isNew) {
-                dispatch(addEvent(eventData))
-            } else {
-                dispatch(updateEvent(eventData))
-            }
+                if (isNew) {
+                    dispatch(addEvent(eventData))
+                } else {
+                    dispatch(updateEvent(eventData))
+                }
 
-            onClose()
+                onClose()
+            } catch (error: any) {
+                console.error("Error saving appointment:", error)
+                if (error.data?.conflict) {
+                    const { type, id } = error.data.conflict
+                    const entity = type === "care worker"
+                        ? careWorkers.find((w: any) => w.id === id)
+                        : clients.find((c: any) => c.id === id)
+                    const name = entity ? `${entity.firstName} ${entity.lastName}` : type
+                    toast.error(`${name} already has an appointment scheduled during this time`)
+                } else {
+                    toast.error(`Failed to ${isNew ? "create" : "update"} appointment`)
+                }
+            }
         } catch (error) {
-            console.error("Error saving appointment:", error)
-            toast.error(`Failed to ${isNew ? "create" : "update"} appointment`)
+            console.error("Error in form submission:", error)
+            toast.error("An unexpected error occurred")
         } finally {
             setIsLoading(false)
         }

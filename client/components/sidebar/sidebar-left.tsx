@@ -137,7 +137,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     }
 
     return (
-        <Sidebar className="border-r-0" {...props}>
+        <Sidebar className="border-r-0 w-[220px]" {...props}>
             <SidebarHeader className="p-4 mt-2">
                 <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-md bg-black/10">

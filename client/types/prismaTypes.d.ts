@@ -15735,6 +15735,7 @@ export namespace Prisma {
     clientId: string | null
     agencyId: string | null
     userId: string | null
+    title: string | null
     condition: string | null
     summary: string | null
     checkInTime: Date | null
@@ -15757,6 +15758,7 @@ export namespace Prisma {
     clientId: string | null
     agencyId: string | null
     userId: string | null
+    title: string | null
     condition: string | null
     summary: string | null
     checkInTime: Date | null
@@ -15779,6 +15781,7 @@ export namespace Prisma {
     clientId: number
     agencyId: number
     userId: number
+    title: number
     condition: number
     summary: number
     checkInTime: number
@@ -15813,6 +15816,7 @@ export namespace Prisma {
     clientId?: true
     agencyId?: true
     userId?: true
+    title?: true
     condition?: true
     summary?: true
     checkInTime?: true
@@ -15835,6 +15839,7 @@ export namespace Prisma {
     clientId?: true
     agencyId?: true
     userId?: true
+    title?: true
     condition?: true
     summary?: true
     checkInTime?: true
@@ -15857,6 +15862,7 @@ export namespace Prisma {
     clientId?: true
     agencyId?: true
     userId?: true
+    title?: true
     condition?: true
     summary?: true
     checkInTime?: true
@@ -15966,6 +15972,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title: string | null
     condition: string
     summary: string
     checkInTime: Date
@@ -16007,6 +16014,7 @@ export namespace Prisma {
     clientId?: boolean
     agencyId?: boolean
     userId?: boolean
+    title?: boolean
     condition?: boolean
     summary?: boolean
     checkInTime?: boolean
@@ -16038,6 +16046,7 @@ export namespace Prisma {
     clientId?: boolean
     agencyId?: boolean
     userId?: boolean
+    title?: boolean
     condition?: boolean
     summary?: boolean
     checkInTime?: boolean
@@ -16063,6 +16072,7 @@ export namespace Prisma {
     clientId?: boolean
     agencyId?: boolean
     userId?: boolean
+    title?: boolean
     condition?: boolean
     summary?: boolean
     checkInTime?: boolean
@@ -16088,6 +16098,7 @@ export namespace Prisma {
     clientId?: boolean
     agencyId?: boolean
     userId?: boolean
+    title?: boolean
     condition?: boolean
     summary?: boolean
     checkInTime?: boolean
@@ -16105,7 +16116,7 @@ export namespace Prisma {
     lastEditReason?: boolean
   }
 
-  export type ReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "agencyId" | "userId" | "condition" | "summary" | "checkInTime" | "checkOutTime" | "createdAt" | "checkInDistance" | "checkOutDistance" | "checkInLocation" | "checkOutLocation" | "hasSignature" | "signatureImageUrl" | "status" | "lastEditedAt" | "lastEditedBy" | "lastEditReason", ExtArgs["result"]["report"]>
+  export type ReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "agencyId" | "userId" | "title" | "condition" | "summary" | "checkInTime" | "checkOutTime" | "createdAt" | "checkInDistance" | "checkOutDistance" | "checkInLocation" | "checkOutLocation" | "hasSignature" | "signatureImageUrl" | "status" | "lastEditedAt" | "lastEditedBy" | "lastEditReason", ExtArgs["result"]["report"]>
   export type ReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tasksCompleted?: boolean | Report$tasksCompletedArgs<ExtArgs>
     alerts?: boolean | Report$alertsArgs<ExtArgs>
@@ -16145,6 +16156,7 @@ export namespace Prisma {
       clientId: string
       agencyId: string
       userId: string
+      title: string | null
       condition: string
       summary: string
       checkInTime: Date
@@ -16595,6 +16607,7 @@ export namespace Prisma {
     readonly clientId: FieldRef<"Report", 'String'>
     readonly agencyId: FieldRef<"Report", 'String'>
     readonly userId: FieldRef<"Report", 'String'>
+    readonly title: FieldRef<"Report", 'String'>
     readonly condition: FieldRef<"Report", 'String'>
     readonly summary: FieldRef<"Report", 'String'>
     readonly checkInTime: FieldRef<"Report", 'DateTime'>
@@ -38391,6 +38404,7 @@ export namespace Prisma {
     clientId: 'clientId',
     agencyId: 'agencyId',
     userId: 'userId',
+    title: 'title',
     condition: 'condition',
     summary: 'summary',
     checkInTime: 'checkInTime',
@@ -39736,6 +39750,7 @@ export namespace Prisma {
 
   export type ScheduleWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    unique_schedule_appointment?: ScheduleUnique_schedule_appointmentCompoundUniqueInput
     AND?: ScheduleWhereInput | ScheduleWhereInput[]
     OR?: ScheduleWhereInput[]
     NOT?: ScheduleWhereInput | ScheduleWhereInput[]
@@ -39756,7 +39771,7 @@ export namespace Prisma {
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "id" | "unique_schedule_appointment">
 
   export type ScheduleOrderByWithAggregationInput = {
     id?: SortOrder
@@ -39808,6 +39823,7 @@ export namespace Prisma {
     clientId?: StringFilter<"Report"> | string
     agencyId?: StringFilter<"Report"> | string
     userId?: StringFilter<"Report"> | string
+    title?: StringNullableFilter<"Report"> | string | null
     condition?: StringFilter<"Report"> | string
     summary?: StringFilter<"Report"> | string
     checkInTime?: DateTimeFilter<"Report"> | Date | string
@@ -39838,6 +39854,7 @@ export namespace Prisma {
     clientId?: SortOrder
     agencyId?: SortOrder
     userId?: SortOrder
+    title?: SortOrderInput | SortOrder
     condition?: SortOrder
     summary?: SortOrder
     checkInTime?: SortOrder
@@ -39871,6 +39888,7 @@ export namespace Prisma {
     clientId?: StringFilter<"Report"> | string
     agencyId?: StringFilter<"Report"> | string
     userId?: StringFilter<"Report"> | string
+    title?: StringNullableFilter<"Report"> | string | null
     condition?: StringFilter<"Report"> | string
     summary?: StringFilter<"Report"> | string
     checkInTime?: DateTimeFilter<"Report"> | Date | string
@@ -39901,6 +39919,7 @@ export namespace Prisma {
     clientId?: SortOrder
     agencyId?: SortOrder
     userId?: SortOrder
+    title?: SortOrderInput | SortOrder
     condition?: SortOrder
     summary?: SortOrder
     checkInTime?: SortOrder
@@ -39931,6 +39950,7 @@ export namespace Prisma {
     clientId?: StringWithAggregatesFilter<"Report"> | string
     agencyId?: StringWithAggregatesFilter<"Report"> | string
     userId?: StringWithAggregatesFilter<"Report"> | string
+    title?: StringNullableWithAggregatesFilter<"Report"> | string | null
     condition?: StringWithAggregatesFilter<"Report"> | string
     summary?: StringWithAggregatesFilter<"Report"> | string
     checkInTime?: DateTimeWithAggregatesFilter<"Report"> | Date | string
@@ -42283,6 +42303,7 @@ export namespace Prisma {
 
   export type ReportCreateInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -42313,6 +42334,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -42337,6 +42359,7 @@ export namespace Prisma {
 
   export type ReportUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42367,6 +42390,7 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42394,6 +42418,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -42413,6 +42438,7 @@ export namespace Prisma {
 
   export type ReportUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42435,6 +42461,7 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44633,6 +44660,14 @@ export namespace Prisma {
     isNot?: VisitTypeWhereInput | null
   }
 
+  export type ScheduleUnique_schedule_appointmentCompoundUniqueInput = {
+    userId: string
+    clientId: string
+    date: Date | string
+    startTime: string
+    endTime: string
+  }
+
   export type ScheduleCountOrderByAggregateInput = {
     id?: SortOrder
     agencyId?: SortOrder
@@ -44744,6 +44779,7 @@ export namespace Prisma {
     clientId?: SortOrder
     agencyId?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
     checkInTime?: SortOrder
@@ -44771,6 +44807,7 @@ export namespace Prisma {
     clientId?: SortOrder
     agencyId?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
     checkInTime?: SortOrder
@@ -44793,6 +44830,7 @@ export namespace Prisma {
     clientId?: SortOrder
     agencyId?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     condition?: SortOrder
     summary?: SortOrder
     checkInTime?: SortOrder
@@ -49585,6 +49623,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutAgencyInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -49613,6 +49652,7 @@ export namespace Prisma {
     id?: string
     clientId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -49960,6 +50000,7 @@ export namespace Prisma {
     clientId?: StringFilter<"Report"> | string
     agencyId?: StringFilter<"Report"> | string
     userId?: StringFilter<"Report"> | string
+    title?: StringNullableFilter<"Report"> | string | null
     condition?: StringFilter<"Report"> | string
     summary?: StringFilter<"Report"> | string
     checkInTime?: DateTimeFilter<"Report"> | Date | string
@@ -51020,6 +51061,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutCaregiverInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -51048,6 +51090,7 @@ export namespace Prisma {
     id?: string
     clientId: string
     agencyId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -51082,6 +51125,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutClientInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -51110,6 +51154,7 @@ export namespace Prisma {
     id?: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55190,6 +55235,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutTasksCompletedInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55219,6 +55265,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55258,6 +55305,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutTasksCompletedInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55287,6 +55335,7 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55310,6 +55359,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutAlertsInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55339,6 +55389,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55378,6 +55429,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutAlertsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55407,6 +55459,7 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55430,6 +55483,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutBodyMapObservationsInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55459,6 +55513,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55498,6 +55553,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutBodyMapObservationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55527,6 +55583,7 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55550,6 +55607,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutEditHistoryInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55579,6 +55637,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -55749,6 +55808,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutEditHistoryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55778,6 +55838,7 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57017,6 +57078,7 @@ export namespace Prisma {
 
   export type ReportCreateWithoutMedicationAdministrationsInput = {
     id?: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -57046,6 +57108,7 @@ export namespace Prisma {
     clientId: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -57272,6 +57335,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutMedicationAdministrationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57301,6 +57365,7 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62385,6 +62450,7 @@ export namespace Prisma {
     id?: string
     clientId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -62806,6 +62872,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62834,6 +62901,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62860,6 +62928,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62970,6 +63039,7 @@ export namespace Prisma {
     id?: string
     clientId: string
     agencyId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -62991,6 +63061,7 @@ export namespace Prisma {
     id?: string
     agencyId: string
     userId: string
+    title?: string | null
     condition: string
     summary: string
     checkInTime: Date | string
@@ -63529,6 +63600,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutCaregiverInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63557,6 +63629,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63583,6 +63656,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63602,6 +63676,7 @@ export namespace Prisma {
 
   export type ReportUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63630,6 +63705,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63656,6 +63732,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     condition?: StringFieldUpdateOperationsInput | string
     summary?: StringFieldUpdateOperationsInput | string
     checkInTime?: DateTimeFieldUpdateOperationsInput | Date | string

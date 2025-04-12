@@ -258,7 +258,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
                         {children}
                     </div>
                 </main>
-                {isSchedulePage && !isHidden && (
+                {/* {isSchedulePage && !isHidden && (
                     <SidebarRight
                         sidebarMode={sidebarMode}
                         careWorkers={careWorkers}
@@ -279,7 +279,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
                         onViewChange={handleViewChange}
                         viewMode={activeView}
                     />
-                )}
+                )} */}
             </div>
         </SidebarProvider>
     )

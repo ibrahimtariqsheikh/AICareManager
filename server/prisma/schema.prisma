@@ -218,9 +218,10 @@ model Schedule {
   client User   @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
   user   User   @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
+  @@index([userId, date])
+  @@index([clientId, date])
   @@index([agencyId])
-  @@index([clientId])
-  @@index([userId])
 }
 
 model Report {

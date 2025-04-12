@@ -1,8 +1,50 @@
 import type { Request, Response } from "express"
-import { PrismaClient, type ScheduleStatus, type ScheduleType, type Schedule, type User } from "@prisma/client"
-import { format, parse } from "date-fns"
+import { PrismaClient, ScheduleStatus, type ScheduleType, type Schedule, type User } from "@prisma/client"
+import { format, parse, isEqual } from "date-fns"
 
 const prisma = new PrismaClient()
+
+// Type definitions for request and response objects
+type CreateScheduleRequest = {
+  agencyId: string
+  clientId: string
+  userId: string
+  date: string
+  startTime: string
+  endTime: string
+  status: string
+  type: string
+  notes?: string
+  chargeRate?: string
+}
+
+type UpdateScheduleRequest = Partial<Omit<CreateScheduleRequest, 'status'>> & {
+  status?: string
+}
+
+type ScheduleResponse = {
+  id: string
+  title: string
+  start: string | Date
+  end: string | Date
+  date: Date
+  startTime: string
+  endTime: string
+  resourceId: string
+  clientId: string
+  type: string
+  status: ScheduleStatus
+  notes?: string | null
+  color: string
+  careWorker: {
+    firstName: string
+    lastName: string
+  }
+  client: {
+    firstName: string
+    lastName: string
+  }
+}
 
 type ScheduleWithRelations = Schedule & {
   client: {
@@ -70,6 +112,74 @@ const mapDbTypeToFormType = (dbType: ScheduleType): string => {
   }
 }
 
+// Improved helper function to check for overlapping schedules
+// Returns all conflicts found to provide better error messages
+const checkOverlappingSchedules = async (
+  userId: string,
+  clientId: string,
+  date: Date,
+  startTime: string,
+  endTime: string,
+  excludeScheduleId?: string
+): Promise<{ hasOverlap: boolean; conflicts: Array<{type: string, id: string}> }> => {
+  // Standardize date format for comparison
+  const appointmentDate = new Date(date.toISOString().split('T')[0])
+  
+  // Query for both care worker and client conflicts in one go
+  const existingSchedules = await prisma.schedule.findMany({
+    where: {
+      date: appointmentDate,
+      id: excludeScheduleId ? { not: excludeScheduleId } : undefined,
+      OR: [
+        { userId },
+        { clientId }
+      ]
+    }
+  })
+  
+  const conflicts: Array<{type: string, id: string}> = []
+  
+  // Check for conflicts
+  for (const schedule of existingSchedules) {
+    // Skip if this is the schedule we're excluding
+    if (excludeScheduleId && schedule.id === excludeScheduleId) continue
+    
+    // Convert time strings to comparable values (minutes since midnight)
+    const newStart = timeStringToMinutes(startTime)
+    const newEnd = timeStringToMinutes(endTime)
+    const existingStart = timeStringToMinutes(schedule.startTime)
+    const existingEnd = timeStringToMinutes(schedule.endTime)
+    
+    // Check if there's an overlap
+    if (
+      (newStart < existingEnd && newEnd > existingStart) || // Standard overlap check
+      (newStart === existingStart && newEnd === existingEnd) // Exact same time
+    ) {
+      // Add care worker conflict
+      if (schedule.userId === userId && !conflicts.some(c => c.type === "care worker" && c.id === userId)) {
+        conflicts.push({ type: "care worker", id: userId })
+      }
+      
+      // Add client conflict
+      if (schedule.clientId === clientId && !conflicts.some(c => c.type === "client" && c.id === clientId)) {
+        conflicts.push({ type: "client", id: clientId })
+      }
+    }
+  }
+  
+  return { 
+    hasOverlap: conflicts.length > 0, 
+    conflicts 
+  }
+}
+
+// Helper function to convert time string to minutes since midnight for easier comparison
+function timeStringToMinutes(timeStr: string): number {
+  const [hours, minutes] = timeStr.split(':').map(Number)
+  return hours * 60 + minutes
+}
+
+
 export const getAgencySchedules = async (req: Request, res: Response): Promise<void> => {
   try {
     const { agencyId } = req.params
@@ -88,9 +198,6 @@ export const getAgencySchedules = async (req: Request, res: Response): Promise<v
     res.status(500).json({ message: "Error fetching agency schedules", error })
   }
 }
-
-
-
 export const getSchedules = async (req: Request, res: Response): Promise<void> => {
   try {
     const { 
@@ -193,268 +300,384 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
   }
 }
 
-export const createSchedule = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { 
-      agencyId, 
-      clientId, 
-      userId, 
-      date, 
-      startTime,
-      endTime,
-      status, 
-      type, 
-      notes, 
-      chargeRate 
-    } = req.body
-
-    // Validate required fields
-    if (!agencyId || !clientId || !userId || !date || !startTime || !endTime || !status || !type) {
-      res.status(400).json({ 
-        message: "Missing required fields",
-        required: ["agencyId", "clientId", "userId", "date", "startTime", "endTime", "status", "type"]
-      })
-      return
-    }
-
-    // Validate time format
-    const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
-    if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
-      res.status(400).json({ message: "Invalid time format. Use HH:mm format" })
-      return
-    }
-
-    // Parse and validate date range
-    const appointmentDate = new Date(date)
-    const [startHour, startMinute] = startTime.split(":").map(Number)
-    const [endHour, endMinute] = endTime.split(":").map(Number)
-
-    const startDateTime = new Date(appointmentDate)
-    startDateTime.setHours(startHour, startMinute)
-
-    const endDateTime = new Date(appointmentDate)
-    endDateTime.setHours(endHour, endMinute)
-
-    if (endDateTime <= startDateTime) {
-      res.status(400).json({ message: "End time must be after start time" })
-      return
-    }
-
-    // Check for overlapping schedules
-    const overlappingSchedule = await prisma.schedule.findFirst({
-      where: {
-        userId,
-        date: appointmentDate,
-        OR: [
-          {
-            AND: [
-              { startTime: { lte: startTime } },
-              { endTime: { gt: startTime } }
-            ]
-          },
-          {
-            AND: [
-              { startTime: { lt: endTime } },
-              { endTime: { gte: endTime } }
-            ]
-          }
-        ]
-      }
-    })
-
-    if (overlappingSchedule) {
-      res.status(400).json({ message: "Schedule overlaps with existing appointment" })
-      return
-    }
-
-    const schedule = await prisma.schedule.create({
-      data: {
-        agencyId,
-        clientId,
-        userId,
-        date: appointmentDate,
+export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>, res: Response): Promise<void> => {
+  // Create a transaction to prevent race conditions
+  const result = await prisma.$transaction(async (tx) => {
+    try {
+      const { 
+        agencyId, 
+        clientId, 
+        userId, 
+        date, 
         startTime,
         endTime,
-        status: status as ScheduleStatus,
-        type: mapFormTypeToDbType(type),
-        notes,
-        chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
-      },
-      include: {
-        client: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-    }) as ScheduleWithRelations
+        status: statusStr, 
+        type, 
+        notes, 
+        chargeRate 
+      } = req.body
 
-    // Format response to match frontend expectations
-    const formattedSchedule = {
-      id: schedule.id,
-      title: `${schedule.client.firstName} ${schedule.client.lastName} with ${schedule.user.firstName} ${schedule.user.lastName}`,
-      start: schedule.startTime,
-      end: schedule.endTime,
-      date: schedule.date,
-      startTime: schedule.startTime,
-      endTime: schedule.endTime,
-      resourceId: schedule.userId,
-      clientId: schedule.clientId,
-      type: mapDbTypeToFormType(schedule.type as ScheduleType),
-      status: schedule.status,
-      notes: schedule.notes,
-      color: getEventColor(schedule.type as ScheduleType),
-      careWorker: {
-        firstName: schedule.user.firstName,
-        lastName: schedule.user.lastName,
-      },
-      client: {
-        firstName: schedule.client.firstName,
-        lastName: schedule.client.lastName,
-      },
-    }
-
-    res.status(201).json(formattedSchedule)
-  } catch (error) {
-    console.error("Error creating schedule:", error)
-    res.status(500).json({ message: "Error creating schedule", error })
-  }
-}
-
-export const updateSchedule = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params
-    const { 
-      clientId, 
-      userId, 
-      date, 
-      startTime,
-      endTime,
-      status, 
-      type, 
-      notes, 
-      chargeRate 
-    } = req.body
-
-    // Check if schedule exists
-    const existingSchedule = await prisma.schedule.findUnique({
-      where: { id },
-    })
-
-    if (!existingSchedule) {
-      res.status(404).json({ message: "Schedule not found" })
-      return
-    }
-
-    // Validate time format if provided
-    if (startTime || endTime) {
-      const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
-      if ((startTime && !timeRegex.test(startTime)) || (endTime && !timeRegex.test(endTime))) {
-        res.status(400).json({ message: "Invalid time format. Use HH:mm format" })
-        return
+      // Validate required fields
+      if (!agencyId || !clientId || !userId || !date || !startTime || !endTime || !statusStr || !type) {
+        return {
+          status: 400,
+          body: { 
+            message: "Missing required fields",
+            required: ["agencyId", "clientId", "userId", "date", "startTime", "endTime", "status", "type"]
+          }
+        }
       }
-    }
 
-    // Check for overlapping schedules if time is being updated
-    if (startTime && endTime) {
-      const overlappingSchedule = await prisma.schedule.findFirst({
+      // Validate status
+      const validStatus = Object.values(ScheduleStatus).find(s => s === statusStr)
+      if (!validStatus) {
+        return {
+          status: 400,
+          body: { 
+            message: "Invalid status",
+            validStatuses: Object.values(ScheduleStatus)
+          }
+        }
+      }
+
+      // Validate time format
+      const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+      if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+        return {
+          status: 400,
+          body: { message: "Invalid time format. Use HH:mm format" }
+        }
+      }
+
+      // Parse and validate date range
+      const appointmentDate = new Date(date)
+      // Standardize date by removing time component
+      appointmentDate.setUTCHours(0, 0, 0, 0)
+      
+      const [startHour, startMinute] = startTime.split(":").map(Number)
+      const [endHour, endMinute] = endTime.split(":").map(Number)
+
+      const startDateTime = new Date(appointmentDate)
+      startDateTime.setHours(startHour, startMinute)
+
+      const endDateTime = new Date(appointmentDate)
+      endDateTime.setHours(endHour, endMinute)
+
+      if (endDateTime <= startDateTime) {
+        return {
+          status: 400,
+          body: { message: "End time must be after start time" }
+        }
+      }
+
+      // First perform a direct check for identical appointments to catch duplicates
+      const identicalAppointment = await tx.schedule.findFirst({
         where: {
-          id: { not: id }, // Exclude current schedule
-          userId: userId || existingSchedule.userId,
-          date: date ? new Date(date) : existingSchedule.date,
-          OR: [
-            {
-              AND: [
-                { startTime: { lte: startTime } },
-                { endTime: { gt: startTime } }
-              ]
-            },
-            {
-              AND: [
-                { startTime: { lt: endTime } },
-                { endTime: { gte: endTime } }
-              ]
-            }
-          ]
+          userId,
+          clientId,
+          date: appointmentDate,
+          startTime,
+          endTime
         }
       })
 
-      if (overlappingSchedule) {
-        res.status(400).json({ message: "Schedule overlaps with existing appointment" })
-        return
+      if (identicalAppointment) {
+        return {
+          status: 400,
+          body: { 
+            message: "An identical appointment already exists",
+            existingId: identicalAppointment.id
+          }
+        }
+      }
+
+      // Check for overlapping schedules using the improved helper function
+      const { hasOverlap, conflicts } = await checkOverlappingSchedules(
+        userId,
+        clientId,
+        appointmentDate,
+        startTime,
+        endTime
+      )
+
+      if (hasOverlap) {
+        return {
+          status: 400,
+          body: { 
+            message: `Scheduling conflict detected`,
+            conflicts
+          }
+        }
+      }
+
+      const schedule = await tx.schedule.create({
+        data: {
+          agencyId,
+          clientId,
+          userId,
+          date: appointmentDate,
+          startTime,
+          endTime,
+          status: validStatus as ScheduleStatus,
+          type: mapFormTypeToDbType(type),
+          notes: notes || undefined,
+          chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
+        },
+        include: {
+          client: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      }) as ScheduleWithRelations
+
+      // Format response to match frontend expectations
+      const formattedSchedule: ScheduleResponse = {
+        id: schedule.id,
+        title: `${schedule.client.firstName} ${schedule.client.lastName} with ${schedule.user.firstName} ${schedule.user.lastName}`,
+        start: schedule.startTime,
+        end: schedule.endTime,
+        date: schedule.date,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        resourceId: schedule.userId,
+        clientId: schedule.clientId,
+        type: mapDbTypeToFormType(schedule.type as ScheduleType),
+        status: schedule.status as ScheduleStatus,
+        notes: schedule.notes || undefined,
+        color: getEventColor(schedule.type as ScheduleType),
+        careWorker: {
+          firstName: schedule.user.firstName,
+          lastName: schedule.user.lastName,
+        },
+        client: {
+          firstName: schedule.client.firstName,
+          lastName: schedule.client.lastName,
+        },
+      }
+
+      return {
+        status: 201,
+        body: formattedSchedule
+      }
+    } catch (error) {
+      console.error("Error in transaction:", error)
+      return {
+        status: 500,
+        body: { message: "Error creating schedule", error }
       }
     }
+  })
 
-    const updatedSchedule = await prisma.schedule.update({
-      where: { id },
-      data: {
-        clientId,
-        userId,
-        date: date ? new Date(date) : undefined,
-        startTime: startTime || undefined,
-        endTime: endTime || undefined,
-        status: status as ScheduleStatus,
-        type: type ? mapFormTypeToDbType(type) : undefined,
-        notes,
-        chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
-      },
-      include: {
+  res.status(result.status).json(result.body)
+}
+
+export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateScheduleRequest>, res: Response): Promise<void> => {
+  // Create a transaction to prevent race conditions
+  const result = await prisma.$transaction(async (tx) => {
+    try {
+      const { id } = req.params
+      const { 
+        clientId, 
+        userId, 
+        date, 
+        startTime,
+        endTime,
+        status: statusStr, 
+        type, 
+        notes, 
+        chargeRate 
+      } = req.body
+
+      // Check if schedule exists with a FOR UPDATE lock to prevent concurrent modifications
+      const existingSchedule = await tx.schedule.findUnique({
+        where: { id },
+      })
+
+      if (!existingSchedule) {
+        return {
+          status: 404,
+          body: { message: "Schedule not found" }
+        }
+      }
+
+      // Validate status if provided
+      let validStatus: ScheduleStatus | undefined
+      if (statusStr) {
+        validStatus = Object.values(ScheduleStatus).find(s => s === statusStr)
+        if (!validStatus) {
+          return {
+            status: 400,
+            body: { 
+              message: "Invalid status",
+              validStatuses: Object.values(ScheduleStatus)
+            }
+          }
+        }
+      }
+
+      // Validate time format if provided
+      if (startTime || endTime) {
+        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+        if ((startTime && !timeRegex.test(startTime)) || (endTime && !timeRegex.test(endTime))) {
+          return {
+            status: 400,
+            body: { message: "Invalid time format. Use HH:mm format" }
+          }
+        }
+      }
+
+      // Only check for overlaps if we're changing date, time, user, or client
+      if (date || startTime || endTime || userId || clientId) {
+        const appointmentDate = date ? new Date(date) : existingSchedule.date
+        // Standardize date by removing time component
+        appointmentDate.setUTCHours(0, 0, 0, 0)
+        
+        const appointmentStartTime = startTime || existingSchedule.startTime
+        const appointmentEndTime = endTime || existingSchedule.endTime
+        const appointmentUserId = userId || existingSchedule.userId
+        const appointmentClientId = clientId || existingSchedule.clientId
+
+        // Check for time validity
+        const [startHour, startMinute] = appointmentStartTime.split(":").map(Number)
+        const [endHour, endMinute] = appointmentEndTime.split(":").map(Number)
+
+        const startDateTime = new Date(appointmentDate)
+        startDateTime.setHours(startHour, startMinute)
+
+        const endDateTime = new Date(appointmentDate)
+        endDateTime.setHours(endHour, endMinute)
+
+        if (endDateTime <= startDateTime) {
+          return {
+            status: 400,
+            body: { message: "End time must be after start time" }
+          }
+        }
+
+        // First perform a direct check for identical appointments to catch duplicates
+        const identicalAppointment = await tx.schedule.findFirst({
+          where: {
+            userId: appointmentUserId,
+            clientId: appointmentClientId,
+            date: appointmentDate,
+            startTime: appointmentStartTime,
+            endTime: appointmentEndTime,
+            id: { not: id }
+          }
+        })
+
+        if (identicalAppointment) {
+          return {
+            status: 400,
+            body: { 
+              message: "An identical appointment already exists",
+              existingId: identicalAppointment.id
+            }
+          }
+        }
+
+        // Check for overlapping schedules using the improved helper function
+        const { hasOverlap, conflicts } = await checkOverlappingSchedules(
+          appointmentUserId,
+          appointmentClientId,
+          appointmentDate,
+          appointmentStartTime,
+          appointmentEndTime,
+          id // Exclude the current schedule from the check
+        )
+
+        if (hasOverlap) {
+          return {
+            status: 400,
+            body: { 
+              message: `Scheduling conflict detected`,
+              conflicts
+            }
+          }
+        }
+      }
+
+      const updatedSchedule = await tx.schedule.update({
+        where: { id },
+        data: {
+          clientId,
+          userId,
+          date: date ? new Date(date) : undefined,
+          startTime: startTime || undefined,
+          endTime: endTime || undefined,
+          status: validStatus as ScheduleStatus,
+          type: type ? mapFormTypeToDbType(type) : undefined,
+          notes: notes || undefined,
+          chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
+        },
+        include: {
+          client: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      }) as ScheduleWithRelations
+
+      // Format response to match frontend expectations
+      const formattedSchedule: ScheduleResponse = {
+        id: updatedSchedule.id,
+        title: `${updatedSchedule.client.firstName} ${updatedSchedule.client.lastName} with ${updatedSchedule.user.firstName} ${updatedSchedule.user.lastName}`,
+        start: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.startTime}`),
+        end: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.endTime}`),
+        date: updatedSchedule.date,
+        startTime: updatedSchedule.startTime,
+        endTime: updatedSchedule.endTime,
+        resourceId: updatedSchedule.userId,
+        clientId: updatedSchedule.clientId,
+        type: mapDbTypeToFormType(updatedSchedule.type as ScheduleType),
+        status: updatedSchedule.status as ScheduleStatus,
+        notes: updatedSchedule.notes || undefined,
+        color: getEventColor(updatedSchedule.type as ScheduleType),
+        careWorker: {
+          firstName: updatedSchedule.user.firstName,
+          lastName: updatedSchedule.user.lastName,
+        },
         client: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
+          firstName: updatedSchedule.client.firstName,
+          lastName: updatedSchedule.client.lastName,
         },
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-    }) as ScheduleWithRelations
+      }
 
-    // Format response to match frontend expectations
-    const formattedSchedule = {
-      id: updatedSchedule.id,
-      title: `${updatedSchedule.client.firstName} ${updatedSchedule.client.lastName} with ${updatedSchedule.user.firstName} ${updatedSchedule.user.lastName}`,
-      start: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.startTime}`),
-      end: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.endTime}`),
-      date: updatedSchedule.date,
-      startTime: updatedSchedule.startTime,
-      endTime: updatedSchedule.endTime,
-      resourceId: updatedSchedule.userId,
-      clientId: updatedSchedule.clientId,
-      type: mapDbTypeToFormType(updatedSchedule.type as ScheduleType),
-      status: updatedSchedule.status,
-      notes: updatedSchedule.notes,
-      color: getEventColor(updatedSchedule.type as ScheduleType),
-      careWorker: {
-        firstName: updatedSchedule.user.firstName,
-        lastName: updatedSchedule.user.lastName,
-      },
-      client: {
-        firstName: updatedSchedule.client.firstName,
-        lastName: updatedSchedule.client.lastName,
-      },
+      return {
+        status: 200,
+        body: formattedSchedule
+      }
+    } catch (error) {
+      console.error("Error in transaction:", error)
+      return {
+        status: 500,
+        body: { message: "Error updating schedule", error }
+      }
     }
+  })
 
-    res.json(formattedSchedule)
-  } catch (error) {
-    console.error("Error updating schedule:", error)
-    res.status(500).json({ message: "Error updating schedule", error })
-  }
+  res.status(result.status).json(result.body)
 }
 
 export const deleteSchedule = async (req: Request, res: Response): Promise<void> => {
