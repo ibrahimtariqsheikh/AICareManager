@@ -69,10 +69,8 @@ export function CustomCalendar({
                     events={events}
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
-                    staffMembers={staffMembers}
-                    getEventDurationInMinutes={getEventDurationInMinutes}
                     spaceTheme={spaceTheme}
-
+                    clients={clients}
                 />
             )}
 

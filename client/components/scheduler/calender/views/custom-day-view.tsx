@@ -1,8 +1,11 @@
 "use client"
 
-import { useState, useEffect, useRef, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import type React from "react"
+
+import { useState, useEffect, useRef, useCallback } from "react"
+import { motion } from "framer-motion"
 import moment from "moment"
+import { toast } from "sonner"
 import {
     ChevronLeft,
     ChevronRight,
@@ -13,13 +16,39 @@ import {
     User,
     Clock,
     Calendar,
-    GripVertical,
+    MoreVertical,
+    Maximize2,
+    Minimize2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { toast } from "sonner"
-import type { AppointmentEvent } from "../types"
-import { getStaffColor } from "../calender-utils"
+import { useAppSelector } from "@/state/redux"
+
+// Define types
+export interface AppointmentEvent {
+    id: string
+    title: string
+    start: Date
+    end: Date
+    type: string
+    clientId?: string
+    date?: Date
+    resourceId?: string
+    status?: string
+    notes?: string
+    chargeRate?: number
+    color?: string
+}
+
+export interface Client {
+    id: string
+    firstName: string
+    lastName: string
+    profile?: {
+        avatarUrl?: string
+    }
+}
 
 interface CustomDayViewProps {
     date: Date
@@ -28,12 +57,16 @@ interface CustomDayViewProps {
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
     min?: Date
     max?: Date
-    staffMembers: any[]
-    getEventDurationInMinutes?: (event: any) => number
+    clients?: Client[] // Make clients a prop instead of using Redux
     spaceTheme?: boolean
     showSidebar?: boolean
     slotHeight?: number
     minutesPerSlot?: number
+    sidebarMode?: string
+    initialHeight?: number | string
+    initialWidth?: number | string
+    staffMembers?: any[]
+    getEventDurationInMinutes?: (event: any) => number
 }
 
 export function CustomDayView({
@@ -43,198 +76,154 @@ export function CustomDayView({
     onEventUpdate,
     min = new Date(new Date().setHours(7, 0, 0)),
     max = new Date(new Date().setHours(19, 0, 0)),
-    staffMembers,
+    clients: propClients,
+    spaceTheme = false,
+    showSidebar = true,
+    slotHeight = 60,
+    minutesPerSlot = 30,
+    initialHeight = "600px",
+    initialWidth = "100%",
+    staffMembers = [],
     getEventDurationInMinutes = (event) => {
         const start = moment(event.start)
         const end = moment(event.end)
         return end.diff(start, "minutes")
     },
-    spaceTheme = false,
-    showSidebar = true,
-    slotHeight = 12,
-    minutesPerSlot = 10,
 }: CustomDayViewProps) {
+    // Get clients from props or Redux as fallback
+    const reduxClients = useAppSelector((state) => state.user.clients || [])
+    const clients = propClients || reduxClients
+
     // Refs
     const containerRef = useRef<HTMLDivElement>(null)
     const timelineRef = useRef<HTMLDivElement>(null)
-    const eventRefs = useRef<{ [key: string]: HTMLElement }>({})
+    const headerRef = useRef<HTMLDivElement>(null)
+    const resizeHandleRef = useRef<HTMLDivElement>(null)
+    const calendarContainerRef = useRef<HTMLDivElement>(null)
 
     // State
-    const [scrollPosition, setScrollPosition] = useState(0)
-    const [eventPositions, setEventPositions] = useState<{ [key: string]: any }>({})
-    const [displayEvents, setDisplayEvents] = useState<{ [key: string]: AppointmentEvent }>({})
+    const [eventPositions, setEventPositions] = useState<Record<string, any>>({})
+    const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
     const [activeEvent, setActiveEvent] = useState<string | null>(null)
     const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
-    const [isDragging, setIsDragging] = useState(false)
     const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
+    const [calendarHeight, setCalendarHeight] = useState<string | number>(initialHeight)
+    const [calendarWidth, setCalendarWidth] = useState<string | number>(initialWidth)
+    const [isResizing, setIsResizing] = useState<boolean>(false)
+    const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
+    const [originalDimensions, setOriginalDimensions] = useState<{ height: string | number; width: string | number }>({
+        height: initialHeight,
+        width: initialWidth,
+    })
 
     // Constants
     const startHour = min.getHours()
     const endHour = max.getHours()
     const slotsPerHour = 60 / minutesPerSlot
+    const slotWidth = 100 // Width of each time slot in pixels
+    const rowHeight = 80 // Fixed height for each client row
 
-    // Computed values
-    const timeSlots = useMemo(() => {
-        const slotCount = (endHour - startHour) * slotsPerHour + 1
-        return Array.from({ length: slotCount }, (_, i) => {
-            const hour = Math.floor(i / slotsPerHour) + startHour
-            const minutes = (i % slotsPerHour) * minutesPerSlot
-            return new Date(new Date(date).setHours(hour, minutes, 0, 0))
+    // Generate time slots
+    const timeSlots = Array.from({ length: (endHour - startHour) * slotsPerHour + 1 }, (_, i) => {
+        const hour = Math.floor(i / slotsPerHour) + startHour
+        const minutes = (i % slotsPerHour) * minutesPerSlot
+        return new Date(new Date(date).setHours(hour, minutes, 0, 0))
+    })
+
+    const totalWidth = timeSlots.length * slotWidth
+
+    // Group events by client
+    const eventsByClient = (() => {
+        const clientEvents: Record<string, AppointmentEvent[]> = {
+            unallocated: [],
+        }
+
+        // Initialize with empty arrays for all clients
+        clients.forEach((client) => {
+            clientEvents[client.id] = []
         })
-    }, [date, startHour, endHour, minutesPerSlot, slotsPerHour])
 
-    const totalHeight = timeSlots.length * slotHeight
+        // Filter events for the current day and group by client
+        events
+            .filter((event) => moment(event.start).isSame(date, "day"))
+            .forEach((event) => {
+                if (event.clientId && clientEvents[event.clientId]) {
+                    clientEvents[event.clientId].push(event)
+                } else {
+                    clientEvents["unallocated"].push(event)
+                }
+            })
 
-    // Filter events for the current day
-    const dayEvents = useMemo(() => {
-        return events.filter((event) => {
-            const eventDate = moment(event.start)
-            return eventDate.isSame(date, "day")
-        })
-    }, [events, date])
+        return clientEvents
+    })()
 
     // Initialize display events
     useEffect(() => {
-        const eventMap: { [key: string]: AppointmentEvent } = {}
-        dayEvents.forEach((event) => {
-            const processedEvent = {
-                ...event,
-                start: moment(event.start).toDate(),
-                end: moment(event.end).toDate(),
-                date: event.date ? moment(event.date).toDate() : moment(event.start).toDate(),
-            }
-            eventMap[event.id] = processedEvent
-        })
+        const eventMap: Record<string, AppointmentEvent> = {}
+        events
+            .filter((event) => moment(event.start).isSame(date, "day"))
+            .forEach((event) => {
+                const processedEvent = {
+                    ...event,
+                    start: new Date(event.start),
+                    end: new Date(event.end),
+                    date: event.date ? new Date(event.date) : new Date(event.start),
+                }
+                eventMap[event.id] = processedEvent
+            })
         setDisplayEvents(eventMap)
-    }, [dayEvents])
+    }, [events, date])
 
     // Calculate positions for events
     useEffect(() => {
         if (!timelineRef.current) return
 
-        try {
-            const positions: { [key: string]: any } = {}
-            const containerWidth = timelineRef.current.clientWidth - 60
+        const positions: Record<string, any> = {}
 
-            // Sort events by start time
-            const sortedEvents = [...dayEvents].sort(
-                (a, b) => moment(a.start).valueOf() - moment(b.start).valueOf()
-            )
+        Object.values(displayEvents).forEach((event) => {
+            const eventStart = moment(event.start)
+            const eventEnd = moment(event.end)
 
-            // Column allocation tracking
-            const timeSlotColumns: { [timeSlot: number]: number[] } = {}
+            // Calculate left position and width
+            const startMinutes = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
+            const endMinutes = (eventEnd.hours() - startHour) * 60 + eventEnd.minutes()
 
-            sortedEvents.forEach((event) => {
-                const eventStart = moment(event.start)
-                const eventEnd = moment(event.end)
+            const left = (startMinutes / minutesPerSlot) * slotWidth
+            const width = ((endMinutes - startMinutes) / minutesPerSlot) * slotWidth
 
-                // Calculate top position and height
-                const startMinutes = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
-                const endMinutes = (eventEnd.hours() - startHour) * 60 + eventEnd.minutes()
+            // Store position data
+            positions[event.id] = {
+                left,
+                width: Math.max(width, 50), // Minimum width for visibility
+                originalEvent: { ...event },
+                startMinutes,
+                durationMinutes: endMinutes - startMinutes,
+            }
+        })
 
-                const roundedStartMinutes = Math.round(startMinutes / minutesPerSlot) * minutesPerSlot
-                const roundedEndMinutes = Math.round(endMinutes / minutesPerSlot) * minutesPerSlot
-                const roundedDuration = Math.max(roundedEndMinutes - roundedStartMinutes, minutesPerSlot)
+        setEventPositions(positions)
+    }, [displayEvents, startHour, minutesPerSlot, slotWidth])
 
-                const top = (roundedStartMinutes / minutesPerSlot) * slotHeight + 10
-                const height = Math.max((roundedDuration / minutesPerSlot) * slotHeight, 20)
-
-                // Find overlapping events for column placement
-                const overlappingEvents = sortedEvents.filter((otherEvent) => {
-                    if (otherEvent.id === event.id) return false
-
-                    const otherStart = moment(otherEvent.start)
-                    const otherEnd = moment(otherEvent.end)
-
-                    return (
-                        (eventStart.isBefore(otherEnd) && eventEnd.isAfter(otherStart)) ||
-                        (otherStart.isBefore(eventEnd) && otherEnd.isAfter(eventStart))
-                    )
-                })
-
-                // Calculate time slot range this event occupies
-                const startSlot = Math.floor(roundedStartMinutes / minutesPerSlot)
-                const endSlot = Math.ceil(roundedEndMinutes / minutesPerSlot)
-
-                // Find first available column
-                let column = 0
-                let maxColumns = 1
-
-                // Check all occupied columns in the time range
-                for (let slot = startSlot; slot <= endSlot; slot++) {
-                    if (!timeSlotColumns[slot]) {
-                        timeSlotColumns[slot] = []
-                    }
-
-                    // Find first available column
-                    while (timeSlotColumns[slot].includes(column)) {
-                        column++
-                    }
-
-                    // Update max columns needed
-                    maxColumns = Math.max(maxColumns, column + 1)
-                }
-
-                // Mark this column as used for all time slots this event covers
-                for (let slot = startSlot; slot <= endSlot; slot++) {
-                    timeSlotColumns[slot].push(column)
-                }
-
-                // Calculate event position and width
-                const totalColumns = maxColumns
-                const columnWidth = containerWidth / totalColumns
-                const left = column * columnWidth
-                const width = columnWidth - 4
-
-
-
-                // Store position data
-                positions[event.id] = {
-                    top,
-                    left,
-                    width,
-                    height,
-                    column,
-                    totalColumns,
-                    startMinutes: roundedStartMinutes,
-                    durationMinutes: roundedDuration,
-                    originalEvent: { ...event },
-                }
-            })
-
-            setEventPositions(positions)
-        } catch (error) {
-            console.error("Error calculating event positions:", error)
-        }
-    }, [dayEvents, startHour, minutesPerSlot, slotHeight])
-
-    // Handle window resize
+    // Watch for changes in initialHeight and initialWidth props
     useEffect(() => {
-        const handleResize = () => {
-            if (timelineRef.current) {
-                const containerWidth = timelineRef.current.clientWidth - 60
+        setCalendarHeight(initialHeight)
+        setCalendarWidth(initialWidth)
+    }, [initialHeight, initialWidth])
 
-                setEventPositions((prev) => {
-                    const updated = { ...prev }
-
-                    Object.keys(updated).forEach((eventId) => {
-                        const pos = updated[eventId]
-                        const columnWidth = containerWidth / pos.totalColumns
-                        updated[eventId] = {
-                            ...pos,
-                            width: columnWidth - 4,
-                            left: 60 + pos.column * columnWidth,
-                        }
-                    })
-
-                    return updated
-                })
+    // Sync header with content scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            if (containerRef.current && headerRef.current) {
+                headerRef.current.scrollLeft = containerRef.current.scrollLeft
             }
         }
 
-        window.addEventListener("resize", handleResize)
-        return () => window.removeEventListener("resize", handleResize)
-    }, [timelineRef, dayEvents])
+        const container = containerRef.current
+        if (container) {
+            container.addEventListener("scroll", handleScroll)
+            return () => container.removeEventListener("scroll", handleScroll)
+        }
+    }, [])
 
     // Auto-scroll to current time on initial load
     useEffect(() => {
@@ -243,65 +232,174 @@ export function CustomDayView({
             const currentHour = now.getHours()
             const currentMinute = now.getMinutes()
             const minutesSinceStart = (currentHour - startHour) * 60 + currentMinute
-            const scrollPos = (minutesSinceStart / minutesPerSlot) * slotHeight - 100
-            containerRef.current.scrollTop = Math.max(0, scrollPos)
-            setScrollPosition(containerRef.current.scrollTop)
+            const scrollPos = (minutesSinceStart / minutesPerSlot) * slotWidth - 200
+            containerRef.current.scrollLeft = Math.max(0, scrollPos)
         }
-    }, [date, startHour, slotHeight, minutesPerSlot])
+    }, [date, startHour, slotWidth, minutesPerSlot])
 
     // Add custom scrollbar style
     useEffect(() => {
-        if (containerRef.current) {
-            const styleId = "calendar-scrollbar-style"
-            if (!document.getElementById(styleId)) {
-                const style = document.createElement("style")
-                style.id = styleId
-                style.textContent = `
-          .calendar-scrollbar::-webkit-scrollbar {
-            width: 8px;
-          }
-          .calendar-scrollbar::-webkit-scrollbar-track {
-            background: ${spaceTheme ? "#1e293b" : "#f1f5f9"};
-            border-radius: 4px;
-          }
-          .calendar-scrollbar::-webkit-scrollbar-thumb {
-            background: ${spaceTheme ? "#475569" : "#cbd5e1"};
-            border-radius: 4px;
-          }
-          .calendar-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: ${spaceTheme ? "#64748b" : "#94a3b8"};
-          }
-        `
-                document.head.appendChild(style)
-            }
+        const styleId = "calendar-scrollbar-style"
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement("style")
+            style.id = styleId
+            style.textContent = `
+        .calendar-scrollbar::-webkit-scrollbar {
+          height: 8px;
+        }
+        .calendar-scrollbar::-webkit-scrollbar-track {
+          background: ${spaceTheme ? "#1e293b" : "#f1f5f9"};
+          border-radius: 4px;
+        }
+        .calendar-scrollbar::-webkit-scrollbar-thumb {
+          background: ${spaceTheme ? "#475569" : "#cbd5e1"};
+          border-radius: 4px;
+        }
+        .calendar-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: ${spaceTheme ? "#64748b" : "#94a3b8"};
+        }
+        
+        /* Add resize styles */
+        .resize-handle {
+          position: absolute;
+          z-index: 30;
+          cursor: nwse-resize;
+        }
+        .resize-handle:hover::before,
+        .resize-handle:active::before {
+          opacity: 1;
+        }
+        .resize-handle::before {
+          content: '';
+          position: absolute;
+          right: 3px;
+          bottom: 3px;
+          width: 10px;
+          height: 10px;
+          border-right: 2px solid ${spaceTheme ? "#64748b" : "#94a3b8"};
+          border-bottom: 2px solid ${spaceTheme ? "#64748b" : "#94a3b8"};
+          opacity: 0.6;
+          transition: opacity 0.2s;
+        }
+        
+        /* Add client row separator */
+        .client-row {
+          border-bottom: 2px solid ${spaceTheme ? "#1e293b" : "#e2e8f0"};
+          position: relative;
+          overflow: visible;
+        }
+        
+        /* Add client row hover effect */
+        .client-row:hover {
+          background-color: ${spaceTheme ? "rgba(30, 41, 59, 0.3)" : "rgba(241, 245, 249, 0.5)"};
+        }
+        
+        /* Add client name label */
+        .client-name-label {
+          position: absolute;
+          left: 8px;
+          top: 8px;
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: ${spaceTheme ? "#94a3b8" : "#64748b"};
+          z-index: 5;
+          pointer-events: none;
+        }
+      `
+            document.head.appendChild(style)
+        }
 
-            return () => {
-                const styleElement = document.getElementById(styleId)
-                if (styleElement) {
-                    document.head.removeChild(styleElement)
-                }
+        return () => {
+            const styleElement = document.getElementById(styleId)
+            if (styleElement) {
+                document.head.removeChild(styleElement)
             }
         }
     }, [spaceTheme])
 
-    // Handle scrolling
-    const handleScroll = () => {
+    // Resize handlers
+    const handleResizeStart = useCallback((e: React.MouseEvent<HTMLDivElement> | MouseEvent) => {
+        e.preventDefault()
+        setIsResizing(true)
+        document.body.style.cursor = "nwse-resize"
+        document.addEventListener("mousemove", handleResize)
+        document.addEventListener("mouseup", handleResizeEnd)
+    }, [])
+
+    const handleResize = useCallback(
+        (e: MouseEvent) => {
+            if (!calendarContainerRef.current || !isResizing) return
+
+            const container = calendarContainerRef.current.getBoundingClientRect()
+            const newWidth = Math.max(600, e.clientX - container.left)
+            const newHeight = Math.max(400, e.clientY - container.top)
+
+            setCalendarWidth(newWidth)
+            setCalendarHeight(newHeight)
+
+            // Force re-render for event positions
+            setEventPositions((prev) => ({ ...prev }))
+        },
+        [isResizing],
+    )
+
+    const handleResizeEnd = useCallback(() => {
+        setIsResizing(false)
+        document.body.style.cursor = ""
+        document.removeEventListener("mousemove", handleResize)
+        document.removeEventListener("mouseup", handleResizeEnd)
+    }, [handleResize])
+
+    // Set up resize handlers
+    useEffect(() => {
+        const resizeHandle = resizeHandleRef.current
+        if (resizeHandle) {
+            resizeHandle.addEventListener("mousedown", handleResizeStart)
+        }
+
+        return () => {
+            if (resizeHandle) {
+                resizeHandle.removeEventListener("mousedown", handleResizeStart)
+            }
+            document.removeEventListener("mousemove", handleResize)
+            document.removeEventListener("mouseup", handleResizeEnd)
+        }
+    }, [handleResizeStart, handleResize, handleResizeEnd])
+
+    // Toggle fullscreen function
+    const toggleFullscreen = useCallback(() => {
+        if (!isFullscreen) {
+            // Save current dimensions before going fullscreen
+            setOriginalDimensions({
+                height: calendarHeight,
+                width: calendarWidth,
+            })
+
+            // Set to fullscreen
+            setCalendarHeight("100vh")
+            setCalendarWidth("100%")
+            setIsFullscreen(true)
+        } else {
+            // Restore original dimensions
+            setCalendarHeight(originalDimensions.height)
+            setCalendarWidth(originalDimensions.width)
+            setIsFullscreen(false)
+        }
+
+        // Force re-render for event positions
+        setEventPositions((prev) => ({ ...prev }))
+    }, [isFullscreen, calendarHeight, calendarWidth, originalDimensions])
+
+    // Scroll controls
+    const scrollLeft = () => {
         if (containerRef.current) {
-            setScrollPosition(containerRef.current.scrollTop)
+            containerRef.current.scrollLeft -= 300
         }
     }
 
-    const scrollUp = () => {
+    const scrollRight = () => {
         if (containerRef.current) {
-            containerRef.current.scrollTop -= 200
-            setScrollPosition(containerRef.current.scrollTop)
-        }
-    }
-
-    const scrollDown = () => {
-        if (containerRef.current) {
-            containerRef.current.scrollTop += 200
-            setScrollPosition(containerRef.current.scrollTop)
+            containerRef.current.scrollLeft += 300
         }
     }
 
@@ -309,26 +407,21 @@ export function CustomDayView({
     const formatTimeFromMinutes = (minutesFromStart: number) => {
         const hours = Math.floor(minutesFromStart / 60) + startHour
         const minutes = minutesFromStart % 60
-
         const displayHours = hours % 12 === 0 ? 12 : hours % 12
         const amPm = hours >= 12 ? "PM" : "AM"
-
         return `${displayHours}:${minutes.toString().padStart(2, "0")} ${amPm}`
     }
 
-    const getTimeFromGridPosition = (gridY: number) => {
-        const gridUnits = Math.round(gridY / slotHeight)
-        return gridUnits * minutesPerSlot
-    }
-
-    const getSnapPosition = (y: number) => {
-        return Math.round(y / slotHeight) * slotHeight
+    // Get client name from client ID
+    const getClientName = (clientId: string) => {
+        if (clientId === "unallocated") return "Unallocated"
+        const client = clients.find((c) => c.id === clientId)
+        return client ? `${client.firstName} ${client.lastName}` : "Unknown Client"
     }
 
     // Drag event handlers
-    const handleDragStart = (eventId: string) => {
+    const handleDragStart = (eventId: string, clientId: string) => {
         setActiveEvent(eventId)
-        setIsDragging(true)
         document.body.style.cursor = "grabbing"
 
         const position = eventPositions[eventId]
@@ -342,53 +435,37 @@ export function CustomDayView({
         const position = eventPositions[eventId]
         if (!position) return
 
-        const rawNewTop = position.top + info.offset.y
-        const snappedTop = getSnapPosition(rawNewTop)
-        const minutesFromStart = getTimeFromGridPosition(snappedTop)
+        // Calculate new time based on drag position
+        const newLeft = position.left + info.offset.x
+        const minutesFromStart = Math.round((newLeft / slotWidth) * minutesPerSlot)
         const timeText = formatTimeFromMinutes(minutesFromStart)
 
         setDragTooltip({ eventId, time: timeText })
     }
 
-    const handleDragEnd = (eventId: string, info: any) => {
+    const handleDragEnd = (eventId: string, info: any, clientId: string) => {
         const position = eventPositions[eventId]
         if (!position) return
 
         document.body.style.cursor = ""
-        setIsDragging(false)
 
-
-
-
-        const minutesFromStart = getTimeFromGridPosition(position.top)
-        const hours = Math.floor(minutesFromStart / 60) + startHour
-        const minutes = minutesFromStart % 60
+        // Calculate new time based on final position
+        const newLeft = position.left + info.offset.x
+        const minutesFromStart = Math.round((newLeft / slotWidth) * minutesPerSlot)
 
         // Ensure time is within bounds
-        const clampedHours = Math.max(min.getHours(), Math.min(hours, max.getHours() - 1))
+        const clampedMinutes = Math.max(
+            0,
+            Math.min(minutesFromStart, (endHour - startHour) * 60 - position.durationMinutes),
+        )
+
+        const hours = Math.floor(clampedMinutes / 60) + startHour
+        const minutes = clampedMinutes % 60
 
         // Create new dates
-        const newStartDate = moment(date)
-            .hour(clampedHours)
-            .minute(minutes)
-            .second(0)
-            .millisecond(0)
-
+        const newStartDate = moment(date).hour(hours).minute(minutes).second(0).millisecond(0)
         const durationInMinutes = position.durationMinutes
         const newEndDate = moment(newStartDate).add(durationInMinutes, "minutes")
-
-        // Ensure end time is within bounds
-        if (newEndDate.hour() > max.getHours() ||
-            (newEndDate.hour() === max.getHours() && newEndDate.minute() > 0)) {
-            // Adjust end time to max
-            newEndDate.hour(max.getHours()).minute(0)
-
-            // If resulting duration is too short, adjust start time instead
-            const adjustedDuration = newEndDate.diff(newStartDate, "minutes")
-            if (adjustedDuration < 30) {
-                newStartDate.subtract(30 - adjustedDuration, "minutes")
-            }
-        }
 
         // Create updated event
         const updatedEvent = {
@@ -404,13 +481,13 @@ export function CustomDayView({
         }))
 
         // Update position
-        const updatedMinutesFromStart = (newStartDate.hour() - startHour) * 60 + newStartDate.minute()
+        const updatedLeft = (clampedMinutes / minutesPerSlot) * slotWidth
         setEventPositions((prev) => ({
             ...prev,
             [eventId]: {
                 ...prev[eventId],
-                top: position.top,
-                startMinutes: updatedMinutesFromStart,
+                left: updatedLeft,
+                startMinutes: clampedMinutes,
                 originalEvent: updatedEvent,
             },
         }))
@@ -435,7 +512,7 @@ export function CustomDayView({
                 case "VIDEO_CALL":
                     return isActive ? "bg-blue-900/60" : isHovered ? "bg-blue-900/40" : "bg-blue-900/30"
                 case "HOSPITAL":
-                    return isActive ? "bg-green-900/60" : isHovered ? "bg-green-900/40" : "bg-green-900/30"
+                    return isActive ? "bg-purple-900/60" : isHovered ? "bg-purple-900/40" : "bg-purple-900/30"
                 case "IN_PERSON":
                     return isActive ? "bg-amber-900/60" : isHovered ? "bg-amber-900/40" : "bg-amber-900/30"
                 case "AUDIO_CALL":
@@ -450,7 +527,7 @@ export function CustomDayView({
                 case "VIDEO_CALL":
                     return isActive ? "bg-blue-100" : isHovered ? "bg-blue-50/80" : "bg-blue-50"
                 case "HOSPITAL":
-                    return isActive ? "bg-green-100" : isHovered ? "bg-green-50/80" : "bg-green-50"
+                    return isActive ? "bg-purple-100" : isHovered ? "bg-purple-50/80" : "bg-purple-50"
                 case "IN_PERSON":
                     return isActive ? "bg-amber-100" : isHovered ? "bg-amber-50/80" : "bg-amber-50"
                 case "AUDIO_CALL":
@@ -461,20 +538,20 @@ export function CustomDayView({
         }
     }
 
-    const getEventAccentColor = (event: AppointmentEvent) => {
+    const getEventBorderColor = (event: AppointmentEvent) => {
         switch (event.type) {
             case "HOME_VISIT":
-                return "rgb(34, 197, 94)"
+                return "border-green-300"
             case "VIDEO_CALL":
-                return "rgb(59, 130, 246)"
+                return "border-blue-300"
             case "HOSPITAL":
-                return "rgb(34, 197, 94)"
+                return "border-purple-300"
             case "IN_PERSON":
-                return "rgb(245, 158, 11)"
+                return "border-amber-300"
             case "AUDIO_CALL":
-                return "rgb(239, 68, 68)"
+                return "border-red-300"
             default:
-                return "rgb(107, 114, 128)"
+                return "border-gray-300"
         }
     }
 
@@ -512,21 +589,6 @@ export function CustomDayView({
         }
     }
 
-    const hasEventsInTimeSlot = (timeSlot: Date) => {
-        const slotStart = moment(timeSlot)
-        const slotEnd = moment(slotStart).add(minutesPerSlot, "minutes")
-
-        return dayEvents.some((event) => {
-            const eventStart = moment(event.start)
-            const eventEnd = moment(event.end)
-            return (
-                (eventStart.isSameOrAfter(slotStart) && eventStart.isBefore(slotEnd)) ||
-                (eventEnd.isAfter(slotStart) && eventEnd.isSameOrBefore(slotEnd)) ||
-                (eventStart.isSameOrBefore(slotStart) && eventEnd.isSameOrAfter(slotEnd))
-            )
-        })
-    }
-
     const getEventDuration = (event: AppointmentEvent) => {
         const duration = getEventDurationInMinutes(event)
         if (duration < 60) {
@@ -548,259 +610,362 @@ export function CustomDayView({
     const tooltipClass = spaceTheme
         ? "bg-slate-800 text-white border border-slate-700"
         : "bg-white text-black border border-gray-200"
+    const clientSidebarClass = spaceTheme ? "bg-slate-900 border-slate-700" : "bg-gray-50 border-gray-200"
+    const resizeButtonClass = spaceTheme
+        ? "absolute bottom-3 right-3 z-30 bg-slate-800 hover:bg-slate-700 text-white rounded-full p-1.5 shadow-md"
+        : "absolute bottom-3 right-3 z-30 bg-white hover:bg-gray-100 rounded-full p-1.5 shadow-md"
 
     return (
-        <div className="h-full flex flex-col p-4">
+        <div
+            ref={calendarContainerRef}
+            className="relative p-4"
+            style={{
+                width: calendarWidth,
+                height: calendarHeight,
+                maxWidth: "100%",
+                transition: isResizing ? "none" : "width 0.3s, height 0.3s",
+                position: "relative",
+            }}
+        >
+            {/* Date header */}
             <div className="flex justify-center items-center mb-3">
-                <h3
-                    className={`text-lg font-semibold text-center px-3 py-1.5 rounded-full "
-                            }`}
-                >
+                <h3 className={`text-lg font-semibold text-center px-3 py-1.5 rounded-full ${headerTextClass}`}>
                     {moment(date).format("dddd, MMMM D, YYYY")}
                 </h3>
             </div>
 
+            <div className="flex flex-col flex-1 h-full overflow-hidden" style={{ height: "calc(100% - 60px)" }}>
+                {/* Scroll controls and information display */}
+                <div className="flex justify-between items-center mb-3 gap-2">
+                    <div className="flex items-center gap-2">
+                        <div
+                            className={`text-xs ${spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
+                                } flex items-center gap-1 px-2.5 py-1 rounded-full`}
+                        >
+                            <Calendar className="h-3.5 w-3.5" />
+                            <span>
+                                {Object.values(displayEvents).length} {Object.values(displayEvents).length === 1 ? "event" : "events"}
+                            </span>
+                        </div>
 
-            <div className="flex flex-col flex-1 h-full overflow-hidden">
-                {/* Scroll controls */}
-                <div className="flex justify-end items-center mb-3 gap-2">
-                    {/* <Button
-                        variant={spaceTheme ? "outline" : "secondary"}
-                        size="sm"
-                        onClick={scrollUp}
-                        disabled={scrollPosition <= 0}
-                        className={`flex items-center gap-1 ${spaceTheme ? "border-slate-700 bg-slate-800/50 hover:bg-slate-800" : ""
-                            } ${scrollPosition <= 0 ? "opacity-50" : ""}`}
-                    >
-                        <ChevronLeft className="h-3.5 w-3.5 rotate-90" />
-                        <span>Earlier</span>
-                    </Button> */}
-                    <div />
-                    <div
-                        className={`text-xs ${spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100/70"
-                            } flex items-center gap-1 px-3 py-1.5 rounded-full`}
-                    >
-                        <GripVertical className="h-3 w-3" />
-                        <span>Drag events to reschedule</span>
-                    </div>
-                    <div
-                        className={`text-xs ${spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
-                            } flex items-center gap-1 px-2.5 py-1 rounded-full`}
-                    >
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>
-                            {dayEvents.length} {dayEvents.length === 1 ? "event" : "events"}
-                        </span>
+                        <div
+                            className={`text-xs ${spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100/70"
+                                } flex items-center gap-1 px-3 py-1.5 rounded-full`}
+                        >
+                            <Clock className="h-3 w-3" />
+                            <span>
+                                {startHour}:00 - {endHour}:00
+                            </span>
+                        </div>
+
+                        {/* Display current width and height */}
+                        <div
+                            className={`text-xs ${spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
+                                } flex items-center gap-1 px-2.5 py-1 rounded-full`}
+                        >
+                            <span>
+                                {typeof calendarWidth === "number" ? `${Math.round(calendarWidth)}px` : calendarWidth} ×
+                                {typeof calendarHeight === "number" ? `${Math.round(calendarHeight)}px` : calendarHeight}
+                            </span>
+                        </div>
                     </div>
 
-                    {/* <Button
-                        variant={spaceTheme ? "outline" : "secondary"}
-                        size="sm"
-                        onClick={scrollDown}
-                        disabled={scrollPosition >= totalHeight - (containerRef.current?.clientHeight || 0)}
-                        className={`flex items-center gap-1 ${spaceTheme ? "border-slate-700 bg-slate-800/50 hover:bg-slate-800" : ""
-                            } ${scrollPosition >= totalHeight - (containerRef.current?.clientHeight || 0) ? "opacity-50" : ""
-                            }`}
-                    >
-                        <span>Later</span>
-                        <ChevronRight className="h-3.5 w-3.5 rotate-90" />
-                    </Button> */}
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant={spaceTheme ? "outline" : "secondary"}
+                            size="sm"
+                            onClick={scrollLeft}
+                            className={`flex items-center gap-1 ${spaceTheme ? "border-slate-700 bg-slate-800/50 hover:bg-slate-800" : ""
+                                }`}
+                        >
+                            <ChevronLeft className="h-3.5 w-3.5" />
+                            <span>Earlier</span>
+                        </Button>
+
+                        <Button
+                            variant={spaceTheme ? "outline" : "secondary"}
+                            size="sm"
+                            onClick={scrollRight}
+                            className={`flex items-center gap-1 ${spaceTheme ? "border-slate-700 bg-slate-800/50 hover:bg-slate-800" : ""
+                                }`}
+                        >
+                            <span>Later</span>
+                            <ChevronRight className="h-3.5 w-3.5" />
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Main timeline container */}
-                <div
-                    ref={containerRef}
-                    className={`flex-1 overflow-y-auto overflow-x-hidden relative border rounded-xl shadow-md ${timelineClass} h-full calendar-scrollbar`}
-                    onScroll={handleScroll}
-                    style={{
-                        minHeight: "300px",
-                        maxHeight: "calc(100vh - 200px)",
-                    }}
-                >
-                    <div className="relative min-h-full" style={{ height: `${totalHeight}px` }} ref={timelineRef}>
-                        {/* Time labels column */}
-                        <div
-                            className={`absolute top-0 left-0 w-[60px] h-full border-r ${spaceTheme ? "border-slate-800 bg-slate-900/80" : "border-gray-200 bg-gray-50/80"
-                                } z-10 backdrop-blur-sm`}
-                        >
-                            {timeSlots
-                                .filter((_, i) => i % slotsPerHour === 0)
-                                .map((time, i) => (
-                                    <div
-                                        key={i}
-                                        className={`absolute ${timeLabelsClass} text-xs font-medium px-2 flex items-center justify-end w-full`}
-                                        style={{ top: `${i * slotHeight * slotsPerHour}px`, height: `${slotHeight}px` }}
-                                    >
-                                        {moment(time).format("h A")}
+                <div className={`flex flex-1 border rounded-xl shadow-md ${timelineClass} h-full overflow-hidden`}>
+                    {/* Client sidebar */}
+                    {showSidebar && (
+                        <div className={`w-48 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`}>
+                            {/* Unallocated section */}
+                            <div className={`p-3 border-b ${clientSidebarClass} sticky top-0 z-10`}>
+                                <div className="flex items-center justify-between">
+                                    <div className="font-medium">Unallocated</div>
+                                    <div className={`text-xs px-1.5 py-0.5 rounded-full ${spaceTheme ? "bg-slate-800" : "bg-gray-200"}`}>
+                                        {eventsByClient["unallocated"]?.length || 0}
                                     </div>
-                                ))}
+                                </div>
+                            </div>
+
+                            {/* Clients */}
+                            {clients.map((client) => (
+                                <div key={client.id} className={`p-3 border-b ${clientSidebarClass} hover:bg-opacity-80`}>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <Avatar className="h-6 w-6">
+                                                <AvatarImage
+                                                    src={client.profile?.avatarUrl || "/placeholder.svg"}
+                                                    alt={`${client.firstName} ${client.lastName}`}
+                                                />
+                                                <AvatarFallback>
+                                                    {client.firstName?.[0]}
+                                                    {client.lastName?.[0]}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <span className="text-sm font-medium truncate">
+                                                {client.firstName} {client.lastName}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <div
+                                                className={`text-xs px-1.5 py-0.5 rounded-full ${spaceTheme ? "bg-slate-800" : "bg-gray-200"}`}
+                                            >
+                                                {eventsByClient[client.id]?.length || 0}
+                                            </div>
+                                            <button className="text-gray-500 hover:text-gray-700">
+                                                <MoreVertical className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Timeline section */}
+                    <div className="flex-1 relative overflow-hidden flex flex-col">
+                        {/* Fixed time header - separate scrollable container */}
+                        <div
+                            ref={headerRef}
+                            className="calendar-scrollbar overflow-x-hidden"
+                            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                        >
+                            <div
+                                className={`sticky top-0 z-10 border-b ${spaceTheme ? "border-slate-800 bg-slate-900/95" : "border-gray-200 bg-white/95"
+                                    } backdrop-blur-sm`}
+                            >
+                                <div className="flex">
+                                    {timeSlots
+                                        .filter((_, i) => i % slotsPerHour === 0)
+                                        .map((time, i) => (
+                                            <div
+                                                key={i}
+                                                className={`flex-shrink-0 ${timeLabelsClass} text-xs font-medium px-2 py-2 text-center border-r ${gridLineClass}`}
+                                                style={{ width: `${slotWidth * slotsPerHour}px` }}
+                                            >
+                                                {moment(time).format("h:mm A")}
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Time grid */}
-                        <div className="absolute left-[60px] right-0 top-0 bottom-0">
-                            {timeSlots.map((time, i) => {
-                                const hasEvents = hasEventsInTimeSlot(time)
-                                const isHourMark = i % slotsPerHour === 0
-                                const isHalfHourMark = i % (slotsPerHour / 2) === 0
-
-                                return (
-                                    <div
-                                        key={i}
-                                        className={cn(
-                                            "absolute left-0 right-0 border-b transition-colors time-slot",
-                                            isHourMark ? hourLineClass : isHalfHourMark ? halfHourLineClass : gridLineClass,
-                                            hasEvents
-                                                ? spaceTheme
-                                                    ? "bg-slate-800/5"
-                                                    : "bg-blue-50/5"
-                                                : spaceTheme
-                                                    ? "bg-slate-800/10"
-                                                    : "bg-gray-50/30"
-                                        )}
-                                        style={{
-                                            top: `${i * slotHeight}px`,
-                                            height: `${slotHeight}px`,
-                                            borderBottomWidth: isHourMark ? "2px" : "1px",
-                                        }}
-                                    >
-                                        {isHourMark && (
-                                            <div
-                                                className={`absolute right-2 top-0 ${timeLabelsClass} text-[10px] opacity-60`}
-                                                style={{ height: `${slotHeight}px` }}
-                                            >
-                                                {moment(time).format("h A")}
-                                            </div>
-                                        )}
-                                    </div>
-                                )
-                            })}
-
-                            {/* Current time indicator */}
-                            {moment(new Date()).isSame(date, "day") && (
-                                <div
-                                    className={`absolute left-0 right-0 h-0.5 z-20 ${currentTimeClass}`}
-                                    style={{
-                                        top: `${(((new Date().getHours() - startHour) * 60 + new Date().getMinutes()) /
-                                            minutesPerSlot) *
-                                            slotHeight
-                                            }px`,
-                                    }}
-                                >
-                                    <div
-                                        className={`w-3 h-3 rounded-full ${currentTimeClass} -mt-1.5 -ml-1.5 shadow-md flex items-center justify-center animate-pulse`}
-                                    >
-                                        <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                                    </div>
-                                    <div
-                                        className={`absolute -right-14 -top-3 text-xs font-medium ${spaceTheme ? "text-white bg-slate-800/80" : "text-gray-700 bg-white/80"
-                                            } bg-opacity-75 px-2 py-0.5 rounded-full shadow-sm`}
-                                    >
-                                        {moment(new Date()).format("h:mm A")}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Empty state */}
-                            {dayEvents.length === 0 && (
-                                <div
-                                    className={`absolute inset-0 flex items-center justify-center ${spaceTheme ? "text-slate-400" : "text-gray-400"
-                                        } text-sm`}
-                                >
-                                    <div className="text-center p-6 max-w-xs mx-auto">
-                                        <div
-                                            className={`w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center ${spaceTheme ? "bg-slate-800/50" : "bg-gray-100"
-                                                }`}
-                                        >
-                                            <Calendar className="h-8 w-8 opacity-40" />
-                                        </div>
-                                        <p className="font-medium">No events scheduled for this day</p>
-
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Events */}
-                            <AnimatePresence>
-                                {Object.entries(displayEvents).map(([eventId, event]) => {
-                                    const position = eventPositions[eventId]
-                                    if (!position) return null
+                        {/* Scrollable timeline content */}
+                        <div
+                            ref={containerRef}
+                            className="overflow-x-auto overflow-y-auto calendar-scrollbar flex-1"
+                            style={{ height: "calc(100% - 33px)" }}
+                            onScroll={() => {
+                                if (headerRef.current && containerRef.current) {
+                                    headerRef.current.scrollLeft = containerRef.current.scrollLeft
+                                }
+                            }}
+                        >
+                            <div ref={timelineRef} className="relative" style={{ width: `${totalWidth}px`, minHeight: "100%" }}>
+                                {/* Vertical grid lines */}
+                                {timeSlots.map((time, i) => {
+                                    const isHourMark = i % slotsPerHour === 0
+                                    const isHalfHourMark = i % (slotsPerHour / 2) === 0 && !isHourMark
 
                                     return (
-                                        <motion.div
-                                            key={eventId}
-                                            ref={(el) => {
-                                                if (el) eventRefs.current[eventId] = el
+                                        <div
+                                            key={i}
+                                            className={`absolute top-0 bottom-0 border-r ${isHourMark ? hourLineClass : isHalfHourMark ? halfHourLineClass : gridLineClass}`}
+                                            style={{
+                                                left: `${i * slotWidth}px`,
+                                                borderRightWidth: isHourMark ? "2px" : "1px",
+                                                height: "100%",
+                                                zIndex: 1,
                                             }}
-                                            layout
-                                            initial={false}
-                                            animate={{
-                                                top: position.top,
-                                                left: position.left,
-                                                width: position.width,
-                                                height: position.height,
-                                                position: "absolute",
-                                            }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.2 }}
-                                            drag="y"
-                                            dragMomentum={false}
-                                            dragConstraints={{
-                                                top: 0,
-                                                bottom: totalHeight - position.height,
-                                            }}
-                                            dragElastic={0}
-                                            dragTransition={{
-                                                bounceStiffness: 0,
-                                                bounceDamping: 0
-                                            }}
-                                            onDragStart={() => handleDragStart(eventId)}
-                                            onDrag={(e, info) => handleDrag(eventId, info)}
-                                            onDragEnd={(e, info) => handleDragEnd(eventId, info)}
-                                            className={cn(
-                                                "rounded-lg shadow-sm text-xs p-2 cursor-grab border",
-                                                getEventBackground(event, activeEvent === eventId, hoveredEvent === eventId),
-                                                spaceTheme ? "text-white border-slate-700" : "text-black border-gray-200"
-                                            )}
-                                            onClick={() => {
-                                                if (!isDragging) {
-                                                    onSelectEvent(event)
-                                                }
-                                            }}
-                                            onMouseEnter={() => setHoveredEvent(eventId)}
-                                            onMouseLeave={() => setHoveredEvent(null)}
-                                        >
-                                            <div className="flex items-center gap-1 mb-1">
-                                                {getEventIcon(event.type)}
-                                                <span className="font-medium truncate">{event.title}</span>
-                                            </div>
-                                            <div className="text-[10px] opacity-70">
-                                                {moment(event.start).format("h:mm A")} -{" "}
-                                                {moment(event.end).format("h:mm A")}
-                                            </div>
-                                            <div className="text-[10px] opacity-60">
-                                                {getEventTypeLabel(event.type)} • {getEventDuration(event)}
-                                            </div>
-                                        </motion.div>
+                                        />
                                     )
                                 })}
-                            </AnimatePresence>
 
-                            {/* Drag tooltip */}
-                            {dragTooltip && (
-                                <div
-                                    className={`pointer-events-none absolute z-50 px-2 py-1 rounded-md text-xs font-medium shadow-sm ${tooltipClass}`}
-                                    style={{
-                                        top: `${eventPositions[dragTooltip.eventId]?.top ?? 0 - 24}px`,
-                                        left: `${eventPositions[dragTooltip.eventId]?.left ?? 0}px`,
-                                    }}
-                                >
-                                    {dragTooltip.time}
+                                {/* Current time indicator */}
+                                {moment(new Date()).isSame(date, "day") && (
+                                    <div
+                                        className={`absolute top-0 bottom-0 w-0.5 z-20 ${currentTimeClass}`}
+                                        style={{
+                                            left: `${(((new Date().getHours() - startHour) * 60 + new Date().getMinutes()) / minutesPerSlot) * slotWidth}px`,
+                                            height: "100%",
+                                        }}
+                                    >
+                                        <div
+                                            className={`w-3 h-3 rounded-full ${currentTimeClass} -ml-1.5 shadow-md flex items-center justify-center animate-pulse`}
+                                        >
+                                            <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Client rows with clear boundaries */}
+                                <div className="relative" style={{ height: `${(clients.length + 1) * rowHeight}px` }}>
+                                    {/* Unallocated row */}
+                                    <div
+                                        className="client-row absolute w-full border-b-2"
+                                        style={{
+                                            top: 0,
+                                            height: `${rowHeight}px`,
+                                            borderColor: spaceTheme ? "#1e293b" : "#e2e8f0",
+                                            zIndex: 2,
+                                        }}
+                                    >
+                                        <div className="client-name-label">Unallocated</div>
+                                        {eventsByClient["unallocated"].map((event) => {
+                                            const pos = eventPositions[event.id]
+                                            if (!pos) return null
+
+                                            const isActive = activeEvent === event.id
+                                            const isHovered = hoveredEvent === event.id
+
+                                            return (
+                                                <motion.div
+                                                    key={event.id}
+                                                    className={cn(
+                                                        "absolute p-2 text-xs rounded-md shadow-md border",
+                                                        getEventBackground(event, isActive, isHovered),
+                                                        getEventBorderColor(event),
+                                                        "cursor-grab active:cursor-grabbing",
+                                                    )}
+                                                    style={{
+                                                        left: `${pos.left || 0}px`,
+                                                        width: `${pos.width || 50}px`,
+                                                        top: "24px", // Adjusted to make room for client name
+                                                        height: `${rowHeight - 32}px`, // Constrain to row height
+                                                        zIndex: isActive ? 50 : 10,
+                                                        overflow: "hidden",
+                                                    }}
+                                                    drag="x"
+                                                    dragConstraints={timelineRef}
+                                                    dragMomentum={false}
+                                                    onDragStart={() => handleDragStart(event.id, "unallocated")}
+                                                    onDrag={(e, info) => handleDrag(event.id, info)}
+                                                    onDragEnd={(e, info) => handleDragEnd(event.id, info, "unallocated")}
+                                                    onMouseEnter={() => setHoveredEvent(event.id)}
+                                                    onMouseLeave={() => setHoveredEvent(null)}
+                                                    onClick={() => onSelectEvent(event)}
+                                                    whileDrag={{ scale: 1.05 }}
+                                                >
+                                                    <div className="flex items-center gap-1 font-medium truncate">
+                                                        {getEventIcon(event.type)}
+                                                        <span>{event.title}</span>
+                                                    </div>
+                                                    <div className="text-[10px] mt-1 text-muted-foreground">
+                                                        {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                    </div>
+                                                </motion.div>
+                                            )
+                                        })}
+                                    </div>
+
+                                    {/* Client rows */}
+                                    {clients.map((client, index) => (
+                                        <div
+                                            key={client.id}
+                                            className="client-row absolute w-full border-b-2"
+                                            style={{
+                                                top: `${(index + 1) * rowHeight}px`,
+                                                height: `${rowHeight}px`,
+                                                borderColor: spaceTheme ? "#1e293b" : "#e2e8f0",
+                                                zIndex: 2,
+                                            }}
+                                        >
+                                            <div className="client-name-label">
+                                                {client.firstName} {client.lastName}
+                                            </div>
+                                            {eventsByClient[client.id]?.map((event) => {
+                                                const pos = eventPositions[event.id]
+                                                if (!pos) return null
+
+                                                const isActive = activeEvent === event.id
+                                                const isHovered = hoveredEvent === event.id
+
+                                                return (
+                                                    <motion.div
+                                                        key={event.id}
+                                                        className={cn(
+                                                            "absolute p-2 text-xs rounded-md shadow-md border",
+                                                            getEventBackground(event, isActive, isHovered),
+                                                            getEventBorderColor(event),
+                                                            "cursor-grab active:cursor-grabbing",
+                                                        )}
+                                                        style={{
+                                                            left: `${pos.left || 0}px`,
+                                                            width: `${pos.width || 50}px`,
+                                                            top: "24px", // Adjusted to make room for client name
+                                                            height: `${rowHeight - 32}px`, // Constrain to row height
+                                                            zIndex: isActive ? 50 : 10,
+                                                            overflow: "hidden",
+                                                        }}
+                                                        drag="x"
+                                                        dragConstraints={timelineRef}
+                                                        dragMomentum={false}
+                                                        onDragStart={() => handleDragStart(event.id, client.id)}
+                                                        onDrag={(e, info) => handleDrag(event.id, info)}
+                                                        onDragEnd={(e, info) => handleDragEnd(event.id, info, client.id)}
+                                                        onMouseEnter={() => setHoveredEvent(event.id)}
+                                                        onMouseLeave={() => setHoveredEvent(null)}
+                                                        onClick={() => onSelectEvent(event)}
+                                                        whileDrag={{ scale: 1.05 }}
+                                                    >
+                                                        <div className="flex items-center gap-1 font-medium truncate">
+                                                            {getEventIcon(event.type)}
+                                                            <span>{event.title}</span>
+                                                        </div>
+                                                        <div className="text-[10px] mt-1 text-muted-foreground">
+                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                        </div>
+                                                    </motion.div>
+                                                )
+                                            })}
+                                        </div>
+                                    ))}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Tooltip */}
+            {dragTooltip && (
+                <div
+                    className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-3 py-1.5 rounded-md text-xs shadow-sm ${tooltipClass}`}
+                >
+                    {dragTooltip.time}
+                </div>
+            )}
+
+            {/* Resize Button */}
+            <button onClick={toggleFullscreen} className={resizeButtonClass}>
+                {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            </button>
+
+            {/* Resize Handle */}
+            <div ref={resizeHandleRef} className="resize-handle bottom-0 right-0 w-4 h-4" style={{ position: "absolute" }} />
         </div>
     )
 }
