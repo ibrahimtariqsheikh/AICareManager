@@ -63,6 +63,7 @@ interface ScheduleState {
   loading: boolean
   error: string | null
   isHidden: boolean
+  activeScheduleUserType: "clients" | "officeStaff" | "careWorker"
 }
 
 const initialState: ScheduleState = {
@@ -73,6 +74,7 @@ const initialState: ScheduleState = {
   loading: false,
   error: null,
   isHidden: true,
+  activeScheduleUserType: "clients",
 }
 
 const scheduleSlice = createSlice({
@@ -103,6 +105,9 @@ const scheduleSlice = createSlice({
         state.events[index] = serializedEvent
       }
       updateFilteredEvents(state)
+    },
+    setActiveScheduleUserType: (state, action: PayloadAction<"clients" | "officeStaff" | "careWorker">) => {
+      state.activeScheduleUserType = action.payload
     },
     deleteEvent: (state, action: PayloadAction<string>) => {
       state.events = state.events.filter((event) => event.id !== action.payload)
@@ -229,6 +234,7 @@ export const {
   clearScheduleError,
   setIsHidden,
   toggleRightSidebar,
+  setActiveScheduleUserType,
 } = scheduleSlice.actions
 
 export default scheduleSlice.reducer

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, useMemo } from "react"
 import moment from "moment"
 import { motion } from "framer-motion"
 import { toast } from "sonner"
@@ -8,6 +8,7 @@ import type { AppointmentEvent } from "../types"
 import { cn } from "../../../../lib/utils"
 import { Home, Video, Building2, Phone, User, Calendar, GripVertical } from "lucide-react"
 import { useAppSelector } from "@/state/redux"
+import { eventTypeStyles } from "../styles/event-colors"
 
 interface CustomWeekViewProps {
     date: Date
@@ -33,6 +34,24 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     // Get current date from Redux store
     const { currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
     const currentDate = new Date(currentDateStr)
+    const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
+    const reduxClients = useAppSelector((state) => state.user.clients || [])
+    const careworkers = useAppSelector((state) => state.user.careWorkers || [])
+    const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
+
+    // Get the appropriate users based on activeScheduleUserType
+    const displayUsers = (() => {
+        switch (activeScheduleUserType) {
+            case "clients":
+                return reduxClients
+            case "careWorker":
+                return careworkers
+            case "officeStaff":
+                return officeStaff
+            default:
+                return reduxClients
+        }
+    })()
 
     // ====================== CONSTANTS ======================
     const HOURS = {
@@ -59,6 +78,22 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         totalGridHeight: 0
     })
     const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
+
+    // Filter events based on activeScheduleUserType
+    const filteredEvents = useMemo(() => {
+        return events.filter(event => {
+            switch (activeScheduleUserType) {
+                case "clients":
+                    return reduxClients.some(client => client.id === event.clientId)
+                case "careWorker":
+                    return careworkers.some(worker => worker.id === event.resourceId)
+                case "officeStaff":
+                    return officeStaff.some(staff => staff.id === event.resourceId)
+                default:
+                    return true
+            }
+        })
+    }, [events, activeScheduleUserType, reduxClients, careworkers, officeStaff])
 
     // ====================== DRAG AND DROP ======================
     interface DraggedEventState {
@@ -134,7 +169,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         const weekStart = moment(daysOfWeek[0]).startOf('day')
         const weekEnd = moment(daysOfWeek[6]).endOf('day')
 
-        events.forEach(event => {
+        filteredEvents.forEach(event => {
             try {
                 const eventStart = moment(event.start)
                 const eventEnd = moment(event.end)
@@ -203,7 +238,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         })
 
         setEventLayoutData(positions)
-    }, [events, daysOfWeek, calendarDimensions])
+    }, [filteredEvents, daysOfWeek, calendarDimensions])
 
     // ====================== DRAG AND DROP ======================
     // Custom drag start handler
@@ -343,11 +378,36 @@ export function CustomWeekView(props: CustomWeekViewProps) {
 
     // Get event background color based on type
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+
         if (spaceTheme) {
-            return isActive ? "bg-slate-800/60" : isHovered ? "bg-slate-800/40" : "bg-slate-800/30"
+            // Convert light theme colors to dark theme
+            const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
+            const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
+            const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
+            return isActive ? activeColor : isHovered ? hoverColor : bgColor
         } else {
-            return isActive ? "bg-gray-100" : isHovered ? "bg-gray-50/80" : "bg-gray-50"
+            return isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg
         }
+    }
+
+    const getEventBorderColor = (event: AppointmentEvent) => {
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        return styles.border
+    }
+
+    const getEventTextColor = (event: AppointmentEvent) => {
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        return styles.text
+    }
+
+    const getEventMutedTextColor = (event: AppointmentEvent) => {
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        return styles.mutedText
     }
 
     // Get event icon based on type
@@ -403,7 +463,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
             .minute((slotIndex % 2) * 30)
         const cellEnd = moment(cellStart).add(30, "minutes")
 
-        return events.some(event => {
+        return filteredEvents.some(event => {
             const eventStart = moment(event.start)
             const eventEnd = moment(event.end)
 
@@ -436,6 +496,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     // ====================== RENDERING ======================
     return (
         <div className="h-full flex flex-col p-4">
+
 
             <div className="flex flex-col flex-1 h-full overflow-hidden">
                 {/* Calendar grid */}
@@ -563,7 +624,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                 )}
 
                                 {/* Event cards */}
-                                {events.map(event => {
+                                {filteredEvents.map(event => {
                                     const position = eventLayoutData[event.id]
                                     if (!position) return null // Skip if position not calculated
 
@@ -579,7 +640,8 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                             className={cn(
                                                 "absolute rounded-lg shadow-sm text-xs p-2 cursor-grab border",
                                                 getEventBackground(event, isDragging, isHovered),
-                                                spaceTheme ? "text-white border-slate-700" : "text-black border-gray-200"
+                                                getEventBorderColor(event),
+                                                spaceTheme ? "border-slate-700" : ""
                                             )}
                                             style={{
                                                 top: `${position.top}px`,
@@ -607,14 +669,14 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                                 }
                                             }}
                                         >
-                                            <div className="flex items-center gap-1 mb-1">
+                                            <div className={cn("flex items-center gap-1 mb-1", getEventTextColor(event))}>
                                                 {getEventIcon(event.type)}
                                                 <span className="font-medium truncate">{event.title}</span>
                                             </div>
-                                            <div className={cn("text-[10px]", spaceTheme ? "text-slate-300" : "text-gray-500")}>
+                                            <div className={cn("text-[10px]", getEventMutedTextColor(event))}>
                                                 {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                             </div>
-                                            <div className={cn("text-[10px]", spaceTheme ? "text-slate-300" : "text-gray-500")}>
+                                            <div className={cn("text-[10px]", getEventMutedTextColor(event))}>
                                                 {getEventTypeLabel(event.type)} • {getEventDuration(event)}
                                             </div>
                                         </motion.div>

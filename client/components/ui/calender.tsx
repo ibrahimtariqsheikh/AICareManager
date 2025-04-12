@@ -66,6 +66,9 @@ function Calendar({
         return new Date()
     })
 
+    // State for animation direction
+    const [direction, setDirection] = React.useState(0)
+
     // Update month when prop changes
     React.useEffect(() => {
         if (propMonth) {
@@ -85,6 +88,7 @@ function Calendar({
 
     // Navigate to previous month
     const prevMonth = () => {
+        setDirection(-1)
         setCurrentMonth((prev) => {
             const newMonth = new Date(prev)
             newMonth.setMonth(newMonth.getMonth() - 1)
@@ -94,6 +98,7 @@ function Calendar({
 
     // Navigate to next month
     const nextMonth = () => {
+        setDirection(1)
         setCurrentMonth((prev) => {
             const newMonth = new Date(prev)
             newMonth.setMonth(newMonth.getMonth() + 1)
@@ -141,6 +146,37 @@ function Calendar({
         }
 
         return disabled.some((range) => date >= range.from && date <= range.to)
+    }
+
+    // Generate array of months
+    const getMonths = () => {
+        return Array.from({ length: 12 }, (_, i) => {
+            const date = new Date(2000, i, 1)
+            return {
+                value: i,
+                label: date.toLocaleString("default", { month: "long" }),
+            }
+        })
+    }
+
+    // Generate array of years (10 years before and after current year)
+    const getYears = () => {
+        const currentYear = new Date().getFullYear()
+        return Array.from({ length: 21 }, (_, i) => currentYear - 10 + i)
+    }
+
+    // Handle month change
+    const handleMonthChange = (month: string) => {
+        const newDate = new Date(currentMonth)
+        newDate.setMonth(Number.parseInt(month))
+        setCurrentMonth(newDate)
+    }
+
+    // Handle year change
+    const handleYearChange = (year: string) => {
+        const newDate = new Date(currentMonth)
+        newDate.setFullYear(Number.parseInt(year))
+        setCurrentMonth(newDate)
     }
 
     // Handle date selection
@@ -227,36 +263,88 @@ function Calendar({
     // Generate calendar
     const weeks = renderCalendarGrid()
 
+    // Animation variants
+    const variants = {
+        enter: (direction: number) => ({
+            x: direction > 0 ? 200 : -200,
+            opacity: 0,
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+        },
+        exit: (direction: number) => ({
+            x: direction < 0 ? 200 : -200,
+            opacity: 0,
+        }),
+    }
+
     return (
-        <div className={cn("p-3 border rounded-lg shadow-sm w-full max-w-full overflow-hidden", className)}>
+        <div
+            className={cn(
+                "p-4 border rounded-lg shadow-md w-full max-w-full overflow-hidden bg-gradient-to-b from-background to-muted/20",
+                className,
+            )}
+        >
             <div className={cn("space-y-4", classNames?.month)}>
-                <div className={cn("flex justify-center pt-1 relative items-center w-full", classNames?.caption)}>
-                    <div className={cn("text-sm font-medium text-center flex-grow", classNames?.caption_label)}>
-                        {getMonthName(currentMonth)} {currentMonth.getFullYear()}
-                    </div>
-                    <div className={cn("space-x-1 flex items-center", classNames?.nav)}>
-                        <div
-                            onClick={prevMonth}
-                            className={cn(
-                                "inline-flex items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                "cursor-pointer",
-                            )}
+                <div className={cn("flex justify-between pt-1 relative items-center w-full gap-2", classNames?.caption)}>
+                    <button
+                        onClick={prevMonth}
+                        className={cn(
+                            buttonVariants({ variant: "outline", size: "icon" }),
+                            "h-8 w-8 bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-in-out",
+                        )}
+                        aria-label="Previous month"
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                    </button>
+
+                    <div
+                        className={cn(
+                            "text-base font-medium text-center flex-grow flex items-center justify-center gap-2",
+                            classNames?.caption_label,
+                        )}
+                    >
+                        <select
+                            value={currentMonth.getMonth()}
+                            onChange={(e) => handleMonthChange(e.target.value)}
+                            className="bg-background border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-8"
+                            aria-label="Select month"
                         >
-                            <ChevronLeft className="h-4 w-4" />
-                        </div>
-                        <div
-                            onClick={nextMonth}
-                            className={cn(
-                                "inline-flex items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                "cursor-pointer",
-                            )}
+                            {getMonths().map((month) => (
+                                <option key={month.value} value={month.value}>
+                                    {month.label}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            value={currentMonth.getFullYear()}
+                            onChange={(e) => handleYearChange(e.target.value)}
+                            className="bg-background border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-8"
+                            aria-label="Select year"
                         >
-                            <ChevronRight className="h-4 w-4" />
-                        </div>
+                            {getYears().map((year) => (
+                                <option key={year} value={year}>
+                                    {year}
+                                </option>
+                            ))}
+                        </select>
                     </div>
+
+                    <button
+                        onClick={nextMonth}
+                        className={cn(
+                            buttonVariants({ variant: "outline", size: "icon" }),
+                            "h-8 w-8 bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-in-out",
+                        )}
+                        aria-label="Next month"
+                    >
+                        <ChevronRight className="h-4 w-4" />
+                    </button>
                 </div>
+
                 <div className={cn("w-full", classNames?.table)}>
-                    <div className={cn("flex justify-between w-full", classNames?.head_row)}>
+                    <div className={cn("flex justify-between w-full mb-2 border-b pb-2", classNames?.head_row)}>
                         {orderedWeekdays.map((day) => (
                             <div
                                 key={day}
@@ -269,72 +357,85 @@ function Calendar({
                             </div>
                         ))}
                     </div>
-                    {weeks.map((week, weekIndex) => (
-                        <div key={weekIndex} className={cn("flex w-full mt-2.5 flex-nowrap", classNames?.row)}>
-                            {week.map((day, dayIndex) => {
-                                if (!day.date) {
+
+                    <div>
+                        {weeks.map((week, weekIndex) => (
+                            <div key={weekIndex} className={cn("flex w-full mt-2.5 flex-nowrap", classNames?.row)}>
+                                {week.map((day, dayIndex) => {
+                                    if (!day.date) {
+                                        return (
+                                            <div
+                                                key={`empty-${dayIndex}`}
+                                                className={cn("h-9 w-9 p-0 text-center", classNames?.day_hidden)}
+                                            />
+                                        )
+                                    }
+
+                                    const isSelected = isDateSelected(day.date)
+                                    const isDayToday = isToday(day.date)
+                                    const isDisabled = isDateDisabled(day.date)
+                                    const isRangeStart =
+                                        selected &&
+                                        (selected as any).from &&
+                                        formatDateKey(day.date) === formatDateKey((selected as any).from)
+                                    const isRangeEnd =
+                                        selected && (selected as any).to && formatDateKey(day.date) === formatDateKey((selected as any).to)
+                                    const isInRange =
+                                        selected &&
+                                        (selected as any).from &&
+                                        (selected as any).to &&
+                                        day.date > (selected as any).from &&
+                                        day.date < (selected as any).to
+
                                     return (
-                                        <div key={`empty-${dayIndex}`} className={cn("h-9 w-9 p-0 text-center", classNames?.day_hidden)} />
-                                    )
-                                }
-
-                                const isSelected = isDateSelected(day.date)
-                                const isDayToday = isToday(day.date)
-                                const isDisabled = isDateDisabled(day.date)
-                                const isRangeStart =
-                                    selected &&
-                                    (selected as any).from &&
-                                    formatDateKey(day.date) === formatDateKey((selected as any).from)
-                                const isRangeEnd =
-                                    selected && (selected as any).to && formatDateKey(day.date) === formatDateKey((selected as any).to)
-                                const isInRange =
-                                    selected &&
-                                    (selected as any).from &&
-                                    (selected as any).to &&
-                                    day.date > (selected as any).from &&
-                                    day.date < (selected as any).to
-
-                                return (
-                                    <div
-                                        key={`${day.date.getFullYear()}-${day.date.getMonth()}-${day.date.getDate()}`}
-                                        className={cn(
-                                            "relative h-9 w-9 p-0 text-center flex items-center justify-center flex-shrink-0",
-                                            day.isOutside && classNames?.day_outside,
-                                            isInRange && "bg-primary/20",
-                                            isRangeStart && "rounded-l-md [&>button]:rounded-l-md",
-                                            isRangeEnd && "rounded-r-md [&>button]:rounded-r-md",
-                                            classNames?.cell,
-                                        )}
-                                    >
-                                        <button
-                                            onClick={() => handleDateSelect(day.date)}
+                                        <div
+                                            key={`${day.date.getFullYear()}-${day.date.getMonth()}-${day.date.getDate()}`}
                                             className={cn(
-                                                buttonVariants({ variant: "ghost" }),
-                                                "h-9 w-9 p-0 font-normal",
-                                                (isSelected || isRangeStart || isRangeEnd) &&
-                                                "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground font-medium",
-                                                isRangeStart && "rounded-l-md",
-                                                isRangeEnd && "rounded-r-md",
-                                                isDayToday && !isSelected && !isRangeStart && !isRangeEnd && "bg-accent text-accent-foreground",
-                                                day.isOutside && "text-muted-foreground opacity-50",
-                                                isDisabled && "text-muted-foreground opacity-50 cursor-not-allowed",
-                                                classNames?.day,
-                                                isSelected && classNames?.day_selected,
-                                                isDayToday && classNames?.day_today,
+                                                "relative h-9 w-9 p-0 text-center flex items-center justify-center flex-shrink-0",
                                                 day.isOutside && classNames?.day_outside,
-                                                isDisabled && classNames?.day_disabled,
+                                                isInRange && "bg-primary/20",
+                                                isRangeStart && "rounded-l-md [&>button]:rounded-l-md",
+                                                isRangeEnd && "rounded-r-md [&>button]:rounded-r-md",
+                                                classNames?.cell,
                                             )}
-                                            disabled={isDisabled}
-                                            type="button"
-                                            tabIndex={day.isOutside ? -1 : 0}
                                         >
-                                            {day.date.getDate()}
-                                        </button>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    ))}
+                                            <button
+                                                onClick={() => handleDateSelect(day.date)}
+                                                className={cn(
+                                                    buttonVariants({ variant: "ghost" }),
+                                                    "h-9 w-9 p-0 font-normal relative overflow-hidden",
+                                                    (isSelected || isRangeStart || isRangeEnd) &&
+                                                    "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground font-medium",
+                                                    isRangeStart && "rounded-l-md",
+                                                    isRangeEnd && "rounded-r-md",
+                                                    isDayToday &&
+                                                    !isSelected &&
+                                                    !isRangeStart &&
+                                                    !isRangeEnd &&
+                                                    "bg-accent text-accent-foreground ring-2 ring-primary ring-offset-1",
+                                                    day.isOutside && "text-muted-foreground opacity-50",
+                                                    isDisabled && "text-muted-foreground opacity-50 cursor-not-allowed",
+                                                    classNames?.day,
+                                                    isSelected && classNames?.day_selected,
+                                                    isDayToday && classNames?.day_today,
+                                                    day.isOutside && classNames?.day_outside,
+                                                    isDisabled && classNames?.day_disabled,
+                                                )}
+                                                disabled={isDisabled}
+                                                type="button"
+                                                tabIndex={day.isOutside ? -1 : 0}
+                                            >
+                                                {day.date.getDate()}
+                                                {isDayToday && !isSelected && (
+                                                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                                                )}
+                                            </button>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
@@ -344,4 +445,3 @@ function Calendar({
 Calendar.displayName = "Calendar"
 
 export { Calendar }
-

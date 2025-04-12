@@ -8,6 +8,7 @@ import { Home, Video, Building2, Phone, User, Calendar, MoreVertical } from "luc
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
+import { eventTypeStyles } from "../styles/event-colors"
 
 // Define types
 export interface AppointmentEvent {
@@ -82,9 +83,25 @@ export function CustomDayView({
     onViewChange,
 }: CustomDayViewProps) {
     const dispatch = useAppDispatch()
-    const activeView = useAppSelector((state) => state.calendar.activeView)
+    const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
     const reduxClients = useAppSelector((state) => state.user.clients || [])
     const clients = propClients || reduxClients
+    const careworkers = useAppSelector((state) => state.user.careWorkers || [])
+    const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
+
+    // Get the appropriate users based on activeScheduleUserType
+    const displayUsers = (() => {
+        switch (activeScheduleUserType) {
+            case "clients":
+                return clients
+            case "careWorker":
+                return careworkers
+            case "officeStaff":
+                return officeStaff
+            default:
+                return clients
+        }
+    })()
 
     // Refs
     const containerRef = useRef<HTMLDivElement>(null)
@@ -112,32 +129,32 @@ export function CustomDayView({
     const slotsPerHour = 60 / minutesPerSlot
     const slotWidth = 100 // Width of each time slot in pixels
 
-    // Calculate dynamic row height based on calendar height and number of clients
+    // Calculate dynamic row height based on calendar height and number of users
     const getRowHeight = () => {
         if (typeof calendarHeight === "number") {
             // Subtract header height (33px) and any other fixed heights
             const availableHeight = calendarHeight - 33
-            return Math.max(60, Math.floor(availableHeight / (clients.length + 2 || 1))) // +2 for Labor Costs and Daily Notes
+            return Math.max(60, Math.floor(availableHeight / (displayUsers.length + 2 || 1))) // +2 for Labor Costs and Daily Notes
         }
         return 80 // Default height if calendarHeight is not a number
     }
 
     const rowHeight = getRowHeight()
 
-    // Calculate total height needed based on number of clients
+    // Calculate total height needed based on number of users
     const MIN_HEIGHT = 200 // Minimum height to maintain usability
-    const EXTRA_PADDING = 30 // Extra space after last client
+    const EXTRA_PADDING = 30 // Extra space after last user
     const totalHeight =
-        clients.length > 0
-            ? (clients.length + 2) * rowHeight + 120 + EXTRA_PADDING // +2 for Labor Costs and Daily Notes, 120px for header and controls + extra padding
-            : MIN_HEIGHT // Use minimum height when no clients
+        displayUsers.length > 0
+            ? (displayUsers.length + 2) * rowHeight + 120 + EXTRA_PADDING // +2 for Labor Costs and Daily Notes, 120px for header and controls + extra padding
+            : MIN_HEIGHT // Use minimum height when no users
 
     // Update calendar height if it's not explicitly set
     useEffect(() => {
         if (typeof initialHeight === "string" && initialHeight === "100%") {
             setCalendarHeight(totalHeight)
         }
-    }, [clients.length, rowHeight, initialHeight])
+    }, [displayUsers.length, rowHeight, initialHeight])
 
     // Generate time slots
     const timeSlots = Array.from({ length: (endHour - startHour) * slotsPerHour + 1 }, (_, i) => {
@@ -148,29 +165,29 @@ export function CustomDayView({
 
     const totalWidth = timeSlots.length * slotWidth
 
-    // Group events by client
-    const eventsByClient = (() => {
-        const clientEvents: Record<string, AppointmentEvent[]> = {
+    // Group events by user
+    const eventsByUser = (() => {
+        const userEvents: Record<string, AppointmentEvent[]> = {
             unallocated: [],
         }
 
-        // Initialize with empty arrays for all clients
-        clients.forEach((client) => {
-            clientEvents[client.id] = []
+        // Initialize with empty arrays for all users
+        displayUsers.forEach((user) => {
+            userEvents[user.id] = []
         })
 
-        // Filter events for the current day and group by client
+        // Filter events for the current day and group by user
         events
             .filter((event) => moment(event.start).isSame(date, "day"))
             .forEach((event) => {
-                if (event.clientId && clientEvents[event.clientId]) {
-                    clientEvents[event.clientId].push(event)
+                if (event.clientId && userEvents[event.clientId]) {
+                    userEvents[event.clientId].push(event)
                 } else {
-                    clientEvents["unallocated"].push(event)
+                    userEvents["unallocated"].push(event)
                 }
             })
 
-        return clientEvents
+        return userEvents
     })()
 
     // Initialize display events
@@ -252,6 +269,31 @@ export function CustomDayView({
             containerRef.current.scrollLeft = Math.max(0, scrollPos)
         }
     }, [date, startHour, slotWidth, minutesPerSlot])
+
+    // Smart scroll based on events
+    useEffect(() => {
+        if (!containerRef.current || !events.length) return
+
+        // Get all events for the current day
+        const dayEvents = events.filter(event => moment(event.start).isSame(date, 'day'))
+
+        if (dayEvents.length === 0) return
+
+        // If there are 3 or fewer events, scroll to the first event
+        if (dayEvents.length <= 3) {
+            const firstEvent = dayEvents.reduce((earliest, current) =>
+                moment(current.start).isBefore(moment(earliest.start)) ? current : earliest
+            )
+            const eventStart = moment(firstEvent.start)
+            const minutesSinceStart = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
+            const scrollPos = (minutesSinceStart / minutesPerSlot) * slotWidth - 200
+            containerRef.current.scrollLeft = Math.max(0, scrollPos)
+        } else {
+            // For more events, scroll to 7:00 AM
+            const scrollPos = (0 / minutesPerSlot) * slotWidth
+            containerRef.current.scrollLeft = Math.max(0, scrollPos)
+        }
+    }, [date, events, startHour, slotWidth, minutesPerSlot])
 
     // Add custom scrollbar style
     useEffect(() => {
@@ -424,54 +466,36 @@ export function CustomDayView({
 
     // Style helpers
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+
         if (spaceTheme) {
-            switch (event.type) {
-                case "HOME_VISIT":
-                    return isActive ? "bg-green-900/60" : isHovered ? "bg-green-900/40" : "bg-green-900/30"
-                case "VIDEO_CALL":
-                    return isActive ? "bg-blue-900/60" : isHovered ? "bg-blue-900/40" : "bg-blue-900/30"
-                case "HOSPITAL":
-                    return isActive ? "bg-purple-900/60" : isHovered ? "bg-purple-900/40" : "bg-purple-900/30"
-                case "IN_PERSON":
-                    return isActive ? "bg-amber-900/60" : isHovered ? "bg-amber-900/40" : "bg-amber-900/30"
-                case "AUDIO_CALL":
-                    return isActive ? "bg-red-900/60" : isHovered ? "bg-red-900/40" : "bg-red-900/30"
-                default:
-                    return isActive ? "bg-slate-800/60" : isHovered ? "bg-slate-800/40" : "bg-slate-800/30"
-            }
+            // Convert light theme colors to dark theme
+            const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
+            const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
+            const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
+            return isActive ? activeColor : isHovered ? hoverColor : bgColor
         } else {
-            switch (event.type) {
-                case "HOME_VISIT":
-                    return isActive ? "bg-green-100" : isHovered ? "bg-green-50/80" : "bg-green-50"
-                case "VIDEO_CALL":
-                    return isActive ? "bg-blue-100" : isHovered ? "bg-blue-50/80" : "bg-blue-50"
-                case "HOSPITAL":
-                    return isActive ? "bg-purple-100" : isHovered ? "bg-purple-50/80" : "bg-purple-50"
-                case "IN_PERSON":
-                    return isActive ? "bg-amber-100" : isHovered ? "bg-amber-50/80" : "bg-amber-50"
-                case "AUDIO_CALL":
-                    return isActive ? "bg-red-100" : isHovered ? "bg-red-50/80" : "bg-red-50"
-                default:
-                    return isActive ? "bg-gray-100" : isHovered ? "bg-gray-50/80" : "bg-gray-50"
-            }
+            return isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg
         }
     }
 
     const getEventBorderColor = (event: AppointmentEvent) => {
-        switch (event.type) {
-            case "HOME_VISIT":
-                return "border-green-300"
-            case "VIDEO_CALL":
-                return "border-blue-300"
-            case "HOSPITAL":
-                return "border-purple-300"
-            case "IN_PERSON":
-                return "border-amber-300"
-            case "AUDIO_CALL":
-                return "border-red-300"
-            default:
-                return "border-gray-300"
-        }
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        return styles.border
+    }
+
+    const getEventTextColor = (event: AppointmentEvent) => {
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        return styles.text
+    }
+
+    const getEventMutedTextColor = (event: AppointmentEvent) => {
+        const type = event.type.toLowerCase()
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        return styles.mutedText
     }
 
     const getEventIcon = (type: string) => {
@@ -491,45 +515,19 @@ export function CustomDayView({
         }
     }
 
-    const getEventTypeLabel = (type: string) => {
-        switch (type) {
-            case "HOME_VISIT":
-                return "Home Visit"
-            case "VIDEO_CALL":
-                return "Video Call"
-            case "HOSPITAL":
-                return "Hospital"
-            case "IN_PERSON":
-                return "In-Person"
-            case "AUDIO_CALL":
-                return "Audio Call"
-            default:
-                return "Appointment"
-        }
-    }
 
-    const getEventDuration = (event: AppointmentEvent) => {
-        const duration = getEventDurationInMinutes(event)
-        if (duration < 60) {
-            return `${duration} min`
-        }
-        const hours = Math.floor(duration / 60)
-        const minutes = duration % 60
-        return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
-    }
 
     // Theme-based style classes
-    const headerTextClass = spaceTheme ? "text-white" : "text-gray-700"
-    const timelineClass = spaceTheme ? "bg-slate-900" : "bg-white"
+    const timelineClass = spaceTheme ? "bg-slate-900" : "bg-gray-50"
     const timeLabelsClass = spaceTheme ? "text-slate-400" : "text-gray-500"
     const currentTimeClass = spaceTheme ? "bg-green-500" : "bg-red-500"
-    const gridLineClass = spaceTheme ? "border-slate-800" : "border-gray-100"
+    const gridLineClass = spaceTheme ? "border-slate-800" : "border-gray-200"
     const hourLineClass = spaceTheme ? "border-slate-700" : "border-gray-200"
     const halfHourLineClass = spaceTheme ? "border-slate-800" : "border-gray-100"
     const tooltipClass = spaceTheme
         ? "bg-slate-800 text-white border border-slate-700"
         : "bg-white text-black border border-gray-200"
-    const clientSidebarClass = spaceTheme ? "bg-slate-900 border-slate-700" : "bg-gray-50 border-gray-200"
+    const clientSidebarClass = spaceTheme ? "bg-slate-900 border-slate-700" : "bg-white border-gray-200"
 
     // Time formatting helpers
     const formatTimeFromMinutes = (minutesFromStart: number) => {
@@ -540,12 +538,6 @@ export function CustomDayView({
         return `${displayHours}:${minutes.toString().padStart(2, "0")} ${amPm}`
     }
 
-    // Get client name from client ID
-    const getClientName = (clientId: string) => {
-        if (clientId === "unallocated") return "Unallocated"
-        const client = clients.find((c) => c.id === clientId)
-        return client ? `${client.firstName} ${client.lastName}` : "Unknown Client"
-    }
 
     return (
         <div
@@ -562,31 +554,31 @@ export function CustomDayView({
             <div className="flex flex-col flex-1" style={{ height: `calc(${totalHeight}px - 60px)` }}>
                 {/* Main timeline container */}
                 <div className={`flex flex-1 border rounded-xl shadow- ${timelineClass} h-full overflow-hidden`}>
-                    {/* Client sidebar */}
+                    {/* User sidebar */}
                     {showSidebar && (
                         <div className={`w-48 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`} style={{ height: "100%" }}>
-                            {/* Clients */}
-                            <div className="h-8 font-semibold flex items-center justify-center text-sm gap-2 border-b text-neutral-600">
-                                <p>Clients</p>
+                            {/* Users */}
+                            <div className="h-8 font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-600">
+                                <p>{activeScheduleUserType === "clients" ? "Clients" : activeScheduleUserType === "careWorker" ? "Care Workers" : "Office Staff"}</p>
                             </div>
 
                             <div
-                                className="font-semibold flex items-center justify-center text-sm gap-2 border-b text-neutral-600"
+                                className="font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-600"
                                 style={{ height: `${rowHeight}px` }}
                             >
                                 <p>Labor Costs</p>
                             </div>
                             <div
-                                className="font-semibold flex items-center justify-center text-sm gap-2 border-b text-neutral-600"
+                                className="font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-600"
                                 style={{ height: `${rowHeight}px` }}
                             >
                                 <p>Daily Notes</p>
                             </div>
 
-                            {/* Client list */}
-                            {clients.map((client) => (
+                            {/* User list */}
+                            {displayUsers.map((user) => (
                                 <div
-                                    key={client.id}
+                                    key={user.id}
                                     className={`border-b ${clientSidebarClass} hover:bg-opacity-80`}
                                     style={{
                                         height: `${rowHeight}px`,
@@ -599,24 +591,27 @@ export function CustomDayView({
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-6 w-6">
                                                 <AvatarImage
-                                                    src={client.profile?.avatarUrl || "/placeholder.svg"}
-                                                    alt={`${client.firstName} ${client.lastName}`}
+                                                    src={user.profile?.avatarUrl || "/placeholder.svg"}
+                                                    alt={`${user.firstName} ${user.lastName}`}
                                                 />
-                                                <AvatarFallback>
-                                                    {client.firstName?.[0]}
-                                                    {client.lastName?.[0]}
+                                                <AvatarFallback className="text-xs">
+                                                    {user.firstName?.[0]}
+
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <span className="text-sm font-medium truncate">
-                                                {client.firstName} {client.lastName}
-                                            </span>
+                                            <div className="flex gap-1 flex-col justify-start items-start">
+                                                <span className="text-sm font-medium truncate">
+                                                    {user.firstName} {user.lastName}
+                                                </span>
+                                                <div
+                                                    className="text-xs text-muted-foreground"
+                                                >
+                                                    {eventsByUser[user.id]?.length || 0} Schedules
+                                                </div>
+                                            </div>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                            <div
-                                                className={`text-xs px-1.5 py-0.5 rounded-full ${spaceTheme ? "bg-slate-800" : "bg-gray-200"}`}
-                                            >
-                                                {eventsByClient[client.id]?.length || 0}
-                                            </div>
+
                                             <button className="text-gray-500 hover:text-gray-700">
                                                 <MoreVertical className="h-4 w-4" />
                                             </button>
@@ -640,17 +635,23 @@ export function CustomDayView({
                                     } backdrop-blur-sm`}
                             >
                                 <div className="flex">
-                                    {timeSlots
-                                        .filter((_, i) => i % slotsPerHour === 0)
-                                        .map((time, i) => (
-                                            <div
-                                                key={i}
-                                                className={`flex-shrink-0 ${timeLabelsClass} text-xs font-medium px-2 py-2 text-center border-r ${gridLineClass}`}
-                                                style={{ width: `${slotWidth * slotsPerHour}px` }}
-                                            >
-                                                {moment(time).format("h:mm A")}
-                                            </div>
-                                        ))}
+                                    {timeSlots.map((time, i) => {
+                                        const isHourMark = i % slotsPerHour === 0
+                                        const isHalfHourMark = i % (slotsPerHour / 2) === 0 && !isHourMark
+
+                                        if (isHourMark || isHalfHourMark) {
+                                            return (
+                                                <div
+                                                    key={i}
+                                                    className={`flex-shrink-0 ${timeLabelsClass} ${isHourMark ? 'text-xs font-medium' : 'text-[10px]'} px-2 py-2 text-center border-r ${gridLineClass}`}
+                                                    style={{ width: `${slotWidth * (slotsPerHour / 2)}px` }}
+                                                >
+                                                    {moment(time).format("h:mm A")}
+                                                </div>
+                                            )
+                                        }
+                                        return null
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -734,11 +735,11 @@ export function CustomDayView({
                                 <div className="absolute w-full border-b" style={{ top: `${rowHeight}px`, height: "1px", zIndex: 2 }} />
 
                                 {/* Client rows with clear boundaries */}
-                                <div className="relative" style={{ height: `${(clients.length + 2) * rowHeight}px` }}>
+                                <div className="relative" style={{ height: `${(displayUsers.length + 2) * rowHeight}px` }}>
                                     {/* Client rows */}
-                                    {clients.map((client, index) => (
+                                    {displayUsers.map((user, index) => (
                                         <div
-                                            key={client.id}
+                                            key={user.id}
                                             className="client-row absolute w-full border-b-2"
                                             style={{
                                                 top: `${(0 + 2) * rowHeight}px`,
@@ -751,7 +752,7 @@ export function CustomDayView({
                                                 {client.firstName} {client.lastName}
                                             </div> */}
 
-                                            {eventsByClient[client.id]?.map((event) => {
+                                            {eventsByUser[user.id]?.map((event) => {
                                                 const pos = eventPositions[event.id]
                                                 if (!pos) return null
 
@@ -770,27 +771,27 @@ export function CustomDayView({
                                                         style={{
                                                             left: `${pos.left || 0}px`,
                                                             width: `${pos.width || 50}px`,
-                                                            top: 0, // Adjusted to make room for client name
-                                                            height: `${rowHeight - 0}px`, // Constrain to row height
+                                                            top: 0,
+                                                            height: `${rowHeight - 0}px`,
                                                             zIndex: isActive ? 50 : 10,
                                                             overflow: "hidden",
                                                         }}
                                                         drag="x"
                                                         dragConstraints={timelineRef}
                                                         dragMomentum={false}
-                                                        onDragStart={() => handleDragStart(event.id, client.id)}
+                                                        onDragStart={() => handleDragStart(event.id, user.id)}
                                                         onDrag={(e, info) => handleDrag(event.id, info)}
-                                                        onDragEnd={(e, info) => handleDragEnd(event.id, info, client.id)}
+                                                        onDragEnd={(e, info) => handleDragEnd(event.id, info, user.id)}
                                                         onMouseEnter={() => setHoveredEvent(event.id)}
                                                         onMouseLeave={() => setHoveredEvent(null)}
                                                         onClick={() => onSelectEvent(event)}
                                                         whileDrag={{ scale: 1.05 }}
                                                     >
-                                                        <div className="flex items-center gap-1 font-medium truncate">
+                                                        <div className={cn("flex items-center gap-1 font-medium truncate", getEventTextColor(event))}>
                                                             {getEventIcon(event.type)}
                                                             <span>{event.title}</span>
                                                         </div>
-                                                        <div className="text-[10px] mt-1 text-muted-foreground">
+                                                        <div className={cn("text-[10px] mt-1", getEventMutedTextColor(event))}>
                                                             {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </div>
                                                     </motion.div>

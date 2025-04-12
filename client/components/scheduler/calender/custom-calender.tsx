@@ -8,7 +8,7 @@ import { Skeleton } from "../../ui/skeleton"
 
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveView } from "@/state/slices/calendarSlice"
-import { CalendarIcon, ChevronDown, GripVertical, Calendar } from "lucide-react"
+import { CalendarIcon, ChevronDown, GripVertical, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
 import { CalendarRange } from "lucide-react"
 import { CalendarDays } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -17,6 +17,9 @@ import { DialogTitle } from "@/components/ui/dialog"
 import moment from "moment"
 import { Calendar as CalendarDropdown } from "@/components/ui/calender"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { setActiveScheduleUserType } from "@/state/slices/scheduleSlice"
 
 // Add month picker styles
 const monthPickerStyles = `
@@ -89,6 +92,8 @@ export function CustomCalendar({
             document.head.removeChild(style)
         }
     }, [])
+
+    const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
 
     const [selectedRange, setSelectedRange] = useState<{ from: Date; to: Date } | undefined>(() => {
         if (activeView === "week") {
@@ -213,23 +218,23 @@ export function CustomCalendar({
     // Render the appropriate view based on activeView
     return (
         <div className="h-full w-full calendar-scrollbar">
-            <div className="grid grid-cols-3 p-2 gap-2 items-center">
-                <div className="flex justify-start">
+            <div className="grid grid-cols-3 p-2 gap-2 items-center justify-between h-20 ">
+                <div className="flex justify-start items-center">
 
                     {/* Controls and info row */}
-                    <div className="flex justify-end items-center mb-3 gap-2 px-4">
+                    <div className="flex justify-end items-center gap-2 px-4">
                         <div
                             className={cn(
-                                "text-xs flex items-center gap-1 px-3 py-1.5 rounded-full",
-                                spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100/70"
+                                "text-xs flex items-center gap-1 h-8 p-3 rounded-md",
+                                spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100"
                             )}
                         >
                             <GripVertical className="h-3 w-3" />
-                            <span>Drag events to reschedule</span>
+                            <span>Draggable</span>
                         </div>
                         <div
                             className={cn(
-                                "text-xs flex items-center gap-1 px-2.5 py-1 rounded-full",
+                                "text-xs flex items-center gap-1 h-8 p-3 rounded-md",
                                 spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
                             )}
                         >
@@ -238,93 +243,156 @@ export function CustomCalendar({
                                 {getVisibleEventsCount()} {getVisibleEventsCount() === 1 ? "event" : "events"}
                             </span>
                         </div>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <motion.div
+                                    className="h-8 flex items-center gap-2 bg-gray-100 text-gray-600 rounded-md px-2 py-1 text-xs  cursor-pointer"
+                                    whileHover={{ scale: 1.04, borderColor: "rgb(156 163 175)" }}
+                                    whileTap={{ scale: 0.96 }}
+                                    transition={{ duration: 0.1 }}
+                                >
+                                    {activeScheduleUserType === "clients" ? (
+                                        <div className="flex items-center gap-2">
+                                            <p>Clients</p>
+                                            <ChevronDown className="h-3 w-3" />
+                                        </div>
+                                    ) : activeScheduleUserType === "officeStaff" ? (
+                                        <div className="flex items-center gap-2">
+                                            <p>Office Staff</p>
+                                            <ChevronDown className="h-3 w-3" />
+                                        </div>
+                                    ) : activeScheduleUserType === "careWorker" ? (
+                                        <div className="flex items-center gap-2">
+                                            <p>Care Worker</p>
+                                            <ChevronDown className="h-3 w-3" />
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <p>Staff</p>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuLabel>User Type</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <motion.div whileHover={{ backgroundColor: "rgb(243 244 246)" }}>
+                                    <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("clients"))}
+                                        className="cursor-pointer text-sm font-normal"
+                                    >Clients</DropdownMenuItem>
+                                </motion.div>
+                                <motion.div whileHover={{ backgroundColor: "rgb(243 244 246)" }}>
+                                    <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("officeStaff"))}
+                                        className="cursor-pointer text-sm font-normal"
+                                    >Office Staff</DropdownMenuItem>
+                                </motion.div>
+                                <motion.div whileHover={{ backgroundColor: "rgb(243 244 246)" }}>
+                                    <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("careWorker"))}
+                                        className="cursor-pointer text-sm font-normal"
+                                    >Care Worker</DropdownMenuItem>
+                                </motion.div>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
 
                 {/* Date header - centered in the middle column */}
                 <div className="flex justify-center items-center">
-                    <div className={`relative inline-block text-lg font-semibold text-center px-3 py-1.5 rounded-full cursor-pointer hover:bg-opacity-10 hover:bg-gray-500`}>
-                        <Dialog>
-                            <DialogTrigger className="flex items-center gap-1">
-                                {activeView === "day" && moment(currentDate).format("dddd, MMMM D, YYYY")}
+                    {activeView === "day" ? (
+                        <div className="flex items-center gap-4">
+                            <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => onNavigate(moment(currentDate).subtract(1, 'day').toDate())}
+                                className="cursor-pointer p-2 rounded-md hover:bg-gray-100"
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                            </motion.div>
+                            <motion.div
+                                className={`relative inline-block text-lg font-semibold text-center px-3 py-1.5 rounded-md cursor-pointer hover:bg-opacity-10 hover:bg-gray-500`}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ duration: 0.15 }}
+                                layout
+                                layoutId="date-header"
+                            >
+                                <Dialog>
+                                    <DialogTrigger className="flex items-center gap-2">
+                                        {moment(currentDate).format("dddd, MMMM D, YYYY")}
+
+                                    </DialogTrigger>
+                                    <DialogContent className="w-fit">
+                                        <DialogHeader>
+                                            <div className="flex items-center gap-4 flex-col">
+                                                <DialogTitle>Calendar</DialogTitle>
+                                                <CalendarDropdown
+                                                    mode="single"
+                                                    selected={currentDate}
+                                                    onSelect={handleDateSelect}
+                                                    className={cn(
+                                                        "rounded-md border w-fit",
+                                                        "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900"
+                                                    )}
+                                                />
+                                            </div>
+                                        </DialogHeader>
+                                    </DialogContent>
+                                </Dialog>
+                            </motion.div>
+                            <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => onNavigate(moment(currentDate).add(1, 'day').toDate())}
+                                className="cursor-pointer p-2 rounded-md hover:bg-gray-100"
+                            >
+                                <ChevronRight className="h-5 w-5" />
+                            </motion.div>
+                        </div>
+                    ) : (
+                        <motion.div
+                            className={`relative inline-block text-lg font-semibold text-center px-3 py-1.5 rounded-md cursor-pointer hover:bg-opacity-10 hover:bg-gray-500`}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={{ duration: 0.15 }}
+                            layout
+                            layoutId="date-header"
+                        >
+                            <div className="flex items-center gap-2">
                                 {activeView === "week" && `${moment(currentDate).startOf('week').format("MMM D")} - ${moment(currentDate).endOf('week').format("MMM D, YYYY")}`}
                                 {activeView === "month" && moment(currentDate).format("MMMM YYYY")}
-                                <ChevronDown className="h-4 w-4" />
-                            </DialogTrigger>
-                            <DialogContent className="w-fit">
-                                <DialogHeader>
-                                    <div className="flex items-center gap-4 flex-col">
-                                        <DialogTitle>Calendar</DialogTitle>
-
-                                        {/* Year and Month Selection */}
-                                        <div className="flex gap-2 mb-4">
-                                            <div className="relative">
-                                                <button
-                                                    onClick={() => setShowYearSelect(!showYearSelect)}
-                                                    className="px-3 py-1.5 rounded-md border hover:bg-gray-50"
-                                                >
-                                                    {selectedYear}
-                                                </button>
-                                                {showYearSelect && (
-                                                    <div className="absolute top-full left-0 mt-1 bg-white border rounded-md shadow-lg z-10 w-24 max-h-48 overflow-y-auto">
-                                                        {years.map(year => (
-                                                            <button
-                                                                key={year}
-                                                                onClick={() => handleYearSelect(year)}
-                                                                className="w-full px-3 py-1.5 text-left hover:bg-gray-50"
-                                                            >
-                                                                {year}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                <Dialog>
+                                    <DialogTrigger className="flex items-center gap-2">
+                                        <ChevronDown className="h-4 w-4" />
+                                    </DialogTrigger>
+                                    <DialogContent className="w-fit">
+                                        <DialogHeader>
+                                            <div className="flex items-center gap-4 flex-col">
+                                                <DialogTitle>Calendar</DialogTitle>
+                                                <CalendarDropdown
+                                                    mode={activeView === "week" || activeView === "month" ? "range" : "single"}
+                                                    selected={activeView === "week" || activeView === "month" ? selectedRange : currentDate}
+                                                    onSelect={handleDateSelect}
+                                                    className={cn(
+                                                        "rounded-md border w-fit",
+                                                        activeView === "month" && "month-picker",
+                                                        "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900",
+                                                        "[&_.rdp-day_range_middle]:bg-blue-50 [&_.rdp-day_range_middle]:text-blue-900",
+                                                        "[&_.rdp-day_range_start]:bg-blue-100 [&_.rdp-day_range_start]:text-blue-900",
+                                                        "[&_.rdp-day_range_end]:bg-blue-100 [&_.rdp-day_range_end]:text-blue-900"
+                                                    )}
+                                                    numberOfMonths={activeView === "week" ? 2 : 1}
+                                                />
                                             </div>
-                                            <div className="relative">
-                                                <button
-                                                    onClick={() => setShowMonthSelect(!showMonthSelect)}
-                                                    className="px-3 py-1.5 rounded-md border hover:bg-gray-50"
-                                                >
-                                                    {months[selectedMonth]}
-                                                </button>
-                                                {showMonthSelect && (
-                                                    <div className="absolute top-full left-0 mt-1 bg-white border rounded-md shadow-lg z-10 w-32 max-h-48 overflow-y-auto">
-                                                        {months.map((month, index) => (
-                                                            <button
-                                                                key={month}
-                                                                onClick={() => handleMonthSelect(index)}
-                                                                className="w-full px-3 py-1.5 text-left hover:bg-gray-50"
-                                                            >
-                                                                {month}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <CalendarDropdown
-                                            mode={activeView === "week" || activeView === "month" ? "range" : "single"}
-                                            selected={activeView === "week" || activeView === "month" ? selectedRange : currentDate}
-                                            onSelect={handleDateSelect}
-                                            className={cn(
-                                                "rounded-md border w-fit",
-                                                activeView === "month" && "month-picker",
-                                                "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900",
-                                                "[&_.rdp-day_range_middle]:bg-blue-50 [&_.rdp-day_range_middle]:text-blue-900",
-                                                "[&_.rdp-day_range_start]:bg-blue-100 [&_.rdp-day_range_start]:text-blue-900",
-                                                "[&_.rdp-day_range_end]:bg-blue-100 [&_.rdp-day_range_end]:text-blue-900"
-                                            )}
-                                            numberOfMonths={activeView === "week" ? 2 : 1}
-                                        />
-                                    </div>
-                                </DialogHeader>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
+                                        </DialogHeader>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                        </motion.div>
+                    )}
                 </div>
 
                 {/* Empty div for the third column to maintain balance */}
-                <div className="flex justify-end">
+                <div className="flex justify-end items-center">
                     <Tabs
                         value={activeView}
                         onValueChange={(value) => dispatch(setActiveView(value as "day" | "week" | "month"))}
@@ -358,7 +426,7 @@ export function CustomCalendar({
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
                     spaceTheme={spaceTheme}
-                    clients={clients}
+
                 />
             )}
 
@@ -384,7 +452,7 @@ export function CustomCalendar({
                     getEventDurationInMinutes={getEventDurationInMinutes}
                     getEventTypeLabel={getEventTypeLabel}
                     spaceTheme={spaceTheme}
-                    clients={clients}
+
                     sidebarMode={sidebarMode}
                 />
             )}
