@@ -20,6 +20,9 @@ import {
     Plus,
     Bell,
     CommandIcon,
+    Search,
+    ChevronDown,
+    CreditCard,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -44,6 +47,7 @@ import Image from "next/image"
 import ChatbotModern from "../icons/chatbot-modern"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { motion } from "framer-motion"
 
 interface NavigationItem {
     title: string
@@ -99,7 +103,11 @@ const navigation: NavigationSection[] = [
                 href: "/dashboard/schedule",
             },
 
-
+            {
+                title: "Billing",
+                icon: CreditCard,
+                href: "/dashboard/billing",
+            },
             {
                 title: "Invites",
                 icon: Mail,
@@ -148,15 +156,21 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
         <Sidebar className="border-r-0 w-[250px] bg-white" {...props}>
             <SidebarHeader className="px-4 py-3 mt-2">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-md ">
+                    <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+
+                        onClick={() => router.push("/")}
+                        className="flex h-9 w-9 items-center justify-center rounded-md ">
                         <Image src="/logos/logo.svg" alt="AI Care Manager" width={30} height={30} />
                         <div className="border-l border-border h-[27px] ml-2" />
-                    </div>
+                    </motion.div>
                     <div className="flex flex-col">
                         <span className="text-sm font-bold ">
                             AI Care Manager
                         </span>
-                        <span className="text-xs text-muted-foreground mt-[1px]">
+                        <span className="text-xs text-neutral-600 mt-[1px]">
                             <div className="flex items-center gap-2">
                                 {user?.userInfo?.agency?.name || "Agency"}
                             </div>
@@ -166,14 +180,46 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button variant="ghost" size="icon">
-                                    <Bell className="h-3.5 w-3.5 text-neutral-600" />
+                                    <ChevronDown className="h-3.5 w-3.5 text-neutral-600" />
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-80">
                                 <div className="flex flex-col space-y-2 p-2">
-                                    <h4 className="font-semibold text-sm">Notifications</h4>
-                                    <div className="text-xs text-muted-foreground">
-                                        <div className="text-neutral-600">You don't have any new notifications.</div>
+                                    <div className="flex flex-row items-center gap-2">
+                                        <Building2 className="h-4 w-4 text-neutral-900" />
+                                        <h4 className="font-semibold text-sm">Switch Agency</h4>
+
+                                    </div>
+                                    <p className="text-xs text-neutral-600 pb-2">
+                                        Switch to a different agency to manage.
+                                    </p>
+                                    <div className="border-b border-border w-[95%] mx-auto my-2" />
+                                    <div className="text-xs text-muted-foreground w-full flex flex-col gap-2">
+                                        {/* Dummy agency data for now */}
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-neutral-900">1.</span>
+                                            <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
+                                                AK Care
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-neutral-900">2.</span>
+                                            <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
+                                                Sunshine Care
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-neutral-900">3.</span>
+                                            <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
+                                                Golden Care
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Button className="w-full mt-2">
+                                            <Plus className="h-4 w-4" />
+                                            <span className="text-xs font-medium">Create New Agency</span>
+                                        </Button>
                                     </div>
                                 </div>
                             </PopoverContent>
@@ -184,6 +230,11 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
             </SidebarHeader>
             <div className="border-b border-border w-[100%] mx-auto my-1" />
             <SidebarContent className="px-3 py-4">
+                <div className="text-xs text-neutral-700 flex items-center gap-1 justify-between mb-4 bg-neutral-100 rounded-md px-3 py-2 border border-neutral-300">
+                    <div className="flex items-center gap-1">    <Search className="h-3.5 w-3.5 text-neutral-600 mr-1" />
+                        Quick Search    </div> <kbd className="flex items-center gap-1 justify-center w-fit px-1.5 py-0.5 text-xs font-medium text-neutral-800 bg-neutral-200 border border-neutral-200 rounded-md"><CommandIcon className="inline-block w-3 h-3" />K</kbd>
+                </div>
+
                 {navigation.map((section) => (
                     <div key={section.title} className="space-y-2 mb-6">
                         <h3 className="px-2 text-xs font-semibold text-neutral-600">
@@ -217,9 +268,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
             </SidebarContent>
             <SidebarFooter className="my-4">
                 <div className="flex flex-col gap-2 items-center">
-                    <div className="text-sm text-neutral-600 flex items-center gap-1 justify-center mb-2">
-                        Press <kbd className="flex items-center gap-1 justify-center w-fit px-1.5 py-0.5 text-xs font-medium text-neutral-800 bg-neutral-100 border border-neutral-200 rounded-md"><CommandIcon className="inline-block w-3 h-3" />K</kbd> to easily navigate.
-                    </div>
+
 
                     {/* <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
                         <div className="flex flex-row items-center gap-2 justify-between">
