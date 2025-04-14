@@ -441,8 +441,100 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
+            <Card className="border border-gray-200 shadow-sm mb-6">
+                <CardHeader className="border-b border-gray-100 pb-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <ClipboardList className="h-5 w-5 mr-2 text-gray-700" />
+                            <CardTitle className="text-lg font-medium text-gray-800">Upcoming Appointments</CardTitle>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="relative">
+                                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <input
+                                    type="text"
+                                    placeholder="Search appointments..."
+                                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
+                            <Button variant="outline" className="bg-white border-gray-200">
+                                <Filter className="h-4 w-4 mr-2" />
+                                Filter
+                            </Button>
+                            <Button variant="outline" className="bg-white border-gray-200">
+                                Export
+                            </Button>
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-b border-gray-100">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment Type</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Care Worker</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-100">
+                            {dashboardData.schedules
+                                .filter(schedule => new Date(schedule.date) >= new Date())
+                                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                                .slice(0, 5)
+                                .map((schedule) => (
+                                    <tr key={schedule.id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarFallback>{schedule.clientName[0]}</AvatarFallback>
+                                                </Avatar>
+                                                <div className="ml-3">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {schedule.clientName}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <Badge variant="outline" className={`${schedule.type === "APPOINTMENT"
+                                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                                : schedule.type === "WEEKLY_CHECKUP"
+                                                    ? "bg-green-50 text-green-700 border-green-200"
+                                                    : "bg-amber-50 text-amber-700 border-amber-200"
+                                                }`}>
+                                                {schedule.type.replace("_", " ")}
+                                            </Badge>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">{new Date(schedule.date).toLocaleDateString()}</div>
+                                            <div className="text-sm text-gray-500">{schedule.startTime} - {schedule.endTime}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">
+                                                {schedule.careWorkerName}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <Badge variant="outline" className={`${schedule.status === "CONFIRMED"
+                                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                                : schedule.status === "PENDING"
+                                                    ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                                                    : "bg-red-50 text-red-700 border-red-200"
+                                                }`}>
+                                                {schedule.status}
+                                            </Badge>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                </CardContent>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <Card className="border border-gray-200 shadow-sm lg:col-span-2">
+                {/* <Card className="border border-gray-200 shadow-sm lg:col-span-2">
                     <CardHeader className="border-b border-gray-100 pb-4">
                         <div className="flex items-center">
                             <Activity className="h-5 w-5 mr-2 text-gray-700" />
@@ -527,7 +619,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                     </CardContent>
-                </Card>
+                </Card> */}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -766,97 +858,7 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            <Card className="border border-gray-200 shadow-sm mb-6">
-                <CardHeader className="border-b border-gray-100 pb-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <ClipboardList className="h-5 w-5 mr-2 text-gray-700" />
-                            <CardTitle className="text-lg font-medium text-gray-800">Upcoming Appointments</CardTitle>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Search appointments..."
-                                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                />
-                            </div>
-                            <Button variant="outline" className="bg-white border-gray-200">
-                                <Filter className="h-4 w-4 mr-2" />
-                                Filter
-                            </Button>
-                            <Button variant="outline" className="bg-white border-gray-200">
-                                Export
-                            </Button>
-                        </div>
-                    </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-b border-gray-100">
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment Type</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Care Worker</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-100">
-                            {dashboardData.schedules
-                                .filter(schedule => new Date(schedule.date) >= new Date())
-                                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                                .slice(0, 5)
-                                .map((schedule) => (
-                                    <tr key={schedule.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <Avatar className="h-8 w-8">
-                                                    <AvatarFallback>{schedule.clientName[0]}</AvatarFallback>
-                                                </Avatar>
-                                                <div className="ml-3">
-                                                    <div className="text-sm font-medium text-gray-900">
-                                                        {schedule.clientName}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <Badge variant="outline" className={`${schedule.type === "APPOINTMENT"
-                                                ? "bg-blue-50 text-blue-700 border-blue-200"
-                                                : schedule.type === "WEEKLY_CHECKUP"
-                                                    ? "bg-green-50 text-green-700 border-green-200"
-                                                    : "bg-amber-50 text-amber-700 border-amber-200"
-                                                }`}>
-                                                {schedule.type.replace("_", " ")}
-                                            </Badge>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{new Date(schedule.date).toLocaleDateString()}</div>
-                                            <div className="text-sm text-gray-500">{schedule.startTime} - {schedule.endTime}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">
-                                                {schedule.careWorkerName}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <Badge variant="outline" className={`${schedule.status === "CONFIRMED"
-                                                ? "bg-blue-50 text-blue-700 border-blue-200"
-                                                : schedule.status === "PENDING"
-                                                    ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                                                    : "bg-red-50 text-red-700 border-red-200"
-                                                }`}>
-                                                {schedule.status}
-                                            </Badge>
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
-                </CardContent>
-            </Card>
+
         </div>
     )
 }

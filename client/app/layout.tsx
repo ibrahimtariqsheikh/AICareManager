@@ -11,6 +11,11 @@ const font = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "AI Care Manager",
   description: "AI Care Manager",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 }
 
 export default async function RootLayout({

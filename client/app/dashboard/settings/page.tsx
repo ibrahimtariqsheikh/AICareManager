@@ -25,6 +25,8 @@ import {
     Star,
     Users,
 } from "lucide-react"
+import { signOut } from "aws-amplify/auth"
+import { useRouter } from "next/navigation"
 
 export default function SettingsPage() {
     // Agency settings state
@@ -44,6 +46,13 @@ export default function SettingsPage() {
     const [clientAndCareWorkerReminders, setClientAndCareWorkerReminders] = useState(true)
     const [distanceAlerts, setDistanceAlerts] = useState(true)
     const [reviewNotifications, setReviewNotifications] = useState(true)
+
+    const router = useRouter()
+
+    const handleLogout = () => {
+        signOut()
+        router.push("/")
+    }
 
     // Handle save settings
     const handleSaveSettings = () => {
@@ -411,6 +420,7 @@ export default function SettingsPage() {
                             <CardDescription>Access support and legal information</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
+                            <div className="flex flex-col gap-2"></div>
                             <Button variant="outline" className="w-full justify-start">
                                 <LifeBuoy className="mr-2 h-4 w-4" />
                                 Contact OnCare Support
@@ -423,10 +433,16 @@ export default function SettingsPage() {
                                 <FileText className="mr-2 h-4 w-4" />
                                 Export Profile Data
                             </Button>
-                            <Button variant="destructive" className="w-full justify-start">
-                                <LogOut className="mr-2 h-4 w-4" />
-                                Log Out
+                            <Button variant="outline" className="w-full justify-start">
+                                <FileText className="mr-2 h-4 w-4" />
+                                Privacy Policy
                             </Button>
+                            <div className="flex justify-end">
+                                <Button variant="destructive" onClick={handleLogout}>
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    Log Out
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 </TabsContent>

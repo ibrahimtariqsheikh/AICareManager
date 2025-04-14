@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip"
+import { CommandPalette } from "./command-palette"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -154,6 +155,7 @@ const SidebarProvider = React.forwardRef<
             {...props}
           >
             {children}
+            <CommandPalette />
           </div>
         </TooltipProvider>
       </SidebarContext.Provider>

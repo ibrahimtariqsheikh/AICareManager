@@ -17,6 +17,9 @@ import {
     Mail,
     File,
     Rocket,
+    Plus,
+    Bell,
+    CommandIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -39,6 +42,8 @@ import { logout } from "../../state/slices/authSlice"
 import { Badge } from "../ui/badge"
 import Image from "next/image"
 import ChatbotModern from "../icons/chatbot-modern"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 
 interface NavigationItem {
     title: string
@@ -140,7 +145,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     }
 
     return (
-        <Sidebar className="border-r-0 w-[220px]" {...props}>
+        <Sidebar className="border-r-0 w-[250px] bg-white" {...props}>
             <SidebarHeader className="px-4 py-3 mt-2">
                 <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-md ">
@@ -157,7 +162,25 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                             </div>
                         </span>
                     </div>
+                    <div className="flex items-center gap-2">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <Bell className="h-3.5 w-3.5 text-neutral-600" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <div className="flex flex-col space-y-2 p-2">
+                                    <h4 className="font-semibold text-sm">Notifications</h4>
+                                    <div className="text-xs text-muted-foreground">
+                                        <div className="text-neutral-600">You don't have any new notifications.</div>
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                 </div>
+
             </SidebarHeader>
             <div className="border-b border-border w-[100%] mx-auto my-1" />
             <SidebarContent className="px-3 py-4">
@@ -192,17 +215,18 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                     </div>
                 ))}
             </SidebarContent>
-            <SidebarFooter className="py-4">
-                <div>
+            <SidebarFooter className="my-4">
+                <div className="flex flex-col gap-2 items-center">
+                    <div className="text-sm text-neutral-600 flex items-center gap-1 justify-center mb-2">
+                        Press <kbd className="flex items-center gap-1 justify-center w-fit px-1.5 py-0.5 text-xs font-medium text-neutral-800 bg-neutral-100 border border-neutral-200 rounded-md"><CommandIcon className="inline-block w-3 h-3" />K</kbd> to easily navigate.
+                    </div>
 
-                    <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
+                    {/* <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
                         <div className="flex flex-row items-center gap-2 justify-between">
                             <div className="flex flex-row items-center gap-2">
                                 <Rocket className="h-4 w-4  text-blue-600" />
                                 <span className="text-xs text-blue-600 font-semibold">
-                                    Get Started
-
-
+                                    Get Started Now
                                 </span>
                             </div>
                             <div className="text-xs text-blue-600 font-semibold bg-blue-400/20 rounded-md px-2 py-[2px] border border-blue-400/10">1/3</div>
@@ -214,7 +238,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                             </div>
                         </div>
 
-                    </div>
+                    </div> */}
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-4">
                     <DropdownMenu open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
@@ -238,17 +262,17 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                 </Button>
                             </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-56">
+                        <DropdownMenuContent align="start" className="w-56 py-2">
                             <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
                                 {theme === "dark" ? (
                                     <>
                                         <Sun className="mr-2 h-3 w-3" />
-                                        <span className="text-sm font-medium">Light Mode</span>
+                                        <span className="text-xs font-medium text-neutral-900">Light Mode</span>
                                     </>
                                 ) : (
                                     <>
                                         <Moon className="mr-2 h-3 w-3" />
-                                        <span className="text-sm font-medium">Dark Mode</span>
+                                        <span className="text-xs font-medium text-neutral-900">Dark Mode</span>
                                     </>
                                 )}
 
@@ -256,13 +280,13 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                             <div className="border-b border-border w-[90%] mx-auto my-2" />
                             <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                                 <LogOut className="mr-2 h-3 w-3" />
-                                <span className="text-sm font-medium">Logout</span>
+                                <span className="text-xs font-medium">Logout</span>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </SidebarFooter>
-            <SidebarRail />
+
         </Sidebar>
     )
 }

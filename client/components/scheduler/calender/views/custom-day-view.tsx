@@ -469,17 +469,7 @@ export function CustomDayView({
 
 
 
-    const getEventTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.text
-    }
 
-    const getEventMutedTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.mutedText
-    }
 
     const getEventIcon = (type: string) => {
         switch (type) {
@@ -757,10 +747,11 @@ export function CustomDayView({
                                                     <motion.div
                                                         key={event.id}
                                                         className={cn(
-                                                            "absolute p-2 text-xs rounded-md shadow-sm ",
-                                                            "bg-blue-100/90",
-                                                            "border-blue-600 border-l-4",
+                                                            "absolute p-2 text-xs rounded-md shadow-sm border ",
+                                                            "bg-blue-50", // Light blue background
+                                                            "border-gray-200 border-l-4 border-l-blue-600",
                                                             "cursor-grab active:cursor-grabbing",
+
                                                         )}
                                                         style={{
                                                             left: `${pos.left || 0}px`,
@@ -781,14 +772,12 @@ export function CustomDayView({
                                                         onClick={() => onSelectEvent(event)}
                                                         whileDrag={{ scale: 1.05 }}
                                                     >
-                                                        <div className={cn("flex flex-col gap-0.5 min-w-0 h-full")}>
-                                                            <div className="flex items-start gap-1 min-w-0">
-                                                                <span className="text-blue-800 flex-shrink-0 pt-0.5">{getEventIcon(event.type) || <HomeModern className="h-3.5 w-3.5" />}</span>
-                                                                <span className="text-blue-800 font-medium truncate">{event.title}</span>
-                                                            </div>
-                                                            <div className={cn("text-[10px] text-blue-800")}>
-                                                                {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
-                                                            </div>
+                                                        <div className={cn("flex items-center gap-1 font-medium truncate")}>
+                                                            <span className="text-blue-800">{getEventIcon(event.type) || <HomeModern className="h-4 w-4" />}</span>
+                                                            <span className="text-blue-800">{event.title}</span>
+                                                        </div>
+                                                        <div className={cn("text-[10px] mt-1 text-blue-800")}>
+                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </div>
                                                     </motion.div>
                                                 )
