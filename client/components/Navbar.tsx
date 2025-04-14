@@ -115,7 +115,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/"
-          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'font-semibold' : ''}`}
+          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'font-semibold text-primary' : ''}`}
         >
           Home
         </Link>
@@ -123,7 +123,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/pricing"
-          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'font-semibold' : ''}`}
+          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'font-semibold text-primary' : ''}`}
         >
           Pricing
         </Link>
@@ -132,7 +132,7 @@ const Navbar = () => {
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
           <Link
             href="/dashboard"
-            className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'font-semibold' : ''}`}
+            className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'font-semibold text-primary' : ''}`}
           >
             Dashboard
           </Link>
@@ -318,12 +318,13 @@ const Navbar = () => {
       animate="visible"
     >
       <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.2 }}
       >
-        <Link href="/" className="flex items-center font-bold">
-          AI Care Manager
+        <Link href="/" className="flex items-center font-bold  gap-1">
+          <Image src="/logos/logo.svg" alt="AI Care Manager" width={35} height={35} />
+          <span className="text-lg font-bold">AI Care Manager</span>
         </Link>
       </motion.div>
 

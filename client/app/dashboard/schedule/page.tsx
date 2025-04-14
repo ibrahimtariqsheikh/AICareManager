@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
 import { useDispatch } from "react-redux"
-import { PlusCircle, X } from "lucide-react"
+import { Plus, PlusCircle, X } from "lucide-react"
 import { Button } from "../../../components/ui/button"
 import { useAppDispatch, useAppSelector } from "@/state/redux"
 import { AppointmentForm } from "@/components/scheduler/appointment-form"
@@ -45,21 +45,23 @@ export default function SchedulerPage() {
             <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex flex-col gap-2">
-                        <h1 className="text-3xl font-bold">Schedule</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Your schedule for the week. Add, edit, or delete appointments as needed. Create new appointments for clients.
-                            And manage your schedule. And Track your time. and more. We have you covered.
+                        <h1 className="text-3xl font-bold text-neutral-900">Schedule</h1>
+                        <p className="text-sm text-neutral-600">
+                            Manage your appointments efficiently. View, create, edit, or cancel client appointments.
+                            Track your availability and organize your professional schedule all in one place.
                         </p>
                     </div>
-                    <Button
+                    {/* <Button
                         onClick={() => setIsAppointmentFormOpen(true)}
                         size="sm"
                         className="hidden sm:flex"
                     >
-                        <PlusCircle className="h-4 w-4 mr-1.5" />
+                        <Plus className="h-4 w-4 mr-1.5" />
                         New Appointment
-                    </Button>
+                    </Button> */}
                 </div>
+
+                <div className="mb-4" />
 
                 <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
 

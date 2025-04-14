@@ -338,15 +338,10 @@ export default function DashboardPage() {
     return (
         <div className="p-6 ">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-                <p className="text-gray-600">Overview of all your detailed of patients and your income</p>
+                <h1 className="text-2xl font-bold text-neutral-900">Dashboard</h1>
+                <p className="text-neutral-600">Overview of all your detailed of patients and your income</p>
             </div>
 
-            <div className="flex justify-between items-center mb-6">
-                <div></div>
-                <div className="flex gap-2">
-                </div>
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <Card className="border border-gray-200 shadow-sm">

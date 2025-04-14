@@ -638,9 +638,8 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                                 if (element) eventElementsRef.current[event.id] = element
                                             }}
                                             className={cn(
-                                                "absolute rounded-lg shadow-sm text-xs p-2 cursor-grab border",
-                                                getEventBackground(event, isDragging, isHovered),
-                                                getEventBorderColor(event),
+                                                "absolute rounded-lg text-xs p-2 cursor-grab ",
+                                                "bg-blue-100/90 border-blue-600 border-l-4 min-w-0",
                                                 spaceTheme ? "border-slate-700" : ""
                                             )}
                                             style={{
@@ -669,14 +668,14 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                                 }
                                             }}
                                         >
-                                            <div className={cn("flex items-center gap-1 mb-1", getEventTextColor(event))}>
+                                            <div className={cn("flex items-center gap-1 mb-1", "text-blue-800")}>
                                                 {getEventIcon(event.type)}
                                                 <span className="font-medium truncate">{event.title}</span>
                                             </div>
-                                            <div className={cn("text-[10px]", getEventMutedTextColor(event))}>
+                                            <div className={cn("text-[10px]", "text-blue-600")}>
                                                 {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                             </div>
-                                            <div className={cn("text-[10px]", getEventMutedTextColor(event))}>
+                                            <div className={cn("text-[10px]", "text-blue-600")}>
                                                 {getEventTypeLabel(event.type)} • {getEventDuration(event)}
                                             </div>
                                         </motion.div>

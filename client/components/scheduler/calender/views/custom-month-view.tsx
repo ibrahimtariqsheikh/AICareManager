@@ -570,9 +570,9 @@ export function CustomMonthView({
                 }}
                 className={cn(
                     "text-xs p-2 rounded-lg shadow-sm cursor-grab active:cursor-grabbing event-card transition-all",
-                    getEventBackground(displayEvent, isActive, isHovered),
-                    spaceTheme ? "text-white border-slate-700" : "text-black border-gray-200",
-                    "border"
+                    "bg-blue-100/90",
+                    spaceTheme ? "text-white border-slate-700" : "text-black border-gray-200 ",
+                    "border-blue-600 border-l-4"
                 )}
                 style={{
                     borderLeftWidth: "4px",
@@ -615,23 +615,21 @@ export function CustomMonthView({
 
                 {/* Event content with improved layout */}
                 <div className="flex flex-col relative z-0">
-                    <div className="flex items-center gap-1 mb-1">
+                    <div className="flex items-center gap-1 mb-1 text-blue-800">
                         {eventIcon}
                         <span className="font-medium truncate">{displayEvent.title}</span>
                     </div>
 
-                    <div className="text-[10px] opacity-70">
+                    <div className="text-[10px]  text-blue-800">
                         {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
                     </div>
 
-                    <div className="text-[10px] opacity-60">
-                        {getEventTypeLabel(displayEvent.type)} • {getEventDuration(displayEvent)}
-                    </div>
+
 
                     {/* Staff info */}
                     <div className="flex items-center gap-1 mt-1">
-                        <div className="w-3 h-3 rounded-full flex-shrink-0 bg-gray-300" />
-                        <span className="text-[10px] truncate">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0 bg-blue-600" />
+                        <span className="text-[10px] truncate text-blue-600 font-medium">
                             {staffName}
                         </span>
                     </div>

@@ -226,7 +226,7 @@ export function CustomCalendar({
                         <div
                             className={cn(
                                 "text-xs flex items-center gap-1 h-8 p-3 rounded-md",
-                                spaceTheme ? "text-slate-400 bg-slate-800/50" : "text-gray-500 bg-gray-100"
+                                spaceTheme ? "text-neutral-100 bg-neutral-900/50" : "text-neutral-900 bg-neutral-100"
                             )}
                         >
                             <GripVertical className="h-3 w-3" />
@@ -235,7 +235,7 @@ export function CustomCalendar({
                         <div
                             className={cn(
                                 "text-xs flex items-center gap-1 h-8 p-3 rounded-md",
-                                spaceTheme ? "bg-slate-800 text-slate-300" : "bg-gray-100 text-gray-600"
+                                spaceTheme ? "bg-neutral-900 text-neutral-100" : "bg-neutral-100 text-neutral-900"
                             )}
                         >
                             <Calendar className="h-3.5 w-3.5" />
@@ -252,43 +252,44 @@ export function CustomCalendar({
                                     transition={{ duration: 0.1 }}
                                 >
                                     {activeScheduleUserType === "clients" ? (
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Clients</p>
                                             <ChevronDown className="h-3 w-3" />
                                         </div>
                                     ) : activeScheduleUserType === "officeStaff" ? (
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Office Staff</p>
                                             <ChevronDown className="h-3 w-3" />
                                         </div>
                                     ) : activeScheduleUserType === "careWorker" ? (
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Care Worker</p>
                                             <ChevronDown className="h-3 w-3" />
                                         </div>
                                     ) : (
-                                        <div>
+                                        <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Staff</p>
+                                            <ChevronDown className="h-3 w-3" />
                                         </div>
                                     )}
                                 </motion.div>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuLabel>User Type</DropdownMenuLabel>
+                                <DropdownMenuLabel className="text-neutral-900 text-xs font-semibold">User Type</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <motion.div whileHover={{ backgroundColor: "rgb(243 244 246)" }}>
+                                <motion.div >
                                     <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("clients"))}
-                                        className="cursor-pointer text-sm font-normal"
+                                        className="cursor-pointer text-xs font-medium text-neutral-900"
                                     >Clients</DropdownMenuItem>
                                 </motion.div>
-                                <motion.div whileHover={{ backgroundColor: "rgb(243 244 246)" }}>
+                                <motion.div >
                                     <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("officeStaff"))}
-                                        className="cursor-pointer text-sm font-normal"
+                                        className="cursor-pointer text-xs font-medium text-neutral-900"
                                     >Office Staff</DropdownMenuItem>
                                 </motion.div>
-                                <motion.div whileHover={{ backgroundColor: "rgb(243 244 246)" }}>
+                                <motion.div >
                                     <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("careWorker"))}
-                                        className="cursor-pointer text-sm font-normal"
+                                        className="cursor-pointer text-xs font-medium text-neutral-900"
                                     >Care Worker</DropdownMenuItem>
                                 </motion.div>
                             </DropdownMenuContent>
@@ -397,16 +398,16 @@ export function CustomCalendar({
                         value={activeView}
                         onValueChange={(value) => dispatch(setActiveView(value as "day" | "week" | "month"))}
                     >
-                        <TabsList>
-                            <TabsTrigger value="day" className="text-xs">
+                        <TabsList className="bg-neutral-100">
+                            <TabsTrigger value="day" className="text-xs text-neutral-900">
                                 <CalendarDays className="h-3 w-3 mr-1" />
                                 Day
                             </TabsTrigger>
-                            <TabsTrigger value="week" className="text-xs ">
+                            <TabsTrigger value="week" className="text-xs text-neutral-900">
                                 <CalendarRange className="h-3 w-3 mr-1" />
                                 Week
                             </TabsTrigger>
-                            <TabsTrigger value="month" className="text-xs">
+                            <TabsTrigger value="month" className="text-xs text-neutral-900">
                                 <CalendarIcon className="h-3 w-3 mr-1" />
                                 Month
                             </TabsTrigger>

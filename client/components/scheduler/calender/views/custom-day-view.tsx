@@ -4,11 +4,14 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, Notebook, ChevronDown } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { eventTypeStyles } from "../styles/event-colors"
+import BankNotes from "@/components/icons/bank-notes"
+import EventIcon from "@/components/icons/eventicon"
+import HomeModern from "@/components/icons/home-modern"
 
 // Define types
 export interface AppointmentEvent {
@@ -464,27 +467,7 @@ export function CustomDayView({
         setActiveEvent(null)
     }
 
-    // Style helpers
-    const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
 
-        if (spaceTheme) {
-            // Convert light theme colors to dark theme
-            const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
-            const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
-            const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
-            return isActive ? activeColor : isHovered ? hoverColor : bgColor
-        } else {
-            return isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg
-        }
-    }
-
-    const getEventBorderColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.border
-    }
 
     const getEventTextColor = (event: AppointmentEvent) => {
         const type = event.type.toLowerCase()
@@ -527,7 +510,7 @@ export function CustomDayView({
     const tooltipClass = spaceTheme
         ? "bg-slate-800 text-white border border-slate-700"
         : "bg-white text-black border border-gray-200"
-    const clientSidebarClass = spaceTheme ? "bg-slate-900 border-slate-700" : "bg-white border-gray-200"
+    const clientSidebarClass = spaceTheme ? "bg-neutral-900 border-neutral-700" : "bg-white border-gray-200"
 
     // Time formatting helpers
     const formatTimeFromMinutes = (minutesFromStart: number) => {
@@ -558,21 +541,29 @@ export function CustomDayView({
                     {showSidebar && (
                         <div className={`w-48 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`} style={{ height: "100%" }}>
                             {/* Users */}
-                            <div className="h-8 font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-600">
-                                <p>{activeScheduleUserType === "clients" ? "Clients" : activeScheduleUserType === "careWorker" ? "Care Workers" : "Office Staff"}</p>
+                            <div className="h-8 font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-900">
+                                <p>{activeScheduleUserType === "clients" ? "CLIENTS" : activeScheduleUserType === "careWorker" ? "CARE WORKERS" : "OFFICE STAFF"}</p>
                             </div>
 
                             <div
-                                className="font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-600"
+                                className=" px-6 font-medium flex items-center text-xs gap-2 border-b text-neutral-600"
                                 style={{ height: `${rowHeight}px` }}
                             >
-                                <p>Labor Costs</p>
+                                <div className="flex items-start gap-2 text-neutral-800">
+                                    <BankNotes className="h-3.5 w-3.5" />
+                                    <span>Labor Costs</span>
+                                    <ChevronDown className="h-3.5 w-3.5" />
+                                </div>
                             </div>
                             <div
-                                className="font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-600"
+                                className="px-6 font-medium flex items-center text-xs gap-2 border-b text-neutral-600"
                                 style={{ height: `${rowHeight}px` }}
                             >
-                                <p>Daily Notes</p>
+                                <div className="flex items-start gap-2 text-neutral-800">
+                                    <Notebook className="h-3.5 w-3.5" />
+                                    <span>Daily Info</span>
+                                    <ChevronDown className="h-3.5 w-3.5" />
+                                </div>
                             </div>
 
                             {/* User list */}
@@ -589,30 +580,33 @@ export function CustomDayView({
                                 >
                                     <div className="flex items-center justify-between w-full">
                                         <div className="flex items-center gap-2">
-                                            <Avatar className="h-6 w-6">
+                                            <Avatar className="h-6 w-6 bg-neutral-100">
                                                 <AvatarImage
                                                     src={user.profile?.avatarUrl || "/placeholder.svg"}
                                                     alt={`${user.firstName} ${user.lastName}`}
+
+
+
                                                 />
-                                                <AvatarFallback className="text-xs">
+                                                <AvatarFallback className="text-xs font-medium bg-neutral-100">
                                                     {user.firstName?.[0]}
 
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <div className="flex gap-1 flex-col justify-start items-start">
-                                                <span className="text-sm font-medium truncate">
+                                            <div className="flex mb-[2px] flex-col justify-start items-start  font-medium">
+                                                <span className="text-sm font-medium truncate text-neutral-800">
                                                     {user.firstName} {user.lastName}
                                                 </span>
                                                 <div
-                                                    className="text-xs text-muted-foreground"
+                                                    className="text-[13px] text-neutral-500 flex items-center gap-1"
                                                 >
-                                                    {eventsByUser[user.id]?.length || 0} Schedules
+                                                    {eventsByUser[user.id]?.length || 0} <EventIcon className="h-4 w-4 block" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-1">
 
-                                            <button className="text-gray-500 hover:text-gray-700">
+                                            <button className="text-neutral-500 hover:text-neutral-700">
                                                 <MoreVertical className="h-4 w-4" />
                                             </button>
                                         </div>
@@ -679,7 +673,7 @@ export function CustomDayView({
                                             className={`absolute top-0 bottom-0 border-r ${isHourMark ? hourLineClass : isHalfHourMark ? halfHourLineClass : gridLineClass}`}
                                             style={{
                                                 left: `${i * slotWidth}px`,
-                                                borderRightWidth: isHourMark ? "2px" : "1.5px",
+                                                borderRightWidth: "1.5px",
                                                 height: "100%",
                                                 zIndex: 1,
                                             }}
@@ -692,7 +686,7 @@ export function CustomDayView({
                                     className={`absolute w-full border-b ${gridLineClass}`}
                                     style={{
                                         top: `${rowHeight}px`,
-                                        height: "1px",
+                                        height: "1.5px",
                                         zIndex: 2,
                                     }}
                                 />
@@ -702,7 +696,7 @@ export function CustomDayView({
                                     className={`absolute w-full border-b ${gridLineClass}`}
                                     style={{
                                         top: `${1 * rowHeight}px`,
-                                        height: "1px",
+                                        height: "1.5px",
                                         zIndex: 2,
                                     }}
                                 />
@@ -711,7 +705,7 @@ export function CustomDayView({
                                     className={`absolute w-full border-b ${gridLineClass}`}
                                     style={{
                                         top: `${2 * rowHeight}px`,
-                                        height: "1px",
+                                        height: "1.5px",
                                         zIndex: 2,
                                     }}
                                 />
@@ -763,9 +757,9 @@ export function CustomDayView({
                                                     <motion.div
                                                         key={event.id}
                                                         className={cn(
-                                                            "absolute p-2 text-xs rounded-md shadow-md border",
-                                                            getEventBackground(event, isActive, isHovered),
-                                                            getEventBorderColor(event),
+                                                            "absolute p-2 text-xs rounded-md shadow-sm ",
+                                                            "bg-blue-100/90",
+                                                            "border-blue-600 border-l-4",
                                                             "cursor-grab active:cursor-grabbing",
                                                         )}
                                                         style={{
@@ -787,12 +781,14 @@ export function CustomDayView({
                                                         onClick={() => onSelectEvent(event)}
                                                         whileDrag={{ scale: 1.05 }}
                                                     >
-                                                        <div className={cn("flex items-center gap-1 font-medium truncate", getEventTextColor(event))}>
-                                                            {getEventIcon(event.type)}
-                                                            <span>{event.title}</span>
-                                                        </div>
-                                                        <div className={cn("text-[10px] mt-1", getEventMutedTextColor(event))}>
-                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                        <div className={cn("flex flex-col gap-0.5 min-w-0 h-full")}>
+                                                            <div className="flex items-start gap-1 min-w-0">
+                                                                <span className="text-blue-800 flex-shrink-0 pt-0.5">{getEventIcon(event.type) || <HomeModern className="h-3.5 w-3.5" />}</span>
+                                                                <span className="text-blue-800 font-medium truncate">{event.title}</span>
+                                                            </div>
+                                                            <div className={cn("text-[10px] text-blue-800")}>
+                                                                {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                            </div>
                                                         </div>
                                                     </motion.div>
                                                 )
@@ -807,13 +803,15 @@ export function CustomDayView({
             </div>
 
             {/* Tooltip */}
-            {dragTooltip && (
-                <div
-                    className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-3 py-1.5 rounded-md text-xs shadow-sm ${tooltipClass}`}
-                >
-                    {dragTooltip.time}
-                </div>
-            )}
-        </div>
+            {
+                dragTooltip && (
+                    <div
+                        className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-3 py-1.5 rounded-md text-xs shadow-sm ${tooltipClass}`}
+                    >
+                        {dragTooltip.time}
+                    </div>
+                )
+            }
+        </div >
     )
 }

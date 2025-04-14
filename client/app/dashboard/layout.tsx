@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation"
-import { SidebarProvider } from "../../components/ui/sidebar"
+import { SidebarHeader, SidebarProvider } from "../../components/ui/sidebar"
 import { SidebarLeft } from "../../components/sidebar/sidebar-left"
 import { SidebarInset } from "../../components/ui/sidebar"
 import { SidebarRight } from "../../components/sidebar/sidebar-right"
@@ -226,11 +226,15 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
 
     return (
         <SidebarProvider className="flex h-screen">
+
             <div className="flex h-full w-full">
+
                 <div className="flex h-full">
+
                     <SidebarLeft />
                     <SidebarInset />
                 </div>
+
                 <main className="flex-1 overflow-y-auto">
                     <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
                         <div className="flex flex-1 items-center gap-2 px-3">
@@ -258,28 +262,7 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
                         {children}
                     </div>
                 </main>
-                {/* {isSchedulePage && !isHidden && (
-                    <SidebarRight
-                        sidebarMode={sidebarMode}
-                        careWorkers={careWorkers}
-                        officeStaff={officeStaff}
-                        clients={clients}
-                        toggleCareWorkerSelection={handleToggleCareWorkerSelection}
-                        toggleOfficeStaffSelection={handleToggleOfficeStaffSelection}
-                        toggleClientSelection={handleToggleClientSelection}
-                        selectAllCareWorkers={handleSelectAllCareWorkers}
-                        deselectAllCareWorkers={handleDeselectAllCareWorkers}
-                        selectAllOfficeStaff={handleSelectAllOfficeStaff}
-                        deselectAllOfficeStaff={handleDeselectAllOfficeStaff}
-                        selectAllClients={handleSelectAllClients}
-                        deselectAllClients={handleDeselectAllClients}
-                        setSidebarMode={handleSetSidebarMode}
-                        currentDate={currentDate}
-                        onDateChange={handleDateChange}
-                        onViewChange={handleViewChange}
-                        viewMode={activeView}
-                    />
-                )} */}
+
             </div>
         </SidebarProvider>
     )
