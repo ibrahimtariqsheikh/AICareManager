@@ -16,6 +16,13 @@ import { addDays, format, subDays } from "date-fns"
 import { ProfitabilityProjections } from "./components/profitability-projections"
 import { BillingReports } from "./components/billing-reports"
 import { BillingSettings } from "./components/billing-settings"
+import { NewInvoiceForm } from "./components/new-invoice-form"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 
 export default function BillingPage() {
     // State for date range
@@ -29,6 +36,9 @@ export default function BillingPage() {
 
     // State for filter visibility
     const [showFilters, setShowFilters] = useState(false)
+
+    // State for new invoice dialog
+    const [showNewInvoiceDialog, setShowNewInvoiceDialog] = useState(false)
 
     // Format date range for display
     const formatDateRange = () => {
@@ -50,7 +60,7 @@ export default function BillingPage() {
                         <Download className="mr-2 h-4 w-4" />
                         Export
                     </Button>
-                    <Button>
+                    <Button onClick={() => setShowNewInvoiceDialog(true)}>
                         <Plus className="mr-2 h-4 w-4" />
                         New Invoice
                     </Button>
@@ -103,6 +113,15 @@ export default function BillingPage() {
                     <BillingSettings />
                 </TabsContent>
             </Tabs>
+
+            <Dialog open={showNewInvoiceDialog} onOpenChange={setShowNewInvoiceDialog}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Create New Invoice</DialogTitle>
+                    </DialogHeader>
+                    <NewInvoiceForm onClose={() => setShowNewInvoiceDialog(false)} />
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

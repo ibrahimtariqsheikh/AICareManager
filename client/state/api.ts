@@ -1,6 +1,7 @@
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth"
 import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { Message } from "@/app/dashboard/chatbot/chatbot-client"
 
 import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
@@ -347,12 +348,16 @@ export interface UserAllDetailsResponse {
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001',
     prepareHeaders: async (headers) => {
-      const session = await fetchAuthSession()
-      const { idToken } = session.tokens ?? {}
-      if (idToken) {
-        headers.set("Authorization", `Bearer ${idToken.toString()}`)
+      try {
+        const session = await fetchAuthSession()
+        const { idToken } = session.tokens ?? {}
+        if (idToken) {
+          headers.set("Authorization", `Bearer ${idToken.toString()}`)
+        }
+      } catch (error) {
+        console.log('No auth session found, proceeding without authentication')
       }
       return headers
     },
@@ -369,7 +374,8 @@ export const api = createApi({
     "Dashboard",
     "User",
     "Agency",
-    "Reports"
+    "Reports",
+    "Chat"
   ],
   endpoints: (build) => ({
     // Get user
@@ -684,6 +690,29 @@ export const api = createApi({
       }),
     }),
 
+    // Chat endpoints
+    sendMessage: build.mutation<{ message: Message; sessionId: string }, { messages: Message[]; sessionId?: string }>({
+      query: (data) => ({
+        url: "/chat/chat",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    getChatHistory: build.query<{ messages: Message[]; sessionId: string }, string>({
+      query: (sessionId) => `/chat/chat/${sessionId}`,
+      providesTags: ["Chat"],
+    }),
+
+    clearChatHistory: build.mutation<void, string>({
+      query: (sessionId) => ({
+        url: `/chat/chat/${sessionId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
     // Document endpoints
     uploadDocument: build.mutation<Document, Partial<Document>>({
       query: (data) => ({
@@ -774,4 +803,8 @@ export const {
   useUpdateReportMutation,
   useGetReportByIdQuery,
   useGetAgencySchedulesQuery,
+  useSendMessageMutation,
+  useGetChatHistoryQuery,
+  useClearChatHistoryMutation,
 } = api
+

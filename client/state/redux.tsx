@@ -19,6 +19,8 @@ import reportReducer from "./slices/reportSlice"
 import documentReducer from "./slices/documentSlice"
 import agencyReducer from "./slices/agencySlice"
 import patientReducer from "./slices/patientSlice"
+import chatReducer from "./slices/chatSlice"
+
 /* REDUX STORE */
 const rootReducer = combineReducers({
   global: globalReducer,
@@ -32,8 +34,9 @@ const rootReducer = combineReducers({
   report: reportReducer,
   document: documentReducer,
   patient: patientReducer,
-
+  chat: chatReducer,
   [api.reducerPath]: api.reducer,
+
 })
 
 export const makeStore = () => {

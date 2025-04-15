@@ -11,6 +11,7 @@ import invitationRoutes from "./routes/invitationRoutes";
 import scheduleRoutes from "./routes/scheduleRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes"
 import reportRoutes from "./routes/reportRoutes";
+import chatRoutes from "./routes/chatRoutes";
 
 
 /* CONFIGURATIONS */
@@ -40,6 +41,7 @@ app.use("/invitations", invitationRoutes);
 app.use("/schedules", scheduleRoutes);
 app.use("/reports", reportRoutes);
 app.use("/dashboard", dashboardRoutes);
+app.use("/chat", chatRoutes);
 /* SERVER */
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Sparkles, Target, Minus, Plus, Save, Calculator, BarChart3 } from "lucide-react"
+import { Sparkles, Target, Minus, Plus, Save, Calculator, BarChart3, ChevronDown } from "lucide-react"
 
 export function ProfitCalculator() {
     const [activeTab, setActiveTab] = useState("configure")
     const [serviceType, setServiceType] = useState("personal-care")
+    const [showRecommendations, setShowRecommendations] = useState(false)
 
     const [profitConfig, setProfitConfig] = useState({
         officeLocation: "West Lake",
@@ -24,6 +25,14 @@ export function ProfitCalculator() {
         ],
         netProfitTarget: 5.96,
     })
+
+    const aiRecommendations = [
+        "Based on current market trends, consider increasing service rates by 5-7%",
+        "Optimize staff scheduling to reduce overtime costs by 15%",
+        "Implement bulk purchasing for supplies to save 8% on operational costs",
+        "Consider offering premium service packages to increase average revenue per client",
+        "Review and renegotiate vendor contracts for potential 10% savings"
+    ]
 
     const handleAddDeduction = () => {
         setProfitConfig({
@@ -51,6 +60,53 @@ export function ProfitCalculator() {
 
     return (
         <div className="space-y-6">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle>Profit Calculator</CardTitle>
+                        <CardDescription>
+                            Calculate and optimize your profit margins
+                        </CardDescription>
+                    </div>
+                    <Button onClick={() => setShowRecommendations(!showRecommendations)}>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        AI Optimize
+                        <ChevronDown className={`ml-2 h-4 w-4 transition-transform ${showRecommendations ? 'rotate-180' : ''}`} />
+                    </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {showRecommendations && (
+                        <div className="p-4 bg-muted/50 rounded-md space-y-2">
+                            <h4 className="font-medium">AI Recommendations</h4>
+                            {aiRecommendations.map((rec, i) => (
+                                <div key={i} className="flex items-start gap-2 text-sm">
+                                    <span className="text-primary">•</span>
+                                    <span>{rec}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label>Revenue</Label>
+                            <Input type="number" placeholder="Enter revenue" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Expenses</Label>
+                            <Input type="number" placeholder="Enter expenses" />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Profit Margin</Label>
+                        <div className="text-2xl font-bold">32.5%</div>
+                        <Button variant="ghost" size="sm" className="mt-2">
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            Get AI Recommendations
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+
             <div className="flex flex-col md:flex-row gap-6">
                 <div className="md:w-2/3">
                     <Card>

@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { useChat } from "ai/react"
 import { motion, AnimatePresence } from "framer-motion"
 import { AutoResizeTextarea } from "@/components/ui/autoresize-textarea"
 import { cn } from "@/lib/utils"
@@ -22,6 +21,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Message, useChat } from "./chatbot-client"
 
 // Define the thinking stages for the AI response
 type ThinkingStage = {
@@ -69,14 +69,12 @@ export default function ChatbotPage() {
         },
     ]
 
-    const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-        api: "/api/chat",
-        initialMessages: [],
-        onFinish: () => {
-            setThinkingStage(-1)
-            setShowFinalResponse(true)
-        },
-    })
+    // Use our custom hook with error handling
+    const { messages, input, handleInputChange, handleSubmit, isLoading, error, clearChat } = useChat({
+        onError: (error) => {
+            toast.error(error);
+        }
+    });
 
     // Mock the thinking stages when loading
     useEffect(() => {
@@ -101,6 +99,9 @@ export default function ChatbotPage() {
             return () => {
                 timers.forEach((timer) => clearTimeout(timer))
             }
+        } else {
+            setThinkingStage(-1)
+            setShowFinalResponse(true)
         }
     }, [isLoading])
 
@@ -152,9 +153,6 @@ export default function ChatbotPage() {
     }
 
     const handleFileSelect = (file: File) => {
-        // In a real app, you would upload the file to your server
-        // and then reference it in the chat message
-
         const fileType = file.type.startsWith("image/") ? "image" : "file"
         const message = `[Uploaded ${fileType}: ${file.name}]`
 
@@ -168,7 +166,7 @@ export default function ChatbotPage() {
     }
 
     return (
-        <div className={cn("flex flex-col h-[calc(100vh-4rem)] text-foreground", isDarkMode ? "bg-[#1E1E1E]" : "bg-white")}>
+        <div className={cn("flex flex-col h-[calc(100vh-4rem)] text-foreground")}>
             {/* Main content area */}
             <main className="flex-1 overflow-hidden flex flex-col">
                 {/* Messages area */}
@@ -177,17 +175,13 @@ export default function ChatbotPage() {
                         <div className="flex flex-col items-center justify-center w-full h-full px-4">
                             <div
                                 className={cn(
-                                    "flex flex-col items-center justify-center w-full max-w-md p-8 rounded-2xl text-center backdrop-blur-md bg-white/20 dark:bg-gray-800/20 border border-gray-200/20 dark:border-gray-700/20",
-                                    isDarkMode
-                                        ? "bg-gradient-to-br from-gray-800/50 to-gray-900/50"
-                                        : "bg-gradient-to-br from-gray-50/50 to-gray-100/50",
+                                    "flex flex-col items-center justify-center w-full max-w-md p-12 rounded-2xl text-center  bg-neutral-200/40 shadow-none",
+
                                 )}
                             >
-                                <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center mb-6">
-                                    <Lightbulb className="h-5 w-5 text-white" />
-                                </div>
-                                <h2 className="text-3xl font-semibold mb-4">How can I assist you today?</h2>
-                                <p className="text-muted-foreground mb-6">Ask questions or use one of the quick actions below</p>
+
+                                <h2 className="text-3xl font-bold mb-4 text-neutral-800">Care.ai</h2>
+                                <p className="mb-6 text-neutral-700 text-sm text-center">Schedule, medication, and manage your client's care in one place</p>
                                 <div className="grid grid-cols-4 gap-3 w-full">
                                     {[
                                         { text: "Summarize Notes", icon: <FileText className="h-4 w-4" /> },
@@ -212,7 +206,7 @@ export default function ChatbotPage() {
                                                         <TooltipTrigger asChild>
                                                             <Button
                                                                 variant="outline"
-                                                                className="w-full h-12 rounded-lg flex items-center justify-center backdrop-blur-sm bg-white/10 dark:bg-gray-800/10 border border-gray-200/20 dark:border-gray-700/20 hover:bg-white/20 dark:hover:bg-gray-800/20"
+                                                                className="w-full h-12 rounded-lg flex items-center justify-center bg-neutral-200 shadow-none"
                                                                 onClick={() => handleQuickAction(action.text)}
                                                             >
                                                                 {action.icon}
@@ -232,7 +226,7 @@ export default function ChatbotPage() {
                     ) : (
                         <div className="max-w-3xl mx-auto py-6 px-4 space-y-6 w-full">
                             <AnimatePresence>
-                                {messages.map((msg, index) => (
+                                {messages.map((msg: Message, index: number) => (
                                     <motion.div
                                         key={msg.id || index}
                                         initial={{ opacity: 0, y: 10 }}
@@ -253,7 +247,7 @@ export default function ChatbotPage() {
                                                 <div className="font-medium mb-1 flex items-center gap-2">
                                                     {msg.role === "user" ? "You" : "Assistant"}
                                                     <span className="text-xs text-muted-foreground">
-                                                        {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                                        {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                                     </span>
                                                 </div>
                                                 <div
