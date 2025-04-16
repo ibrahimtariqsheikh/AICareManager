@@ -7,7 +7,7 @@ import { Check } from "lucide-react"
 import { Button } from "../../components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card"
 import { Switch } from "../../components/ui/switch"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordian"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion"
 import { cn } from "../../lib/utils"
 
 export default function PricingPage() {
