@@ -3,12 +3,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react"
 import moment from "moment"
 import { motion } from "framer-motion"
-import { toast } from "sonner"
 import type { AppointmentEvent } from "../types"
 import { cn } from "../../../../lib/utils"
-import { Home, Video, Building2, Phone, User, Calendar, GripVertical } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar } from "lucide-react"
 import { useAppSelector } from "@/state/redux"
-import { eventTypeStyles } from "../styles/event-colors"
 
 interface CustomWeekViewProps {
     date: Date
@@ -25,33 +23,18 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         date,
         events,
         onSelectEvent,
-        staffMembers,
         getEventDurationInMinutes,
-        onEventUpdate,
         spaceTheme = false
     } = props
 
     // Get current date from Redux store
-    const { currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
-    const currentDate = new Date(currentDateStr)
+    useAppSelector((state) => state.calendar)
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
     const reduxClients = useAppSelector((state) => state.user.clients || [])
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
 
     // Get the appropriate users based on activeScheduleUserType
-    const displayUsers = (() => {
-        switch (activeScheduleUserType) {
-            case "clients":
-                return reduxClients
-            case "careWorker":
-                return careworkers
-            case "officeStaff":
-                return officeStaff
-            default:
-                return reduxClients
-        }
-    })()
 
     // ====================== CONSTANTS ======================
     const HOURS = {
@@ -77,7 +60,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         totalGridWidth: 0,
         totalGridHeight: 0
     })
-    const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
+    const [, setHoveredEvent] = useState<string | null>(null)
 
     // Filter events based on activeScheduleUserType
     const filteredEvents = useMemo(() => {
@@ -253,162 +236,9 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     }
 
     // Custom drag handler - updates position while dragging
-    const handleDrag = (
-        e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent,
-        draggedState: DraggedEventState,
-        info: { offset: { x: number, y: number } }
-    ) => {
-        if (!gridContainerRef.current || !draggedState.event) return
 
-        const { dayColumnWidth } = calendarDimensions
-        const originalPosition = draggedState.originalPosition
 
-        // Calculate day column movement
-        const newLeft = originalPosition.left + info.offset.x
-        const newDayIndex = Math.max(0, Math.min(6,
-            Math.floor((newLeft - TIME_COLUMN_WIDTH + (dayColumnWidth / 2)) / dayColumnWidth)
-        ))
 
-        // Calculate time movement
-        const newTop = Math.max(0, originalPosition.top + info.offset.y)
-        const newMinutes = Math.floor((newTop / CELL_HEIGHT) * 30)
-
-        // Update current position in state
-        setDraggedEvent(prev => ({
-            ...prev,
-            currentDayIndex: newDayIndex,
-            currentMinutes: newMinutes
-        }))
-
-        // Update event position in real-time for visual feedback
-        if (eventElementsRef.current[draggedState.event.id]) {
-            const element = eventElementsRef.current[draggedState.event.id]
-
-            // Position exactly at day column
-            const snappedLeft = TIME_COLUMN_WIDTH + (newDayIndex * dayColumnWidth)
-            element.style.left = `${snappedLeft}px`
-            element.style.top = `${newTop}px`
-        }
-    }
-
-    // Custom drag end handler
-    const handleDragEnd = (dragInfo: { offset: { x: number, y: number } }) => {
-        if (!gridContainerRef.current || !draggedEvent.event || draggedEvent.currentDayIndex === null) {
-            isCurrentlyDragging.current = false
-            return
-        }
-
-        const { dayColumnWidth } = calendarDimensions
-        const event = draggedEvent.event
-        const originalPosition = draggedEvent.originalPosition
-        const newDayIndex = draggedEvent.currentDayIndex
-
-        // Get time with 10-minute snapping
-        const newMinutes = draggedEvent.currentMinutes || 0
-        const snappedMinutes = Math.round(newMinutes / 10) * 10
-
-        const newHours = HOURS.START + Math.floor(snappedMinutes / 60)
-        const newMinutesValue = snappedMinutes % 60
-
-        // Create new start date
-        const newStartDate = moment(daysOfWeek[newDayIndex])
-            .hour(newHours)
-            .minute(newMinutesValue)
-            .second(0)
-            .millisecond(0)
-
-        // Create new end date by adding original duration
-        const newEndDate = moment(newStartDate)
-            .add(originalPosition.durationMinutes, 'minutes')
-
-        // Ensure end time doesn't exceed calendar bounds
-        if (newEndDate.hour() > HOURS.END) {
-            newEndDate.hour(HOURS.END).minute(0)
-        }
-
-        // Create updated event
-        const updatedEvent: AppointmentEvent = {
-            ...event,
-            start: newStartDate.toDate(),
-            end: newEndDate.toDate(),
-            date: newStartDate.toDate()
-        }
-
-        // Calculate final position for visual update
-        const updatedPosition = {
-            ...originalPosition,
-            top: (snappedMinutes / 30) * CELL_HEIGHT,
-            left: TIME_COLUMN_WIDTH + (newDayIndex * dayColumnWidth),
-            dayIndex: newDayIndex
-        }
-
-        // Update the event layout data
-        setEventLayoutData(prev => ({
-            ...prev,
-            [event.id]: updatedPosition
-        }))
-
-        // Call onEventUpdate if provided
-        if (onEventUpdate) {
-            onEventUpdate(updatedEvent)
-            toast.success("Appointment updated")
-        }
-
-        // Reset drag state
-        setDraggedEvent({
-            event: null,
-            originalPosition: null,
-            currentDayIndex: null,
-            currentMinutes: null
-        })
-
-        // Reset dragging flag
-        setTimeout(() => {
-            isCurrentlyDragging.current = false
-        }, 100)
-    }
-
-    // ====================== UTILITIES ======================
-    // Format time label (e.g. "8 AM", "2:30 PM")
-    const formatTimeLabel = (timeSlot: string): string => {
-        const [hourStr, minuteStr] = timeSlot.split(":")
-        const hour = parseInt(hourStr, 10)
-        return `${hour % 12 || 12}${minuteStr === "00" ? "" : ":30"} ${hour >= 12 ? "PM" : "AM"}`
-    }
-
-    // Get event background color based on type
-    const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-
-        if (spaceTheme) {
-            // Convert light theme colors to dark theme
-            const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
-            const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
-            const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
-            return isActive ? activeColor : isHovered ? hoverColor : bgColor
-        } else {
-            return isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg
-        }
-    }
-
-    const getEventBorderColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.border
-    }
-
-    const getEventTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.text
-    }
-
-    const getEventMutedTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.mutedText
-    }
 
     // Get event icon based on type
     const getEventIcon = (type: string) => {
@@ -457,27 +287,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     }
 
     // Check if a time slot has events (for styling)
-    const hasEventsInCell = (day: Date, slotIndex: number): boolean => {
-        const cellStart = moment(day)
-            .hour(Math.floor(slotIndex / 2) + HOURS.START)
-            .minute((slotIndex % 2) * 30)
-        const cellEnd = moment(cellStart).add(30, "minutes")
-
-        return filteredEvents.some(event => {
-            const eventStart = moment(event.start)
-            const eventEnd = moment(event.end)
-
-            // Skip if not on the same day
-            if (!eventStart.isSame(day, "day")) return false
-
-            // Check for overlap
-            return (
-                (eventStart.isSameOrAfter(cellStart) && eventStart.isBefore(cellEnd)) ||
-                (eventEnd.isAfter(cellStart) && eventEnd.isSameOrBefore(cellEnd)) ||
-                (eventStart.isSameOrBefore(cellStart) && eventEnd.isSameOrAfter(cellEnd))
-            )
-        })
-    }
 
     // Auto-scroll to current time on initial load
     useEffect(() => {
@@ -492,6 +301,10 @@ export function CustomWeekView(props: CustomWeekViewProps) {
             calendarContainerRef.current.scrollTop = Math.max(0, scrollPosition)
         }
     }, [timeIntervals])
+
+    function formatTimeLabel(_timeSlot: string): React.ReactNode {
+        throw new Error("Function not implemented.")
+    }
 
     // ====================== RENDERING ======================
     return (
@@ -575,12 +388,10 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                             {/* Calendar grid */}
                             <div className="flex-1 grid grid-cols-7 relative" ref={gridContainerRef}>
                                 {/* Grid cells background */}
-                                {daysOfWeek.map((day, dayIndex) => (
+                                {daysOfWeek.map((_, dayIndex) => (
                                     <div key={dayIndex} className={cn("border-r", spaceTheme ? "border-zinc-800" : "border-gray-200")}>
                                         {timeIntervals.map((_, slotIndex) => {
-                                            const hasEvents = hasEventsInCell(day, slotIndex)
                                             const isHourLine = slotIndex % 2 === 0
-                                            const isHalfHourLine = slotIndex % 2 === 1
 
                                             return (
                                                 <div
@@ -629,7 +440,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                     if (!position) return null // Skip if position not calculated
 
                                     const isDragging = draggedEvent.event?.id === event.id
-                                    const isHovered = hoveredEvent === event.id
+
 
                                     return (
                                         <motion.div

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+
 import { useAppSelector } from "../../state/redux"
 import { useGetDashboardDataQuery } from "../../state/api"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card"
@@ -15,37 +15,21 @@ import {
     CheckCircle2,
     AlertCircle,
     Filter,
-    ChevronRight,
+
     Search,
 } from "lucide-react"
 import { Progress } from "../../components/ui/progress"
 import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
+import { Avatar, AvatarFallback } from "../../components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
+
 import { Skeleton } from "../../components/ui/skeleton"
-import {
-    LineChart,
-    Line,
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-} from "recharts"
+
 
 export default function DashboardPage() {
     const { user } = useAppSelector((state) => state.user)
-    const [scheduleFilter, setScheduleFilter] = useState("all")
+
 
     console.log("user?.userInfo?.id", user?.userInfo?.id)
 
@@ -60,28 +44,7 @@ export default function DashboardPage() {
     console.log(dashboardData)
 
     // Animation variants for staggered animations
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    }
 
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        show: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 24,
-            },
-        },
-    }
 
     if (isLoading) {
         return (
@@ -168,12 +131,12 @@ export default function DashboardPage() {
                         </div>
                         <CardTitle className="text-center">No Data Available</CardTitle>
                         <CardDescription className="text-center">
-                            We couldn't find any dashboard data for your account.
+                            We couldn&apos;t find any dashboard data for your account.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground text-center">
-                            Please make sure you're logged in with the correct account or contact support for assistance.
+                            Please make sure you&apos;re logged in with the correct account or contact support for assistance.
                         </p>
                     </CardContent>
                 </Card>
@@ -207,133 +170,8 @@ export default function DashboardPage() {
         )
     }
 
-    // Filter schedules based on selected filter
-    const filteredSchedules = dashboardData.schedules.filter((schedule) => {
-        if (scheduleFilter === "all") return true
-        if (scheduleFilter === "today") {
-            const today = new Date()
-            const scheduleDate = new Date(schedule.date)
-            return (
-                scheduleDate.getDate() === today.getDate() &&
-                scheduleDate.getMonth() === today.getMonth() &&
-                scheduleDate.getFullYear() === today.getFullYear()
-            )
-        }
-        if (scheduleFilter === "tomorrow") {
-            const tomorrow = new Date()
-            tomorrow.setDate(tomorrow.getDate() + 1)
-            const scheduleDate = new Date(schedule.date)
-            return (
-                scheduleDate.getDate() === tomorrow.getDate() &&
-                scheduleDate.getMonth() === tomorrow.getMonth() &&
-                scheduleDate.getFullYear() === tomorrow.getFullYear()
-            )
-        }
-        if (scheduleFilter === "pending") {
-            return schedule.status === "PENDING"
-        }
-        return true
-    })
 
-    // Function to get schedule type badge
-    const getScheduleTypeBadge = (type: string) => {
-        switch (type) {
-            case "HOME_VISIT":
-                return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-0">Home Visit</Badge>
-            case "MEDICATION":
-                return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-0">Medication</Badge>
-            case "THERAPY":
-                return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 border-0">Therapy</Badge>
-            case "APPOINTMENT":
-                return <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200 border-0">Appointment</Badge>
-            case "SHOPPING":
-                return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 border-0">Shopping</Badge>
-            default:
-                return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 border-0">{type}</Badge>
-        }
-    }
 
-    // Function to get schedule status badge
-    const getScheduleStatusBadge = (status: string) => {
-        switch (status) {
-            case "CONFIRMED":
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        Confirmed
-                    </Badge>
-                )
-            case "PENDING":
-                return (
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-                        Pending
-                    </Badge>
-                )
-            case "CANCELED":
-                return (
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                        Canceled
-                    </Badge>
-                )
-            case "COMPLETED":
-                return (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                        Completed
-                    </Badge>
-                )
-            default:
-                return <Badge variant="outline">{status}</Badge>
-        }
-    }
-
-    // Function to format date in a user-friendly way
-    const formatScheduleDate = (dateString: string) => {
-        const date = new Date(dateString)
-        const now = new Date()
-        const tomorrow = new Date()
-        tomorrow.setDate(tomorrow.getDate() + 1)
-
-        if (
-            date.getDate() === now.getDate() &&
-            date.getMonth() === now.getMonth() &&
-            date.getFullYear() === now.getFullYear()
-        ) {
-            return "Today"
-        } else if (
-            date.getDate() === tomorrow.getDate() &&
-            date.getMonth() === tomorrow.getMonth() &&
-            date.getFullYear() === tomorrow.getFullYear()
-        ) {
-            return "Tomorrow"
-        } else {
-            return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
-        }
-    }
-
-    // Add this before the return statement:
-    const admissionData = [
-        { name: 'Jan', admissions: 65, discharges: 45 },
-        { name: 'Feb', admissions: 59, discharges: 48 },
-        { name: 'Mar', admissions: 80, discharges: 40 },
-        { name: 'Apr', admissions: 81, discharges: 65 },
-        { name: 'May', admissions: 56, discharges: 52 },
-        { name: 'Jun', admissions: 55, discharges: 45 },
-        { name: 'Jul', admissions: 40, discharges: 35 },
-        { name: 'Aug', admissions: 45, discharges: 30 },
-        { name: 'Sep', admissions: 50, discharges: 40 },
-        { name: 'Oct', admissions: 55, discharges: 45 },
-        { name: 'Nov', admissions: 60, discharges: 50 },
-        { name: 'Dec', admissions: 65, discharges: 55 },
-    ]
-
-    const doctorScheduleData = [
-        { name: 'Mon', available: 72, unavailable: 24, leave: 16 },
-        { name: 'Tue', available: 70, unavailable: 26, leave: 14 },
-        { name: 'Wed', available: 75, unavailable: 20, leave: 15 },
-        { name: 'Thu', available: 68, unavailable: 28, leave: 14 },
-        { name: 'Fri', available: 65, unavailable: 30, leave: 15 },
-        { name: 'Sat', available: 60, unavailable: 35, leave: 15 },
-        { name: 'Sun', available: 55, unavailable: 40, leave: 15 },
-    ]
 
     return (
         <div className="p-6 ">

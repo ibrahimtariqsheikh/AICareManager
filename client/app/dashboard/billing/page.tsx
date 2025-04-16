@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { DatePickerWithRange } from "./components/date-range-picker"
 import { InvoiceTable } from "./components/invoice-table"
@@ -10,9 +9,9 @@ import { ProfitCalculator } from "./components/profit-calculator"
 import { ShiftReview } from "./components/shift-review"
 import { BillingStats } from "./components/billing-stats"
 import { BillingActions } from "./components/billing-actions"
-import { Download, FileText, Filter, Plus, Settings, Sparkles } from 'lucide-react'
+import { Download, Filter, Plus } from 'lucide-react'
 import { DateRange } from "react-day-picker"
-import { addDays, format, subDays } from "date-fns"
+import { subDays } from "date-fns"
 import { ProfitabilityProjections } from "./components/profitability-projections"
 import { BillingReports } from "./components/billing-reports"
 import { BillingSettings } from "./components/billing-settings"
@@ -40,11 +39,6 @@ export default function BillingPage() {
     // State for new invoice dialog
     const [showNewInvoiceDialog, setShowNewInvoiceDialog] = useState(false)
 
-    // Format date range for display
-    const formatDateRange = () => {
-        if (!dateRange?.from || !dateRange?.to) return "Select date range"
-        return `${format(dateRange.from, "MMM d, yyyy")} - ${format(dateRange.to, "MMM d, yyyy")}`
-    }
 
     return (
         <div className="container mx-auto py-6 space-y-8">

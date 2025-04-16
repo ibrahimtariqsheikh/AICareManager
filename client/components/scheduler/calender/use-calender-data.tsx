@@ -3,10 +3,11 @@
 import { useEffect, useCallback } from "react"
 import { toast } from "sonner"
 import { useAppSelector, useAppDispatch } from "../../../state/redux"
-import { useGetSchedulesByDateRangeQuery, useGetSchedulesQuery, useGetFilteredUsersQuery } from "../../../state/api"
-import { setFilteredEvents, toggleEventTypeSelection, setSidebarMode } from "../../../state/slices/scheduleSlice"
+import { useGetSchedulesQuery, useGetUsersQuery } from "../../../state/api"
+import { setFilteredEvents, setSidebarMode } from "../../../state/slices/scheduleSlice"
+
+import type { SidebarMode, StaffMember, Client } from "./types"
 import { filterEvents } from "./calender-utils"
-import type { SidebarMode } from "./types"
 
 interface DateRange {
     from?: Date
@@ -25,7 +26,6 @@ export function useCalendarData(dateRange: DateRange) {
     const {
         events,
         filteredEvents,
-        eventTypes,
         sidebarMode,
         loading: schedulesLoading,
         error,
@@ -33,42 +33,34 @@ export function useCalendarData(dateRange: DateRange) {
 
     // Prepare query parameters for API calls
     const queryParams = {
-        startDate: dateRange.from?.toISOString(),
-        endDate: dateRange.to?.toISOString(),
-        status: undefined,
-        type: undefined,
         limit: 100,
         offset: 0,
+        ...(userId ? { userId } : {}),
+        ...(dateRange.from ? { startDate: dateRange.from.toISOString() } : {}),
+        ...(dateRange.to ? { endDate: dateRange.to.toISOString() } : {}),
     }
 
     // Use the appropriate query based on whether date range is provided
     const hasDateRange = Boolean(dateRange.from && dateRange.to)
 
     // Fetch schedules
-    const schedulesQuery = useGetSchedulesQuery(
-        {
-            status: undefined,
-            type: undefined,
-            limit: 100,
-            offset: 0,
-        },
-        { skip: hasDateRange || !userId },
-    )
-
-    const dateRangeQuery = useGetSchedulesByDateRangeQuery(queryParams, { skip: !hasDateRange || !userId })
+    const schedulesQuery = useGetSchedulesQuery(queryParams, { skip: hasDateRange || !userId })
 
     // Fetch users (staff and clients)
-    const { refetch: refetchUsers } = useGetFilteredUsersQuery(userId, {
-        skip: !userId,
-    })
-
-    // Determine which query to use
-    const query = hasDateRange ? dateRangeQuery : schedulesQuery
+    const { refetch: refetchUsers } = useGetUsersQuery(
+        {
+            role: "CARE_WORKER",
+            agencyId: userInfo?.agencyId || "",
+        },
+        { skip: !userInfo?.agencyId },
+    )
 
     // Update filtered events when staff, clients, or event types change
     useEffect(() => {
-        const careWorkerMembers = careWorkers.map((staff) => ({
+        const careWorkerMembers: StaffMember[] = careWorkers.map((staff) => ({
             id: staff.id,
+            firstName: staff.firstName || "",
+            lastName: staff.lastName || "",
             name: `${staff.firstName} ${staff.lastName}`,
             role: staff.role || "CARE_WORKER",
             color: staff.color || "#000000",
@@ -76,8 +68,10 @@ export function useCalendarData(dateRange: DateRange) {
             selected: true,
         }))
 
-        const officeStaffMembers = officeStaff.map((staff) => ({
+        const officeStaffMembers: StaffMember[] = officeStaff.map((staff) => ({
             id: staff.id,
+            firstName: staff.firstName || "",
+            lastName: staff.lastName || "",
             name: `${staff.firstName} ${staff.lastName}`,
             role: staff.role || "OFFICE_STAFF",
             color: staff.color || "#000000",
@@ -85,20 +79,23 @@ export function useCalendarData(dateRange: DateRange) {
             selected: true,
         }))
 
-        const formattedClients = clients.map((client) => ({
+        const formattedClients: Client[] = clients.map((client) => ({
             id: client.id,
+            firstName: client.firstName || "",
+            lastName: client.lastName || "",
             name: `${client.firstName} ${client.lastName}`,
             color: client.color || "#000000",
             avatar: client.profile?.avatarUrl || "",
             selected: true,
         }))
 
+
+
         const filtered = filterEvents(
             events,
             careWorkerMembers,
             officeStaffMembers,
             formattedClients,
-            eventTypes,
             sidebarMode,
         )
         dispatch(setFilteredEvents(filtered))
@@ -113,17 +110,9 @@ export function useCalendarData(dateRange: DateRange) {
 
     // Function to refresh data
     const refreshData = useCallback(() => {
-        query.refetch()
+        schedulesQuery.refetch()
         refetchUsers()
-    }, [query, refetchUsers])
-
-    // Toggle event type selection
-    const handleToggleEventType = useCallback(
-        (typeId: string) => {
-            dispatch(toggleEventTypeSelection(typeId))
-        },
-        [dispatch],
-    )
+    }, [schedulesQuery, refetchUsers])
 
     // Set sidebar mode
     const handleSetSidebarMode = useCallback(
@@ -137,10 +126,8 @@ export function useCalendarData(dateRange: DateRange) {
         events,
         filteredEvents,
         isLoading: schedulesLoading || usersLoading,
-        eventTypes,
         sidebarMode,
         setSidebarMode: handleSetSidebarMode,
-        toggleEventTypeSelection: handleToggleEventType,
         refreshData,
     }
 }

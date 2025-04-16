@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation"
 import { useGetReportByIdQuery } from "@/state/api"
 import { format, formatDistance } from "date-fns"
-import { AlertCircle, ArrowLeft, Edit, FileText, Home, MapPin, Plus, User, Wrench } from "lucide-react"
+import { AlertCircle, ArrowLeft, FileText, Home, MapPin, Plus, User, Wrench } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -132,7 +132,7 @@ const ReportPage = () => {
                                         <p>{formatTime(report.checkInTime)}</p>
                                         {report.checkInDistance && (
                                             <Badge variant="outline" className="ml-2">
-                                                {report.checkInDistance}km from client's home
+                                                {report.checkInDistance}km from client&apos;s home
                                             </Badge>
                                         )}
                                     </div>
@@ -150,7 +150,7 @@ const ReportPage = () => {
                                         <p>{formatTime(report.checkOutTime)}</p>
                                         {report.checkOutDistance && (
                                             <Badge variant="outline" className="ml-2">
-                                                {report.checkOutDistance}km from client's home
+                                                {report.checkOutDistance}km from client&apos;s home
                                             </Badge>
                                         )}
                                     </div>

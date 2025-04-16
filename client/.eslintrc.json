@@ -1,0 +1,13 @@
+{
+    "extends": [],
+    "plugins": [],
+    "rules": {},
+    "ignorePatterns": [
+        "node_modules/",
+        ".next/",
+        "out/",
+        "public/",
+        "*.config.js",
+        "*.config.ts"
+    ]
+}

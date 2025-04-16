@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Loader2 } from "lucide-react"
@@ -41,7 +40,7 @@ export type RequestResetFormValues = z.infer<typeof requestResetSchema>
 export type ConfirmResetFormValues = z.infer<typeof confirmResetSchema>
 
 const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ usernameProp, toggleForm }) => {
-    const router = useRouter()
+
     const dispatch = useAppDispatch()
     const { loading, error, isPasswordReset } = useAppSelector((state) => state.auth)
     const [username, setUsername] = useState(usernameProp || "")

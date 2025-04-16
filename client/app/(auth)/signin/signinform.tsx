@@ -31,9 +31,9 @@ const SigninForm: React.FC<SigninFormProps> = ({
 }) => {
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const { loading, error, isVerificationStep, user } = useAppSelector((state) => state.auth)
+    const { loading, error, isVerificationStep } = useAppSelector((state) => state.auth)
     const [showPassword, setShowPassword] = useState<boolean>(false)
-    const [verificationStatus, setVerificationStatus] = useState("")
+    const [, setVerificationStatus] = useState("")
     const [usernameForVerification, setUsernameForVerification] = useState("")
 
     const form = useForm<SigninFormValues>({
@@ -54,9 +54,6 @@ const SigninForm: React.FC<SigninFormProps> = ({
         return () => subscription.unsubscribe()
     }, [form, dispatch, error])
 
-    const toggleVerificationForm = () => {
-        setShowVerification(!showVerification)
-    }
 
     const onSubmit = async (values: SigninFormValues) => {
         try {

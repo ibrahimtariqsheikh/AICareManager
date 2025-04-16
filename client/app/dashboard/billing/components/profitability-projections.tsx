@@ -1,13 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { DateRange } from "react-day-picker"
-
-interface ProfitabilityProjectionsProps {
-    dateRange: DateRange | undefined
-}
-
-export function ProfitabilityProjections({ dateRange }: ProfitabilityProjectionsProps) {
+export function ProfitabilityProjections() {
     return (
         <Card>
             <CardHeader>

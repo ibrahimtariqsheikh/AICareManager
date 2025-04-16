@@ -4,8 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Link from "next/link";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "../../../../components/ui/button";
@@ -28,7 +27,7 @@ import {
 import { toast } from "sonner";
 
 import { useAppDispatch, useAppSelector } from "../../../../state/redux";
-import { signupUser, verifyCode } from "../../../../state/slices/authSlice";
+import { signupUser } from "../../../../state/slices/authSlice";
 import { withToast } from "../../../../lib/utils";
 import { useCreateUserMutation } from "../../../../state/api";
 import { Role } from "../../../../types/prismaTypes";
@@ -64,7 +63,7 @@ const SignupForm = ({
 }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const { loading, error, isVerificationStep } = useAppSelector((state) => state.auth);
+    const { error, isVerificationStep } = useAppSelector((state) => state.auth);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [createUser] = useCreateUserMutation();
 
@@ -109,7 +108,7 @@ const SignupForm = ({
                     lastName: values.lastName,
                     username: values.username,
                     role: values.role,
-                    agencyId: invitationData?.inviterId // Changed from inviterId to agencyId
+                    agencyId: invitationData?.inviterId ?? "" // Changed from inviterId to agencyId
                 })).unwrap(),
                 {
                     success: "Account created successfully!",
@@ -122,13 +121,13 @@ const SignupForm = ({
                 toggleForm();
             } else if (result) {
                 //CREATE USER IN DATABASE
-                const user = await createUser({
+                await createUser({
                     email: values.email,
                     firstName: values.firstName,
                     lastName: values.lastName,
                     role: values.role as Role,
                     cognitoId: result.user.cognitoId ?? "",
-                    invitedById: invitationData?.inviterId
+                    invitedById: invitationData?.inviterId ?? "" // Changed from inviterId to invitedById
                 })
                 toast.success("Account created successfully!");
                 router.push("/dashboard");

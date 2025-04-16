@@ -18,14 +18,14 @@ import { Plus, Users, UserMinus } from "lucide-react"
 import { ClientGroupList } from "./components/client-group-list"
 import { ClientSelector } from "./components/client-selector"
 import { useAppSelector } from "@/hooks/useAppSelector"
-import { useAppDispatch } from "@/hooks/useAppDispatch"
+
 import { useGetGroupsQuery, useCreateGroupMutation, useUpdateGroupMutation, useDeleteGroupMutation } from "@/state/api"
 import type { Client, ClientGroup } from "./types"
 import { EmptyState } from "./components/empty-state"
 import { Group } from "@/types/prismaTypes"
 
 export default function ClientGroupsPage() {
-    const dispatch = useAppDispatch()
+
     const agencyId = useAppSelector((state) => state.user.user.userInfo?.agencyId)
     const { data: groupsData, isLoading, refetch } = useGetGroupsQuery(agencyId as string)
     const [createGroup] = useCreateGroupMutation()

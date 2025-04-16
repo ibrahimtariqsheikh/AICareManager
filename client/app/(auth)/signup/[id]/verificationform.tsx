@@ -80,7 +80,7 @@ const VerificationForm = ({
         if (!usernameProp && !username) {
             setShowUserInputs(true);
         }
-    }, [user, error, emailProp, usernameProp]);
+    }, [user, error, emailProp, usernameProp, username]);
 
     const onSubmit = async (values: { code: string }) => {
         try {
@@ -208,7 +208,7 @@ const VerificationForm = ({
                     <FormField
                         control={form.control}
                         name="code"
-                        render={({ field }: { field: any }) => (
+                        render={({ field }) => (
                             <FormItem>
                                 <div className="block text-sm font-medium">Verification Code</div>
                                 <FormControl>

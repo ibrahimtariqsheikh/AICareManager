@@ -7,8 +7,7 @@ import { toast } from "sonner"
 import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, Notebook, ChevronDown } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { useAppSelector, useAppDispatch } from "@/state/redux"
-import { eventTypeStyles } from "../styles/event-colors"
+import { useAppSelector } from "@/state/redux"
 import BankNotes from "@/components/icons/bank-notes"
 import EventIcon from "@/components/icons/eventicon"
 import HomeModern from "@/components/icons/home-modern"
@@ -70,22 +69,12 @@ export function CustomDayView({
     clients: propClients,
     spaceTheme = false,
     showSidebar = true,
-    slotHeight = 60,
     minutesPerSlot = 30,
     initialHeight = "600px",
     initialWidth = "100%",
-    staffMembers = [],
-    getEventDurationInMinutes = (event) => {
-        const start = moment(event.start)
-        const end = moment(event.end)
-        return end.diff(start, "minutes")
-    },
-    currentView,
-    currentDate,
-    onDateChange,
-    onViewChange,
+
 }: CustomDayViewProps) {
-    const dispatch = useAppDispatch()
+
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
     const reduxClients = useAppSelector((state) => state.user.clients || [])
     const clients = propClients || reduxClients
@@ -94,16 +83,10 @@ export function CustomDayView({
 
     // Get the appropriate users based on activeScheduleUserType
     const displayUsers = (() => {
-        switch (activeScheduleUserType) {
-            case "clients":
-                return clients
-            case "careWorker":
-                return careworkers
-            case "officeStaff":
-                return officeStaff
-            default:
-                return clients
-        }
+        if (activeScheduleUserType === "clients") return clients
+        if (activeScheduleUserType === "careWorker") return careworkers
+        if (activeScheduleUserType === "officeStaff") return officeStaff
+        return []
     })()
 
     // Refs
@@ -116,12 +99,12 @@ export function CustomDayView({
     const [eventPositions, setEventPositions] = useState<Record<string, any>>({})
     const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
     const [activeEvent, setActiveEvent] = useState<string | null>(null)
-    const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
+    const [, setHoveredEvent] = useState<string | null>(null)
     const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
     const [calendarHeight, setCalendarHeight] = useState<string | number>(initialHeight)
     const [calendarWidth, setCalendarWidth] = useState<string | number>(initialWidth)
-    const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
-    const [originalDimensions, setOriginalDimensions] = useState<{ height: string | number; width: string | number }>({
+    const [] = useState<boolean>(false)
+    const [] = useState<{ height: string | number; width: string | number }>({
         height: initialHeight,
         width: initialWidth,
     })
@@ -184,9 +167,9 @@ export function CustomDayView({
             .filter((event) => moment(event.start).isSame(date, "day"))
             .forEach((event) => {
                 if (event.clientId && userEvents[event.clientId]) {
-                    userEvents[event.clientId].push(event)
+                    userEvents[event.clientId]?.push(event)
                 } else {
-                    userEvents["unallocated"].push(event)
+                    userEvents["unallocated"]?.push(event)
                 }
             })
 
@@ -259,6 +242,8 @@ export function CustomDayView({
             container.addEventListener("scroll", handleScroll)
             return () => container.removeEventListener("scroll", handleScroll)
         }
+
+        return () => { } // Ensure a return function exists on all paths
     }, [])
 
     // Auto-scroll to current time on initial load
@@ -379,7 +364,7 @@ export function CustomDayView({
     }, [spaceTheme])
 
     // Drag event handlers
-    const handleDragStart = (eventId: string, clientId: string) => {
+    const handleDragStart = (eventId: string, _clientId: string) => {
         setActiveEvent(eventId)
         document.body.style.cursor = "grabbing"
 
@@ -402,7 +387,7 @@ export function CustomDayView({
         setDragTooltip({ eventId, time: timeText })
     }
 
-    const handleDragEnd = (eventId: string, info: any, clientId: string) => {
+    const handleDragEnd = (eventId: string, info: any, _clientId: string) => {
         const position = eventPositions[eventId]
         if (!position) return
 
@@ -653,7 +638,7 @@ export function CustomDayView({
                         >
                             <div ref={timelineRef} className="relative" style={{ width: `${totalWidth}px`, minHeight: "100%" }}>
                                 {/* Vertical grid lines */}
-                                {timeSlots.map((time, i) => {
+                                {timeSlots.map((_time, i) => {
                                     const isHourMark = i % slotsPerHour === 0
                                     const isHalfHourMark = i % (slotsPerHour / 2) === 0 && !isHourMark
 
@@ -721,7 +706,7 @@ export function CustomDayView({
                                 {/* Client rows with clear boundaries */}
                                 <div className="relative" style={{ height: `${(displayUsers.length + 2) * rowHeight}px` }}>
                                     {/* Client rows */}
-                                    {displayUsers.map((user, index) => (
+                                    {displayUsers.map((user, _) => (
                                         <div
                                             key={user.id}
                                             className="client-row absolute w-full border-b-2"
@@ -741,7 +726,6 @@ export function CustomDayView({
                                                 if (!pos) return null
 
                                                 const isActive = activeEvent === event.id
-                                                const isHovered = hoveredEvent === event.id
 
                                                 return (
                                                     <motion.div
@@ -765,8 +749,8 @@ export function CustomDayView({
                                                         dragConstraints={timelineRef}
                                                         dragMomentum={false}
                                                         onDragStart={() => handleDragStart(event.id, user.id)}
-                                                        onDrag={(e, info) => handleDrag(event.id, info)}
-                                                        onDragEnd={(e, info) => handleDragEnd(event.id, info, user.id)}
+                                                        onDrag={(_e, info) => handleDrag(event.id, info)}
+                                                        onDragEnd={(_e, info) => handleDragEnd(event.id, info, user.id)}
                                                         onMouseEnter={() => setHoveredEvent(event.id)}
                                                         onMouseLeave={() => setHoveredEvent(null)}
                                                         onClick={() => onSelectEvent(event)}

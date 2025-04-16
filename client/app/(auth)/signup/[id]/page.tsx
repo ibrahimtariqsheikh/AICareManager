@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { useAppSelector } from "../../../../state/redux"
 import VerificationForm from "./verificationform"
 import { decrypt } from "../../../../lib/utils"
@@ -91,8 +89,8 @@ const SignupPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
                 <div className="mb-10">
                     <p className="text-xl font-medium mb-2">
-                        "AI Care Manager has streamlined our healthcare operations and improved communication between our staff and
-                        patients, making our facility more efficient than ever before."
+                        &quot;AI Care Manager has streamlined our healthcare operations and improved communication between our staff and
+                        patients, making our facility more efficient than ever before.&quot;
                     </p>
                     <p className="text-sm">Dr. Ibrahim Sheikh</p>
                 </div>

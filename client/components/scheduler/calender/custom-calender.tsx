@@ -76,9 +76,7 @@ export function CustomCalendar({
     onNavigate,
     isLoading,
     staffMembers,
-    isMobile,
     sidebarMode,
-    clients,
     spaceTheme,
     events,
     getEventTypeLabel,
@@ -138,17 +136,6 @@ export function CustomCalendar({
         }
     }
 
-    const getWeekRange = (date: Date) => {
-        const start = moment(date).startOf('week').toDate()
-        const end = moment(date).endOf('week').toDate()
-        return { from: start, to: end }
-    }
-
-    const getMonthRange = (date: Date) => {
-        const start = moment(date).startOf('month').toDate()
-        const end = moment(date).endOf('month').toDate()
-        return { from: start, to: end }
-    }
 
     const getEventDurationInMinutes = (event: AppointmentEvent) => {
         const start = new Date(event.start)
@@ -185,27 +172,6 @@ export function CustomCalendar({
         console.log("Sample processed event:", events[0])
     }, [events])
 
-    const [showYearSelect, setShowYearSelect] = useState(false)
-    const [showMonthSelect, setShowMonthSelect] = useState(false)
-    const [selectedYear, setSelectedYear] = useState(moment(currentDate).year())
-    const [selectedMonth, setSelectedMonth] = useState(moment(currentDate).month())
-
-    const years = Array.from({ length: 10 }, (_, i) => moment().year() - 5 + i)
-    const months = moment.months()
-
-    const handleYearSelect = (year: number) => {
-        setSelectedYear(year)
-        const newDate = moment(currentDate).year(year).toDate()
-        onNavigate(newDate)
-        setShowYearSelect(false)
-    }
-
-    const handleMonthSelect = (month: number) => {
-        setSelectedMonth(month)
-        const newDate = moment(currentDate).month(month).toDate()
-        onNavigate(newDate)
-        setShowMonthSelect(false)
-    }
 
     if (isLoading) {
         return (
@@ -328,7 +294,7 @@ export function CustomCalendar({
                                                 <DialogTitle>Calendar</DialogTitle>
                                                 <CalendarDropdown
                                                     mode="single"
-                                                    selected={currentDate}
+                                                    selected={currentDate ?? new Date()}
                                                     onSelect={handleDateSelect}
                                                     className={cn(
                                                         "rounded-md border w-fit",
@@ -371,7 +337,7 @@ export function CustomCalendar({
                                                 <DialogTitle>Calendar</DialogTitle>
                                                 <CalendarDropdown
                                                     mode={activeView === "week" || activeView === "month" ? "range" : "single"}
-                                                    selected={activeView === "week" || activeView === "month" ? selectedRange : currentDate}
+                                                    selected={activeView === "week" || activeView === "month" ? (selectedRange ?? { from: new Date(), to: new Date() }) : (currentDate ?? new Date())}
                                                     onSelect={handleDateSelect}
                                                     className={cn(
                                                         "rounded-md border w-fit",
@@ -426,7 +392,7 @@ export function CustomCalendar({
                     events={events}
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
-                    spaceTheme={spaceTheme}
+
 
                 />
             )}
@@ -439,7 +405,7 @@ export function CustomCalendar({
                     onEventUpdate={onEventUpdate}
                     staffMembers={staffMembers}
                     getEventDurationInMinutes={getEventDurationInMinutes}
-                    spaceTheme={spaceTheme}
+
                 />
             )}
 
@@ -452,7 +418,7 @@ export function CustomCalendar({
                     staffMembers={staffMembers}
                     getEventDurationInMinutes={getEventDurationInMinutes}
                     getEventTypeLabel={getEventTypeLabel}
-                    spaceTheme={spaceTheme}
+
 
                     sidebarMode={sidebarMode}
                 />

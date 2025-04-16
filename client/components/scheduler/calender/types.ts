@@ -17,6 +17,13 @@ export interface Client {
   selected: boolean
 }
 
+export interface EventType {
+  id: string
+  name: string
+  color: string
+  selected: boolean
+}
+
 export interface AppointmentEvent {
   id: string
   title: string

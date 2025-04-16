@@ -106,7 +106,7 @@ export const initializeAuth = createAsyncThunk(
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ username, password }: LoginInput, { rejectWithValue, dispatch }) => {
+  async ({ username, password }: LoginInput, { rejectWithValue }) => {
     try {
       const response = await signIn({
         username,
@@ -190,7 +190,7 @@ export const signupUser = createAsyncThunk(
 
 export const verifyCode = createAsyncThunk(
   "auth/verifyCode",
-  async ({ username, code }: VerificationInput, { rejectWithValue, dispatch }) => {
+  async ({ username, code }: VerificationInput, { rejectWithValue }) => {
     try {
       const { isSignUpComplete } = await confirmSignUp({
         username,

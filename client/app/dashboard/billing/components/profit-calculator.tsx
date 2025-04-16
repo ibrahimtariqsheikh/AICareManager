@@ -51,7 +51,7 @@ export function ProfitCalculator() {
         })
     }
 
-    const handleDeductionChange = (id: string, field: string, value: any) => {
+    const handleDeductionChange = (id: string, field: string, value: string | number) => {
         setProfitConfig({
             ...profitConfig,
             deductions: profitConfig.deductions.map((d) => (d.id === id ? { ...d, [field]: value } : d)),

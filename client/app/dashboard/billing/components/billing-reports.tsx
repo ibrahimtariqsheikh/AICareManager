@@ -1,7 +1,6 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { DateRange } from "react-day-picker"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { Button } from "@/components/ui/button"
 import { Sparkles, ChevronDown } from "lucide-react"
@@ -17,11 +16,7 @@ const data = [
     { name: "Jun", revenue: 2390, expenses: 3800 },
 ]
 
-interface BillingReportsProps {
-    dateRange: DateRange | undefined
-}
-
-export function BillingReports({ dateRange }: BillingReportsProps) {
+export function BillingReports() {
     const [showAnalysis, setShowAnalysis] = useState({
         overview: false,
         clients: false,

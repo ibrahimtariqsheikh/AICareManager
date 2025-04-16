@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Lightbulb, FileText, Calendar, PlusCircle, ClipboardList } from 'lucide-react'
+import { Lightbulb, FileText, Calendar, ClipboardList } from 'lucide-react'
 
 interface SuggestionDialogProps {
     open: boolean

@@ -5,9 +5,9 @@ import { useAppSelector } from "../../../state/redux"
 import { useRouter } from "next/navigation"
 import ResetPasswordForm from "./resetpasswordform"
 import SigninForm from "./signinform"
-import { Blocks, MessageSquare, BarChart3, Users, ChevronLeft, Calendar, Bot } from "lucide-react"
+import { Blocks, MessageSquare, Users, ChevronLeft, Calendar, Bot } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
+
 
 const SigninPage = () => {
     const router = useRouter()
@@ -168,7 +168,7 @@ const SigninPage = () => {
                     <div className="mb-4">
                         <h1 className="text-4xl sm:text-5xl leading-snug font-semibold mb-6 tracking-wide">
                             <span className="block bg-gradient-to-r from-gray-300 via-white to-transparent bg-clip-text text-transparent backdrop-filter backdrop-blur-lg p-1">
-                                Healthcare management that's
+                                Healthcare management that&apos;s
                             </span>
                             <span className="block bg-gradient-to-r from-white via-gray-100 to-transparent bg-clip-text text-transparent backdrop-filter backdrop-blur-lg p-1">
                                 efficient and compliant

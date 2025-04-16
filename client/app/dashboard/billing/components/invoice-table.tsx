@@ -15,7 +15,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ArrowUpDown, Download, Edit, Eye, MoreHorizontal, Send, Trash } from "lucide-react"
-import type { DateRange } from "react-day-picker"
 import { format } from "date-fns"
 
 // Mock clients data
@@ -35,12 +34,9 @@ interface Invoice {
     paymentMethod: string
 }
 
-interface InvoiceTableProps {
-    date?: DateRange | undefined
-    filters?: any
-}
+// Props type not needed as we're not using params
 
-export function InvoiceTable({ date, filters }: InvoiceTableProps) {
+export function InvoiceTable(): React.JSX.Element {
     const [selectedInvoices, setSelectedInvoices] = useState<string[]>([])
     const [sortColumn, setSortColumn] = useState<string | null>(null)
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")

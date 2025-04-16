@@ -1,8 +1,8 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, MotionStyle } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { eventTypeStyles } from "../styles/event-colors"
+import { eventTypeStyles, EventStyles } from "../styles/event-colors"
 import { Home, Video, Building2, Phone, User, Calendar } from "lucide-react"
 import type { AppointmentEvent } from "../types"
 
@@ -19,7 +19,7 @@ interface CalendarEventCardProps {
     onMouseEnter?: () => void
     onMouseLeave?: () => void
     className?: string
-    style?: React.CSSProperties
+    style?: MotionStyle
 }
 
 export function CalendarEventCard({
@@ -40,7 +40,7 @@ export function CalendarEventCard({
     // Get event styling based on type
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
         const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
 
         if (spaceTheme) {
             // Convert light theme colors to dark theme
@@ -55,19 +55,19 @@ export function CalendarEventCard({
 
     const getEventBorderColor = (event: AppointmentEvent) => {
         const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
         return styles.border
     }
 
     const getEventTextColor = (event: AppointmentEvent) => {
         const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
         return styles.text
     }
 
     const getEventMutedTextColor = (event: AppointmentEvent) => {
         const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
         return styles.mutedText
     }
 
@@ -94,20 +94,22 @@ export function CalendarEventCard({
     return (
         <motion.div
             className={cn(
-                "rounded-md shadow-sm border p-2 cursor-pointer transition-colors",
+                "rounded-md border p-2 cursor-pointer transition-colors",
+                isDragging
+                    ? (spaceTheme ? "shadow-lg shadow-black/50" : "shadow-lg shadow-black/20")
+                    : (spaceTheme ? "shadow-md shadow-black/30" : "shadow-sm shadow-black/10"),
                 getEventBackground(event, isActive, isHovered),
                 getEventBorderColor(event),
                 spaceTheme ? "border-slate-700" : "",
                 className
             )}
-            style={{
-                ...style,
-                boxShadow: isDragging
-                    ? (spaceTheme ? "0 4px 12px rgba(0,0,0,0.5)" : "0 4px 12px rgba(0,0,0,0.2)")
-                    : (spaceTheme ? "0 2px 6px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.1)"),
-                transform: isDragging ? "scale(1.02)" : "scale(1)",
+            animate={{
+                scale: isDragging ? 1.02 : 1,
                 opacity: isDragging ? 0.9 : 1,
-                transition: "box-shadow 0.2s, transform 0.2s, opacity 0.2s"
+            }}
+            transition={{
+                duration: 0.2,
+                ease: "easeInOut"
             }}
             drag={onDragStart ? "x" : false}
             dragSnapToOrigin
@@ -118,6 +120,7 @@ export function CalendarEventCard({
             onMouseLeave={onMouseLeave}
             onClick={() => onClick?.(event)}
             whileDrag={{ scale: 1.05 }}
+            {...(style && { style })}
         >
             <div className={cn("flex items-center gap-1 mb-1", getEventTextColor(event))}>
                 {getEventIcon(event.type)}

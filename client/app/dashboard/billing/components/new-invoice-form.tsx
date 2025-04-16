@@ -65,7 +65,7 @@ export function NewInvoiceForm({ onClose }: NewInvoiceFormProps) {
 
             router.refresh()
             onClose()
-        } catch (error) {
+        } catch {
             toast({
                 title: "Error",
                 description: "Failed to create invoice. Please try again.",

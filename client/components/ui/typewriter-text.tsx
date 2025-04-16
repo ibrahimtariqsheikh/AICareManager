@@ -114,12 +114,12 @@ export const TypewriterEffectSmooth = ({
 }) => {
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
-    const [isTyping, setIsTyping] = useState(true);
+    const [, setIsTyping] = useState(true);
 
     useEffect(() => {
         if (currentWordIndex < words.length) {
             const timeout = setTimeout(() => {
-                if (currentCharIndex < words[currentWordIndex].text.length) {
+                if (words[currentWordIndex] && currentCharIndex < words[currentWordIndex].text.length) {
                     setCurrentCharIndex((prev) => prev + 1);
                 } else {
                     setCurrentWordIndex((prev) => prev + 1);
@@ -130,6 +130,7 @@ export const TypewriterEffectSmooth = ({
             return () => clearTimeout(timeout);
         } else {
             setIsTyping(false);
+            return () => { };
         }
     }, [currentWordIndex, currentCharIndex, words]);
 

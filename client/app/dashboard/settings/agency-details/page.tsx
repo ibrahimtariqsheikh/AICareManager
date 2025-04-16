@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Separator } from "@/components/ui/separator"
 import {
     Dialog,
     DialogContent,
@@ -19,10 +18,9 @@ import {
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { toast, Toaster } from "sonner"
-import { Building2, MapPin, FileText, Info, AlertCircle, CheckCircle2, Palette, ImageIcon, Upload, Trash2 } from "lucide-react"
+import { Building2, MapPin, FileText, Info, Palette, Trash2 } from "lucide-react"
 import { DocumentUpload } from "@/app/dashboard/settings/agency-details/components/document-upload"
 import { DocumentList } from "@/app/dashboard/settings/agency-details/components/document-list"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useAppSelector } from "@/hooks/useAppSelector"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -95,36 +93,7 @@ const formSchema = z.object({
     maxCareWorkers: z.number().nullable(),
 })
 
-interface AgencyInfo {
-    id: string
-    name: string
-    email?: string
-    description?: string
-    address?: string
-    extension?: number
-    mobileNumber?: number
-    landlineNumber: number | null
-    website?: string
-    logo: string | null
-    primaryColor: string | null
-    secondaryColor: string | null
-    isActive: boolean
-    isSuspended: boolean
-    hasScheduleV2: boolean
-    hasEMAR: boolean
-    hasFinance: boolean
-    isWeek1And2ScheduleEnabled: boolean
-    hasPoliciesAndProcedures: boolean
-    isTestAccount: boolean
-    createdAt: string
-    updatedAt: string
-    licenseNumber: string | null
-    timeZone: string
-    currency: string
-    maxUsers: number | null
-    maxClients: number | null
-    maxCareWorkers: number | null
-}
+
 
 export default function AgencyPage() {
     const agencyRedux = useAppSelector((state) => state.agency.agency)
@@ -135,22 +104,22 @@ export default function AgencyPage() {
     const [formInitialized, setFormInitialized] = useState(false)
 
     // Initialize form with empty values
-    const form = useForm<AgencyInfo>({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             id: "",
             name: "",
-            email: "",
-            description: "",
-            address: "",
+            email: undefined,
+            description: undefined,
+            address: undefined,
             extension: undefined,
             mobileNumber: undefined,
             landlineNumber: null,
-            website: "",
+            website: undefined,
             logo: null,
             primaryColor: null,
             secondaryColor: null,
-            isActive: false,
+            isActive: true,
             isSuspended: false,
             hasScheduleV2: false,
             hasEMAR: false,
@@ -158,15 +127,15 @@ export default function AgencyPage() {
             isWeek1And2ScheduleEnabled: false,
             hasPoliciesAndProcedures: false,
             isTestAccount: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: "",
+            updatedAt: "",
             licenseNumber: null,
-            timeZone: "UTC",
-            currency: "USD",
+            timeZone: "Europe/London",
+            currency: "GBP",
             maxUsers: null,
             maxClients: null,
-            maxCareWorkers: null,
-        },
+            maxCareWorkers: null
+        }
     })
 
 
@@ -176,17 +145,17 @@ export default function AgencyPage() {
             form.reset({
                 id: agencyRedux.id || "",
                 name: agencyRedux.name || "",
-                email: agencyRedux.email || "",
-                description: agencyRedux.description || "",
-                address: agencyRedux.address || "",
+                email: agencyRedux.email || undefined,
+                description: agencyRedux.description || undefined,
+                address: agencyRedux.address || undefined,
                 extension: agencyRedux.extension || undefined,
                 mobileNumber: agencyRedux.mobileNumber || undefined,
-                landlineNumber: agencyRedux.landlineNumber,
-                website: agencyRedux.website || "",
-                logo: agencyRedux.logo,
-                primaryColor: agencyRedux.primaryColor,
-                secondaryColor: agencyRedux.secondaryColor,
-                isActive: agencyRedux.isActive || false,
+                landlineNumber: agencyRedux.landlineNumber || null,
+                website: agencyRedux.website || undefined,
+                logo: agencyRedux.logo || null,
+                primaryColor: agencyRedux.primaryColor || null,
+                secondaryColor: agencyRedux.secondaryColor || null,
+                isActive: agencyRedux.isActive || true,
                 isSuspended: agencyRedux.isSuspended || false,
                 hasScheduleV2: agencyRedux.hasScheduleV2 || false,
                 hasEMAR: agencyRedux.hasEMAR || false,
@@ -194,21 +163,21 @@ export default function AgencyPage() {
                 isWeek1And2ScheduleEnabled: agencyRedux.isWeek1And2ScheduleEnabled || false,
                 hasPoliciesAndProcedures: agencyRedux.hasPoliciesAndProcedures || false,
                 isTestAccount: agencyRedux.isTestAccount || false,
-                createdAt: agencyRedux.createdAt || new Date().toISOString(),
-                updatedAt: agencyRedux.updatedAt || new Date().toISOString(),
-                licenseNumber: agencyRedux.licenseNumber,
-                timeZone: agencyRedux.timeZone || "UTC",
-                currency: agencyRedux.currency || "USD",
-                maxUsers: agencyRedux.maxUsers,
-                maxClients: agencyRedux.maxClients,
-                maxCareWorkers: agencyRedux.maxCareWorkers,
+                createdAt: agencyRedux.createdAt || "",
+                updatedAt: agencyRedux.updatedAt || "",
+                licenseNumber: agencyRedux.licenseNumber || null,
+                timeZone: agencyRedux.timeZone || "Europe/London",
+                currency: agencyRedux.currency || "GBP",
+                maxUsers: agencyRedux.maxUsers || null,
+                maxClients: agencyRedux.maxClients || null,
+                maxCareWorkers: agencyRedux.maxCareWorkers || null
             });
             setFormInitialized(true);
         }
     }, [agencyRedux, form, formInitialized]);
 
     // State for dialogs
-    const [isDocumentInfoOpen, setIsDocumentInfoOpen] = useState(false)
+    const [, setIsDocumentInfoOpen] = useState(false)
 
     // Documents state - in a real app, this would come from an API
     const [documents, setDocuments] = useState([
@@ -233,7 +202,7 @@ export default function AgencyPage() {
         toast.success("Document deleted successfully")
     }
 
-    const onSubmit = async (data: AgencyInfo) => {
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
         console.log("Form submission started");
         try {
             console.log("Form submitted with data:", data);

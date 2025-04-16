@@ -1,7 +1,7 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSendMessageMutation, useGetChatHistoryQuery, useClearChatHistoryMutation, api } from '@/state/api';
+import { useSendMessageMutation, useGetChatHistoryQuery, useClearChatHistoryMutation } from '@/state/api';
 import { RootState } from '@/state/redux';
 import { setMessages, addMessage, setLoading, setError, setSessionId, clearChat } from '@/state/slices/chatSlice';
 
@@ -27,7 +27,6 @@ type ChatResponse = {
 
 export function useChat({
 
-  initialMessages = [],
   onError,
   loadHistory = true,
 }: UseChatOptions = {}) {
@@ -127,7 +126,7 @@ export function useChat({
     } finally {
       dispatch(setLoading(false));
     }
-  }, [api, input, isLoading, messages, onError, sendMessage, sessionId, dispatch]);
+  }, [input, isLoading, messages, onError, sendMessage, sessionId, dispatch]);
 
   return {
     messages,

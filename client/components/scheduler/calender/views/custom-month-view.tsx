@@ -4,9 +4,8 @@ import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import moment from "moment"
 import { motion } from "framer-motion"
-import { ChevronDown, Calendar, Clock, MapPin, User, Users, Home, Video, Building2, Phone, GripVertical } from "lucide-react"
+import { ChevronDown, Calendar, Clock, User, Home, Video, Building2, Phone } from "lucide-react"
 import type { AppointmentEvent } from "../types"
-import { Button } from "../../../ui/button"
 import { cn } from "../../../../lib/utils"
 import { toast } from "sonner"
 import { useAppSelector } from "@/state/redux"
@@ -80,27 +79,13 @@ export function CustomMonthView({
     const dragEventTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
 
-    // Get current date from Redux store
-    const { currentDate: currentDateStr } = useAppSelector((state: RootState) => state.calendar)
-    const currentDate = new Date(currentDateStr)
+
     const activeScheduleUserType = useAppSelector((state: RootState) => state.schedule.activeScheduleUserType)
     const reduxClients = useAppSelector((state: RootState) => state.user.clients || [])
     const careworkers = useAppSelector((state: RootState) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state: RootState) => state.user.officeStaff || [])
 
-    // Get the appropriate users based on activeScheduleUserType
-    const displayUsers = (() => {
-        switch (activeScheduleUserType) {
-            case "clients":
-                return reduxClients
-            case "careWorker":
-                return careworkers
-            case "officeStaff":
-                return officeStaff
-            default:
-                return reduxClients
-        }
-    })()
+
 
     // Generate calendar days for the month
     useEffect(() => {
@@ -258,8 +243,11 @@ export function CustomMonthView({
     // Get event background color based on type
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
         const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-
+        const styles = eventTypeStyles[type] || eventTypeStyles.meeting || {
+            bg: 'bg-gray-50',
+            hoverBg: 'bg-gray-100',
+            activeBg: 'bg-gray-200'
+        }
         if (spaceTheme) {
             // Convert light theme colors to dark theme
             const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
@@ -271,23 +259,7 @@ export function CustomMonthView({
         }
     }
 
-    const getEventBorderColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.border
-    }
 
-    const getEventTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.text
-    }
-
-    const getEventMutedTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting
-        return styles.mutedText
-    }
 
     // Get event icon based on type
     const getEventIcon = useCallback((event: AppointmentEvent) => {
@@ -347,9 +319,12 @@ export function CustomMonthView({
         // If not in any cell, find the closest cell
         const sortedCells = [...dayCells].sort((a, b) => a.distance - b.distance)
         if (sortedCells.length > 0) {
-            return {
-                dateStr: sortedCells[0].dateStr,
-                element: sortedCells[0].element,
+            const firstCell = sortedCells[0]
+            if (firstCell) {
+                return {
+                    dateStr: firstCell.dateStr,
+                    element: firstCell.element,
+                }
             }
         }
 
@@ -357,7 +332,7 @@ export function CustomMonthView({
     }, [])
 
     // Handle drag start
-    const handleDragStart = useCallback((eventId: string, e: MouseEvent | PointerEvent | TouchEvent) => {
+    const handleDragStart = useCallback((eventId: string, _e: MouseEvent | PointerEvent | TouchEvent) => {
         if (!displayEvents[eventId]) return
 
         // Set cursor style for the whole document
@@ -555,7 +530,7 @@ export function CustomMonthView({
     }, [getEventDurationInMinutes])
 
     // Render event component
-    const renderEvent = useCallback((event: AppointmentEvent, isExpanded: boolean) => {
+    const renderEvent = useCallback((event: AppointmentEvent, _isExpanded: boolean) => {
         const isActive = activeEvent === event.id
         const isHovered = hoveredEvent === event.id
         const displayEvent = displayEvents[event.id] || event
@@ -803,7 +778,7 @@ export function CustomMonthView({
 
                                         {/* Events */}
                                         <div className="mt-1 space-y-1.5">
-                                            {eventsToShow.map((event) => renderEvent(event, isExpanded))}
+                                            {eventsToShow.map((event) => renderEvent(event, isExpanded ?? false))}
 
                                             {/* Ghost event placeholder during drag */}
                                             {renderGhostEvent(dateStr)}

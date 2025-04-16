@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { AutoResizeTextarea } from "@/components/ui/autoresize-textarea"
 import { cn } from "@/lib/utils"
@@ -20,7 +20,6 @@ import {
     Syringe,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useTheme } from "next-themes"
 import { toast } from "sonner"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { FileUpload } from "@/app/dashboard/chatbot/components/file-upload"
@@ -38,23 +37,20 @@ type ThinkingStage = {
 }
 
 export default function ChatbotPage() {
-    const [inputValue, setInputValue] = useState("")
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const messagesContainerRef = useRef<HTMLDivElement>(null)
     const [hasMessages, setHasMessages] = useState(false)
-    const { theme } = useTheme()
-    const isDarkMode = theme === "dark"
-    const [showQuickActions, setShowQuickActions] = useState(false)
+
+
     const [thinkingStage, setThinkingStage] = useState<number>(-1)
-    const [showFinalResponse, setShowFinalResponse] = useState(false)
 
     // Dialog states
     const [imageUploadOpen, setImageUploadOpen] = useState(false)
     const [searchDialogOpen, setSearchDialogOpen] = useState(false)
     const [suggestionDialogOpen, setSuggestionDialogOpen] = useState(false)
 
-    // Define the thinking stages
-    const thinkingStages: ThinkingStage[] = [
+    // Define the thinking stages with useMemo to avoid recreation on every render
+    const thinkingStages = useMemo<ThinkingStage[]>(() => [
         {
             id: "thinking",
             text: "Thinking...",
@@ -73,10 +69,10 @@ export default function ChatbotPage() {
             icon: <Sparkles className="h-4 w-4" />,
             duration: 1500,
         },
-    ]
+    ], [])
 
     // Use our custom hook with error handling
-    const { messages, input, handleInputChange, handleSubmit, isLoading, error, clearChat } = useChat({
+    const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
         onError: (error) => {
             toast.error(error)
         },
@@ -85,7 +81,6 @@ export default function ChatbotPage() {
     // Mock the thinking stages when loading
     useEffect(() => {
         if (isLoading) {
-            setShowFinalResponse(false)
             setThinkingStage(0)
 
             // Progress through thinking stages
@@ -107,9 +102,9 @@ export default function ChatbotPage() {
             }
         } else {
             setThinkingStage(-1)
-            setShowFinalResponse(true)
+            return undefined
         }
-    }, [isLoading])
+    }, [isLoading, thinkingStages])
 
     useEffect(() => {
         setHasMessages(messages.length > 0)
@@ -119,7 +114,6 @@ export default function ChatbotPage() {
         e.preventDefault()
         if (input.trim()) {
             handleSubmit(e)
-            setInputValue("")
         }
     }
 
@@ -137,14 +131,6 @@ export default function ChatbotPage() {
         }
     }
 
-    const handlePlusClick = () => {
-        setShowQuickActions(!showQuickActions)
-    }
-
-    const handleSearchClick = () => {
-        setSearchDialogOpen(true)
-    }
-
     const handleLightbulbClick = () => {
         setSuggestionDialogOpen(true)
     }
@@ -154,7 +140,6 @@ export default function ChatbotPage() {
     }
 
     const handleQuickAction = (action: string) => {
-        setInputValue(action)
         handleInputChange({ target: { value: action } } as React.ChangeEvent<HTMLTextAreaElement>)
     }
 
@@ -186,7 +171,7 @@ export default function ChatbotPage() {
                             >
                                 <h2 className="text-3xl font-bold mb-4">Care.ai</h2>
                                 <p className="mb-6 text-sm text-center text-muted-foreground">
-                                    Schedule, medication, and manage your client's care in one place
+                                    Schedule, medication, and manage your client&apos;s care in one place
                                 </p>
                                 <div className="grid grid-cols-4 gap-3 w-full">
                                     {[
@@ -301,8 +286,8 @@ export default function ChatbotPage() {
                                                         >
                                                             {/* Current thinking stage */}
                                                             <div className="flex items-center gap-2 p-2 rounded-md border">
-                                                                {thinkingStages[thinkingStage].icon}
-                                                                <span className="text-sm font-medium">{thinkingStages[thinkingStage].text}</span>
+                                                                {thinkingStages[thinkingStage]?.icon}
+                                                                <span className="text-sm font-medium">{thinkingStages[thinkingStage]?.text}</span>
                                                                 <div className="ml-auto flex gap-1">
                                                                     <div className="h-2 w-2 rounded-full bg-current animate-pulse"></div>
                                                                     <div
@@ -322,8 +307,8 @@ export default function ChatbotPage() {
                                                                     key={idx}
                                                                     className="flex items-center gap-2 p-2 rounded-md border text-muted-foreground"
                                                                 >
-                                                                    {thinkingStages[idx].icon}
-                                                                    <span className="text-sm">{thinkingStages[idx].text}</span>
+                                                                    {thinkingStages[idx]?.icon}
+                                                                    <span className="text-sm">{thinkingStages[idx]?.text}</span>
                                                                     <div className="ml-auto">
                                                                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                             <path
@@ -370,7 +355,6 @@ export default function ChatbotPage() {
                                     value={input}
                                     onChange={(value: string) => {
                                         handleInputChange({ target: { value } } as React.ChangeEvent<HTMLTextAreaElement>)
-                                        setInputValue(value)
                                     }}
                                     onKeyDown={handleKeyDown}
                                     className="w-full py-2 pl-12 pr-12 bg-transparent focus:outline-none resize-none max-h-[200px] min-h-[40px] flex items-center"

@@ -10,13 +10,13 @@ import { TaskUsageStats } from "./components/task-usage-stats"
 import { TaskCategoryList } from "./components/task-category-list"
 import { Plus, ListChecks, BarChart2, FolderPlus } from "lucide-react"
 import { useCustomTasks } from "./hooks/use-custom-tasks"
-import type { CustomTask, TaskCategory } from "./types"
+import type { TaskCategory } from "./types"
 
 export default function CustomTasksPage() {
     const router = useRouter()
     const [activeTab, setActiveTab] = useState("tasks")
     const [isCreatingCategory, setIsCreatingCategory] = useState(false)
-    const { tasks, categories, addTask, removeTask, addCategory, removeCategory } = useCustomTasks()
+    const { tasks, categories, removeTask, addCategory, removeCategory } = useCustomTasks()
 
     const handleCategoryCreated = (category: TaskCategory) => {
         addCategory(category)

@@ -9,14 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import type { DateRange } from "react-day-picker"
 import { AlertCircle, CheckCircle2, Clock, Edit, Sparkles } from "lucide-react"
 
-interface ShiftReviewProps {
-    date?: DateRange | undefined
-}
-
-export function ShiftReview({ date }: ShiftReviewProps) {
+export function ShiftReview() {
     const [activeTab, setActiveTab] = useState("pending")
 
     // Mock data for shifts
@@ -338,10 +333,10 @@ export function ShiftReview({ date }: ShiftReviewProps) {
                     <div className="mt-4 text-sm text-muted-foreground">
                         <p>Example commands:</p>
                         <ul className="list-disc list-inside space-y-1 mt-2">
-                            <li>"Fix the travel time exception for Lian Huang on March 30"</li>
-                            <li>"Adjust Richard Brief's shift on March 29 to start at 10:15 AM"</li>
-                            <li>"Add a 30-minute break to all shifts longer than 6 hours"</li>
-                            <li>"Show me all shifts with overtime in the last week"</li>
+                            <li>&quot;Fix the travel time exception for Lian Huang on March 30&quot;</li>
+                            <li>&quot;Adjust Richard Brief&apos;s shift on March 29 to start at 10:15 AM&quot;</li>
+                            <li>&quot;Add a 30-minute break to all shifts longer than 6 hours&quot;</li>
+                            <li>&quot;Show me all shifts with overtime in the last week&quot;</li>
                         </ul>
                     </div>
                 </CardContent>

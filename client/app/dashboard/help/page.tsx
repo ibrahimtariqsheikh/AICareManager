@@ -129,9 +129,9 @@ export default function HelpPage() {
                                 <InfoIcon className="h-4 w-4" />
                                 <AlertTitle>New features available</AlertTitle>
                                 <AlertDescription>
-                                    We've recently added new reporting features and improved the scheduling interface. Check out our{" "}
+                                    We&apos;ve recently added new reporting features and improved the scheduling interface. Check out our{" "}
                                     <Link href="#" className="underline text-primary">
-                                        What's New
+                                        What&apos;s New
                                     </Link>{" "}
                                     page for details.
                                 </AlertDescription>
@@ -170,8 +170,8 @@ export default function HelpPage() {
                                         </div>
 
                                         <div className="text-sm text-muted-foreground">
-                                            By clicking "Select CSV File" below, I acknowledge that client data submitted from my CSV file to
-                                            AI Care Manager may be used to provide and improve AI Care Manager's services as further described
+                                            By clicking &quot;Select CSV File&quot; below, I acknowledge that client data submitted from my CSV file to
+                                            AI Care Manager may be used to provide and improve AI Care Manager&apos;s services as further described
                                             in our{" "}
                                             <Link href="#" className="text-blue-500 hover:underline">
                                                 Terms of Service
@@ -221,8 +221,8 @@ export default function HelpPage() {
                                         </div>
 
                                         <div className="text-sm text-muted-foreground">
-                                            By clicking "Select CSV File" below, I acknowledge that care worker data submitted from my CSV
-                                            file to AI Care Manager may be used to provide and improve AI Care Manager's services as further
+                                            By clicking &quot;Select CSV File&quot; below, I acknowledge that care worker data submitted from my CSV
+                                            file to AI Care Manager may be used to provide and improve AI Care Manager&apos;s services as further
                                             described in our{" "}
                                             <Link href="#" className="text-blue-500 hover:underline">
                                                 Terms of Service
@@ -296,7 +296,7 @@ export default function HelpPage() {
                                             </AccordionTrigger>
                                             <AccordionContent>
                                                 To minimize manual work, ensure your CSV includes all recommended fields. Our system uses AI to
-                                                match records based on names, addresses, and other identifiers. After upload, you'll see
+                                                match records based on names, addresses, and other identifiers. After upload, you&apos;ll see
                                                 potential matches highlighted for review, allowing you to confirm or adjust as needed.
                                             </AccordionContent>
                                         </AccordionItem>
@@ -304,8 +304,8 @@ export default function HelpPage() {
                                         <AccordionItem value="item-3">
                                             <AccordionTrigger>How do I map custom fields with CSV data?</AccordionTrigger>
                                             <AccordionContent>
-                                                During the import process, you'll see a field mapping screen where you can match your CSV
-                                                columns to our system fields. For custom fields, select "Map to custom field" and either choose
+                                                During the import process, you&apos;ll see a field mapping screen where you can match your CSV
+                                                columns to our system fields. For custom fields, select &quot;Map to custom field&quot; and either choose
                                                 an existing custom field or create a new one. You can save this mapping for future imports.
                                             </AccordionContent>
                                         </AccordionItem>
@@ -314,7 +314,7 @@ export default function HelpPage() {
                                             <AccordionTrigger>Can I enrich client data after I upload it?</AccordionTrigger>
                                             <AccordionContent>
                                                 Yes, AI Care Manager offers data enrichment options. After upload, go to the client profile and
-                                                click "Enrich Data." Our system can add missing contact information, verify addresses, and
+                                                click &quot;Enrich Data.&quot; Our system can add missing contact information, verify addresses, and
                                                 suggest additional details based on available information.
                                             </AccordionContent>
                                         </AccordionItem>

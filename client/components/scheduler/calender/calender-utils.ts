@@ -1,4 +1,4 @@
-import { EventType } from "react-hook-form"
+
 import type { AppointmentEvent, StaffMember, Client, SidebarMode } from "./types"
 
 // Filter events based on selected staff, clients, and event types
@@ -7,7 +7,6 @@ export function filterEvents(
   careWorkers: StaffMember[],
   officeStaff: StaffMember[],
   clients: Client[],
-  eventTypes: EventType[],
   sidebarMode: SidebarMode,
 ): AppointmentEvent[] {
   // If there are no events, return empty array
@@ -57,7 +56,7 @@ export function filterEvents(
 export function getRandomColor(id: string): string {
   const colors = ["#4f46e5", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#ec4899"]
   const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  return colors[hash % colors.length]
+  return colors[hash % colors.length] || "#6b7280"
 }
 
 // Helper function to get event color based on type
