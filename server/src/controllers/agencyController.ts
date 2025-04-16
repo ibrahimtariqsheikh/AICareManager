@@ -4,6 +4,21 @@ import { Role } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
+export const deleteAgencyRateSheet = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id, rateSheetId } = req.params;
+        await prisma.rateSheet.delete({
+            where: { id: rateSheetId },
+        });
+        res.json({ message: "Rate sheet deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting rate sheet", error: error });
+    }
+};
+
+
+
 export const getAllAgencies = async (req: Request, res: Response): Promise<void> => {
     try {
         const agencies = await prisma.agency.findMany();
@@ -204,3 +219,159 @@ export const getAllMedicationDatabaseLinksByAgencyId = async (req: Request, res:
         res.status(500).json({ message: "Error fetching medication database links", error: error });
     }
 };
+
+// get all custom tasks by agency id
+export const getAgencyCustomTasks = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const customTasks = await prisma.customTask.findMany({
+            where: { agencyId: id },
+        });
+        res.json(customTasks);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching custom tasks", error: error });
+    }
+};
+
+// get all groups by agency id
+export const getAgencyGroups = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const groups = await prisma.group.findMany({
+            where: { agencyId: id },
+        });
+        res.json(groups);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching groups", error: error });
+    }
+};
+
+// get all rate sheets by agency id
+export const getAgencyRateSheets = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const rateSheets = await prisma.rateSheet.findMany({
+            where: { agencyId: id },
+        });
+        res.json(rateSheets);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching rate sheets", error: error });
+    }
+};
+
+// update custom task for agency
+export const updateAgencyCustomTask = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { task } = req.body;
+        const updatedTask = await prisma.customTask.update({
+            where: { id },
+            data: task,
+        });
+        res.json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating custom tasks", error: error });
+    }
+};
+
+
+// update rate sheet for agency
+export const updateAgencyRateSheet = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id: agencyId } = req.params;
+        const { id: rateSheetId, name, hourlyRate, staffType } = req.body;
+        const updatedRateSheet = await prisma.rateSheet.update({
+            where: { id: rateSheetId },
+            data: {
+                name,
+                hourlyRate,
+                staffType
+            },
+        });
+        res.json(updatedRateSheet);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating rate sheet", error: error });
+    }
+};
+
+// create rate sheet for agency
+export const createAgencyRateSheet = async (req: Request, res: Response): Promise<void> => {
+    try {
+        console.log("createAgencyRateSheet", req.body)
+        const { id } = req.params;
+        const { name, hourlyRate, staffType } = req.body;
+        const rateSheet = await prisma.rateSheet.create({
+            data: {
+                name,
+                hourlyRate,
+                staffType,
+                agencyId: id
+            },
+        });
+        res.status(201).json(rateSheet);
+    } catch (error) {
+        res.status(500).json({ message: "Error creating rate sheet", error: error });
+    }
+};
+
+// update group for agency
+export const updateAgencyGroup = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id: agencyId } = req.params;
+        const { id: groupId, name, clientIds } = req.body;
+        const updatedGroup = await prisma.group.update({
+            where: { id: groupId },
+            data: {
+                name,
+                agencyId,
+                clients: {
+                    set: clientIds ? clientIds.map((clientId: string) => ({ id: clientId })) : undefined
+                }
+            },
+            include: {
+                clients: true
+            }
+        });
+        res.json(updatedGroup);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating group", error: error });
+    }
+};
+
+// create group for agency
+export const createAgencyGroup = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { name, clientIds } = req.body;
+        const group = await prisma.group.create({
+            data: {
+                name,
+                agencyId: id,
+                clients: {
+                    connect: clientIds ? clientIds.map((clientId: string) => ({ id: clientId })) : []
+                }
+            },
+            include: {
+                clients: true
+            }
+        });
+        res.status(201).json(group);
+    } catch (error) {
+        res.status(500).json({ message: "Error creating group", error: error });
+    }
+};
+
+// delete group for agency
+export const deleteAgencyGroup = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { groupId } = req.params;
+        await prisma.group.delete({
+            where: { id: groupId },
+        });
+        res.json({ message: "Group deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting group", error: error });
+    }
+};
+
+

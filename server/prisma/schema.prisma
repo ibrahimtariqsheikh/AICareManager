@@ -44,13 +44,75 @@ model Agency {
   schedules       Schedule[]
   invoices        Invoice[]
   mileageRecords  MileageRecord[]
-  documents       Document[]               @relation("AgencyDocuments")
   incidentReports IncidentReport[]
   medications     MedicationDatabaseLink[]
-  visitTypes      VisitType[] // Added visit types
-  riskCategories  RiskCategory[] // Added risk categories
+  visitTypes      VisitType[]
+  riskCategories  RiskCategory[]
 
-  Report Report[]
+  documents Document[] @relation("AgencyDocuments")
+
+  Report      Report[]
+  groups      Group[]
+  rateSheets  RateSheet[]
+  customTasks CustomTask[]
+}
+
+model Group {
+  id       String  @id @default(cuid())
+  name     String
+  clients  User[]
+  Agency   Agency? @relation(fields: [agencyId], references: [id])
+  agencyId String?
+}
+
+model RateSheet {
+  id         String        @id @default(cuid())
+  name       String
+  hourlyRate Float
+  staffType  RateSheetType
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  Agency     Agency?       @relation(fields: [agencyId], references: [id])
+  agencyId   String?
+}
+
+enum RateSheetType {
+  CLIENT
+  CARE_WORKER
+  OFFICE_STAFF
+}
+
+enum CustomTaskCategory {
+  HEALTH_MONITORING
+  PERSONAL_CARE
+  MEDICATION
+  MEAL_PREPARATION
+  OTHER
+}
+
+enum CustomTaskFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum CustomTaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model CustomTask {
+  id          String              @id @default(cuid())
+  name        String
+  placeholder String
+  category    CustomTaskCategory
+  frequency   CustomTaskFrequency
+  priority    CustomTaskPriority
+  icon        String?
+  Agency      Agency?             @relation(fields: [agencyId], references: [id])
+  agencyId    String?
 }
 
 model ClientCareAssignment {
@@ -142,6 +204,8 @@ model User {
   reminders                 Reminder[] // Added reminders
   medicationAdministrations MedicationAdministration[] @relation("AdministeredMedications")
   reportEdits               ReportEdit[] // Added report edits relation
+  Group                     Group?                     @relation(fields: [groupId], references: [id])
+  groupId                   String?
 }
 
 // NEW MODEL: Communication Preference

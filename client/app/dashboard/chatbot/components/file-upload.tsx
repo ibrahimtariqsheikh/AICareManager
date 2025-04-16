@@ -83,16 +83,16 @@ export function FileUpload({
         if (!file) return <Upload className="h-8 w-8 text-muted-foreground" />
 
         if (file.type.startsWith('image/')) {
-            return <ImageIcon className="h-8 w-8 text-blue-500" />
+            return <ImageIcon className="h-8 w-8" />
         } else if (file.type.includes('pdf')) {
-            return <FileText className="h-8 w-8 text-red-500" />
+            return <FileText className="h-8 w-8" />
         } else {
-            return <File className="h-8 w-8 text-gray-500" />
+            return <File className="h-8 w-8" />
         }
     }
 
     return (
-        <div className={cn("p-4 rounded-lg border border-dashed", className)}>
+        <div className={cn("p-4 rounded-lg border", className)}>
             <div className="flex flex-col items-center gap-4">
                 {!file ? (
                     <>
@@ -129,12 +129,12 @@ export function FileUpload({
                                 <img
                                     src={preview || "/placeholder.svg"}
                                     alt="Preview"
-                                    className="rounded-md object-cover w-full h-full"
+                                    className="rounded-md object-cover w-full h-full border"
                                 />
                                 <Button
                                     size="icon"
-                                    variant="destructive"
-                                    className="absolute top-2 right-2 h-6 w-6"
+                                    variant="outline"
+                                    className="absolute top-2 right-2 h-6 w-6 bg-background"
                                     onClick={handleCancel}
                                 >
                                     <X className="h-3 w-3" />

@@ -50,9 +50,9 @@ export default function BillingPage() {
         <div className="container mx-auto py-6 space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Billing & Finance</h1>
-                    <p className="text-muted-foreground">
-                        Manage invoices, track payments, and analyze financial performance
+                    <h1 className="text-2xl font-bold text-neutral-800">Billing & Finance</h1>
+                    <p className="text-neutral-700">
+                        Manage invoices, track payments, and analyze financial performance.
                     </p>
                 </div>
                 <div className="flex items-center gap-2">

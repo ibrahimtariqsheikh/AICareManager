@@ -24,6 +24,21 @@ export type Invitation = $Result.DefaultSelection<Prisma.$InvitationPayload>
  */
 export type Agency = $Result.DefaultSelection<Prisma.$AgencyPayload>
 /**
+ * Model Group
+ * 
+ */
+export type Group = $Result.DefaultSelection<Prisma.$GroupPayload>
+/**
+ * Model RateSheet
+ * 
+ */
+export type RateSheet = $Result.DefaultSelection<Prisma.$RateSheetPayload>
+/**
+ * Model CustomTask
+ * 
+ */
+export type CustomTask = $Result.DefaultSelection<Prisma.$CustomTaskPayload>
+/**
  * Model ClientCareAssignment
  * 
  */
@@ -163,7 +178,46 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
  * Enums
  */
 export namespace $Enums {
-  export const Role: {
+  export const RateSheetType: {
+  CLIENT: 'CLIENT',
+  CARE_WORKER: 'CARE_WORKER',
+  OFFICE_STAFF: 'OFFICE_STAFF'
+};
+
+export type RateSheetType = (typeof RateSheetType)[keyof typeof RateSheetType]
+
+
+export const CustomTaskCategory: {
+  HEALTH_MONITORING: 'HEALTH_MONITORING',
+  PERSONAL_CARE: 'PERSONAL_CARE',
+  MEDICATION: 'MEDICATION',
+  MEAL_PREPARATION: 'MEAL_PREPARATION',
+  OTHER: 'OTHER'
+};
+
+export type CustomTaskCategory = (typeof CustomTaskCategory)[keyof typeof CustomTaskCategory]
+
+
+export const CustomTaskFrequency: {
+  DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
+  MONTHLY: 'MONTHLY',
+  YEARLY: 'YEARLY'
+};
+
+export type CustomTaskFrequency = (typeof CustomTaskFrequency)[keyof typeof CustomTaskFrequency]
+
+
+export const CustomTaskPriority: {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+};
+
+export type CustomTaskPriority = (typeof CustomTaskPriority)[keyof typeof CustomTaskPriority]
+
+
+export const Role: {
   SOFTWARE_OWNER: 'SOFTWARE_OWNER',
   ADMIN: 'ADMIN',
   CARE_WORKER: 'CARE_WORKER',
@@ -308,6 +362,22 @@ export const AlertSeverity: {
 export type AlertSeverity = (typeof AlertSeverity)[keyof typeof AlertSeverity]
 
 }
+
+export type RateSheetType = $Enums.RateSheetType
+
+export const RateSheetType: typeof $Enums.RateSheetType
+
+export type CustomTaskCategory = $Enums.CustomTaskCategory
+
+export const CustomTaskCategory: typeof $Enums.CustomTaskCategory
+
+export type CustomTaskFrequency = $Enums.CustomTaskFrequency
+
+export const CustomTaskFrequency: typeof $Enums.CustomTaskFrequency
+
+export type CustomTaskPriority = $Enums.CustomTaskPriority
+
+export const CustomTaskPriority: typeof $Enums.CustomTaskPriority
 
 export type Role = $Enums.Role
 
@@ -501,6 +571,36 @@ export class PrismaClient<
     * ```
     */
   get agency(): Prisma.AgencyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.group`: Exposes CRUD operations for the **Group** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Groups
+    * const groups = await prisma.group.findMany()
+    * ```
+    */
+  get group(): Prisma.GroupDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.rateSheet`: Exposes CRUD operations for the **RateSheet** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RateSheets
+    * const rateSheets = await prisma.rateSheet.findMany()
+    * ```
+    */
+  get rateSheet(): Prisma.RateSheetDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.customTask`: Exposes CRUD operations for the **CustomTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CustomTasks
+    * const customTasks = await prisma.customTask.findMany()
+    * ```
+    */
+  get customTask(): Prisma.CustomTaskDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.clientCareAssignment`: Exposes CRUD operations for the **ClientCareAssignment** model.
@@ -829,8 +929,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.5.0
-   * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
+   * Prisma Client JS version: 6.6.0
+   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
    */
   export type PrismaVersion = {
     client: string
@@ -1213,6 +1313,9 @@ export namespace Prisma {
   export const ModelName: {
     Invitation: 'Invitation',
     Agency: 'Agency',
+    Group: 'Group',
+    RateSheet: 'RateSheet',
+    CustomTask: 'CustomTask',
     ClientCareAssignment: 'ClientCareAssignment',
     User: 'User',
     CommunicationPreference: 'CommunicationPreference',
@@ -1258,7 +1361,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "invitation" | "agency" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
+      modelProps: "invitation" | "agency" | "group" | "rateSheet" | "customTask" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1407,6 +1510,228 @@ export namespace Prisma {
           count: {
             args: Prisma.AgencyCountArgs<ExtArgs>
             result: $Utils.Optional<AgencyCountAggregateOutputType> | number
+          }
+        }
+      }
+      Group: {
+        payload: Prisma.$GroupPayload<ExtArgs>
+        fields: Prisma.GroupFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroupFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroupFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>
+          }
+          findFirst: {
+            args: Prisma.GroupFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroupFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>
+          }
+          findMany: {
+            args: Prisma.GroupFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>[]
+          }
+          create: {
+            args: Prisma.GroupCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>
+          }
+          createMany: {
+            args: Prisma.GroupCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GroupCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>[]
+          }
+          delete: {
+            args: Prisma.GroupDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>
+          }
+          update: {
+            args: Prisma.GroupUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroupDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroupUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GroupUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>[]
+          }
+          upsert: {
+            args: Prisma.GroupUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupPayload>
+          }
+          aggregate: {
+            args: Prisma.GroupAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroup>
+          }
+          groupBy: {
+            args: Prisma.GroupGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroupGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroupCountArgs<ExtArgs>
+            result: $Utils.Optional<GroupCountAggregateOutputType> | number
+          }
+        }
+      }
+      RateSheet: {
+        payload: Prisma.$RateSheetPayload<ExtArgs>
+        fields: Prisma.RateSheetFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RateSheetFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RateSheetFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>
+          }
+          findFirst: {
+            args: Prisma.RateSheetFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RateSheetFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>
+          }
+          findMany: {
+            args: Prisma.RateSheetFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>[]
+          }
+          create: {
+            args: Prisma.RateSheetCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>
+          }
+          createMany: {
+            args: Prisma.RateSheetCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RateSheetCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>[]
+          }
+          delete: {
+            args: Prisma.RateSheetDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>
+          }
+          update: {
+            args: Prisma.RateSheetUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>
+          }
+          deleteMany: {
+            args: Prisma.RateSheetDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RateSheetUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RateSheetUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>[]
+          }
+          upsert: {
+            args: Prisma.RateSheetUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RateSheetPayload>
+          }
+          aggregate: {
+            args: Prisma.RateSheetAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRateSheet>
+          }
+          groupBy: {
+            args: Prisma.RateSheetGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RateSheetGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RateSheetCountArgs<ExtArgs>
+            result: $Utils.Optional<RateSheetCountAggregateOutputType> | number
+          }
+        }
+      }
+      CustomTask: {
+        payload: Prisma.$CustomTaskPayload<ExtArgs>
+        fields: Prisma.CustomTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CustomTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CustomTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.CustomTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CustomTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>
+          }
+          findMany: {
+            args: Prisma.CustomTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>[]
+          }
+          create: {
+            args: Prisma.CustomTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>
+          }
+          createMany: {
+            args: Prisma.CustomTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CustomTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.CustomTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>
+          }
+          update: {
+            args: Prisma.CustomTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.CustomTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CustomTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CustomTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.CustomTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.CustomTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCustomTask>
+          }
+          groupBy: {
+            args: Prisma.CustomTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CustomTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CustomTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<CustomTaskCountAggregateOutputType> | number
           }
         }
       }
@@ -3494,6 +3819,9 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     invitation?: InvitationOmit
     agency?: AgencyOmit
+    group?: GroupOmit
+    rateSheet?: RateSheetOmit
+    customTask?: CustomTaskOmit
     clientCareAssignment?: ClientCareAssignmentOmit
     user?: UserOmit
     communicationPreference?: CommunicationPreferenceOmit
@@ -3619,12 +3947,15 @@ export namespace Prisma {
     schedules: number
     invoices: number
     mileageRecords: number
-    documents: number
     incidentReports: number
     medications: number
     visitTypes: number
     riskCategories: number
+    documents: number
     Report: number
+    groups: number
+    rateSheets: number
+    customTasks: number
   }
 
   export type AgencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3632,12 +3963,15 @@ export namespace Prisma {
     schedules?: boolean | AgencyCountOutputTypeCountSchedulesArgs
     invoices?: boolean | AgencyCountOutputTypeCountInvoicesArgs
     mileageRecords?: boolean | AgencyCountOutputTypeCountMileageRecordsArgs
-    documents?: boolean | AgencyCountOutputTypeCountDocumentsArgs
     incidentReports?: boolean | AgencyCountOutputTypeCountIncidentReportsArgs
     medications?: boolean | AgencyCountOutputTypeCountMedicationsArgs
     visitTypes?: boolean | AgencyCountOutputTypeCountVisitTypesArgs
     riskCategories?: boolean | AgencyCountOutputTypeCountRiskCategoriesArgs
+    documents?: boolean | AgencyCountOutputTypeCountDocumentsArgs
     Report?: boolean | AgencyCountOutputTypeCountReportArgs
+    groups?: boolean | AgencyCountOutputTypeCountGroupsArgs
+    rateSheets?: boolean | AgencyCountOutputTypeCountRateSheetsArgs
+    customTasks?: boolean | AgencyCountOutputTypeCountCustomTasksArgs
   }
 
   // Custom InputTypes
@@ -3682,13 +4016,6 @@ export namespace Prisma {
   /**
    * AgencyCountOutputType without action
    */
-  export type AgencyCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: DocumentWhereInput
-  }
-
-  /**
-   * AgencyCountOutputType without action
-   */
   export type AgencyCountOutputTypeCountIncidentReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: IncidentReportWhereInput
   }
@@ -3717,8 +4044,67 @@ export namespace Prisma {
   /**
    * AgencyCountOutputType without action
    */
+  export type AgencyCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
   export type AgencyCountOutputTypeCountReportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReportWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountGroupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountRateSheetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RateSheetWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountCustomTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomTaskWhereInput
+  }
+
+
+  /**
+   * Count Type GroupCountOutputType
+   */
+
+  export type GroupCountOutputType = {
+    clients: number
+  }
+
+  export type GroupCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clients?: boolean | GroupCountOutputTypeCountClientsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GroupCountOutputType without action
+   */
+  export type GroupCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupCountOutputType
+     */
+    select?: GroupCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GroupCountOutputType without action
+   */
+  export type GroupCountOutputTypeCountClientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -4885,7 +5271,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Invitation model
-   */ 
+   */
   interface InvitationFieldRefs {
     readonly id: FieldRef<"Invitation", 'String'>
     readonly email: FieldRef<"Invitation", 'String'>
@@ -5534,12 +5920,15 @@ export namespace Prisma {
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
     invoices?: boolean | Agency$invoicesArgs<ExtArgs>
     mileageRecords?: boolean | Agency$mileageRecordsArgs<ExtArgs>
-    documents?: boolean | Agency$documentsArgs<ExtArgs>
     incidentReports?: boolean | Agency$incidentReportsArgs<ExtArgs>
     medications?: boolean | Agency$medicationsArgs<ExtArgs>
     visitTypes?: boolean | Agency$visitTypesArgs<ExtArgs>
     riskCategories?: boolean | Agency$riskCategoriesArgs<ExtArgs>
+    documents?: boolean | Agency$documentsArgs<ExtArgs>
     Report?: boolean | Agency$ReportArgs<ExtArgs>
+    groups?: boolean | Agency$groupsArgs<ExtArgs>
+    rateSheets?: boolean | Agency$rateSheetsArgs<ExtArgs>
+    customTasks?: boolean | Agency$customTasksArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agency"]>
 
@@ -5594,12 +5983,15 @@ export namespace Prisma {
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
     invoices?: boolean | Agency$invoicesArgs<ExtArgs>
     mileageRecords?: boolean | Agency$mileageRecordsArgs<ExtArgs>
-    documents?: boolean | Agency$documentsArgs<ExtArgs>
     incidentReports?: boolean | Agency$incidentReportsArgs<ExtArgs>
     medications?: boolean | Agency$medicationsArgs<ExtArgs>
     visitTypes?: boolean | Agency$visitTypesArgs<ExtArgs>
     riskCategories?: boolean | Agency$riskCategoriesArgs<ExtArgs>
+    documents?: boolean | Agency$documentsArgs<ExtArgs>
     Report?: boolean | Agency$ReportArgs<ExtArgs>
+    groups?: boolean | Agency$groupsArgs<ExtArgs>
+    rateSheets?: boolean | Agency$rateSheetsArgs<ExtArgs>
+    customTasks?: boolean | Agency$customTasksArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5612,12 +6004,15 @@ export namespace Prisma {
       schedules: Prisma.$SchedulePayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
       mileageRecords: Prisma.$MileageRecordPayload<ExtArgs>[]
-      documents: Prisma.$DocumentPayload<ExtArgs>[]
       incidentReports: Prisma.$IncidentReportPayload<ExtArgs>[]
       medications: Prisma.$MedicationDatabaseLinkPayload<ExtArgs>[]
       visitTypes: Prisma.$VisitTypePayload<ExtArgs>[]
       riskCategories: Prisma.$RiskCategoryPayload<ExtArgs>[]
+      documents: Prisma.$DocumentPayload<ExtArgs>[]
       Report: Prisma.$ReportPayload<ExtArgs>[]
+      groups: Prisma.$GroupPayload<ExtArgs>[]
+      rateSheets: Prisma.$RateSheetPayload<ExtArgs>[]
+      customTasks: Prisma.$CustomTaskPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6030,12 +6425,15 @@ export namespace Prisma {
     schedules<T extends Agency$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends Agency$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     mileageRecords<T extends Agency$mileageRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$mileageRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MileageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    documents<T extends Agency$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     incidentReports<T extends Agency$incidentReportsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$incidentReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     medications<T extends Agency$medicationsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$medicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationDatabaseLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     visitTypes<T extends Agency$visitTypesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$visitTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     riskCategories<T extends Agency$riskCategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$riskCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    documents<T extends Agency$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Report<T extends Agency$ReportArgs<ExtArgs> = {}>(args?: Subset<T, Agency$ReportArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    groups<T extends Agency$groupsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$groupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    rateSheets<T extends Agency$rateSheetsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$rateSheetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    customTasks<T extends Agency$customTasksArgs<ExtArgs> = {}>(args?: Subset<T, Agency$customTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6063,7 +6461,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Agency model
-   */ 
+   */
   interface AgencyFieldRefs {
     readonly id: FieldRef<"Agency", 'String'>
     readonly name: FieldRef<"Agency", 'String'>
@@ -6561,30 +6959,6 @@ export namespace Prisma {
   }
 
   /**
-   * Agency.documents
-   */
-  export type Agency$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Document
-     */
-    select?: DocumentSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Document
-     */
-    omit?: DocumentOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: DocumentInclude<ExtArgs> | null
-    where?: DocumentWhereInput
-    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
-    cursor?: DocumentWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
-  }
-
-  /**
    * Agency.incidentReports
    */
   export type Agency$incidentReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6681,6 +7055,30 @@ export namespace Prisma {
   }
 
   /**
+   * Agency.documents
+   */
+  export type Agency$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    cursor?: DocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
    * Agency.Report
    */
   export type Agency$ReportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6705,6 +7103,78 @@ export namespace Prisma {
   }
 
   /**
+   * Agency.groups
+   */
+  export type Agency$groupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    where?: GroupWhereInput
+    orderBy?: GroupOrderByWithRelationInput | GroupOrderByWithRelationInput[]
+    cursor?: GroupWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroupScalarFieldEnum | GroupScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.rateSheets
+   */
+  export type Agency$rateSheetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    where?: RateSheetWhereInput
+    orderBy?: RateSheetOrderByWithRelationInput | RateSheetOrderByWithRelationInput[]
+    cursor?: RateSheetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RateSheetScalarFieldEnum | RateSheetScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.customTasks
+   */
+  export type Agency$customTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    where?: CustomTaskWhereInput
+    orderBy?: CustomTaskOrderByWithRelationInput | CustomTaskOrderByWithRelationInput[]
+    cursor?: CustomTaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomTaskScalarFieldEnum | CustomTaskScalarFieldEnum[]
+  }
+
+  /**
    * Agency without action
    */
   export type AgencyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6720,6 +7190,3340 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AgencyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Group
+   */
+
+  export type AggregateGroup = {
+    _count: GroupCountAggregateOutputType | null
+    _min: GroupMinAggregateOutputType | null
+    _max: GroupMaxAggregateOutputType | null
+  }
+
+  export type GroupMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    agencyId: string | null
+  }
+
+  export type GroupMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    agencyId: string | null
+  }
+
+  export type GroupCountAggregateOutputType = {
+    id: number
+    name: number
+    agencyId: number
+    _all: number
+  }
+
+
+  export type GroupMinAggregateInputType = {
+    id?: true
+    name?: true
+    agencyId?: true
+  }
+
+  export type GroupMaxAggregateInputType = {
+    id?: true
+    name?: true
+    agencyId?: true
+  }
+
+  export type GroupCountAggregateInputType = {
+    id?: true
+    name?: true
+    agencyId?: true
+    _all?: true
+  }
+
+  export type GroupAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Group to aggregate.
+     */
+    where?: GroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Groups to fetch.
+     */
+    orderBy?: GroupOrderByWithRelationInput | GroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Groups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Groups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Groups
+    **/
+    _count?: true | GroupCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroupMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroupMaxAggregateInputType
+  }
+
+  export type GetGroupAggregateType<T extends GroupAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroup]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroup[P]>
+      : GetScalarType<T[P], AggregateGroup[P]>
+  }
+
+
+
+
+  export type GroupGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupWhereInput
+    orderBy?: GroupOrderByWithAggregationInput | GroupOrderByWithAggregationInput[]
+    by: GroupScalarFieldEnum[] | GroupScalarFieldEnum
+    having?: GroupScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroupCountAggregateInputType | true
+    _min?: GroupMinAggregateInputType
+    _max?: GroupMaxAggregateInputType
+  }
+
+  export type GroupGroupByOutputType = {
+    id: string
+    name: string
+    agencyId: string | null
+    _count: GroupCountAggregateOutputType | null
+    _min: GroupMinAggregateOutputType | null
+    _max: GroupMaxAggregateOutputType | null
+  }
+
+  type GetGroupGroupByPayload<T extends GroupGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroupGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroupGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroupGroupByOutputType[P]>
+            : GetScalarType<T[P], GroupGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroupSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    agencyId?: boolean
+    clients?: boolean | Group$clientsArgs<ExtArgs>
+    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    _count?: boolean | GroupCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["group"]>
+
+  export type GroupSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    agencyId?: boolean
+    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["group"]>
+
+  export type GroupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    agencyId?: boolean
+    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["group"]>
+
+  export type GroupSelectScalar = {
+    id?: boolean
+    name?: boolean
+    agencyId?: boolean
+  }
+
+  export type GroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "agencyId", ExtArgs["result"]["group"]>
+  export type GroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clients?: boolean | Group$clientsArgs<ExtArgs>
+    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    _count?: boolean | GroupCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type GroupIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+  }
+  export type GroupIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+  }
+
+  export type $GroupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Group"
+    objects: {
+      clients: Prisma.$UserPayload<ExtArgs>[]
+      Agency: Prisma.$AgencyPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      agencyId: string | null
+    }, ExtArgs["result"]["group"]>
+    composites: {}
+  }
+
+  type GroupGetPayload<S extends boolean | null | undefined | GroupDefaultArgs> = $Result.GetResult<Prisma.$GroupPayload, S>
+
+  type GroupCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GroupFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GroupCountAggregateInputType | true
+    }
+
+  export interface GroupDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Group'], meta: { name: 'Group' } }
+    /**
+     * Find zero or one Group that matches the filter.
+     * @param {GroupFindUniqueArgs} args - Arguments to find a Group
+     * @example
+     * // Get one Group
+     * const group = await prisma.group.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroupFindUniqueArgs>(args: SelectSubset<T, GroupFindUniqueArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Group that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GroupFindUniqueOrThrowArgs} args - Arguments to find a Group
+     * @example
+     * // Get one Group
+     * const group = await prisma.group.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroupFindUniqueOrThrowArgs>(args: SelectSubset<T, GroupFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Group that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupFindFirstArgs} args - Arguments to find a Group
+     * @example
+     * // Get one Group
+     * const group = await prisma.group.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroupFindFirstArgs>(args?: SelectSubset<T, GroupFindFirstArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Group that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupFindFirstOrThrowArgs} args - Arguments to find a Group
+     * @example
+     * // Get one Group
+     * const group = await prisma.group.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroupFindFirstOrThrowArgs>(args?: SelectSubset<T, GroupFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Groups that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Groups
+     * const groups = await prisma.group.findMany()
+     * 
+     * // Get first 10 Groups
+     * const groups = await prisma.group.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const groupWithIdOnly = await prisma.group.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GroupFindManyArgs>(args?: SelectSubset<T, GroupFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Group.
+     * @param {GroupCreateArgs} args - Arguments to create a Group.
+     * @example
+     * // Create one Group
+     * const Group = await prisma.group.create({
+     *   data: {
+     *     // ... data to create a Group
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroupCreateArgs>(args: SelectSubset<T, GroupCreateArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Groups.
+     * @param {GroupCreateManyArgs} args - Arguments to create many Groups.
+     * @example
+     * // Create many Groups
+     * const group = await prisma.group.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroupCreateManyArgs>(args?: SelectSubset<T, GroupCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Groups and returns the data saved in the database.
+     * @param {GroupCreateManyAndReturnArgs} args - Arguments to create many Groups.
+     * @example
+     * // Create many Groups
+     * const group = await prisma.group.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Groups and only return the `id`
+     * const groupWithIdOnly = await prisma.group.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GroupCreateManyAndReturnArgs>(args?: SelectSubset<T, GroupCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Group.
+     * @param {GroupDeleteArgs} args - Arguments to delete one Group.
+     * @example
+     * // Delete one Group
+     * const Group = await prisma.group.delete({
+     *   where: {
+     *     // ... filter to delete one Group
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroupDeleteArgs>(args: SelectSubset<T, GroupDeleteArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Group.
+     * @param {GroupUpdateArgs} args - Arguments to update one Group.
+     * @example
+     * // Update one Group
+     * const group = await prisma.group.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroupUpdateArgs>(args: SelectSubset<T, GroupUpdateArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Groups.
+     * @param {GroupDeleteManyArgs} args - Arguments to filter Groups to delete.
+     * @example
+     * // Delete a few Groups
+     * const { count } = await prisma.group.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroupDeleteManyArgs>(args?: SelectSubset<T, GroupDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Groups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Groups
+     * const group = await prisma.group.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroupUpdateManyArgs>(args: SelectSubset<T, GroupUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Groups and returns the data updated in the database.
+     * @param {GroupUpdateManyAndReturnArgs} args - Arguments to update many Groups.
+     * @example
+     * // Update many Groups
+     * const group = await prisma.group.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Groups and only return the `id`
+     * const groupWithIdOnly = await prisma.group.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GroupUpdateManyAndReturnArgs>(args: SelectSubset<T, GroupUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Group.
+     * @param {GroupUpsertArgs} args - Arguments to update or create a Group.
+     * @example
+     * // Update or create a Group
+     * const group = await prisma.group.upsert({
+     *   create: {
+     *     // ... data to create a Group
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Group we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroupUpsertArgs>(args: SelectSubset<T, GroupUpsertArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Groups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupCountArgs} args - Arguments to filter Groups to count.
+     * @example
+     * // Count the number of Groups
+     * const count = await prisma.group.count({
+     *   where: {
+     *     // ... the filter for the Groups we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroupCountArgs>(
+      args?: Subset<T, GroupCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroupCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Group.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroupAggregateArgs>(args: Subset<T, GroupAggregateArgs>): Prisma.PrismaPromise<GetGroupAggregateType<T>>
+
+    /**
+     * Group by Group.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroupGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroupGroupByArgs['orderBy'] }
+        : { orderBy?: GroupGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroupGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroupGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Group model
+   */
+  readonly fields: GroupFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Group.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    clients<T extends Group$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Group$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Agency<T extends Group$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, Group$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Group model
+   */
+  interface GroupFieldRefs {
+    readonly id: FieldRef<"Group", 'String'>
+    readonly name: FieldRef<"Group", 'String'>
+    readonly agencyId: FieldRef<"Group", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Group findUnique
+   */
+  export type GroupFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * Filter, which Group to fetch.
+     */
+    where: GroupWhereUniqueInput
+  }
+
+  /**
+   * Group findUniqueOrThrow
+   */
+  export type GroupFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * Filter, which Group to fetch.
+     */
+    where: GroupWhereUniqueInput
+  }
+
+  /**
+   * Group findFirst
+   */
+  export type GroupFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * Filter, which Group to fetch.
+     */
+    where?: GroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Groups to fetch.
+     */
+    orderBy?: GroupOrderByWithRelationInput | GroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Groups.
+     */
+    cursor?: GroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Groups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Groups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Groups.
+     */
+    distinct?: GroupScalarFieldEnum | GroupScalarFieldEnum[]
+  }
+
+  /**
+   * Group findFirstOrThrow
+   */
+  export type GroupFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * Filter, which Group to fetch.
+     */
+    where?: GroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Groups to fetch.
+     */
+    orderBy?: GroupOrderByWithRelationInput | GroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Groups.
+     */
+    cursor?: GroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Groups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Groups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Groups.
+     */
+    distinct?: GroupScalarFieldEnum | GroupScalarFieldEnum[]
+  }
+
+  /**
+   * Group findMany
+   */
+  export type GroupFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * Filter, which Groups to fetch.
+     */
+    where?: GroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Groups to fetch.
+     */
+    orderBy?: GroupOrderByWithRelationInput | GroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Groups.
+     */
+    cursor?: GroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Groups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Groups.
+     */
+    skip?: number
+    distinct?: GroupScalarFieldEnum | GroupScalarFieldEnum[]
+  }
+
+  /**
+   * Group create
+   */
+  export type GroupCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Group.
+     */
+    data: XOR<GroupCreateInput, GroupUncheckedCreateInput>
+  }
+
+  /**
+   * Group createMany
+   */
+  export type GroupCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Groups.
+     */
+    data: GroupCreateManyInput | GroupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Group createManyAndReturn
+   */
+  export type GroupCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * The data used to create many Groups.
+     */
+    data: GroupCreateManyInput | GroupCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Group update
+   */
+  export type GroupUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Group.
+     */
+    data: XOR<GroupUpdateInput, GroupUncheckedUpdateInput>
+    /**
+     * Choose, which Group to update.
+     */
+    where: GroupWhereUniqueInput
+  }
+
+  /**
+   * Group updateMany
+   */
+  export type GroupUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Groups.
+     */
+    data: XOR<GroupUpdateManyMutationInput, GroupUncheckedUpdateManyInput>
+    /**
+     * Filter which Groups to update
+     */
+    where?: GroupWhereInput
+    /**
+     * Limit how many Groups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Group updateManyAndReturn
+   */
+  export type GroupUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * The data used to update Groups.
+     */
+    data: XOR<GroupUpdateManyMutationInput, GroupUncheckedUpdateManyInput>
+    /**
+     * Filter which Groups to update
+     */
+    where?: GroupWhereInput
+    /**
+     * Limit how many Groups to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Group upsert
+   */
+  export type GroupUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Group to update in case it exists.
+     */
+    where: GroupWhereUniqueInput
+    /**
+     * In case the Group found by the `where` argument doesn't exist, create a new Group with this data.
+     */
+    create: XOR<GroupCreateInput, GroupUncheckedCreateInput>
+    /**
+     * In case the Group was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroupUpdateInput, GroupUncheckedUpdateInput>
+  }
+
+  /**
+   * Group delete
+   */
+  export type GroupDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    /**
+     * Filter which Group to delete.
+     */
+    where: GroupWhereUniqueInput
+  }
+
+  /**
+   * Group deleteMany
+   */
+  export type GroupDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Groups to delete
+     */
+    where?: GroupWhereInput
+    /**
+     * Limit how many Groups to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Group.clients
+   */
+  export type Group$clientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Group.Agency
+   */
+  export type Group$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agency
+     */
+    select?: AgencySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Agency
+     */
+    omit?: AgencyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgencyInclude<ExtArgs> | null
+    where?: AgencyWhereInput
+  }
+
+  /**
+   * Group without action
+   */
+  export type GroupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RateSheet
+   */
+
+  export type AggregateRateSheet = {
+    _count: RateSheetCountAggregateOutputType | null
+    _avg: RateSheetAvgAggregateOutputType | null
+    _sum: RateSheetSumAggregateOutputType | null
+    _min: RateSheetMinAggregateOutputType | null
+    _max: RateSheetMaxAggregateOutputType | null
+  }
+
+  export type RateSheetAvgAggregateOutputType = {
+    hourlyRate: number | null
+  }
+
+  export type RateSheetSumAggregateOutputType = {
+    hourlyRate: number | null
+  }
+
+  export type RateSheetMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    hourlyRate: number | null
+    staffType: $Enums.RateSheetType | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type RateSheetMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    hourlyRate: number | null
+    staffType: $Enums.RateSheetType | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type RateSheetCountAggregateOutputType = {
+    id: number
+    name: number
+    hourlyRate: number
+    staffType: number
+    createdAt: number
+    updatedAt: number
+    agencyId: number
+    _all: number
+  }
+
+
+  export type RateSheetAvgAggregateInputType = {
+    hourlyRate?: true
+  }
+
+  export type RateSheetSumAggregateInputType = {
+    hourlyRate?: true
+  }
+
+  export type RateSheetMinAggregateInputType = {
+    id?: true
+    name?: true
+    hourlyRate?: true
+    staffType?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type RateSheetMaxAggregateInputType = {
+    id?: true
+    name?: true
+    hourlyRate?: true
+    staffType?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type RateSheetCountAggregateInputType = {
+    id?: true
+    name?: true
+    hourlyRate?: true
+    staffType?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+    _all?: true
+  }
+
+  export type RateSheetAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RateSheet to aggregate.
+     */
+    where?: RateSheetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RateSheets to fetch.
+     */
+    orderBy?: RateSheetOrderByWithRelationInput | RateSheetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RateSheetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RateSheets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RateSheets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RateSheets
+    **/
+    _count?: true | RateSheetCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RateSheetAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RateSheetSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RateSheetMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RateSheetMaxAggregateInputType
+  }
+
+  export type GetRateSheetAggregateType<T extends RateSheetAggregateArgs> = {
+        [P in keyof T & keyof AggregateRateSheet]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRateSheet[P]>
+      : GetScalarType<T[P], AggregateRateSheet[P]>
+  }
+
+
+
+
+  export type RateSheetGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RateSheetWhereInput
+    orderBy?: RateSheetOrderByWithAggregationInput | RateSheetOrderByWithAggregationInput[]
+    by: RateSheetScalarFieldEnum[] | RateSheetScalarFieldEnum
+    having?: RateSheetScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RateSheetCountAggregateInputType | true
+    _avg?: RateSheetAvgAggregateInputType
+    _sum?: RateSheetSumAggregateInputType
+    _min?: RateSheetMinAggregateInputType
+    _max?: RateSheetMaxAggregateInputType
+  }
+
+  export type RateSheetGroupByOutputType = {
+    id: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt: Date
+    updatedAt: Date
+    agencyId: string | null
+    _count: RateSheetCountAggregateOutputType | null
+    _avg: RateSheetAvgAggregateOutputType | null
+    _sum: RateSheetSumAggregateOutputType | null
+    _min: RateSheetMinAggregateOutputType | null
+    _max: RateSheetMaxAggregateOutputType | null
+  }
+
+  type GetRateSheetGroupByPayload<T extends RateSheetGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RateSheetGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RateSheetGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RateSheetGroupByOutputType[P]>
+            : GetScalarType<T[P], RateSheetGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RateSheetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    hourlyRate?: boolean
+    staffType?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["rateSheet"]>
+
+  export type RateSheetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    hourlyRate?: boolean
+    staffType?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["rateSheet"]>
+
+  export type RateSheetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    hourlyRate?: boolean
+    staffType?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["rateSheet"]>
+
+  export type RateSheetSelectScalar = {
+    id?: boolean
+    name?: boolean
+    hourlyRate?: boolean
+    staffType?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+  }
+
+  export type RateSheetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "hourlyRate" | "staffType" | "createdAt" | "updatedAt" | "agencyId", ExtArgs["result"]["rateSheet"]>
+  export type RateSheetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+  }
+  export type RateSheetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+  }
+  export type RateSheetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+  }
+
+  export type $RateSheetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RateSheet"
+    objects: {
+      Agency: Prisma.$AgencyPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      hourlyRate: number
+      staffType: $Enums.RateSheetType
+      createdAt: Date
+      updatedAt: Date
+      agencyId: string | null
+    }, ExtArgs["result"]["rateSheet"]>
+    composites: {}
+  }
+
+  type RateSheetGetPayload<S extends boolean | null | undefined | RateSheetDefaultArgs> = $Result.GetResult<Prisma.$RateSheetPayload, S>
+
+  type RateSheetCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RateSheetFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RateSheetCountAggregateInputType | true
+    }
+
+  export interface RateSheetDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RateSheet'], meta: { name: 'RateSheet' } }
+    /**
+     * Find zero or one RateSheet that matches the filter.
+     * @param {RateSheetFindUniqueArgs} args - Arguments to find a RateSheet
+     * @example
+     * // Get one RateSheet
+     * const rateSheet = await prisma.rateSheet.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RateSheetFindUniqueArgs>(args: SelectSubset<T, RateSheetFindUniqueArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RateSheet that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RateSheetFindUniqueOrThrowArgs} args - Arguments to find a RateSheet
+     * @example
+     * // Get one RateSheet
+     * const rateSheet = await prisma.rateSheet.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RateSheetFindUniqueOrThrowArgs>(args: SelectSubset<T, RateSheetFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RateSheet that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateSheetFindFirstArgs} args - Arguments to find a RateSheet
+     * @example
+     * // Get one RateSheet
+     * const rateSheet = await prisma.rateSheet.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RateSheetFindFirstArgs>(args?: SelectSubset<T, RateSheetFindFirstArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RateSheet that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateSheetFindFirstOrThrowArgs} args - Arguments to find a RateSheet
+     * @example
+     * // Get one RateSheet
+     * const rateSheet = await prisma.rateSheet.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RateSheetFindFirstOrThrowArgs>(args?: SelectSubset<T, RateSheetFindFirstOrThrowArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RateSheets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateSheetFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RateSheets
+     * const rateSheets = await prisma.rateSheet.findMany()
+     * 
+     * // Get first 10 RateSheets
+     * const rateSheets = await prisma.rateSheet.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rateSheetWithIdOnly = await prisma.rateSheet.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RateSheetFindManyArgs>(args?: SelectSubset<T, RateSheetFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RateSheet.
+     * @param {RateSheetCreateArgs} args - Arguments to create a RateSheet.
+     * @example
+     * // Create one RateSheet
+     * const RateSheet = await prisma.rateSheet.create({
+     *   data: {
+     *     // ... data to create a RateSheet
+     *   }
+     * })
+     * 
+     */
+    create<T extends RateSheetCreateArgs>(args: SelectSubset<T, RateSheetCreateArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RateSheets.
+     * @param {RateSheetCreateManyArgs} args - Arguments to create many RateSheets.
+     * @example
+     * // Create many RateSheets
+     * const rateSheet = await prisma.rateSheet.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RateSheetCreateManyArgs>(args?: SelectSubset<T, RateSheetCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RateSheets and returns the data saved in the database.
+     * @param {RateSheetCreateManyAndReturnArgs} args - Arguments to create many RateSheets.
+     * @example
+     * // Create many RateSheets
+     * const rateSheet = await prisma.rateSheet.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RateSheets and only return the `id`
+     * const rateSheetWithIdOnly = await prisma.rateSheet.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RateSheetCreateManyAndReturnArgs>(args?: SelectSubset<T, RateSheetCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RateSheet.
+     * @param {RateSheetDeleteArgs} args - Arguments to delete one RateSheet.
+     * @example
+     * // Delete one RateSheet
+     * const RateSheet = await prisma.rateSheet.delete({
+     *   where: {
+     *     // ... filter to delete one RateSheet
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RateSheetDeleteArgs>(args: SelectSubset<T, RateSheetDeleteArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RateSheet.
+     * @param {RateSheetUpdateArgs} args - Arguments to update one RateSheet.
+     * @example
+     * // Update one RateSheet
+     * const rateSheet = await prisma.rateSheet.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RateSheetUpdateArgs>(args: SelectSubset<T, RateSheetUpdateArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RateSheets.
+     * @param {RateSheetDeleteManyArgs} args - Arguments to filter RateSheets to delete.
+     * @example
+     * // Delete a few RateSheets
+     * const { count } = await prisma.rateSheet.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RateSheetDeleteManyArgs>(args?: SelectSubset<T, RateSheetDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RateSheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateSheetUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RateSheets
+     * const rateSheet = await prisma.rateSheet.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RateSheetUpdateManyArgs>(args: SelectSubset<T, RateSheetUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RateSheets and returns the data updated in the database.
+     * @param {RateSheetUpdateManyAndReturnArgs} args - Arguments to update many RateSheets.
+     * @example
+     * // Update many RateSheets
+     * const rateSheet = await prisma.rateSheet.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RateSheets and only return the `id`
+     * const rateSheetWithIdOnly = await prisma.rateSheet.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RateSheetUpdateManyAndReturnArgs>(args: SelectSubset<T, RateSheetUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RateSheet.
+     * @param {RateSheetUpsertArgs} args - Arguments to update or create a RateSheet.
+     * @example
+     * // Update or create a RateSheet
+     * const rateSheet = await prisma.rateSheet.upsert({
+     *   create: {
+     *     // ... data to create a RateSheet
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RateSheet we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RateSheetUpsertArgs>(args: SelectSubset<T, RateSheetUpsertArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RateSheets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateSheetCountArgs} args - Arguments to filter RateSheets to count.
+     * @example
+     * // Count the number of RateSheets
+     * const count = await prisma.rateSheet.count({
+     *   where: {
+     *     // ... the filter for the RateSheets we want to count
+     *   }
+     * })
+    **/
+    count<T extends RateSheetCountArgs>(
+      args?: Subset<T, RateSheetCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RateSheetCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RateSheet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateSheetAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RateSheetAggregateArgs>(args: Subset<T, RateSheetAggregateArgs>): Prisma.PrismaPromise<GetRateSheetAggregateType<T>>
+
+    /**
+     * Group by RateSheet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateSheetGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RateSheetGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RateSheetGroupByArgs['orderBy'] }
+        : { orderBy?: RateSheetGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RateSheetGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRateSheetGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RateSheet model
+   */
+  readonly fields: RateSheetFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RateSheet.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RateSheetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Agency<T extends RateSheet$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, RateSheet$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RateSheet model
+   */
+  interface RateSheetFieldRefs {
+    readonly id: FieldRef<"RateSheet", 'String'>
+    readonly name: FieldRef<"RateSheet", 'String'>
+    readonly hourlyRate: FieldRef<"RateSheet", 'Float'>
+    readonly staffType: FieldRef<"RateSheet", 'RateSheetType'>
+    readonly createdAt: FieldRef<"RateSheet", 'DateTime'>
+    readonly updatedAt: FieldRef<"RateSheet", 'DateTime'>
+    readonly agencyId: FieldRef<"RateSheet", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RateSheet findUnique
+   */
+  export type RateSheetFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * Filter, which RateSheet to fetch.
+     */
+    where: RateSheetWhereUniqueInput
+  }
+
+  /**
+   * RateSheet findUniqueOrThrow
+   */
+  export type RateSheetFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * Filter, which RateSheet to fetch.
+     */
+    where: RateSheetWhereUniqueInput
+  }
+
+  /**
+   * RateSheet findFirst
+   */
+  export type RateSheetFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * Filter, which RateSheet to fetch.
+     */
+    where?: RateSheetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RateSheets to fetch.
+     */
+    orderBy?: RateSheetOrderByWithRelationInput | RateSheetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RateSheets.
+     */
+    cursor?: RateSheetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RateSheets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RateSheets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RateSheets.
+     */
+    distinct?: RateSheetScalarFieldEnum | RateSheetScalarFieldEnum[]
+  }
+
+  /**
+   * RateSheet findFirstOrThrow
+   */
+  export type RateSheetFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * Filter, which RateSheet to fetch.
+     */
+    where?: RateSheetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RateSheets to fetch.
+     */
+    orderBy?: RateSheetOrderByWithRelationInput | RateSheetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RateSheets.
+     */
+    cursor?: RateSheetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RateSheets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RateSheets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RateSheets.
+     */
+    distinct?: RateSheetScalarFieldEnum | RateSheetScalarFieldEnum[]
+  }
+
+  /**
+   * RateSheet findMany
+   */
+  export type RateSheetFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * Filter, which RateSheets to fetch.
+     */
+    where?: RateSheetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RateSheets to fetch.
+     */
+    orderBy?: RateSheetOrderByWithRelationInput | RateSheetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RateSheets.
+     */
+    cursor?: RateSheetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RateSheets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RateSheets.
+     */
+    skip?: number
+    distinct?: RateSheetScalarFieldEnum | RateSheetScalarFieldEnum[]
+  }
+
+  /**
+   * RateSheet create
+   */
+  export type RateSheetCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RateSheet.
+     */
+    data: XOR<RateSheetCreateInput, RateSheetUncheckedCreateInput>
+  }
+
+  /**
+   * RateSheet createMany
+   */
+  export type RateSheetCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RateSheets.
+     */
+    data: RateSheetCreateManyInput | RateSheetCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RateSheet createManyAndReturn
+   */
+  export type RateSheetCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * The data used to create many RateSheets.
+     */
+    data: RateSheetCreateManyInput | RateSheetCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RateSheet update
+   */
+  export type RateSheetUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RateSheet.
+     */
+    data: XOR<RateSheetUpdateInput, RateSheetUncheckedUpdateInput>
+    /**
+     * Choose, which RateSheet to update.
+     */
+    where: RateSheetWhereUniqueInput
+  }
+
+  /**
+   * RateSheet updateMany
+   */
+  export type RateSheetUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RateSheets.
+     */
+    data: XOR<RateSheetUpdateManyMutationInput, RateSheetUncheckedUpdateManyInput>
+    /**
+     * Filter which RateSheets to update
+     */
+    where?: RateSheetWhereInput
+    /**
+     * Limit how many RateSheets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RateSheet updateManyAndReturn
+   */
+  export type RateSheetUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * The data used to update RateSheets.
+     */
+    data: XOR<RateSheetUpdateManyMutationInput, RateSheetUncheckedUpdateManyInput>
+    /**
+     * Filter which RateSheets to update
+     */
+    where?: RateSheetWhereInput
+    /**
+     * Limit how many RateSheets to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RateSheet upsert
+   */
+  export type RateSheetUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RateSheet to update in case it exists.
+     */
+    where: RateSheetWhereUniqueInput
+    /**
+     * In case the RateSheet found by the `where` argument doesn't exist, create a new RateSheet with this data.
+     */
+    create: XOR<RateSheetCreateInput, RateSheetUncheckedCreateInput>
+    /**
+     * In case the RateSheet was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RateSheetUpdateInput, RateSheetUncheckedUpdateInput>
+  }
+
+  /**
+   * RateSheet delete
+   */
+  export type RateSheetDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    /**
+     * Filter which RateSheet to delete.
+     */
+    where: RateSheetWhereUniqueInput
+  }
+
+  /**
+   * RateSheet deleteMany
+   */
+  export type RateSheetDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RateSheets to delete
+     */
+    where?: RateSheetWhereInput
+    /**
+     * Limit how many RateSheets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RateSheet.Agency
+   */
+  export type RateSheet$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agency
+     */
+    select?: AgencySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Agency
+     */
+    omit?: AgencyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgencyInclude<ExtArgs> | null
+    where?: AgencyWhereInput
+  }
+
+  /**
+   * RateSheet without action
+   */
+  export type RateSheetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CustomTask
+   */
+
+  export type AggregateCustomTask = {
+    _count: CustomTaskCountAggregateOutputType | null
+    _min: CustomTaskMinAggregateOutputType | null
+    _max: CustomTaskMaxAggregateOutputType | null
+  }
+
+  export type CustomTaskMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    placeholder: string | null
+    category: $Enums.CustomTaskCategory | null
+    frequency: $Enums.CustomTaskFrequency | null
+    priority: $Enums.CustomTaskPriority | null
+    icon: string | null
+    agencyId: string | null
+  }
+
+  export type CustomTaskMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    placeholder: string | null
+    category: $Enums.CustomTaskCategory | null
+    frequency: $Enums.CustomTaskFrequency | null
+    priority: $Enums.CustomTaskPriority | null
+    icon: string | null
+    agencyId: string | null
+  }
+
+  export type CustomTaskCountAggregateOutputType = {
+    id: number
+    name: number
+    placeholder: number
+    category: number
+    frequency: number
+    priority: number
+    icon: number
+    agencyId: number
+    _all: number
+  }
+
+
+  export type CustomTaskMinAggregateInputType = {
+    id?: true
+    name?: true
+    placeholder?: true
+    category?: true
+    frequency?: true
+    priority?: true
+    icon?: true
+    agencyId?: true
+  }
+
+  export type CustomTaskMaxAggregateInputType = {
+    id?: true
+    name?: true
+    placeholder?: true
+    category?: true
+    frequency?: true
+    priority?: true
+    icon?: true
+    agencyId?: true
+  }
+
+  export type CustomTaskCountAggregateInputType = {
+    id?: true
+    name?: true
+    placeholder?: true
+    category?: true
+    frequency?: true
+    priority?: true
+    icon?: true
+    agencyId?: true
+    _all?: true
+  }
+
+  export type CustomTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomTask to aggregate.
+     */
+    where?: CustomTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomTasks to fetch.
+     */
+    orderBy?: CustomTaskOrderByWithRelationInput | CustomTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CustomTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CustomTasks
+    **/
+    _count?: true | CustomTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CustomTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CustomTaskMaxAggregateInputType
+  }
+
+  export type GetCustomTaskAggregateType<T extends CustomTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateCustomTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCustomTask[P]>
+      : GetScalarType<T[P], AggregateCustomTask[P]>
+  }
+
+
+
+
+  export type CustomTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomTaskWhereInput
+    orderBy?: CustomTaskOrderByWithAggregationInput | CustomTaskOrderByWithAggregationInput[]
+    by: CustomTaskScalarFieldEnum[] | CustomTaskScalarFieldEnum
+    having?: CustomTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CustomTaskCountAggregateInputType | true
+    _min?: CustomTaskMinAggregateInputType
+    _max?: CustomTaskMaxAggregateInputType
+  }
+
+  export type CustomTaskGroupByOutputType = {
+    id: string
+    name: string
+    placeholder: string
+    category: $Enums.CustomTaskCategory
+    frequency: $Enums.CustomTaskFrequency
+    priority: $Enums.CustomTaskPriority
+    icon: string | null
+    agencyId: string | null
+    _count: CustomTaskCountAggregateOutputType | null
+    _min: CustomTaskMinAggregateOutputType | null
+    _max: CustomTaskMaxAggregateOutputType | null
+  }
+
+  type GetCustomTaskGroupByPayload<T extends CustomTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CustomTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CustomTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CustomTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], CustomTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CustomTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    placeholder?: boolean
+    category?: boolean
+    frequency?: boolean
+    priority?: boolean
+    icon?: boolean
+    agencyId?: boolean
+    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["customTask"]>
+
+  export type CustomTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    placeholder?: boolean
+    category?: boolean
+    frequency?: boolean
+    priority?: boolean
+    icon?: boolean
+    agencyId?: boolean
+    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["customTask"]>
+
+  export type CustomTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    placeholder?: boolean
+    category?: boolean
+    frequency?: boolean
+    priority?: boolean
+    icon?: boolean
+    agencyId?: boolean
+    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+  }, ExtArgs["result"]["customTask"]>
+
+  export type CustomTaskSelectScalar = {
+    id?: boolean
+    name?: boolean
+    placeholder?: boolean
+    category?: boolean
+    frequency?: boolean
+    priority?: boolean
+    icon?: boolean
+    agencyId?: boolean
+  }
+
+  export type CustomTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "placeholder" | "category" | "frequency" | "priority" | "icon" | "agencyId", ExtArgs["result"]["customTask"]>
+  export type CustomTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+  }
+  export type CustomTaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+  }
+  export type CustomTaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+  }
+
+  export type $CustomTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CustomTask"
+    objects: {
+      Agency: Prisma.$AgencyPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      placeholder: string
+      category: $Enums.CustomTaskCategory
+      frequency: $Enums.CustomTaskFrequency
+      priority: $Enums.CustomTaskPriority
+      icon: string | null
+      agencyId: string | null
+    }, ExtArgs["result"]["customTask"]>
+    composites: {}
+  }
+
+  type CustomTaskGetPayload<S extends boolean | null | undefined | CustomTaskDefaultArgs> = $Result.GetResult<Prisma.$CustomTaskPayload, S>
+
+  type CustomTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CustomTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CustomTaskCountAggregateInputType | true
+    }
+
+  export interface CustomTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CustomTask'], meta: { name: 'CustomTask' } }
+    /**
+     * Find zero or one CustomTask that matches the filter.
+     * @param {CustomTaskFindUniqueArgs} args - Arguments to find a CustomTask
+     * @example
+     * // Get one CustomTask
+     * const customTask = await prisma.customTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CustomTaskFindUniqueArgs>(args: SelectSubset<T, CustomTaskFindUniqueArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CustomTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CustomTaskFindUniqueOrThrowArgs} args - Arguments to find a CustomTask
+     * @example
+     * // Get one CustomTask
+     * const customTask = await prisma.customTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CustomTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, CustomTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomTaskFindFirstArgs} args - Arguments to find a CustomTask
+     * @example
+     * // Get one CustomTask
+     * const customTask = await prisma.customTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CustomTaskFindFirstArgs>(args?: SelectSubset<T, CustomTaskFindFirstArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomTaskFindFirstOrThrowArgs} args - Arguments to find a CustomTask
+     * @example
+     * // Get one CustomTask
+     * const customTask = await prisma.customTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CustomTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, CustomTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CustomTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CustomTasks
+     * const customTasks = await prisma.customTask.findMany()
+     * 
+     * // Get first 10 CustomTasks
+     * const customTasks = await prisma.customTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const customTaskWithIdOnly = await prisma.customTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CustomTaskFindManyArgs>(args?: SelectSubset<T, CustomTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CustomTask.
+     * @param {CustomTaskCreateArgs} args - Arguments to create a CustomTask.
+     * @example
+     * // Create one CustomTask
+     * const CustomTask = await prisma.customTask.create({
+     *   data: {
+     *     // ... data to create a CustomTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends CustomTaskCreateArgs>(args: SelectSubset<T, CustomTaskCreateArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CustomTasks.
+     * @param {CustomTaskCreateManyArgs} args - Arguments to create many CustomTasks.
+     * @example
+     * // Create many CustomTasks
+     * const customTask = await prisma.customTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CustomTaskCreateManyArgs>(args?: SelectSubset<T, CustomTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CustomTasks and returns the data saved in the database.
+     * @param {CustomTaskCreateManyAndReturnArgs} args - Arguments to create many CustomTasks.
+     * @example
+     * // Create many CustomTasks
+     * const customTask = await prisma.customTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CustomTasks and only return the `id`
+     * const customTaskWithIdOnly = await prisma.customTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CustomTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, CustomTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CustomTask.
+     * @param {CustomTaskDeleteArgs} args - Arguments to delete one CustomTask.
+     * @example
+     * // Delete one CustomTask
+     * const CustomTask = await prisma.customTask.delete({
+     *   where: {
+     *     // ... filter to delete one CustomTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CustomTaskDeleteArgs>(args: SelectSubset<T, CustomTaskDeleteArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CustomTask.
+     * @param {CustomTaskUpdateArgs} args - Arguments to update one CustomTask.
+     * @example
+     * // Update one CustomTask
+     * const customTask = await prisma.customTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CustomTaskUpdateArgs>(args: SelectSubset<T, CustomTaskUpdateArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CustomTasks.
+     * @param {CustomTaskDeleteManyArgs} args - Arguments to filter CustomTasks to delete.
+     * @example
+     * // Delete a few CustomTasks
+     * const { count } = await prisma.customTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CustomTaskDeleteManyArgs>(args?: SelectSubset<T, CustomTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CustomTasks
+     * const customTask = await prisma.customTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CustomTaskUpdateManyArgs>(args: SelectSubset<T, CustomTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomTasks and returns the data updated in the database.
+     * @param {CustomTaskUpdateManyAndReturnArgs} args - Arguments to update many CustomTasks.
+     * @example
+     * // Update many CustomTasks
+     * const customTask = await prisma.customTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CustomTasks and only return the `id`
+     * const customTaskWithIdOnly = await prisma.customTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CustomTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, CustomTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CustomTask.
+     * @param {CustomTaskUpsertArgs} args - Arguments to update or create a CustomTask.
+     * @example
+     * // Update or create a CustomTask
+     * const customTask = await prisma.customTask.upsert({
+     *   create: {
+     *     // ... data to create a CustomTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CustomTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CustomTaskUpsertArgs>(args: SelectSubset<T, CustomTaskUpsertArgs<ExtArgs>>): Prisma__CustomTaskClient<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CustomTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomTaskCountArgs} args - Arguments to filter CustomTasks to count.
+     * @example
+     * // Count the number of CustomTasks
+     * const count = await prisma.customTask.count({
+     *   where: {
+     *     // ... the filter for the CustomTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends CustomTaskCountArgs>(
+      args?: Subset<T, CustomTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CustomTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CustomTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CustomTaskAggregateArgs>(args: Subset<T, CustomTaskAggregateArgs>): Prisma.PrismaPromise<GetCustomTaskAggregateType<T>>
+
+    /**
+     * Group by CustomTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CustomTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CustomTaskGroupByArgs['orderBy'] }
+        : { orderBy?: CustomTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CustomTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCustomTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CustomTask model
+   */
+  readonly fields: CustomTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CustomTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CustomTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Agency<T extends CustomTask$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, CustomTask$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CustomTask model
+   */
+  interface CustomTaskFieldRefs {
+    readonly id: FieldRef<"CustomTask", 'String'>
+    readonly name: FieldRef<"CustomTask", 'String'>
+    readonly placeholder: FieldRef<"CustomTask", 'String'>
+    readonly category: FieldRef<"CustomTask", 'CustomTaskCategory'>
+    readonly frequency: FieldRef<"CustomTask", 'CustomTaskFrequency'>
+    readonly priority: FieldRef<"CustomTask", 'CustomTaskPriority'>
+    readonly icon: FieldRef<"CustomTask", 'String'>
+    readonly agencyId: FieldRef<"CustomTask", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CustomTask findUnique
+   */
+  export type CustomTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomTask to fetch.
+     */
+    where: CustomTaskWhereUniqueInput
+  }
+
+  /**
+   * CustomTask findUniqueOrThrow
+   */
+  export type CustomTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomTask to fetch.
+     */
+    where: CustomTaskWhereUniqueInput
+  }
+
+  /**
+   * CustomTask findFirst
+   */
+  export type CustomTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomTask to fetch.
+     */
+    where?: CustomTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomTasks to fetch.
+     */
+    orderBy?: CustomTaskOrderByWithRelationInput | CustomTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomTasks.
+     */
+    cursor?: CustomTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomTasks.
+     */
+    distinct?: CustomTaskScalarFieldEnum | CustomTaskScalarFieldEnum[]
+  }
+
+  /**
+   * CustomTask findFirstOrThrow
+   */
+  export type CustomTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomTask to fetch.
+     */
+    where?: CustomTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomTasks to fetch.
+     */
+    orderBy?: CustomTaskOrderByWithRelationInput | CustomTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomTasks.
+     */
+    cursor?: CustomTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomTasks.
+     */
+    distinct?: CustomTaskScalarFieldEnum | CustomTaskScalarFieldEnum[]
+  }
+
+  /**
+   * CustomTask findMany
+   */
+  export type CustomTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomTasks to fetch.
+     */
+    where?: CustomTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomTasks to fetch.
+     */
+    orderBy?: CustomTaskOrderByWithRelationInput | CustomTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CustomTasks.
+     */
+    cursor?: CustomTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomTasks.
+     */
+    skip?: number
+    distinct?: CustomTaskScalarFieldEnum | CustomTaskScalarFieldEnum[]
+  }
+
+  /**
+   * CustomTask create
+   */
+  export type CustomTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CustomTask.
+     */
+    data: XOR<CustomTaskCreateInput, CustomTaskUncheckedCreateInput>
+  }
+
+  /**
+   * CustomTask createMany
+   */
+  export type CustomTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CustomTasks.
+     */
+    data: CustomTaskCreateManyInput | CustomTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomTask createManyAndReturn
+   */
+  export type CustomTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many CustomTasks.
+     */
+    data: CustomTaskCreateManyInput | CustomTaskCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomTask update
+   */
+  export type CustomTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CustomTask.
+     */
+    data: XOR<CustomTaskUpdateInput, CustomTaskUncheckedUpdateInput>
+    /**
+     * Choose, which CustomTask to update.
+     */
+    where: CustomTaskWhereUniqueInput
+  }
+
+  /**
+   * CustomTask updateMany
+   */
+  export type CustomTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CustomTasks.
+     */
+    data: XOR<CustomTaskUpdateManyMutationInput, CustomTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomTasks to update
+     */
+    where?: CustomTaskWhereInput
+    /**
+     * Limit how many CustomTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomTask updateManyAndReturn
+   */
+  export type CustomTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update CustomTasks.
+     */
+    data: XOR<CustomTaskUpdateManyMutationInput, CustomTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomTasks to update
+     */
+    where?: CustomTaskWhereInput
+    /**
+     * Limit how many CustomTasks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomTask upsert
+   */
+  export type CustomTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CustomTask to update in case it exists.
+     */
+    where: CustomTaskWhereUniqueInput
+    /**
+     * In case the CustomTask found by the `where` argument doesn't exist, create a new CustomTask with this data.
+     */
+    create: XOR<CustomTaskCreateInput, CustomTaskUncheckedCreateInput>
+    /**
+     * In case the CustomTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CustomTaskUpdateInput, CustomTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * CustomTask delete
+   */
+  export type CustomTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
+    /**
+     * Filter which CustomTask to delete.
+     */
+    where: CustomTaskWhereUniqueInput
+  }
+
+  /**
+   * CustomTask deleteMany
+   */
+  export type CustomTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomTasks to delete
+     */
+    where?: CustomTaskWhereInput
+    /**
+     * Limit how many CustomTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomTask.Agency
+   */
+  export type CustomTask$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agency
+     */
+    select?: AgencySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Agency
+     */
+    omit?: AgencyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgencyInclude<ExtArgs> | null
+    where?: AgencyWhereInput
+  }
+
+  /**
+   * CustomTask without action
+   */
+  export type CustomTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomTask
+     */
+    select?: CustomTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomTask
+     */
+    omit?: CustomTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomTaskInclude<ExtArgs> | null
   }
 
 
@@ -7368,7 +11172,7 @@ export namespace Prisma {
 
   /**
    * Fields of the ClientCareAssignment model
-   */ 
+   */
   interface ClientCareAssignmentFieldRefs {
     readonly id: FieldRef<"ClientCareAssignment", 'String'>
     readonly clientId: FieldRef<"ClientCareAssignment", 'String'>
@@ -7840,6 +11644,7 @@ export namespace Prisma {
     interests: string | null
     history: string | null
     preferredName: string | null
+    groupId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -7873,6 +11678,7 @@ export namespace Prisma {
     interests: string | null
     history: string | null
     preferredName: string | null
+    groupId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -7906,6 +11712,7 @@ export namespace Prisma {
     interests: number
     history: number
     preferredName: number
+    groupId: number
     _all: number
   }
 
@@ -7949,6 +11756,7 @@ export namespace Prisma {
     interests?: true
     history?: true
     preferredName?: true
+    groupId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -7982,6 +11790,7 @@ export namespace Prisma {
     interests?: true
     history?: true
     preferredName?: true
+    groupId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -8015,6 +11824,7 @@ export namespace Prisma {
     interests?: true
     history?: true
     preferredName?: true
+    groupId?: true
     _all?: true
   }
 
@@ -8135,6 +11945,7 @@ export namespace Prisma {
     interests: string | null
     history: string | null
     preferredName: string | null
+    groupId: string | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -8187,6 +11998,7 @@ export namespace Prisma {
     interests?: boolean
     history?: boolean
     preferredName?: boolean
+    groupId?: boolean
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     agency?: boolean | User$agencyArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
@@ -8220,6 +12032,7 @@ export namespace Prisma {
     reminders?: boolean | User$remindersArgs<ExtArgs>
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
     reportEdits?: boolean | User$reportEditsArgs<ExtArgs>
+    Group?: boolean | User$GroupArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8254,8 +12067,10 @@ export namespace Prisma {
     interests?: boolean
     history?: boolean
     preferredName?: boolean
+    groupId?: boolean
     agency?: boolean | User$agencyArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
+    Group?: boolean | User$GroupArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8289,8 +12104,10 @@ export namespace Prisma {
     interests?: boolean
     history?: boolean
     preferredName?: boolean
+    groupId?: boolean
     agency?: boolean | User$agencyArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
+    Group?: boolean | User$GroupArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -8324,9 +12141,10 @@ export namespace Prisma {
     interests?: boolean
     history?: boolean
     preferredName?: boolean
+    groupId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cognitoId" | "email" | "firstName" | "lastName" | "role" | "subRole" | "createdAt" | "updatedAt" | "agencyId" | "invitedById" | "title" | "addressLine1" | "addressLine2" | "townOrCity" | "county" | "postalCode" | "propertyAccess" | "phoneNumber" | "nhsNumber" | "dnraOrder" | "chargeRate" | "mobility" | "likesDislikes" | "dateOfBirth" | "languages" | "allergies" | "interests" | "history" | "preferredName", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cognitoId" | "email" | "firstName" | "lastName" | "role" | "subRole" | "createdAt" | "updatedAt" | "agencyId" | "invitedById" | "title" | "addressLine1" | "addressLine2" | "townOrCity" | "county" | "postalCode" | "propertyAccess" | "phoneNumber" | "nhsNumber" | "dnraOrder" | "chargeRate" | "mobility" | "likesDislikes" | "dateOfBirth" | "languages" | "allergies" | "interests" | "history" | "preferredName" | "groupId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     agency?: boolean | User$agencyArgs<ExtArgs>
@@ -8361,15 +12179,18 @@ export namespace Prisma {
     reminders?: boolean | User$remindersArgs<ExtArgs>
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
     reportEdits?: boolean | User$reportEditsArgs<ExtArgs>
+    Group?: boolean | User$GroupArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | User$agencyArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
+    Group?: boolean | User$GroupArgs<ExtArgs>
   }
   export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | User$agencyArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
+    Group?: boolean | User$GroupArgs<ExtArgs>
   }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8408,6 +12229,7 @@ export namespace Prisma {
       reminders: Prisma.$ReminderPayload<ExtArgs>[]
       medicationAdministrations: Prisma.$MedicationAdministrationPayload<ExtArgs>[]
       reportEdits: Prisma.$ReportEditPayload<ExtArgs>[]
+      Group: Prisma.$GroupPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8440,6 +12262,7 @@ export namespace Prisma {
       interests: string | null
       history: string | null
       preferredName: string | null
+      groupId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -8867,6 +12690,7 @@ export namespace Prisma {
     reminders<T extends User$remindersArgs<ExtArgs> = {}>(args?: Subset<T, User$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     medicationAdministrations<T extends User$medicationAdministrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$medicationAdministrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationAdministrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reportEdits<T extends User$reportEditsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportEditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Group<T extends User$GroupArgs<ExtArgs> = {}>(args?: Subset<T, User$GroupArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8894,7 +12718,7 @@ export namespace Prisma {
 
   /**
    * Fields of the User model
-   */ 
+   */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
     readonly cognitoId: FieldRef<"User", 'String'>
@@ -8926,6 +12750,7 @@ export namespace Prisma {
     readonly interests: FieldRef<"User", 'String'>
     readonly history: FieldRef<"User", 'String'>
     readonly preferredName: FieldRef<"User", 'String'>
+    readonly groupId: FieldRef<"User", 'String'>
   }
     
 
@@ -10094,6 +13919,25 @@ export namespace Prisma {
   }
 
   /**
+   * User.Group
+   */
+  export type User$GroupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Group
+     */
+    select?: GroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Group
+     */
+    omit?: GroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupInclude<ExtArgs> | null
+    where?: GroupWhereInput
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10761,7 +14605,7 @@ export namespace Prisma {
 
   /**
    * Fields of the CommunicationPreference model
-   */ 
+   */
   interface CommunicationPreferenceFieldRefs {
     readonly id: FieldRef<"CommunicationPreference", 'String'>
     readonly userId: FieldRef<"CommunicationPreference", 'String'>
@@ -11832,7 +15676,7 @@ export namespace Prisma {
 
   /**
    * Fields of the FamilyAccess model
-   */ 
+   */
   interface FamilyAccessFieldRefs {
     readonly id: FieldRef<"FamilyAccess", 'String'>
     readonly clientId: FieldRef<"FamilyAccess", 'String'>
@@ -12909,7 +16753,7 @@ export namespace Prisma {
 
   /**
    * Fields of the MedicationDatabaseLink model
-   */ 
+   */
   interface MedicationDatabaseLinkFieldRefs {
     readonly id: FieldRef<"MedicationDatabaseLink", 'String'>
     readonly name: FieldRef<"MedicationDatabaseLink", 'String'>
@@ -14010,7 +17854,7 @@ export namespace Prisma {
 
   /**
    * Fields of the VisitType model
-   */ 
+   */
   interface VisitTypeFieldRefs {
     readonly id: FieldRef<"VisitType", 'String'>
     readonly agencyId: FieldRef<"VisitType", 'String'>
@@ -15259,7 +19103,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Schedule model
-   */ 
+   */
   interface ScheduleFieldRefs {
     readonly id: FieldRef<"Schedule", 'String'>
     readonly agencyId: FieldRef<"Schedule", 'String'>
@@ -16601,7 +20445,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Report model
-   */ 
+   */
   interface ReportFieldRefs {
     readonly id: FieldRef<"Report", 'String'>
     readonly clientId: FieldRef<"Report", 'String'>
@@ -17830,7 +21674,7 @@ export namespace Prisma {
 
   /**
    * Fields of the ReportTask model
-   */ 
+   */
   interface ReportTaskFieldRefs {
     readonly id: FieldRef<"ReportTask", 'String'>
     readonly reportId: FieldRef<"ReportTask", 'String'>
@@ -18939,7 +22783,7 @@ export namespace Prisma {
 
   /**
    * Fields of the ReportAlert model
-   */ 
+   */
   interface ReportAlertFieldRefs {
     readonly id: FieldRef<"ReportAlert", 'String'>
     readonly reportId: FieldRef<"ReportAlert", 'String'>
@@ -20013,7 +23857,7 @@ export namespace Prisma {
 
   /**
    * Fields of the BodyMapObservation model
-   */ 
+   */
   interface BodyMapObservationFieldRefs {
     readonly id: FieldRef<"BodyMapObservation", 'String'>
     readonly reportId: FieldRef<"BodyMapObservation", 'String'>
@@ -21092,7 +24936,7 @@ export namespace Prisma {
 
   /**
    * Fields of the ReportEdit model
-   */ 
+   */
   interface ReportEditFieldRefs {
     readonly id: FieldRef<"ReportEdit", 'String'>
     readonly reportId: FieldRef<"ReportEdit", 'String'>
@@ -22313,7 +26157,7 @@ export namespace Prisma {
 
   /**
    * Fields of the MedicationRecord model
-   */ 
+   */
   interface MedicationRecordFieldRefs {
     readonly id: FieldRef<"MedicationRecord", 'String'>
     readonly medicationId: FieldRef<"MedicationRecord", 'String'>
@@ -23470,7 +27314,7 @@ export namespace Prisma {
 
   /**
    * Fields of the MedicationAdministration model
-   */ 
+   */
   interface MedicationAdministrationFieldRefs {
     readonly id: FieldRef<"MedicationAdministration", 'String'>
     readonly medicationRecordId: FieldRef<"MedicationAdministration", 'String'>
@@ -24629,7 +28473,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Invoice model
-   */ 
+   */
   interface InvoiceFieldRefs {
     readonly id: FieldRef<"Invoice", 'String'>
     readonly agencyId: FieldRef<"Invoice", 'String'>
@@ -25847,7 +29691,7 @@ export namespace Prisma {
 
   /**
    * Fields of the MileageRecord model
-   */ 
+   */
   interface MileageRecordFieldRefs {
     readonly id: FieldRef<"MileageRecord", 'String'>
     readonly agencyId: FieldRef<"MileageRecord", 'String'>
@@ -26951,7 +30795,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Document model
-   */ 
+   */
   interface DocumentFieldRefs {
     readonly id: FieldRef<"Document", 'String'>
     readonly title: FieldRef<"Document", 'String'>
@@ -28068,7 +31912,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Profile model
-   */ 
+   */
   interface ProfileFieldRefs {
     readonly id: FieldRef<"Profile", 'String'>
     readonly userId: FieldRef<"Profile", 'String'>
@@ -29146,7 +32990,7 @@ export namespace Prisma {
 
   /**
    * Fields of the IncidentReport model
-   */ 
+   */
   interface IncidentReportFieldRefs {
     readonly id: FieldRef<"IncidentReport", 'String'>
     readonly reporterId: FieldRef<"IncidentReport", 'String'>
@@ -30213,7 +34057,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Message model
-   */ 
+   */
   interface MessageFieldRefs {
     readonly id: FieldRef<"Message", 'String'>
     readonly senderId: FieldRef<"Message", 'String'>
@@ -31283,7 +35127,7 @@ export namespace Prisma {
 
   /**
    * Fields of the KeyContact model
-   */ 
+   */
   interface KeyContactFieldRefs {
     readonly id: FieldRef<"KeyContact", 'String'>
     readonly clientId: FieldRef<"KeyContact", 'String'>
@@ -32318,7 +36162,7 @@ export namespace Prisma {
 
   /**
    * Fields of the CareOutcome model
-   */ 
+   */
   interface CareOutcomeFieldRefs {
     readonly id: FieldRef<"CareOutcome", 'String'>
     readonly clientId: FieldRef<"CareOutcome", 'String'>
@@ -33362,7 +37206,7 @@ export namespace Prisma {
 
   /**
    * Fields of the CommunicationLog model
-   */ 
+   */
   interface CommunicationLogFieldRefs {
     readonly id: FieldRef<"CommunicationLog", 'String'>
     readonly clientId: FieldRef<"CommunicationLog", 'String'>
@@ -34425,7 +38269,7 @@ export namespace Prisma {
 
   /**
    * Fields of the RiskCategory model
-   */ 
+   */
   interface RiskCategoryFieldRefs {
     readonly id: FieldRef<"RiskCategory", 'String'>
     readonly agencyId: FieldRef<"RiskCategory", 'String'>
@@ -35629,7 +39473,7 @@ export namespace Prisma {
 
   /**
    * Fields of the RiskAssessment model
-   */ 
+   */
   interface RiskAssessmentFieldRefs {
     readonly id: FieldRef<"RiskAssessment", 'String'>
     readonly clientId: FieldRef<"RiskAssessment", 'String'>
@@ -36717,7 +40561,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Reminder model
-   */ 
+   */
   interface ReminderFieldRefs {
     readonly id: FieldRef<"Reminder", 'String'>
     readonly clientId: FieldRef<"Reminder", 'String'>
@@ -37813,7 +41657,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Notification model
-   */ 
+   */
   interface NotificationFieldRefs {
     readonly id: FieldRef<"Notification", 'String'>
     readonly userId: FieldRef<"Notification", 'String'>
@@ -38284,6 +42128,42 @@ export namespace Prisma {
   export type AgencyScalarFieldEnum = (typeof AgencyScalarFieldEnum)[keyof typeof AgencyScalarFieldEnum]
 
 
+  export const GroupScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    agencyId: 'agencyId'
+  };
+
+  export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof GroupScalarFieldEnum]
+
+
+  export const RateSheetScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    hourlyRate: 'hourlyRate',
+    staffType: 'staffType',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    agencyId: 'agencyId'
+  };
+
+  export type RateSheetScalarFieldEnum = (typeof RateSheetScalarFieldEnum)[keyof typeof RateSheetScalarFieldEnum]
+
+
+  export const CustomTaskScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    placeholder: 'placeholder',
+    category: 'category',
+    frequency: 'frequency',
+    priority: 'priority',
+    icon: 'icon',
+    agencyId: 'agencyId'
+  };
+
+  export type CustomTaskScalarFieldEnum = (typeof CustomTaskScalarFieldEnum)[keyof typeof CustomTaskScalarFieldEnum]
+
+
   export const ClientCareAssignmentScalarFieldEnum: {
     id: 'id',
     clientId: 'clientId',
@@ -38325,7 +42205,8 @@ export namespace Prisma {
     allergies: 'allergies',
     interests: 'interests',
     history: 'history',
-    preferredName: 'preferredName'
+    preferredName: 'preferredName',
+    groupId: 'groupId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -38704,7 +42585,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references 
+   * Field references
    */
 
 
@@ -38796,6 +42677,62 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'RateSheetType'
+   */
+  export type EnumRateSheetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RateSheetType'>
+    
+
+
+  /**
+   * Reference to a field of type 'RateSheetType[]'
+   */
+  export type ListEnumRateSheetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RateSheetType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CustomTaskCategory'
+   */
+  export type EnumCustomTaskCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'CustomTaskCategory[]'
+   */
+  export type ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskCategory[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CustomTaskFrequency'
+   */
+  export type EnumCustomTaskFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskFrequency'>
+    
+
+
+  /**
+   * Reference to a field of type 'CustomTaskFrequency[]'
+   */
+  export type ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskFrequency[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CustomTaskPriority'
+   */
+  export type EnumCustomTaskPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskPriority'>
+    
+
+
+  /**
+   * Reference to a field of type 'CustomTaskPriority[]'
+   */
+  export type ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskPriority[]'>
     
 
 
@@ -39023,12 +42960,15 @@ export namespace Prisma {
     schedules?: ScheduleListRelationFilter
     invoices?: InvoiceListRelationFilter
     mileageRecords?: MileageRecordListRelationFilter
-    documents?: DocumentListRelationFilter
     incidentReports?: IncidentReportListRelationFilter
     medications?: MedicationDatabaseLinkListRelationFilter
     visitTypes?: VisitTypeListRelationFilter
     riskCategories?: RiskCategoryListRelationFilter
+    documents?: DocumentListRelationFilter
     Report?: ReportListRelationFilter
+    groups?: GroupListRelationFilter
+    rateSheets?: RateSheetListRelationFilter
+    customTasks?: CustomTaskListRelationFilter
   }
 
   export type AgencyOrderByWithRelationInput = {
@@ -39048,12 +42988,15 @@ export namespace Prisma {
     schedules?: ScheduleOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
     mileageRecords?: MileageRecordOrderByRelationAggregateInput
-    documents?: DocumentOrderByRelationAggregateInput
     incidentReports?: IncidentReportOrderByRelationAggregateInput
     medications?: MedicationDatabaseLinkOrderByRelationAggregateInput
     visitTypes?: VisitTypeOrderByRelationAggregateInput
     riskCategories?: RiskCategoryOrderByRelationAggregateInput
+    documents?: DocumentOrderByRelationAggregateInput
     Report?: ReportOrderByRelationAggregateInput
+    groups?: GroupOrderByRelationAggregateInput
+    rateSheets?: RateSheetOrderByRelationAggregateInput
+    customTasks?: CustomTaskOrderByRelationAggregateInput
   }
 
   export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -39076,12 +43019,15 @@ export namespace Prisma {
     schedules?: ScheduleListRelationFilter
     invoices?: InvoiceListRelationFilter
     mileageRecords?: MileageRecordListRelationFilter
-    documents?: DocumentListRelationFilter
     incidentReports?: IncidentReportListRelationFilter
     medications?: MedicationDatabaseLinkListRelationFilter
     visitTypes?: VisitTypeListRelationFilter
     riskCategories?: RiskCategoryListRelationFilter
+    documents?: DocumentListRelationFilter
     Report?: ReportListRelationFilter
+    groups?: GroupListRelationFilter
+    rateSheets?: RateSheetListRelationFilter
+    customTasks?: CustomTaskListRelationFilter
   }, "id">
 
   export type AgencyOrderByWithAggregationInput = {
@@ -39118,6 +43064,191 @@ export namespace Prisma {
     isTestAccount?: BoolWithAggregatesFilter<"Agency"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Agency"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Agency"> | Date | string
+  }
+
+  export type GroupWhereInput = {
+    AND?: GroupWhereInput | GroupWhereInput[]
+    OR?: GroupWhereInput[]
+    NOT?: GroupWhereInput | GroupWhereInput[]
+    id?: StringFilter<"Group"> | string
+    name?: StringFilter<"Group"> | string
+    agencyId?: StringNullableFilter<"Group"> | string | null
+    clients?: UserListRelationFilter
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+  }
+
+  export type GroupOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrderInput | SortOrder
+    clients?: UserOrderByRelationAggregateInput
+    Agency?: AgencyOrderByWithRelationInput
+  }
+
+  export type GroupWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GroupWhereInput | GroupWhereInput[]
+    OR?: GroupWhereInput[]
+    NOT?: GroupWhereInput | GroupWhereInput[]
+    name?: StringFilter<"Group"> | string
+    agencyId?: StringNullableFilter<"Group"> | string | null
+    clients?: UserListRelationFilter
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+  }, "id">
+
+  export type GroupOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrderInput | SortOrder
+    _count?: GroupCountOrderByAggregateInput
+    _max?: GroupMaxOrderByAggregateInput
+    _min?: GroupMinOrderByAggregateInput
+  }
+
+  export type GroupScalarWhereWithAggregatesInput = {
+    AND?: GroupScalarWhereWithAggregatesInput | GroupScalarWhereWithAggregatesInput[]
+    OR?: GroupScalarWhereWithAggregatesInput[]
+    NOT?: GroupScalarWhereWithAggregatesInput | GroupScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Group"> | string
+    name?: StringWithAggregatesFilter<"Group"> | string
+    agencyId?: StringNullableWithAggregatesFilter<"Group"> | string | null
+  }
+
+  export type RateSheetWhereInput = {
+    AND?: RateSheetWhereInput | RateSheetWhereInput[]
+    OR?: RateSheetWhereInput[]
+    NOT?: RateSheetWhereInput | RateSheetWhereInput[]
+    id?: StringFilter<"RateSheet"> | string
+    name?: StringFilter<"RateSheet"> | string
+    hourlyRate?: FloatFilter<"RateSheet"> | number
+    staffType?: EnumRateSheetTypeFilter<"RateSheet"> | $Enums.RateSheetType
+    createdAt?: DateTimeFilter<"RateSheet"> | Date | string
+    updatedAt?: DateTimeFilter<"RateSheet"> | Date | string
+    agencyId?: StringNullableFilter<"RateSheet"> | string | null
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+  }
+
+  export type RateSheetOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    hourlyRate?: SortOrder
+    staffType?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrderInput | SortOrder
+    Agency?: AgencyOrderByWithRelationInput
+  }
+
+  export type RateSheetWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RateSheetWhereInput | RateSheetWhereInput[]
+    OR?: RateSheetWhereInput[]
+    NOT?: RateSheetWhereInput | RateSheetWhereInput[]
+    name?: StringFilter<"RateSheet"> | string
+    hourlyRate?: FloatFilter<"RateSheet"> | number
+    staffType?: EnumRateSheetTypeFilter<"RateSheet"> | $Enums.RateSheetType
+    createdAt?: DateTimeFilter<"RateSheet"> | Date | string
+    updatedAt?: DateTimeFilter<"RateSheet"> | Date | string
+    agencyId?: StringNullableFilter<"RateSheet"> | string | null
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+  }, "id">
+
+  export type RateSheetOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    hourlyRate?: SortOrder
+    staffType?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrderInput | SortOrder
+    _count?: RateSheetCountOrderByAggregateInput
+    _avg?: RateSheetAvgOrderByAggregateInput
+    _max?: RateSheetMaxOrderByAggregateInput
+    _min?: RateSheetMinOrderByAggregateInput
+    _sum?: RateSheetSumOrderByAggregateInput
+  }
+
+  export type RateSheetScalarWhereWithAggregatesInput = {
+    AND?: RateSheetScalarWhereWithAggregatesInput | RateSheetScalarWhereWithAggregatesInput[]
+    OR?: RateSheetScalarWhereWithAggregatesInput[]
+    NOT?: RateSheetScalarWhereWithAggregatesInput | RateSheetScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RateSheet"> | string
+    name?: StringWithAggregatesFilter<"RateSheet"> | string
+    hourlyRate?: FloatWithAggregatesFilter<"RateSheet"> | number
+    staffType?: EnumRateSheetTypeWithAggregatesFilter<"RateSheet"> | $Enums.RateSheetType
+    createdAt?: DateTimeWithAggregatesFilter<"RateSheet"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RateSheet"> | Date | string
+    agencyId?: StringNullableWithAggregatesFilter<"RateSheet"> | string | null
+  }
+
+  export type CustomTaskWhereInput = {
+    AND?: CustomTaskWhereInput | CustomTaskWhereInput[]
+    OR?: CustomTaskWhereInput[]
+    NOT?: CustomTaskWhereInput | CustomTaskWhereInput[]
+    id?: StringFilter<"CustomTask"> | string
+    name?: StringFilter<"CustomTask"> | string
+    placeholder?: StringFilter<"CustomTask"> | string
+    category?: EnumCustomTaskCategoryFilter<"CustomTask"> | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFilter<"CustomTask"> | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFilter<"CustomTask"> | $Enums.CustomTaskPriority
+    icon?: StringNullableFilter<"CustomTask"> | string | null
+    agencyId?: StringNullableFilter<"CustomTask"> | string | null
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+  }
+
+  export type CustomTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    placeholder?: SortOrder
+    category?: SortOrder
+    frequency?: SortOrder
+    priority?: SortOrder
+    icon?: SortOrderInput | SortOrder
+    agencyId?: SortOrderInput | SortOrder
+    Agency?: AgencyOrderByWithRelationInput
+  }
+
+  export type CustomTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CustomTaskWhereInput | CustomTaskWhereInput[]
+    OR?: CustomTaskWhereInput[]
+    NOT?: CustomTaskWhereInput | CustomTaskWhereInput[]
+    name?: StringFilter<"CustomTask"> | string
+    placeholder?: StringFilter<"CustomTask"> | string
+    category?: EnumCustomTaskCategoryFilter<"CustomTask"> | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFilter<"CustomTask"> | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFilter<"CustomTask"> | $Enums.CustomTaskPriority
+    icon?: StringNullableFilter<"CustomTask"> | string | null
+    agencyId?: StringNullableFilter<"CustomTask"> | string | null
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+  }, "id">
+
+  export type CustomTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    placeholder?: SortOrder
+    category?: SortOrder
+    frequency?: SortOrder
+    priority?: SortOrder
+    icon?: SortOrderInput | SortOrder
+    agencyId?: SortOrderInput | SortOrder
+    _count?: CustomTaskCountOrderByAggregateInput
+    _max?: CustomTaskMaxOrderByAggregateInput
+    _min?: CustomTaskMinOrderByAggregateInput
+  }
+
+  export type CustomTaskScalarWhereWithAggregatesInput = {
+    AND?: CustomTaskScalarWhereWithAggregatesInput | CustomTaskScalarWhereWithAggregatesInput[]
+    OR?: CustomTaskScalarWhereWithAggregatesInput[]
+    NOT?: CustomTaskScalarWhereWithAggregatesInput | CustomTaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CustomTask"> | string
+    name?: StringWithAggregatesFilter<"CustomTask"> | string
+    placeholder?: StringWithAggregatesFilter<"CustomTask"> | string
+    category?: EnumCustomTaskCategoryWithAggregatesFilter<"CustomTask"> | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyWithAggregatesFilter<"CustomTask"> | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityWithAggregatesFilter<"CustomTask"> | $Enums.CustomTaskPriority
+    icon?: StringNullableWithAggregatesFilter<"CustomTask"> | string | null
+    agencyId?: StringNullableWithAggregatesFilter<"CustomTask"> | string | null
   }
 
   export type ClientCareAssignmentWhereInput = {
@@ -39213,6 +43344,7 @@ export namespace Prisma {
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
     preferredName?: StringNullableFilter<"User"> | string | null
+    groupId?: StringNullableFilter<"User"> | string | null
     sentInvitations?: InvitationListRelationFilter
     agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     invitedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -39246,6 +43378,7 @@ export namespace Prisma {
     reminders?: ReminderListRelationFilter
     medicationAdministrations?: MedicationAdministrationListRelationFilter
     reportEdits?: ReportEditListRelationFilter
+    Group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -39279,6 +43412,7 @@ export namespace Prisma {
     interests?: SortOrderInput | SortOrder
     history?: SortOrderInput | SortOrder
     preferredName?: SortOrderInput | SortOrder
+    groupId?: SortOrderInput | SortOrder
     sentInvitations?: InvitationOrderByRelationAggregateInput
     agency?: AgencyOrderByWithRelationInput
     invitedBy?: UserOrderByWithRelationInput
@@ -39312,6 +43446,7 @@ export namespace Prisma {
     reminders?: ReminderOrderByRelationAggregateInput
     medicationAdministrations?: MedicationAdministrationOrderByRelationAggregateInput
     reportEdits?: ReportEditOrderByRelationAggregateInput
+    Group?: GroupOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -39348,6 +43483,7 @@ export namespace Prisma {
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
     preferredName?: StringNullableFilter<"User"> | string | null
+    groupId?: StringNullableFilter<"User"> | string | null
     sentInvitations?: InvitationListRelationFilter
     agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     invitedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -39381,6 +43517,7 @@ export namespace Prisma {
     reminders?: ReminderListRelationFilter
     medicationAdministrations?: MedicationAdministrationListRelationFilter
     reportEdits?: ReportEditListRelationFilter
+    Group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
   }, "id" | "cognitoId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -39414,6 +43551,7 @@ export namespace Prisma {
     interests?: SortOrderInput | SortOrder
     history?: SortOrderInput | SortOrder
     preferredName?: SortOrderInput | SortOrder
+    groupId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -39455,6 +43593,7 @@ export namespace Prisma {
     interests?: StringNullableWithAggregatesFilter<"User"> | string | null
     history?: StringNullableWithAggregatesFilter<"User"> | string | null
     preferredName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    groupId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type CommunicationPreferenceWhereInput = {
@@ -41395,12 +45534,15 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateInput = {
@@ -41420,12 +45562,15 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUpdateInput = {
@@ -41445,12 +45590,15 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateInput = {
@@ -41470,12 +45618,15 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateManyInput = {
@@ -41521,6 +45672,196 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupCreateInput = {
+    id?: string
+    name: string
+    clients?: UserCreateNestedManyWithoutGroupInput
+    Agency?: AgencyCreateNestedOneWithoutGroupsInput
+  }
+
+  export type GroupUncheckedCreateInput = {
+    id?: string
+    name: string
+    agencyId?: string | null
+    clients?: UserUncheckedCreateNestedManyWithoutGroupInput
+  }
+
+  export type GroupUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    clients?: UserUpdateManyWithoutGroupNestedInput
+    Agency?: AgencyUpdateOneWithoutGroupsNestedInput
+  }
+
+  export type GroupUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    clients?: UserUncheckedUpdateManyWithoutGroupNestedInput
+  }
+
+  export type GroupCreateManyInput = {
+    id?: string
+    name: string
+    agencyId?: string | null
+  }
+
+  export type GroupUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type GroupUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RateSheetCreateInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Agency?: AgencyCreateNestedOneWithoutRateSheetsInput
+  }
+
+  export type RateSheetUncheckedCreateInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+  }
+
+  export type RateSheetUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Agency?: AgencyUpdateOneWithoutRateSheetsNestedInput
+  }
+
+  export type RateSheetUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RateSheetCreateManyInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+  }
+
+  export type RateSheetUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RateSheetUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomTaskCreateInput = {
+    id?: string
+    name: string
+    placeholder: string
+    category: $Enums.CustomTaskCategory
+    frequency: $Enums.CustomTaskFrequency
+    priority: $Enums.CustomTaskPriority
+    icon?: string | null
+    Agency?: AgencyCreateNestedOneWithoutCustomTasksInput
+  }
+
+  export type CustomTaskUncheckedCreateInput = {
+    id?: string
+    name: string
+    placeholder: string
+    category: $Enums.CustomTaskCategory
+    frequency: $Enums.CustomTaskFrequency
+    priority: $Enums.CustomTaskPriority
+    icon?: string | null
+    agencyId?: string | null
+  }
+
+  export type CustomTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    placeholder?: StringFieldUpdateOperationsInput | string
+    category?: EnumCustomTaskCategoryFieldUpdateOperationsInput | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    Agency?: AgencyUpdateOneWithoutCustomTasksNestedInput
+  }
+
+  export type CustomTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    placeholder?: StringFieldUpdateOperationsInput | string
+    category?: EnumCustomTaskCategoryFieldUpdateOperationsInput | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomTaskCreateManyInput = {
+    id?: string
+    name: string
+    placeholder: string
+    category: $Enums.CustomTaskCategory
+    frequency: $Enums.CustomTaskFrequency
+    priority: $Enums.CustomTaskPriority
+    icon?: string | null
+    agencyId?: string | null
+  }
+
+  export type CustomTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    placeholder?: StringFieldUpdateOperationsInput | string
+    category?: EnumCustomTaskCategoryFieldUpdateOperationsInput | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    placeholder?: StringFieldUpdateOperationsInput | string
+    category?: EnumCustomTaskCategoryFieldUpdateOperationsInput | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClientCareAssignmentCreateInput = {
@@ -41639,6 +45980,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -41672,6 +46014,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -41767,6 +46110,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -41800,6 +46144,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -41864,6 +46209,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -41928,6 +46274,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommunicationPreferenceCreateInput = {
@@ -44022,12 +48369,6 @@ export namespace Prisma {
     none?: MileageRecordWhereInput
   }
 
-  export type DocumentListRelationFilter = {
-    every?: DocumentWhereInput
-    some?: DocumentWhereInput
-    none?: DocumentWhereInput
-  }
-
   export type IncidentReportListRelationFilter = {
     every?: IncidentReportWhereInput
     some?: IncidentReportWhereInput
@@ -44052,10 +48393,34 @@ export namespace Prisma {
     none?: RiskCategoryWhereInput
   }
 
+  export type DocumentListRelationFilter = {
+    every?: DocumentWhereInput
+    some?: DocumentWhereInput
+    none?: DocumentWhereInput
+  }
+
   export type ReportListRelationFilter = {
     every?: ReportWhereInput
     some?: ReportWhereInput
     none?: ReportWhereInput
+  }
+
+  export type GroupListRelationFilter = {
+    every?: GroupWhereInput
+    some?: GroupWhereInput
+    none?: GroupWhereInput
+  }
+
+  export type RateSheetListRelationFilter = {
+    every?: RateSheetWhereInput
+    some?: RateSheetWhereInput
+    none?: RateSheetWhereInput
+  }
+
+  export type CustomTaskListRelationFilter = {
+    every?: CustomTaskWhereInput
+    some?: CustomTaskWhereInput
+    none?: CustomTaskWhereInput
   }
 
   export type UserOrderByRelationAggregateInput = {
@@ -44071,10 +48436,6 @@ export namespace Prisma {
   }
 
   export type MileageRecordOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type DocumentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -44094,7 +48455,23 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type DocumentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ReportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroupOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RateSheetOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CustomTaskOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -44151,6 +48528,228 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type AgencyNullableScalarRelationFilter = {
+    is?: AgencyWhereInput | null
+    isNot?: AgencyWhereInput | null
+  }
+
+  export type GroupCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type GroupMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type GroupMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type EnumRateSheetTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RateSheetType | EnumRateSheetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRateSheetTypeFilter<$PrismaModel> | $Enums.RateSheetType
+  }
+
+  export type RateSheetCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    hourlyRate?: SortOrder
+    staffType?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type RateSheetAvgOrderByAggregateInput = {
+    hourlyRate?: SortOrder
+  }
+
+  export type RateSheetMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    hourlyRate?: SortOrder
+    staffType?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type RateSheetMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    hourlyRate?: SortOrder
+    staffType?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type RateSheetSumOrderByAggregateInput = {
+    hourlyRate?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type EnumRateSheetTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RateSheetType | EnumRateSheetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRateSheetTypeWithAggregatesFilter<$PrismaModel> | $Enums.RateSheetType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRateSheetTypeFilter<$PrismaModel>
+    _max?: NestedEnumRateSheetTypeFilter<$PrismaModel>
+  }
+
+  export type EnumCustomTaskCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskCategory | EnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskCategoryFilter<$PrismaModel> | $Enums.CustomTaskCategory
+  }
+
+  export type EnumCustomTaskFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskFrequency | EnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskFrequencyFilter<$PrismaModel> | $Enums.CustomTaskFrequency
+  }
+
+  export type EnumCustomTaskPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskPriority | EnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskPriorityFilter<$PrismaModel> | $Enums.CustomTaskPriority
+  }
+
+  export type CustomTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    placeholder?: SortOrder
+    category?: SortOrder
+    frequency?: SortOrder
+    priority?: SortOrder
+    icon?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type CustomTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    placeholder?: SortOrder
+    category?: SortOrder
+    frequency?: SortOrder
+    priority?: SortOrder
+    icon?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type CustomTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    placeholder?: SortOrder
+    category?: SortOrder
+    frequency?: SortOrder
+    priority?: SortOrder
+    icon?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type EnumCustomTaskCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskCategory | EnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskCategoryWithAggregatesFilter<$PrismaModel> | $Enums.CustomTaskCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCustomTaskCategoryFilter<$PrismaModel>
+    _max?: NestedEnumCustomTaskCategoryFilter<$PrismaModel>
+  }
+
+  export type EnumCustomTaskFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskFrequency | EnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.CustomTaskFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCustomTaskFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumCustomTaskFrequencyFilter<$PrismaModel>
+  }
+
+  export type EnumCustomTaskPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskPriority | EnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskPriorityWithAggregatesFilter<$PrismaModel> | $Enums.CustomTaskPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCustomTaskPriorityFilter<$PrismaModel>
+    _max?: NestedEnumCustomTaskPriorityFilter<$PrismaModel>
+  }
+
   export type ClientCareAssignmentClientIdUserIdCompoundUniqueInput = {
     clientId: string
     userId: string
@@ -44178,21 +48777,6 @@ export namespace Prisma {
     userId?: SortOrder
     isDecisionMaker?: SortOrder
     assignedAt?: SortOrder
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type BoolNullableFilter<$PrismaModel = never> = {
@@ -44226,11 +48810,6 @@ export namespace Prisma {
     every?: InvitationWhereInput
     some?: InvitationWhereInput
     none?: InvitationWhereInput
-  }
-
-  export type AgencyNullableScalarRelationFilter = {
-    is?: AgencyWhereInput | null
-    isNot?: AgencyWhereInput | null
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -44320,6 +48899,11 @@ export namespace Prisma {
     none?: ReportEditWhereInput
   }
 
+  export type GroupNullableScalarRelationFilter = {
+    is?: GroupWhereInput | null
+    isNot?: GroupWhereInput | null
+  }
+
   export type InvitationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -44403,6 +48987,7 @@ export namespace Prisma {
     interests?: SortOrder
     history?: SortOrder
     preferredName?: SortOrder
+    groupId?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -44440,6 +49025,7 @@ export namespace Prisma {
     interests?: SortOrder
     history?: SortOrder
     preferredName?: SortOrder
+    groupId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -44473,28 +49059,11 @@ export namespace Prisma {
     interests?: SortOrder
     history?: SortOrder
     preferredName?: SortOrder
+    groupId?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     chargeRate?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -45150,17 +49719,6 @@ export namespace Prisma {
     _max?: NestedEnumDoseTypeFilter<$PrismaModel>
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type EnumInvoiceStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.InvoiceStatus | EnumInvoiceStatusFieldRefInput<$PrismaModel>
     in?: $Enums.InvoiceStatus[] | ListEnumInvoiceStatusFieldRefInput<$PrismaModel>
@@ -45207,22 +49765,6 @@ export namespace Prisma {
 
   export type InvoiceSumOrderByAggregateInput = {
     amount?: SortOrder
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type EnumInvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -45729,13 +50271,6 @@ export namespace Prisma {
     connect?: MileageRecordWhereUniqueInput | MileageRecordWhereUniqueInput[]
   }
 
-  export type DocumentCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
-    createMany?: DocumentCreateManyAgencyInputEnvelope
-    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-  }
-
   export type IncidentReportCreateNestedManyWithoutAgencyInput = {
     create?: XOR<IncidentReportCreateWithoutAgencyInput, IncidentReportUncheckedCreateWithoutAgencyInput> | IncidentReportCreateWithoutAgencyInput[] | IncidentReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: IncidentReportCreateOrConnectWithoutAgencyInput | IncidentReportCreateOrConnectWithoutAgencyInput[]
@@ -45764,11 +50299,39 @@ export namespace Prisma {
     connect?: RiskCategoryWhereUniqueInput | RiskCategoryWhereUniqueInput[]
   }
 
+  export type DocumentCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
+    createMany?: DocumentCreateManyAgencyInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
   export type ReportCreateNestedManyWithoutAgencyInput = {
     create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
     createMany?: ReportCreateManyAgencyInputEnvelope
     connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type GroupCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<GroupCreateWithoutAgencyInput, GroupUncheckedCreateWithoutAgencyInput> | GroupCreateWithoutAgencyInput[] | GroupUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutAgencyInput | GroupCreateOrConnectWithoutAgencyInput[]
+    createMany?: GroupCreateManyAgencyInputEnvelope
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+  }
+
+  export type RateSheetCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<RateSheetCreateWithoutAgencyInput, RateSheetUncheckedCreateWithoutAgencyInput> | RateSheetCreateWithoutAgencyInput[] | RateSheetUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: RateSheetCreateOrConnectWithoutAgencyInput | RateSheetCreateOrConnectWithoutAgencyInput[]
+    createMany?: RateSheetCreateManyAgencyInputEnvelope
+    connect?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+  }
+
+  export type CustomTaskCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<CustomTaskCreateWithoutAgencyInput, CustomTaskUncheckedCreateWithoutAgencyInput> | CustomTaskCreateWithoutAgencyInput[] | CustomTaskUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CustomTaskCreateOrConnectWithoutAgencyInput | CustomTaskCreateOrConnectWithoutAgencyInput[]
+    createMany?: CustomTaskCreateManyAgencyInputEnvelope
+    connect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
   }
 
   export type UserUncheckedCreateNestedManyWithoutAgencyInput = {
@@ -45799,13 +50362,6 @@ export namespace Prisma {
     connect?: MileageRecordWhereUniqueInput | MileageRecordWhereUniqueInput[]
   }
 
-  export type DocumentUncheckedCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
-    createMany?: DocumentCreateManyAgencyInputEnvelope
-    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-  }
-
   export type IncidentReportUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<IncidentReportCreateWithoutAgencyInput, IncidentReportUncheckedCreateWithoutAgencyInput> | IncidentReportCreateWithoutAgencyInput[] | IncidentReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: IncidentReportCreateOrConnectWithoutAgencyInput | IncidentReportCreateOrConnectWithoutAgencyInput[]
@@ -45834,11 +50390,39 @@ export namespace Prisma {
     connect?: RiskCategoryWhereUniqueInput | RiskCategoryWhereUniqueInput[]
   }
 
+  export type DocumentUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
+    createMany?: DocumentCreateManyAgencyInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
   export type ReportUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
     createMany?: ReportCreateManyAgencyInputEnvelope
     connect?: ReportWhereUniqueInput | ReportWhereUniqueInput[]
+  }
+
+  export type GroupUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<GroupCreateWithoutAgencyInput, GroupUncheckedCreateWithoutAgencyInput> | GroupCreateWithoutAgencyInput[] | GroupUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutAgencyInput | GroupCreateOrConnectWithoutAgencyInput[]
+    createMany?: GroupCreateManyAgencyInputEnvelope
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+  }
+
+  export type RateSheetUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<RateSheetCreateWithoutAgencyInput, RateSheetUncheckedCreateWithoutAgencyInput> | RateSheetCreateWithoutAgencyInput[] | RateSheetUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: RateSheetCreateOrConnectWithoutAgencyInput | RateSheetCreateOrConnectWithoutAgencyInput[]
+    createMany?: RateSheetCreateManyAgencyInputEnvelope
+    connect?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+  }
+
+  export type CustomTaskUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<CustomTaskCreateWithoutAgencyInput, CustomTaskUncheckedCreateWithoutAgencyInput> | CustomTaskCreateWithoutAgencyInput[] | CustomTaskUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CustomTaskCreateOrConnectWithoutAgencyInput | CustomTaskCreateOrConnectWithoutAgencyInput[]
+    createMany?: CustomTaskCreateManyAgencyInputEnvelope
+    connect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -45901,20 +50485,6 @@ export namespace Prisma {
     deleteMany?: MileageRecordScalarWhereInput | MileageRecordScalarWhereInput[]
   }
 
-  export type DocumentUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
-    upsert?: DocumentUpsertWithWhereUniqueWithoutAgencyInput | DocumentUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: DocumentCreateManyAgencyInputEnvelope
-    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    update?: DocumentUpdateWithWhereUniqueWithoutAgencyInput | DocumentUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: DocumentUpdateManyWithWhereWithoutAgencyInput | DocumentUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
-  }
-
   export type IncidentReportUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<IncidentReportCreateWithoutAgencyInput, IncidentReportUncheckedCreateWithoutAgencyInput> | IncidentReportCreateWithoutAgencyInput[] | IncidentReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: IncidentReportCreateOrConnectWithoutAgencyInput | IncidentReportCreateOrConnectWithoutAgencyInput[]
@@ -45971,6 +50541,20 @@ export namespace Prisma {
     deleteMany?: RiskCategoryScalarWhereInput | RiskCategoryScalarWhereInput[]
   }
 
+  export type DocumentUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutAgencyInput | DocumentUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: DocumentCreateManyAgencyInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutAgencyInput | DocumentUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutAgencyInput | DocumentUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
   export type ReportUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
@@ -45983,6 +50567,48 @@ export namespace Prisma {
     update?: ReportUpdateWithWhereUniqueWithoutAgencyInput | ReportUpdateWithWhereUniqueWithoutAgencyInput[]
     updateMany?: ReportUpdateManyWithWhereWithoutAgencyInput | ReportUpdateManyWithWhereWithoutAgencyInput[]
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type GroupUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<GroupCreateWithoutAgencyInput, GroupUncheckedCreateWithoutAgencyInput> | GroupCreateWithoutAgencyInput[] | GroupUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutAgencyInput | GroupCreateOrConnectWithoutAgencyInput[]
+    upsert?: GroupUpsertWithWhereUniqueWithoutAgencyInput | GroupUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: GroupCreateManyAgencyInputEnvelope
+    set?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    disconnect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    delete?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    update?: GroupUpdateWithWhereUniqueWithoutAgencyInput | GroupUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: GroupUpdateManyWithWhereWithoutAgencyInput | GroupUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: GroupScalarWhereInput | GroupScalarWhereInput[]
+  }
+
+  export type RateSheetUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<RateSheetCreateWithoutAgencyInput, RateSheetUncheckedCreateWithoutAgencyInput> | RateSheetCreateWithoutAgencyInput[] | RateSheetUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: RateSheetCreateOrConnectWithoutAgencyInput | RateSheetCreateOrConnectWithoutAgencyInput[]
+    upsert?: RateSheetUpsertWithWhereUniqueWithoutAgencyInput | RateSheetUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: RateSheetCreateManyAgencyInputEnvelope
+    set?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    disconnect?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    delete?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    connect?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    update?: RateSheetUpdateWithWhereUniqueWithoutAgencyInput | RateSheetUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: RateSheetUpdateManyWithWhereWithoutAgencyInput | RateSheetUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: RateSheetScalarWhereInput | RateSheetScalarWhereInput[]
+  }
+
+  export type CustomTaskUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<CustomTaskCreateWithoutAgencyInput, CustomTaskUncheckedCreateWithoutAgencyInput> | CustomTaskCreateWithoutAgencyInput[] | CustomTaskUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CustomTaskCreateOrConnectWithoutAgencyInput | CustomTaskCreateOrConnectWithoutAgencyInput[]
+    upsert?: CustomTaskUpsertWithWhereUniqueWithoutAgencyInput | CustomTaskUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: CustomTaskCreateManyAgencyInputEnvelope
+    set?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    disconnect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    delete?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    connect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    update?: CustomTaskUpdateWithWhereUniqueWithoutAgencyInput | CustomTaskUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: CustomTaskUpdateManyWithWhereWithoutAgencyInput | CustomTaskUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: CustomTaskScalarWhereInput | CustomTaskScalarWhereInput[]
   }
 
   export type UserUncheckedUpdateManyWithoutAgencyNestedInput = {
@@ -46041,20 +50667,6 @@ export namespace Prisma {
     deleteMany?: MileageRecordScalarWhereInput | MileageRecordScalarWhereInput[]
   }
 
-  export type DocumentUncheckedUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
-    upsert?: DocumentUpsertWithWhereUniqueWithoutAgencyInput | DocumentUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: DocumentCreateManyAgencyInputEnvelope
-    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    update?: DocumentUpdateWithWhereUniqueWithoutAgencyInput | DocumentUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: DocumentUpdateManyWithWhereWithoutAgencyInput | DocumentUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
-  }
-
   export type IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<IncidentReportCreateWithoutAgencyInput, IncidentReportUncheckedCreateWithoutAgencyInput> | IncidentReportCreateWithoutAgencyInput[] | IncidentReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: IncidentReportCreateOrConnectWithoutAgencyInput | IncidentReportCreateOrConnectWithoutAgencyInput[]
@@ -46111,6 +50723,20 @@ export namespace Prisma {
     deleteMany?: RiskCategoryScalarWhereInput | RiskCategoryScalarWhereInput[]
   }
 
+  export type DocumentUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput> | DocumentCreateWithoutAgencyInput[] | DocumentUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutAgencyInput | DocumentCreateOrConnectWithoutAgencyInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutAgencyInput | DocumentUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: DocumentCreateManyAgencyInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutAgencyInput | DocumentUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutAgencyInput | DocumentUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
   export type ReportUncheckedUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<ReportCreateWithoutAgencyInput, ReportUncheckedCreateWithoutAgencyInput> | ReportCreateWithoutAgencyInput[] | ReportUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: ReportCreateOrConnectWithoutAgencyInput | ReportCreateOrConnectWithoutAgencyInput[]
@@ -46123,6 +50749,166 @@ export namespace Prisma {
     update?: ReportUpdateWithWhereUniqueWithoutAgencyInput | ReportUpdateWithWhereUniqueWithoutAgencyInput[]
     updateMany?: ReportUpdateManyWithWhereWithoutAgencyInput | ReportUpdateManyWithWhereWithoutAgencyInput[]
     deleteMany?: ReportScalarWhereInput | ReportScalarWhereInput[]
+  }
+
+  export type GroupUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<GroupCreateWithoutAgencyInput, GroupUncheckedCreateWithoutAgencyInput> | GroupCreateWithoutAgencyInput[] | GroupUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutAgencyInput | GroupCreateOrConnectWithoutAgencyInput[]
+    upsert?: GroupUpsertWithWhereUniqueWithoutAgencyInput | GroupUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: GroupCreateManyAgencyInputEnvelope
+    set?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    disconnect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    delete?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    update?: GroupUpdateWithWhereUniqueWithoutAgencyInput | GroupUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: GroupUpdateManyWithWhereWithoutAgencyInput | GroupUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: GroupScalarWhereInput | GroupScalarWhereInput[]
+  }
+
+  export type RateSheetUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<RateSheetCreateWithoutAgencyInput, RateSheetUncheckedCreateWithoutAgencyInput> | RateSheetCreateWithoutAgencyInput[] | RateSheetUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: RateSheetCreateOrConnectWithoutAgencyInput | RateSheetCreateOrConnectWithoutAgencyInput[]
+    upsert?: RateSheetUpsertWithWhereUniqueWithoutAgencyInput | RateSheetUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: RateSheetCreateManyAgencyInputEnvelope
+    set?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    disconnect?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    delete?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    connect?: RateSheetWhereUniqueInput | RateSheetWhereUniqueInput[]
+    update?: RateSheetUpdateWithWhereUniqueWithoutAgencyInput | RateSheetUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: RateSheetUpdateManyWithWhereWithoutAgencyInput | RateSheetUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: RateSheetScalarWhereInput | RateSheetScalarWhereInput[]
+  }
+
+  export type CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<CustomTaskCreateWithoutAgencyInput, CustomTaskUncheckedCreateWithoutAgencyInput> | CustomTaskCreateWithoutAgencyInput[] | CustomTaskUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CustomTaskCreateOrConnectWithoutAgencyInput | CustomTaskCreateOrConnectWithoutAgencyInput[]
+    upsert?: CustomTaskUpsertWithWhereUniqueWithoutAgencyInput | CustomTaskUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: CustomTaskCreateManyAgencyInputEnvelope
+    set?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    disconnect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    delete?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    connect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+    update?: CustomTaskUpdateWithWhereUniqueWithoutAgencyInput | CustomTaskUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: CustomTaskUpdateManyWithWhereWithoutAgencyInput | CustomTaskUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: CustomTaskScalarWhereInput | CustomTaskScalarWhereInput[]
+  }
+
+  export type UserCreateNestedManyWithoutGroupInput = {
+    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
+    createMany?: UserCreateManyGroupInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type AgencyCreateNestedOneWithoutGroupsInput = {
+    create?: XOR<AgencyCreateWithoutGroupsInput, AgencyUncheckedCreateWithoutGroupsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutGroupsInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutGroupInput = {
+    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
+    createMany?: UserCreateManyGroupInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserUpdateManyWithoutGroupNestedInput = {
+    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutGroupInput | UserUpsertWithWhereUniqueWithoutGroupInput[]
+    createMany?: UserCreateManyGroupInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutGroupInput | UserUpdateWithWhereUniqueWithoutGroupInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutGroupInput | UserUpdateManyWithWhereWithoutGroupInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type AgencyUpdateOneWithoutGroupsNestedInput = {
+    create?: XOR<AgencyCreateWithoutGroupsInput, AgencyUncheckedCreateWithoutGroupsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutGroupsInput
+    upsert?: AgencyUpsertWithoutGroupsInput
+    disconnect?: AgencyWhereInput | boolean
+    delete?: AgencyWhereInput | boolean
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutGroupsInput, AgencyUpdateWithoutGroupsInput>, AgencyUncheckedUpdateWithoutGroupsInput>
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type UserUncheckedUpdateManyWithoutGroupNestedInput = {
+    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutGroupInput | UserUpsertWithWhereUniqueWithoutGroupInput[]
+    createMany?: UserCreateManyGroupInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutGroupInput | UserUpdateWithWhereUniqueWithoutGroupInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutGroupInput | UserUpdateManyWithWhereWithoutGroupInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type AgencyCreateNestedOneWithoutRateSheetsInput = {
+    create?: XOR<AgencyCreateWithoutRateSheetsInput, AgencyUncheckedCreateWithoutRateSheetsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutRateSheetsInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EnumRateSheetTypeFieldUpdateOperationsInput = {
+    set?: $Enums.RateSheetType
+  }
+
+  export type AgencyUpdateOneWithoutRateSheetsNestedInput = {
+    create?: XOR<AgencyCreateWithoutRateSheetsInput, AgencyUncheckedCreateWithoutRateSheetsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutRateSheetsInput
+    upsert?: AgencyUpsertWithoutRateSheetsInput
+    disconnect?: AgencyWhereInput | boolean
+    delete?: AgencyWhereInput | boolean
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutRateSheetsInput, AgencyUpdateWithoutRateSheetsInput>, AgencyUncheckedUpdateWithoutRateSheetsInput>
+  }
+
+  export type AgencyCreateNestedOneWithoutCustomTasksInput = {
+    create?: XOR<AgencyCreateWithoutCustomTasksInput, AgencyUncheckedCreateWithoutCustomTasksInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutCustomTasksInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type EnumCustomTaskCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.CustomTaskCategory
+  }
+
+  export type EnumCustomTaskFrequencyFieldUpdateOperationsInput = {
+    set?: $Enums.CustomTaskFrequency
+  }
+
+  export type EnumCustomTaskPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.CustomTaskPriority
+  }
+
+  export type AgencyUpdateOneWithoutCustomTasksNestedInput = {
+    create?: XOR<AgencyCreateWithoutCustomTasksInput, AgencyUncheckedCreateWithoutCustomTasksInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutCustomTasksInput
+    upsert?: AgencyUpsertWithoutCustomTasksInput
+    disconnect?: AgencyWhereInput | boolean
+    delete?: AgencyWhereInput | boolean
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutCustomTasksInput, AgencyUpdateWithoutCustomTasksInput>, AgencyUncheckedUpdateWithoutCustomTasksInput>
   }
 
   export type UserCreateNestedOneWithoutClientAssignmentsInput = {
@@ -46380,6 +51166,12 @@ export namespace Prisma {
     connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
   }
 
+  export type GroupCreateNestedOneWithoutClientsInput = {
+    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
+    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput
+    connect?: GroupWhereUniqueInput
+  }
+
   export type InvitationUncheckedCreateNestedManyWithoutInviterInput = {
     create?: XOR<InvitationCreateWithoutInviterInput, InvitationUncheckedCreateWithoutInviterInput> | InvitationCreateWithoutInviterInput[] | InvitationUncheckedCreateWithoutInviterInput[]
     connectOrCreate?: InvitationCreateOrConnectWithoutInviterInput | InvitationCreateOrConnectWithoutInviterInput[]
@@ -46593,10 +51385,6 @@ export namespace Prisma {
     connectOrCreate?: ReportEditCreateOrConnectWithoutEditorInput | ReportEditCreateOrConnectWithoutEditorInput[]
     createMany?: ReportEditCreateManyEditorInputEnvelope
     connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type NullableBoolFieldUpdateOperationsInput = {
@@ -47059,6 +51847,16 @@ export namespace Prisma {
     update?: ReportEditUpdateWithWhereUniqueWithoutEditorInput | ReportEditUpdateWithWhereUniqueWithoutEditorInput[]
     updateMany?: ReportEditUpdateManyWithWhereWithoutEditorInput | ReportEditUpdateManyWithWhereWithoutEditorInput[]
     deleteMany?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
+  }
+
+  export type GroupUpdateOneWithoutClientsNestedInput = {
+    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
+    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput
+    upsert?: GroupUpsertWithoutClientsInput
+    disconnect?: GroupWhereInput | boolean
+    delete?: GroupWhereInput | boolean
+    connect?: GroupWhereUniqueInput
+    update?: XOR<XOR<GroupUpdateToOneWithWhereWithoutClientsInput, GroupUpdateWithoutClientsInput>, GroupUncheckedUpdateWithoutClientsInput>
   }
 
   export type InvitationUncheckedUpdateManyWithoutInviterNestedInput = {
@@ -48181,14 +52979,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type EnumInvoiceStatusFieldUpdateOperationsInput = {
     set?: $Enums.InvoiceStatus
   }
@@ -48711,6 +53501,118 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumRateSheetTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.RateSheetType | EnumRateSheetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRateSheetTypeFilter<$PrismaModel> | $Enums.RateSheetType
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRateSheetTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RateSheetType | EnumRateSheetTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumRateSheetTypeWithAggregatesFilter<$PrismaModel> | $Enums.RateSheetType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRateSheetTypeFilter<$PrismaModel>
+    _max?: NestedEnumRateSheetTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCustomTaskCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskCategory | EnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskCategoryFilter<$PrismaModel> | $Enums.CustomTaskCategory
+  }
+
+  export type NestedEnumCustomTaskFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskFrequency | EnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskFrequencyFilter<$PrismaModel> | $Enums.CustomTaskFrequency
+  }
+
+  export type NestedEnumCustomTaskPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskPriority | EnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskPriorityFilter<$PrismaModel> | $Enums.CustomTaskPriority
+  }
+
+  export type NestedEnumCustomTaskCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskCategory | EnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskCategory[] | ListEnumCustomTaskCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskCategoryWithAggregatesFilter<$PrismaModel> | $Enums.CustomTaskCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCustomTaskCategoryFilter<$PrismaModel>
+    _max?: NestedEnumCustomTaskCategoryFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCustomTaskFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskFrequency | EnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskFrequency[] | ListEnumCustomTaskFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.CustomTaskFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCustomTaskFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumCustomTaskFrequencyFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCustomTaskPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CustomTaskPriority | EnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CustomTaskPriority[] | ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumCustomTaskPriorityWithAggregatesFilter<$PrismaModel> | $Enums.CustomTaskPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCustomTaskPriorityFilter<$PrismaModel>
+    _max?: NestedEnumCustomTaskPriorityFilter<$PrismaModel>
+  }
+
   export type NestedBoolNullableFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
@@ -48736,23 +53638,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -48878,38 +53763,11 @@ export namespace Prisma {
     _max?: NestedEnumDoseTypeFilter<$PrismaModel>
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedEnumInvoiceStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.InvoiceStatus | EnumInvoiceStatusFieldRefInput<$PrismaModel>
     in?: $Enums.InvoiceStatus[] | ListEnumInvoiceStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.InvoiceStatus[] | ListEnumInvoiceStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumInvoiceStatusFilter<$PrismaModel> | $Enums.InvoiceStatus
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedEnumInvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -49033,6 +53891,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -49066,6 +53925,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -49175,6 +54035,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -49208,6 +54069,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -49301,6 +54163,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutAgencyInput = {
@@ -49333,6 +54196,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -49485,34 +54349,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type DocumentCreateWithoutAgencyInput = {
-    id?: string
-    title: string
-    fileUrl: string
-    uploadedAt?: Date | string
-    user?: UserCreateNestedOneWithoutDocumentsInput
-    client?: UserCreateNestedOneWithoutDocumentInput
-  }
-
-  export type DocumentUncheckedCreateWithoutAgencyInput = {
-    id?: string
-    title: string
-    fileUrl: string
-    uploadedAt?: Date | string
-    userId?: string | null
-    clientId?: string | null
-  }
-
-  export type DocumentCreateOrConnectWithoutAgencyInput = {
-    where: DocumentWhereUniqueInput
-    create: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type DocumentCreateManyAgencyInputEnvelope = {
-    data: DocumentCreateManyAgencyInput | DocumentCreateManyAgencyInput[]
-    skipDuplicates?: boolean
-  }
-
   export type IncidentReportCreateWithoutAgencyInput = {
     id?: string
     description: string
@@ -49621,6 +54457,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DocumentCreateWithoutAgencyInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    uploadedAt?: Date | string
+    user?: UserCreateNestedOneWithoutDocumentsInput
+    client?: UserCreateNestedOneWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    uploadedAt?: Date | string
+    userId?: string | null
+    clientId?: string | null
+  }
+
+  export type DocumentCreateOrConnectWithoutAgencyInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type DocumentCreateManyAgencyInputEnvelope = {
+    data: DocumentCreateManyAgencyInput | DocumentCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ReportCreateWithoutAgencyInput = {
     id?: string
     title?: string | null
@@ -49685,6 +54549,86 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GroupCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    clients?: UserCreateNestedManyWithoutGroupInput
+  }
+
+  export type GroupUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    clients?: UserUncheckedCreateNestedManyWithoutGroupInput
+  }
+
+  export type GroupCreateOrConnectWithoutAgencyInput = {
+    where: GroupWhereUniqueInput
+    create: XOR<GroupCreateWithoutAgencyInput, GroupUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type GroupCreateManyAgencyInputEnvelope = {
+    data: GroupCreateManyAgencyInput | GroupCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RateSheetCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RateSheetUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RateSheetCreateOrConnectWithoutAgencyInput = {
+    where: RateSheetWhereUniqueInput
+    create: XOR<RateSheetCreateWithoutAgencyInput, RateSheetUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type RateSheetCreateManyAgencyInputEnvelope = {
+    data: RateSheetCreateManyAgencyInput | RateSheetCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomTaskCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    placeholder: string
+    category: $Enums.CustomTaskCategory
+    frequency: $Enums.CustomTaskFrequency
+    priority: $Enums.CustomTaskPriority
+    icon?: string | null
+  }
+
+  export type CustomTaskUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    placeholder: string
+    category: $Enums.CustomTaskCategory
+    frequency: $Enums.CustomTaskFrequency
+    priority: $Enums.CustomTaskPriority
+    icon?: string | null
+  }
+
+  export type CustomTaskCreateOrConnectWithoutAgencyInput = {
+    where: CustomTaskWhereUniqueInput
+    create: XOR<CustomTaskCreateWithoutAgencyInput, CustomTaskUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type CustomTaskCreateManyAgencyInputEnvelope = {
+    data: CustomTaskCreateManyAgencyInput | CustomTaskCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutAgencyInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutAgencyInput, UserUncheckedUpdateWithoutAgencyInput>
@@ -49735,6 +54679,7 @@ export namespace Prisma {
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
     preferredName?: StringNullableFilter<"User"> | string | null
+    groupId?: StringNullableFilter<"User"> | string | null
   }
 
   export type ScheduleUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -49834,35 +54779,6 @@ export namespace Prisma {
     notes?: StringNullableFilter<"MileageRecord"> | string | null
     createdAt?: DateTimeFilter<"MileageRecord"> | Date | string
     updatedAt?: DateTimeFilter<"MileageRecord"> | Date | string
-  }
-
-  export type DocumentUpsertWithWhereUniqueWithoutAgencyInput = {
-    where: DocumentWhereUniqueInput
-    update: XOR<DocumentUpdateWithoutAgencyInput, DocumentUncheckedUpdateWithoutAgencyInput>
-    create: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type DocumentUpdateWithWhereUniqueWithoutAgencyInput = {
-    where: DocumentWhereUniqueInput
-    data: XOR<DocumentUpdateWithoutAgencyInput, DocumentUncheckedUpdateWithoutAgencyInput>
-  }
-
-  export type DocumentUpdateManyWithWhereWithoutAgencyInput = {
-    where: DocumentScalarWhereInput
-    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutAgencyInput>
-  }
-
-  export type DocumentScalarWhereInput = {
-    AND?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
-    OR?: DocumentScalarWhereInput[]
-    NOT?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
-    id?: StringFilter<"Document"> | string
-    title?: StringFilter<"Document"> | string
-    fileUrl?: StringFilter<"Document"> | string
-    uploadedAt?: DateTimeFilter<"Document"> | Date | string
-    userId?: StringNullableFilter<"Document"> | string | null
-    clientId?: StringNullableFilter<"Document"> | string | null
-    agencyId?: StringNullableFilter<"Document"> | string | null
   }
 
   export type IncidentReportUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -49976,6 +54892,35 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RiskCategory"> | Date | string
   }
 
+  export type DocumentUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: DocumentWhereUniqueInput
+    update: XOR<DocumentUpdateWithoutAgencyInput, DocumentUncheckedUpdateWithoutAgencyInput>
+    create: XOR<DocumentCreateWithoutAgencyInput, DocumentUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type DocumentUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: DocumentWhereUniqueInput
+    data: XOR<DocumentUpdateWithoutAgencyInput, DocumentUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type DocumentUpdateManyWithWhereWithoutAgencyInput = {
+    where: DocumentScalarWhereInput
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type DocumentScalarWhereInput = {
+    AND?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+    OR?: DocumentScalarWhereInput[]
+    NOT?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+    id?: StringFilter<"Document"> | string
+    title?: StringFilter<"Document"> | string
+    fileUrl?: StringFilter<"Document"> | string
+    uploadedAt?: DateTimeFilter<"Document"> | Date | string
+    userId?: StringNullableFilter<"Document"> | string | null
+    clientId?: StringNullableFilter<"Document"> | string | null
+    agencyId?: StringNullableFilter<"Document"> | string | null
+  }
+
   export type ReportUpsertWithWhereUniqueWithoutAgencyInput = {
     where: ReportWhereUniqueInput
     update: XOR<ReportUpdateWithoutAgencyInput, ReportUncheckedUpdateWithoutAgencyInput>
@@ -50016,6 +54961,616 @@ export namespace Prisma {
     lastEditedAt?: DateTimeNullableFilter<"Report"> | Date | string | null
     lastEditedBy?: StringNullableFilter<"Report"> | string | null
     lastEditReason?: StringNullableFilter<"Report"> | string | null
+  }
+
+  export type GroupUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: GroupWhereUniqueInput
+    update: XOR<GroupUpdateWithoutAgencyInput, GroupUncheckedUpdateWithoutAgencyInput>
+    create: XOR<GroupCreateWithoutAgencyInput, GroupUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type GroupUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: GroupWhereUniqueInput
+    data: XOR<GroupUpdateWithoutAgencyInput, GroupUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type GroupUpdateManyWithWhereWithoutAgencyInput = {
+    where: GroupScalarWhereInput
+    data: XOR<GroupUpdateManyMutationInput, GroupUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type GroupScalarWhereInput = {
+    AND?: GroupScalarWhereInput | GroupScalarWhereInput[]
+    OR?: GroupScalarWhereInput[]
+    NOT?: GroupScalarWhereInput | GroupScalarWhereInput[]
+    id?: StringFilter<"Group"> | string
+    name?: StringFilter<"Group"> | string
+    agencyId?: StringNullableFilter<"Group"> | string | null
+  }
+
+  export type RateSheetUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: RateSheetWhereUniqueInput
+    update: XOR<RateSheetUpdateWithoutAgencyInput, RateSheetUncheckedUpdateWithoutAgencyInput>
+    create: XOR<RateSheetCreateWithoutAgencyInput, RateSheetUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type RateSheetUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: RateSheetWhereUniqueInput
+    data: XOR<RateSheetUpdateWithoutAgencyInput, RateSheetUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type RateSheetUpdateManyWithWhereWithoutAgencyInput = {
+    where: RateSheetScalarWhereInput
+    data: XOR<RateSheetUpdateManyMutationInput, RateSheetUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type RateSheetScalarWhereInput = {
+    AND?: RateSheetScalarWhereInput | RateSheetScalarWhereInput[]
+    OR?: RateSheetScalarWhereInput[]
+    NOT?: RateSheetScalarWhereInput | RateSheetScalarWhereInput[]
+    id?: StringFilter<"RateSheet"> | string
+    name?: StringFilter<"RateSheet"> | string
+    hourlyRate?: FloatFilter<"RateSheet"> | number
+    staffType?: EnumRateSheetTypeFilter<"RateSheet"> | $Enums.RateSheetType
+    createdAt?: DateTimeFilter<"RateSheet"> | Date | string
+    updatedAt?: DateTimeFilter<"RateSheet"> | Date | string
+    agencyId?: StringNullableFilter<"RateSheet"> | string | null
+  }
+
+  export type CustomTaskUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: CustomTaskWhereUniqueInput
+    update: XOR<CustomTaskUpdateWithoutAgencyInput, CustomTaskUncheckedUpdateWithoutAgencyInput>
+    create: XOR<CustomTaskCreateWithoutAgencyInput, CustomTaskUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type CustomTaskUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: CustomTaskWhereUniqueInput
+    data: XOR<CustomTaskUpdateWithoutAgencyInput, CustomTaskUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type CustomTaskUpdateManyWithWhereWithoutAgencyInput = {
+    where: CustomTaskScalarWhereInput
+    data: XOR<CustomTaskUpdateManyMutationInput, CustomTaskUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type CustomTaskScalarWhereInput = {
+    AND?: CustomTaskScalarWhereInput | CustomTaskScalarWhereInput[]
+    OR?: CustomTaskScalarWhereInput[]
+    NOT?: CustomTaskScalarWhereInput | CustomTaskScalarWhereInput[]
+    id?: StringFilter<"CustomTask"> | string
+    name?: StringFilter<"CustomTask"> | string
+    placeholder?: StringFilter<"CustomTask"> | string
+    category?: EnumCustomTaskCategoryFilter<"CustomTask"> | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFilter<"CustomTask"> | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFilter<"CustomTask"> | $Enums.CustomTaskPriority
+    icon?: StringNullableFilter<"CustomTask"> | string | null
+    agencyId?: StringNullableFilter<"CustomTask"> | string | null
+  }
+
+  export type UserCreateWithoutGroupInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    Document?: DocumentCreateNestedManyWithoutClientInput
+    Notification?: NotificationCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+  }
+
+  export type UserUncheckedCreateWithoutGroupInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+  }
+
+  export type UserCreateOrConnectWithoutGroupInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput>
+  }
+
+  export type UserCreateManyGroupInputEnvelope = {
+    data: UserCreateManyGroupInput | UserCreateManyGroupInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AgencyCreateWithoutGroupsInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutGroupsInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutGroupsInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutGroupsInput, AgencyUncheckedCreateWithoutGroupsInput>
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutGroupInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutGroupInput, UserUncheckedUpdateWithoutGroupInput>
+    create: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutGroupInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutGroupInput, UserUncheckedUpdateWithoutGroupInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutGroupInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutGroupInput>
+  }
+
+  export type AgencyUpsertWithoutGroupsInput = {
+    update: XOR<AgencyUpdateWithoutGroupsInput, AgencyUncheckedUpdateWithoutGroupsInput>
+    create: XOR<AgencyCreateWithoutGroupsInput, AgencyUncheckedCreateWithoutGroupsInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutGroupsInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutGroupsInput, AgencyUncheckedUpdateWithoutGroupsInput>
+  }
+
+  export type AgencyUpdateWithoutGroupsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutGroupsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyCreateWithoutRateSheetsInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutRateSheetsInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutRateSheetsInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutRateSheetsInput, AgencyUncheckedCreateWithoutRateSheetsInput>
+  }
+
+  export type AgencyUpsertWithoutRateSheetsInput = {
+    update: XOR<AgencyUpdateWithoutRateSheetsInput, AgencyUncheckedUpdateWithoutRateSheetsInput>
+    create: XOR<AgencyCreateWithoutRateSheetsInput, AgencyUncheckedCreateWithoutRateSheetsInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutRateSheetsInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutRateSheetsInput, AgencyUncheckedUpdateWithoutRateSheetsInput>
+  }
+
+  export type AgencyUpdateWithoutRateSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutRateSheetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyCreateWithoutCustomTasksInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutCustomTasksInput = {
+    id?: string
+    name: string
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutCustomTasksInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutCustomTasksInput, AgencyUncheckedCreateWithoutCustomTasksInput>
+  }
+
+  export type AgencyUpsertWithoutCustomTasksInput = {
+    update: XOR<AgencyUpdateWithoutCustomTasksInput, AgencyUncheckedUpdateWithoutCustomTasksInput>
+    create: XOR<AgencyCreateWithoutCustomTasksInput, AgencyUncheckedCreateWithoutCustomTasksInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutCustomTasksInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutCustomTasksInput, AgencyUncheckedUpdateWithoutCustomTasksInput>
+  }
+
+  export type AgencyUpdateWithoutCustomTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutCustomTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutClientAssignmentsInput = {
@@ -50079,6 +55634,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutClientAssignmentsInput = {
@@ -50112,6 +55668,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -50210,6 +55767,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCareAssignmentsInput = {
@@ -50243,6 +55801,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -50352,6 +55911,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientAssignmentsInput = {
@@ -50385,6 +55945,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -50489,6 +56050,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareAssignmentsInput = {
@@ -50522,6 +56084,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -50602,12 +56165,15 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutUsersInput = {
@@ -50626,12 +56192,15 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutUsersInput = {
@@ -50700,6 +56269,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutInvitedUsersInput = {
@@ -50733,6 +56303,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -50831,6 +56402,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutInvitedByInput = {
@@ -50863,6 +56435,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -51850,6 +57423,23 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GroupCreateWithoutClientsInput = {
+    id?: string
+    name: string
+    Agency?: AgencyCreateNestedOneWithoutGroupsInput
+  }
+
+  export type GroupUncheckedCreateWithoutClientsInput = {
+    id?: string
+    name: string
+    agencyId?: string | null
+  }
+
+  export type GroupCreateOrConnectWithoutClientsInput = {
+    where: GroupWhereUniqueInput
+    create: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
+  }
+
   export type InvitationUpsertWithWhereUniqueWithoutInviterInput = {
     where: InvitationWhereUniqueInput
     update: XOR<InvitationUpdateWithoutInviterInput, InvitationUncheckedUpdateWithoutInviterInput>
@@ -51908,12 +57498,15 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutUsersInput = {
@@ -51932,12 +57525,15 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutInvitedUsersInput = {
@@ -52012,6 +57608,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedUsersInput = {
@@ -52045,6 +57642,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -52735,6 +58333,29 @@ export namespace Prisma {
     changesJson?: StringFilter<"ReportEdit"> | string
   }
 
+  export type GroupUpsertWithoutClientsInput = {
+    update: XOR<GroupUpdateWithoutClientsInput, GroupUncheckedUpdateWithoutClientsInput>
+    create: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
+    where?: GroupWhereInput
+  }
+
+  export type GroupUpdateToOneWithWhereWithoutClientsInput = {
+    where?: GroupWhereInput
+    data: XOR<GroupUpdateWithoutClientsInput, GroupUncheckedUpdateWithoutClientsInput>
+  }
+
+  export type GroupUpdateWithoutClientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    Agency?: AgencyUpdateOneWithoutGroupsNestedInput
+  }
+
+  export type GroupUncheckedUpdateWithoutClientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type UserCreateWithoutCommunicationPreferenceInput = {
     id?: string
     cognitoId: string
@@ -52796,6 +58417,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationPreferenceInput = {
@@ -52829,6 +58451,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
@@ -52938,6 +58561,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationPreferenceInput = {
@@ -52971,6 +58595,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -53064,6 +58689,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutFamilyAccessInput = {
@@ -53097,6 +58723,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -53206,6 +58833,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFamilyAccessInput = {
@@ -53239,6 +58867,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -53288,11 +58917,14 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMedicationsInput = {
@@ -53312,11 +58944,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMedicationsInput = {
@@ -53401,11 +59036,14 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMedicationsInput = {
@@ -53425,11 +59063,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type MedicationRecordUpsertWithWhereUniqueWithoutMedicationInput = {
@@ -53465,11 +59106,14 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutVisitTypesInput = {
@@ -53489,11 +59133,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutVisitTypesInput = {
@@ -53571,11 +59218,14 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutVisitTypesInput = {
@@ -53595,11 +59245,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput = {
@@ -53657,12 +59310,15 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutSchedulesInput = {
@@ -53681,12 +59337,15 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutSchedulesInput = {
@@ -53755,6 +59414,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutClientSchedulesInput = {
@@ -53788,6 +59448,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -53886,6 +59547,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerSchedulesInput = {
@@ -53919,6 +59581,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -54012,12 +59675,15 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutSchedulesInput = {
@@ -54036,12 +59702,15 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientSchedulesInput = {
@@ -54116,6 +59785,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientSchedulesInput = {
@@ -54149,6 +59819,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -54253,6 +59924,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerSchedulesInput = {
@@ -54286,6 +59958,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -54525,6 +60198,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutClientReportsInput = {
@@ -54558,6 +60232,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -54656,6 +60331,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCareReportsInput = {
@@ -54689,6 +60365,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -54743,11 +60420,14 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutReportInput = {
@@ -54767,11 +60447,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutReportInput = {
@@ -54972,6 +60655,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientReportsInput = {
@@ -55005,6 +60689,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -55109,6 +60794,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareReportsInput = {
@@ -55142,6 +60828,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -55202,11 +60889,14 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutReportInput = {
@@ -55226,11 +60916,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type ReportCreateWithoutTasksCompletedInput = {
@@ -55725,6 +61418,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutReportEditsInput = {
@@ -55758,6 +61452,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -55932,6 +61627,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportEditsInput = {
@@ -55965,6 +61661,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -56081,6 +61778,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutClientMedicationsInput = {
@@ -56114,6 +61812,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -56212,6 +61911,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMedicationsInput = {
@@ -56245,6 +61945,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -56343,6 +62044,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutMedicationRecordsInput = {
@@ -56376,6 +62078,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -56546,6 +62249,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMedicationsInput = {
@@ -56579,6 +62283,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -56683,6 +62388,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMedicationsInput = {
@@ -56716,6 +62422,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -56820,6 +62527,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationRecordsInput = {
@@ -56853,6 +62561,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -57006,6 +62715,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutMedicationAdministrationsInput = {
@@ -57039,6 +62749,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -57257,6 +62968,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationAdministrationsInput = {
@@ -57290,6 +63002,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -57403,12 +63116,15 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutInvoicesInput = {
@@ -57427,12 +63143,15 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutInvoicesInput = {
@@ -57501,6 +63220,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutInvoiceInput = {
@@ -57534,6 +63254,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -57598,12 +63319,15 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutInvoicesInput = {
@@ -57622,12 +63346,15 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutInvoiceInput = {
@@ -57702,6 +63429,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoiceInput = {
@@ -57735,6 +63463,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -57783,12 +63512,15 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMileageRecordsInput = {
@@ -57807,12 +63539,15 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMileageRecordsInput = {
@@ -57881,6 +63616,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutClientMileageInput = {
@@ -57914,6 +63650,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -58012,6 +63749,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMileageInput = {
@@ -58045,6 +63783,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -58143,6 +63882,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutMileageRecordsInput = {
@@ -58176,6 +63916,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -58240,12 +63981,15 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMileageRecordsInput = {
@@ -58264,12 +64008,15 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientMileageInput = {
@@ -58344,6 +64091,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMileageInput = {
@@ -58377,6 +64125,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -58481,6 +64230,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMileageInput = {
@@ -58514,6 +64264,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -58618,6 +64369,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMileageRecordsInput = {
@@ -58651,6 +64403,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -58744,6 +64497,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -58777,6 +64531,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -58875,6 +64630,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutDocumentInput = {
@@ -58908,6 +64664,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -58967,6 +64724,9 @@ export namespace Prisma {
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutDocumentsInput = {
@@ -58991,6 +64751,9 @@ export namespace Prisma {
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutDocumentsInput = {
@@ -59070,6 +64833,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -59103,6 +64867,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -59207,6 +64972,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentInput = {
@@ -59240,6 +65006,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -59305,6 +65072,9 @@ export namespace Prisma {
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutDocumentsInput = {
@@ -59329,6 +65099,9 @@ export namespace Prisma {
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutProfileInput = {
@@ -59392,6 +65165,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -59425,6 +65199,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -59534,6 +65309,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -59567,6 +65343,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -59660,6 +65437,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutIncidentReportsInput = {
@@ -59693,6 +65471,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -59747,11 +65526,14 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutIncidentReportsInput = {
@@ -59771,11 +65553,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutIncidentReportsInput = {
@@ -59855,6 +65640,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutIncidentReportsInput = {
@@ -59888,6 +65674,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -59948,11 +65735,14 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutIncidentReportsInput = {
@@ -59972,11 +65762,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutSentMessagesInput = {
@@ -60040,6 +65833,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutSentMessagesInput = {
@@ -60073,6 +65867,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -60171,6 +65966,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutReceivedMessagesInput = {
@@ -60204,6 +66000,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -60313,6 +66110,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentMessagesInput = {
@@ -60346,6 +66144,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -60450,6 +66249,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
@@ -60483,6 +66283,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -60576,6 +66377,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutKeyContactsInput = {
@@ -60609,6 +66411,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -60718,6 +66521,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKeyContactsInput = {
@@ -60751,6 +66555,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -60844,6 +66649,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCareOutcomesInput = {
@@ -60877,6 +66683,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -60986,6 +66793,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareOutcomesInput = {
@@ -61019,6 +66827,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -61112,6 +66921,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationLogsInput = {
@@ -61145,6 +66955,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -61254,6 +67065,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -61287,6 +67099,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -61336,11 +67149,14 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
     Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRiskCategoriesInput = {
@@ -61360,11 +67176,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
     medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRiskCategoriesInput = {
@@ -61436,11 +67255,14 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
     Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRiskCategoriesInput = {
@@ -61460,11 +67282,14 @@ export namespace Prisma {
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
     medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type RiskAssessmentUpsertWithWhereUniqueWithoutRiskCategoryInput = {
@@ -61544,6 +67369,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutRiskAssessmentsInput = {
@@ -61577,6 +67403,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -61707,6 +67534,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRiskAssessmentsInput = {
@@ -61740,6 +67568,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -61860,6 +67689,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutRemindersInput = {
@@ -61893,6 +67723,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -62002,6 +67833,7 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRemindersInput = {
@@ -62035,6 +67867,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -62128,6 +67961,7 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
   }
 
   export type UserUncheckedCreateWithoutNotificationInput = {
@@ -62161,6 +67995,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -62270,6 +68105,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationInput = {
@@ -62303,6 +68139,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -62365,6 +68202,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
   }
 
   export type ScheduleCreateManyAgencyInput = {
@@ -62406,15 +68244,6 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type DocumentCreateManyAgencyInput = {
-    id?: string
-    title: string
-    fileUrl: string
-    uploadedAt?: Date | string
-    userId?: string | null
-    clientId?: string | null
-  }
-
   export type IncidentReportCreateManyAgencyInput = {
     id?: string
     reporterId: string
@@ -62446,6 +68275,15 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type DocumentCreateManyAgencyInput = {
+    id?: string
+    title: string
+    fileUrl: string
+    uploadedAt?: Date | string
+    userId?: string | null
+    clientId?: string | null
+  }
+
   export type ReportCreateManyAgencyInput = {
     id?: string
     clientId: string
@@ -62466,6 +68304,30 @@ export namespace Prisma {
     lastEditedAt?: Date | string | null
     lastEditedBy?: string | null
     lastEditReason?: string | null
+  }
+
+  export type GroupCreateManyAgencyInput = {
+    id?: string
+    name: string
+  }
+
+  export type RateSheetCreateManyAgencyInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomTaskCreateManyAgencyInput = {
+    id?: string
+    name: string
+    placeholder: string
+    category: $Enums.CustomTaskCategory
+    frequency: $Enums.CustomTaskFrequency
+    priority: $Enums.CustomTaskPriority
+    icon?: string | null
   }
 
   export type UserUpdateWithoutAgencyInput = {
@@ -62529,6 +68391,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgencyInput = {
@@ -62561,6 +68424,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -62624,6 +68488,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ScheduleUpdateWithoutAgencyInput = {
@@ -62744,33 +68609,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type DocumentUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    fileUrl?: StringFieldUpdateOperationsInput | string
-    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneWithoutDocumentsNestedInput
-    client?: UserUpdateOneWithoutDocumentNestedInput
-  }
-
-  export type DocumentUncheckedUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    fileUrl?: StringFieldUpdateOperationsInput | string
-    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableStringFieldUpdateOperationsInput | string | null
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type DocumentUncheckedUpdateManyWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    fileUrl?: StringFieldUpdateOperationsInput | string
-    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableStringFieldUpdateOperationsInput | string | null
-    clientId?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
   export type IncidentReportUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
@@ -62870,6 +68708,33 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DocumentUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutDocumentsNestedInput
+    client?: UserUpdateOneWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type ReportUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62946,6 +68811,274 @@ export namespace Prisma {
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type GroupUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    clients?: UserUpdateManyWithoutGroupNestedInput
+  }
+
+  export type GroupUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    clients?: UserUncheckedUpdateManyWithoutGroupNestedInput
+  }
+
+  export type GroupUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RateSheetUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RateSheetUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RateSheetUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomTaskUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    placeholder?: StringFieldUpdateOperationsInput | string
+    category?: EnumCustomTaskCategoryFieldUpdateOperationsInput | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomTaskUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    placeholder?: StringFieldUpdateOperationsInput | string
+    category?: EnumCustomTaskCategoryFieldUpdateOperationsInput | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomTaskUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    placeholder?: StringFieldUpdateOperationsInput | string
+    category?: EnumCustomTaskCategoryFieldUpdateOperationsInput | $Enums.CustomTaskCategory
+    frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
+    priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserCreateManyGroupInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+  }
+
+  export type UserUpdateWithoutGroupInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    Document?: DocumentUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutGroupInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutGroupInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type InvitationCreateManyInviterInput = {
     id?: string
     email: string
@@ -62987,6 +69120,7 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     preferredName?: string | null
+    groupId?: string | null
   }
 
   export type ClientCareAssignmentCreateManyUserInput = {
@@ -63363,6 +69497,7 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedByInput = {
@@ -63395,6 +69530,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -63458,6 +69594,7 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClientCareAssignmentUpdateWithoutUserInput = {

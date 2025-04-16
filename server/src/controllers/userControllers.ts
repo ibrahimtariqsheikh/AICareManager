@@ -136,19 +136,25 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     const { cognitoId } = req.params;
     console.log("cognitoId", cognitoId);
-    const user = await prisma.user.findUnique({
-        where: { cognitoId },
-        include: {
-            agency: true
+    try {
+        const user = await prisma.user.findUnique({
+            where: { cognitoId },
+            include: {
+                agency: true,
+                profile: true
+            }
+        });
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
         }
-    });
 
-    if (!user) {
-        res.status(404).json({ message: "User not found" });
-        return;
+        res.json(user);
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        res.status(500).json({ message: "Error fetching user", error });
     }
-
-    res.json(user);
 };
 
 // Client-related functions

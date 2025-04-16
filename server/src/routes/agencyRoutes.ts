@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
     getAllAgencies,
     getAgencyById,
@@ -13,7 +13,17 @@ import {
     getAllIncidentReportsByAgencyId,
     getAllMedicationRecordsByAgencyId,
     getAllDocumentsByAgencyId,
-    getAllMedicationDatabaseLinksByAgencyId
+    getAllMedicationDatabaseLinksByAgencyId,
+    getAgencyCustomTasks,
+    getAgencyGroups,
+    getAgencyRateSheets,
+    updateAgencyCustomTask,
+    updateAgencyRateSheet,
+    createAgencyRateSheet,
+    deleteAgencyRateSheet,
+    updateAgencyGroup,
+    deleteAgencyGroup,
+    createAgencyGroup
 } from "../controllers/agencyController";
 
 const router = express.Router();
@@ -24,6 +34,22 @@ router.get("/:id", getAgencyById);
 router.post("/", createAgency);
 router.put("/:id", updateAgency);
 router.delete("/:id", deleteAgency);
+
+//I made these
+router.get("/:id/custom-tasks", getAgencyCustomTasks);
+router.get("/:id/groups", getAgencyGroups);
+router.get("/:id/rate-sheets", getAgencyRateSheets);
+
+router.put("/:id/custom-task", updateAgencyCustomTask);
+
+router.put("/:id/rate-sheet", updateAgencyRateSheet);
+
+router.post("/:id/rate-sheet", createAgencyRateSheet);
+router.delete("/:id/rate-sheet/:rateSheetId", deleteAgencyRateSheet);
+
+router.put("/:id/group", updateAgencyGroup);
+router.put("/:id/group", createAgencyGroup);
+router.delete("/:id/group/:groupId", deleteAgencyGroup);
 
 // Agency relationship routes
 router.get("/:id/users", getAllUsersByAgencyId);

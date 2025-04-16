@@ -3,8 +3,10 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { Message } from "@/app/dashboard/chatbot/chatbot-client"
 
-import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration } from "../types/prismaTypes"
+import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration, CustomTask, Group, RateSheet } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
+import { Client } from "@/app/dashboard/settings/groups/types"
+import { ClientGroup } from "@/app/dashboard/settings/groups/types"
 
 
 
@@ -346,6 +348,33 @@ export interface UserAllDetailsResponse {
   };
 }
 
+export interface GroupInput {
+  name: string
+  clientIds: string[]
+  agencyId?: string
+}
+
+export interface GroupResponse {
+  id: string
+  name: string
+  clients: {
+    id: string
+    firstName: string
+    lastName: string
+    status: string
+  }[]
+  agencyId?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface GroupsResponse {
+  data: GroupResponse[]
+  meta: {
+    total: number
+  }
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001',
@@ -375,7 +404,9 @@ export const api = createApi({
     "User",
     "Agency",
     "Reports",
-    "Chat"
+    "Chat",
+    "RateSheets",
+    "Groups"
   ],
   endpoints: (build) => ({
     // Get user
@@ -776,6 +807,130 @@ export const api = createApi({
       }),
       providesTags: ["User"],
     }),
+
+    // Agency endpoints
+    getAgencyCustomTasks: build.query<CustomTask[], string>({
+      query: (agencyId) => `/agencies/${agencyId}/custom-tasks`,
+    }),
+
+    getAgencyGroups: build.query<Group[], string>({
+      query: (agencyId) => `/agencies/${agencyId}/groups`,
+      providesTags: ["Groups"],
+    }),
+
+    // Group endpoints
+    getGroups: build.query<GroupResponse[], string>({
+      query: (agencyId) => ({
+        url: `/agencies/${agencyId}/groups`,
+        method: 'GET'
+      }),
+      providesTags: ["Groups"],
+    }),
+
+    createGroup: build.mutation<Group, { agencyId: string; name: string; clientIds: string[] }>({
+      query: ({ agencyId, name, clientIds }) => ({
+        url: `/agencies/${agencyId}/group`,
+        method: 'POST',
+        body: { 
+          name,
+          agencyId,
+          clients: {
+            connect: clientIds.map(id => ({ id }))
+          }
+        },
+      }),
+      invalidatesTags: ["Groups"],
+    }),
+
+    updateGroup: build.mutation<Group, { agencyId: string; groupId: string; name: string; clientIds: string[] }>({
+      query: ({ agencyId, groupId, name, clientIds }) => ({
+        url: `/agencies/${agencyId}/group/${groupId}`,
+        method: 'PUT',
+        body: { 
+          name,
+          clients: {
+            set: clientIds.map(id => ({ id }))
+          }
+        },
+      }),
+      invalidatesTags: ["Groups"],
+    }),
+
+    deleteGroup: build.mutation<void, { agencyId: string; groupId: string }>({
+      query: ({ agencyId, groupId }) => ({
+        url: `/agencies/${agencyId}/group/${groupId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["Groups"],
+    }),
+
+    getAgencyRateSheets: build.query<RateSheet[], { agencyId: string; staffType?: "client" | "careWorker" | "officeStaff" }>({
+      query: ({ agencyId, staffType }) => {
+        const params = new URLSearchParams();
+        if (staffType) {
+          params.append('staffType', staffType);
+        }
+        return `/agencies/${agencyId}/rate-sheets?${params.toString()}`;
+      },
+      providesTags: ["RateSheets"],
+    }),
+
+    updateAgencyCustomTasks: build.mutation<CustomTask[], { agencyId: string; tasks: CustomTask[] }>({
+      query: ({ agencyId, tasks }) => ({
+        url: `/agencies/${agencyId}/custom-tasks`,
+        method: 'PUT',
+        body: tasks,
+      }),
+    }),
+
+    updateAgencyGroups: build.mutation<Group[], { agencyId: string; groups: Group[] }>({
+      query: ({ agencyId, groups }) => ({
+        url: `/agencies/${agencyId}/groups`,
+        method: 'PUT',
+        body: groups,
+      }),
+    }),
+
+    createAgencyRateSheet: build.mutation<RateSheet, { agencyId: string; name: string; hourlyRate: number; staffType?: "CLIENT" | "CARE_WORKER" | "OFFICE_STAFF" }>({
+      query: ({ agencyId, name, hourlyRate, staffType }) => ({
+        url: `/agencies/${agencyId}/rate-sheet`,
+        method: 'POST',
+        body: { name, hourlyRate, staffType },
+      }),
+      invalidatesTags: ["RateSheets"],
+    }),
+
+    updateAgencyRateSheet: build.mutation<RateSheet, { agencyId: string; rateSheetId: string; name: string; hourlyRate: number; staffType?: "CLIENT" | "CARE_WORKER" | "OFFICE_STAFF" }>({
+      query: ({ agencyId, rateSheetId, name, hourlyRate, staffType }) => ({
+        url: `/agencies/${agencyId}/rate-sheet`,
+        method: 'PUT',
+        body: { id: rateSheetId, name, hourlyRate, staffType },
+      }),
+      invalidatesTags: ["RateSheets"],
+    }),
+
+    deleteAgencyRateSheet: build.mutation<void, { agencyId: string; rateSheetId: string }>({
+      query: ({ agencyId, rateSheetId }) => ({
+        url: `/agencies/${agencyId}/rate-sheet/${rateSheetId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["RateSheets"],
+    }),
+
+    updateAgencyRateSheets: build.mutation<RateSheet[], { agencyId: string; rateSheets: RateSheet[]; staffType?: "client" | "careWorker" | "officeStaff" }>({
+      query: ({ agencyId, rateSheets, staffType }) => {
+        const params = new URLSearchParams();
+        if (staffType) {
+          params.append('staffType', staffType);
+        }
+        return {
+          url: `/agencies/${agencyId}/rate-sheets?${params.toString()}`,
+          method: 'PUT',
+          body: rateSheets,
+        };
+      },
+    }),
+
   }),
 })
 
@@ -806,5 +961,17 @@ export const {
   useSendMessageMutation,
   useGetChatHistoryQuery,
   useClearChatHistoryMutation,
+  useGetAgencyCustomTasksQuery,
+  useGetAgencyGroupsQuery,
+  useCreateGroupMutation,
+  useUpdateGroupMutation,
+  useDeleteGroupMutation,
+  useGetAgencyRateSheetsQuery,
+  useUpdateAgencyCustomTasksMutation,
+  useUpdateAgencyGroupsMutation,
+  useUpdateAgencyRateSheetsMutation,
+  useCreateAgencyRateSheetMutation,
+  useUpdateAgencyRateSheetMutation,
+  useDeleteAgencyRateSheetMutation,
+  useGetGroupsQuery,
 } = api
-

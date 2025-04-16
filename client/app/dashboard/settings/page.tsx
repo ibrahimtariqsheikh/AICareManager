@@ -216,31 +216,32 @@ export default function SettingsPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
+                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
+                                    onClick={() => router.push("/dashboard/settings/groups")}
+                                >
                                     <Users className="mr-2 h-4 w-4" />
                                     Groups
                                 </Button>
-                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
+                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
+                                    onClick={() => router.push("/dashboard/settings/rate-sheets")}
+                                >
                                     <FileText className="mr-2 h-4 w-4" />
                                     Rate Sheets
                                 </Button>
-                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
-                                    <Building className="mr-2 h-4 w-4" />
-                                    Agency Details & Documents
-                                </Button>
-                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
+                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
+                                    onClick={() => router.push("/dashboard/settings/custom-tasks")}
+                                >
                                     <FileText className="mr-2 h-4 w-4" />
                                     Custom Tasks
                                 </Button>
-                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    Care Plan Custom Fields
+                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
+                                    onClick={() => router.push("/dashboard/settings/agency-details")}
+                                >
+                                    <Building className="mr-2 h-4 w-4" />
+                                    Agency Details & Documents
                                 </Button>
-                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    Policies and Procedures
-                                </Button>
-                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
+
+                                <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm" onClick={() => router.push("/dashboard/settings/documents")}>
                                     <FileText className="mr-2 h-4 w-4" />
                                     Documents
                                 </Button>

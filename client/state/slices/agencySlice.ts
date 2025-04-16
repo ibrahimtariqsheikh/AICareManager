@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { api } from "../api";
-import { Agency, User } from "../../types/prismaTypes";
-import { UsersResponse } from "../api";
+import { Agency, CustomTask, Group, RateSheet, RateSheetType, User } from "../../types/agencyTypes";
+
 
 interface AgencyState {
     agency: Agency | null;
@@ -11,6 +11,10 @@ interface AgencyState {
     careWorkers: User[];
     loading: boolean;
     error: string | null;
+    customTasks: CustomTask[];
+    groups: Group[];
+    rateSheets: RateSheet[];
+    activeRateSheetStaffType: RateSheetType;
 }
 
 // Initial state
@@ -22,23 +26,11 @@ const initialState: AgencyState = {
     careWorkers: [],
     loading: false,
     error: null,
+    customTasks: [],
+    groups: [],
+    rateSheets: [],
+    activeRateSheetStaffType: "CLIENT",
 };
-
-// Async thunks
-const fetchAgencyUsers = createAsyncThunk(
-    'agency/fetchAgencyUsers',
-    async (agencyId: string, { rejectWithValue }) => {
-        try {
-            const response = await api.endpoints.getAgencyUsers.initiate(agencyId);
-            if ('data' in response) {
-                return response.data as UsersResponse;
-            }
-            throw new Error('Failed to fetch agency users');
-        } catch (error) {
-            return rejectWithValue(error);
-        }
-    }
-);
 
 // Agency Slice
 const agencySlice = createSlice({
@@ -60,33 +52,47 @@ const agencySlice = createSlice({
         setCareWorkers: (state, action: PayloadAction<User[]>) => {
             state.careWorkers = action.payload;
         },
+        setActiveRateSheetStaffType: (state, action: PayloadAction<RateSheetType>) => {
+            state.activeRateSheetStaffType = action.payload;
+        },
         clearAgencyUsers: (state) => {
             state.clients = [];
             state.officeStaff = [];
             state.careWorkers = [];
+        },
+        setCustomTasks: (state, action: PayloadAction<CustomTask[]>) => {
+            state.customTasks = action.payload;
+        },
+        setGroups: (state, action: PayloadAction<Group[]>) => {
+            state.groups = action.payload;
+        },
+        setRateSheets: (state, action: PayloadAction<RateSheet[]>) => {
+            state.rateSheets = action.payload;
+        },
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.loading = action.payload;
+        },
+        setError: (state, action: PayloadAction<string | null>) => {
+            state.error = action.payload;
         }
-    },
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchAgencyUsers.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchAgencyUsers.fulfilled, (state, action) => {
-                state.loading = false;
-                if (action.payload?.data) {
-                    state.clients = action.payload.data.filter((user: User) => user.role === "CLIENT");
-                    state.officeStaff = action.payload.data.filter((user: User) => user.role === "OFFICE_STAFF");
-                    state.careWorkers = action.payload.data.filter((user: User) => user.role === "CARE_WORKER");
-                }
-            })
-            .addCase(fetchAgencyUsers.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload as string;
-            });
     }
 });
 
-export const { setAgency, setAgencyId, setClients, setOfficeStaff, setCareWorkers, clearAgencyUsers } = agencySlice.actions;
-export { fetchAgencyUsers };
+// Export actions
+export const { 
+    setAgency, 
+    setAgencyId, 
+    setClients, 
+    setOfficeStaff, 
+    setCareWorkers, 
+    clearAgencyUsers,
+    setCustomTasks,
+    setGroups,
+    setRateSheets,
+    setLoading,
+    setError,
+    setActiveRateSheetStaffType
+} = agencySlice.actions;
+
+// Export reducer
 export default agencySlice.reducer;

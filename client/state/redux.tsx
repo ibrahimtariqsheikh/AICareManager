@@ -36,7 +36,6 @@ const rootReducer = combineReducers({
   patient: patientReducer,
   chat: chatReducer,
   [api.reducerPath]: api.reducer,
-
 })
 
 export const makeStore = () => {
