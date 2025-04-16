@@ -12,13 +12,14 @@ import { ReactNode, useEffect, useState, useMemo } from "react"
 import { useAppDispatch, useAppSelector } from "../../state/redux";
 import { setUser, setOfficeStaff, setCareWorkers, setClients } from "../../state/slices/userSlice";
 import { setCurrentDate, setActiveView } from "../../state/slices/calendarSlice";
-import { useGetUserQuery, useGetAgencyUsersQuery } from "../../state/api";
+import { useGetUserQuery, useGetAgencyUsersQuery, useGetAgencyByIdQuery } from "../../state/api";
 import { redirect } from "next/navigation"
 import * as React from "react"
 import type { SidebarMode } from "../../components/scheduler/calender/types"
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { setSidebarMode } from "@/state/slices/scheduleSlice";
+import { setAgency } from "@/state/slices/agencySlice";
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -35,7 +36,14 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
     const { activeView, currentDate: currentDateStr } = useAppSelector((state) => state.calendar)
     const { data: userInformation } = useGetUserQuery()
     const { data: agencyUsers } = useGetAgencyUsersQuery(userInformation?.userInfo?.agencyId || "")
+
     const isSchedulePage = pathname === "/dashboard/schedule"
+
+    const { data: agency } = useGetAgencyByIdQuery(userInformation?.userInfo?.agencyId || "")
+
+
+
+
 
     const [isLoading, setIsLoading] = useState(true)
     const currentDate = useMemo(() => {
@@ -43,13 +51,29 @@ export default function DashboardLayout({ children, params }: DashboardLayoutPro
         return isNaN(date.getTime()) ? new Date() : date
     }, [currentDateStr])
 
+    // Initial user dispatch - This is the first point where user data is dispatched to Redux
+    // The useGetUserQuery hook fetches the user's information from the API
+    // When the data is received, it's dispatched to Redux using the setUser action
+    // This sets up the core user information in the Redux store
     useEffect(() => {
         if (userInformation) {
             dispatch(setUser(userInformation))
+
             setIsLoading(false)
         }
     }, [userInformation, dispatch])
 
+
+    useEffect(() => {
+        if (agency) {
+            dispatch(setAgency(agency))
+        }
+    }, [agency, dispatch])
+
+    // Secondary user dispatch - This sets up the different user types in the Redux store
+    // After the initial user dispatch, we fetch and organize agency users by their roles
+    // This separates users into three categories: care workers, office staff, and clients
+    // Each category is then dispatched to its respective Redux state
     useEffect(() => {
         if (agencyUsers?.data) {
             const careWorkers = agencyUsers.data.filter((user: any) => user.role === "CARE_WORKER")

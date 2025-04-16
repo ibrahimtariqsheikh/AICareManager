@@ -808,6 +808,12 @@ export const api = createApi({
       providesTags: ["User"],
     }),
 
+    // Get agency by ID
+    getAgencyById: build.query<Agency, string>({
+      query: (agencyId) => `/agencies/${agencyId}`,
+      providesTags: ["Agency"],
+    }),
+
     // Agency endpoints
     getAgencyCustomTasks: build.query<CustomTask[], string>({
       query: (agencyId) => `/agencies/${agencyId}/custom-tasks`,
@@ -822,7 +828,10 @@ export const api = createApi({
     getGroups: build.query<GroupResponse[], string>({
       query: (agencyId) => ({
         url: `/agencies/${agencyId}/groups`,
-        method: 'GET'
+        method: 'GET',
+        params: {
+          include: 'clients'
+        }
       }),
       providesTags: ["Groups"],
     }),
@@ -833,10 +842,7 @@ export const api = createApi({
         method: 'POST',
         body: { 
           name,
-          agencyId,
-          clients: {
-            connect: clientIds.map(id => ({ id }))
-          }
+          clientIds
         },
       }),
       invalidatesTags: ["Groups"],
@@ -848,9 +854,7 @@ export const api = createApi({
         method: 'PUT',
         body: { 
           name,
-          clients: {
-            set: clientIds.map(id => ({ id }))
-          }
+          clientIds
         },
       }),
       invalidatesTags: ["Groups"],
@@ -917,6 +921,30 @@ export const api = createApi({
       invalidatesTags: ["RateSheets"],
     }),
 
+    //update agency
+    updateAgency: build.mutation<Agency, { agencyId: string; agency: Agency }>({
+      query: ({ agencyId, agency }) => ({
+        url: `/agencies/${agencyId}`,
+        method: 'PUT',
+        body: agency,
+      }),
+    }),
+//create agency
+    createAgency: build.mutation<Agency, { agency: Agency }>({
+      query: ({ agency }) => ({
+        url: `/agencies`,
+        method: 'POST',
+        body: agency,
+      }),
+    }),
+//delete agency
+    deleteAgency: build.mutation<void, { agencyId: string }>({
+      query: ({ agencyId }) => ({
+        url: `/agencies/${agencyId}`,
+        method: 'DELETE',
+      }),
+    }),
+
     updateAgencyRateSheets: build.mutation<RateSheet[], { agencyId: string; rateSheets: RateSheet[]; staffType?: "client" | "careWorker" | "officeStaff" }>({
       query: ({ agencyId, rateSheets, staffType }) => {
         const params = new URLSearchParams();
@@ -938,6 +966,7 @@ export const {
   useGetUserQuery,
   useGetUsersQuery,
   useGetAgencyUsersQuery,
+  useGetAgencyByIdQuery,
   useGetUserInvitationsQuery,
   useCreateInvitationMutation,
   useCancelInvitationMutation,
@@ -974,4 +1003,7 @@ export const {
   useUpdateAgencyRateSheetMutation,
   useDeleteAgencyRateSheetMutation,
   useGetGroupsQuery,
+  useUpdateAgencyMutation,
+  useCreateAgencyMutation,
+  useDeleteAgencyMutation,
 } = api

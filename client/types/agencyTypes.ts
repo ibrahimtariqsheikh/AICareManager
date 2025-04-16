@@ -10,7 +10,32 @@ export interface User {
 export interface Agency {
     id: string;
     name: string;
-    // Add other agency properties as needed
+    email: string;
+    description?: string;
+    address?: string;
+    extension?: number;
+    mobileNumber?: number;
+    landlineNumber?: number;
+    website?: string;
+    logo?: string;
+    primaryColor?: string;
+    secondaryColor?: string;
+    isActive: boolean;
+    isSuspended: boolean;
+    hasScheduleV2: boolean;
+    hasEMAR: boolean;
+    hasFinance: boolean;
+    isWeek1And2ScheduleEnabled: boolean;
+    hasPoliciesAndProcedures: boolean;
+    isTestAccount: boolean;
+    createdAt: string;
+    updatedAt: string;
+    licenseNumber?: string;
+    timeZone: string;
+    currency: string;
+    maxUsers?: number;
+    maxClients?: number;
+    maxCareWorkers?: number;
 }
 
 export interface CustomTask {

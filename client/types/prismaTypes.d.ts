@@ -24,6 +24,26 @@ export type Invitation = $Result.DefaultSelection<Prisma.$InvitationPayload>
  */
 export type Agency = $Result.DefaultSelection<Prisma.$AgencyPayload>
 /**
+ * Model Announcement
+ * 
+ */
+export type Announcement = $Result.DefaultSelection<Prisma.$AnnouncementPayload>
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
+/**
+ * Model Certification
+ * 
+ */
+export type Certification = $Result.DefaultSelection<Prisma.$CertificationPayload>
+/**
+ * Model OperatingHours
+ * 
+ */
+export type OperatingHours = $Result.DefaultSelection<Prisma.$OperatingHoursPayload>
+/**
  * Model Group
  * 
  */
@@ -178,7 +198,68 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
  * Enums
  */
 export namespace $Enums {
-  export const RateSheetType: {
+  export const AnnouncementPriority: {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+};
+
+export type AnnouncementPriority = (typeof AnnouncementPriority)[keyof typeof AnnouncementPriority]
+
+
+export const AnnouncementStatus: {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type AnnouncementStatus = (typeof AnnouncementStatus)[keyof typeof AnnouncementStatus]
+
+
+export const AuditAction: {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT',
+  PASSWORD_CHANGE: 'PASSWORD_CHANGE',
+  PERMISSION_CHANGE: 'PERMISSION_CHANGE',
+  EXPORT: 'EXPORT',
+  IMPORT: 'IMPORT',
+  ARCHIVE: 'ARCHIVE',
+  RESTORE: 'RESTORE',
+  SYSTEM: 'SYSTEM'
+};
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
+
+
+export const CertificationStatus: {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  PENDING: 'PENDING',
+  REVOKED: 'REVOKED',
+  SUSPENDED: 'SUSPENDED'
+};
+
+export type CertificationStatus = (typeof CertificationStatus)[keyof typeof CertificationStatus]
+
+
+export const DayOfWeek: {
+  MONDAY: 'MONDAY',
+  TUESDAY: 'TUESDAY',
+  WEDNESDAY: 'WEDNESDAY',
+  THURSDAY: 'THURSDAY',
+  FRIDAY: 'FRIDAY',
+  SATURDAY: 'SATURDAY',
+  SUNDAY: 'SUNDAY'
+};
+
+export type DayOfWeek = (typeof DayOfWeek)[keyof typeof DayOfWeek]
+
+
+export const RateSheetType: {
   CLIENT: 'CLIENT',
   CARE_WORKER: 'CARE_WORKER',
   OFFICE_STAFF: 'OFFICE_STAFF'
@@ -362,6 +443,26 @@ export const AlertSeverity: {
 export type AlertSeverity = (typeof AlertSeverity)[keyof typeof AlertSeverity]
 
 }
+
+export type AnnouncementPriority = $Enums.AnnouncementPriority
+
+export const AnnouncementPriority: typeof $Enums.AnnouncementPriority
+
+export type AnnouncementStatus = $Enums.AnnouncementStatus
+
+export const AnnouncementStatus: typeof $Enums.AnnouncementStatus
+
+export type AuditAction = $Enums.AuditAction
+
+export const AuditAction: typeof $Enums.AuditAction
+
+export type CertificationStatus = $Enums.CertificationStatus
+
+export const CertificationStatus: typeof $Enums.CertificationStatus
+
+export type DayOfWeek = $Enums.DayOfWeek
+
+export const DayOfWeek: typeof $Enums.DayOfWeek
 
 export type RateSheetType = $Enums.RateSheetType
 
@@ -571,6 +672,46 @@ export class PrismaClient<
     * ```
     */
   get agency(): Prisma.AgencyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.announcement`: Exposes CRUD operations for the **Announcement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Announcements
+    * const announcements = await prisma.announcement.findMany()
+    * ```
+    */
+  get announcement(): Prisma.AnnouncementDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AuditLogs
+    * const auditLogs = await prisma.auditLog.findMany()
+    * ```
+    */
+  get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.certification`: Exposes CRUD operations for the **Certification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Certifications
+    * const certifications = await prisma.certification.findMany()
+    * ```
+    */
+  get certification(): Prisma.CertificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.operatingHours`: Exposes CRUD operations for the **OperatingHours** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OperatingHours
+    * const operatingHours = await prisma.operatingHours.findMany()
+    * ```
+    */
+  get operatingHours(): Prisma.OperatingHoursDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.group`: Exposes CRUD operations for the **Group** model.
@@ -1313,6 +1454,10 @@ export namespace Prisma {
   export const ModelName: {
     Invitation: 'Invitation',
     Agency: 'Agency',
+    Announcement: 'Announcement',
+    AuditLog: 'AuditLog',
+    Certification: 'Certification',
+    OperatingHours: 'OperatingHours',
     Group: 'Group',
     RateSheet: 'RateSheet',
     CustomTask: 'CustomTask',
@@ -1361,7 +1506,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "invitation" | "agency" | "group" | "rateSheet" | "customTask" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
+      modelProps: "invitation" | "agency" | "announcement" | "auditLog" | "certification" | "operatingHours" | "group" | "rateSheet" | "customTask" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1510,6 +1655,302 @@ export namespace Prisma {
           count: {
             args: Prisma.AgencyCountArgs<ExtArgs>
             result: $Utils.Optional<AgencyCountAggregateOutputType> | number
+          }
+        }
+      }
+      Announcement: {
+        payload: Prisma.$AnnouncementPayload<ExtArgs>
+        fields: Prisma.AnnouncementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AnnouncementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AnnouncementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>
+          }
+          findFirst: {
+            args: Prisma.AnnouncementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AnnouncementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>
+          }
+          findMany: {
+            args: Prisma.AnnouncementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>[]
+          }
+          create: {
+            args: Prisma.AnnouncementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>
+          }
+          createMany: {
+            args: Prisma.AnnouncementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AnnouncementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>[]
+          }
+          delete: {
+            args: Prisma.AnnouncementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>
+          }
+          update: {
+            args: Prisma.AnnouncementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>
+          }
+          deleteMany: {
+            args: Prisma.AnnouncementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AnnouncementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AnnouncementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>[]
+          }
+          upsert: {
+            args: Prisma.AnnouncementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnnouncementPayload>
+          }
+          aggregate: {
+            args: Prisma.AnnouncementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAnnouncement>
+          }
+          groupBy: {
+            args: Prisma.AnnouncementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AnnouncementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AnnouncementCountArgs<ExtArgs>
+            result: $Utils.Optional<AnnouncementCountAggregateOutputType> | number
+          }
+        }
+      }
+      AuditLog: {
+        payload: Prisma.$AuditLogPayload<ExtArgs>
+        fields: Prisma.AuditLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AuditLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AuditLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          findFirst: {
+            args: Prisma.AuditLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AuditLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          findMany: {
+            args: Prisma.AuditLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+          }
+          create: {
+            args: Prisma.AuditLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          createMany: {
+            args: Prisma.AuditLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AuditLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+          }
+          delete: {
+            args: Prisma.AuditLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          update: {
+            args: Prisma.AuditLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.AuditLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AuditLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AuditLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.AuditLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          aggregate: {
+            args: Prisma.AuditLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAuditLog>
+          }
+          groupBy: {
+            args: Prisma.AuditLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AuditLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AuditLogCountArgs<ExtArgs>
+            result: $Utils.Optional<AuditLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      Certification: {
+        payload: Prisma.$CertificationPayload<ExtArgs>
+        fields: Prisma.CertificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CertificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CertificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>
+          }
+          findFirst: {
+            args: Prisma.CertificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CertificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>
+          }
+          findMany: {
+            args: Prisma.CertificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>[]
+          }
+          create: {
+            args: Prisma.CertificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>
+          }
+          createMany: {
+            args: Prisma.CertificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CertificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>[]
+          }
+          delete: {
+            args: Prisma.CertificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>
+          }
+          update: {
+            args: Prisma.CertificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.CertificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CertificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CertificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.CertificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CertificationPayload>
+          }
+          aggregate: {
+            args: Prisma.CertificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCertification>
+          }
+          groupBy: {
+            args: Prisma.CertificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CertificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CertificationCountArgs<ExtArgs>
+            result: $Utils.Optional<CertificationCountAggregateOutputType> | number
+          }
+        }
+      }
+      OperatingHours: {
+        payload: Prisma.$OperatingHoursPayload<ExtArgs>
+        fields: Prisma.OperatingHoursFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OperatingHoursFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OperatingHoursFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>
+          }
+          findFirst: {
+            args: Prisma.OperatingHoursFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OperatingHoursFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>
+          }
+          findMany: {
+            args: Prisma.OperatingHoursFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>[]
+          }
+          create: {
+            args: Prisma.OperatingHoursCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>
+          }
+          createMany: {
+            args: Prisma.OperatingHoursCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OperatingHoursCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>[]
+          }
+          delete: {
+            args: Prisma.OperatingHoursDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>
+          }
+          update: {
+            args: Prisma.OperatingHoursUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>
+          }
+          deleteMany: {
+            args: Prisma.OperatingHoursDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OperatingHoursUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OperatingHoursUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>[]
+          }
+          upsert: {
+            args: Prisma.OperatingHoursUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OperatingHoursPayload>
+          }
+          aggregate: {
+            args: Prisma.OperatingHoursAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOperatingHours>
+          }
+          groupBy: {
+            args: Prisma.OperatingHoursGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OperatingHoursGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OperatingHoursCountArgs<ExtArgs>
+            result: $Utils.Optional<OperatingHoursCountAggregateOutputType> | number
           }
         }
       }
@@ -3819,6 +4260,10 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     invitation?: InvitationOmit
     agency?: AgencyOmit
+    announcement?: AnnouncementOmit
+    auditLog?: AuditLogOmit
+    certification?: CertificationOmit
+    operatingHours?: OperatingHoursOmit
     group?: GroupOmit
     rateSheet?: RateSheetOmit
     customTask?: CustomTaskOmit
@@ -3956,6 +4401,11 @@ export namespace Prisma {
     groups: number
     rateSheets: number
     customTasks: number
+    certifications: number
+    operatingHours: number
+    reminders: number
+    auditLogs: number
+    announcements: number
   }
 
   export type AgencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3972,6 +4422,11 @@ export namespace Prisma {
     groups?: boolean | AgencyCountOutputTypeCountGroupsArgs
     rateSheets?: boolean | AgencyCountOutputTypeCountRateSheetsArgs
     customTasks?: boolean | AgencyCountOutputTypeCountCustomTasksArgs
+    certifications?: boolean | AgencyCountOutputTypeCountCertificationsArgs
+    operatingHours?: boolean | AgencyCountOutputTypeCountOperatingHoursArgs
+    reminders?: boolean | AgencyCountOutputTypeCountRemindersArgs
+    auditLogs?: boolean | AgencyCountOutputTypeCountAuditLogsArgs
+    announcements?: boolean | AgencyCountOutputTypeCountAnnouncementsArgs
   }
 
   // Custom InputTypes
@@ -4076,6 +4531,72 @@ export namespace Prisma {
     where?: CustomTaskWhereInput
   }
 
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountCertificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CertificationWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountOperatingHoursArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OperatingHoursWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountRemindersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReminderWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountAnnouncementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnnouncementWhereInput
+  }
+
+
+  /**
+   * Count Type AnnouncementCountOutputType
+   */
+
+  export type AnnouncementCountOutputType = {
+    acknowledgedBy: number
+  }
+
+  export type AnnouncementCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    acknowledgedBy?: boolean | AnnouncementCountOutputTypeCountAcknowledgedByArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AnnouncementCountOutputType without action
+   */
+  export type AnnouncementCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnnouncementCountOutputType
+     */
+    select?: AnnouncementCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AnnouncementCountOutputType without action
+   */
+  export type AnnouncementCountOutputTypeCountAcknowledgedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
 
   /**
    * Count Type GroupCountOutputType
@@ -4142,6 +4663,10 @@ export namespace Prisma {
     reminders: number
     medicationAdministrations: number
     reportEdits: number
+    createdAnnouncements: number
+    acknowledgedAnnouncements: number
+    Announcement: number
+    AuditLog: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4174,6 +4699,10 @@ export namespace Prisma {
     reminders?: boolean | UserCountOutputTypeCountRemindersArgs
     medicationAdministrations?: boolean | UserCountOutputTypeCountMedicationAdministrationsArgs
     reportEdits?: boolean | UserCountOutputTypeCountReportEditsArgs
+    createdAnnouncements?: boolean | UserCountOutputTypeCountCreatedAnnouncementsArgs
+    acknowledgedAnnouncements?: boolean | UserCountOutputTypeCountAcknowledgedAnnouncementsArgs
+    Announcement?: boolean | UserCountOutputTypeCountAnnouncementArgs
+    AuditLog?: boolean | UserCountOutputTypeCountAuditLogArgs
   }
 
   // Custom InputTypes
@@ -4388,6 +4917,34 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountReportEditsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReportEditWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedAnnouncementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnnouncementWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAcknowledgedAnnouncementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnnouncementWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAnnouncementArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnnouncementWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAuditLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
   }
 
 
@@ -5702,13 +6259,43 @@ export namespace Prisma {
 
   export type AggregateAgency = {
     _count: AgencyCountAggregateOutputType | null
+    _avg: AgencyAvgAggregateOutputType | null
+    _sum: AgencySumAggregateOutputType | null
     _min: AgencyMinAggregateOutputType | null
     _max: AgencyMaxAggregateOutputType | null
+  }
+
+  export type AgencyAvgAggregateOutputType = {
+    extension: number | null
+    mobileNumber: number | null
+    landlineNumber: number | null
+    maxUsers: number | null
+    maxClients: number | null
+    maxCareWorkers: number | null
+  }
+
+  export type AgencySumAggregateOutputType = {
+    extension: number | null
+    mobileNumber: number | null
+    landlineNumber: number | null
+    maxUsers: number | null
+    maxClients: number | null
+    maxCareWorkers: number | null
   }
 
   export type AgencyMinAggregateOutputType = {
     id: string | null
     name: string | null
+    email: string | null
+    description: string | null
+    address: string | null
+    extension: number | null
+    mobileNumber: number | null
+    landlineNumber: number | null
+    website: string | null
+    logo: string | null
+    primaryColor: string | null
+    secondaryColor: string | null
     isActive: boolean | null
     isSuspended: boolean | null
     hasScheduleV2: boolean | null
@@ -5719,11 +6306,27 @@ export namespace Prisma {
     isTestAccount: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    licenseNumber: string | null
+    timeZone: string | null
+    currency: string | null
+    maxUsers: number | null
+    maxClients: number | null
+    maxCareWorkers: number | null
   }
 
   export type AgencyMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    email: string | null
+    description: string | null
+    address: string | null
+    extension: number | null
+    mobileNumber: number | null
+    landlineNumber: number | null
+    website: string | null
+    logo: string | null
+    primaryColor: string | null
+    secondaryColor: string | null
     isActive: boolean | null
     isSuspended: boolean | null
     hasScheduleV2: boolean | null
@@ -5734,11 +6337,27 @@ export namespace Prisma {
     isTestAccount: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    licenseNumber: string | null
+    timeZone: string | null
+    currency: string | null
+    maxUsers: number | null
+    maxClients: number | null
+    maxCareWorkers: number | null
   }
 
   export type AgencyCountAggregateOutputType = {
     id: number
     name: number
+    email: number
+    description: number
+    address: number
+    extension: number
+    mobileNumber: number
+    landlineNumber: number
+    website: number
+    logo: number
+    primaryColor: number
+    secondaryColor: number
     isActive: number
     isSuspended: number
     hasScheduleV2: number
@@ -5749,13 +6368,47 @@ export namespace Prisma {
     isTestAccount: number
     createdAt: number
     updatedAt: number
+    licenseNumber: number
+    timeZone: number
+    currency: number
+    maxUsers: number
+    maxClients: number
+    maxCareWorkers: number
     _all: number
   }
 
 
+  export type AgencyAvgAggregateInputType = {
+    extension?: true
+    mobileNumber?: true
+    landlineNumber?: true
+    maxUsers?: true
+    maxClients?: true
+    maxCareWorkers?: true
+  }
+
+  export type AgencySumAggregateInputType = {
+    extension?: true
+    mobileNumber?: true
+    landlineNumber?: true
+    maxUsers?: true
+    maxClients?: true
+    maxCareWorkers?: true
+  }
+
   export type AgencyMinAggregateInputType = {
     id?: true
     name?: true
+    email?: true
+    description?: true
+    address?: true
+    extension?: true
+    mobileNumber?: true
+    landlineNumber?: true
+    website?: true
+    logo?: true
+    primaryColor?: true
+    secondaryColor?: true
     isActive?: true
     isSuspended?: true
     hasScheduleV2?: true
@@ -5766,11 +6419,27 @@ export namespace Prisma {
     isTestAccount?: true
     createdAt?: true
     updatedAt?: true
+    licenseNumber?: true
+    timeZone?: true
+    currency?: true
+    maxUsers?: true
+    maxClients?: true
+    maxCareWorkers?: true
   }
 
   export type AgencyMaxAggregateInputType = {
     id?: true
     name?: true
+    email?: true
+    description?: true
+    address?: true
+    extension?: true
+    mobileNumber?: true
+    landlineNumber?: true
+    website?: true
+    logo?: true
+    primaryColor?: true
+    secondaryColor?: true
     isActive?: true
     isSuspended?: true
     hasScheduleV2?: true
@@ -5781,11 +6450,27 @@ export namespace Prisma {
     isTestAccount?: true
     createdAt?: true
     updatedAt?: true
+    licenseNumber?: true
+    timeZone?: true
+    currency?: true
+    maxUsers?: true
+    maxClients?: true
+    maxCareWorkers?: true
   }
 
   export type AgencyCountAggregateInputType = {
     id?: true
     name?: true
+    email?: true
+    description?: true
+    address?: true
+    extension?: true
+    mobileNumber?: true
+    landlineNumber?: true
+    website?: true
+    logo?: true
+    primaryColor?: true
+    secondaryColor?: true
     isActive?: true
     isSuspended?: true
     hasScheduleV2?: true
@@ -5796,6 +6481,12 @@ export namespace Prisma {
     isTestAccount?: true
     createdAt?: true
     updatedAt?: true
+    licenseNumber?: true
+    timeZone?: true
+    currency?: true
+    maxUsers?: true
+    maxClients?: true
+    maxCareWorkers?: true
     _all?: true
   }
 
@@ -5837,6 +6528,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: AgencyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AgencySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: AgencyMinAggregateInputType
@@ -5867,6 +6570,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: AgencyCountAggregateInputType | true
+    _avg?: AgencyAvgAggregateInputType
+    _sum?: AgencySumAggregateInputType
     _min?: AgencyMinAggregateInputType
     _max?: AgencyMaxAggregateInputType
   }
@@ -5874,6 +6579,16 @@ export namespace Prisma {
   export type AgencyGroupByOutputType = {
     id: string
     name: string
+    email: string
+    description: string | null
+    address: string | null
+    extension: number | null
+    mobileNumber: number | null
+    landlineNumber: number | null
+    website: string | null
+    logo: string | null
+    primaryColor: string | null
+    secondaryColor: string | null
     isActive: boolean
     isSuspended: boolean
     hasScheduleV2: boolean
@@ -5884,7 +6599,15 @@ export namespace Prisma {
     isTestAccount: boolean
     createdAt: Date
     updatedAt: Date
+    licenseNumber: string | null
+    timeZone: string
+    currency: string
+    maxUsers: number | null
+    maxClients: number | null
+    maxCareWorkers: number | null
     _count: AgencyCountAggregateOutputType | null
+    _avg: AgencyAvgAggregateOutputType | null
+    _sum: AgencySumAggregateOutputType | null
     _min: AgencyMinAggregateOutputType | null
     _max: AgencyMaxAggregateOutputType | null
   }
@@ -5906,6 +6629,16 @@ export namespace Prisma {
   export type AgencySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    email?: boolean
+    description?: boolean
+    address?: boolean
+    extension?: boolean
+    mobileNumber?: boolean
+    landlineNumber?: boolean
+    website?: boolean
+    logo?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -5916,6 +6649,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    licenseNumber?: boolean
+    timeZone?: boolean
+    currency?: boolean
+    maxUsers?: boolean
+    maxClients?: boolean
+    maxCareWorkers?: boolean
     users?: boolean | Agency$usersArgs<ExtArgs>
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
     invoices?: boolean | Agency$invoicesArgs<ExtArgs>
@@ -5929,12 +6668,27 @@ export namespace Prisma {
     groups?: boolean | Agency$groupsArgs<ExtArgs>
     rateSheets?: boolean | Agency$rateSheetsArgs<ExtArgs>
     customTasks?: boolean | Agency$customTasksArgs<ExtArgs>
+    certifications?: boolean | Agency$certificationsArgs<ExtArgs>
+    operatingHours?: boolean | Agency$operatingHoursArgs<ExtArgs>
+    reminders?: boolean | Agency$remindersArgs<ExtArgs>
+    auditLogs?: boolean | Agency$auditLogsArgs<ExtArgs>
+    announcements?: boolean | Agency$announcementsArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agency"]>
 
   export type AgencySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    email?: boolean
+    description?: boolean
+    address?: boolean
+    extension?: boolean
+    mobileNumber?: boolean
+    landlineNumber?: boolean
+    website?: boolean
+    logo?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -5945,11 +6699,27 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    licenseNumber?: boolean
+    timeZone?: boolean
+    currency?: boolean
+    maxUsers?: boolean
+    maxClients?: boolean
+    maxCareWorkers?: boolean
   }, ExtArgs["result"]["agency"]>
 
   export type AgencySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    email?: boolean
+    description?: boolean
+    address?: boolean
+    extension?: boolean
+    mobileNumber?: boolean
+    landlineNumber?: boolean
+    website?: boolean
+    logo?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -5960,11 +6730,27 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    licenseNumber?: boolean
+    timeZone?: boolean
+    currency?: boolean
+    maxUsers?: boolean
+    maxClients?: boolean
+    maxCareWorkers?: boolean
   }, ExtArgs["result"]["agency"]>
 
   export type AgencySelectScalar = {
     id?: boolean
     name?: boolean
+    email?: boolean
+    description?: boolean
+    address?: boolean
+    extension?: boolean
+    mobileNumber?: boolean
+    landlineNumber?: boolean
+    website?: boolean
+    logo?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -5975,9 +6761,15 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    licenseNumber?: boolean
+    timeZone?: boolean
+    currency?: boolean
+    maxUsers?: boolean
+    maxClients?: boolean
+    maxCareWorkers?: boolean
   }
 
-  export type AgencyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "isSuspended" | "hasScheduleV2" | "hasEMAR" | "hasFinance" | "isWeek1And2ScheduleEnabled" | "hasPoliciesAndProcedures" | "isTestAccount" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
+  export type AgencyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "description" | "address" | "extension" | "mobileNumber" | "landlineNumber" | "website" | "logo" | "primaryColor" | "secondaryColor" | "isActive" | "isSuspended" | "hasScheduleV2" | "hasEMAR" | "hasFinance" | "isWeek1And2ScheduleEnabled" | "hasPoliciesAndProcedures" | "isTestAccount" | "createdAt" | "updatedAt" | "licenseNumber" | "timeZone" | "currency" | "maxUsers" | "maxClients" | "maxCareWorkers", ExtArgs["result"]["agency"]>
   export type AgencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Agency$usersArgs<ExtArgs>
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
@@ -5992,6 +6784,11 @@ export namespace Prisma {
     groups?: boolean | Agency$groupsArgs<ExtArgs>
     rateSheets?: boolean | Agency$rateSheetsArgs<ExtArgs>
     customTasks?: boolean | Agency$customTasksArgs<ExtArgs>
+    certifications?: boolean | Agency$certificationsArgs<ExtArgs>
+    operatingHours?: boolean | Agency$operatingHoursArgs<ExtArgs>
+    reminders?: boolean | Agency$remindersArgs<ExtArgs>
+    auditLogs?: boolean | Agency$auditLogsArgs<ExtArgs>
+    announcements?: boolean | Agency$announcementsArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -6013,10 +6810,25 @@ export namespace Prisma {
       groups: Prisma.$GroupPayload<ExtArgs>[]
       rateSheets: Prisma.$RateSheetPayload<ExtArgs>[]
       customTasks: Prisma.$CustomTaskPayload<ExtArgs>[]
+      certifications: Prisma.$CertificationPayload<ExtArgs>[]
+      operatingHours: Prisma.$OperatingHoursPayload<ExtArgs>[]
+      reminders: Prisma.$ReminderPayload<ExtArgs>[]
+      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+      announcements: Prisma.$AnnouncementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      email: string
+      description: string | null
+      address: string | null
+      extension: number | null
+      mobileNumber: number | null
+      landlineNumber: number | null
+      website: string | null
+      logo: string | null
+      primaryColor: string | null
+      secondaryColor: string | null
       isActive: boolean
       isSuspended: boolean
       hasScheduleV2: boolean
@@ -6027,6 +6839,12 @@ export namespace Prisma {
       isTestAccount: boolean
       createdAt: Date
       updatedAt: Date
+      licenseNumber: string | null
+      timeZone: string
+      currency: string
+      maxUsers: number | null
+      maxClients: number | null
+      maxCareWorkers: number | null
     }, ExtArgs["result"]["agency"]>
     composites: {}
   }
@@ -6434,6 +7252,11 @@ export namespace Prisma {
     groups<T extends Agency$groupsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$groupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rateSheets<T extends Agency$rateSheetsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$rateSheetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customTasks<T extends Agency$customTasksArgs<ExtArgs> = {}>(args?: Subset<T, Agency$customTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    certifications<T extends Agency$certificationsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$certificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    operatingHours<T extends Agency$operatingHoursArgs<ExtArgs> = {}>(args?: Subset<T, Agency$operatingHoursArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reminders<T extends Agency$remindersArgs<ExtArgs> = {}>(args?: Subset<T, Agency$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends Agency$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    announcements<T extends Agency$announcementsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$announcementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6465,6 +7288,16 @@ export namespace Prisma {
   interface AgencyFieldRefs {
     readonly id: FieldRef<"Agency", 'String'>
     readonly name: FieldRef<"Agency", 'String'>
+    readonly email: FieldRef<"Agency", 'String'>
+    readonly description: FieldRef<"Agency", 'String'>
+    readonly address: FieldRef<"Agency", 'String'>
+    readonly extension: FieldRef<"Agency", 'Int'>
+    readonly mobileNumber: FieldRef<"Agency", 'Int'>
+    readonly landlineNumber: FieldRef<"Agency", 'Int'>
+    readonly website: FieldRef<"Agency", 'String'>
+    readonly logo: FieldRef<"Agency", 'String'>
+    readonly primaryColor: FieldRef<"Agency", 'String'>
+    readonly secondaryColor: FieldRef<"Agency", 'String'>
     readonly isActive: FieldRef<"Agency", 'Boolean'>
     readonly isSuspended: FieldRef<"Agency", 'Boolean'>
     readonly hasScheduleV2: FieldRef<"Agency", 'Boolean'>
@@ -6475,6 +7308,12 @@ export namespace Prisma {
     readonly isTestAccount: FieldRef<"Agency", 'Boolean'>
     readonly createdAt: FieldRef<"Agency", 'DateTime'>
     readonly updatedAt: FieldRef<"Agency", 'DateTime'>
+    readonly licenseNumber: FieldRef<"Agency", 'String'>
+    readonly timeZone: FieldRef<"Agency", 'String'>
+    readonly currency: FieldRef<"Agency", 'String'>
+    readonly maxUsers: FieldRef<"Agency", 'Int'>
+    readonly maxClients: FieldRef<"Agency", 'Int'>
+    readonly maxCareWorkers: FieldRef<"Agency", 'Int'>
   }
     
 
@@ -7175,6 +8014,126 @@ export namespace Prisma {
   }
 
   /**
+   * Agency.certifications
+   */
+  export type Agency$certificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    where?: CertificationWhereInput
+    orderBy?: CertificationOrderByWithRelationInput | CertificationOrderByWithRelationInput[]
+    cursor?: CertificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CertificationScalarFieldEnum | CertificationScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.operatingHours
+   */
+  export type Agency$operatingHoursArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    where?: OperatingHoursWhereInput
+    orderBy?: OperatingHoursOrderByWithRelationInput | OperatingHoursOrderByWithRelationInput[]
+    cursor?: OperatingHoursWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OperatingHoursScalarFieldEnum | OperatingHoursScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.reminders
+   */
+  export type Agency$remindersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reminder
+     */
+    select?: ReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Reminder
+     */
+    omit?: ReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReminderInclude<ExtArgs> | null
+    where?: ReminderWhereInput
+    orderBy?: ReminderOrderByWithRelationInput | ReminderOrderByWithRelationInput[]
+    cursor?: ReminderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReminderScalarFieldEnum | ReminderScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.auditLogs
+   */
+  export type Agency$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * Agency.announcements
+   */
+  export type Agency$announcementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    where?: AnnouncementWhereInput
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    cursor?: AnnouncementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
    * Agency without action
    */
   export type AgencyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7194,6 +8153,4686 @@ export namespace Prisma {
 
 
   /**
+   * Model Announcement
+   */
+
+  export type AggregateAnnouncement = {
+    _count: AnnouncementCountAggregateOutputType | null
+    _min: AnnouncementMinAggregateOutputType | null
+    _max: AnnouncementMaxAggregateOutputType | null
+  }
+
+  export type AnnouncementMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    content: string | null
+    priority: $Enums.AnnouncementPriority | null
+    status: $Enums.AnnouncementStatus | null
+    publishDate: Date | null
+    expiryDate: Date | null
+    isSticky: boolean | null
+    requiresAcknowledgment: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+    createdById: string | null
+    attachmentUrl: string | null
+    attachmentType: string | null
+    userId: string | null
+  }
+
+  export type AnnouncementMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    content: string | null
+    priority: $Enums.AnnouncementPriority | null
+    status: $Enums.AnnouncementStatus | null
+    publishDate: Date | null
+    expiryDate: Date | null
+    isSticky: boolean | null
+    requiresAcknowledgment: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+    createdById: string | null
+    attachmentUrl: string | null
+    attachmentType: string | null
+    userId: string | null
+  }
+
+  export type AnnouncementCountAggregateOutputType = {
+    id: number
+    title: number
+    content: number
+    priority: number
+    status: number
+    publishDate: number
+    expiryDate: number
+    isSticky: number
+    requiresAcknowledgment: number
+    createdAt: number
+    updatedAt: number
+    agencyId: number
+    createdById: number
+    targetRoles: number
+    attachmentUrl: number
+    attachmentType: number
+    userId: number
+    _all: number
+  }
+
+
+  export type AnnouncementMinAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    priority?: true
+    status?: true
+    publishDate?: true
+    expiryDate?: true
+    isSticky?: true
+    requiresAcknowledgment?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+    createdById?: true
+    attachmentUrl?: true
+    attachmentType?: true
+    userId?: true
+  }
+
+  export type AnnouncementMaxAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    priority?: true
+    status?: true
+    publishDate?: true
+    expiryDate?: true
+    isSticky?: true
+    requiresAcknowledgment?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+    createdById?: true
+    attachmentUrl?: true
+    attachmentType?: true
+    userId?: true
+  }
+
+  export type AnnouncementCountAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    priority?: true
+    status?: true
+    publishDate?: true
+    expiryDate?: true
+    isSticky?: true
+    requiresAcknowledgment?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+    createdById?: true
+    targetRoles?: true
+    attachmentUrl?: true
+    attachmentType?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type AnnouncementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Announcement to aggregate.
+     */
+    where?: AnnouncementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Announcements to fetch.
+     */
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AnnouncementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Announcements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Announcements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Announcements
+    **/
+    _count?: true | AnnouncementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AnnouncementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AnnouncementMaxAggregateInputType
+  }
+
+  export type GetAnnouncementAggregateType<T extends AnnouncementAggregateArgs> = {
+        [P in keyof T & keyof AggregateAnnouncement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAnnouncement[P]>
+      : GetScalarType<T[P], AggregateAnnouncement[P]>
+  }
+
+
+
+
+  export type AnnouncementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnnouncementWhereInput
+    orderBy?: AnnouncementOrderByWithAggregationInput | AnnouncementOrderByWithAggregationInput[]
+    by: AnnouncementScalarFieldEnum[] | AnnouncementScalarFieldEnum
+    having?: AnnouncementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AnnouncementCountAggregateInputType | true
+    _min?: AnnouncementMinAggregateInputType
+    _max?: AnnouncementMaxAggregateInputType
+  }
+
+  export type AnnouncementGroupByOutputType = {
+    id: string
+    title: string
+    content: string
+    priority: $Enums.AnnouncementPriority
+    status: $Enums.AnnouncementStatus
+    publishDate: Date | null
+    expiryDate: Date | null
+    isSticky: boolean
+    requiresAcknowledgment: boolean
+    createdAt: Date
+    updatedAt: Date
+    agencyId: string
+    createdById: string
+    targetRoles: $Enums.Role[]
+    attachmentUrl: string | null
+    attachmentType: string | null
+    userId: string | null
+    _count: AnnouncementCountAggregateOutputType | null
+    _min: AnnouncementMinAggregateOutputType | null
+    _max: AnnouncementMaxAggregateOutputType | null
+  }
+
+  type GetAnnouncementGroupByPayload<T extends AnnouncementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AnnouncementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AnnouncementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AnnouncementGroupByOutputType[P]>
+            : GetScalarType<T[P], AnnouncementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AnnouncementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    priority?: boolean
+    status?: boolean
+    publishDate?: boolean
+    expiryDate?: boolean
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    createdById?: boolean
+    targetRoles?: boolean
+    attachmentUrl?: boolean
+    attachmentType?: boolean
+    userId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | Announcement$acknowledgedByArgs<ExtArgs>
+    User?: boolean | Announcement$UserArgs<ExtArgs>
+    _count?: boolean | AnnouncementCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["announcement"]>
+
+  export type AnnouncementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    priority?: boolean
+    status?: boolean
+    publishDate?: boolean
+    expiryDate?: boolean
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    createdById?: boolean
+    targetRoles?: boolean
+    attachmentUrl?: boolean
+    attachmentType?: boolean
+    userId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    User?: boolean | Announcement$UserArgs<ExtArgs>
+  }, ExtArgs["result"]["announcement"]>
+
+  export type AnnouncementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    priority?: boolean
+    status?: boolean
+    publishDate?: boolean
+    expiryDate?: boolean
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    createdById?: boolean
+    targetRoles?: boolean
+    attachmentUrl?: boolean
+    attachmentType?: boolean
+    userId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    User?: boolean | Announcement$UserArgs<ExtArgs>
+  }, ExtArgs["result"]["announcement"]>
+
+  export type AnnouncementSelectScalar = {
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    priority?: boolean
+    status?: boolean
+    publishDate?: boolean
+    expiryDate?: boolean
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    createdById?: boolean
+    targetRoles?: boolean
+    attachmentUrl?: boolean
+    attachmentType?: boolean
+    userId?: boolean
+  }
+
+  export type AnnouncementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "priority" | "status" | "publishDate" | "expiryDate" | "isSticky" | "requiresAcknowledgment" | "createdAt" | "updatedAt" | "agencyId" | "createdById" | "targetRoles" | "attachmentUrl" | "attachmentType" | "userId", ExtArgs["result"]["announcement"]>
+  export type AnnouncementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | Announcement$acknowledgedByArgs<ExtArgs>
+    User?: boolean | Announcement$UserArgs<ExtArgs>
+    _count?: boolean | AnnouncementCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AnnouncementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    User?: boolean | Announcement$UserArgs<ExtArgs>
+  }
+  export type AnnouncementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    User?: boolean | Announcement$UserArgs<ExtArgs>
+  }
+
+  export type $AnnouncementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Announcement"
+    objects: {
+      agency: Prisma.$AgencyPayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs>
+      acknowledgedBy: Prisma.$UserPayload<ExtArgs>[]
+      User: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      content: string
+      priority: $Enums.AnnouncementPriority
+      status: $Enums.AnnouncementStatus
+      publishDate: Date | null
+      expiryDate: Date | null
+      isSticky: boolean
+      requiresAcknowledgment: boolean
+      createdAt: Date
+      updatedAt: Date
+      agencyId: string
+      createdById: string
+      targetRoles: $Enums.Role[]
+      attachmentUrl: string | null
+      attachmentType: string | null
+      userId: string | null
+    }, ExtArgs["result"]["announcement"]>
+    composites: {}
+  }
+
+  type AnnouncementGetPayload<S extends boolean | null | undefined | AnnouncementDefaultArgs> = $Result.GetResult<Prisma.$AnnouncementPayload, S>
+
+  type AnnouncementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AnnouncementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AnnouncementCountAggregateInputType | true
+    }
+
+  export interface AnnouncementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Announcement'], meta: { name: 'Announcement' } }
+    /**
+     * Find zero or one Announcement that matches the filter.
+     * @param {AnnouncementFindUniqueArgs} args - Arguments to find a Announcement
+     * @example
+     * // Get one Announcement
+     * const announcement = await prisma.announcement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AnnouncementFindUniqueArgs>(args: SelectSubset<T, AnnouncementFindUniqueArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Announcement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AnnouncementFindUniqueOrThrowArgs} args - Arguments to find a Announcement
+     * @example
+     * // Get one Announcement
+     * const announcement = await prisma.announcement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AnnouncementFindUniqueOrThrowArgs>(args: SelectSubset<T, AnnouncementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Announcement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnnouncementFindFirstArgs} args - Arguments to find a Announcement
+     * @example
+     * // Get one Announcement
+     * const announcement = await prisma.announcement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AnnouncementFindFirstArgs>(args?: SelectSubset<T, AnnouncementFindFirstArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Announcement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnnouncementFindFirstOrThrowArgs} args - Arguments to find a Announcement
+     * @example
+     * // Get one Announcement
+     * const announcement = await prisma.announcement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AnnouncementFindFirstOrThrowArgs>(args?: SelectSubset<T, AnnouncementFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Announcements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnnouncementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Announcements
+     * const announcements = await prisma.announcement.findMany()
+     * 
+     * // Get first 10 Announcements
+     * const announcements = await prisma.announcement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const announcementWithIdOnly = await prisma.announcement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AnnouncementFindManyArgs>(args?: SelectSubset<T, AnnouncementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Announcement.
+     * @param {AnnouncementCreateArgs} args - Arguments to create a Announcement.
+     * @example
+     * // Create one Announcement
+     * const Announcement = await prisma.announcement.create({
+     *   data: {
+     *     // ... data to create a Announcement
+     *   }
+     * })
+     * 
+     */
+    create<T extends AnnouncementCreateArgs>(args: SelectSubset<T, AnnouncementCreateArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Announcements.
+     * @param {AnnouncementCreateManyArgs} args - Arguments to create many Announcements.
+     * @example
+     * // Create many Announcements
+     * const announcement = await prisma.announcement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AnnouncementCreateManyArgs>(args?: SelectSubset<T, AnnouncementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Announcements and returns the data saved in the database.
+     * @param {AnnouncementCreateManyAndReturnArgs} args - Arguments to create many Announcements.
+     * @example
+     * // Create many Announcements
+     * const announcement = await prisma.announcement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Announcements and only return the `id`
+     * const announcementWithIdOnly = await prisma.announcement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AnnouncementCreateManyAndReturnArgs>(args?: SelectSubset<T, AnnouncementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Announcement.
+     * @param {AnnouncementDeleteArgs} args - Arguments to delete one Announcement.
+     * @example
+     * // Delete one Announcement
+     * const Announcement = await prisma.announcement.delete({
+     *   where: {
+     *     // ... filter to delete one Announcement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AnnouncementDeleteArgs>(args: SelectSubset<T, AnnouncementDeleteArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Announcement.
+     * @param {AnnouncementUpdateArgs} args - Arguments to update one Announcement.
+     * @example
+     * // Update one Announcement
+     * const announcement = await prisma.announcement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AnnouncementUpdateArgs>(args: SelectSubset<T, AnnouncementUpdateArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Announcements.
+     * @param {AnnouncementDeleteManyArgs} args - Arguments to filter Announcements to delete.
+     * @example
+     * // Delete a few Announcements
+     * const { count } = await prisma.announcement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AnnouncementDeleteManyArgs>(args?: SelectSubset<T, AnnouncementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Announcements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnnouncementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Announcements
+     * const announcement = await prisma.announcement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AnnouncementUpdateManyArgs>(args: SelectSubset<T, AnnouncementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Announcements and returns the data updated in the database.
+     * @param {AnnouncementUpdateManyAndReturnArgs} args - Arguments to update many Announcements.
+     * @example
+     * // Update many Announcements
+     * const announcement = await prisma.announcement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Announcements and only return the `id`
+     * const announcementWithIdOnly = await prisma.announcement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AnnouncementUpdateManyAndReturnArgs>(args: SelectSubset<T, AnnouncementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Announcement.
+     * @param {AnnouncementUpsertArgs} args - Arguments to update or create a Announcement.
+     * @example
+     * // Update or create a Announcement
+     * const announcement = await prisma.announcement.upsert({
+     *   create: {
+     *     // ... data to create a Announcement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Announcement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AnnouncementUpsertArgs>(args: SelectSubset<T, AnnouncementUpsertArgs<ExtArgs>>): Prisma__AnnouncementClient<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Announcements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnnouncementCountArgs} args - Arguments to filter Announcements to count.
+     * @example
+     * // Count the number of Announcements
+     * const count = await prisma.announcement.count({
+     *   where: {
+     *     // ... the filter for the Announcements we want to count
+     *   }
+     * })
+    **/
+    count<T extends AnnouncementCountArgs>(
+      args?: Subset<T, AnnouncementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AnnouncementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Announcement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnnouncementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AnnouncementAggregateArgs>(args: Subset<T, AnnouncementAggregateArgs>): Prisma.PrismaPromise<GetAnnouncementAggregateType<T>>
+
+    /**
+     * Group by Announcement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnnouncementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AnnouncementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AnnouncementGroupByArgs['orderBy'] }
+        : { orderBy?: AnnouncementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AnnouncementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnnouncementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Announcement model
+   */
+  readonly fields: AnnouncementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Announcement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AnnouncementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    acknowledgedBy<T extends Announcement$acknowledgedByArgs<ExtArgs> = {}>(args?: Subset<T, Announcement$acknowledgedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    User<T extends Announcement$UserArgs<ExtArgs> = {}>(args?: Subset<T, Announcement$UserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Announcement model
+   */
+  interface AnnouncementFieldRefs {
+    readonly id: FieldRef<"Announcement", 'String'>
+    readonly title: FieldRef<"Announcement", 'String'>
+    readonly content: FieldRef<"Announcement", 'String'>
+    readonly priority: FieldRef<"Announcement", 'AnnouncementPriority'>
+    readonly status: FieldRef<"Announcement", 'AnnouncementStatus'>
+    readonly publishDate: FieldRef<"Announcement", 'DateTime'>
+    readonly expiryDate: FieldRef<"Announcement", 'DateTime'>
+    readonly isSticky: FieldRef<"Announcement", 'Boolean'>
+    readonly requiresAcknowledgment: FieldRef<"Announcement", 'Boolean'>
+    readonly createdAt: FieldRef<"Announcement", 'DateTime'>
+    readonly updatedAt: FieldRef<"Announcement", 'DateTime'>
+    readonly agencyId: FieldRef<"Announcement", 'String'>
+    readonly createdById: FieldRef<"Announcement", 'String'>
+    readonly targetRoles: FieldRef<"Announcement", 'Role[]'>
+    readonly attachmentUrl: FieldRef<"Announcement", 'String'>
+    readonly attachmentType: FieldRef<"Announcement", 'String'>
+    readonly userId: FieldRef<"Announcement", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Announcement findUnique
+   */
+  export type AnnouncementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * Filter, which Announcement to fetch.
+     */
+    where: AnnouncementWhereUniqueInput
+  }
+
+  /**
+   * Announcement findUniqueOrThrow
+   */
+  export type AnnouncementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * Filter, which Announcement to fetch.
+     */
+    where: AnnouncementWhereUniqueInput
+  }
+
+  /**
+   * Announcement findFirst
+   */
+  export type AnnouncementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * Filter, which Announcement to fetch.
+     */
+    where?: AnnouncementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Announcements to fetch.
+     */
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Announcements.
+     */
+    cursor?: AnnouncementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Announcements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Announcements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Announcements.
+     */
+    distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
+   * Announcement findFirstOrThrow
+   */
+  export type AnnouncementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * Filter, which Announcement to fetch.
+     */
+    where?: AnnouncementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Announcements to fetch.
+     */
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Announcements.
+     */
+    cursor?: AnnouncementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Announcements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Announcements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Announcements.
+     */
+    distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
+   * Announcement findMany
+   */
+  export type AnnouncementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * Filter, which Announcements to fetch.
+     */
+    where?: AnnouncementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Announcements to fetch.
+     */
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Announcements.
+     */
+    cursor?: AnnouncementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Announcements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Announcements.
+     */
+    skip?: number
+    distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
+   * Announcement create
+   */
+  export type AnnouncementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Announcement.
+     */
+    data: XOR<AnnouncementCreateInput, AnnouncementUncheckedCreateInput>
+  }
+
+  /**
+   * Announcement createMany
+   */
+  export type AnnouncementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Announcements.
+     */
+    data: AnnouncementCreateManyInput | AnnouncementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Announcement createManyAndReturn
+   */
+  export type AnnouncementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * The data used to create many Announcements.
+     */
+    data: AnnouncementCreateManyInput | AnnouncementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Announcement update
+   */
+  export type AnnouncementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Announcement.
+     */
+    data: XOR<AnnouncementUpdateInput, AnnouncementUncheckedUpdateInput>
+    /**
+     * Choose, which Announcement to update.
+     */
+    where: AnnouncementWhereUniqueInput
+  }
+
+  /**
+   * Announcement updateMany
+   */
+  export type AnnouncementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Announcements.
+     */
+    data: XOR<AnnouncementUpdateManyMutationInput, AnnouncementUncheckedUpdateManyInput>
+    /**
+     * Filter which Announcements to update
+     */
+    where?: AnnouncementWhereInput
+    /**
+     * Limit how many Announcements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Announcement updateManyAndReturn
+   */
+  export type AnnouncementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * The data used to update Announcements.
+     */
+    data: XOR<AnnouncementUpdateManyMutationInput, AnnouncementUncheckedUpdateManyInput>
+    /**
+     * Filter which Announcements to update
+     */
+    where?: AnnouncementWhereInput
+    /**
+     * Limit how many Announcements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Announcement upsert
+   */
+  export type AnnouncementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Announcement to update in case it exists.
+     */
+    where: AnnouncementWhereUniqueInput
+    /**
+     * In case the Announcement found by the `where` argument doesn't exist, create a new Announcement with this data.
+     */
+    create: XOR<AnnouncementCreateInput, AnnouncementUncheckedCreateInput>
+    /**
+     * In case the Announcement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AnnouncementUpdateInput, AnnouncementUncheckedUpdateInput>
+  }
+
+  /**
+   * Announcement delete
+   */
+  export type AnnouncementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    /**
+     * Filter which Announcement to delete.
+     */
+    where: AnnouncementWhereUniqueInput
+  }
+
+  /**
+   * Announcement deleteMany
+   */
+  export type AnnouncementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Announcements to delete
+     */
+    where?: AnnouncementWhereInput
+    /**
+     * Limit how many Announcements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Announcement.acknowledgedBy
+   */
+  export type Announcement$acknowledgedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Announcement.User
+   */
+  export type Announcement$UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Announcement without action
+   */
+  export type AnnouncementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AuditLog
+   */
+
+  export type AggregateAuditLog = {
+    _count: AuditLogCountAggregateOutputType | null
+    _min: AuditLogMinAggregateOutputType | null
+    _max: AuditLogMaxAggregateOutputType | null
+  }
+
+  export type AuditLogMinAggregateOutputType = {
+    id: string | null
+    action: $Enums.AuditAction | null
+    entityType: string | null
+    entityId: string | null
+    description: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    performedAt: Date | null
+    agencyId: string | null
+    userId: string | null
+  }
+
+  export type AuditLogMaxAggregateOutputType = {
+    id: string | null
+    action: $Enums.AuditAction | null
+    entityType: string | null
+    entityId: string | null
+    description: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    performedAt: Date | null
+    agencyId: string | null
+    userId: string | null
+  }
+
+  export type AuditLogCountAggregateOutputType = {
+    id: number
+    action: number
+    entityType: number
+    entityId: number
+    description: number
+    changes: number
+    ipAddress: number
+    userAgent: number
+    performedAt: number
+    agencyId: number
+    userId: number
+    _all: number
+  }
+
+
+  export type AuditLogMinAggregateInputType = {
+    id?: true
+    action?: true
+    entityType?: true
+    entityId?: true
+    description?: true
+    ipAddress?: true
+    userAgent?: true
+    performedAt?: true
+    agencyId?: true
+    userId?: true
+  }
+
+  export type AuditLogMaxAggregateInputType = {
+    id?: true
+    action?: true
+    entityType?: true
+    entityId?: true
+    description?: true
+    ipAddress?: true
+    userAgent?: true
+    performedAt?: true
+    agencyId?: true
+    userId?: true
+  }
+
+  export type AuditLogCountAggregateInputType = {
+    id?: true
+    action?: true
+    entityType?: true
+    entityId?: true
+    description?: true
+    changes?: true
+    ipAddress?: true
+    userAgent?: true
+    performedAt?: true
+    agencyId?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type AuditLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditLog to aggregate.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AuditLogs
+    **/
+    _count?: true | AuditLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AuditLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AuditLogMaxAggregateInputType
+  }
+
+  export type GetAuditLogAggregateType<T extends AuditLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateAuditLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAuditLog[P]>
+      : GetScalarType<T[P], AggregateAuditLog[P]>
+  }
+
+
+
+
+  export type AuditLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithAggregationInput | AuditLogOrderByWithAggregationInput[]
+    by: AuditLogScalarFieldEnum[] | AuditLogScalarFieldEnum
+    having?: AuditLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AuditLogCountAggregateInputType | true
+    _min?: AuditLogMinAggregateInputType
+    _max?: AuditLogMaxAggregateInputType
+  }
+
+  export type AuditLogGroupByOutputType = {
+    id: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes: JsonValue | null
+    ipAddress: string | null
+    userAgent: string | null
+    performedAt: Date
+    agencyId: string
+    userId: string | null
+    _count: AuditLogCountAggregateOutputType | null
+    _min: AuditLogMinAggregateOutputType | null
+    _max: AuditLogMaxAggregateOutputType | null
+  }
+
+  type GetAuditLogGroupByPayload<T extends AuditLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AuditLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AuditLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
+            : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AuditLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    action?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    description?: boolean
+    changes?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    performedAt?: boolean
+    agencyId?: boolean
+    userId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | AuditLog$userArgs<ExtArgs>
+  }, ExtArgs["result"]["auditLog"]>
+
+  export type AuditLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    action?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    description?: boolean
+    changes?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    performedAt?: boolean
+    agencyId?: boolean
+    userId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | AuditLog$userArgs<ExtArgs>
+  }, ExtArgs["result"]["auditLog"]>
+
+  export type AuditLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    action?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    description?: boolean
+    changes?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    performedAt?: boolean
+    agencyId?: boolean
+    userId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | AuditLog$userArgs<ExtArgs>
+  }, ExtArgs["result"]["auditLog"]>
+
+  export type AuditLogSelectScalar = {
+    id?: boolean
+    action?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    description?: boolean
+    changes?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    performedAt?: boolean
+    agencyId?: boolean
+    userId?: boolean
+  }
+
+  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "action" | "entityType" | "entityId" | "description" | "changes" | "ipAddress" | "userAgent" | "performedAt" | "agencyId" | "userId", ExtArgs["result"]["auditLog"]>
+  export type AuditLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | AuditLog$userArgs<ExtArgs>
+  }
+  export type AuditLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | AuditLog$userArgs<ExtArgs>
+  }
+  export type AuditLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | AuditLog$userArgs<ExtArgs>
+  }
+
+  export type $AuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AuditLog"
+    objects: {
+      agency: Prisma.$AgencyPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      action: $Enums.AuditAction
+      entityType: string
+      entityId: string
+      description: string
+      changes: Prisma.JsonValue | null
+      ipAddress: string | null
+      userAgent: string | null
+      performedAt: Date
+      agencyId: string
+      userId: string | null
+    }, ExtArgs["result"]["auditLog"]>
+    composites: {}
+  }
+
+  type AuditLogGetPayload<S extends boolean | null | undefined | AuditLogDefaultArgs> = $Result.GetResult<Prisma.$AuditLogPayload, S>
+
+  type AuditLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AuditLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AuditLogCountAggregateInputType | true
+    }
+
+  export interface AuditLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AuditLog'], meta: { name: 'AuditLog' } }
+    /**
+     * Find zero or one AuditLog that matches the filter.
+     * @param {AuditLogFindUniqueArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AuditLogFindUniqueArgs>(args: SelectSubset<T, AuditLogFindUniqueArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AuditLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AuditLogFindUniqueOrThrowArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AuditLogFindUniqueOrThrowArgs>(args: SelectSubset<T, AuditLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindFirstArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AuditLogFindFirstArgs>(args?: SelectSubset<T, AuditLogFindFirstArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindFirstOrThrowArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AuditLogFindFirstOrThrowArgs>(args?: SelectSubset<T, AuditLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AuditLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AuditLogs
+     * const auditLogs = await prisma.auditLog.findMany()
+     * 
+     * // Get first 10 AuditLogs
+     * const auditLogs = await prisma.auditLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const auditLogWithIdOnly = await prisma.auditLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AuditLogFindManyArgs>(args?: SelectSubset<T, AuditLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AuditLog.
+     * @param {AuditLogCreateArgs} args - Arguments to create a AuditLog.
+     * @example
+     * // Create one AuditLog
+     * const AuditLog = await prisma.auditLog.create({
+     *   data: {
+     *     // ... data to create a AuditLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends AuditLogCreateArgs>(args: SelectSubset<T, AuditLogCreateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AuditLogs.
+     * @param {AuditLogCreateManyArgs} args - Arguments to create many AuditLogs.
+     * @example
+     * // Create many AuditLogs
+     * const auditLog = await prisma.auditLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AuditLogCreateManyArgs>(args?: SelectSubset<T, AuditLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AuditLogs and returns the data saved in the database.
+     * @param {AuditLogCreateManyAndReturnArgs} args - Arguments to create many AuditLogs.
+     * @example
+     * // Create many AuditLogs
+     * const auditLog = await prisma.auditLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AuditLogs and only return the `id`
+     * const auditLogWithIdOnly = await prisma.auditLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AuditLogCreateManyAndReturnArgs>(args?: SelectSubset<T, AuditLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AuditLog.
+     * @param {AuditLogDeleteArgs} args - Arguments to delete one AuditLog.
+     * @example
+     * // Delete one AuditLog
+     * const AuditLog = await prisma.auditLog.delete({
+     *   where: {
+     *     // ... filter to delete one AuditLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AuditLogDeleteArgs>(args: SelectSubset<T, AuditLogDeleteArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AuditLog.
+     * @param {AuditLogUpdateArgs} args - Arguments to update one AuditLog.
+     * @example
+     * // Update one AuditLog
+     * const auditLog = await prisma.auditLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AuditLogUpdateArgs>(args: SelectSubset<T, AuditLogUpdateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AuditLogs.
+     * @param {AuditLogDeleteManyArgs} args - Arguments to filter AuditLogs to delete.
+     * @example
+     * // Delete a few AuditLogs
+     * const { count } = await prisma.auditLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AuditLogDeleteManyArgs>(args?: SelectSubset<T, AuditLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AuditLogs
+     * const auditLog = await prisma.auditLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AuditLogUpdateManyArgs>(args: SelectSubset<T, AuditLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditLogs and returns the data updated in the database.
+     * @param {AuditLogUpdateManyAndReturnArgs} args - Arguments to update many AuditLogs.
+     * @example
+     * // Update many AuditLogs
+     * const auditLog = await prisma.auditLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AuditLogs and only return the `id`
+     * const auditLogWithIdOnly = await prisma.auditLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AuditLogUpdateManyAndReturnArgs>(args: SelectSubset<T, AuditLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AuditLog.
+     * @param {AuditLogUpsertArgs} args - Arguments to update or create a AuditLog.
+     * @example
+     * // Update or create a AuditLog
+     * const auditLog = await prisma.auditLog.upsert({
+     *   create: {
+     *     // ... data to create a AuditLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AuditLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AuditLogUpsertArgs>(args: SelectSubset<T, AuditLogUpsertArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogCountArgs} args - Arguments to filter AuditLogs to count.
+     * @example
+     * // Count the number of AuditLogs
+     * const count = await prisma.auditLog.count({
+     *   where: {
+     *     // ... the filter for the AuditLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends AuditLogCountArgs>(
+      args?: Subset<T, AuditLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AuditLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AuditLogAggregateArgs>(args: Subset<T, AuditLogAggregateArgs>): Prisma.PrismaPromise<GetAuditLogAggregateType<T>>
+
+    /**
+     * Group by AuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AuditLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AuditLogGroupByArgs['orderBy'] }
+        : { orderBy?: AuditLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AuditLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuditLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AuditLog model
+   */
+  readonly fields: AuditLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AuditLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends AuditLog$userArgs<ExtArgs> = {}>(args?: Subset<T, AuditLog$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AuditLog model
+   */
+  interface AuditLogFieldRefs {
+    readonly id: FieldRef<"AuditLog", 'String'>
+    readonly action: FieldRef<"AuditLog", 'AuditAction'>
+    readonly entityType: FieldRef<"AuditLog", 'String'>
+    readonly entityId: FieldRef<"AuditLog", 'String'>
+    readonly description: FieldRef<"AuditLog", 'String'>
+    readonly changes: FieldRef<"AuditLog", 'Json'>
+    readonly ipAddress: FieldRef<"AuditLog", 'String'>
+    readonly userAgent: FieldRef<"AuditLog", 'String'>
+    readonly performedAt: FieldRef<"AuditLog", 'DateTime'>
+    readonly agencyId: FieldRef<"AuditLog", 'String'>
+    readonly userId: FieldRef<"AuditLog", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AuditLog findUnique
+   */
+  export type AuditLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog findUniqueOrThrow
+   */
+  export type AuditLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog findFirst
+   */
+  export type AuditLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditLogs.
+     */
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog findFirstOrThrow
+   */
+  export type AuditLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditLogs.
+     */
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog findMany
+   */
+  export type AuditLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLogs to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog create
+   */
+  export type AuditLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AuditLog.
+     */
+    data: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
+  }
+
+  /**
+   * AuditLog createMany
+   */
+  export type AuditLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AuditLogs.
+     */
+    data: AuditLogCreateManyInput | AuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AuditLog createManyAndReturn
+   */
+  export type AuditLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many AuditLogs.
+     */
+    data: AuditLogCreateManyInput | AuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AuditLog update
+   */
+  export type AuditLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AuditLog.
+     */
+    data: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
+    /**
+     * Choose, which AuditLog to update.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog updateMany
+   */
+  export type AuditLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AuditLogs.
+     */
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditLogs to update
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditLog updateManyAndReturn
+   */
+  export type AuditLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to update AuditLogs.
+     */
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditLogs to update
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AuditLog upsert
+   */
+  export type AuditLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AuditLog to update in case it exists.
+     */
+    where: AuditLogWhereUniqueInput
+    /**
+     * In case the AuditLog found by the `where` argument doesn't exist, create a new AuditLog with this data.
+     */
+    create: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
+    /**
+     * In case the AuditLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
+  }
+
+  /**
+   * AuditLog delete
+   */
+  export type AuditLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter which AuditLog to delete.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog deleteMany
+   */
+  export type AuditLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditLogs to delete
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditLog.user
+   */
+  export type AuditLog$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AuditLog without action
+   */
+  export type AuditLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Certification
+   */
+
+  export type AggregateCertification = {
+    _count: CertificationCountAggregateOutputType | null
+    _min: CertificationMinAggregateOutputType | null
+    _max: CertificationMaxAggregateOutputType | null
+  }
+
+  export type CertificationMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    issuingAuthority: string | null
+    certificationCode: string | null
+    issueDate: Date | null
+    expiryDate: Date | null
+    status: $Enums.CertificationStatus | null
+    documentUrl: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type CertificationMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    issuingAuthority: string | null
+    certificationCode: string | null
+    issueDate: Date | null
+    expiryDate: Date | null
+    status: $Enums.CertificationStatus | null
+    documentUrl: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type CertificationCountAggregateOutputType = {
+    id: number
+    name: number
+    issuingAuthority: number
+    certificationCode: number
+    issueDate: number
+    expiryDate: number
+    status: number
+    documentUrl: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    agencyId: number
+    _all: number
+  }
+
+
+  export type CertificationMinAggregateInputType = {
+    id?: true
+    name?: true
+    issuingAuthority?: true
+    certificationCode?: true
+    issueDate?: true
+    expiryDate?: true
+    status?: true
+    documentUrl?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type CertificationMaxAggregateInputType = {
+    id?: true
+    name?: true
+    issuingAuthority?: true
+    certificationCode?: true
+    issueDate?: true
+    expiryDate?: true
+    status?: true
+    documentUrl?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type CertificationCountAggregateInputType = {
+    id?: true
+    name?: true
+    issuingAuthority?: true
+    certificationCode?: true
+    issueDate?: true
+    expiryDate?: true
+    status?: true
+    documentUrl?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+    _all?: true
+  }
+
+  export type CertificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Certification to aggregate.
+     */
+    where?: CertificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Certifications to fetch.
+     */
+    orderBy?: CertificationOrderByWithRelationInput | CertificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CertificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Certifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Certifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Certifications
+    **/
+    _count?: true | CertificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CertificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CertificationMaxAggregateInputType
+  }
+
+  export type GetCertificationAggregateType<T extends CertificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateCertification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCertification[P]>
+      : GetScalarType<T[P], AggregateCertification[P]>
+  }
+
+
+
+
+  export type CertificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CertificationWhereInput
+    orderBy?: CertificationOrderByWithAggregationInput | CertificationOrderByWithAggregationInput[]
+    by: CertificationScalarFieldEnum[] | CertificationScalarFieldEnum
+    having?: CertificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CertificationCountAggregateInputType | true
+    _min?: CertificationMinAggregateInputType
+    _max?: CertificationMaxAggregateInputType
+  }
+
+  export type CertificationGroupByOutputType = {
+    id: string
+    name: string
+    issuingAuthority: string
+    certificationCode: string | null
+    issueDate: Date
+    expiryDate: Date
+    status: $Enums.CertificationStatus
+    documentUrl: string | null
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    agencyId: string
+    _count: CertificationCountAggregateOutputType | null
+    _min: CertificationMinAggregateOutputType | null
+    _max: CertificationMaxAggregateOutputType | null
+  }
+
+  type GetCertificationGroupByPayload<T extends CertificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CertificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CertificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CertificationGroupByOutputType[P]>
+            : GetScalarType<T[P], CertificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CertificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    issuingAuthority?: boolean
+    certificationCode?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    documentUrl?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["certification"]>
+
+  export type CertificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    issuingAuthority?: boolean
+    certificationCode?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    documentUrl?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["certification"]>
+
+  export type CertificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    issuingAuthority?: boolean
+    certificationCode?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    documentUrl?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["certification"]>
+
+  export type CertificationSelectScalar = {
+    id?: boolean
+    name?: boolean
+    issuingAuthority?: boolean
+    certificationCode?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    documentUrl?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+  }
+
+  export type CertificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "issuingAuthority" | "certificationCode" | "issueDate" | "expiryDate" | "status" | "documentUrl" | "notes" | "createdAt" | "updatedAt" | "agencyId", ExtArgs["result"]["certification"]>
+  export type CertificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+  export type CertificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+  export type CertificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+
+  export type $CertificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Certification"
+    objects: {
+      agency: Prisma.$AgencyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      issuingAuthority: string
+      certificationCode: string | null
+      issueDate: Date
+      expiryDate: Date
+      status: $Enums.CertificationStatus
+      documentUrl: string | null
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+      agencyId: string
+    }, ExtArgs["result"]["certification"]>
+    composites: {}
+  }
+
+  type CertificationGetPayload<S extends boolean | null | undefined | CertificationDefaultArgs> = $Result.GetResult<Prisma.$CertificationPayload, S>
+
+  type CertificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CertificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CertificationCountAggregateInputType | true
+    }
+
+  export interface CertificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Certification'], meta: { name: 'Certification' } }
+    /**
+     * Find zero or one Certification that matches the filter.
+     * @param {CertificationFindUniqueArgs} args - Arguments to find a Certification
+     * @example
+     * // Get one Certification
+     * const certification = await prisma.certification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CertificationFindUniqueArgs>(args: SelectSubset<T, CertificationFindUniqueArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Certification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CertificationFindUniqueOrThrowArgs} args - Arguments to find a Certification
+     * @example
+     * // Get one Certification
+     * const certification = await prisma.certification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CertificationFindUniqueOrThrowArgs>(args: SelectSubset<T, CertificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Certification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CertificationFindFirstArgs} args - Arguments to find a Certification
+     * @example
+     * // Get one Certification
+     * const certification = await prisma.certification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CertificationFindFirstArgs>(args?: SelectSubset<T, CertificationFindFirstArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Certification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CertificationFindFirstOrThrowArgs} args - Arguments to find a Certification
+     * @example
+     * // Get one Certification
+     * const certification = await prisma.certification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CertificationFindFirstOrThrowArgs>(args?: SelectSubset<T, CertificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Certifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CertificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Certifications
+     * const certifications = await prisma.certification.findMany()
+     * 
+     * // Get first 10 Certifications
+     * const certifications = await prisma.certification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const certificationWithIdOnly = await prisma.certification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CertificationFindManyArgs>(args?: SelectSubset<T, CertificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Certification.
+     * @param {CertificationCreateArgs} args - Arguments to create a Certification.
+     * @example
+     * // Create one Certification
+     * const Certification = await prisma.certification.create({
+     *   data: {
+     *     // ... data to create a Certification
+     *   }
+     * })
+     * 
+     */
+    create<T extends CertificationCreateArgs>(args: SelectSubset<T, CertificationCreateArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Certifications.
+     * @param {CertificationCreateManyArgs} args - Arguments to create many Certifications.
+     * @example
+     * // Create many Certifications
+     * const certification = await prisma.certification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CertificationCreateManyArgs>(args?: SelectSubset<T, CertificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Certifications and returns the data saved in the database.
+     * @param {CertificationCreateManyAndReturnArgs} args - Arguments to create many Certifications.
+     * @example
+     * // Create many Certifications
+     * const certification = await prisma.certification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Certifications and only return the `id`
+     * const certificationWithIdOnly = await prisma.certification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CertificationCreateManyAndReturnArgs>(args?: SelectSubset<T, CertificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Certification.
+     * @param {CertificationDeleteArgs} args - Arguments to delete one Certification.
+     * @example
+     * // Delete one Certification
+     * const Certification = await prisma.certification.delete({
+     *   where: {
+     *     // ... filter to delete one Certification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CertificationDeleteArgs>(args: SelectSubset<T, CertificationDeleteArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Certification.
+     * @param {CertificationUpdateArgs} args - Arguments to update one Certification.
+     * @example
+     * // Update one Certification
+     * const certification = await prisma.certification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CertificationUpdateArgs>(args: SelectSubset<T, CertificationUpdateArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Certifications.
+     * @param {CertificationDeleteManyArgs} args - Arguments to filter Certifications to delete.
+     * @example
+     * // Delete a few Certifications
+     * const { count } = await prisma.certification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CertificationDeleteManyArgs>(args?: SelectSubset<T, CertificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Certifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CertificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Certifications
+     * const certification = await prisma.certification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CertificationUpdateManyArgs>(args: SelectSubset<T, CertificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Certifications and returns the data updated in the database.
+     * @param {CertificationUpdateManyAndReturnArgs} args - Arguments to update many Certifications.
+     * @example
+     * // Update many Certifications
+     * const certification = await prisma.certification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Certifications and only return the `id`
+     * const certificationWithIdOnly = await prisma.certification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CertificationUpdateManyAndReturnArgs>(args: SelectSubset<T, CertificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Certification.
+     * @param {CertificationUpsertArgs} args - Arguments to update or create a Certification.
+     * @example
+     * // Update or create a Certification
+     * const certification = await prisma.certification.upsert({
+     *   create: {
+     *     // ... data to create a Certification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Certification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CertificationUpsertArgs>(args: SelectSubset<T, CertificationUpsertArgs<ExtArgs>>): Prisma__CertificationClient<$Result.GetResult<Prisma.$CertificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Certifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CertificationCountArgs} args - Arguments to filter Certifications to count.
+     * @example
+     * // Count the number of Certifications
+     * const count = await prisma.certification.count({
+     *   where: {
+     *     // ... the filter for the Certifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends CertificationCountArgs>(
+      args?: Subset<T, CertificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CertificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Certification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CertificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CertificationAggregateArgs>(args: Subset<T, CertificationAggregateArgs>): Prisma.PrismaPromise<GetCertificationAggregateType<T>>
+
+    /**
+     * Group by Certification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CertificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CertificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CertificationGroupByArgs['orderBy'] }
+        : { orderBy?: CertificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CertificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCertificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Certification model
+   */
+  readonly fields: CertificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Certification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CertificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Certification model
+   */
+  interface CertificationFieldRefs {
+    readonly id: FieldRef<"Certification", 'String'>
+    readonly name: FieldRef<"Certification", 'String'>
+    readonly issuingAuthority: FieldRef<"Certification", 'String'>
+    readonly certificationCode: FieldRef<"Certification", 'String'>
+    readonly issueDate: FieldRef<"Certification", 'DateTime'>
+    readonly expiryDate: FieldRef<"Certification", 'DateTime'>
+    readonly status: FieldRef<"Certification", 'CertificationStatus'>
+    readonly documentUrl: FieldRef<"Certification", 'String'>
+    readonly notes: FieldRef<"Certification", 'String'>
+    readonly createdAt: FieldRef<"Certification", 'DateTime'>
+    readonly updatedAt: FieldRef<"Certification", 'DateTime'>
+    readonly agencyId: FieldRef<"Certification", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Certification findUnique
+   */
+  export type CertificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Certification to fetch.
+     */
+    where: CertificationWhereUniqueInput
+  }
+
+  /**
+   * Certification findUniqueOrThrow
+   */
+  export type CertificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Certification to fetch.
+     */
+    where: CertificationWhereUniqueInput
+  }
+
+  /**
+   * Certification findFirst
+   */
+  export type CertificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Certification to fetch.
+     */
+    where?: CertificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Certifications to fetch.
+     */
+    orderBy?: CertificationOrderByWithRelationInput | CertificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Certifications.
+     */
+    cursor?: CertificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Certifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Certifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Certifications.
+     */
+    distinct?: CertificationScalarFieldEnum | CertificationScalarFieldEnum[]
+  }
+
+  /**
+   * Certification findFirstOrThrow
+   */
+  export type CertificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Certification to fetch.
+     */
+    where?: CertificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Certifications to fetch.
+     */
+    orderBy?: CertificationOrderByWithRelationInput | CertificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Certifications.
+     */
+    cursor?: CertificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Certifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Certifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Certifications.
+     */
+    distinct?: CertificationScalarFieldEnum | CertificationScalarFieldEnum[]
+  }
+
+  /**
+   * Certification findMany
+   */
+  export type CertificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Certifications to fetch.
+     */
+    where?: CertificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Certifications to fetch.
+     */
+    orderBy?: CertificationOrderByWithRelationInput | CertificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Certifications.
+     */
+    cursor?: CertificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Certifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Certifications.
+     */
+    skip?: number
+    distinct?: CertificationScalarFieldEnum | CertificationScalarFieldEnum[]
+  }
+
+  /**
+   * Certification create
+   */
+  export type CertificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Certification.
+     */
+    data: XOR<CertificationCreateInput, CertificationUncheckedCreateInput>
+  }
+
+  /**
+   * Certification createMany
+   */
+  export type CertificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Certifications.
+     */
+    data: CertificationCreateManyInput | CertificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Certification createManyAndReturn
+   */
+  export type CertificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Certifications.
+     */
+    data: CertificationCreateManyInput | CertificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Certification update
+   */
+  export type CertificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Certification.
+     */
+    data: XOR<CertificationUpdateInput, CertificationUncheckedUpdateInput>
+    /**
+     * Choose, which Certification to update.
+     */
+    where: CertificationWhereUniqueInput
+  }
+
+  /**
+   * Certification updateMany
+   */
+  export type CertificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Certifications.
+     */
+    data: XOR<CertificationUpdateManyMutationInput, CertificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Certifications to update
+     */
+    where?: CertificationWhereInput
+    /**
+     * Limit how many Certifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Certification updateManyAndReturn
+   */
+  export type CertificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * The data used to update Certifications.
+     */
+    data: XOR<CertificationUpdateManyMutationInput, CertificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Certifications to update
+     */
+    where?: CertificationWhereInput
+    /**
+     * Limit how many Certifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Certification upsert
+   */
+  export type CertificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Certification to update in case it exists.
+     */
+    where: CertificationWhereUniqueInput
+    /**
+     * In case the Certification found by the `where` argument doesn't exist, create a new Certification with this data.
+     */
+    create: XOR<CertificationCreateInput, CertificationUncheckedCreateInput>
+    /**
+     * In case the Certification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CertificationUpdateInput, CertificationUncheckedUpdateInput>
+  }
+
+  /**
+   * Certification delete
+   */
+  export type CertificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+    /**
+     * Filter which Certification to delete.
+     */
+    where: CertificationWhereUniqueInput
+  }
+
+  /**
+   * Certification deleteMany
+   */
+  export type CertificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Certifications to delete
+     */
+    where?: CertificationWhereInput
+    /**
+     * Limit how many Certifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Certification without action
+   */
+  export type CertificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Certification
+     */
+    select?: CertificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Certification
+     */
+    omit?: CertificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CertificationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OperatingHours
+   */
+
+  export type AggregateOperatingHours = {
+    _count: OperatingHoursCountAggregateOutputType | null
+    _min: OperatingHoursMinAggregateOutputType | null
+    _max: OperatingHoursMaxAggregateOutputType | null
+  }
+
+  export type OperatingHoursMinAggregateOutputType = {
+    id: string | null
+    dayOfWeek: $Enums.DayOfWeek | null
+    isOpen: boolean | null
+    openTime: string | null
+    closeTime: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type OperatingHoursMaxAggregateOutputType = {
+    id: string | null
+    dayOfWeek: $Enums.DayOfWeek | null
+    isOpen: boolean | null
+    openTime: string | null
+    closeTime: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type OperatingHoursCountAggregateOutputType = {
+    id: number
+    dayOfWeek: number
+    isOpen: number
+    openTime: number
+    closeTime: number
+    createdAt: number
+    updatedAt: number
+    agencyId: number
+    _all: number
+  }
+
+
+  export type OperatingHoursMinAggregateInputType = {
+    id?: true
+    dayOfWeek?: true
+    isOpen?: true
+    openTime?: true
+    closeTime?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type OperatingHoursMaxAggregateInputType = {
+    id?: true
+    dayOfWeek?: true
+    isOpen?: true
+    openTime?: true
+    closeTime?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type OperatingHoursCountAggregateInputType = {
+    id?: true
+    dayOfWeek?: true
+    isOpen?: true
+    openTime?: true
+    closeTime?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+    _all?: true
+  }
+
+  export type OperatingHoursAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OperatingHours to aggregate.
+     */
+    where?: OperatingHoursWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OperatingHours to fetch.
+     */
+    orderBy?: OperatingHoursOrderByWithRelationInput | OperatingHoursOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OperatingHoursWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OperatingHours from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OperatingHours.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OperatingHours
+    **/
+    _count?: true | OperatingHoursCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OperatingHoursMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OperatingHoursMaxAggregateInputType
+  }
+
+  export type GetOperatingHoursAggregateType<T extends OperatingHoursAggregateArgs> = {
+        [P in keyof T & keyof AggregateOperatingHours]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOperatingHours[P]>
+      : GetScalarType<T[P], AggregateOperatingHours[P]>
+  }
+
+
+
+
+  export type OperatingHoursGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OperatingHoursWhereInput
+    orderBy?: OperatingHoursOrderByWithAggregationInput | OperatingHoursOrderByWithAggregationInput[]
+    by: OperatingHoursScalarFieldEnum[] | OperatingHoursScalarFieldEnum
+    having?: OperatingHoursScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OperatingHoursCountAggregateInputType | true
+    _min?: OperatingHoursMinAggregateInputType
+    _max?: OperatingHoursMaxAggregateInputType
+  }
+
+  export type OperatingHoursGroupByOutputType = {
+    id: string
+    dayOfWeek: $Enums.DayOfWeek
+    isOpen: boolean
+    openTime: string
+    closeTime: string
+    createdAt: Date
+    updatedAt: Date
+    agencyId: string
+    _count: OperatingHoursCountAggregateOutputType | null
+    _min: OperatingHoursMinAggregateOutputType | null
+    _max: OperatingHoursMaxAggregateOutputType | null
+  }
+
+  type GetOperatingHoursGroupByPayload<T extends OperatingHoursGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OperatingHoursGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OperatingHoursGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OperatingHoursGroupByOutputType[P]>
+            : GetScalarType<T[P], OperatingHoursGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OperatingHoursSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dayOfWeek?: boolean
+    isOpen?: boolean
+    openTime?: boolean
+    closeTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["operatingHours"]>
+
+  export type OperatingHoursSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dayOfWeek?: boolean
+    isOpen?: boolean
+    openTime?: boolean
+    closeTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["operatingHours"]>
+
+  export type OperatingHoursSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dayOfWeek?: boolean
+    isOpen?: boolean
+    openTime?: boolean
+    closeTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["operatingHours"]>
+
+  export type OperatingHoursSelectScalar = {
+    id?: boolean
+    dayOfWeek?: boolean
+    isOpen?: boolean
+    openTime?: boolean
+    closeTime?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+  }
+
+  export type OperatingHoursOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dayOfWeek" | "isOpen" | "openTime" | "closeTime" | "createdAt" | "updatedAt" | "agencyId", ExtArgs["result"]["operatingHours"]>
+  export type OperatingHoursInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+  export type OperatingHoursIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+  export type OperatingHoursIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+  }
+
+  export type $OperatingHoursPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OperatingHours"
+    objects: {
+      agency: Prisma.$AgencyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      dayOfWeek: $Enums.DayOfWeek
+      isOpen: boolean
+      openTime: string
+      closeTime: string
+      createdAt: Date
+      updatedAt: Date
+      agencyId: string
+    }, ExtArgs["result"]["operatingHours"]>
+    composites: {}
+  }
+
+  type OperatingHoursGetPayload<S extends boolean | null | undefined | OperatingHoursDefaultArgs> = $Result.GetResult<Prisma.$OperatingHoursPayload, S>
+
+  type OperatingHoursCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OperatingHoursFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OperatingHoursCountAggregateInputType | true
+    }
+
+  export interface OperatingHoursDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OperatingHours'], meta: { name: 'OperatingHours' } }
+    /**
+     * Find zero or one OperatingHours that matches the filter.
+     * @param {OperatingHoursFindUniqueArgs} args - Arguments to find a OperatingHours
+     * @example
+     * // Get one OperatingHours
+     * const operatingHours = await prisma.operatingHours.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OperatingHoursFindUniqueArgs>(args: SelectSubset<T, OperatingHoursFindUniqueArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OperatingHours that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OperatingHoursFindUniqueOrThrowArgs} args - Arguments to find a OperatingHours
+     * @example
+     * // Get one OperatingHours
+     * const operatingHours = await prisma.operatingHours.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OperatingHoursFindUniqueOrThrowArgs>(args: SelectSubset<T, OperatingHoursFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OperatingHours that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OperatingHoursFindFirstArgs} args - Arguments to find a OperatingHours
+     * @example
+     * // Get one OperatingHours
+     * const operatingHours = await prisma.operatingHours.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OperatingHoursFindFirstArgs>(args?: SelectSubset<T, OperatingHoursFindFirstArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OperatingHours that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OperatingHoursFindFirstOrThrowArgs} args - Arguments to find a OperatingHours
+     * @example
+     * // Get one OperatingHours
+     * const operatingHours = await prisma.operatingHours.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OperatingHoursFindFirstOrThrowArgs>(args?: SelectSubset<T, OperatingHoursFindFirstOrThrowArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OperatingHours that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OperatingHoursFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OperatingHours
+     * const operatingHours = await prisma.operatingHours.findMany()
+     * 
+     * // Get first 10 OperatingHours
+     * const operatingHours = await prisma.operatingHours.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const operatingHoursWithIdOnly = await prisma.operatingHours.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OperatingHoursFindManyArgs>(args?: SelectSubset<T, OperatingHoursFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OperatingHours.
+     * @param {OperatingHoursCreateArgs} args - Arguments to create a OperatingHours.
+     * @example
+     * // Create one OperatingHours
+     * const OperatingHours = await prisma.operatingHours.create({
+     *   data: {
+     *     // ... data to create a OperatingHours
+     *   }
+     * })
+     * 
+     */
+    create<T extends OperatingHoursCreateArgs>(args: SelectSubset<T, OperatingHoursCreateArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OperatingHours.
+     * @param {OperatingHoursCreateManyArgs} args - Arguments to create many OperatingHours.
+     * @example
+     * // Create many OperatingHours
+     * const operatingHours = await prisma.operatingHours.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OperatingHoursCreateManyArgs>(args?: SelectSubset<T, OperatingHoursCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OperatingHours and returns the data saved in the database.
+     * @param {OperatingHoursCreateManyAndReturnArgs} args - Arguments to create many OperatingHours.
+     * @example
+     * // Create many OperatingHours
+     * const operatingHours = await prisma.operatingHours.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OperatingHours and only return the `id`
+     * const operatingHoursWithIdOnly = await prisma.operatingHours.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OperatingHoursCreateManyAndReturnArgs>(args?: SelectSubset<T, OperatingHoursCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OperatingHours.
+     * @param {OperatingHoursDeleteArgs} args - Arguments to delete one OperatingHours.
+     * @example
+     * // Delete one OperatingHours
+     * const OperatingHours = await prisma.operatingHours.delete({
+     *   where: {
+     *     // ... filter to delete one OperatingHours
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OperatingHoursDeleteArgs>(args: SelectSubset<T, OperatingHoursDeleteArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OperatingHours.
+     * @param {OperatingHoursUpdateArgs} args - Arguments to update one OperatingHours.
+     * @example
+     * // Update one OperatingHours
+     * const operatingHours = await prisma.operatingHours.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OperatingHoursUpdateArgs>(args: SelectSubset<T, OperatingHoursUpdateArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OperatingHours.
+     * @param {OperatingHoursDeleteManyArgs} args - Arguments to filter OperatingHours to delete.
+     * @example
+     * // Delete a few OperatingHours
+     * const { count } = await prisma.operatingHours.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OperatingHoursDeleteManyArgs>(args?: SelectSubset<T, OperatingHoursDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OperatingHours.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OperatingHoursUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OperatingHours
+     * const operatingHours = await prisma.operatingHours.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OperatingHoursUpdateManyArgs>(args: SelectSubset<T, OperatingHoursUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OperatingHours and returns the data updated in the database.
+     * @param {OperatingHoursUpdateManyAndReturnArgs} args - Arguments to update many OperatingHours.
+     * @example
+     * // Update many OperatingHours
+     * const operatingHours = await prisma.operatingHours.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OperatingHours and only return the `id`
+     * const operatingHoursWithIdOnly = await prisma.operatingHours.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OperatingHoursUpdateManyAndReturnArgs>(args: SelectSubset<T, OperatingHoursUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OperatingHours.
+     * @param {OperatingHoursUpsertArgs} args - Arguments to update or create a OperatingHours.
+     * @example
+     * // Update or create a OperatingHours
+     * const operatingHours = await prisma.operatingHours.upsert({
+     *   create: {
+     *     // ... data to create a OperatingHours
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OperatingHours we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OperatingHoursUpsertArgs>(args: SelectSubset<T, OperatingHoursUpsertArgs<ExtArgs>>): Prisma__OperatingHoursClient<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OperatingHours.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OperatingHoursCountArgs} args - Arguments to filter OperatingHours to count.
+     * @example
+     * // Count the number of OperatingHours
+     * const count = await prisma.operatingHours.count({
+     *   where: {
+     *     // ... the filter for the OperatingHours we want to count
+     *   }
+     * })
+    **/
+    count<T extends OperatingHoursCountArgs>(
+      args?: Subset<T, OperatingHoursCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OperatingHoursCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OperatingHours.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OperatingHoursAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OperatingHoursAggregateArgs>(args: Subset<T, OperatingHoursAggregateArgs>): Prisma.PrismaPromise<GetOperatingHoursAggregateType<T>>
+
+    /**
+     * Group by OperatingHours.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OperatingHoursGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OperatingHoursGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OperatingHoursGroupByArgs['orderBy'] }
+        : { orderBy?: OperatingHoursGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OperatingHoursGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOperatingHoursGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OperatingHours model
+   */
+  readonly fields: OperatingHoursFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OperatingHours.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OperatingHoursClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OperatingHours model
+   */
+  interface OperatingHoursFieldRefs {
+    readonly id: FieldRef<"OperatingHours", 'String'>
+    readonly dayOfWeek: FieldRef<"OperatingHours", 'DayOfWeek'>
+    readonly isOpen: FieldRef<"OperatingHours", 'Boolean'>
+    readonly openTime: FieldRef<"OperatingHours", 'String'>
+    readonly closeTime: FieldRef<"OperatingHours", 'String'>
+    readonly createdAt: FieldRef<"OperatingHours", 'DateTime'>
+    readonly updatedAt: FieldRef<"OperatingHours", 'DateTime'>
+    readonly agencyId: FieldRef<"OperatingHours", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OperatingHours findUnique
+   */
+  export type OperatingHoursFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * Filter, which OperatingHours to fetch.
+     */
+    where: OperatingHoursWhereUniqueInput
+  }
+
+  /**
+   * OperatingHours findUniqueOrThrow
+   */
+  export type OperatingHoursFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * Filter, which OperatingHours to fetch.
+     */
+    where: OperatingHoursWhereUniqueInput
+  }
+
+  /**
+   * OperatingHours findFirst
+   */
+  export type OperatingHoursFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * Filter, which OperatingHours to fetch.
+     */
+    where?: OperatingHoursWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OperatingHours to fetch.
+     */
+    orderBy?: OperatingHoursOrderByWithRelationInput | OperatingHoursOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OperatingHours.
+     */
+    cursor?: OperatingHoursWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OperatingHours from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OperatingHours.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OperatingHours.
+     */
+    distinct?: OperatingHoursScalarFieldEnum | OperatingHoursScalarFieldEnum[]
+  }
+
+  /**
+   * OperatingHours findFirstOrThrow
+   */
+  export type OperatingHoursFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * Filter, which OperatingHours to fetch.
+     */
+    where?: OperatingHoursWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OperatingHours to fetch.
+     */
+    orderBy?: OperatingHoursOrderByWithRelationInput | OperatingHoursOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OperatingHours.
+     */
+    cursor?: OperatingHoursWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OperatingHours from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OperatingHours.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OperatingHours.
+     */
+    distinct?: OperatingHoursScalarFieldEnum | OperatingHoursScalarFieldEnum[]
+  }
+
+  /**
+   * OperatingHours findMany
+   */
+  export type OperatingHoursFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * Filter, which OperatingHours to fetch.
+     */
+    where?: OperatingHoursWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OperatingHours to fetch.
+     */
+    orderBy?: OperatingHoursOrderByWithRelationInput | OperatingHoursOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OperatingHours.
+     */
+    cursor?: OperatingHoursWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OperatingHours from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OperatingHours.
+     */
+    skip?: number
+    distinct?: OperatingHoursScalarFieldEnum | OperatingHoursScalarFieldEnum[]
+  }
+
+  /**
+   * OperatingHours create
+   */
+  export type OperatingHoursCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OperatingHours.
+     */
+    data: XOR<OperatingHoursCreateInput, OperatingHoursUncheckedCreateInput>
+  }
+
+  /**
+   * OperatingHours createMany
+   */
+  export type OperatingHoursCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OperatingHours.
+     */
+    data: OperatingHoursCreateManyInput | OperatingHoursCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OperatingHours createManyAndReturn
+   */
+  export type OperatingHoursCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * The data used to create many OperatingHours.
+     */
+    data: OperatingHoursCreateManyInput | OperatingHoursCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OperatingHours update
+   */
+  export type OperatingHoursUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OperatingHours.
+     */
+    data: XOR<OperatingHoursUpdateInput, OperatingHoursUncheckedUpdateInput>
+    /**
+     * Choose, which OperatingHours to update.
+     */
+    where: OperatingHoursWhereUniqueInput
+  }
+
+  /**
+   * OperatingHours updateMany
+   */
+  export type OperatingHoursUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OperatingHours.
+     */
+    data: XOR<OperatingHoursUpdateManyMutationInput, OperatingHoursUncheckedUpdateManyInput>
+    /**
+     * Filter which OperatingHours to update
+     */
+    where?: OperatingHoursWhereInput
+    /**
+     * Limit how many OperatingHours to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OperatingHours updateManyAndReturn
+   */
+  export type OperatingHoursUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * The data used to update OperatingHours.
+     */
+    data: XOR<OperatingHoursUpdateManyMutationInput, OperatingHoursUncheckedUpdateManyInput>
+    /**
+     * Filter which OperatingHours to update
+     */
+    where?: OperatingHoursWhereInput
+    /**
+     * Limit how many OperatingHours to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OperatingHours upsert
+   */
+  export type OperatingHoursUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OperatingHours to update in case it exists.
+     */
+    where: OperatingHoursWhereUniqueInput
+    /**
+     * In case the OperatingHours found by the `where` argument doesn't exist, create a new OperatingHours with this data.
+     */
+    create: XOR<OperatingHoursCreateInput, OperatingHoursUncheckedCreateInput>
+    /**
+     * In case the OperatingHours was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OperatingHoursUpdateInput, OperatingHoursUncheckedUpdateInput>
+  }
+
+  /**
+   * OperatingHours delete
+   */
+  export type OperatingHoursDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+    /**
+     * Filter which OperatingHours to delete.
+     */
+    where: OperatingHoursWhereUniqueInput
+  }
+
+  /**
+   * OperatingHours deleteMany
+   */
+  export type OperatingHoursDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OperatingHours to delete
+     */
+    where?: OperatingHoursWhereInput
+    /**
+     * Limit how many OperatingHours to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OperatingHours without action
+   */
+  export type OperatingHoursDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OperatingHours
+     */
+    select?: OperatingHoursSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OperatingHours
+     */
+    omit?: OperatingHoursOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OperatingHoursInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Group
    */
 
@@ -7207,18 +12846,24 @@ export namespace Prisma {
     id: string | null
     name: string | null
     agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type GroupMaxAggregateOutputType = {
     id: string | null
     name: string | null
     agencyId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type GroupCountAggregateOutputType = {
     id: number
     name: number
     agencyId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -7227,18 +12872,24 @@ export namespace Prisma {
     id?: true
     name?: true
     agencyId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type GroupMaxAggregateInputType = {
     id?: true
     name?: true
     agencyId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type GroupCountAggregateInputType = {
     id?: true
     name?: true
     agencyId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -7318,6 +12969,8 @@ export namespace Prisma {
     id: string
     name: string
     agencyId: string | null
+    createdAt: Date
+    updatedAt: Date
     _count: GroupCountAggregateOutputType | null
     _min: GroupMinAggregateOutputType | null
     _max: GroupMaxAggregateOutputType | null
@@ -7341,6 +12994,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     clients?: boolean | Group$clientsArgs<ExtArgs>
     Agency?: boolean | Group$AgencyArgs<ExtArgs>
     _count?: boolean | GroupCountOutputTypeDefaultArgs<ExtArgs>
@@ -7350,6 +13005,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     Agency?: boolean | Group$AgencyArgs<ExtArgs>
   }, ExtArgs["result"]["group"]>
 
@@ -7357,6 +13014,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     Agency?: boolean | Group$AgencyArgs<ExtArgs>
   }, ExtArgs["result"]["group"]>
 
@@ -7364,9 +13023,11 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     agencyId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type GroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "agencyId", ExtArgs["result"]["group"]>
+  export type GroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["group"]>
   export type GroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clients?: boolean | Group$clientsArgs<ExtArgs>
     Agency?: boolean | Group$AgencyArgs<ExtArgs>
@@ -7389,6 +13050,8 @@ export namespace Prisma {
       id: string
       name: string
       agencyId: string | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["group"]>
     composites: {}
   }
@@ -7817,6 +13480,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Group", 'String'>
     readonly name: FieldRef<"Group", 'String'>
     readonly agencyId: FieldRef<"Group", 'String'>
+    readonly createdAt: FieldRef<"Group", 'DateTime'>
+    readonly updatedAt: FieldRef<"Group", 'DateTime'>
   }
     
 
@@ -12033,6 +17698,10 @@ export namespace Prisma {
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
     reportEdits?: boolean | User$reportEditsArgs<ExtArgs>
     Group?: boolean | User$GroupArgs<ExtArgs>
+    createdAnnouncements?: boolean | User$createdAnnouncementsArgs<ExtArgs>
+    acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
+    Announcement?: boolean | User$AnnouncementArgs<ExtArgs>
+    AuditLog?: boolean | User$AuditLogArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -12180,6 +17849,10 @@ export namespace Prisma {
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
     reportEdits?: boolean | User$reportEditsArgs<ExtArgs>
     Group?: boolean | User$GroupArgs<ExtArgs>
+    createdAnnouncements?: boolean | User$createdAnnouncementsArgs<ExtArgs>
+    acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
+    Announcement?: boolean | User$AnnouncementArgs<ExtArgs>
+    AuditLog?: boolean | User$AuditLogArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12230,6 +17903,10 @@ export namespace Prisma {
       medicationAdministrations: Prisma.$MedicationAdministrationPayload<ExtArgs>[]
       reportEdits: Prisma.$ReportEditPayload<ExtArgs>[]
       Group: Prisma.$GroupPayload<ExtArgs> | null
+      createdAnnouncements: Prisma.$AnnouncementPayload<ExtArgs>[]
+      acknowledgedAnnouncements: Prisma.$AnnouncementPayload<ExtArgs>[]
+      Announcement: Prisma.$AnnouncementPayload<ExtArgs>[]
+      AuditLog: Prisma.$AuditLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12691,6 +18368,10 @@ export namespace Prisma {
     medicationAdministrations<T extends User$medicationAdministrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$medicationAdministrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationAdministrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reportEdits<T extends User$reportEditsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportEditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportEditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Group<T extends User$GroupArgs<ExtArgs> = {}>(args?: Subset<T, User$GroupArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdAnnouncements<T extends User$createdAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    acknowledgedAnnouncements<T extends User$acknowledgedAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, User$acknowledgedAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Announcement<T extends User$AnnouncementArgs<ExtArgs> = {}>(args?: Subset<T, User$AnnouncementArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    AuditLog<T extends User$AuditLogArgs<ExtArgs> = {}>(args?: Subset<T, User$AuditLogArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13935,6 +19616,102 @@ export namespace Prisma {
      */
     include?: GroupInclude<ExtArgs> | null
     where?: GroupWhereInput
+  }
+
+  /**
+   * User.createdAnnouncements
+   */
+  export type User$createdAnnouncementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    where?: AnnouncementWhereInput
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    cursor?: AnnouncementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
+   * User.acknowledgedAnnouncements
+   */
+  export type User$acknowledgedAnnouncementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    where?: AnnouncementWhereInput
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    cursor?: AnnouncementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
+   * User.Announcement
+   */
+  export type User$AnnouncementArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Announcement
+     */
+    select?: AnnouncementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Announcement
+     */
+    omit?: AnnouncementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnnouncementInclude<ExtArgs> | null
+    where?: AnnouncementWhereInput
+    orderBy?: AnnouncementOrderByWithRelationInput | AnnouncementOrderByWithRelationInput[]
+    cursor?: AnnouncementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
+   * User.AuditLog
+   */
+  export type User$AuditLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
   }
 
   /**
@@ -39918,6 +45695,7 @@ export namespace Prisma {
     dueDate: Date | null
     completed: boolean | null
     createdAt: Date | null
+    agencyId: string | null
   }
 
   export type ReminderMaxAggregateOutputType = {
@@ -39928,6 +45706,7 @@ export namespace Prisma {
     dueDate: Date | null
     completed: boolean | null
     createdAt: Date | null
+    agencyId: string | null
   }
 
   export type ReminderCountAggregateOutputType = {
@@ -39938,6 +45717,7 @@ export namespace Prisma {
     dueDate: number
     completed: number
     createdAt: number
+    agencyId: number
     _all: number
   }
 
@@ -39950,6 +45730,7 @@ export namespace Prisma {
     dueDate?: true
     completed?: true
     createdAt?: true
+    agencyId?: true
   }
 
   export type ReminderMaxAggregateInputType = {
@@ -39960,6 +45741,7 @@ export namespace Prisma {
     dueDate?: true
     completed?: true
     createdAt?: true
+    agencyId?: true
   }
 
   export type ReminderCountAggregateInputType = {
@@ -39970,6 +45752,7 @@ export namespace Prisma {
     dueDate?: true
     completed?: true
     createdAt?: true
+    agencyId?: true
     _all?: true
   }
 
@@ -40053,6 +45836,7 @@ export namespace Prisma {
     dueDate: Date
     completed: boolean
     createdAt: Date
+    agencyId: string | null
     _count: ReminderCountAggregateOutputType | null
     _min: ReminderMinAggregateOutputType | null
     _max: ReminderMaxAggregateOutputType | null
@@ -40080,7 +45864,9 @@ export namespace Prisma {
     dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
+    agencyId?: boolean
     client?: boolean | UserDefaultArgs<ExtArgs>
+    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
   }, ExtArgs["result"]["reminder"]>
 
   export type ReminderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -40091,7 +45877,9 @@ export namespace Prisma {
     dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
+    agencyId?: boolean
     client?: boolean | UserDefaultArgs<ExtArgs>
+    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
   }, ExtArgs["result"]["reminder"]>
 
   export type ReminderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -40102,7 +45890,9 @@ export namespace Prisma {
     dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
+    agencyId?: boolean
     client?: boolean | UserDefaultArgs<ExtArgs>
+    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
   }, ExtArgs["result"]["reminder"]>
 
   export type ReminderSelectScalar = {
@@ -40113,23 +45903,28 @@ export namespace Prisma {
     dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
+    agencyId?: boolean
   }
 
-  export type ReminderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "title" | "message" | "dueDate" | "completed" | "createdAt", ExtArgs["result"]["reminder"]>
+  export type ReminderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "title" | "message" | "dueDate" | "completed" | "createdAt" | "agencyId", ExtArgs["result"]["reminder"]>
   export type ReminderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | UserDefaultArgs<ExtArgs>
+    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
   }
   export type ReminderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | UserDefaultArgs<ExtArgs>
+    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
   }
   export type ReminderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | UserDefaultArgs<ExtArgs>
+    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
   }
 
   export type $ReminderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Reminder"
     objects: {
       client: Prisma.$UserPayload<ExtArgs>
+      Agency: Prisma.$AgencyPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -40139,6 +45934,7 @@ export namespace Prisma {
       dueDate: Date
       completed: boolean
       createdAt: Date
+      agencyId: string | null
     }, ExtArgs["result"]["reminder"]>
     composites: {}
   }
@@ -40534,6 +46330,7 @@ export namespace Prisma {
   export interface Prisma__ReminderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Agency<T extends Reminder$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, Reminder$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -40570,6 +46367,7 @@ export namespace Prisma {
     readonly dueDate: FieldRef<"Reminder", 'DateTime'>
     readonly completed: FieldRef<"Reminder", 'Boolean'>
     readonly createdAt: FieldRef<"Reminder", 'DateTime'>
+    readonly agencyId: FieldRef<"Reminder", 'String'>
   }
     
 
@@ -40963,6 +46761,25 @@ export namespace Prisma {
      * Limit how many Reminders to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Reminder.Agency
+   */
+  export type Reminder$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Agency
+     */
+    select?: AgencySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Agency
+     */
+    omit?: AgencyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgencyInclude<ExtArgs> | null
+    where?: AgencyWhereInput
   }
 
   /**
@@ -42113,6 +47930,16 @@ export namespace Prisma {
   export const AgencyScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    email: 'email',
+    description: 'description',
+    address: 'address',
+    extension: 'extension',
+    mobileNumber: 'mobileNumber',
+    landlineNumber: 'landlineNumber',
+    website: 'website',
+    logo: 'logo',
+    primaryColor: 'primaryColor',
+    secondaryColor: 'secondaryColor',
     isActive: 'isActive',
     isSuspended: 'isSuspended',
     hasScheduleV2: 'hasScheduleV2',
@@ -42122,16 +47949,96 @@ export namespace Prisma {
     hasPoliciesAndProcedures: 'hasPoliciesAndProcedures',
     isTestAccount: 'isTestAccount',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    licenseNumber: 'licenseNumber',
+    timeZone: 'timeZone',
+    currency: 'currency',
+    maxUsers: 'maxUsers',
+    maxClients: 'maxClients',
+    maxCareWorkers: 'maxCareWorkers'
   };
 
   export type AgencyScalarFieldEnum = (typeof AgencyScalarFieldEnum)[keyof typeof AgencyScalarFieldEnum]
 
 
+  export const AnnouncementScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    content: 'content',
+    priority: 'priority',
+    status: 'status',
+    publishDate: 'publishDate',
+    expiryDate: 'expiryDate',
+    isSticky: 'isSticky',
+    requiresAcknowledgment: 'requiresAcknowledgment',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    agencyId: 'agencyId',
+    createdById: 'createdById',
+    targetRoles: 'targetRoles',
+    attachmentUrl: 'attachmentUrl',
+    attachmentType: 'attachmentType',
+    userId: 'userId'
+  };
+
+  export type AnnouncementScalarFieldEnum = (typeof AnnouncementScalarFieldEnum)[keyof typeof AnnouncementScalarFieldEnum]
+
+
+  export const AuditLogScalarFieldEnum: {
+    id: 'id',
+    action: 'action',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    description: 'description',
+    changes: 'changes',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
+    performedAt: 'performedAt',
+    agencyId: 'agencyId',
+    userId: 'userId'
+  };
+
+  export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+  export const CertificationScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    issuingAuthority: 'issuingAuthority',
+    certificationCode: 'certificationCode',
+    issueDate: 'issueDate',
+    expiryDate: 'expiryDate',
+    status: 'status',
+    documentUrl: 'documentUrl',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    agencyId: 'agencyId'
+  };
+
+  export type CertificationScalarFieldEnum = (typeof CertificationScalarFieldEnum)[keyof typeof CertificationScalarFieldEnum]
+
+
+  export const OperatingHoursScalarFieldEnum: {
+    id: 'id',
+    dayOfWeek: 'dayOfWeek',
+    isOpen: 'isOpen',
+    openTime: 'openTime',
+    closeTime: 'closeTime',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    agencyId: 'agencyId'
+  };
+
+  export type OperatingHoursScalarFieldEnum = (typeof OperatingHoursScalarFieldEnum)[keyof typeof OperatingHoursScalarFieldEnum]
+
+
   export const GroupScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    agencyId: 'agencyId'
+    agencyId: 'agencyId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof GroupScalarFieldEnum]
@@ -42540,7 +48447,8 @@ export namespace Prisma {
     message: 'message',
     dueDate: 'dueDate',
     completed: 'completed',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    agencyId: 'agencyId'
   };
 
   export type ReminderScalarFieldEnum = (typeof ReminderScalarFieldEnum)[keyof typeof ReminderScalarFieldEnum]
@@ -42568,6 +48476,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -42582,6 +48498,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -42660,9 +48585,107 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnnouncementPriority'
+   */
+  export type EnumAnnouncementPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnouncementPriority'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnnouncementPriority[]'
+   */
+  export type ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnouncementPriority[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnnouncementStatus'
+   */
+  export type EnumAnnouncementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnouncementStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnnouncementStatus[]'
+   */
+  export type ListEnumAnnouncementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnouncementStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AuditAction'
+   */
+  export type EnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction'>
+    
+
+
+  /**
+   * Reference to a field of type 'AuditAction[]'
+   */
+  export type ListEnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'CertificationStatus'
+   */
+  export type EnumCertificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CertificationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'CertificationStatus[]'
+   */
+  export type ListEnumCertificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CertificationStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DayOfWeek'
+   */
+  export type EnumDayOfWeekFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DayOfWeek'>
+    
+
+
+  /**
+   * Reference to a field of type 'DayOfWeek[]'
+   */
+  export type ListEnumDayOfWeekFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DayOfWeek[]'>
     
 
 
@@ -42835,20 +48858,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'NotificationType'
    */
   export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
@@ -42946,6 +48955,16 @@ export namespace Prisma {
     NOT?: AgencyWhereInput | AgencyWhereInput[]
     id?: StringFilter<"Agency"> | string
     name?: StringFilter<"Agency"> | string
+    email?: StringFilter<"Agency"> | string
+    description?: StringNullableFilter<"Agency"> | string | null
+    address?: StringNullableFilter<"Agency"> | string | null
+    extension?: IntNullableFilter<"Agency"> | number | null
+    mobileNumber?: IntNullableFilter<"Agency"> | number | null
+    landlineNumber?: IntNullableFilter<"Agency"> | number | null
+    website?: StringNullableFilter<"Agency"> | string | null
+    logo?: StringNullableFilter<"Agency"> | string | null
+    primaryColor?: StringNullableFilter<"Agency"> | string | null
+    secondaryColor?: StringNullableFilter<"Agency"> | string | null
     isActive?: BoolFilter<"Agency"> | boolean
     isSuspended?: BoolFilter<"Agency"> | boolean
     hasScheduleV2?: BoolFilter<"Agency"> | boolean
@@ -42956,6 +48975,12 @@ export namespace Prisma {
     isTestAccount?: BoolFilter<"Agency"> | boolean
     createdAt?: DateTimeFilter<"Agency"> | Date | string
     updatedAt?: DateTimeFilter<"Agency"> | Date | string
+    licenseNumber?: StringNullableFilter<"Agency"> | string | null
+    timeZone?: StringFilter<"Agency"> | string
+    currency?: StringFilter<"Agency"> | string
+    maxUsers?: IntNullableFilter<"Agency"> | number | null
+    maxClients?: IntNullableFilter<"Agency"> | number | null
+    maxCareWorkers?: IntNullableFilter<"Agency"> | number | null
     users?: UserListRelationFilter
     schedules?: ScheduleListRelationFilter
     invoices?: InvoiceListRelationFilter
@@ -42969,11 +48994,26 @@ export namespace Prisma {
     groups?: GroupListRelationFilter
     rateSheets?: RateSheetListRelationFilter
     customTasks?: CustomTaskListRelationFilter
+    certifications?: CertificationListRelationFilter
+    operatingHours?: OperatingHoursListRelationFilter
+    reminders?: ReminderListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
+    announcements?: AnnouncementListRelationFilter
   }
 
   export type AgencyOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    description?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    extension?: SortOrderInput | SortOrder
+    mobileNumber?: SortOrderInput | SortOrder
+    landlineNumber?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    primaryColor?: SortOrderInput | SortOrder
+    secondaryColor?: SortOrderInput | SortOrder
     isActive?: SortOrder
     isSuspended?: SortOrder
     hasScheduleV2?: SortOrder
@@ -42984,6 +49024,12 @@ export namespace Prisma {
     isTestAccount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    licenseNumber?: SortOrderInput | SortOrder
+    timeZone?: SortOrder
+    currency?: SortOrder
+    maxUsers?: SortOrderInput | SortOrder
+    maxClients?: SortOrderInput | SortOrder
+    maxCareWorkers?: SortOrderInput | SortOrder
     users?: UserOrderByRelationAggregateInput
     schedules?: ScheduleOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
@@ -42997,6 +49043,11 @@ export namespace Prisma {
     groups?: GroupOrderByRelationAggregateInput
     rateSheets?: RateSheetOrderByRelationAggregateInput
     customTasks?: CustomTaskOrderByRelationAggregateInput
+    certifications?: CertificationOrderByRelationAggregateInput
+    operatingHours?: OperatingHoursOrderByRelationAggregateInput
+    reminders?: ReminderOrderByRelationAggregateInput
+    auditLogs?: AuditLogOrderByRelationAggregateInput
+    announcements?: AnnouncementOrderByRelationAggregateInput
   }
 
   export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -43005,6 +49056,16 @@ export namespace Prisma {
     OR?: AgencyWhereInput[]
     NOT?: AgencyWhereInput | AgencyWhereInput[]
     name?: StringFilter<"Agency"> | string
+    email?: StringFilter<"Agency"> | string
+    description?: StringNullableFilter<"Agency"> | string | null
+    address?: StringNullableFilter<"Agency"> | string | null
+    extension?: IntNullableFilter<"Agency"> | number | null
+    mobileNumber?: IntNullableFilter<"Agency"> | number | null
+    landlineNumber?: IntNullableFilter<"Agency"> | number | null
+    website?: StringNullableFilter<"Agency"> | string | null
+    logo?: StringNullableFilter<"Agency"> | string | null
+    primaryColor?: StringNullableFilter<"Agency"> | string | null
+    secondaryColor?: StringNullableFilter<"Agency"> | string | null
     isActive?: BoolFilter<"Agency"> | boolean
     isSuspended?: BoolFilter<"Agency"> | boolean
     hasScheduleV2?: BoolFilter<"Agency"> | boolean
@@ -43015,6 +49076,12 @@ export namespace Prisma {
     isTestAccount?: BoolFilter<"Agency"> | boolean
     createdAt?: DateTimeFilter<"Agency"> | Date | string
     updatedAt?: DateTimeFilter<"Agency"> | Date | string
+    licenseNumber?: StringNullableFilter<"Agency"> | string | null
+    timeZone?: StringFilter<"Agency"> | string
+    currency?: StringFilter<"Agency"> | string
+    maxUsers?: IntNullableFilter<"Agency"> | number | null
+    maxClients?: IntNullableFilter<"Agency"> | number | null
+    maxCareWorkers?: IntNullableFilter<"Agency"> | number | null
     users?: UserListRelationFilter
     schedules?: ScheduleListRelationFilter
     invoices?: InvoiceListRelationFilter
@@ -43028,11 +49095,26 @@ export namespace Prisma {
     groups?: GroupListRelationFilter
     rateSheets?: RateSheetListRelationFilter
     customTasks?: CustomTaskListRelationFilter
+    certifications?: CertificationListRelationFilter
+    operatingHours?: OperatingHoursListRelationFilter
+    reminders?: ReminderListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
+    announcements?: AnnouncementListRelationFilter
   }, "id">
 
   export type AgencyOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    description?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    extension?: SortOrderInput | SortOrder
+    mobileNumber?: SortOrderInput | SortOrder
+    landlineNumber?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    primaryColor?: SortOrderInput | SortOrder
+    secondaryColor?: SortOrderInput | SortOrder
     isActive?: SortOrder
     isSuspended?: SortOrder
     hasScheduleV2?: SortOrder
@@ -43043,9 +49125,17 @@ export namespace Prisma {
     isTestAccount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    licenseNumber?: SortOrderInput | SortOrder
+    timeZone?: SortOrder
+    currency?: SortOrder
+    maxUsers?: SortOrderInput | SortOrder
+    maxClients?: SortOrderInput | SortOrder
+    maxCareWorkers?: SortOrderInput | SortOrder
     _count?: AgencyCountOrderByAggregateInput
+    _avg?: AgencyAvgOrderByAggregateInput
     _max?: AgencyMaxOrderByAggregateInput
     _min?: AgencyMinOrderByAggregateInput
+    _sum?: AgencySumOrderByAggregateInput
   }
 
   export type AgencyScalarWhereWithAggregatesInput = {
@@ -43054,6 +49144,16 @@ export namespace Prisma {
     NOT?: AgencyScalarWhereWithAggregatesInput | AgencyScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Agency"> | string
     name?: StringWithAggregatesFilter<"Agency"> | string
+    email?: StringWithAggregatesFilter<"Agency"> | string
+    description?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    address?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    extension?: IntNullableWithAggregatesFilter<"Agency"> | number | null
+    mobileNumber?: IntNullableWithAggregatesFilter<"Agency"> | number | null
+    landlineNumber?: IntNullableWithAggregatesFilter<"Agency"> | number | null
+    website?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    logo?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    primaryColor?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    secondaryColor?: StringNullableWithAggregatesFilter<"Agency"> | string | null
     isActive?: BoolWithAggregatesFilter<"Agency"> | boolean
     isSuspended?: BoolWithAggregatesFilter<"Agency"> | boolean
     hasScheduleV2?: BoolWithAggregatesFilter<"Agency"> | boolean
@@ -43064,6 +49164,385 @@ export namespace Prisma {
     isTestAccount?: BoolWithAggregatesFilter<"Agency"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Agency"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Agency"> | Date | string
+    licenseNumber?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    timeZone?: StringWithAggregatesFilter<"Agency"> | string
+    currency?: StringWithAggregatesFilter<"Agency"> | string
+    maxUsers?: IntNullableWithAggregatesFilter<"Agency"> | number | null
+    maxClients?: IntNullableWithAggregatesFilter<"Agency"> | number | null
+    maxCareWorkers?: IntNullableWithAggregatesFilter<"Agency"> | number | null
+  }
+
+  export type AnnouncementWhereInput = {
+    AND?: AnnouncementWhereInput | AnnouncementWhereInput[]
+    OR?: AnnouncementWhereInput[]
+    NOT?: AnnouncementWhereInput | AnnouncementWhereInput[]
+    id?: StringFilter<"Announcement"> | string
+    title?: StringFilter<"Announcement"> | string
+    content?: StringFilter<"Announcement"> | string
+    priority?: EnumAnnouncementPriorityFilter<"Announcement"> | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFilter<"Announcement"> | $Enums.AnnouncementStatus
+    publishDate?: DateTimeNullableFilter<"Announcement"> | Date | string | null
+    expiryDate?: DateTimeNullableFilter<"Announcement"> | Date | string | null
+    isSticky?: BoolFilter<"Announcement"> | boolean
+    requiresAcknowledgment?: BoolFilter<"Announcement"> | boolean
+    createdAt?: DateTimeFilter<"Announcement"> | Date | string
+    updatedAt?: DateTimeFilter<"Announcement"> | Date | string
+    agencyId?: StringFilter<"Announcement"> | string
+    createdById?: StringFilter<"Announcement"> | string
+    targetRoles?: EnumRoleNullableListFilter<"Announcement">
+    attachmentUrl?: StringNullableFilter<"Announcement"> | string | null
+    attachmentType?: StringNullableFilter<"Announcement"> | string | null
+    userId?: StringNullableFilter<"Announcement"> | string | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    acknowledgedBy?: UserListRelationFilter
+    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type AnnouncementOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    publishDate?: SortOrderInput | SortOrder
+    expiryDate?: SortOrderInput | SortOrder
+    isSticky?: SortOrder
+    requiresAcknowledgment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    createdById?: SortOrder
+    targetRoles?: SortOrder
+    attachmentUrl?: SortOrderInput | SortOrder
+    attachmentType?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    agency?: AgencyOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+    acknowledgedBy?: UserOrderByRelationAggregateInput
+    User?: UserOrderByWithRelationInput
+  }
+
+  export type AnnouncementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AnnouncementWhereInput | AnnouncementWhereInput[]
+    OR?: AnnouncementWhereInput[]
+    NOT?: AnnouncementWhereInput | AnnouncementWhereInput[]
+    title?: StringFilter<"Announcement"> | string
+    content?: StringFilter<"Announcement"> | string
+    priority?: EnumAnnouncementPriorityFilter<"Announcement"> | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFilter<"Announcement"> | $Enums.AnnouncementStatus
+    publishDate?: DateTimeNullableFilter<"Announcement"> | Date | string | null
+    expiryDate?: DateTimeNullableFilter<"Announcement"> | Date | string | null
+    isSticky?: BoolFilter<"Announcement"> | boolean
+    requiresAcknowledgment?: BoolFilter<"Announcement"> | boolean
+    createdAt?: DateTimeFilter<"Announcement"> | Date | string
+    updatedAt?: DateTimeFilter<"Announcement"> | Date | string
+    agencyId?: StringFilter<"Announcement"> | string
+    createdById?: StringFilter<"Announcement"> | string
+    targetRoles?: EnumRoleNullableListFilter<"Announcement">
+    attachmentUrl?: StringNullableFilter<"Announcement"> | string | null
+    attachmentType?: StringNullableFilter<"Announcement"> | string | null
+    userId?: StringNullableFilter<"Announcement"> | string | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    acknowledgedBy?: UserListRelationFilter
+    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type AnnouncementOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    publishDate?: SortOrderInput | SortOrder
+    expiryDate?: SortOrderInput | SortOrder
+    isSticky?: SortOrder
+    requiresAcknowledgment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    createdById?: SortOrder
+    targetRoles?: SortOrder
+    attachmentUrl?: SortOrderInput | SortOrder
+    attachmentType?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    _count?: AnnouncementCountOrderByAggregateInput
+    _max?: AnnouncementMaxOrderByAggregateInput
+    _min?: AnnouncementMinOrderByAggregateInput
+  }
+
+  export type AnnouncementScalarWhereWithAggregatesInput = {
+    AND?: AnnouncementScalarWhereWithAggregatesInput | AnnouncementScalarWhereWithAggregatesInput[]
+    OR?: AnnouncementScalarWhereWithAggregatesInput[]
+    NOT?: AnnouncementScalarWhereWithAggregatesInput | AnnouncementScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Announcement"> | string
+    title?: StringWithAggregatesFilter<"Announcement"> | string
+    content?: StringWithAggregatesFilter<"Announcement"> | string
+    priority?: EnumAnnouncementPriorityWithAggregatesFilter<"Announcement"> | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusWithAggregatesFilter<"Announcement"> | $Enums.AnnouncementStatus
+    publishDate?: DateTimeNullableWithAggregatesFilter<"Announcement"> | Date | string | null
+    expiryDate?: DateTimeNullableWithAggregatesFilter<"Announcement"> | Date | string | null
+    isSticky?: BoolWithAggregatesFilter<"Announcement"> | boolean
+    requiresAcknowledgment?: BoolWithAggregatesFilter<"Announcement"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Announcement"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Announcement"> | Date | string
+    agencyId?: StringWithAggregatesFilter<"Announcement"> | string
+    createdById?: StringWithAggregatesFilter<"Announcement"> | string
+    targetRoles?: EnumRoleNullableListFilter<"Announcement">
+    attachmentUrl?: StringNullableWithAggregatesFilter<"Announcement"> | string | null
+    attachmentType?: StringNullableWithAggregatesFilter<"Announcement"> | string | null
+    userId?: StringNullableWithAggregatesFilter<"Announcement"> | string | null
+  }
+
+  export type AuditLogWhereInput = {
+    AND?: AuditLogWhereInput | AuditLogWhereInput[]
+    OR?: AuditLogWhereInput[]
+    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
+    id?: StringFilter<"AuditLog"> | string
+    action?: EnumAuditActionFilter<"AuditLog"> | $Enums.AuditAction
+    entityType?: StringFilter<"AuditLog"> | string
+    entityId?: StringFilter<"AuditLog"> | string
+    description?: StringFilter<"AuditLog"> | string
+    changes?: JsonNullableFilter<"AuditLog">
+    ipAddress?: StringNullableFilter<"AuditLog"> | string | null
+    userAgent?: StringNullableFilter<"AuditLog"> | string | null
+    performedAt?: DateTimeFilter<"AuditLog"> | Date | string
+    agencyId?: StringFilter<"AuditLog"> | string
+    userId?: StringNullableFilter<"AuditLog"> | string | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type AuditLogOrderByWithRelationInput = {
+    id?: SortOrder
+    action?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    description?: SortOrder
+    changes?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    performedAt?: SortOrder
+    agencyId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    agency?: AgencyOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AuditLogWhereInput | AuditLogWhereInput[]
+    OR?: AuditLogWhereInput[]
+    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
+    action?: EnumAuditActionFilter<"AuditLog"> | $Enums.AuditAction
+    entityType?: StringFilter<"AuditLog"> | string
+    entityId?: StringFilter<"AuditLog"> | string
+    description?: StringFilter<"AuditLog"> | string
+    changes?: JsonNullableFilter<"AuditLog">
+    ipAddress?: StringNullableFilter<"AuditLog"> | string | null
+    userAgent?: StringNullableFilter<"AuditLog"> | string | null
+    performedAt?: DateTimeFilter<"AuditLog"> | Date | string
+    agencyId?: StringFilter<"AuditLog"> | string
+    userId?: StringNullableFilter<"AuditLog"> | string | null
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type AuditLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    action?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    description?: SortOrder
+    changes?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    performedAt?: SortOrder
+    agencyId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    _count?: AuditLogCountOrderByAggregateInput
+    _max?: AuditLogMaxOrderByAggregateInput
+    _min?: AuditLogMinOrderByAggregateInput
+  }
+
+  export type AuditLogScalarWhereWithAggregatesInput = {
+    AND?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
+    OR?: AuditLogScalarWhereWithAggregatesInput[]
+    NOT?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AuditLog"> | string
+    action?: EnumAuditActionWithAggregatesFilter<"AuditLog"> | $Enums.AuditAction
+    entityType?: StringWithAggregatesFilter<"AuditLog"> | string
+    entityId?: StringWithAggregatesFilter<"AuditLog"> | string
+    description?: StringWithAggregatesFilter<"AuditLog"> | string
+    changes?: JsonNullableWithAggregatesFilter<"AuditLog">
+    ipAddress?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    performedAt?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
+    agencyId?: StringWithAggregatesFilter<"AuditLog"> | string
+    userId?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+  }
+
+  export type CertificationWhereInput = {
+    AND?: CertificationWhereInput | CertificationWhereInput[]
+    OR?: CertificationWhereInput[]
+    NOT?: CertificationWhereInput | CertificationWhereInput[]
+    id?: StringFilter<"Certification"> | string
+    name?: StringFilter<"Certification"> | string
+    issuingAuthority?: StringFilter<"Certification"> | string
+    certificationCode?: StringNullableFilter<"Certification"> | string | null
+    issueDate?: DateTimeFilter<"Certification"> | Date | string
+    expiryDate?: DateTimeFilter<"Certification"> | Date | string
+    status?: EnumCertificationStatusFilter<"Certification"> | $Enums.CertificationStatus
+    documentUrl?: StringNullableFilter<"Certification"> | string | null
+    notes?: StringNullableFilter<"Certification"> | string | null
+    createdAt?: DateTimeFilter<"Certification"> | Date | string
+    updatedAt?: DateTimeFilter<"Certification"> | Date | string
+    agencyId?: StringFilter<"Certification"> | string
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+  }
+
+  export type CertificationOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    issuingAuthority?: SortOrder
+    certificationCode?: SortOrderInput | SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    documentUrl?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    agency?: AgencyOrderByWithRelationInput
+  }
+
+  export type CertificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CertificationWhereInput | CertificationWhereInput[]
+    OR?: CertificationWhereInput[]
+    NOT?: CertificationWhereInput | CertificationWhereInput[]
+    name?: StringFilter<"Certification"> | string
+    issuingAuthority?: StringFilter<"Certification"> | string
+    certificationCode?: StringNullableFilter<"Certification"> | string | null
+    issueDate?: DateTimeFilter<"Certification"> | Date | string
+    expiryDate?: DateTimeFilter<"Certification"> | Date | string
+    status?: EnumCertificationStatusFilter<"Certification"> | $Enums.CertificationStatus
+    documentUrl?: StringNullableFilter<"Certification"> | string | null
+    notes?: StringNullableFilter<"Certification"> | string | null
+    createdAt?: DateTimeFilter<"Certification"> | Date | string
+    updatedAt?: DateTimeFilter<"Certification"> | Date | string
+    agencyId?: StringFilter<"Certification"> | string
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+  }, "id">
+
+  export type CertificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    issuingAuthority?: SortOrder
+    certificationCode?: SortOrderInput | SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    documentUrl?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    _count?: CertificationCountOrderByAggregateInput
+    _max?: CertificationMaxOrderByAggregateInput
+    _min?: CertificationMinOrderByAggregateInput
+  }
+
+  export type CertificationScalarWhereWithAggregatesInput = {
+    AND?: CertificationScalarWhereWithAggregatesInput | CertificationScalarWhereWithAggregatesInput[]
+    OR?: CertificationScalarWhereWithAggregatesInput[]
+    NOT?: CertificationScalarWhereWithAggregatesInput | CertificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Certification"> | string
+    name?: StringWithAggregatesFilter<"Certification"> | string
+    issuingAuthority?: StringWithAggregatesFilter<"Certification"> | string
+    certificationCode?: StringNullableWithAggregatesFilter<"Certification"> | string | null
+    issueDate?: DateTimeWithAggregatesFilter<"Certification"> | Date | string
+    expiryDate?: DateTimeWithAggregatesFilter<"Certification"> | Date | string
+    status?: EnumCertificationStatusWithAggregatesFilter<"Certification"> | $Enums.CertificationStatus
+    documentUrl?: StringNullableWithAggregatesFilter<"Certification"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"Certification"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Certification"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Certification"> | Date | string
+    agencyId?: StringWithAggregatesFilter<"Certification"> | string
+  }
+
+  export type OperatingHoursWhereInput = {
+    AND?: OperatingHoursWhereInput | OperatingHoursWhereInput[]
+    OR?: OperatingHoursWhereInput[]
+    NOT?: OperatingHoursWhereInput | OperatingHoursWhereInput[]
+    id?: StringFilter<"OperatingHours"> | string
+    dayOfWeek?: EnumDayOfWeekFilter<"OperatingHours"> | $Enums.DayOfWeek
+    isOpen?: BoolFilter<"OperatingHours"> | boolean
+    openTime?: StringFilter<"OperatingHours"> | string
+    closeTime?: StringFilter<"OperatingHours"> | string
+    createdAt?: DateTimeFilter<"OperatingHours"> | Date | string
+    updatedAt?: DateTimeFilter<"OperatingHours"> | Date | string
+    agencyId?: StringFilter<"OperatingHours"> | string
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+  }
+
+  export type OperatingHoursOrderByWithRelationInput = {
+    id?: SortOrder
+    dayOfWeek?: SortOrder
+    isOpen?: SortOrder
+    openTime?: SortOrder
+    closeTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    agency?: AgencyOrderByWithRelationInput
+  }
+
+  export type OperatingHoursWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    agencyId_dayOfWeek?: OperatingHoursAgencyIdDayOfWeekCompoundUniqueInput
+    AND?: OperatingHoursWhereInput | OperatingHoursWhereInput[]
+    OR?: OperatingHoursWhereInput[]
+    NOT?: OperatingHoursWhereInput | OperatingHoursWhereInput[]
+    dayOfWeek?: EnumDayOfWeekFilter<"OperatingHours"> | $Enums.DayOfWeek
+    isOpen?: BoolFilter<"OperatingHours"> | boolean
+    openTime?: StringFilter<"OperatingHours"> | string
+    closeTime?: StringFilter<"OperatingHours"> | string
+    createdAt?: DateTimeFilter<"OperatingHours"> | Date | string
+    updatedAt?: DateTimeFilter<"OperatingHours"> | Date | string
+    agencyId?: StringFilter<"OperatingHours"> | string
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+  }, "id" | "agencyId_dayOfWeek">
+
+  export type OperatingHoursOrderByWithAggregationInput = {
+    id?: SortOrder
+    dayOfWeek?: SortOrder
+    isOpen?: SortOrder
+    openTime?: SortOrder
+    closeTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    _count?: OperatingHoursCountOrderByAggregateInput
+    _max?: OperatingHoursMaxOrderByAggregateInput
+    _min?: OperatingHoursMinOrderByAggregateInput
+  }
+
+  export type OperatingHoursScalarWhereWithAggregatesInput = {
+    AND?: OperatingHoursScalarWhereWithAggregatesInput | OperatingHoursScalarWhereWithAggregatesInput[]
+    OR?: OperatingHoursScalarWhereWithAggregatesInput[]
+    NOT?: OperatingHoursScalarWhereWithAggregatesInput | OperatingHoursScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OperatingHours"> | string
+    dayOfWeek?: EnumDayOfWeekWithAggregatesFilter<"OperatingHours"> | $Enums.DayOfWeek
+    isOpen?: BoolWithAggregatesFilter<"OperatingHours"> | boolean
+    openTime?: StringWithAggregatesFilter<"OperatingHours"> | string
+    closeTime?: StringWithAggregatesFilter<"OperatingHours"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"OperatingHours"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"OperatingHours"> | Date | string
+    agencyId?: StringWithAggregatesFilter<"OperatingHours"> | string
   }
 
   export type GroupWhereInput = {
@@ -43073,6 +49552,8 @@ export namespace Prisma {
     id?: StringFilter<"Group"> | string
     name?: StringFilter<"Group"> | string
     agencyId?: StringNullableFilter<"Group"> | string | null
+    createdAt?: DateTimeFilter<"Group"> | Date | string
+    updatedAt?: DateTimeFilter<"Group"> | Date | string
     clients?: UserListRelationFilter
     Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }
@@ -43081,6 +49562,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     agencyId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     clients?: UserOrderByRelationAggregateInput
     Agency?: AgencyOrderByWithRelationInput
   }
@@ -43092,6 +49575,8 @@ export namespace Prisma {
     NOT?: GroupWhereInput | GroupWhereInput[]
     name?: StringFilter<"Group"> | string
     agencyId?: StringNullableFilter<"Group"> | string | null
+    createdAt?: DateTimeFilter<"Group"> | Date | string
+    updatedAt?: DateTimeFilter<"Group"> | Date | string
     clients?: UserListRelationFilter
     Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }, "id">
@@ -43100,6 +49585,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     agencyId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: GroupCountOrderByAggregateInput
     _max?: GroupMaxOrderByAggregateInput
     _min?: GroupMinOrderByAggregateInput
@@ -43112,6 +49599,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Group"> | string
     name?: StringWithAggregatesFilter<"Group"> | string
     agencyId?: StringNullableWithAggregatesFilter<"Group"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Group"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Group"> | Date | string
   }
 
   export type RateSheetWhereInput = {
@@ -43379,6 +49868,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationListRelationFilter
     reportEdits?: ReportEditListRelationFilter
     Group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
+    createdAnnouncements?: AnnouncementListRelationFilter
+    acknowledgedAnnouncements?: AnnouncementListRelationFilter
+    Announcement?: AnnouncementListRelationFilter
+    AuditLog?: AuditLogListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -43447,6 +49940,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationOrderByRelationAggregateInput
     reportEdits?: ReportEditOrderByRelationAggregateInput
     Group?: GroupOrderByWithRelationInput
+    createdAnnouncements?: AnnouncementOrderByRelationAggregateInput
+    acknowledgedAnnouncements?: AnnouncementOrderByRelationAggregateInput
+    Announcement?: AnnouncementOrderByRelationAggregateInput
+    AuditLog?: AuditLogOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -43518,6 +50015,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationListRelationFilter
     reportEdits?: ReportEditListRelationFilter
     Group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
+    createdAnnouncements?: AnnouncementListRelationFilter
+    acknowledgedAnnouncements?: AnnouncementListRelationFilter
+    Announcement?: AnnouncementListRelationFilter
+    AuditLog?: AuditLogListRelationFilter
   }, "id" | "cognitoId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -45310,7 +51811,9 @@ export namespace Prisma {
     dueDate?: DateTimeFilter<"Reminder"> | Date | string
     completed?: BoolFilter<"Reminder"> | boolean
     createdAt?: DateTimeFilter<"Reminder"> | Date | string
+    agencyId?: StringNullableFilter<"Reminder"> | string | null
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }
 
   export type ReminderOrderByWithRelationInput = {
@@ -45321,7 +51824,9 @@ export namespace Prisma {
     dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
+    agencyId?: SortOrderInput | SortOrder
     client?: UserOrderByWithRelationInput
+    Agency?: AgencyOrderByWithRelationInput
   }
 
   export type ReminderWhereUniqueInput = Prisma.AtLeast<{
@@ -45335,7 +51840,9 @@ export namespace Prisma {
     dueDate?: DateTimeFilter<"Reminder"> | Date | string
     completed?: BoolFilter<"Reminder"> | boolean
     createdAt?: DateTimeFilter<"Reminder"> | Date | string
+    agencyId?: StringNullableFilter<"Reminder"> | string | null
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }, "id">
 
   export type ReminderOrderByWithAggregationInput = {
@@ -45346,6 +51853,7 @@ export namespace Prisma {
     dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
+    agencyId?: SortOrderInput | SortOrder
     _count?: ReminderCountOrderByAggregateInput
     _max?: ReminderMaxOrderByAggregateInput
     _min?: ReminderMinOrderByAggregateInput
@@ -45362,6 +51870,7 @@ export namespace Prisma {
     dueDate?: DateTimeWithAggregatesFilter<"Reminder"> | Date | string
     completed?: BoolWithAggregatesFilter<"Reminder"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Reminder"> | Date | string
+    agencyId?: StringNullableWithAggregatesFilter<"Reminder"> | string | null
   }
 
   export type NotificationWhereInput = {
@@ -45520,6 +52029,16 @@ export namespace Prisma {
   export type AgencyCreateInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -45530,6 +52049,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -45543,11 +52068,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -45558,6 +52098,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -45571,11 +52117,26 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -45586,6 +52147,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -45599,11 +52166,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -45614,6 +52196,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -45627,11 +52215,26 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateManyInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -45642,11 +52245,27 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
   }
 
   export type AgencyUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -45657,11 +52276,27 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type AgencyUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -45672,11 +52307,436 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type AnnouncementCreateInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    agency: AgencyCreateNestedOneWithoutAnnouncementsInput
+    createdBy: UserCreateNestedOneWithoutCreatedAnnouncementsInput
+    acknowledgedBy?: UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+    User?: UserCreateNestedOneWithoutAnnouncementInput
+  }
+
+  export type AnnouncementUncheckedCreateInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    createdById: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    userId?: string | null
+    acknowledgedBy?: UserUncheckedCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+  }
+
+  export type AnnouncementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    agency?: AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput
+    acknowledgedBy?: UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+    User?: UserUpdateOneWithoutAnnouncementNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedBy?: UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+  }
+
+  export type AnnouncementCreateManyInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    createdById: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    userId?: string | null
+  }
+
+  export type AnnouncementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AnnouncementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AuditLogCreateInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutAuditLogsInput
+    user?: UserCreateNestedOneWithoutAuditLogInput
+  }
+
+  export type AuditLogUncheckedCreateInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    agencyId: string
+    userId?: string | null
+  }
+
+  export type AuditLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutAuditLogsNestedInput
+    user?: UserUpdateOneWithoutAuditLogNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AuditLogCreateManyInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    agencyId: string
+    userId?: string | null
+  }
+
+  export type AuditLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CertificationCreateInput = {
+    id?: string
+    name: string
+    issuingAuthority: string
+    certificationCode?: string | null
+    issueDate: Date | string
+    expiryDate: Date | string
+    status?: $Enums.CertificationStatus
+    documentUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutCertificationsInput
+  }
+
+  export type CertificationUncheckedCreateInput = {
+    id?: string
+    name: string
+    issuingAuthority: string
+    certificationCode?: string | null
+    issueDate: Date | string
+    expiryDate: Date | string
+    status?: $Enums.CertificationStatus
+    documentUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+  }
+
+  export type CertificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: StringFieldUpdateOperationsInput | string
+    certificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumCertificationStatusFieldUpdateOperationsInput | $Enums.CertificationStatus
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutCertificationsNestedInput
+  }
+
+  export type CertificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: StringFieldUpdateOperationsInput | string
+    certificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumCertificationStatusFieldUpdateOperationsInput | $Enums.CertificationStatus
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CertificationCreateManyInput = {
+    id?: string
+    name: string
+    issuingAuthority: string
+    certificationCode?: string | null
+    issueDate: Date | string
+    expiryDate: Date | string
+    status?: $Enums.CertificationStatus
+    documentUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+  }
+
+  export type CertificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: StringFieldUpdateOperationsInput | string
+    certificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumCertificationStatusFieldUpdateOperationsInput | $Enums.CertificationStatus
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CertificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: StringFieldUpdateOperationsInput | string
+    certificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumCertificationStatusFieldUpdateOperationsInput | $Enums.CertificationStatus
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OperatingHoursCreateInput = {
+    id?: string
+    dayOfWeek: $Enums.DayOfWeek
+    isOpen?: boolean
+    openTime?: string
+    closeTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutOperatingHoursInput
+  }
+
+  export type OperatingHoursUncheckedCreateInput = {
+    id?: string
+    dayOfWeek: $Enums.DayOfWeek
+    isOpen?: boolean
+    openTime?: string
+    closeTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+  }
+
+  export type OperatingHoursUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    isOpen?: BoolFieldUpdateOperationsInput | boolean
+    openTime?: StringFieldUpdateOperationsInput | string
+    closeTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutOperatingHoursNestedInput
+  }
+
+  export type OperatingHoursUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    isOpen?: BoolFieldUpdateOperationsInput | boolean
+    openTime?: StringFieldUpdateOperationsInput | string
+    closeTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OperatingHoursCreateManyInput = {
+    id?: string
+    dayOfWeek: $Enums.DayOfWeek
+    isOpen?: boolean
+    openTime?: string
+    closeTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+  }
+
+  export type OperatingHoursUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    isOpen?: BoolFieldUpdateOperationsInput | boolean
+    openTime?: StringFieldUpdateOperationsInput | string
+    closeTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OperatingHoursUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    isOpen?: BoolFieldUpdateOperationsInput | boolean
+    openTime?: StringFieldUpdateOperationsInput | string
+    closeTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
   }
 
   export type GroupCreateInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     clients?: UserCreateNestedManyWithoutGroupInput
     Agency?: AgencyCreateNestedOneWithoutGroupsInput
   }
@@ -45685,12 +52745,16 @@ export namespace Prisma {
     id?: string
     name: string
     agencyId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     clients?: UserUncheckedCreateNestedManyWithoutGroupInput
   }
 
   export type GroupUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clients?: UserUpdateManyWithoutGroupNestedInput
     Agency?: AgencyUpdateOneWithoutGroupsNestedInput
   }
@@ -45699,6 +52763,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clients?: UserUncheckedUpdateManyWithoutGroupNestedInput
   }
 
@@ -45706,17 +52772,23 @@ export namespace Prisma {
     id?: string
     name: string
     agencyId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type GroupUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type GroupUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RateSheetCreateInput = {
@@ -45981,6 +53053,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -46046,6 +53122,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -46111,6 +53191,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -46176,6 +53260,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -48048,6 +55136,7 @@ export namespace Prisma {
     completed?: boolean
     createdAt?: Date | string
     client: UserCreateNestedOneWithoutRemindersInput
+    Agency?: AgencyCreateNestedOneWithoutRemindersInput
   }
 
   export type ReminderUncheckedCreateInput = {
@@ -48058,6 +55147,7 @@ export namespace Prisma {
     dueDate: Date | string
     completed?: boolean
     createdAt?: Date | string
+    agencyId?: string | null
   }
 
   export type ReminderUpdateInput = {
@@ -48068,6 +55158,7 @@ export namespace Prisma {
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: UserUpdateOneRequiredWithoutRemindersNestedInput
+    Agency?: AgencyUpdateOneWithoutRemindersNestedInput
   }
 
   export type ReminderUncheckedUpdateInput = {
@@ -48078,6 +55169,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReminderCreateManyInput = {
@@ -48088,6 +55180,7 @@ export namespace Prisma {
     dueDate: Date | string
     completed?: boolean
     createdAt?: Date | string
+    agencyId?: string | null
   }
 
   export type ReminderUpdateManyMutationInput = {
@@ -48107,6 +55200,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type NotificationCreateInput = {
@@ -48340,6 +55434,32 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -48423,6 +55543,36 @@ export namespace Prisma {
     none?: CustomTaskWhereInput
   }
 
+  export type CertificationListRelationFilter = {
+    every?: CertificationWhereInput
+    some?: CertificationWhereInput
+    none?: CertificationWhereInput
+  }
+
+  export type OperatingHoursListRelationFilter = {
+    every?: OperatingHoursWhereInput
+    some?: OperatingHoursWhereInput
+    none?: OperatingHoursWhereInput
+  }
+
+  export type ReminderListRelationFilter = {
+    every?: ReminderWhereInput
+    some?: ReminderWhereInput
+    none?: ReminderWhereInput
+  }
+
+  export type AuditLogListRelationFilter = {
+    every?: AuditLogWhereInput
+    some?: AuditLogWhereInput
+    none?: AuditLogWhereInput
+  }
+
+  export type AnnouncementListRelationFilter = {
+    every?: AnnouncementWhereInput
+    some?: AnnouncementWhereInput
+    none?: AnnouncementWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -48475,9 +55625,39 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type CertificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OperatingHoursOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReminderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AuditLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AnnouncementOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type AgencyCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    description?: SortOrder
+    address?: SortOrder
+    extension?: SortOrder
+    mobileNumber?: SortOrder
+    landlineNumber?: SortOrder
+    website?: SortOrder
+    logo?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
     isActive?: SortOrder
     isSuspended?: SortOrder
     hasScheduleV2?: SortOrder
@@ -48488,11 +55668,36 @@ export namespace Prisma {
     isTestAccount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    licenseNumber?: SortOrder
+    timeZone?: SortOrder
+    currency?: SortOrder
+    maxUsers?: SortOrder
+    maxClients?: SortOrder
+    maxCareWorkers?: SortOrder
+  }
+
+  export type AgencyAvgOrderByAggregateInput = {
+    extension?: SortOrder
+    mobileNumber?: SortOrder
+    landlineNumber?: SortOrder
+    maxUsers?: SortOrder
+    maxClients?: SortOrder
+    maxCareWorkers?: SortOrder
   }
 
   export type AgencyMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    description?: SortOrder
+    address?: SortOrder
+    extension?: SortOrder
+    mobileNumber?: SortOrder
+    landlineNumber?: SortOrder
+    website?: SortOrder
+    logo?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
     isActive?: SortOrder
     isSuspended?: SortOrder
     hasScheduleV2?: SortOrder
@@ -48503,11 +55708,27 @@ export namespace Prisma {
     isTestAccount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    licenseNumber?: SortOrder
+    timeZone?: SortOrder
+    currency?: SortOrder
+    maxUsers?: SortOrder
+    maxClients?: SortOrder
+    maxCareWorkers?: SortOrder
   }
 
   export type AgencyMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
+    description?: SortOrder
+    address?: SortOrder
+    extension?: SortOrder
+    mobileNumber?: SortOrder
+    landlineNumber?: SortOrder
+    website?: SortOrder
+    logo?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
     isActive?: SortOrder
     isSuspended?: SortOrder
     hasScheduleV2?: SortOrder
@@ -48518,52 +55739,21 @@ export namespace Prisma {
     isTestAccount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    licenseNumber?: SortOrder
+    timeZone?: SortOrder
+    currency?: SortOrder
+    maxUsers?: SortOrder
+    maxClients?: SortOrder
+    maxCareWorkers?: SortOrder
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type AgencyNullableScalarRelationFilter = {
-    is?: AgencyWhereInput | null
-    isNot?: AgencyWhereInput | null
-  }
-
-  export type GroupCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type GroupMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    agencyId?: SortOrder
-  }
-
-  export type GroupMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    agencyId?: SortOrder
+  export type AgencySumOrderByAggregateInput = {
+    extension?: SortOrder
+    mobileNumber?: SortOrder
+    landlineNumber?: SortOrder
+    maxUsers?: SortOrder
+    maxClients?: SortOrder
+    maxCareWorkers?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -48582,6 +55772,417 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumAnnouncementPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementPriority | EnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementPriorityFilter<$PrismaModel> | $Enums.AnnouncementPriority
+  }
+
+  export type EnumAnnouncementStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementStatus | EnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementStatusFilter<$PrismaModel> | $Enums.AnnouncementStatus
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type EnumRoleNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    has?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type AgencyScalarRelationFilter = {
+    is?: AgencyWhereInput
+    isNot?: AgencyWhereInput
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type AnnouncementCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    publishDate?: SortOrder
+    expiryDate?: SortOrder
+    isSticky?: SortOrder
+    requiresAcknowledgment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    createdById?: SortOrder
+    targetRoles?: SortOrder
+    attachmentUrl?: SortOrder
+    attachmentType?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type AnnouncementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    publishDate?: SortOrder
+    expiryDate?: SortOrder
+    isSticky?: SortOrder
+    requiresAcknowledgment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    createdById?: SortOrder
+    attachmentUrl?: SortOrder
+    attachmentType?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type AnnouncementMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    publishDate?: SortOrder
+    expiryDate?: SortOrder
+    isSticky?: SortOrder
+    requiresAcknowledgment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    createdById?: SortOrder
+    attachmentUrl?: SortOrder
+    attachmentType?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type EnumAnnouncementPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementPriority | EnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementPriorityWithAggregatesFilter<$PrismaModel> | $Enums.AnnouncementPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnnouncementPriorityFilter<$PrismaModel>
+    _max?: NestedEnumAnnouncementPriorityFilter<$PrismaModel>
+  }
+
+  export type EnumAnnouncementStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementStatus | EnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementStatusWithAggregatesFilter<$PrismaModel> | $Enums.AnnouncementStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnnouncementStatusFilter<$PrismaModel>
+    _max?: NestedEnumAnnouncementStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumAuditActionFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditAction | EnumAuditActionFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditActionFilter<$PrismaModel> | $Enums.AuditAction
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type AuditLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    action?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    description?: SortOrder
+    changes?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    performedAt?: SortOrder
+    agencyId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type AuditLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    action?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    description?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    performedAt?: SortOrder
+    agencyId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type AuditLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    action?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    description?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    performedAt?: SortOrder
+    agencyId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type EnumAuditActionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditAction | EnumAuditActionFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditActionWithAggregatesFilter<$PrismaModel> | $Enums.AuditAction
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAuditActionFilter<$PrismaModel>
+    _max?: NestedEnumAuditActionFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type EnumCertificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CertificationStatus | EnumCertificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCertificationStatusFilter<$PrismaModel> | $Enums.CertificationStatus
+  }
+
+  export type CertificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    issuingAuthority?: SortOrder
+    certificationCode?: SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    documentUrl?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type CertificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    issuingAuthority?: SortOrder
+    certificationCode?: SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    documentUrl?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type CertificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    issuingAuthority?: SortOrder
+    certificationCode?: SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    documentUrl?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type EnumCertificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CertificationStatus | EnumCertificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCertificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.CertificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCertificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumCertificationStatusFilter<$PrismaModel>
+  }
+
+  export type EnumDayOfWeekFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekFilter<$PrismaModel> | $Enums.DayOfWeek
+  }
+
+  export type OperatingHoursAgencyIdDayOfWeekCompoundUniqueInput = {
+    agencyId: string
+    dayOfWeek: $Enums.DayOfWeek
+  }
+
+  export type OperatingHoursCountOrderByAggregateInput = {
+    id?: SortOrder
+    dayOfWeek?: SortOrder
+    isOpen?: SortOrder
+    openTime?: SortOrder
+    closeTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type OperatingHoursMaxOrderByAggregateInput = {
+    id?: SortOrder
+    dayOfWeek?: SortOrder
+    isOpen?: SortOrder
+    openTime?: SortOrder
+    closeTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type OperatingHoursMinOrderByAggregateInput = {
+    id?: SortOrder
+    dayOfWeek?: SortOrder
+    isOpen?: SortOrder
+    openTime?: SortOrder
+    closeTime?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type EnumDayOfWeekWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekWithAggregatesFilter<$PrismaModel> | $Enums.DayOfWeek
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDayOfWeekFilter<$PrismaModel>
+    _max?: NestedEnumDayOfWeekFilter<$PrismaModel>
+  }
+
+  export type AgencyNullableScalarRelationFilter = {
+    is?: AgencyWhereInput | null
+    isNot?: AgencyWhereInput | null
+  }
+
+  export type GroupCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroupMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GroupMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    agencyId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -48795,26 +56396,10 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type InvitationListRelationFilter = {
     every?: InvitationWhereInput
     some?: InvitationWhereInput
     none?: InvitationWhereInput
-  }
-
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
   }
 
   export type CommunicationPreferenceNullableScalarRelationFilter = {
@@ -48881,12 +56466,6 @@ export namespace Prisma {
     none?: CommunicationLogWhereInput
   }
 
-  export type ReminderListRelationFilter = {
-    every?: ReminderWhereInput
-    some?: ReminderWhereInput
-    none?: ReminderWhereInput
-  }
-
   export type MedicationAdministrationListRelationFilter = {
     every?: MedicationAdministrationWhereInput
     some?: MedicationAdministrationWhereInput
@@ -48941,10 +56520,6 @@ export namespace Prisma {
   }
 
   export type CommunicationLogOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ReminderOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -49090,20 +56665,6 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type CommunicationPreferenceCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -49156,11 +56717,6 @@ export namespace Prisma {
     relation?: SortOrder
     phone?: SortOrder
     email?: SortOrder
-  }
-
-  export type AgencyScalarRelationFilter = {
-    is?: AgencyWhereInput
-    isNot?: AgencyWhereInput
   }
 
   export type MedicationDatabaseLinkCountOrderByAggregateInput = {
@@ -50137,6 +57693,7 @@ export namespace Prisma {
     dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
+    agencyId?: SortOrder
   }
 
   export type ReminderMaxOrderByAggregateInput = {
@@ -50147,6 +57704,7 @@ export namespace Prisma {
     dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
+    agencyId?: SortOrder
   }
 
   export type ReminderMinOrderByAggregateInput = {
@@ -50157,6 +57715,7 @@ export namespace Prisma {
     dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
+    agencyId?: SortOrder
   }
 
   export type EnumNotificationTypeFilter<$PrismaModel = never> = {
@@ -50334,6 +57893,41 @@ export namespace Prisma {
     connect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
   }
 
+  export type CertificationCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<CertificationCreateWithoutAgencyInput, CertificationUncheckedCreateWithoutAgencyInput> | CertificationCreateWithoutAgencyInput[] | CertificationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CertificationCreateOrConnectWithoutAgencyInput | CertificationCreateOrConnectWithoutAgencyInput[]
+    createMany?: CertificationCreateManyAgencyInputEnvelope
+    connect?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+  }
+
+  export type OperatingHoursCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<OperatingHoursCreateWithoutAgencyInput, OperatingHoursUncheckedCreateWithoutAgencyInput> | OperatingHoursCreateWithoutAgencyInput[] | OperatingHoursUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: OperatingHoursCreateOrConnectWithoutAgencyInput | OperatingHoursCreateOrConnectWithoutAgencyInput[]
+    createMany?: OperatingHoursCreateManyAgencyInputEnvelope
+    connect?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+  }
+
+  export type ReminderCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<ReminderCreateWithoutAgencyInput, ReminderUncheckedCreateWithoutAgencyInput> | ReminderCreateWithoutAgencyInput[] | ReminderUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReminderCreateOrConnectWithoutAgencyInput | ReminderCreateOrConnectWithoutAgencyInput[]
+    createMany?: ReminderCreateManyAgencyInputEnvelope
+    connect?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+  }
+
+  export type AuditLogCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<AuditLogCreateWithoutAgencyInput, AuditLogUncheckedCreateWithoutAgencyInput> | AuditLogCreateWithoutAgencyInput[] | AuditLogUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutAgencyInput | AuditLogCreateOrConnectWithoutAgencyInput[]
+    createMany?: AuditLogCreateManyAgencyInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type AnnouncementCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
+    createMany?: AnnouncementCreateManyAgencyInputEnvelope
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
@@ -50423,6 +58017,53 @@ export namespace Prisma {
     connectOrCreate?: CustomTaskCreateOrConnectWithoutAgencyInput | CustomTaskCreateOrConnectWithoutAgencyInput[]
     createMany?: CustomTaskCreateManyAgencyInputEnvelope
     connect?: CustomTaskWhereUniqueInput | CustomTaskWhereUniqueInput[]
+  }
+
+  export type CertificationUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<CertificationCreateWithoutAgencyInput, CertificationUncheckedCreateWithoutAgencyInput> | CertificationCreateWithoutAgencyInput[] | CertificationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CertificationCreateOrConnectWithoutAgencyInput | CertificationCreateOrConnectWithoutAgencyInput[]
+    createMany?: CertificationCreateManyAgencyInputEnvelope
+    connect?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+  }
+
+  export type OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<OperatingHoursCreateWithoutAgencyInput, OperatingHoursUncheckedCreateWithoutAgencyInput> | OperatingHoursCreateWithoutAgencyInput[] | OperatingHoursUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: OperatingHoursCreateOrConnectWithoutAgencyInput | OperatingHoursCreateOrConnectWithoutAgencyInput[]
+    createMany?: OperatingHoursCreateManyAgencyInputEnvelope
+    connect?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+  }
+
+  export type ReminderUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<ReminderCreateWithoutAgencyInput, ReminderUncheckedCreateWithoutAgencyInput> | ReminderCreateWithoutAgencyInput[] | ReminderUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReminderCreateOrConnectWithoutAgencyInput | ReminderCreateOrConnectWithoutAgencyInput[]
+    createMany?: ReminderCreateManyAgencyInputEnvelope
+    connect?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+  }
+
+  export type AuditLogUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<AuditLogCreateWithoutAgencyInput, AuditLogUncheckedCreateWithoutAgencyInput> | AuditLogCreateWithoutAgencyInput[] | AuditLogUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutAgencyInput | AuditLogCreateOrConnectWithoutAgencyInput[]
+    createMany?: AuditLogCreateManyAgencyInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type AnnouncementUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
+    createMany?: AnnouncementCreateManyAgencyInputEnvelope
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -50611,6 +58252,76 @@ export namespace Prisma {
     deleteMany?: CustomTaskScalarWhereInput | CustomTaskScalarWhereInput[]
   }
 
+  export type CertificationUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<CertificationCreateWithoutAgencyInput, CertificationUncheckedCreateWithoutAgencyInput> | CertificationCreateWithoutAgencyInput[] | CertificationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CertificationCreateOrConnectWithoutAgencyInput | CertificationCreateOrConnectWithoutAgencyInput[]
+    upsert?: CertificationUpsertWithWhereUniqueWithoutAgencyInput | CertificationUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: CertificationCreateManyAgencyInputEnvelope
+    set?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    disconnect?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    delete?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    connect?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    update?: CertificationUpdateWithWhereUniqueWithoutAgencyInput | CertificationUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: CertificationUpdateManyWithWhereWithoutAgencyInput | CertificationUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: CertificationScalarWhereInput | CertificationScalarWhereInput[]
+  }
+
+  export type OperatingHoursUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<OperatingHoursCreateWithoutAgencyInput, OperatingHoursUncheckedCreateWithoutAgencyInput> | OperatingHoursCreateWithoutAgencyInput[] | OperatingHoursUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: OperatingHoursCreateOrConnectWithoutAgencyInput | OperatingHoursCreateOrConnectWithoutAgencyInput[]
+    upsert?: OperatingHoursUpsertWithWhereUniqueWithoutAgencyInput | OperatingHoursUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: OperatingHoursCreateManyAgencyInputEnvelope
+    set?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    disconnect?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    delete?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    connect?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    update?: OperatingHoursUpdateWithWhereUniqueWithoutAgencyInput | OperatingHoursUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: OperatingHoursUpdateManyWithWhereWithoutAgencyInput | OperatingHoursUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: OperatingHoursScalarWhereInput | OperatingHoursScalarWhereInput[]
+  }
+
+  export type ReminderUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ReminderCreateWithoutAgencyInput, ReminderUncheckedCreateWithoutAgencyInput> | ReminderCreateWithoutAgencyInput[] | ReminderUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReminderCreateOrConnectWithoutAgencyInput | ReminderCreateOrConnectWithoutAgencyInput[]
+    upsert?: ReminderUpsertWithWhereUniqueWithoutAgencyInput | ReminderUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ReminderCreateManyAgencyInputEnvelope
+    set?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    disconnect?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    delete?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    connect?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    update?: ReminderUpdateWithWhereUniqueWithoutAgencyInput | ReminderUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ReminderUpdateManyWithWhereWithoutAgencyInput | ReminderUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ReminderScalarWhereInput | ReminderScalarWhereInput[]
+  }
+
+  export type AuditLogUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<AuditLogCreateWithoutAgencyInput, AuditLogUncheckedCreateWithoutAgencyInput> | AuditLogCreateWithoutAgencyInput[] | AuditLogUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutAgencyInput | AuditLogCreateOrConnectWithoutAgencyInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutAgencyInput | AuditLogUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: AuditLogCreateManyAgencyInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutAgencyInput | AuditLogUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutAgencyInput | AuditLogUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type AnnouncementUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutAgencyInput | AnnouncementUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: AnnouncementCreateManyAgencyInputEnvelope
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutAgencyInput | AnnouncementUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutAgencyInput | AnnouncementUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<UserCreateWithoutAgencyInput, UserUncheckedCreateWithoutAgencyInput> | UserCreateWithoutAgencyInput[] | UserUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: UserCreateOrConnectWithoutAgencyInput | UserCreateOrConnectWithoutAgencyInput[]
@@ -50793,6 +58504,249 @@ export namespace Prisma {
     deleteMany?: CustomTaskScalarWhereInput | CustomTaskScalarWhereInput[]
   }
 
+  export type CertificationUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<CertificationCreateWithoutAgencyInput, CertificationUncheckedCreateWithoutAgencyInput> | CertificationCreateWithoutAgencyInput[] | CertificationUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: CertificationCreateOrConnectWithoutAgencyInput | CertificationCreateOrConnectWithoutAgencyInput[]
+    upsert?: CertificationUpsertWithWhereUniqueWithoutAgencyInput | CertificationUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: CertificationCreateManyAgencyInputEnvelope
+    set?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    disconnect?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    delete?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    connect?: CertificationWhereUniqueInput | CertificationWhereUniqueInput[]
+    update?: CertificationUpdateWithWhereUniqueWithoutAgencyInput | CertificationUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: CertificationUpdateManyWithWhereWithoutAgencyInput | CertificationUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: CertificationScalarWhereInput | CertificationScalarWhereInput[]
+  }
+
+  export type OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<OperatingHoursCreateWithoutAgencyInput, OperatingHoursUncheckedCreateWithoutAgencyInput> | OperatingHoursCreateWithoutAgencyInput[] | OperatingHoursUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: OperatingHoursCreateOrConnectWithoutAgencyInput | OperatingHoursCreateOrConnectWithoutAgencyInput[]
+    upsert?: OperatingHoursUpsertWithWhereUniqueWithoutAgencyInput | OperatingHoursUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: OperatingHoursCreateManyAgencyInputEnvelope
+    set?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    disconnect?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    delete?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    connect?: OperatingHoursWhereUniqueInput | OperatingHoursWhereUniqueInput[]
+    update?: OperatingHoursUpdateWithWhereUniqueWithoutAgencyInput | OperatingHoursUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: OperatingHoursUpdateManyWithWhereWithoutAgencyInput | OperatingHoursUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: OperatingHoursScalarWhereInput | OperatingHoursScalarWhereInput[]
+  }
+
+  export type ReminderUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ReminderCreateWithoutAgencyInput, ReminderUncheckedCreateWithoutAgencyInput> | ReminderCreateWithoutAgencyInput[] | ReminderUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ReminderCreateOrConnectWithoutAgencyInput | ReminderCreateOrConnectWithoutAgencyInput[]
+    upsert?: ReminderUpsertWithWhereUniqueWithoutAgencyInput | ReminderUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ReminderCreateManyAgencyInputEnvelope
+    set?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    disconnect?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    delete?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    connect?: ReminderWhereUniqueInput | ReminderWhereUniqueInput[]
+    update?: ReminderUpdateWithWhereUniqueWithoutAgencyInput | ReminderUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ReminderUpdateManyWithWhereWithoutAgencyInput | ReminderUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ReminderScalarWhereInput | ReminderScalarWhereInput[]
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<AuditLogCreateWithoutAgencyInput, AuditLogUncheckedCreateWithoutAgencyInput> | AuditLogCreateWithoutAgencyInput[] | AuditLogUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutAgencyInput | AuditLogCreateOrConnectWithoutAgencyInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutAgencyInput | AuditLogUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: AuditLogCreateManyAgencyInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutAgencyInput | AuditLogUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutAgencyInput | AuditLogUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutAgencyInput | AnnouncementUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: AnnouncementCreateManyAgencyInputEnvelope
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutAgencyInput | AnnouncementUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutAgencyInput | AnnouncementUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
+  export type AnnouncementCreatetargetRolesInput = {
+    set: $Enums.Role[]
+  }
+
+  export type AgencyCreateNestedOneWithoutAnnouncementsInput = {
+    create?: XOR<AgencyCreateWithoutAnnouncementsInput, AgencyUncheckedCreateWithoutAnnouncementsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutAnnouncementsInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreatedAnnouncementsInput = {
+    create?: XOR<UserCreateWithoutCreatedAnnouncementsInput, UserUncheckedCreateWithoutCreatedAnnouncementsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedAnnouncementsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput = {
+    create?: XOR<UserCreateWithoutAcknowledgedAnnouncementsInput, UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput> | UserCreateWithoutAcknowledgedAnnouncementsInput[] | UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput | UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutAnnouncementInput = {
+    create?: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnnouncementInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutAcknowledgedAnnouncementsInput = {
+    create?: XOR<UserCreateWithoutAcknowledgedAnnouncementsInput, UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput> | UserCreateWithoutAcknowledgedAnnouncementsInput[] | UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput | UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type EnumAnnouncementPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.AnnouncementPriority
+  }
+
+  export type EnumAnnouncementStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AnnouncementStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type AnnouncementUpdatetargetRolesInput = {
+    set?: $Enums.Role[]
+    push?: $Enums.Role | $Enums.Role[]
+  }
+
+  export type AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput = {
+    create?: XOR<AgencyCreateWithoutAnnouncementsInput, AgencyUncheckedCreateWithoutAnnouncementsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutAnnouncementsInput
+    upsert?: AgencyUpsertWithoutAnnouncementsInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutAnnouncementsInput, AgencyUpdateWithoutAnnouncementsInput>, AgencyUncheckedUpdateWithoutAnnouncementsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedAnnouncementsInput, UserUncheckedCreateWithoutCreatedAnnouncementsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedAnnouncementsInput
+    upsert?: UserUpsertWithoutCreatedAnnouncementsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedAnnouncementsInput, UserUpdateWithoutCreatedAnnouncementsInput>, UserUncheckedUpdateWithoutCreatedAnnouncementsInput>
+  }
+
+  export type UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput = {
+    create?: XOR<UserCreateWithoutAcknowledgedAnnouncementsInput, UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput> | UserCreateWithoutAcknowledgedAnnouncementsInput[] | UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput | UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutAcknowledgedAnnouncementsInput | UserUpsertWithWhereUniqueWithoutAcknowledgedAnnouncementsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutAcknowledgedAnnouncementsInput | UserUpdateWithWhereUniqueWithoutAcknowledgedAnnouncementsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutAcknowledgedAnnouncementsInput | UserUpdateManyWithWhereWithoutAcknowledgedAnnouncementsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutAnnouncementNestedInput = {
+    create?: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnnouncementInput
+    upsert?: UserUpsertWithoutAnnouncementInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnnouncementInput, UserUpdateWithoutAnnouncementInput>, UserUncheckedUpdateWithoutAnnouncementInput>
+  }
+
+  export type UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsNestedInput = {
+    create?: XOR<UserCreateWithoutAcknowledgedAnnouncementsInput, UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput> | UserCreateWithoutAcknowledgedAnnouncementsInput[] | UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput | UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutAcknowledgedAnnouncementsInput | UserUpsertWithWhereUniqueWithoutAcknowledgedAnnouncementsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutAcknowledgedAnnouncementsInput | UserUpdateWithWhereUniqueWithoutAcknowledgedAnnouncementsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutAcknowledgedAnnouncementsInput | UserUpdateManyWithWhereWithoutAcknowledgedAnnouncementsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type AgencyCreateNestedOneWithoutAuditLogsInput = {
+    create?: XOR<AgencyCreateWithoutAuditLogsInput, AgencyUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutAuditLogsInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAuditLogInput = {
+    create?: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuditLogInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumAuditActionFieldUpdateOperationsInput = {
+    set?: $Enums.AuditAction
+  }
+
+  export type AgencyUpdateOneRequiredWithoutAuditLogsNestedInput = {
+    create?: XOR<AgencyCreateWithoutAuditLogsInput, AgencyUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutAuditLogsInput
+    upsert?: AgencyUpsertWithoutAuditLogsInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutAuditLogsInput, AgencyUpdateWithoutAuditLogsInput>, AgencyUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type UserUpdateOneWithoutAuditLogNestedInput = {
+    create?: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuditLogInput
+    upsert?: UserUpsertWithoutAuditLogInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogInput, UserUpdateWithoutAuditLogInput>, UserUncheckedUpdateWithoutAuditLogInput>
+  }
+
+  export type AgencyCreateNestedOneWithoutCertificationsInput = {
+    create?: XOR<AgencyCreateWithoutCertificationsInput, AgencyUncheckedCreateWithoutCertificationsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutCertificationsInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type EnumCertificationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.CertificationStatus
+  }
+
+  export type AgencyUpdateOneRequiredWithoutCertificationsNestedInput = {
+    create?: XOR<AgencyCreateWithoutCertificationsInput, AgencyUncheckedCreateWithoutCertificationsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutCertificationsInput
+    upsert?: AgencyUpsertWithoutCertificationsInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutCertificationsInput, AgencyUpdateWithoutCertificationsInput>, AgencyUncheckedUpdateWithoutCertificationsInput>
+  }
+
+  export type AgencyCreateNestedOneWithoutOperatingHoursInput = {
+    create?: XOR<AgencyCreateWithoutOperatingHoursInput, AgencyUncheckedCreateWithoutOperatingHoursInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutOperatingHoursInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type EnumDayOfWeekFieldUpdateOperationsInput = {
+    set?: $Enums.DayOfWeek
+  }
+
+  export type AgencyUpdateOneRequiredWithoutOperatingHoursNestedInput = {
+    create?: XOR<AgencyCreateWithoutOperatingHoursInput, AgencyUncheckedCreateWithoutOperatingHoursInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutOperatingHoursInput
+    upsert?: AgencyUpsertWithoutOperatingHoursInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutOperatingHoursInput, AgencyUpdateWithoutOperatingHoursInput>, AgencyUncheckedUpdateWithoutOperatingHoursInput>
+  }
+
   export type UserCreateNestedManyWithoutGroupInput = {
     create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
     connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
@@ -50835,10 +58789,6 @@ export namespace Prisma {
     delete?: AgencyWhereInput | boolean
     connect?: AgencyWhereUniqueInput
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutGroupsInput, AgencyUpdateWithoutGroupsInput>, AgencyUncheckedUpdateWithoutGroupsInput>
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type UserUncheckedUpdateManyWithoutGroupNestedInput = {
@@ -51172,6 +59122,33 @@ export namespace Prisma {
     connect?: GroupWhereUniqueInput
   }
 
+  export type AnnouncementCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
+    createMany?: AnnouncementCreateManyCreatedByInputEnvelope
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type AnnouncementCreateNestedManyWithoutAcknowledgedByInput = {
+    create?: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput> | AnnouncementCreateWithoutAcknowledgedByInput[] | AnnouncementUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAcknowledgedByInput | AnnouncementCreateOrConnectWithoutAcknowledgedByInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type AnnouncementCreateNestedManyWithoutUserInput = {
+    create?: XOR<AnnouncementCreateWithoutUserInput, AnnouncementUncheckedCreateWithoutUserInput> | AnnouncementCreateWithoutUserInput[] | AnnouncementUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutUserInput | AnnouncementCreateOrConnectWithoutUserInput[]
+    createMany?: AnnouncementCreateManyUserInputEnvelope
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type AuditLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
   export type InvitationUncheckedCreateNestedManyWithoutInviterInput = {
     create?: XOR<InvitationCreateWithoutInviterInput, InvitationUncheckedCreateWithoutInviterInput> | InvitationCreateWithoutInviterInput[] | InvitationUncheckedCreateWithoutInviterInput[]
     connectOrCreate?: InvitationCreateOrConnectWithoutInviterInput | InvitationCreateOrConnectWithoutInviterInput[]
@@ -51387,6 +59364,33 @@ export namespace Prisma {
     connect?: ReportEditWhereUniqueInput | ReportEditWhereUniqueInput[]
   }
 
+  export type AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
+    createMany?: AnnouncementCreateManyCreatedByInputEnvelope
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput = {
+    create?: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput> | AnnouncementCreateWithoutAcknowledgedByInput[] | AnnouncementUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAcknowledgedByInput | AnnouncementCreateOrConnectWithoutAcknowledgedByInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type AnnouncementUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AnnouncementCreateWithoutUserInput, AnnouncementUncheckedCreateWithoutUserInput> | AnnouncementCreateWithoutUserInput[] | AnnouncementUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutUserInput | AnnouncementCreateOrConnectWithoutUserInput[]
+    createMany?: AnnouncementCreateManyUserInputEnvelope
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type AuditLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
   export type NullableBoolFieldUpdateOperationsInput = {
     set?: boolean | null
   }
@@ -51397,10 +59401,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type InvitationUpdateManyWithoutInviterNestedInput = {
@@ -51859,6 +59859,61 @@ export namespace Prisma {
     update?: XOR<XOR<GroupUpdateToOneWithWhereWithoutClientsInput, GroupUpdateWithoutClientsInput>, GroupUncheckedUpdateWithoutClientsInput>
   }
 
+  export type AnnouncementUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutCreatedByInput | AnnouncementUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: AnnouncementCreateManyCreatedByInputEnvelope
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutCreatedByInput | AnnouncementUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutCreatedByInput | AnnouncementUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
+  export type AnnouncementUpdateManyWithoutAcknowledgedByNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput> | AnnouncementCreateWithoutAcknowledgedByInput[] | AnnouncementUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAcknowledgedByInput | AnnouncementCreateOrConnectWithoutAcknowledgedByInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutAcknowledgedByInput | AnnouncementUpsertWithWhereUniqueWithoutAcknowledgedByInput[]
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutAcknowledgedByInput | AnnouncementUpdateWithWhereUniqueWithoutAcknowledgedByInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutAcknowledgedByInput | AnnouncementUpdateManyWithWhereWithoutAcknowledgedByInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
+  export type AnnouncementUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutUserInput, AnnouncementUncheckedCreateWithoutUserInput> | AnnouncementCreateWithoutUserInput[] | AnnouncementUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutUserInput | AnnouncementCreateOrConnectWithoutUserInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutUserInput | AnnouncementUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AnnouncementCreateManyUserInputEnvelope
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutUserInput | AnnouncementUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutUserInput | AnnouncementUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
+  export type AuditLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutUserInput | AuditLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
   export type InvitationUncheckedUpdateManyWithoutInviterNestedInput = {
     create?: XOR<InvitationCreateWithoutInviterInput, InvitationUncheckedCreateWithoutInviterInput> | InvitationCreateWithoutInviterInput[] | InvitationUncheckedCreateWithoutInviterInput[]
     connectOrCreate?: InvitationCreateOrConnectWithoutInviterInput | InvitationCreateOrConnectWithoutInviterInput[]
@@ -52283,6 +60338,61 @@ export namespace Prisma {
     update?: ReportEditUpdateWithWhereUniqueWithoutEditorInput | ReportEditUpdateWithWhereUniqueWithoutEditorInput[]
     updateMany?: ReportEditUpdateManyWithWhereWithoutEditorInput | ReportEditUpdateManyWithWhereWithoutEditorInput[]
     deleteMany?: ReportEditScalarWhereInput | ReportEditScalarWhereInput[]
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutCreatedByInput | AnnouncementUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: AnnouncementCreateManyCreatedByInputEnvelope
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutCreatedByInput | AnnouncementUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutCreatedByInput | AnnouncementUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput> | AnnouncementCreateWithoutAcknowledgedByInput[] | AnnouncementUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutAcknowledgedByInput | AnnouncementCreateOrConnectWithoutAcknowledgedByInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutAcknowledgedByInput | AnnouncementUpsertWithWhereUniqueWithoutAcknowledgedByInput[]
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutAcknowledgedByInput | AnnouncementUpdateWithWhereUniqueWithoutAcknowledgedByInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutAcknowledgedByInput | AnnouncementUpdateManyWithWhereWithoutAcknowledgedByInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AnnouncementCreateWithoutUserInput, AnnouncementUncheckedCreateWithoutUserInput> | AnnouncementCreateWithoutUserInput[] | AnnouncementUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AnnouncementCreateOrConnectWithoutUserInput | AnnouncementCreateOrConnectWithoutUserInput[]
+    upsert?: AnnouncementUpsertWithWhereUniqueWithoutUserInput | AnnouncementUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AnnouncementCreateManyUserInputEnvelope
+    set?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    disconnect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    delete?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+    update?: AnnouncementUpdateWithWhereUniqueWithoutUserInput | AnnouncementUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AnnouncementUpdateManyWithWhereWithoutUserInput | AnnouncementUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutUserInput | AuditLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AuditLogCreateManyUserInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutCommunicationPreferenceInput = {
@@ -53319,12 +61429,28 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type AgencyCreateNestedOneWithoutRemindersInput = {
+    create?: XOR<AgencyCreateWithoutRemindersInput, AgencyUncheckedCreateWithoutRemindersInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutRemindersInput
+    connect?: AgencyWhereUniqueInput
+  }
+
   export type UserUpdateOneRequiredWithoutRemindersNestedInput = {
     create?: XOR<UserCreateWithoutRemindersInput, UserUncheckedCreateWithoutRemindersInput>
     connectOrCreate?: UserCreateOrConnectWithoutRemindersInput
     upsert?: UserUpsertWithoutRemindersInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRemindersInput, UserUpdateWithoutRemindersInput>, UserUncheckedUpdateWithoutRemindersInput>
+  }
+
+  export type AgencyUpdateOneWithoutRemindersNestedInput = {
+    create?: XOR<AgencyCreateWithoutRemindersInput, AgencyUncheckedCreateWithoutRemindersInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutRemindersInput
+    upsert?: AgencyUpsertWithoutRemindersInput
+    disconnect?: AgencyWhereInput | boolean
+    delete?: AgencyWhereInput | boolean
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutRemindersInput, AgencyUpdateWithoutRemindersInput>, AgencyUncheckedUpdateWithoutRemindersInput>
   }
 
   export type UserCreateNestedOneWithoutNotificationInput = {
@@ -53474,19 +61600,6 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -53499,6 +61612,11 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -53516,6 +61634,174 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAnnouncementPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementPriority | EnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementPriorityFilter<$PrismaModel> | $Enums.AnnouncementPriority
+  }
+
+  export type NestedEnumAnnouncementStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementStatus | EnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementStatusFilter<$PrismaModel> | $Enums.AnnouncementStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumAnnouncementPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementPriority | EnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementPriority[] | ListEnumAnnouncementPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementPriorityWithAggregatesFilter<$PrismaModel> | $Enums.AnnouncementPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnnouncementPriorityFilter<$PrismaModel>
+    _max?: NestedEnumAnnouncementPriorityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAnnouncementStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnnouncementStatus | EnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnnouncementStatus[] | ListEnumAnnouncementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnnouncementStatusWithAggregatesFilter<$PrismaModel> | $Enums.AnnouncementStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnnouncementStatusFilter<$PrismaModel>
+    _max?: NestedEnumAnnouncementStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAuditActionFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditAction | EnumAuditActionFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditActionFilter<$PrismaModel> | $Enums.AuditAction
+  }
+
+  export type NestedEnumAuditActionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditAction | EnumAuditActionFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditActionWithAggregatesFilter<$PrismaModel> | $Enums.AuditAction
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAuditActionFilter<$PrismaModel>
+    _max?: NestedEnumAuditActionFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumCertificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CertificationStatus | EnumCertificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCertificationStatusFilter<$PrismaModel> | $Enums.CertificationStatus
+  }
+
+  export type NestedEnumCertificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CertificationStatus | EnumCertificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CertificationStatus[] | ListEnumCertificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCertificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.CertificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCertificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumCertificationStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumDayOfWeekFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekFilter<$PrismaModel> | $Enums.DayOfWeek
+  }
+
+  export type NestedEnumDayOfWeekWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DayOfWeek | EnumDayOfWeekFieldRefInput<$PrismaModel>
+    in?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DayOfWeek[] | ListEnumDayOfWeekFieldRefInput<$PrismaModel>
+    not?: NestedEnumDayOfWeekWithAggregatesFilter<$PrismaModel> | $Enums.DayOfWeek
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDayOfWeekFilter<$PrismaModel>
+    _max?: NestedEnumDayOfWeekFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -53618,28 +61904,6 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
     not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
@@ -53662,20 +61926,6 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumScheduleTypeFilter<$PrismaModel = never> = {
@@ -53892,6 +62142,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -53956,6 +62210,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -54036,6 +62294,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -54100,6 +62362,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAgencyInput = {
@@ -54164,6 +62430,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgencyInput = {
@@ -54228,6 +62498,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgencyInput = {
@@ -54552,12 +62826,16 @@ export namespace Prisma {
   export type GroupCreateWithoutAgencyInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     clients?: UserCreateNestedManyWithoutGroupInput
   }
 
   export type GroupUncheckedCreateWithoutAgencyInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     clients?: UserUncheckedCreateNestedManyWithoutGroupInput
   }
 
@@ -54626,6 +62904,190 @@ export namespace Prisma {
 
   export type CustomTaskCreateManyAgencyInputEnvelope = {
     data: CustomTaskCreateManyAgencyInput | CustomTaskCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CertificationCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    issuingAuthority: string
+    certificationCode?: string | null
+    issueDate: Date | string
+    expiryDate: Date | string
+    status?: $Enums.CertificationStatus
+    documentUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CertificationUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    issuingAuthority: string
+    certificationCode?: string | null
+    issueDate: Date | string
+    expiryDate: Date | string
+    status?: $Enums.CertificationStatus
+    documentUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CertificationCreateOrConnectWithoutAgencyInput = {
+    where: CertificationWhereUniqueInput
+    create: XOR<CertificationCreateWithoutAgencyInput, CertificationUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type CertificationCreateManyAgencyInputEnvelope = {
+    data: CertificationCreateManyAgencyInput | CertificationCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OperatingHoursCreateWithoutAgencyInput = {
+    id?: string
+    dayOfWeek: $Enums.DayOfWeek
+    isOpen?: boolean
+    openTime?: string
+    closeTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OperatingHoursUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    dayOfWeek: $Enums.DayOfWeek
+    isOpen?: boolean
+    openTime?: string
+    closeTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OperatingHoursCreateOrConnectWithoutAgencyInput = {
+    where: OperatingHoursWhereUniqueInput
+    create: XOR<OperatingHoursCreateWithoutAgencyInput, OperatingHoursUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type OperatingHoursCreateManyAgencyInputEnvelope = {
+    data: OperatingHoursCreateManyAgencyInput | OperatingHoursCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReminderCreateWithoutAgencyInput = {
+    id?: string
+    title: string
+    message?: string | null
+    dueDate: Date | string
+    completed?: boolean
+    createdAt?: Date | string
+    client: UserCreateNestedOneWithoutRemindersInput
+  }
+
+  export type ReminderUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    clientId: string
+    title: string
+    message?: string | null
+    dueDate: Date | string
+    completed?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ReminderCreateOrConnectWithoutAgencyInput = {
+    where: ReminderWhereUniqueInput
+    create: XOR<ReminderCreateWithoutAgencyInput, ReminderUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type ReminderCreateManyAgencyInputEnvelope = {
+    data: ReminderCreateManyAgencyInput | ReminderCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AuditLogCreateWithoutAgencyInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    user?: UserCreateNestedOneWithoutAuditLogInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    userId?: string | null
+  }
+
+  export type AuditLogCreateOrConnectWithoutAgencyInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutAgencyInput, AuditLogUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type AuditLogCreateManyAgencyInputEnvelope = {
+    data: AuditLogCreateManyAgencyInput | AuditLogCreateManyAgencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AnnouncementCreateWithoutAgencyInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    createdBy: UserCreateNestedOneWithoutCreatedAnnouncementsInput
+    acknowledgedBy?: UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+    User?: UserCreateNestedOneWithoutAnnouncementInput
+  }
+
+  export type AnnouncementUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    userId?: string | null
+    acknowledgedBy?: UserUncheckedCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+  }
+
+  export type AnnouncementCreateOrConnectWithoutAgencyInput = {
+    where: AnnouncementWhereUniqueInput
+    create: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type AnnouncementCreateManyAgencyInputEnvelope = {
+    data: AnnouncementCreateManyAgencyInput | AnnouncementCreateManyAgencyInput[]
     skipDuplicates?: boolean
   }
 
@@ -54986,6 +63448,8 @@ export namespace Prisma {
     id?: StringFilter<"Group"> | string
     name?: StringFilter<"Group"> | string
     agencyId?: StringNullableFilter<"Group"> | string | null
+    createdAt?: DateTimeFilter<"Group"> | Date | string
+    updatedAt?: DateTimeFilter<"Group"> | Date | string
   }
 
   export type RateSheetUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -55045,6 +63509,2025 @@ export namespace Prisma {
     priority?: EnumCustomTaskPriorityFilter<"CustomTask"> | $Enums.CustomTaskPriority
     icon?: StringNullableFilter<"CustomTask"> | string | null
     agencyId?: StringNullableFilter<"CustomTask"> | string | null
+  }
+
+  export type CertificationUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: CertificationWhereUniqueInput
+    update: XOR<CertificationUpdateWithoutAgencyInput, CertificationUncheckedUpdateWithoutAgencyInput>
+    create: XOR<CertificationCreateWithoutAgencyInput, CertificationUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type CertificationUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: CertificationWhereUniqueInput
+    data: XOR<CertificationUpdateWithoutAgencyInput, CertificationUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type CertificationUpdateManyWithWhereWithoutAgencyInput = {
+    where: CertificationScalarWhereInput
+    data: XOR<CertificationUpdateManyMutationInput, CertificationUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type CertificationScalarWhereInput = {
+    AND?: CertificationScalarWhereInput | CertificationScalarWhereInput[]
+    OR?: CertificationScalarWhereInput[]
+    NOT?: CertificationScalarWhereInput | CertificationScalarWhereInput[]
+    id?: StringFilter<"Certification"> | string
+    name?: StringFilter<"Certification"> | string
+    issuingAuthority?: StringFilter<"Certification"> | string
+    certificationCode?: StringNullableFilter<"Certification"> | string | null
+    issueDate?: DateTimeFilter<"Certification"> | Date | string
+    expiryDate?: DateTimeFilter<"Certification"> | Date | string
+    status?: EnumCertificationStatusFilter<"Certification"> | $Enums.CertificationStatus
+    documentUrl?: StringNullableFilter<"Certification"> | string | null
+    notes?: StringNullableFilter<"Certification"> | string | null
+    createdAt?: DateTimeFilter<"Certification"> | Date | string
+    updatedAt?: DateTimeFilter<"Certification"> | Date | string
+    agencyId?: StringFilter<"Certification"> | string
+  }
+
+  export type OperatingHoursUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: OperatingHoursWhereUniqueInput
+    update: XOR<OperatingHoursUpdateWithoutAgencyInput, OperatingHoursUncheckedUpdateWithoutAgencyInput>
+    create: XOR<OperatingHoursCreateWithoutAgencyInput, OperatingHoursUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type OperatingHoursUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: OperatingHoursWhereUniqueInput
+    data: XOR<OperatingHoursUpdateWithoutAgencyInput, OperatingHoursUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type OperatingHoursUpdateManyWithWhereWithoutAgencyInput = {
+    where: OperatingHoursScalarWhereInput
+    data: XOR<OperatingHoursUpdateManyMutationInput, OperatingHoursUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type OperatingHoursScalarWhereInput = {
+    AND?: OperatingHoursScalarWhereInput | OperatingHoursScalarWhereInput[]
+    OR?: OperatingHoursScalarWhereInput[]
+    NOT?: OperatingHoursScalarWhereInput | OperatingHoursScalarWhereInput[]
+    id?: StringFilter<"OperatingHours"> | string
+    dayOfWeek?: EnumDayOfWeekFilter<"OperatingHours"> | $Enums.DayOfWeek
+    isOpen?: BoolFilter<"OperatingHours"> | boolean
+    openTime?: StringFilter<"OperatingHours"> | string
+    closeTime?: StringFilter<"OperatingHours"> | string
+    createdAt?: DateTimeFilter<"OperatingHours"> | Date | string
+    updatedAt?: DateTimeFilter<"OperatingHours"> | Date | string
+    agencyId?: StringFilter<"OperatingHours"> | string
+  }
+
+  export type ReminderUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: ReminderWhereUniqueInput
+    update: XOR<ReminderUpdateWithoutAgencyInput, ReminderUncheckedUpdateWithoutAgencyInput>
+    create: XOR<ReminderCreateWithoutAgencyInput, ReminderUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type ReminderUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: ReminderWhereUniqueInput
+    data: XOR<ReminderUpdateWithoutAgencyInput, ReminderUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type ReminderUpdateManyWithWhereWithoutAgencyInput = {
+    where: ReminderScalarWhereInput
+    data: XOR<ReminderUpdateManyMutationInput, ReminderUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type ReminderScalarWhereInput = {
+    AND?: ReminderScalarWhereInput | ReminderScalarWhereInput[]
+    OR?: ReminderScalarWhereInput[]
+    NOT?: ReminderScalarWhereInput | ReminderScalarWhereInput[]
+    id?: StringFilter<"Reminder"> | string
+    clientId?: StringFilter<"Reminder"> | string
+    title?: StringFilter<"Reminder"> | string
+    message?: StringNullableFilter<"Reminder"> | string | null
+    dueDate?: DateTimeFilter<"Reminder"> | Date | string
+    completed?: BoolFilter<"Reminder"> | boolean
+    createdAt?: DateTimeFilter<"Reminder"> | Date | string
+    agencyId?: StringNullableFilter<"Reminder"> | string | null
+  }
+
+  export type AuditLogUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: AuditLogWhereUniqueInput
+    update: XOR<AuditLogUpdateWithoutAgencyInput, AuditLogUncheckedUpdateWithoutAgencyInput>
+    create: XOR<AuditLogCreateWithoutAgencyInput, AuditLogUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type AuditLogUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: AuditLogWhereUniqueInput
+    data: XOR<AuditLogUpdateWithoutAgencyInput, AuditLogUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type AuditLogUpdateManyWithWhereWithoutAgencyInput = {
+    where: AuditLogScalarWhereInput
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type AuditLogScalarWhereInput = {
+    AND?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+    OR?: AuditLogScalarWhereInput[]
+    NOT?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+    id?: StringFilter<"AuditLog"> | string
+    action?: EnumAuditActionFilter<"AuditLog"> | $Enums.AuditAction
+    entityType?: StringFilter<"AuditLog"> | string
+    entityId?: StringFilter<"AuditLog"> | string
+    description?: StringFilter<"AuditLog"> | string
+    changes?: JsonNullableFilter<"AuditLog">
+    ipAddress?: StringNullableFilter<"AuditLog"> | string | null
+    userAgent?: StringNullableFilter<"AuditLog"> | string | null
+    performedAt?: DateTimeFilter<"AuditLog"> | Date | string
+    agencyId?: StringFilter<"AuditLog"> | string
+    userId?: StringNullableFilter<"AuditLog"> | string | null
+  }
+
+  export type AnnouncementUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: AnnouncementWhereUniqueInput
+    update: XOR<AnnouncementUpdateWithoutAgencyInput, AnnouncementUncheckedUpdateWithoutAgencyInput>
+    create: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type AnnouncementUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: AnnouncementWhereUniqueInput
+    data: XOR<AnnouncementUpdateWithoutAgencyInput, AnnouncementUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type AnnouncementUpdateManyWithWhereWithoutAgencyInput = {
+    where: AnnouncementScalarWhereInput
+    data: XOR<AnnouncementUpdateManyMutationInput, AnnouncementUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type AnnouncementScalarWhereInput = {
+    AND?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+    OR?: AnnouncementScalarWhereInput[]
+    NOT?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
+    id?: StringFilter<"Announcement"> | string
+    title?: StringFilter<"Announcement"> | string
+    content?: StringFilter<"Announcement"> | string
+    priority?: EnumAnnouncementPriorityFilter<"Announcement"> | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFilter<"Announcement"> | $Enums.AnnouncementStatus
+    publishDate?: DateTimeNullableFilter<"Announcement"> | Date | string | null
+    expiryDate?: DateTimeNullableFilter<"Announcement"> | Date | string | null
+    isSticky?: BoolFilter<"Announcement"> | boolean
+    requiresAcknowledgment?: BoolFilter<"Announcement"> | boolean
+    createdAt?: DateTimeFilter<"Announcement"> | Date | string
+    updatedAt?: DateTimeFilter<"Announcement"> | Date | string
+    agencyId?: StringFilter<"Announcement"> | string
+    createdById?: StringFilter<"Announcement"> | string
+    targetRoles?: EnumRoleNullableListFilter<"Announcement">
+    attachmentUrl?: StringNullableFilter<"Announcement"> | string | null
+    attachmentType?: StringNullableFilter<"Announcement"> | string | null
+    userId?: StringNullableFilter<"Announcement"> | string | null
+  }
+
+  export type AgencyCreateWithoutAnnouncementsInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutAnnouncementsInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutAnnouncementsInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutAnnouncementsInput, AgencyUncheckedCreateWithoutAnnouncementsInput>
+  }
+
+  export type UserCreateWithoutCreatedAnnouncementsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    Document?: DocumentCreateNestedManyWithoutClientInput
+    Notification?: NotificationCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedAnnouncementsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    groupId?: string | null
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedAnnouncementsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedAnnouncementsInput, UserUncheckedCreateWithoutCreatedAnnouncementsInput>
+  }
+
+  export type UserCreateWithoutAcknowledgedAnnouncementsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    Document?: DocumentCreateNestedManyWithoutClientInput
+    Notification?: NotificationCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    groupId?: string | null
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAcknowledgedAnnouncementsInput, UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput>
+  }
+
+  export type UserCreateWithoutAnnouncementInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    Document?: DocumentCreateNestedManyWithoutClientInput
+    Notification?: NotificationCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAnnouncementInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    groupId?: string | null
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAnnouncementInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
+  }
+
+  export type AgencyUpsertWithoutAnnouncementsInput = {
+    update: XOR<AgencyUpdateWithoutAnnouncementsInput, AgencyUncheckedUpdateWithoutAnnouncementsInput>
+    create: XOR<AgencyCreateWithoutAnnouncementsInput, AgencyUncheckedCreateWithoutAnnouncementsInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutAnnouncementsInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutAnnouncementsInput, AgencyUncheckedUpdateWithoutAnnouncementsInput>
+  }
+
+  export type AgencyUpdateWithoutAnnouncementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutAnnouncementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type UserUpsertWithoutCreatedAnnouncementsInput = {
+    update: XOR<UserUpdateWithoutCreatedAnnouncementsInput, UserUncheckedUpdateWithoutCreatedAnnouncementsInput>
+    create: XOR<UserCreateWithoutCreatedAnnouncementsInput, UserUncheckedCreateWithoutCreatedAnnouncementsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedAnnouncementsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedAnnouncementsInput, UserUncheckedUpdateWithoutCreatedAnnouncementsInput>
+  }
+
+  export type UserUpdateWithoutCreatedAnnouncementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    Document?: DocumentUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedAnnouncementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutAcknowledgedAnnouncementsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutAcknowledgedAnnouncementsInput, UserUncheckedUpdateWithoutAcknowledgedAnnouncementsInput>
+    create: XOR<UserCreateWithoutAcknowledgedAnnouncementsInput, UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutAcknowledgedAnnouncementsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutAcknowledgedAnnouncementsInput, UserUncheckedUpdateWithoutAcknowledgedAnnouncementsInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutAcknowledgedAnnouncementsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsInput>
+  }
+
+  export type UserUpsertWithoutAnnouncementInput = {
+    update: XOR<UserUpdateWithoutAnnouncementInput, UserUncheckedUpdateWithoutAnnouncementInput>
+    create: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAnnouncementInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAnnouncementInput, UserUncheckedUpdateWithoutAnnouncementInput>
+  }
+
+  export type UserUpdateWithoutAnnouncementInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    Document?: DocumentUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAnnouncementInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AgencyCreateWithoutAuditLogsInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutAuditLogsInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutAuditLogsInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutAuditLogsInput, AgencyUncheckedCreateWithoutAuditLogsInput>
+  }
+
+  export type UserCreateWithoutAuditLogInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    Document?: DocumentCreateNestedManyWithoutClientInput
+    Notification?: NotificationCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAuditLogInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    firstName: string
+    lastName: string
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    title?: string | null
+    addressLine1?: string | null
+    addressLine2?: string | null
+    townOrCity?: string | null
+    county?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    chargeRate?: number | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    preferredName?: string | null
+    groupId?: string | null
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAuditLogInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
+  }
+
+  export type AgencyUpsertWithoutAuditLogsInput = {
+    update: XOR<AgencyUpdateWithoutAuditLogsInput, AgencyUncheckedUpdateWithoutAuditLogsInput>
+    create: XOR<AgencyCreateWithoutAuditLogsInput, AgencyUncheckedCreateWithoutAuditLogsInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutAuditLogsInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutAuditLogsInput, AgencyUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type AgencyUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type UserUpsertWithoutAuditLogInput = {
+    update: XOR<UserUpdateWithoutAuditLogInput, UserUncheckedUpdateWithoutAuditLogInput>
+    create: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAuditLogInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAuditLogInput, UserUncheckedUpdateWithoutAuditLogInput>
+  }
+
+  export type UserUpdateWithoutAuditLogInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    Document?: DocumentUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAuditLogInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AgencyCreateWithoutCertificationsInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutCertificationsInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutCertificationsInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutCertificationsInput, AgencyUncheckedCreateWithoutCertificationsInput>
+  }
+
+  export type AgencyUpsertWithoutCertificationsInput = {
+    update: XOR<AgencyUpdateWithoutCertificationsInput, AgencyUncheckedUpdateWithoutCertificationsInput>
+    create: XOR<AgencyCreateWithoutCertificationsInput, AgencyUncheckedCreateWithoutCertificationsInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutCertificationsInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutCertificationsInput, AgencyUncheckedUpdateWithoutCertificationsInput>
+  }
+
+  export type AgencyUpdateWithoutCertificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutCertificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyCreateWithoutOperatingHoursInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutOperatingHoursInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutOperatingHoursInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutOperatingHoursInput, AgencyUncheckedCreateWithoutOperatingHoursInput>
+  }
+
+  export type AgencyUpsertWithoutOperatingHoursInput = {
+    update: XOR<AgencyUpdateWithoutOperatingHoursInput, AgencyUncheckedUpdateWithoutOperatingHoursInput>
+    create: XOR<AgencyCreateWithoutOperatingHoursInput, AgencyUncheckedCreateWithoutOperatingHoursInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutOperatingHoursInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutOperatingHoursInput, AgencyUncheckedUpdateWithoutOperatingHoursInput>
+  }
+
+  export type AgencyUpdateWithoutOperatingHoursInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutOperatingHoursInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutGroupInput = {
@@ -55109,6 +65592,10 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutGroupInput = {
@@ -55173,6 +65660,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutGroupInput = {
@@ -55188,6 +65679,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutGroupsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -55198,6 +65699,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -55210,11 +65717,26 @@ export namespace Prisma {
     Report?: ReportCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutGroupsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -55225,6 +65747,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -55237,6 +65765,11 @@ export namespace Prisma {
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutGroupsInput = {
@@ -55274,6 +65807,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutGroupsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -55284,6 +65827,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -55296,11 +65845,26 @@ export namespace Prisma {
     Report?: ReportUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutGroupsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -55311,6 +65875,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -55323,11 +65893,26 @@ export namespace Prisma {
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutRateSheetsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -55338,6 +65923,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -55350,11 +65941,26 @@ export namespace Prisma {
     Report?: ReportCreateNestedManyWithoutAgencyInput
     groups?: GroupCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRateSheetsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -55365,6 +65971,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -55377,6 +65989,11 @@ export namespace Prisma {
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRateSheetsInput = {
@@ -55398,6 +66015,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutRateSheetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -55408,6 +66035,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -55420,11 +66053,26 @@ export namespace Prisma {
     Report?: ReportUpdateManyWithoutAgencyNestedInput
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRateSheetsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -55435,6 +66083,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -55447,11 +66101,26 @@ export namespace Prisma {
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutCustomTasksInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -55462,6 +66131,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -55474,11 +66149,26 @@ export namespace Prisma {
     Report?: ReportCreateNestedManyWithoutAgencyInput
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutCustomTasksInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -55489,6 +66179,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -55501,6 +66197,11 @@ export namespace Prisma {
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutCustomTasksInput = {
@@ -55522,6 +66223,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutCustomTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -55532,6 +66243,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -55544,11 +66261,26 @@ export namespace Prisma {
     Report?: ReportUpdateManyWithoutAgencyNestedInput
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutCustomTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -55559,6 +66291,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -55571,6 +66309,11 @@ export namespace Prisma {
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutClientAssignmentsInput = {
@@ -55635,6 +66378,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientAssignmentsInput = {
@@ -55699,6 +66446,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientAssignmentsInput = {
@@ -55768,6 +66519,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareAssignmentsInput = {
@@ -55832,6 +66587,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareAssignmentsInput = {
@@ -55912,6 +66671,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientAssignmentsInput = {
@@ -55976,6 +66739,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareAssignmentsInput = {
@@ -56051,6 +66818,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareAssignmentsInput = {
@@ -56115,6 +66886,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type InvitationCreateWithoutInviterInput = {
@@ -56152,6 +66927,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutUsersInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -56162,6 +66947,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
@@ -56174,11 +66965,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutUsersInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -56189,6 +66995,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
@@ -56201,6 +67013,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutUsersInput = {
@@ -56270,6 +67087,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvitedUsersInput = {
@@ -56334,6 +67155,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvitedUsersInput = {
@@ -56403,6 +67228,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvitedByInput = {
@@ -56467,6 +67296,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvitedByInput = {
@@ -57344,6 +68177,7 @@ export namespace Prisma {
     dueDate: Date | string
     completed?: boolean
     createdAt?: Date | string
+    Agency?: AgencyCreateNestedOneWithoutRemindersInput
   }
 
   export type ReminderUncheckedCreateWithoutClientInput = {
@@ -57353,6 +68187,7 @@ export namespace Prisma {
     dueDate: Date | string
     completed?: boolean
     createdAt?: Date | string
+    agencyId?: string | null
   }
 
   export type ReminderCreateOrConnectWithoutClientInput = {
@@ -57426,6 +68261,8 @@ export namespace Prisma {
   export type GroupCreateWithoutClientsInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     Agency?: AgencyCreateNestedOneWithoutGroupsInput
   }
 
@@ -57433,11 +68270,194 @@ export namespace Prisma {
     id?: string
     name: string
     agencyId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type GroupCreateOrConnectWithoutClientsInput = {
     where: GroupWhereUniqueInput
     create: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
+  }
+
+  export type AnnouncementCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    agency: AgencyCreateNestedOneWithoutAnnouncementsInput
+    acknowledgedBy?: UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+    User?: UserCreateNestedOneWithoutAnnouncementInput
+  }
+
+  export type AnnouncementUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    userId?: string | null
+    acknowledgedBy?: UserUncheckedCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+  }
+
+  export type AnnouncementCreateOrConnectWithoutCreatedByInput = {
+    where: AnnouncementWhereUniqueInput
+    create: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type AnnouncementCreateManyCreatedByInputEnvelope = {
+    data: AnnouncementCreateManyCreatedByInput | AnnouncementCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AnnouncementCreateWithoutAcknowledgedByInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    agency: AgencyCreateNestedOneWithoutAnnouncementsInput
+    createdBy: UserCreateNestedOneWithoutCreatedAnnouncementsInput
+    User?: UserCreateNestedOneWithoutAnnouncementInput
+  }
+
+  export type AnnouncementUncheckedCreateWithoutAcknowledgedByInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    createdById: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    userId?: string | null
+  }
+
+  export type AnnouncementCreateOrConnectWithoutAcknowledgedByInput = {
+    where: AnnouncementWhereUniqueInput
+    create: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput>
+  }
+
+  export type AnnouncementCreateWithoutUserInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    agency: AgencyCreateNestedOneWithoutAnnouncementsInput
+    createdBy: UserCreateNestedOneWithoutCreatedAnnouncementsInput
+    acknowledgedBy?: UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+  }
+
+  export type AnnouncementUncheckedCreateWithoutUserInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    createdById: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    acknowledgedBy?: UserUncheckedCreateNestedManyWithoutAcknowledgedAnnouncementsInput
+  }
+
+  export type AnnouncementCreateOrConnectWithoutUserInput = {
+    where: AnnouncementWhereUniqueInput
+    create: XOR<AnnouncementCreateWithoutUserInput, AnnouncementUncheckedCreateWithoutUserInput>
+  }
+
+  export type AnnouncementCreateManyUserInputEnvelope = {
+    data: AnnouncementCreateManyUserInput | AnnouncementCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AuditLogCreateWithoutUserInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutAuditLogsInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutUserInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    agencyId: string
+  }
+
+  export type AuditLogCreateOrConnectWithoutUserInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type AuditLogCreateManyUserInputEnvelope = {
+    data: AuditLogCreateManyUserInput | AuditLogCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type InvitationUpsertWithWhereUniqueWithoutInviterInput = {
@@ -57485,6 +68505,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -57495,6 +68525,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
@@ -57507,11 +68543,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -57522,6 +68573,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
@@ -57534,6 +68591,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutInvitedUsersInput = {
@@ -57609,6 +68671,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedUsersInput = {
@@ -57673,6 +68739,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutInvitedByInput = {
@@ -58261,19 +69331,6 @@ export namespace Prisma {
     data: XOR<ReminderUpdateManyMutationInput, ReminderUncheckedUpdateManyWithoutClientInput>
   }
 
-  export type ReminderScalarWhereInput = {
-    AND?: ReminderScalarWhereInput | ReminderScalarWhereInput[]
-    OR?: ReminderScalarWhereInput[]
-    NOT?: ReminderScalarWhereInput | ReminderScalarWhereInput[]
-    id?: StringFilter<"Reminder"> | string
-    clientId?: StringFilter<"Reminder"> | string
-    title?: StringFilter<"Reminder"> | string
-    message?: StringNullableFilter<"Reminder"> | string | null
-    dueDate?: DateTimeFilter<"Reminder"> | Date | string
-    completed?: BoolFilter<"Reminder"> | boolean
-    createdAt?: DateTimeFilter<"Reminder"> | Date | string
-  }
-
   export type MedicationAdministrationUpsertWithWhereUniqueWithoutAdministeredByInput = {
     where: MedicationAdministrationWhereUniqueInput
     update: XOR<MedicationAdministrationUpdateWithoutAdministeredByInput, MedicationAdministrationUncheckedUpdateWithoutAdministeredByInput>
@@ -58347,6 +69404,8 @@ export namespace Prisma {
   export type GroupUpdateWithoutClientsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Agency?: AgencyUpdateOneWithoutGroupsNestedInput
   }
 
@@ -58354,6 +69413,72 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnnouncementUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: AnnouncementWhereUniqueInput
+    update: XOR<AnnouncementUpdateWithoutCreatedByInput, AnnouncementUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type AnnouncementUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: AnnouncementWhereUniqueInput
+    data: XOR<AnnouncementUpdateWithoutCreatedByInput, AnnouncementUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type AnnouncementUpdateManyWithWhereWithoutCreatedByInput = {
+    where: AnnouncementScalarWhereInput
+    data: XOR<AnnouncementUpdateManyMutationInput, AnnouncementUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type AnnouncementUpsertWithWhereUniqueWithoutAcknowledgedByInput = {
+    where: AnnouncementWhereUniqueInput
+    update: XOR<AnnouncementUpdateWithoutAcknowledgedByInput, AnnouncementUncheckedUpdateWithoutAcknowledgedByInput>
+    create: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput>
+  }
+
+  export type AnnouncementUpdateWithWhereUniqueWithoutAcknowledgedByInput = {
+    where: AnnouncementWhereUniqueInput
+    data: XOR<AnnouncementUpdateWithoutAcknowledgedByInput, AnnouncementUncheckedUpdateWithoutAcknowledgedByInput>
+  }
+
+  export type AnnouncementUpdateManyWithWhereWithoutAcknowledgedByInput = {
+    where: AnnouncementScalarWhereInput
+    data: XOR<AnnouncementUpdateManyMutationInput, AnnouncementUncheckedUpdateManyWithoutAcknowledgedByInput>
+  }
+
+  export type AnnouncementUpsertWithWhereUniqueWithoutUserInput = {
+    where: AnnouncementWhereUniqueInput
+    update: XOR<AnnouncementUpdateWithoutUserInput, AnnouncementUncheckedUpdateWithoutUserInput>
+    create: XOR<AnnouncementCreateWithoutUserInput, AnnouncementUncheckedCreateWithoutUserInput>
+  }
+
+  export type AnnouncementUpdateWithWhereUniqueWithoutUserInput = {
+    where: AnnouncementWhereUniqueInput
+    data: XOR<AnnouncementUpdateWithoutUserInput, AnnouncementUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AnnouncementUpdateManyWithWhereWithoutUserInput = {
+    where: AnnouncementScalarWhereInput
+    data: XOR<AnnouncementUpdateManyMutationInput, AnnouncementUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AuditLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: AuditLogWhereUniqueInput
+    update: XOR<AuditLogUpdateWithoutUserInput, AuditLogUncheckedUpdateWithoutUserInput>
+    create: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type AuditLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: AuditLogWhereUniqueInput
+    data: XOR<AuditLogUpdateWithoutUserInput, AuditLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AuditLogUpdateManyWithWhereWithoutUserInput = {
+    where: AuditLogScalarWhereInput
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutUserInput>
   }
 
   export type UserCreateWithoutCommunicationPreferenceInput = {
@@ -58418,6 +69543,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationPreferenceInput = {
@@ -58482,6 +69611,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationPreferenceInput = {
@@ -58562,6 +69695,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationPreferenceInput = {
@@ -58626,6 +69763,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutFamilyAccessInput = {
@@ -58690,6 +69831,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFamilyAccessInput = {
@@ -58754,6 +69899,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFamilyAccessInput = {
@@ -58834,6 +69983,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFamilyAccessInput = {
@@ -58898,11 +70051,25 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutMedicationsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -58913,6 +70080,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -58925,11 +70098,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMedicationsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -58940,6 +70128,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -58952,6 +70146,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMedicationsInput = {
@@ -59022,6 +70221,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutMedicationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -59032,6 +70241,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -59044,11 +70259,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMedicationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -59059,6 +70289,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -59071,6 +70307,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type MedicationRecordUpsertWithWhereUniqueWithoutMedicationInput = {
@@ -59092,6 +70333,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutVisitTypesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -59102,6 +70353,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -59114,11 +70371,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutVisitTypesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -59129,6 +70401,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -59141,6 +70419,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutVisitTypesInput = {
@@ -59204,6 +70487,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutVisitTypesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -59214,6 +70507,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -59226,11 +70525,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutVisitTypesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -59241,6 +70555,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -59253,6 +70573,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput = {
@@ -59297,6 +70622,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutSchedulesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -59307,6 +70642,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
@@ -59319,11 +70660,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutSchedulesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -59334,6 +70690,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
@@ -59346,6 +70708,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutSchedulesInput = {
@@ -59415,6 +70782,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientSchedulesInput = {
@@ -59479,6 +70850,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientSchedulesInput = {
@@ -59548,6 +70923,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerSchedulesInput = {
@@ -59612,6 +70991,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerSchedulesInput = {
@@ -59662,6 +71045,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutSchedulesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -59672,6 +71065,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
@@ -59684,11 +71083,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutSchedulesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -59699,6 +71113,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
@@ -59711,6 +71131,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientSchedulesInput = {
@@ -59786,6 +71211,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientSchedulesInput = {
@@ -59850,6 +71279,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerSchedulesInput = {
@@ -59925,6 +71358,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerSchedulesInput = {
@@ -59989,6 +71426,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ReportTaskCreateWithoutReportInput = {
@@ -60199,6 +71640,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientReportsInput = {
@@ -60263,6 +71708,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientReportsInput = {
@@ -60332,6 +71781,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareReportsInput = {
@@ -60396,6 +71849,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareReportsInput = {
@@ -60406,6 +71863,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutReportInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -60416,6 +71883,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -60428,11 +71901,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutReportInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -60443,6 +71931,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -60455,6 +71949,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutReportInput = {
@@ -60656,6 +72155,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientReportsInput = {
@@ -60720,6 +72223,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareReportsInput = {
@@ -60795,6 +72302,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareReportsInput = {
@@ -60859,6 +72370,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyUpsertWithoutReportInput = {
@@ -60875,6 +72390,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutReportInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -60885,6 +72410,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -60897,11 +72428,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutReportInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -60912,6 +72458,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -60924,6 +72476,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type ReportCreateWithoutTasksCompletedInput = {
@@ -61419,6 +72976,10 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReportEditsInput = {
@@ -61483,6 +73044,10 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReportEditsInput = {
@@ -61628,6 +73193,10 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportEditsInput = {
@@ -61692,6 +73261,10 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MedicationDatabaseLinkCreateWithoutMedicationRecordInput = {
@@ -61779,6 +73352,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientMedicationsInput = {
@@ -61843,6 +73420,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientMedicationsInput = {
@@ -61912,6 +73493,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMedicationsInput = {
@@ -61976,6 +73561,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMedicationsInput = {
@@ -62045,6 +73634,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMedicationRecordsInput = {
@@ -62109,6 +73702,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMedicationRecordsInput = {
@@ -62250,6 +73847,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMedicationsInput = {
@@ -62314,6 +73915,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerMedicationsInput = {
@@ -62389,6 +73994,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMedicationsInput = {
@@ -62453,6 +74062,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutMedicationRecordsInput = {
@@ -62528,6 +74141,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationRecordsInput = {
@@ -62592,6 +74209,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MedicationAdministrationUpsertWithWhereUniqueWithoutMedicationRecordInput = {
@@ -62716,6 +74337,10 @@ export namespace Prisma {
     reminders?: ReminderCreateNestedManyWithoutClientInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMedicationAdministrationsInput = {
@@ -62780,6 +74405,10 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMedicationAdministrationsInput = {
@@ -62969,6 +74598,10 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationAdministrationsInput = {
@@ -63033,6 +74666,10 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ReportUpsertWithoutMedicationAdministrationsInput = {
@@ -63103,6 +74740,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutInvoicesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -63113,6 +74760,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
@@ -63125,11 +74778,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutInvoicesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -63140,6 +74808,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
@@ -63152,6 +74826,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutInvoicesInput = {
@@ -63221,6 +74900,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvoiceInput = {
@@ -63285,6 +74968,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvoiceInput = {
@@ -63306,6 +74993,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -63316,6 +75013,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
@@ -63328,11 +75031,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -63343,6 +75061,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
@@ -63355,6 +75079,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutInvoiceInput = {
@@ -63430,6 +75159,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoiceInput = {
@@ -63494,11 +75227,25 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutMileageRecordsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -63509,6 +75256,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -63521,11 +75274,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMileageRecordsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -63536,6 +75304,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -63548,6 +75322,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMileageRecordsInput = {
@@ -63617,6 +75396,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientMileageInput = {
@@ -63681,6 +75464,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientMileageInput = {
@@ -63750,6 +75537,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMileageInput = {
@@ -63814,6 +75605,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMileageInput = {
@@ -63883,6 +75678,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMileageRecordsInput = {
@@ -63947,6 +75746,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMileageRecordsInput = {
@@ -63968,6 +75771,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutMileageRecordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -63978,6 +75791,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -63990,11 +75809,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMileageRecordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -64005,6 +75839,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -64017,6 +75857,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientMileageInput = {
@@ -64092,6 +75937,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMileageInput = {
@@ -64156,6 +76005,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerMileageInput = {
@@ -64231,6 +76084,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMileageInput = {
@@ -64295,6 +76152,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutMileageRecordsInput = {
@@ -64370,6 +76231,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMileageRecordsInput = {
@@ -64434,6 +76299,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutDocumentsInput = {
@@ -64498,6 +76367,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -64562,6 +76435,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -64631,6 +76508,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocumentInput = {
@@ -64695,6 +76576,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocumentInput = {
@@ -64705,6 +76590,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutDocumentsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -64715,6 +76610,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -64727,11 +76628,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutDocumentsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -64742,6 +76658,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -64754,6 +76676,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutDocumentsInput = {
@@ -64834,6 +76761,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -64898,6 +76829,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutDocumentInput = {
@@ -64973,6 +76908,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentInput = {
@@ -65037,6 +76976,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyUpsertWithoutDocumentsInput = {
@@ -65053,6 +76996,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutDocumentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -65063,6 +77016,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -65075,11 +77034,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutDocumentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -65090,6 +77064,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -65102,6 +77082,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutProfileInput = {
@@ -65166,6 +77151,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -65230,6 +77219,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -65310,6 +77303,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -65374,6 +77371,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutIncidentReportsInput = {
@@ -65438,6 +77439,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutIncidentReportsInput = {
@@ -65502,6 +77507,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutIncidentReportsInput = {
@@ -65512,6 +77521,16 @@ export namespace Prisma {
   export type AgencyCreateWithoutIncidentReportsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -65522,6 +77541,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -65534,11 +77559,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutIncidentReportsInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -65549,6 +77589,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -65561,6 +77607,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutIncidentReportsInput = {
@@ -65641,6 +77692,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutIncidentReportsInput = {
@@ -65705,6 +77760,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyUpsertWithoutIncidentReportsInput = {
@@ -65721,6 +77780,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutIncidentReportsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -65731,6 +77800,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -65743,11 +77818,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutIncidentReportsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -65758,6 +77848,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -65770,6 +77866,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutSentMessagesInput = {
@@ -65834,6 +77935,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentMessagesInput = {
@@ -65898,6 +78003,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentMessagesInput = {
@@ -65967,6 +78076,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedMessagesInput = {
@@ -66031,6 +78144,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedMessagesInput = {
@@ -66111,6 +78228,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentMessagesInput = {
@@ -66175,6 +78296,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutReceivedMessagesInput = {
@@ -66250,6 +78375,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
@@ -66314,6 +78443,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKeyContactsInput = {
@@ -66378,6 +78511,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKeyContactsInput = {
@@ -66442,6 +78579,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutKeyContactsInput = {
@@ -66522,6 +78663,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKeyContactsInput = {
@@ -66586,6 +78731,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCareOutcomesInput = {
@@ -66650,6 +78799,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareOutcomesInput = {
@@ -66714,6 +78867,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareOutcomesInput = {
@@ -66794,6 +78951,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareOutcomesInput = {
@@ -66858,6 +79019,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCommunicationLogsInput = {
@@ -66922,6 +79087,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationLogsInput = {
@@ -66986,6 +79155,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationLogsInput = {
@@ -67066,6 +79239,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -67130,11 +79307,25 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutRiskCategoriesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -67145,6 +79336,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceCreateNestedManyWithoutAgencyInput
@@ -67157,11 +79354,26 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRiskCategoriesInput = {
     id?: string
     name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
     isActive?: boolean
     isSuspended?: boolean
     hasScheduleV2?: boolean
@@ -67172,6 +79384,12 @@ export namespace Prisma {
     isTestAccount?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
@@ -67184,6 +79402,11 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRiskCategoriesInput = {
@@ -67241,6 +79464,16 @@ export namespace Prisma {
   export type AgencyUpdateWithoutRiskCategoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -67251,6 +79484,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
@@ -67263,11 +79502,26 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRiskCategoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     isSuspended?: BoolFieldUpdateOperationsInput | boolean
     hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
@@ -67278,6 +79532,12 @@ export namespace Prisma {
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
@@ -67290,6 +79550,11 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type RiskAssessmentUpsertWithWhereUniqueWithoutRiskCategoryInput = {
@@ -67370,6 +79635,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRiskAssessmentsInput = {
@@ -67434,6 +79703,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRiskAssessmentsInput = {
@@ -67535,6 +79808,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRiskAssessmentsInput = {
@@ -67599,6 +79876,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RiskCategoryUpsertWithoutRiskAssessmentsInput = {
@@ -67690,6 +79971,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRemindersInput = {
@@ -67754,11 +80039,116 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRemindersInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutRemindersInput, UserUncheckedCreateWithoutRemindersInput>
+  }
+
+  export type AgencyCreateWithoutRemindersInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    Report?: ReportCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyUncheckedCreateWithoutRemindersInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: number | null
+    mobileNumber?: number | null
+    landlineNumber?: number | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutRemindersInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutRemindersInput, AgencyUncheckedCreateWithoutRemindersInput>
   }
 
   export type UserUpsertWithoutRemindersInput = {
@@ -67834,6 +80224,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRemindersInput = {
@@ -67898,6 +80292,117 @@ export namespace Prisma {
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AgencyUpsertWithoutRemindersInput = {
+    update: XOR<AgencyUpdateWithoutRemindersInput, AgencyUncheckedUpdateWithoutRemindersInput>
+    create: XOR<AgencyCreateWithoutRemindersInput, AgencyUncheckedCreateWithoutRemindersInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutRemindersInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutRemindersInput, AgencyUncheckedUpdateWithoutRemindersInput>
+  }
+
+  export type AgencyUpdateWithoutRemindersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutRemindersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableIntFieldUpdateOperationsInput | number | null
+    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutNotificationInput = {
@@ -67962,6 +80467,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
     Group?: GroupCreateNestedOneWithoutClientsInput
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationInput = {
@@ -68026,6 +80535,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationInput = {
@@ -68106,6 +80619,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationInput = {
@@ -68170,6 +80687,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyAgencyInput = {
@@ -68309,6 +80830,8 @@ export namespace Prisma {
   export type GroupCreateManyAgencyInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type RateSheetCreateManyAgencyInput = {
@@ -68328,6 +80851,72 @@ export namespace Prisma {
     frequency: $Enums.CustomTaskFrequency
     priority: $Enums.CustomTaskPriority
     icon?: string | null
+  }
+
+  export type CertificationCreateManyAgencyInput = {
+    id?: string
+    name: string
+    issuingAuthority: string
+    certificationCode?: string | null
+    issueDate: Date | string
+    expiryDate: Date | string
+    status?: $Enums.CertificationStatus
+    documentUrl?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OperatingHoursCreateManyAgencyInput = {
+    id?: string
+    dayOfWeek: $Enums.DayOfWeek
+    isOpen?: boolean
+    openTime?: string
+    closeTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReminderCreateManyAgencyInput = {
+    id?: string
+    clientId: string
+    title: string
+    message?: string | null
+    dueDate: Date | string
+    completed?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AuditLogCreateManyAgencyInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    userId?: string | null
+  }
+
+  export type AnnouncementCreateManyAgencyInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    userId?: string | null
   }
 
   export type UserUpdateWithoutAgencyInput = {
@@ -68392,6 +80981,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgencyInput = {
@@ -68456,6 +81049,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAgencyInput = {
@@ -68814,18 +81411,24 @@ export namespace Prisma {
   export type GroupUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clients?: UserUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupUncheckedUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clients?: UserUncheckedUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupUncheckedUpdateManyWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RateSheetUpdateWithoutAgencyInput = {
@@ -68883,6 +81486,376 @@ export namespace Prisma {
     frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
     priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
     icon?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CertificationUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: StringFieldUpdateOperationsInput | string
+    certificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumCertificationStatusFieldUpdateOperationsInput | $Enums.CertificationStatus
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CertificationUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: StringFieldUpdateOperationsInput | string
+    certificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumCertificationStatusFieldUpdateOperationsInput | $Enums.CertificationStatus
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CertificationUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: StringFieldUpdateOperationsInput | string
+    certificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumCertificationStatusFieldUpdateOperationsInput | $Enums.CertificationStatus
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OperatingHoursUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    isOpen?: BoolFieldUpdateOperationsInput | boolean
+    openTime?: StringFieldUpdateOperationsInput | string
+    closeTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OperatingHoursUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    isOpen?: BoolFieldUpdateOperationsInput | boolean
+    openTime?: StringFieldUpdateOperationsInput | string
+    closeTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OperatingHoursUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayOfWeek?: EnumDayOfWeekFieldUpdateOperationsInput | $Enums.DayOfWeek
+    isOpen?: BoolFieldUpdateOperationsInput | boolean
+    openTime?: StringFieldUpdateOperationsInput | string
+    closeTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReminderUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutRemindersNestedInput
+  }
+
+  export type ReminderUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReminderUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAuditLogNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AnnouncementUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput
+    acknowledgedBy?: UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+    User?: UserUpdateOneWithoutAnnouncementNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedBy?: UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserUpdateWithoutAcknowledgedAnnouncementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    Document?: DocumentUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAcknowledgedAnnouncementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
+    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
+    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
+    county?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserCreateManyGroupInput = {
@@ -68980,6 +81953,10 @@ export namespace Prisma {
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGroupInput = {
@@ -69044,6 +82021,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutGroupInput = {
@@ -69382,6 +82363,7 @@ export namespace Prisma {
     dueDate: Date | string
     completed?: boolean
     createdAt?: Date | string
+    agencyId?: string | null
   }
 
   export type MedicationAdministrationCreateManyAdministeredByInput = {
@@ -69401,6 +82383,57 @@ export namespace Prisma {
     editedAt?: Date | string
     reason: string
     changesJson: string
+  }
+
+  export type AnnouncementCreateManyCreatedByInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+    userId?: string | null
+  }
+
+  export type AnnouncementCreateManyUserInput = {
+    id?: string
+    title: string
+    content: string
+    priority?: $Enums.AnnouncementPriority
+    status?: $Enums.AnnouncementStatus
+    publishDate?: Date | string | null
+    expiryDate?: Date | string | null
+    isSticky?: boolean
+    requiresAcknowledgment?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    createdById: string
+    targetRoles?: AnnouncementCreatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: string | null
+    attachmentType?: string | null
+  }
+
+  export type AuditLogCreateManyUserInput = {
+    id?: string
+    action: $Enums.AuditAction
+    entityType: string
+    entityId: string
+    description: string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    performedAt?: Date | string
+    agencyId: string
   }
 
   export type InvitationUpdateWithoutInviterInput = {
@@ -69498,6 +82531,10 @@ export namespace Prisma {
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
     Group?: GroupUpdateOneWithoutClientsNestedInput
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedByInput = {
@@ -69562,6 +82599,10 @@ export namespace Prisma {
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutInvitedByInput = {
@@ -70485,6 +83526,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Agency?: AgencyUpdateOneWithoutRemindersNestedInput
   }
 
   export type ReminderUncheckedUpdateWithoutClientInput = {
@@ -70494,6 +83536,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReminderUncheckedUpdateManyWithoutClientInput = {
@@ -70503,6 +83546,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MedicationAdministrationUpdateWithoutAdministeredByInput = {
@@ -70560,6 +83604,223 @@ export namespace Prisma {
     editedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reason?: StringFieldUpdateOperationsInput | string
     changesJson?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AnnouncementUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    agency?: AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput
+    acknowledgedBy?: UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+    User?: UserUpdateOneWithoutAnnouncementNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedBy?: UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AnnouncementUpdateWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    agency?: AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput
+    User?: UserUpdateOneWithoutAnnouncementNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AnnouncementUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    agency?: AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput
+    acknowledgedBy?: UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedBy?: UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
+  }
+
+  export type AnnouncementUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    priority?: EnumAnnouncementPriorityFieldUpdateOperationsInput | $Enums.AnnouncementPriority
+    status?: EnumAnnouncementStatusFieldUpdateOperationsInput | $Enums.AnnouncementStatus
+    publishDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSticky?: BoolFieldUpdateOperationsInput | boolean
+    requiresAcknowledgment?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    targetRoles?: AnnouncementUpdatetargetRolesInput | $Enums.Role[]
+    attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AuditLogUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutAuditLogsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    changes?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicationRecordCreateManyMedicationInput = {

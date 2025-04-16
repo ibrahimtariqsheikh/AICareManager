@@ -5,6 +5,257 @@ import { Role } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
+
+/**
+ * Create a new agency
+ */
+export const createAgency = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const {
+            name,
+            email,
+            description,
+            address,
+            extension,
+            mobileNumber,
+            landlineNumber,
+            website,
+            logo,
+            primaryColor,
+            secondaryColor,
+            hasScheduleV2,
+            hasEMAR,
+            hasFinance,
+            isWeek1And2ScheduleEnabled,
+            hasPoliciesAndProcedures,
+            licenseNumber,
+            timeZone,
+            currency,
+            maxUsers,
+            maxClients,
+            maxCareWorkers
+        } = req.body;
+
+        console.log("Creating agency with data:", {
+            name,
+            email,
+            description
+        });
+
+        // Validate required fields
+        if (!name) {
+            console.error("Create Agency Error: Name is missing");
+            res.status(400).json({ message: "Agency name is required" });
+            return;
+        }
+
+        if (!email) {
+            console.error("Create Agency Error: Email is missing");
+            res.status(400).json({ message: "Agency email is required" });
+            return;
+        }
+
+        const agency = await prisma.agency.create({
+            data: {
+                name,
+                email,
+                description,
+                address,
+                extension,
+                mobileNumber,
+                landlineNumber,
+                website,
+                logo,
+                primaryColor,
+                secondaryColor,
+                hasScheduleV2: hasScheduleV2 ?? true,
+                hasEMAR: hasEMAR ?? false,
+                hasFinance: hasFinance ?? false,
+                isWeek1And2ScheduleEnabled: isWeek1And2ScheduleEnabled ?? false,
+                hasPoliciesAndProcedures: hasPoliciesAndProcedures ?? false,
+                licenseNumber,
+                timeZone: timeZone || "UTC",
+                currency: currency || "CAD",
+                maxUsers,
+                maxClients,
+                maxCareWorkers
+            }
+        });
+
+        console.log("Agency created successfully:", {
+            agencyId: agency.id,
+            name: agency.name,
+            email: agency.email,
+            createdAt: agency.createdAt
+        });
+
+        res.status(201).json(agency);
+    } catch (error: any) {
+        console.error("Error creating agency:", {
+            error: error.message,
+            stack: error.stack,
+            code: error.code,
+            meta: error.meta,
+            fullError: error,
+            requestBody: req.body
+        });
+        res.status(500).json({ 
+            message: "Error creating agency", 
+            error: error.message,
+            details: error.meta,
+            code: error.code
+        });
+    }
+};
+
+/**
+ * Update an existing agency by ID
+ */
+export const updateAgency = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const {
+            name,
+            email,
+            description,
+            address,
+            extension,
+            mobileNumber,
+            landlineNumber,
+            website,
+            logo,
+            primaryColor,
+            secondaryColor,
+            isActive,
+            isSuspended,
+            hasScheduleV2,
+            hasEMAR,
+            hasFinance,
+            isWeek1And2ScheduleEnabled,
+            hasPoliciesAndProcedures,
+            isTestAccount,
+            licenseNumber,
+            timeZone,
+            currency,
+            maxUsers,
+            maxClients,
+            maxCareWorkers
+        } = req.body;
+
+        console.log("Update Agency Request - ID:", id, "Data:", req.body);
+
+        // Check if agency exists
+        const existingAgency = await prisma.agency.findUnique({
+            where: { id }
+        });
+
+        if (!existingAgency) {
+            console.error("Update Agency Error: Agency not found", { id });
+            res.status(404).json({ message: "Agency not found" });
+            return;
+        }
+
+        const updatedAgency = await prisma.agency.update({
+            where: { id },
+            data: {
+                name,
+                email,
+                description,
+                address,
+                extension,
+                mobileNumber,
+                landlineNumber,
+                website,
+                logo,
+                primaryColor,
+                secondaryColor,
+                isActive,
+                isSuspended,
+                hasScheduleV2,
+                hasEMAR,
+                hasFinance,
+                isWeek1And2ScheduleEnabled,
+                hasPoliciesAndProcedures,
+                isTestAccount,
+                licenseNumber,
+                timeZone,
+                currency,
+                maxUsers,
+                maxClients,
+                maxCareWorkers
+            }
+        });
+
+        console.log("Agency updated successfully:", {
+            agencyId: updatedAgency.id,
+            name: updatedAgency.name,
+            updatedAt: updatedAgency.updatedAt
+        });
+
+        res.json(updatedAgency);
+    } catch (error: any) {
+        console.error("Error updating agency:", {
+            error: error.message,
+            stack: error.stack,
+            code: error.code,
+            meta: error.meta,
+            fullError: error,
+            requestParams: req.params,
+            requestBody: req.body
+        });
+        res.status(500).json({ 
+            message: "Error updating agency", 
+            error: error.message,
+            details: error.meta,
+            code: error.code
+        });
+    }
+};
+
+/**
+ * Delete an agency by ID
+ */
+export const deleteAgency = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        console.log("Delete Agency Request - ID:", id);
+
+        // Check if agency exists
+        const existingAgency = await prisma.agency.findUnique({
+            where: { id }
+        });
+
+        if (!existingAgency) {
+            console.error("Delete Agency Error: Agency not found", { id });
+            res.status(404).json({ message: "Agency not found" });
+            return;
+        }
+
+        // Delete the agency
+        await prisma.agency.delete({
+            where: { id }
+        });
+
+        console.log("Agency deleted successfully:", { id });
+        res.json({ message: "Agency deleted successfully" });
+    } catch (error: any) {
+        console.error("Error deleting agency:", {
+            error: error.message,
+            stack: error.stack,
+            code: error.code,
+            meta: error.meta,
+            fullError: error,
+            requestParams: req.params
+        });
+        res.status(500).json({ 
+            message: "Error deleting agency", 
+            error: error.message,
+            details: error.meta,
+            code: error.code
+        });
+    }
+};
+
 export const deleteAgencyRateSheet = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id, rateSheetId } = req.params;
@@ -47,54 +298,8 @@ export const getAgencyById = async (req: Request, res: Response): Promise<void> 
     }
 };
 
-// create agency
-export const createAgency = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { name, isActive, hasScheduleV2, hasEMAR, hasFinance } = req.body;
-        const agency = await prisma.agency.create({
-            data: { 
-                name,
-                isActive: isActive ?? true,
-                hasScheduleV2: hasScheduleV2 ?? true,
-                hasEMAR: hasEMAR ?? false,
-                hasFinance: hasFinance ?? false
-            },
-        });
-        res.status(201).json(agency);
-    } catch (error) {
-        res.status(500).json({ message: "Error creating agency", error: error });
-    }
-};
 
-// update agency
-export const updateAgency = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const updateData = req.body;
-        
-        const agency = await prisma.agency.update({
-            where: { id },
-            data: updateData,
-        });
-        
-        res.json(agency);
-    } catch (error) {
-        res.status(500).json({ message: "Error updating agency", error: error });
-    }
-};
 
-// delete agency
-export const deleteAgency = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        await prisma.agency.delete({
-            where: { id },
-        });
-        res.json({ message: "Agency deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ message: "Error deleting agency", error: error });
-    }
-};
 
 // get all users by agency id
 export const getAllUsersByAgencyId = async (req: Request, res: Response): Promise<void> => {
@@ -237,8 +442,13 @@ export const getAgencyCustomTasks = async (req: Request, res: Response): Promise
 export const getAgencyGroups = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
+        const { include } = req.query;
+        
         const groups = await prisma.group.findMany({
             where: { agencyId: id },
+            include: include === 'clients' ? {
+                clients: true
+            } : undefined
         });
         res.json(groups);
     } catch (error) {
@@ -317,24 +527,98 @@ export const createAgencyRateSheet = async (req: Request, res: Response): Promis
 // update group for agency
 export const updateAgencyGroup = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id: agencyId } = req.params;
-        const { id: groupId, name, clientIds } = req.body;
+        const { id: agencyId, groupId } = req.params;
+        const { name, clientIds } = req.body;
+
+        console.log("Update Group Request - Full Request:", {
+            params: req.params,
+            body: req.body,
+            headers: req.headers
+        });
+
+        // Validate required fields
+        if (!name) {
+            console.error("Update Group Error: Name is missing");
+            res.status(400).json({ message: "Group name is required" });
+            return;
+        }
+
+        if (!clientIds || !Array.isArray(clientIds)) {
+            console.error("Update Group Error: Invalid clientIds", { clientIds });
+            res.status(400).json({ message: "Client IDs must be provided as an array" });
+            return;
+        }
+
+        console.log("Updating group with data:", {
+            groupId,
+            name,
+            agencyId,
+            clientIds,
+            clientCount: clientIds.length
+        });
+
+        // First, disconnect all existing clients
+        await prisma.group.update({
+            where: { id: groupId },
+            data: {
+                clients: {
+                    set: []
+                }
+            }
+        });
+
+        // Then, connect the new clients and update the group
         const updatedGroup = await prisma.group.update({
             where: { id: groupId },
             data: {
                 name,
                 agencyId,
                 clients: {
-                    set: clientIds ? clientIds.map((clientId: string) => ({ id: clientId })) : undefined
+                    connect: clientIds.map((clientId: string) => ({ id: clientId }))
                 }
             },
-            include: {
-                clients: true
+            select: {
+                id: true,
+                name: true,
+                agencyId: true,
+                createdAt: true,
+                updatedAt: true,
+                clients: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true
+                    }
+                }
             }
         });
+
+        console.log("Group updated successfully:", {
+            groupId: updatedGroup.id,
+            name: updatedGroup.name,
+            clientCount: updatedGroup.clients.length,
+            createdAt: updatedGroup.createdAt,
+            updatedAt: updatedGroup.updatedAt
+        });
+
         res.json(updatedGroup);
-    } catch (error) {
-        res.status(500).json({ message: "Error updating group", error: error });
+    } catch (error: any) {
+        console.error("Error updating group:", {
+            error: error.message,
+            stack: error.stack,
+            code: error.code,
+            meta: error.meta,
+            fullError: error,
+            requestBody: req.body,
+            requestParams: req.params
+        });
+        res.status(500).json({ 
+            message: "Error updating group", 
+            error: error.message,
+            details: error.meta,
+            code: error.code
+        });
     }
 };
 
@@ -343,21 +627,83 @@ export const createAgencyGroup = async (req: Request, res: Response): Promise<vo
     try {
         const { id } = req.params;
         const { name, clientIds } = req.body;
+
+        console.log("Create Group Request - Full Request:", {
+            params: req.params,
+            body: req.body,
+            headers: req.headers
+        });
+
+        // Validate required fields
+        if (!name) {
+            console.error("Create Group Error: Name is missing");
+            res.status(400).json({ message: "Group name is required" });
+            return;
+        }
+
+        if (!clientIds || !Array.isArray(clientIds)) {
+            console.error("Create Group Error: Invalid clientIds", { clientIds });
+            res.status(400).json({ message: "Client IDs must be provided as an array" });
+            return;
+        }
+
+        console.log("Creating group with data:", {
+            name,
+            agencyId: id,
+            clientIds,
+            clientCount: clientIds.length
+        });
+
         const group = await prisma.group.create({
             data: {
                 name,
                 agencyId: id,
                 clients: {
-                    connect: clientIds ? clientIds.map((clientId: string) => ({ id: clientId })) : []
+                    connect: clientIds.map((clientId: string) => ({ id: clientId }))
                 }
             },
-            include: {
-                clients: true
+            select: {
+                id: true,
+                name: true,
+                agencyId: true,
+                createdAt: true,
+                updatedAt: true,
+                clients: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true
+                    }
+                }
             }
         });
+
+        console.log("Group created successfully:", {
+            groupId: group.id,
+            name: group.name,
+            clientCount: group.clients.length,
+            createdAt: group.createdAt,
+            updatedAt: group.updatedAt
+        });
+
         res.status(201).json(group);
-    } catch (error) {
-        res.status(500).json({ message: "Error creating group", error: error });
+    } catch (error: any) {
+        console.error("Error creating group:", {
+            error: error.message,
+            stack: error.stack,
+            code: error.code,
+            meta: error.meta,
+            fullError: error,
+            requestBody: req.body,
+            requestParams: req.params
+        });
+        res.status(500).json({ 
+            message: "Error creating group", 
+            error: error.message,
+            details: error.meta,
+            code: error.code
+        });
     }
 };
 

@@ -11,6 +11,14 @@ export interface Agency {
   isTestAccount: boolean;
   createdAt: string;
   updatedAt: string;
+  email?: string;
+  address?: string;
+  phone?: string;
+  website?: string;
+  description?: string;
+  logo?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
 }
 
 export interface IncidentReport {

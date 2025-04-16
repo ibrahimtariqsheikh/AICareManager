@@ -28,14 +28,21 @@ import {
 
 const router = express.Router();
 
-// Agency CRUD routes
+
+
+
+// Agency GET routes
 router.get("/", getAllAgencies);
 router.get("/:id", getAgencyById);
+
+// Agency POST routes
 router.post("/", createAgency);
+
+// Agency PUT routes
 router.put("/:id", updateAgency);
 router.delete("/:id", deleteAgency);
 
-//I made these
+//I made these routes for the agency details page
 router.get("/:id/custom-tasks", getAgencyCustomTasks);
 router.get("/:id/groups", getAgencyGroups);
 router.get("/:id/rate-sheets", getAgencyRateSheets);
@@ -47,8 +54,8 @@ router.put("/:id/rate-sheet", updateAgencyRateSheet);
 router.post("/:id/rate-sheet", createAgencyRateSheet);
 router.delete("/:id/rate-sheet/:rateSheetId", deleteAgencyRateSheet);
 
-router.put("/:id/group", updateAgencyGroup);
-router.put("/:id/group", createAgencyGroup);
+router.put("/:id/group/:groupId", updateAgencyGroup);
+router.post("/:id/group", createAgencyGroup);
 router.delete("/:id/group/:groupId", deleteAgencyGroup);
 
 // Agency relationship routes

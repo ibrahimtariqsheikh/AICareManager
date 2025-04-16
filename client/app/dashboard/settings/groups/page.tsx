@@ -117,7 +117,23 @@ export default function ClientGroupsPage() {
         } catch (error: any) {
             console.error("Error saving group:", error)
             const errorMessage = error.data?.message || error.message || "Failed to save group. Please try again."
-            toast.error(errorMessage)
+            const errorDetails = error.data?.details || error.data?.error || ""
+            const errorCode = error.data?.code || ""
+
+            // Log the full error for debugging
+            console.error("Full error details:", {
+                message: errorMessage,
+                details: errorDetails,
+                code: errorCode,
+                fullError: error
+            })
+
+            // Show the error message with details if available
+            if (errorDetails) {
+                toast.error(`${errorMessage}\n${errorDetails}`)
+            } else {
+                toast.error(errorMessage)
+            }
         }
     }
 
@@ -168,8 +184,8 @@ export default function ClientGroupsPage() {
 
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-xl font-semibold">All Groups</h2>
-                    <p className="text-sm text-muted-foreground">
+                    <h2 className="text-xl font-semibold text-neutral-900">All Groups</h2>
+                    <p className="text-sm text-neutral-700">
                         {clientGroups.length} group{clientGroups.length !== 1 ? "s" : ""}
                     </p>
                 </div>

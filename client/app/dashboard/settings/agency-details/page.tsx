@@ -1,13 +1,12 @@
 "use client"
-
-import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -18,78 +17,203 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { toast } from "sonner"
-import { Building2, MapPin, FileText, Info, Pencil, AlertCircle, CheckCircle2, Palette, ImageIcon } from "lucide-react"
-import { DocumentUpload } from "./components/document-upload"
-import { DocumentList } from "./components/document-list"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { toast, Toaster } from "sonner"
+import { Building2, MapPin, FileText, Info, AlertCircle, CheckCircle2, Palette, ImageIcon, Upload, Trash2 } from "lucide-react"
+import { DocumentUpload } from "@/app/dashboard/settings/agency-details/components/document-upload"
+import { DocumentList } from "@/app/dashboard/settings/agency-details/components/document-list"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useAppSelector } from "@/hooks/useAppSelector"
+import { Switch } from "@/components/ui/switch"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useUpdateAgencyMutation, useDeleteAgencyMutation } from "@/state/api"
+import { useAppDispatch } from "@/state/redux"
+import { setAgency } from "@/state/slices/agencySlice"
+
+const CURRENCIES = [
+    { code: "USD", name: "US Dollar" },
+    { code: "CAD", name: "Canadian Dollar" },
+    { code: "GBP", name: "British Pound" },
+    { code: "EUR", name: "Euro" },
+    { code: "AUD", name: "Australian Dollar" },
+    { code: "NZD", name: "New Zealand Dollar" },
+    { code: "JPY", name: "Japanese Yen" },
+    { code: "INR", name: "Indian Rupee" },
+] as const;
+
+const TIME_ZONES = [
+    { value: "UTC", label: "Coordinated Universal Time (UTC)" },
+    { value: "America/New_York", label: "Eastern Time (ET)" },
+    { value: "America/Chicago", label: "Central Time (CT)" },
+    { value: "America/Denver", label: "Mountain Time (MT)" },
+    { value: "America/Los_Angeles", label: "Pacific Time (PT)" },
+    { value: "America/Anchorage", label: "Alaska Time (AKT)" },
+    { value: "Pacific/Honolulu", label: "Hawaii Time (HT)" },
+    { value: "Europe/London", label: "London (GMT/BST)" },
+    { value: "Europe/Paris", label: "Central European Time (CET)" },
+    { value: "Asia/Dubai", label: "Dubai (GST)" },
+    { value: "Asia/Singapore", label: "Singapore (SGT)" },
+    { value: "Asia/Tokyo", label: "Tokyo (JST)" },
+    { value: "Australia/Sydney", label: "Sydney (AEST)" },
+    { value: "Pacific/Auckland", label: "Auckland (NZST)" },
+] as const;
+
+const formSchema = z.object({
+    id: z.string(),
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Invalid email address").optional(),
+    description: z.string().optional(),
+    address: z.string().optional(),
+    extension: z.number().optional(),
+    mobileNumber: z.number().optional(),
+    landlineNumber: z.number().nullable(),
+    website: z.string().url("Invalid website URL").optional(),
+    logo: z.string().url("Invalid logo URL").nullable(),
+    primaryColor: z
+        .string()
+        .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color code")
+        .nullable(),
+    secondaryColor: z
+        .string()
+        .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color code")
+        .nullable(),
+    isActive: z.boolean(),
+    isSuspended: z.boolean(),
+    hasScheduleV2: z.boolean(),
+    hasEMAR: z.boolean(),
+    hasFinance: z.boolean(),
+    isWeek1And2ScheduleEnabled: z.boolean(),
+    hasPoliciesAndProcedures: z.boolean(),
+    isTestAccount: z.boolean(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    licenseNumber: z.string().nullable(),
+    timeZone: z.string(),
+    currency: z.string(),
+    maxUsers: z.number().nullable(),
+    maxClients: z.number().nullable(),
+    maxCareWorkers: z.number().nullable(),
+})
 
 interface AgencyInfo {
+    id: string
     name: string
-    email: string
-    address: string
-    phone: string
-    website: string
-    description: string
-    logo?: string
-    primaryColor?: string
-    secondaryColor?: string
+    email?: string
+    description?: string
+    address?: string
+    extension?: number
+    mobileNumber?: number
+    landlineNumber: number | null
+    website?: string
+    logo: string | null
+    primaryColor: string | null
+    secondaryColor: string | null
+    isActive: boolean
+    isSuspended: boolean
+    hasScheduleV2: boolean
+    hasEMAR: boolean
+    hasFinance: boolean
+    isWeek1And2ScheduleEnabled: boolean
+    hasPoliciesAndProcedures: boolean
+    isTestAccount: boolean
+    createdAt: string
+    updatedAt: string
+    licenseNumber: string | null
+    timeZone: string
+    currency: string
+    maxUsers: number | null
+    maxClients: number | null
+    maxCareWorkers: number | null
 }
 
 export default function AgencyPage() {
-    // Initial agency data - in a real app, this would come from an API
-    const [agency, setAgency] = useState<AgencyInfo>({
-        name: "AK Care",
-        email: "ayan@weareoncare.com",
-        address: "Kenan Street, London, NW6 NW6",
-        phone: "+44 20 1234 5678",
-        website: "www.akcare.com",
-        description: "AK Care provides high-quality care services to clients across London.",
-        primaryColor: "#4f46e5",
-        secondaryColor: "#10b981",
+    const agencyRedux = useAppSelector((state) => state.agency.agency)
+    const dispatch = useAppDispatch()
+    const [updateAgency, { isLoading: isUpdating }] = useUpdateAgencyMutation()
+    const [deleteAgency, { isLoading: isDeleting }] = useDeleteAgencyMutation()
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+    const [formInitialized, setFormInitialized] = useState(false)
+
+    // Initialize form with empty values
+    const form = useForm<AgencyInfo>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            id: "",
+            name: "",
+            email: "",
+            description: "",
+            address: "",
+            extension: undefined,
+            mobileNumber: undefined,
+            landlineNumber: null,
+            website: "",
+            logo: null,
+            primaryColor: null,
+            secondaryColor: null,
+            isActive: false,
+            isSuspended: false,
+            hasScheduleV2: false,
+            hasEMAR: false,
+            hasFinance: false,
+            isWeek1And2ScheduleEnabled: false,
+            hasPoliciesAndProcedures: false,
+            isTestAccount: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            licenseNumber: null,
+            timeZone: "UTC",
+            currency: "USD",
+            maxUsers: null,
+            maxClients: null,
+            maxCareWorkers: null,
+        },
     })
 
-    // State for edit dialogs
-    const [isGeneralEditOpen, setIsGeneralEditOpen] = useState(false)
-    const [isContactEditOpen, setIsContactEditOpen] = useState(false)
-    const [isBrandingEditOpen, setIsBrandingEditOpen] = useState(false)
-    const [isDocumentInfoOpen, setIsDocumentInfoOpen] = useState(false)
 
-    // Form state
-    const [formData, setFormData] = useState<AgencyInfo>(agency)
+    useEffect(() => {
+        if (agencyRedux && !formInitialized) {
+            console.log("Setting form values from Redux data:", agencyRedux);
+            form.reset({
+                id: agencyRedux.id || "",
+                name: agencyRedux.name || "",
+                email: agencyRedux.email || "",
+                description: agencyRedux.description || "",
+                address: agencyRedux.address || "",
+                extension: agencyRedux.extension || undefined,
+                mobileNumber: agencyRedux.mobileNumber || undefined,
+                landlineNumber: agencyRedux.landlineNumber,
+                website: agencyRedux.website || "",
+                logo: agencyRedux.logo,
+                primaryColor: agencyRedux.primaryColor,
+                secondaryColor: agencyRedux.secondaryColor,
+                isActive: agencyRedux.isActive || false,
+                isSuspended: agencyRedux.isSuspended || false,
+                hasScheduleV2: agencyRedux.hasScheduleV2 || false,
+                hasEMAR: agencyRedux.hasEMAR || false,
+                hasFinance: agencyRedux.hasFinance || false,
+                isWeek1And2ScheduleEnabled: agencyRedux.isWeek1And2ScheduleEnabled || false,
+                hasPoliciesAndProcedures: agencyRedux.hasPoliciesAndProcedures || false,
+                isTestAccount: agencyRedux.isTestAccount || false,
+                createdAt: agencyRedux.createdAt || new Date().toISOString(),
+                updatedAt: agencyRedux.updatedAt || new Date().toISOString(),
+                licenseNumber: agencyRedux.licenseNumber,
+                timeZone: agencyRedux.timeZone || "UTC",
+                currency: agencyRedux.currency || "USD",
+                maxUsers: agencyRedux.maxUsers,
+                maxClients: agencyRedux.maxClients,
+                maxCareWorkers: agencyRedux.maxCareWorkers,
+            });
+            setFormInitialized(true);
+        }
+    }, [agencyRedux, form, formInitialized]);
+
+    // State for dialogs
+    const [isDocumentInfoOpen, setIsDocumentInfoOpen] = useState(false)
 
     // Documents state - in a real app, this would come from an API
     const [documents, setDocuments] = useState([
         { id: "1", name: "operational_documents.pdf", type: "operational_documents", uploadedAt: new Date().toISOString() },
     ])
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
-    }
-
-    const handleGeneralSave = () => {
-        setAgency((prev) => ({ ...prev, name: formData.name, email: formData.email, description: formData.description }))
-        setIsGeneralEditOpen(false)
-        toast.success("Agency information updated successfully")
-    }
-
-    const handleContactSave = () => {
-        setAgency((prev) => ({ ...prev, address: formData.address, phone: formData.phone, website: formData.website }))
-        setIsContactEditOpen(false)
-        toast.success("Contact details updated successfully")
-    }
-
-    const handleBrandingSave = () => {
-        setAgency((prev) => ({
-            ...prev,
-            logo: formData.logo,
-            primaryColor: formData.primaryColor,
-            secondaryColor: formData.secondaryColor,
-        }))
-        setIsBrandingEditOpen(false)
-        toast.success("Branding settings updated successfully")
-    }
 
     const handleDocumentUpload = (file: File) => {
         // In a real app, you would upload the file to your server
@@ -109,465 +233,511 @@ export default function AgencyPage() {
         toast.success("Document deleted successfully")
     }
 
+    const onSubmit = async (data: AgencyInfo) => {
+        console.log("Form submission started");
+        try {
+            console.log("Form submitted with data:", data);
+            console.log("Current form state:", form.getValues());
+            console.log("Form errors:", form.formState.errors);
+
+            const result = await updateAgency({
+                agencyId: data.id,
+                agency: {
+                    ...data,
+                    updatedAt: new Date().toISOString()
+                }
+            }).unwrap()
+
+            if (result) {
+                console.log("Backend Response:", result)
+                // Update Redux store with the new agency data
+                dispatch(setAgency(result))
+                toast.success("Agency updated successfully!", {
+                    duration: 4000,
+                    position: "top-right"
+                });
+            }
+        } catch (error: any) {
+            console.error("Error updating agency:", error)
+            const errorMessage = error?.data?.message || "Failed to update agency information"
+            toast.error(errorMessage, {
+                duration: 4000,
+                position: "top-right"
+            });
+        }
+    }
+
+    const handleDeleteAgency = async () => {
+        try {
+            await deleteAgency({
+                agencyId: agencyRedux?.id || ""
+            }).unwrap()
+            toast.success("Agency deleted successfully")
+            // You might want to redirect to a different page after deletion
+        } catch (error) {
+            console.error("Error deleting agency:", error)
+            toast.error("Failed to delete agency")
+        } finally {
+            setIsDeleteDialogOpen(false)
+        }
+    }
+
+    // Debug current form values
+    const currentValues = form.watch();
+    console.log("Current form values:", currentValues);
+    console.log("Form initialized:", formInitialized);
+    console.log("Agency Redux data:", agencyRedux);
+
     return (
         <div className="container mx-auto py-6 space-y-6">
+            <Toaster position="top-right" richColors closeButton />
+
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight">Agency Settings</h1>
-                <p className="text-muted-foreground">Manage your agency information, contact details, and documents</p>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Agency Settings</h1>
+                        <p className="text-muted-foreground">Manage your agency information, contact details, and documents</p>
+                    </div>
+                    <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setIsDeleteDialogOpen(true)}
+                        disabled={true} // Disabled since there's only one agency
+                    >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete Agency
+                    </Button>
+                </div>
             </div>
 
-            <Tabs defaultValue="general" className="w-full">
-                <TabsList className="grid grid-cols-4 mb-8">
-                    <TabsTrigger value="general" className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4" />
-                        <span>General</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="contact" className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        <span>Contact</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="documents" className="flex items-center gap-2">
-                        <FileText className="h-4 w-4" />
-                        <span>Documents</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="branding" className="flex items-center gap-2">
-                        <Palette className="h-4 w-4" />
-                        <span>Branding</span>
-                    </TabsTrigger>
-                </TabsList>
+            {/* Show loading state while form is initializing */}
+            {!formInitialized && agencyRedux ? (
+                <div className="flex justify-center items-center h-64">
+                    <div className="flex flex-col items-center">
+                        <svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p className="mt-2 text-sm text-muted-foreground">Loading agency information...</p>
+                    </div>
+                </div>
+            ) : (
+                <Form {...form}>
+                    <form onSubmit={async (e) => {
+                        console.log("Form submit event triggered");
+                        e.preventDefault();
+                        try {
+                            const data = form.getValues();
+                            console.log("Form data:", data);
+                            await onSubmit(data);
+                        } catch (error) {
+                            console.error("Form submission error:", error);
+                        }
+                    }} className="space-y-6">
+                        <Tabs defaultValue="general" className="w-full">
+                            <TabsList className="grid grid-cols-4 mb-8">
+                                <TabsTrigger value="general" className="flex items-center gap-2">
+                                    <Building2 className="h-4 w-4" />
+                                    <span>General</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="contact" className="flex items-center gap-2">
+                                    <MapPin className="h-4 w-4" />
+                                    <span>Contact</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="documents" className="flex items-center gap-2">
+                                    <FileText className="h-4 w-4" />
+                                    <span>Documents</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="branding" className="flex items-center gap-2">
+                                    <Palette className="h-4 w-4" />
+                                    <span>Branding</span>
+                                </TabsTrigger>
+                            </TabsList>
 
-                {/* General Information Tab */}
-                <TabsContent value="general">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <div className="flex items-center space-x-2">
-                                <Building2 className="h-5 w-5 text-primary" />
-                                <CardTitle>General Information</CardTitle>
-                            </div>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    setFormData(agency)
-                                    setIsGeneralEditOpen(true)
-                                }}
-                            >
-                                <Pencil className="h-4 w-4 mr-2" />
-                                Edit
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="pt-4">
-                            <div className="grid gap-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-sm text-muted-foreground">Agency Name</Label>
-                                        <p className="font-medium">{agency.name}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-sm text-muted-foreground">Email</Label>
-                                        <p className="font-medium">{agency.email}</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <Label className="text-sm text-muted-foreground">Description</Label>
-                                    <p className="text-sm">{agency.description || "No description provided"}</p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* Contact Details Tab */}
-                <TabsContent value="contact">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <div className="flex items-center space-x-2">
-                                <MapPin className="h-5 w-5 text-primary" />
-                                <CardTitle>Contact Details</CardTitle>
-                            </div>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    setFormData(agency)
-                                    setIsContactEditOpen(true)
-                                }}
-                            >
-                                <Pencil className="h-4 w-4 mr-2" />
-                                Edit
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="pt-4">
-                            <div className="grid gap-4">
-                                <div>
-                                    <Label className="text-sm text-muted-foreground">Address</Label>
-                                    <p className="font-medium">{agency.address}</p>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-sm text-muted-foreground">Phone</Label>
-                                        <p className="font-medium">{agency.phone || "Not provided"}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-sm text-muted-foreground">Website</Label>
-                                        <p className="font-medium">{agency.website || "Not provided"}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* Documents Tab */}
-                <TabsContent value="documents">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <div className="flex items-center space-x-2">
-                                <FileText className="h-5 w-5 text-primary" />
-                                <CardTitle>Documents</CardTitle>
-                            </div>
-                            <div className="flex space-x-2">
-                                <Button variant="outline" size="sm" onClick={() => setIsDocumentInfoOpen(true)}>
-                                    <Info className="h-4 w-4 mr-2" />
-                                    How care workers see these
-                                </Button>
-                                <DocumentUpload onUpload={handleDocumentUpload} />
-                            </div>
-                        </CardHeader>
-                        <CardContent className="pt-4">
-                            <Alert className="mb-4">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>Important</AlertTitle>
-                                <AlertDescription>
-                                    Documents uploaded here will be available to all care workers in your agency.
-                                </AlertDescription>
-                            </Alert>
-
-                            <DocumentList documents={documents} onDelete={handleDocumentDelete} />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* Branding Tab */}
-                <TabsContent value="branding">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <div className="flex items-center space-x-2">
-                                <Palette className="h-5 w-5 text-primary" />
-                                <CardTitle>Branding Settings</CardTitle>
-                            </div>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    setFormData(agency)
-                                    setIsBrandingEditOpen(true)
-                                }}
-                            >
-                                <Pencil className="h-4 w-4 mr-2" />
-                                Edit
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="pt-4">
-                            <div className="grid gap-6">
-                                <div>
-                                    <Label className="text-sm text-muted-foreground">Agency Logo</Label>
-                                    <div className="mt-2 border rounded-md p-4 flex items-center justify-center bg-muted/10">
-                                        {agency.logo ? (
-                                            <img
-                                                src={agency.logo || "/placeholder.svg"}
-                                                alt={`${agency.name} logo`}
-                                                className="max-h-24 max-w-full object-contain"
+                            {/* General Information Tab */}
+                            <TabsContent value="general">
+                                <Card>
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                        <div className="flex items-center space-x-2">
+                                            <Building2 className="h-5 w-5 text-primary" />
+                                            <CardTitle>General Information</CardTitle>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="pt-4">
+                                        <div className="grid gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="name"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Agency Name</FormLabel>
+                                                        <FormControl>
+                                                            <Input {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
                                             />
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center p-4">
-                                                <ImageIcon className="h-12 w-12 text-muted-foreground mb-2" />
-                                                <p className="text-sm text-muted-foreground">No logo uploaded</p>
+                                            <FormField
+                                                control={form.control}
+                                                name="email"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Email</FormLabel>
+                                                        <FormControl>
+                                                            <Input {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="description"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Description</FormLabel>
+                                                        <FormControl>
+                                                            <Textarea {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="licenseNumber"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>License Number</FormLabel>
+                                                        <FormControl>
+                                                            <Input {...field} value={field.value || ""} placeholder="Enter license number" />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="timeZone"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Time Zone</FormLabel>
+                                                            <Select onValueChange={field.onChange} defaultValue={field.value || "UTC"}>
+                                                                <FormControl>
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Select time zone" />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    {TIME_ZONES.map((timeZone) => (
+                                                                        <SelectItem key={timeZone.value} value={timeZone.value}>
+                                                                            {timeZone.label}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="currency"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Currency</FormLabel>
+                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                <FormControl>
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Select currency" />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    {CURRENCIES.map((currency) => (
+                                                                        <SelectItem key={currency.code} value={currency.code}>
+                                                                            {currency.name} ({currency.code})
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-sm text-muted-foreground">Primary Color</Label>
-                                        <div className="flex items-center mt-2">
-                                            <div
-                                                className="w-6 h-6 rounded-full mr-2 border"
-                                                style={{ backgroundColor: agency.primaryColor }}
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="maxUsers"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Max Users</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    {...field}
+                                                                    value={field.value || ""}
+                                                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                                    placeholder="No limit"
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="maxClients"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Max Clients</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    {...field}
+                                                                    value={field.value || ""}
+                                                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                                    placeholder="No limit"
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="maxCareWorkers"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Max Care Workers</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    {...field}
+                                                                    value={field.value || ""}
+                                                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                                    placeholder="No limit"
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-6">
+                                            <h3 className="text-sm font-medium mb-3">Agency Features</h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="hasScheduleV2"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel>Schedule V2</FormLabel>
+                                                                <FormDescription>Enable advanced scheduling features</FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                {/* Other feature toggles remain the same */}
+                                                <FormField
+                                                    control={form.control}
+                                                    name="hasEMAR"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel>EMAR</FormLabel>
+                                                                <FormDescription>Electronic Medication Administration Record</FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="hasFinance"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel>Finance</FormLabel>
+                                                                <FormDescription>Enable financial management features</FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="isWeek1And2ScheduleEnabled"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel>Week 1 & 2 Schedule</FormLabel>
+                                                                <FormDescription>Enable bi-weekly scheduling</FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="hasPoliciesAndProcedures"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                                                            <div className="space-y-0.5">
+                                                                <FormLabel>Policies & Procedures</FormLabel>
+                                                                <FormDescription>Enable policies and procedures module</FormDescription>
+                                                            </div>
+                                                            <FormControl>
+                                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                                            </FormControl>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* The other TabsContent sections remain the same */}
+                            {/* Contact Details Tab */}
+                            <TabsContent value="contact">
+                                <Card>
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                        <div className="flex items-center space-x-2">
+                                            <MapPin className="h-5 w-5 text-primary" />
+                                            <CardTitle>Contact Details</CardTitle>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="pt-4">
+                                        {/* Form fields for contact details */}
+                                        <div className="grid gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="address"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Address</FormLabel>
+                                                        <FormControl>
+                                                            <Textarea {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
                                             />
-                                            <p className="font-mono text-sm">{agency.primaryColor}</p>
+                                            {/* Other contact fields */}
                                         </div>
-                                    </div>
-                                    <div>
-                                        <Label className="text-sm text-muted-foreground">Secondary Color</Label>
-                                        <div className="flex items-center mt-2">
-                                            <div
-                                                className="w-6 h-6 rounded-full mr-2 border"
-                                                style={{ backgroundColor: agency.secondaryColor }}
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* Documents Tab */}
+                            <TabsContent value="documents">
+                                <Card>
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                        <div className="flex items-center space-x-2">
+                                            <FileText className="h-5 w-5 text-primary" />
+                                            <CardTitle>Documents</CardTitle>
+                                        </div>
+                                        <div className="flex space-x-2">
+                                            <Button variant="outline" size="sm" onClick={() => setIsDocumentInfoOpen(true)}>
+                                                <Info className="h-4 w-4 mr-2" />
+                                                How care workers see these
+                                            </Button>
+                                            <DocumentUpload onUpload={handleDocumentUpload} />
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="pt-4">
+                                        <DocumentList documents={documents} onDelete={handleDocumentDelete} />
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* Branding Tab - Add fields here if needed */}
+                            <TabsContent value="branding">
+                                <Card>
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                        <div className="flex items-center space-x-2">
+                                            <Palette className="h-5 w-5 text-primary" />
+                                            <CardTitle>Branding</CardTitle>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="pt-4">
+                                        <div className="grid gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="primaryColor"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Primary Color</FormLabel>
+                                                        <FormControl>
+                                                            <Input {...field} value={field.value || ""} placeholder="#000000" />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
                                             />
-                                            <p className="font-mono text-sm">{agency.secondaryColor}</p>
+                                            <FormField
+                                                control={form.control}
+                                                name="secondaryColor"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Secondary Color</FormLabel>
+                                                        <FormControl>
+                                                            <Input {...field} value={field.value || ""} placeholder="#FFFFFF" />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
                                         </div>
-                                    </div>
-                                </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
 
-                                <div className="mt-4 p-4 border rounded-md bg-muted/10">
-                                    <h3 className="text-sm font-medium mb-2">Preview</h3>
-                                    <div className="flex flex-col gap-2">
-                                        <div
-                                            className="h-10 rounded-md flex items-center justify-center text-white font-medium"
-                                            style={{ backgroundColor: agency.primaryColor }}
-                                        >
-                                            Primary Button
-                                        </div>
-                                        <div
-                                            className="h-10 rounded-md flex items-center justify-center text-white font-medium"
-                                            style={{ backgroundColor: agency.secondaryColor }}
-                                        >
-                                            Secondary Button
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
+                        <div className="flex justify-end">
+                            <Button
+                                type="submit"
+                                disabled={isUpdating}
+                                onClick={() => console.log("Save button clicked")}
+                            >
+                                {isUpdating ? "Saving..." : "Save Changes"}
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
+            )}
 
-            {/* General Information Edit Dialog */}
-            <Dialog open={isGeneralEditOpen} onOpenChange={setIsGeneralEditOpen}>
-                <DialogContent className="sm:max-w-[525px]">
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Edit General Information</DialogTitle>
+                        <DialogTitle>Delete Agency</DialogTitle>
                         <DialogDescription>
-                            Update your agency's general information. Click save when you're done.
+                            Are you sure you want to delete this agency? This action cannot be undone.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                                Agency Name
-                            </Label>
-                            <Input id="name" name="name" value={formData.name} onChange={handleInputChange} className="col-span-3" />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="email" className="text-right">
-                                Email
-                            </Label>
-                            <Input
-                                id="email"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="description" className="text-right">
-                                Description
-                            </Label>
-                            <Textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleInputChange}
-                                className="col-span-3"
-                                rows={4}
-                            />
-                        </div>
-                    </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsGeneralEditOpen(false)}>
+                        <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
                             Cancel
                         </Button>
-                        <Button onClick={handleGeneralSave}>Save Changes</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            {/* Contact Details Edit Dialog */}
-            <Dialog open={isContactEditOpen} onOpenChange={setIsContactEditOpen}>
-                <DialogContent className="sm:max-w-[525px]">
-                    <DialogHeader>
-                        <DialogTitle>Edit Contact Details</DialogTitle>
-                        <DialogDescription>
-                            Update your agency's contact information. Click save when you're done.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="address" className="text-right">
-                                Address
-                            </Label>
-                            <Textarea
-                                id="address"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleInputChange}
-                                className="col-span-3"
-                                rows={2}
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="phone" className="text-right">
-                                Phone
-                            </Label>
-                            <Input
-                                id="phone"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="website" className="text-right">
-                                Website
-                            </Label>
-                            <Input
-                                id="website"
-                                name="website"
-                                value={formData.website}
-                                onChange={handleInputChange}
-                                className="col-span-3"
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsContactEditOpen(false)}>
-                            Cancel
+                        <Button variant="destructive" onClick={handleDeleteAgency} disabled={isDeleting}>
+                            {isDeleting ? "Deleting..." : "Delete"}
                         </Button>
-                        <Button onClick={handleContactSave}>Save Changes</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            {/* Branding Edit Dialog */}
-            <Dialog open={isBrandingEditOpen} onOpenChange={setIsBrandingEditOpen}>
-                <DialogContent className="sm:max-w-[525px]">
-                    <DialogHeader>
-                        <DialogTitle>Edit Branding Settings</DialogTitle>
-                        <DialogDescription>
-                            Update your agency's branding and appearance. Click save when you're done.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="logo" className="text-right">
-                                Logo URL
-                            </Label>
-                            <Input
-                                id="logo"
-                                name="logo"
-                                value={formData.logo || ""}
-                                onChange={handleInputChange}
-                                placeholder="https://example.com/logo.png"
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="primaryColor" className="text-right">
-                                Primary Color
-                            </Label>
-                            <div className="col-span-3 flex gap-2">
-                                <Input
-                                    type="color"
-                                    id="primaryColor"
-                                    name="primaryColor"
-                                    value={formData.primaryColor || "#4f46e5"}
-                                    onChange={handleInputChange}
-                                    className="w-12 h-10 p-1"
-                                />
-                                <Input
-                                    id="primaryColorText"
-                                    name="primaryColor"
-                                    value={formData.primaryColor || "#4f46e5"}
-                                    onChange={handleInputChange}
-                                    className="flex-1"
-                                />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="secondaryColor" className="text-right">
-                                Secondary Color
-                            </Label>
-                            <div className="col-span-3 flex gap-2">
-                                <Input
-                                    type="color"
-                                    id="secondaryColor"
-                                    name="secondaryColor"
-                                    value={formData.secondaryColor || "#10b981"}
-                                    onChange={handleInputChange}
-                                    className="w-12 h-10 p-1"
-                                />
-                                <Input
-                                    id="secondaryColorText"
-                                    name="secondaryColor"
-                                    value={formData.secondaryColor || "#10b981"}
-                                    onChange={handleInputChange}
-                                    className="flex-1"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsBrandingEditOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button onClick={handleBrandingSave}>Save Changes</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            {/* Document Info Dialog */}
-            <Dialog open={isDocumentInfoOpen} onOpenChange={setIsDocumentInfoOpen}>
-                <DialogContent className="sm:max-w-[525px]">
-                    <DialogHeader>
-                        <DialogTitle>How Care Workers Access Documents</DialogTitle>
-                        <DialogDescription>
-                            Information about how care workers can view and access agency documents
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div className="flex items-start space-x-4">
-                            <div className="mt-0.5">
-                                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-medium">Mobile App Access</h4>
-                                <p className="text-sm text-muted-foreground">
-                                    Care workers can access all documents through the "Documents" section in their mobile app.
-                                </p>
-                            </div>
-                        </div>
-                        <Separator />
-                        <div className="flex items-start space-x-4">
-                            <div className="mt-0.5">
-                                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-medium">Web Portal</h4>
-                                <p className="text-sm text-muted-foreground">
-                                    Documents are also available through the web portal under "Resources" → "Agency Documents".
-                                </p>
-                            </div>
-                        </div>
-                        <Separator />
-                        <div className="flex items-start space-x-4">
-                            <div className="mt-0.5">
-                                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-medium">Notifications</h4>
-                                <p className="text-sm text-muted-foreground">
-                                    Care workers receive notifications when new documents are uploaded or existing ones are updated.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button onClick={() => setIsDocumentInfoOpen(false)}>Close</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

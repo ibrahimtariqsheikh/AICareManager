@@ -25,10 +25,21 @@ model Invitation {
 }
 
 // ======== AGENCY MANAGEMENT MODELS ========
+//Contact Person
 
 model Agency {
   id                         String   @id @default(cuid())
   name                       String
+  email                      String   @default("example@agency.com")
+  description                String?
+  address                    String?
+  extension                  Int?
+  mobileNumber               Int?
+  landlineNumber             Int?
+  website                    String?
+  logo                       String?
+  primaryColor               String?
+  secondaryColor             String?
   isActive                   Boolean  @default(true)
   isSuspended                Boolean  @default(false)
   hasScheduleV2              Boolean  @default(true)
@@ -55,14 +66,172 @@ model Agency {
   groups      Group[]
   rateSheets  RateSheet[]
   customTasks CustomTask[]
+
+  //extra fields
+  licenseNumber  String?
+  certifications Certification[]
+  operatingHours OperatingHours[]
+  timeZone       String           @default("UTC")
+  currency       String           @default("CAD")
+  reminders      Reminder[]
+  maxUsers       Int?
+  maxClients     Int?
+  maxCareWorkers Int?
+
+  auditLogs     AuditLog[]
+  announcements Announcement[]
+}
+
+model Announcement {
+  id                     String               @id @default(cuid())
+  title                  String
+  content                String
+  priority               AnnouncementPriority @default(NORMAL)
+  status                 AnnouncementStatus   @default(DRAFT)
+  publishDate            DateTime?
+  expiryDate             DateTime?
+  isSticky               Boolean              @default(false)
+  requiresAcknowledgment Boolean              @default(false)
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+
+  // Relations
+  agency      Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  agencyId    String
+  createdBy   User   @relation("AnnouncementCreator", fields: [createdById], references: [id])
+  createdById String
+
+  // Many-to-many relation for targeted user roles
+  targetRoles Role[]
+
+  // Many-to-many relation for users who have acknowledged
+  acknowledgedBy User[] @relation("AnnouncementAcknowledgements")
+
+  // Optional attachment
+  attachmentUrl  String?
+  attachmentType String?
+  User           User?   @relation(fields: [userId], references: [id])
+  userId         String?
+
+  @@index([agencyId])
+  @@index([publishDate])
+  @@index([status])
+}
+
+enum AnnouncementPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum AnnouncementStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  entityType  String // The type of entity that was affected (e.g., "User", "Client", "Visit")
+  entityId    String // The ID of the entity that was affected
+  description String
+  changes     Json? // Store the before/after values
+  ipAddress   String?
+  userAgent   String?
+  performedAt DateTime    @default(now())
+
+  // Relations
+  agency   Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  agencyId String
+  user     User?   @relation(fields: [userId], references: [id])
+  userId   String? // Nullable in case of system actions
+
+  @@index([agencyId])
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([performedAt])
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  PASSWORD_CHANGE
+  PERMISSION_CHANGE
+  EXPORT
+  IMPORT
+  ARCHIVE
+  RESTORE
+  SYSTEM
+}
+
+model Certification {
+  id                String              @id @default(cuid())
+  name              String
+  issuingAuthority  String
+  certificationCode String?
+  issueDate         DateTime
+  expiryDate        DateTime
+  status            CertificationStatus @default(ACTIVE)
+  documentUrl       String?
+  notes             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relation to Agency
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  agencyId String
+
+  @@index([agencyId])
+}
+
+enum CertificationStatus {
+  ACTIVE
+  EXPIRED
+  PENDING
+  REVOKED
+  SUSPENDED
+}
+
+model OperatingHours {
+  id        String    @id @default(cuid())
+  dayOfWeek DayOfWeek
+  isOpen    Boolean   @default(true)
+  openTime  String    @default("09:00") // 24-hour format
+  closeTime String    @default("17:00") // 24-hour format
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relation to Agency
+  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  agencyId String
+
+  @@unique([agencyId, dayOfWeek])
+  @@index([agencyId])
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
 
 model Group {
-  id       String  @id @default(cuid())
-  name     String
-  clients  User[]
-  Agency   Agency? @relation(fields: [agencyId], references: [id])
-  agencyId String?
+  id        String   @id @default(cuid())
+  name      String
+  clients   User[]
+  Agency    Agency?  @relation(fields: [agencyId], references: [id])
+  agencyId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model RateSheet {
@@ -206,6 +375,12 @@ model User {
   reportEdits               ReportEdit[] // Added report edits relation
   Group                     Group?                     @relation(fields: [groupId], references: [id])
   groupId                   String?
+
+  // Announcement relations
+  createdAnnouncements      Announcement[] @relation("AnnouncementCreator")
+  acknowledgedAnnouncements Announcement[] @relation("AnnouncementAcknowledgements")
+  Announcement              Announcement[]
+  AuditLog                  AuditLog[]
 }
 
 // NEW MODEL: Communication Preference
@@ -588,7 +763,9 @@ model Reminder {
   completed Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client   User    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  Agency   Agency? @relation(fields: [agencyId], references: [id])
+  agencyId String?
 }
 
 model Notification {
