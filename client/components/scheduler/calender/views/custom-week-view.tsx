@@ -10,7 +10,7 @@ import { useAppSelector } from "@/state/redux"
 
 interface CustomWeekViewProps {
     date: Date
-    events: AppointmentEvent[]
+
     onSelectEvent: (event: AppointmentEvent) => void
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
@@ -21,7 +21,7 @@ interface CustomWeekViewProps {
 export function CustomWeekView(props: CustomWeekViewProps) {
     const {
         date,
-        events,
+
         onSelectEvent,
         getEventDurationInMinutes,
         spaceTheme = false
@@ -33,6 +33,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     const reduxClients = useAppSelector((state) => state.user.clients || [])
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
+    const events = useAppSelector((state) => state.schedule.events || [])
 
     // Get the appropriate users based on activeScheduleUserType
 
@@ -237,6 +238,18 @@ export function CustomWeekView(props: CustomWeekViewProps) {
 
     // Custom drag handler - updates position while dragging
 
+    // Custom drag end handler
+
+    // ====================== UTILITIES ======================
+    // Format time label (e.g. "8 AM", "2:30 PM")
+    const formatTimeLabel = (timeSlot: string): string => {
+        const [hourStr, minuteStr] = timeSlot.split(":")
+        const hour = parseInt(hourStr || "0", 10)
+        return `${hour % 12 || 12}${minuteStr === "00" ? "" : ":30"} ${hour >= 12 ? "PM" : "AM"}`
+    }
+
+    // Get event background color based on type
+
 
 
 
@@ -301,10 +314,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
             calendarContainerRef.current.scrollTop = Math.max(0, scrollPosition)
         }
     }, [timeIntervals])
-
-    function formatTimeLabel(_timeSlot: string): React.ReactNode {
-        throw new Error("Function not implemented.")
-    }
 
     // ====================== RENDERING ======================
     return (
@@ -388,7 +397,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                             {/* Calendar grid */}
                             <div className="flex-1 grid grid-cols-7 relative" ref={gridContainerRef}>
                                 {/* Grid cells background */}
-                                {daysOfWeek.map((_, dayIndex) => (
+                                {daysOfWeek.map((_day, dayIndex) => (
                                     <div key={dayIndex} className={cn("border-r", spaceTheme ? "border-zinc-800" : "border-gray-200")}>
                                         {timeIntervals.map((_, slotIndex) => {
                                             const isHourLine = slotIndex % 2 === 0
@@ -440,7 +449,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                     if (!position) return null // Skip if position not calculated
 
                                     const isDragging = draggedEvent.event?.id === event.id
-
 
                                     return (
                                         <motion.div

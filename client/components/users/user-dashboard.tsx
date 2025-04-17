@@ -1,14 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus, Bell, RefreshCw, Users, UserPlus, Briefcase, Search, Badge } from 'lucide-react'
+import { Users, UserPlus, Briefcase } from 'lucide-react'
 import { toast } from "sonner"
 import {
     useGetUserQuery,
-    useGetUserInvitationsQuery,
     useCreateUserMutation,
     useGetAgencyUsersQuery,
 } from "@/state/api"
@@ -18,18 +16,19 @@ import { Role, User, SubRole } from "@/types/prismaTypes"
 import { AddUsersNewDialog } from "./add-users-new-dialog"
 import { useDispatch } from "react-redux"
 import { setClients, setOfficeStaff, setCareWorkers } from "@/state/slices/agencySlice"
+import { setActiveUserType } from "@/state/slices/userSlice"
 import { v4 as uuidv4 } from "uuid"
 import { useAppSelector } from "@/state/redux"
 import { UserTableUser } from "./user-table-user"
-import { Input } from "../ui/input"
+
 
 export function UserDashboard() {
     // State
-    const [searchQuery, setSearchQuery] = useState("")
+    const [searchQuery, _] = useState("")
     const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false)
 
-    const [isRefreshing, setIsRefreshing] = useState(false)
-    const [activeUserType, setActiveUserType] = useState<Role>("CLIENT")
+
+    const activeUserType = useAppSelector((state) => state.user.activeUserType)
 
     // Redux
     const dispatch = useDispatch()
@@ -64,15 +63,17 @@ export function UserDashboard() {
     // Handle creating user
     const handleAddUser = async (firstName: string, lastName: string, agencyId: string, email: string, role: Role, subRole?: SubRole) => {
         try {
-            await createUser({
+            const newUserInput = {
                 email,
                 role,
-                subRole,
                 firstName,
                 lastName,
                 cognitoId: uuidv4(),
-                agencyId
-            })
+                agencyId,
+                ...(subRole ? { subRole } : {})
+            };
+
+            await createUser(newUserInput);
             setIsAddUserDialogOpen(false)
             toast.success("User created successfully")
             await refetchUsers()
@@ -98,12 +99,12 @@ export function UserDashboard() {
                     <p className="text-gray-500 mt-1">Manage the users in your agency and their account permissions here.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="relative">
+                    {/* <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <Input type="text" id="medium-input" className="shadow-none block w-full p-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search users..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                    </div>
+                    </div> */}
 
-                    <Button onClick={() => setIsAddUserDialogOpen(true)} variant={"outline"}>
+                    <Button onClick={() => setIsAddUserDialogOpen(true)} >
                         <UserPlus className="h-4 w-4 mr-2" />
                         Add User
                     </Button>
@@ -117,21 +118,21 @@ export function UserDashboard() {
             <div className="flex border-b border-gray-200">
                 <button
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CLIENT" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-                    onClick={() => setActiveUserType("CLIENT")}
+                    onClick={() => dispatch(setActiveUserType("CLIENT"))}
                 >
                     <Users className="h-4 w-4" />
                     Clients ({clients.length})
                 </button>
                 <button
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CARE_WORKER" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-                    onClick={() => setActiveUserType("CARE_WORKER")}
+                    onClick={() => dispatch(setActiveUserType("CARE_WORKER"))}
                 >
                     <UserPlus className="h-4 w-4" />
                     Care Workers ({careWorkers.length})
                 </button>
                 <button
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "OFFICE_STAFF" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-                    onClick={() => setActiveUserType("OFFICE_STAFF")}
+                    onClick={() => dispatch(setActiveUserType("OFFICE_STAFF"))}
                 >
                     <Briefcase className="h-4 w-4" />
                     Office Staff ({officeStaff.length})

@@ -105,7 +105,7 @@ export function AddUserDialog({ isOpen, setIsOpen, onAddUser, isLoading }: AddUs
                         {getSubroleOptions(role).length > 0 && (
                             <div className="grid gap-2">
                                 <Label htmlFor="subRole">Subrole</Label>
-                                <Select value={subRole} onValueChange={(value: SubRole) => setSubRole(value)}>
+                                <Select value={subRole || ""} onValueChange={(value: SubRole) => setSubRole(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a subrole" />
                                     </SelectTrigger>

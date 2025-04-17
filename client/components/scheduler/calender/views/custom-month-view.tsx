@@ -13,7 +13,7 @@ import { eventTypeStyles } from "../styles/event-colors"
 
 interface CustomMonthViewProps {
     date: Date
-    events: AppointmentEvent[]
+
     onSelectEvent: (event: AppointmentEvent) => void
     onDateSelect: (date: Date) => void
     staffMembers: any[]
@@ -50,7 +50,6 @@ interface RootState {
 
 export function CustomMonthView({
     date,
-    events,
     onSelectEvent,
     onDateSelect,
     staffMembers,
@@ -84,6 +83,8 @@ export function CustomMonthView({
     const reduxClients = useAppSelector((state: RootState) => state.user.clients || [])
     const careworkers = useAppSelector((state: RootState) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state: RootState) => state.user.officeStaff || [])
+
+    const events = useAppSelector((state) => state.schedule.events || [])
 
 
 

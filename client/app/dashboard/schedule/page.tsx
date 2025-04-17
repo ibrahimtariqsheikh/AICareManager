@@ -2,28 +2,22 @@
 
 import { useState } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
-import { useDispatch } from "react-redux"
-import { Plus, PlusCircle, X } from "lucide-react"
 import { Button } from "../../../components/ui/button"
-import { useAppDispatch, useAppSelector } from "@/state/redux"
+import { useAppDispatch } from "@/state/redux"
 import { AppointmentForm } from "@/components/scheduler/appointment-form"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { toggleRightSidebar } from "@/state/slices/scheduleSlice"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { Plus } from "lucide-react"
 
 export default function SchedulerPage() {
-    const [view, setView] = useState<"day" | "week" | "month">("week")
-    const [dateRange, setDateRange] = useState<{
-        from: Date | undefined
-        to: Date | undefined
-    }>({
+    const [view] = useState<"day" | "week" | "month">("week")
+    const [dateRange] = useState<{ from?: Date; to?: Date }>({
         from: new Date(),
-        to: undefined,
     })
     const dispatch = useAppDispatch()
 
-    const user = useAppSelector((state) => state.user.user)
     const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<any>(null)
 
@@ -51,14 +45,14 @@ export default function SchedulerPage() {
                             Track your availability and organize your professional schedule all in one place.
                         </p>
                     </div>
-                    {/* <Button
+                    <Button
                         onClick={() => setIsAppointmentFormOpen(true)}
                         size="sm"
                         className="hidden sm:flex"
                     >
                         <Plus className="h-4 w-4 mr-1.5" />
                         New Appointment
-                    </Button> */}
+                    </Button>
                 </div>
 
                 <div className="mb-4" />

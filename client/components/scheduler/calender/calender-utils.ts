@@ -17,12 +17,33 @@ export function filterEvents(
   // Log for debugging
   console.log("Filtering events:", events.length)
 
-  // Ensure dates are properly parsed
-  const processedEvents = events.map((event) => ({
-    ...event,
-    start: event.start instanceof Date ? event.start : new Date(event.start),
-    end: event.end instanceof Date ? event.end : new Date(event.end),
-  }))
+  // Ensure dates are properly parsed with timezone preservation
+  const processedEvents = events.map((event) => {
+    // Parse ISO strings in a way that preserves the date as specified (not converted to local timezone)
+    const parseISODate = (dateStr: string | Date) => {
+      if (dateStr instanceof Date) return dateStr;
+      
+      // For ISO strings, extract the date parts and construct a date at local midnight
+      const [year, month, day] = dateStr.substring(0, 10).split('-').map(Number);
+      const date = new Date(year, month - 1, day); // month is 0-indexed in JS Date
+      
+      // If there's time information in the ISO string, add it
+      if (dateStr.length > 10) {
+        const timeMatch = dateStr.match(/T(\d{2}):(\d{2}):(\d{2})/);
+        if (timeMatch) {
+          date.setHours(Number(timeMatch[1]), Number(timeMatch[2]), Number(timeMatch[3]));
+        }
+      }
+      
+      return date;
+    };
+    
+    return {
+      ...event,
+      start: parseISODate(event.start),
+      end: parseISODate(event.end),
+    };
+  })
 
   const selectedCareWorkerIds = careWorkers.filter((staff) => staff.selected).map((staff) => staff.id)
   const selectedOfficeStaffIds = officeStaff.filter((staff) => staff.selected).map((staff) => staff.id)

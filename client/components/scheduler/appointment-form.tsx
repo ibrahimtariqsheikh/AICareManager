@@ -5,7 +5,7 @@ import type React from "react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CalendarIcon, ChevronLeft, ChevronRight, Clock } from "lucide-react"
+import { CalendarIcon, ChevronLeft, ChevronRight, Clock, Loader2 } from "lucide-react"
 import { format, addMonths, subMonths, setHours, setMinutes, isBefore, isAfter } from "date-fns"
 import { cn } from "../../lib/utils"
 
@@ -21,7 +21,7 @@ import { useAppSelector, useAppDispatch } from "../../state/redux"
 import { addEvent, updateEvent, deleteEvent } from "../../state/slices/scheduleSlice"
 import { setClients, setOfficeStaff } from "../../state/slices/userSlice"
 
-import { useCreateScheduleMutation, useUpdateScheduleMutation, useDeleteScheduleMutation, useGetUsersQuery, useGetUserQuery } from "../../state/api"
+import { useCreateScheduleMutation, useUpdateScheduleMutation, useDeleteScheduleMutation } from "../../state/api"
 
 
 const formSchema = z.object({
@@ -124,26 +124,22 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     useEffect(() => {
         const startTime = form.watch("startTime")
         if (startTime) {
-            const [startHour, startMinute] = startTime.split(":").map(Number)
+            const [startHour, startMinute] = startTime.split(":").map(Number) as [number, number]
             const startDate = setMinutes(setHours(new Date(), startHour), startMinute)
-
-            // Filter end times to only show times after the start time
             const filteredEndTimes = allTimeOptions.filter((option) => {
-                const [endHour, endMinute] = option.value.split(":").map(Number)
+                const [endHour, endMinute] = option.value.split(":").map(Number) as [number, number]
                 const endDate = setMinutes(setHours(new Date(), endHour), endMinute)
                 return isAfter(endDate, startDate)
             })
 
             setAvailableEndTimes(filteredEndTimes)
 
-            // If current end time is before start time, update it
             const currentEndTime = form.watch("endTime")
             if (currentEndTime) {
-                const [endHour, endMinute] = currentEndTime.split(":").map(Number)
+                const [endHour, endMinute] = currentEndTime.split(":").map(Number) as [number, number]
                 const endDate = setMinutes(setHours(new Date(), endHour), endMinute)
 
                 if (isBefore(endDate, startDate)) {
-                    // Set end time to start time + 1 hour or next available time
                     const nextHour = (startHour + 1) % 24
                     const nextTime = `${nextHour.toString().padStart(2, "0")}:${startMinute.toString().padStart(2, "0")}`
                     form.setValue("endTime", nextTime)
@@ -152,7 +148,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         }
     }, [form.watch("startTime"), allTimeOptions, form])
 
-    // Initialize clients and staff from Redux store
+
     useEffect(() => {
         console.log('Initializing clients and staff')
         console.log('Redux clients:', clients)
@@ -177,8 +173,15 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
 
     useEffect(() => {
         if (event && !isNew) {
-            const startDate = new Date(event.shiftStart || event.start)
-            const endDate = new Date(event.shiftEnd || event.end)
+            const startTimestamp = (event.shiftStart ?? event.start) as number | string | Date
+            const endTimestamp = (event.shiftEnd ?? event.end) as number | string | Date
+
+            if (startTimestamp === undefined || endTimestamp === undefined) {
+                return
+            }
+
+            const startDate = new Date(startTimestamp)
+            const endDate = new Date(endTimestamp)
             const appointmentDate = new Date(event.date || startDate)
 
             form.reset({
@@ -227,8 +230,8 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             setIsLoading(true)
 
             // Combine date and time
-            const [startHour, startMinute] = data.startTime.split(":").map(Number)
-            const [endHour, endMinute] = data.endTime.split(":").map(Number)
+            const [startHour, startMinute] = data.startTime.split(":").map(Number) as [number, number]
+            const [endHour, endMinute] = data.endTime.split(":").map(Number) as [number, number]
 
             const startDateTime = new Date(data.date)
             startDateTime.setHours(startHour, startMinute)
@@ -236,12 +239,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             const endDateTime = new Date(data.date)
             endDateTime.setHours(endHour, endMinute)
 
-            // Find the selected care worker and client for additional data
-            const careWorker = careWorkers.find((worker: any) => worker.id === data.userId)
-            const client = clients.find((client: any) => client.id === data.clientId)
-
-            // Create a title that includes both care worker and client names
-            const title = `${client ? `${client.firstName} ${client.lastName}` : "Client"} with ${careWorker ? `${careWorker.firstName} ${careWorker.lastName}` : "Care Worker"}`
 
             const scheduleData = {
                 agencyId: data.agencyId,
@@ -255,11 +252,11 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                 notes: data.notes || "",
             }
 
+
             let response
             try {
                 if (isNew) {
                     response = await createSchedule(scheduleData).unwrap()
-                    console.log("Created new appointment:", response)
                     toast.success("Appointment created successfully")
                 } else {
                     response = await updateSchedule({ id: event.id, ...scheduleData }).unwrap()
@@ -314,24 +311,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
         }
     }
 
-    // Helper function to get event color based on type
-    const getEventColor = (type: string): string => {
-        switch (type) {
-            case "APPOINTMENT":
-                return "#4f46e5" // indigo
-            case "CHECKUP":
-            case "WEEKLY_CHECKUP":
-                return "#10b981" // emerald
-            case "EMERGENCY":
-                return "#ef4444" // red
-            case "ROUTINE":
-                return "#8b5cf6" // purple
-            case "HOME_VISIT":
-                return "#059669" // green
-            default:
-                return "#6b7280" // gray
-        }
-    }
 
     const goToPreviousMonth = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -724,7 +703,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                             <Button type="submit" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
-                                        <span className="animate-spin mr-2">⏳</span>
+                                        <Loader2 className="animate-spin mr-2 w-4 h-4" />
                                         {isNew ? "Creating..." : "Updating..."}
                                     </>
                                 ) : (

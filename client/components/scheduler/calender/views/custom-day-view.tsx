@@ -11,22 +11,8 @@ import { useAppSelector } from "@/state/redux"
 import BankNotes from "@/components/icons/bank-notes"
 import EventIcon from "@/components/icons/eventicon"
 import HomeModern from "@/components/icons/home-modern"
+import { AppointmentEvent } from "../types"
 
-// Define types
-export interface AppointmentEvent {
-    id: string
-    title: string
-    start: Date
-    end: Date
-    type: string
-    clientId?: string
-    date?: Date
-    resourceId?: string
-    status?: string
-    notes?: string
-    chargeRate?: number
-    color?: string
-}
 
 export interface Client {
     id: string
@@ -39,7 +25,7 @@ export interface Client {
 
 interface CustomDayViewProps {
     date: Date
-    events: AppointmentEvent[]
+
     onSelectEvent: (event: AppointmentEvent) => void
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
     min?: Date
@@ -61,7 +47,7 @@ interface CustomDayViewProps {
 
 export function CustomDayView({
     date,
-    events,
+
     onSelectEvent,
     onEventUpdate,
     min = new Date(new Date().setHours(7, 0, 0)),
@@ -80,6 +66,7 @@ export function CustomDayView({
     const clients = propClients || reduxClients
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
+    const events = useAppSelector((state) => state.schedule.events || [])
 
     // Get the appropriate users based on activeScheduleUserType
     const displayUsers = (() => {
@@ -191,6 +178,7 @@ export function CustomDayView({
                 eventMap[event.id] = processedEvent
             })
         setDisplayEvents(eventMap)
+        console.log('Display Events:', eventMap)
     }, [events, date])
 
     // Calculate positions for events

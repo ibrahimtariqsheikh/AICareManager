@@ -61,14 +61,14 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 bg-neutral-100 border border-neutral-300 rounded-lg p-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Input
                         placeholder="Search..."
                         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                         onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-                        className="max-w-sm border border-gray-200"
+                        className="max-w-sm bg-neutral-200"
                     />
                 </div>
                 <DropdownMenu>

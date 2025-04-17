@@ -71,7 +71,7 @@ export interface ProcessedCalendarEvent {
     clientId: string
     type: string
     status: string
-    notes?: string
+    notes?: string | undefined
     color: string
     careWorker: {
         firstName: string

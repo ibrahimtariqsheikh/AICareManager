@@ -20,7 +20,7 @@ export function ClientSelector({ onClientSelect, selectedClientIds }: ClientSele
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
-      setFilteredClients(clients.map((client) => ({
+      setFilteredClients(clients.map((client: Client) => ({
         id: client.id,
         firstName: client.firstName,
         lastName: client.lastName,

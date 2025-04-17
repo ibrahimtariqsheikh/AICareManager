@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { api } from "../api";
 import { Agency, CustomTask, Group, RateSheet, RateSheetType, User } from "../../types/agencyTypes";
 
 
@@ -15,6 +14,7 @@ interface AgencyState {
     groups: Group[];
     rateSheets: RateSheet[];
     activeRateSheetStaffType: RateSheetType;
+  
 }
 
 // Initial state
@@ -30,6 +30,7 @@ const initialState: AgencyState = {
     groups: [],
     rateSheets: [],
     activeRateSheetStaffType: "CLIENT",
+   
 };
 
 // Agency Slice
@@ -43,6 +44,7 @@ const agencySlice = createSlice({
         setAgencyId: (state, action: PayloadAction<string>) => {
             state.agencyId = action.payload;
         },
+       
         setClients: (state, action: PayloadAction<User[]>) => {
             state.clients = action.payload;
         },

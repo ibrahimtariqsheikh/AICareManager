@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import type { User } from "../../types/prismaTypes"
 import { api } from "../api"
 import type { UserResponse } from "../api"
@@ -57,6 +57,7 @@ interface UserState {
   careWorkers: User[];
   clients: User[];
   loading: boolean;
+  activeUserType: "CLIENT" | "CARE_WORKER" | "OFFICE_STAFF";
   error: string | null;
   currentUser: User | null;
 }
@@ -79,6 +80,7 @@ const initialState: UserState = {
   officeStaff: [],
   careWorkers: [],
   clients: [],
+  activeUserType: "CLIENT",
   loading: false,
   error: null,
   currentUser: null,
@@ -100,6 +102,9 @@ const userSlice = createSlice({
     },
     setClients: (state, action: PayloadAction<User[]>) => {
       state.clients = action.payload
+    },
+    setActiveUserType: (state, action: PayloadAction<"CLIENT" | "CARE_WORKER" | "OFFICE_STAFF">) => {
+      state.activeUserType = action.payload
     },
     clearUserError: (state) => {
       state.error = null
@@ -162,6 +167,7 @@ export const {
   setCurrentUser,
   setLoading,
   setError,
+  setActiveUserType,
 } = userSlice.actions
 export default userSlice.reducer
 

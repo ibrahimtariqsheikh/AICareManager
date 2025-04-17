@@ -4,7 +4,6 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
     DropdownMenu,
@@ -77,28 +76,12 @@ export const columns: ColumnDef<User>[] = [
         },
     },
 
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-            const status = row.original.status || "Active"
-            switch (status.toLowerCase()) {
-                case "active":
-                    return <Badge className="bg-blue-500/10 text-blue-800 hover:bg-blue-200 border-0 shadow-none">Active</Badge>
-                case "inactive":
-                    return <Badge className="bg-gray-500/10 text-gray-800 hover:bg-gray-200 border-0 shadow-none">Inactive</Badge>
-                case "pending":
-                    return <Badge className="bg-yellow-500/10 text-yellow-800 hover:bg-yellow-200 border-0 shadow-none">Pending</Badge>
-                default:
-                    return <Badge className="bg-blue-500/10 text-blue-800 hover:bg-blue-200 border-0 shadow-none">{status}</Badge>
-            }
-        },
-    },
+
     {
         accessorKey: "subRole",
         header: "Subrole",
         cell: ({ row }) => (
-            <div className="text-sm text-gray-600">
+            <div className="text-xs text-blue-800 bg-blue-100 font-medium rounded-md px-2 py-1 max-w-30 w-fit text-center">
                 {row.original.subRole ? row.original.subRole.replace(/_/g, " ") : "None"}
             </div>
         ),

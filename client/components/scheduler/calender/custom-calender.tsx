@@ -64,7 +64,7 @@ interface CustomCalendarProps {
     sidebarMode: SidebarMode
     clients: Client[]
     spaceTheme?: boolean
-    events: ProcessedCalendarEvent[]
+    events?: ProcessedCalendarEvent[]
     getEventTypeLabel: (type: string) => string
 }
 
@@ -78,7 +78,7 @@ export function CustomCalendar({
     staffMembers,
     sidebarMode,
     spaceTheme,
-    events,
+    events = [],
     getEventTypeLabel,
 }: CustomCalendarProps) {
     // Add styles to document
@@ -389,7 +389,7 @@ export function CustomCalendar({
                     currentDate={currentDate}
                     onDateChange={onNavigate}
                     date={currentDate}
-                    events={events}
+
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
 
@@ -400,7 +400,7 @@ export function CustomCalendar({
             {activeView === "week" && (
                 <CustomWeekView
                     date={currentDate}
-                    events={events}
+
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
                     staffMembers={staffMembers}
@@ -412,7 +412,7 @@ export function CustomCalendar({
             {activeView === "month" && (
                 <CustomMonthView
                     date={currentDate}
-                    events={events}
+
                     onSelectEvent={onSelectEvent}
                     onDateSelect={onNavigate}
                     staffMembers={staffMembers}
