@@ -314,7 +314,7 @@ export const getUserAllDetails = async (req: Request, res: Response): Promise<vo
                 riskAssessments: true,
                 familyAccess: true,
                 communicationLogs: true,
-                agenciesOwned: true,
+             
             },
         });
         res.json({data: user}); 
@@ -339,7 +339,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                     },
                 },
                 agency: true,
-                agenciesOwned: true,
+       
             },
         });
 
