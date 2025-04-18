@@ -142,7 +142,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
             include: {
                 agency: true,
                 profile: true,
-                agenciesOwned: true,
+               
             }
         });
 
