@@ -1,16 +1,17 @@
 import { jsPDF } from "jspdf"
 import { format } from "date-fns"
-import type { Client, InvoiceData, InvoiceItem } from "../../types"
-import type { DateRange } from "react-day-picker"
+import type { InvoiceData, InvoiceItem } from "../../types"
+import { User } from "@/types/prismaTypes"
+import { DateRange } from "react-big-calendar"
 
 export function generatePDF(
-  client: Client,
+  client: User,
   invoiceData: InvoiceData,
   items: InvoiceItem[],
   subtotal: number,
   tax: number,
   total: number,
-  dateRange: DateRange | undefined,
+  dateRange: DateRange | null,
 ): jsPDF {
   try {
     // Create a new PDF document
@@ -60,12 +61,8 @@ export function generatePDF(
 
     doc.setFontSize(10)
     doc.setTextColor(secondaryTextColor)
-    doc.text(client.name ?? "", 20, 77)
-    doc.text(client.address ?? "", 20, 82)
-    doc.text(`${client.city ?? ""}, ${client.state ?? ""} ${client.postalCode ?? ""}`, 20, 87)
-    doc.text(client.country ?? "", 20, 92)
-    doc.text(client.email ?? "", 20, 97)
-    doc.text(client.phone ?? "", 20, 102)
+    doc.text(client.firstName + " " + client.lastName ?? "", 20, 82)
+  
 
     // Add service period
     doc.setFontSize(12)

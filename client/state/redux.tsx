@@ -20,8 +20,10 @@ import documentReducer from "./slices/documentSlice"
 import agencyReducer from "./slices/agencySlice"
 import patientReducer from "./slices/patientSlice"
 import chatReducer from "./slices/chatSlice"
+import invoiceReducer from "./slices/invoiceSlice"
 
-/* REDUX STORE */
+
+
 const rootReducer = combineReducers({
   global: globalReducer,
   agency: agencyReducer,
@@ -35,6 +37,7 @@ const rootReducer = combineReducers({
   document: documentReducer,
   patient: patientReducer,
   chat: chatReducer,
+  invoice: invoiceReducer,
   [api.reducerPath]: api.reducer,
 })
 
@@ -44,16 +47,14 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
-          // Ignore these action types
           ignoredActions: ['api/executeQuery/fulfilled', 'api/executeQuery/rejected'],
-          // Ignore these paths in the state
           ignoredPaths: ['api.queries', 'api.mutations', 'api.subscriptions'],
         },
       }).concat(api.middleware),
   })
 }
 
-/* REDUX TYPES */
+
 export type AppStore = ReturnType<typeof makeStore>
 export type RootState = ReturnType<AppStore["getState"]>
 export type AppDispatch = AppStore["dispatch"]

@@ -7,33 +7,31 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label"
 import { ClientSelector } from "./components/client-selector"
 import { InvoiceLineItems } from "./components/invoice-line-items"
-
 import { InvoiceSummary } from "./components/invoice-summary"
 import { InvoiceSettings } from "./components/invoice-settings"
 import { toast } from "sonner"
 import { ArrowLeft, Save, Send, Download, Plus } from "lucide-react"
-import type { DateRange } from "react-day-picker"
 import { addDays, format } from "date-fns"
-
-import type { Client, CareWorker, InvoiceItem, InvoiceData } from "./types"
-import { fetchClients, fetchCareWorkers, fetchClientHours } from "./api/mock-api"
+import type { InvoiceItem, InvoiceData } from "./types"
+import { fetchClientHours } from "./api/mock-api"
 import { generateInvoiceNumber } from "./components/utils/invoice-utils"
 import { generatePDF } from "./components/utils/pdf-generator"
-import { DatePickerWithRange } from "@/components/scheduler/date-range"
 import { PDFPreview } from "./components/pdf-preview"
+import { useAppDispatch, useAppSelector } from "@/state/redux"
+import { CustomDateRangeSelector } from "./components/custom-date-range"
+import { setInvoices } from "@/state/slices/invoiceSlice"
 
 export default function InvoiceBuilderPage() {
     const router = useRouter()
-    const [clients, setClients] = useState<Client[]>([])
-    const [careWorkers, setCareWorkers] = useState<CareWorker[]>([])
-    const [selectedClient, setSelectedClient] = useState<Client | null>(null)
-    const [dateRange, setDateRange] = useState<DateRange | undefined>({
-        from: addDays(new Date(), -14),
-        to: new Date(),
-    })
+    const careWorkers = useAppSelector((state) => state.user.careWorkers)
+    const selectedClient = useAppSelector((state) => state.invoice.selectedClient)
+    const dateRange = useAppSelector((state) => state.invoice.selectedDateRange)
+    const dispatch = useAppDispatch()
+    const invoices = useAppSelector((state) => state.invoice.invoices)
+
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
     const [isLoading, setIsLoading] = useState(false)
-    const [activeTab, setActiveTab] = useState("details")
+
     const [invoiceData, setInvoiceData] = useState<InvoiceData>({
         invoiceNumber: generateInvoiceNumber(),
         issueDate: format(new Date(), "yyyy-MM-dd"),
@@ -43,16 +41,6 @@ export default function InvoiceBuilderPage() {
         taxEnabled: false,
     })
 
-    // Load clients and care workers on component mount
-    useEffect(() => {
-        const loadData = async () => {
-            const clientsData = await fetchClients()
-            const careWorkersData = await fetchCareWorkers()
-            setClients(clientsData)
-            setCareWorkers(careWorkersData)
-        }
-        loadData()
-    }, [])
 
     // Generate invoice items when client and date range are selected
     useEffect(() => {
@@ -62,7 +50,7 @@ export default function InvoiceBuilderPage() {
             setIsLoading(true)
             try {
                 // Fetch hours worked for the selected client in the date range
-                const hoursData = await fetchClientHours(selectedClient.id, dateRange.from, dateRange.to)
+                const hoursData = await fetchClientHours(selectedClient.userInfo.id, dateRange.from, dateRange.to)
 
                 // Group hours by care worker and service type
                 const groupedItems: Record<string, InvoiceItem> = {}
@@ -100,12 +88,7 @@ export default function InvoiceBuilderPage() {
         }
     }, [selectedClient, dateRange, careWorkers])
 
-    const handleClientChange = (client: Client | null) => {
-        setSelectedClient(client)
-        if (!client) {
-            setInvoiceItems([])
-        }
-    }
+
 
     const handleAddItem = () => {
         const newItem: InvoiceItem = {
@@ -129,13 +112,11 @@ export default function InvoiceBuilderPage() {
     }
 
     const handleSaveInvoice = () => {
-        // In a real app, this would save the invoice to your backend
         toast.success("Invoice saved successfully")
     }
 
     const handleSendInvoice = () => {
-        // In a real app, this would send the invoice to the client
-        toast.success("Invoice sent to client")
+        dispatch(setInvoices([...(invoices || []), invoiceData]))
     }
 
     const handleDownloadPDF = () => {
@@ -197,7 +178,7 @@ export default function InvoiceBuilderPage() {
                     </Button>
                     <Button onClick={handleSendInvoice}>
                         <Send className="mr-2 h-4 w-4" />
-                        Send Invoice
+                        Create Invoice
                     </Button>
                 </div>
             </div>
@@ -213,15 +194,11 @@ export default function InvoiceBuilderPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="client">Client</Label>
-                                    <ClientSelector
-                                        clients={clients}
-                                        selectedClient={selectedClient}
-                                        onClientChange={handleClientChange}
-                                    />
+                                    <ClientSelector />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Service Period</Label>
-                                    <DatePickerWithRange date={dateRange} setDate={setDateRange} />
+                                    <Label htmlFor="dateRange">Date Range</Label>
+                                    <CustomDateRangeSelector />
                                 </div>
                             </div>
                         </CardContent>
@@ -286,13 +263,13 @@ export default function InvoiceBuilderPage() {
                         </CardHeader>
                         <CardContent className="p-0">
                             <PDFPreview
-                                client={selectedClient}
+
                                 invoiceData={invoiceData}
                                 items={invoiceItems}
                                 subtotal={calculateSubtotal()}
                                 tax={calculateTax()}
                                 total={calculateTotal()}
-                                dateRange={dateRange}
+
                             />
                         </CardContent>
                     </Card>

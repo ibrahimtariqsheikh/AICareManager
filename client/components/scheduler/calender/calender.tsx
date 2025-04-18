@@ -188,7 +188,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
                 <div
                     className={`${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border rounded-lg overflow-hidden transition-all duration-200 ease-in-out flex-1`}
                 >
-                    {schedules.length === 0 ? (
+                    {schedules.length === 0 && !isSchedulesLoading ? (
                         <div className="flex-1 h-full flex flex-col items-center justify-center p-8">
                             <div className="text-center max-w-md">
                                 <div

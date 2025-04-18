@@ -518,16 +518,7 @@ export function CustomDayView({
                                     <ChevronDown className="h-3.5 w-3.5" />
                                 </div>
                             </div>
-                            <div
-                                className="px-6 font-medium flex items-center text-xs gap-2 border-b text-neutral-600"
-                                style={{ height: `${rowHeight}px` }}
-                            >
-                                <div className="flex items-start gap-2 text-neutral-800">
-                                    <Notebook className="h-3.5 w-3.5" />
-                                    <span>Daily Info</span>
-                                    <ChevronDown className="h-3.5 w-3.5" />
-                                </div>
-                            </div>
+
 
                             {/* User list */}
                             {displayUsers.map((user) => (
@@ -654,15 +645,7 @@ export function CustomDayView({
                                     }}
                                 />
 
-                                {/* Daily Notes row grid line */}
-                                <div
-                                    className={`absolute w-full border-b ${gridLineClass}`}
-                                    style={{
-                                        top: `${1 * rowHeight}px`,
-                                        height: "1.5px",
-                                        zIndex: 2,
-                                    }}
-                                />
+
                                 {/* Daily Notes row grid line */}
                                 <div
                                     className={`absolute w-full border-b ${gridLineClass}`}
@@ -699,10 +682,10 @@ export function CustomDayView({
                                             key={user.id}
                                             className="client-row absolute w-full border-b-2"
                                             style={{
-                                                top: `${(0 + 2) * rowHeight}px`,
+                                                top: `${(0 + 1) * rowHeight}px`,
                                                 height: `${rowHeight}px`,
                                                 borderColor: spaceTheme ? "#1e293b" : "#e2e8f0",
-                                                zIndex: 2,
+
                                             }}
                                         >
                                             {/* <div className="client-name-label">
@@ -719,7 +702,7 @@ export function CustomDayView({
                                                     <motion.div
                                                         key={event.id}
                                                         className={cn(
-                                                            "absolute p-2 text-xs rounded-md shadow-sm border ",
+                                                            "absolute p-2 text-xs rounded-md  border ",
                                                             "bg-blue-50", // Light blue background
                                                             "border-gray-200 border-l-4 border-l-blue-600",
                                                             "cursor-grab active:cursor-grabbing",
@@ -751,6 +734,7 @@ export function CustomDayView({
                                                         <div className={cn("text-[10px] mt-1 text-blue-800")}>
                                                             {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </div>
+                                                        <div className="text-xs font-semibold text-blue-800 flex flex-row items-center gap-1 justify-start mt-1"><User className="h-3.5 w-3.5" /><div className="text-blue-800">{event.careWorker?.firstName} {event.careWorker?.lastName}</div>  </div>
                                                     </motion.div>
                                                 )
                                             })}

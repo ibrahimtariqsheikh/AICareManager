@@ -1,21 +1,25 @@
 "use client"
 
 import { format } from "date-fns"
-import type { Client, InvoiceData, InvoiceItem } from "../types"
-import type { DateRange } from "react-day-picker"
+import type { InvoiceData, InvoiceItem } from "../types"
+import { User } from "@/types/prismaTypes"
+import { useAppSelector } from "@/state/redux"
 
 interface PDFPreviewProps {
-  client: Client | null
+
   invoiceData: InvoiceData
   items: InvoiceItem[]
   subtotal: number
   tax: number
   total: number
-  dateRange: DateRange | undefined
+
 }
 
-export function PDFPreview({ client, invoiceData, items, subtotal, tax, total, dateRange }: PDFPreviewProps) {
-  if (!client) {
+export function PDFPreview({ invoiceData, items, subtotal, tax, total }: PDFPreviewProps) {
+  const selectedClient: User | null = useAppSelector((state) => state.invoice.selectedClient)
+  const dateRange = useAppSelector((state) => state.invoice.selectedDateRange)
+
+  if (!selectedClient) {
     return (
       <div className="text-center py-12">
         <h3 className="text-lg font-medium">No Client Selected</h3>
@@ -153,14 +157,9 @@ export function PDFPreview({ client, invoiceData, items, subtotal, tax, total, d
           <div className="mt-10">
             <h2 className="text-lg font-bold text-gray-700">Bill To:</h2>
             <div className="mt-2">
-              <p className="font-medium">{client.name}</p>
-              <p>{client.address}</p>
-              <p>
-                {client.city}, {client.state} {client.postalCode}
-              </p>
-              <p>{client.country}</p>
-              <p className="mt-2">{client.email}</p>
-              <p>{client.phone}</p>
+              <p className="font-medium">{selectedClient.firstName} {selectedClient.lastName}</p>
+              <p>{selectedClient.email}</p>
+
             </div>
           </div>
 
