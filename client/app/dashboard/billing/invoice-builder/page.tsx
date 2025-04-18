@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,87 +8,30 @@ import { Label } from "@/components/ui/label"
 import { ClientSelector } from "./components/client-selector"
 import { InvoiceLineItems } from "./components/invoice-line-items"
 import { InvoiceSummary } from "./components/invoice-summary"
-import { InvoiceSettings } from "./components/invoice-settings"
 import { toast } from "sonner"
-import { ArrowLeft, Save, Send, Download, Plus } from "lucide-react"
-import { addDays, format } from "date-fns"
-import type { InvoiceItem, InvoiceData } from "./types"
-import { fetchClientHours } from "./api/mock-api"
-import { generateInvoiceNumber } from "./components/utils/invoice-utils"
+import { ArrowLeft, Download, Plus } from "lucide-react"
+
+import type { InvoiceItem } from "./types"
+
 import { generatePDF } from "./components/utils/pdf-generator"
 import { PDFPreview } from "./components/pdf-preview"
 import { useAppDispatch, useAppSelector } from "@/state/redux"
 import { CustomDateRangeSelector } from "./components/custom-date-range"
-import { setInvoices } from "@/state/slices/invoiceSlice"
+import { setInvoiceData, setInvoices } from "@/state/slices/invoiceSlice"
+import { InvoiceSettings } from "./components/invoice-settings"
+
+
 
 export default function InvoiceBuilderPage() {
     const router = useRouter()
-    const careWorkers = useAppSelector((state) => state.user.careWorkers)
+
     const selectedClient = useAppSelector((state) => state.invoice.selectedClient)
-    const dateRange = useAppSelector((state) => state.invoice.selectedDateRange)
     const dispatch = useAppDispatch()
     const invoices = useAppSelector((state) => state.invoice.invoices)
+    const invoiceData = useAppSelector((state) => state.invoice.invoiceData)
 
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
-    const [isLoading, setIsLoading] = useState(false)
-
-    const [invoiceData, setInvoiceData] = useState<InvoiceData>({
-        invoiceNumber: generateInvoiceNumber(),
-        issueDate: format(new Date(), "yyyy-MM-dd"),
-        dueDate: format(addDays(new Date(), 30), "yyyy-MM-dd"),
-        notes: "",
-        taxRate: 0,
-        taxEnabled: false,
-    })
-
-
-    // Generate invoice items when client and date range are selected
-    useEffect(() => {
-        const generateInvoiceItems = async () => {
-            if (!selectedClient || !dateRange?.from || !dateRange?.to) return
-
-            setIsLoading(true)
-            try {
-                // Fetch hours worked for the selected client in the date range
-                const hoursData = await fetchClientHours(selectedClient.userInfo.id, dateRange.from, dateRange.to)
-
-                // Group hours by care worker and service type
-                const groupedItems: Record<string, InvoiceItem> = {}
-
-                hoursData.forEach((entry) => {
-                    const key = `${entry.careWorkerId}-${entry.serviceType}`
-                    if (!groupedItems[key]) {
-                        const careWorker = careWorkers.find((cw) => cw.id === entry.careWorkerId)
-                        groupedItems[key] = {
-                            id: key,
-                            description: `${entry.serviceType} - ${careWorker?.firstName} ${careWorker?.lastName || ""}`,
-                            quantity: entry.hours,
-                            rate: selectedClient.rates[entry.serviceType] || 0,
-                            amount: (selectedClient.rates[entry.serviceType] || 0) * entry.hours,
-                            serviceType: entry.serviceType,
-                            careWorkerId: entry.careWorkerId,
-                        }
-                    } else {
-                        groupedItems[key].quantity += entry.hours
-                        groupedItems[key].amount = groupedItems[key].rate * groupedItems[key].quantity
-                    }
-                })
-
-                setInvoiceItems(Object.values(groupedItems))
-            } catch (error) {
-                console.error("Error generating invoice items:", error)
-                toast.error("Failed to generate invoice items")
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
-        if (selectedClient && dateRange?.from && dateRange?.to) {
-            generateInvoiceItems()
-        }
-    }, [selectedClient, dateRange, careWorkers])
-
-
+    const [isLoading, _] = useState(false)
 
     const handleAddItem = () => {
         const newItem: InvoiceItem = {
@@ -111,15 +54,11 @@ export default function InvoiceBuilderPage() {
         setInvoiceItems(invoiceItems.filter((item) => item.id !== itemId))
     }
 
-    const handleSaveInvoice = () => {
-        toast.success("Invoice saved successfully")
-    }
-
     const handleSendInvoice = () => {
         dispatch(setInvoices([...(invoices || []), invoiceData]))
     }
 
-    const handleDownloadPDF = () => {
+    const handleDownloadPDF = async () => {
         if (!selectedClient) {
             toast.error("Please select a client first")
             return
@@ -127,22 +66,20 @@ export default function InvoiceBuilderPage() {
 
         try {
             // Generate PDF
-            const doc = generatePDF(
+            const doc = await generatePDF(
                 selectedClient,
-                invoiceData,
                 invoiceItems,
                 calculateSubtotal(),
                 calculateTax(),
                 calculateTotal(),
-                dateRange,
             )
 
             // Download the PDF
-            doc.save(`Invoice-${invoiceData.invoiceNumber}.pdf`)
+            doc.save(`Invoice-${invoiceData?.invoiceNumber}.pdf`)
             toast.success("PDF downloaded successfully")
         } catch (error) {
             console.error("Error generating PDF:", error)
-            toast.error("Failed to generate PDF")
+            toast.error(error instanceof Error ? error.toString() : "An unknown error occurred")
         }
     }
 
@@ -151,7 +88,7 @@ export default function InvoiceBuilderPage() {
     }
 
     const calculateTax = () => {
-        return invoiceData.taxEnabled ? calculateSubtotal() * (invoiceData.taxRate / 100) : 0
+        return invoiceData?.taxEnabled ? calculateSubtotal() * (invoiceData.taxRate / 100) : 0
     }
 
     const calculateTotal = () => {
@@ -168,16 +105,13 @@ export default function InvoiceBuilderPage() {
                     <h1 className="text-2xl font-bold">Create New Invoice</h1>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={handleSaveInvoice}>
-                        <Save className="mr-2 h-4 w-4" />
-                        Save Draft
-                    </Button>
+
                     <Button variant="outline" onClick={handleDownloadPDF}>
                         <Download className="mr-2 h-4 w-4" />
                         Download PDF
                     </Button>
                     <Button onClick={handleSendInvoice}>
-                        <Send className="mr-2 h-4 w-4" />
+                        <Plus className="mr-2 h-4 w-4" />
                         Create Invoice
                     </Button>
                 </div>
@@ -200,16 +134,20 @@ export default function InvoiceBuilderPage() {
                                     <Label htmlFor="dateRange">Date Range</Label>
                                     <CustomDateRangeSelector />
                                 </div>
+
                             </div>
+
                         </CardContent>
                     </Card>
 
-                    <InvoiceSettings invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
+                    <InvoiceSettings
+
+                    />
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle>Line Items</CardTitle>
+                                <CardTitle>Services</CardTitle>
                                 <CardDescription>Services provided during the selected period</CardDescription>
                             </div>
                             <Button variant="outline" size="sm" onClick={handleAddItem}>
@@ -230,8 +168,8 @@ export default function InvoiceBuilderPage() {
                                 subtotal={calculateSubtotal()}
                                 tax={calculateTax()}
                                 total={calculateTotal()}
-                                taxEnabled={invoiceData.taxEnabled}
-                                taxRate={invoiceData.taxRate}
+                                taxEnabled={invoiceData?.taxEnabled ?? false}
+                                taxRate={invoiceData?.taxRate ?? 0}
                             />
                         </CardFooter>
                     </Card>
@@ -245,8 +183,8 @@ export default function InvoiceBuilderPage() {
                             <textarea
                                 className="w-full min-h-[100px] p-3 border rounded-md"
                                 placeholder="Enter any additional notes or payment instructions..."
-                                value={invoiceData.notes}
-                                onChange={(e) => setInvoiceData({ ...invoiceData, notes: e.target.value })}
+                                value={invoiceData?.notes ?? ""}
+                                onChange={(e) => dispatch(setInvoiceData({ ...invoiceData, notes: e.target.value }))}
                             />
                         </CardContent>
                     </Card>
@@ -263,13 +201,10 @@ export default function InvoiceBuilderPage() {
                         </CardHeader>
                         <CardContent className="p-0">
                             <PDFPreview
-
-                                invoiceData={invoiceData}
                                 items={invoiceItems}
                                 subtotal={calculateSubtotal()}
                                 tax={calculateTax()}
                                 total={calculateTotal()}
-
                             />
                         </CardContent>
                     </Card>

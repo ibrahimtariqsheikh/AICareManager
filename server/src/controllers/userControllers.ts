@@ -141,7 +141,8 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
             where: { cognitoId },
             include: {
                 agency: true,
-                profile: true
+                profile: true,
+                agenciesOwned: true,
             }
         });
 
@@ -306,7 +307,6 @@ export const getUserAllDetails = async (req: Request, res: Response): Promise<vo
             include: {
                 profile: true,
                 agency: true,
-                medicationRecords: true,
                 documents: true,
                 incidentReports: true,
                 keyContacts: true,
@@ -314,6 +314,7 @@ export const getUserAllDetails = async (req: Request, res: Response): Promise<vo
                 riskAssessments: true,
                 familyAccess: true,
                 communicationLogs: true,
+                agenciesOwned: true,
             },
         });
         res.json({data: user}); 
@@ -338,6 +339,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                     },
                 },
                 agency: true,
+                agenciesOwned: true,
             },
         });
 

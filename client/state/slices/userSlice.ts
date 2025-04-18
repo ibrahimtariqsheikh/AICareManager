@@ -27,6 +27,23 @@ interface UserState {
       lastName: string;
       role: string;
       agencyId?: string;
+    agenciesOwned: [
+      {
+        id: string;
+        name: string;
+        isActive: boolean;
+        isSuspended: boolean;
+        hasScheduleV2: boolean;
+        hasEMAR: boolean;
+        hasFinance: boolean;
+ isWeek1And2ScheduleEnabled: boolean;
+        hasPoliciesAndProcedures: boolean;
+        isTestAccount: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+
+      }
+    ];
       agency?: {
         id: string;
         name: string;
@@ -42,6 +59,7 @@ interface UserState {
         updatedAt: Date;
       };
     } | null;
+
     authUser: {
       cognitoInfo: {
         signInDetails: {
@@ -66,6 +84,7 @@ interface UserState {
 const initialState: UserState = {
   user: {
     userInfo: null,
+
     authUser: {
       cognitoInfo: {
         signInDetails: {
@@ -92,7 +111,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<AdditionalUserInfo>) => {
-      state.user = action.payload
+      state.user=action.payload
     },
     setOfficeStaff: (state, action: PayloadAction<User[]>) => {
       state.officeStaff = action.payload

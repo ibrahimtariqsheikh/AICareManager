@@ -1,12 +1,11 @@
 "use client"
 
 import { format } from "date-fns"
-import type { Client, InvoiceData, InvoiceItem } from "../types"
+import type { InvoiceItem } from "../types"
 import type { DateRange } from "react-day-picker"
+import { useAppSelector } from "@/state/redux"
 
 interface InvoicePreviewProps {
-  client: Client | null
-  invoiceData: InvoiceData
   items: InvoiceItem[]
   subtotal: number
   tax: number
@@ -14,7 +13,10 @@ interface InvoicePreviewProps {
   dateRange: DateRange | undefined
 }
 
-export function InvoicePreview({ client, invoiceData, items, subtotal, tax, total, dateRange }: InvoicePreviewProps) {
+export function InvoicePreview({ items, subtotal, tax, total, dateRange }: InvoicePreviewProps) {
+  const invoiceData = useAppSelector((state) => state.invoice.invoiceData)
+  const client = useAppSelector((state) => state.invoice.selectedClient)
+  console.log("Date Range From Invoice Preview", dateRange)
   if (!client) {
     return (
       <div className="text-center py-12">
@@ -31,20 +33,20 @@ export function InvoicePreview({ client, invoiceData, items, subtotal, tax, tota
           <h1 className="text-3xl font-bold text-gray-900">INVOICE</h1>
           <div className="mt-4">
             <p className="font-bold">AI Care Manager</p>
-            <p>123 Care Street</p>
-            <p>Toronto, ON M5V 2K4</p>
-            <p>Canada</p>
-            <p className="mt-2">contact@aicaremanager.com</p>
-            <p>+1 (416) 555-1234</p>
+            <p>{client.addressLine1}</p>
+            <p>{client.addressLine2}</p>
+            <p>{client.townOrCity}</p>
+            <p className="mt-2">{client.postalCode}</p>
+            <p>{client.phoneNumber}</p>
           </div>
         </div>
         <div className="text-right">
           <div className="h-16 w-16 bg-primary rounded-md flex items-center justify-center">
             <span className="text-white font-bold text-xl">ACM</span>
           </div>
-          <p className="mt-4 font-medium">Invoice #{invoiceData.invoiceNumber}</p>
-          <p className="text-muted-foreground">Issue Date: {format(new Date(invoiceData.issueDate), "MMM d, yyyy")}</p>
-          <p className="text-muted-foreground">Due Date: {format(new Date(invoiceData.dueDate), "MMM d, yyyy")}</p>
+          <p className="mt-4 font-medium">Invoice #{invoiceData?.invoiceNumber}</p>
+          <p className="text-muted-foreground">Issue Date: {format(new Date(invoiceData?.issueDate || new Date()), "MMM d, yyyy")}</p>
+          <p className="text-muted-foreground">Due Date: {format(new Date(invoiceData?.dueDate || new Date()), "MMM d, yyyy")}</p>
         </div>
       </div>
 
@@ -100,9 +102,9 @@ export function InvoicePreview({ client, invoiceData, items, subtotal, tax, tota
             <span className="font-medium">Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-          {invoiceData.taxEnabled && (
+          {invoiceData?.taxEnabled && (
             <div className="flex justify-between py-2 border-b border-gray-200">
-              <span className="font-medium">Tax ({invoiceData.taxRate}%)</span>
+              <span className="font-medium">Tax ({invoiceData?.taxRate}%)</span>
               <span>${tax.toFixed(2)}</span>
             </div>
           )}
@@ -113,16 +115,16 @@ export function InvoicePreview({ client, invoiceData, items, subtotal, tax, tota
         </div>
       </div>
 
-      {invoiceData.notes && (
+      {invoiceData?.notes && (
         <div className="mt-8">
           <h2 className="text-lg font-bold text-gray-700">Notes:</h2>
-          <p className="mt-2 text-gray-600 whitespace-pre-line">{invoiceData.notes}</p>
+          <p className="mt-2 text-gray-600 whitespace-pre-line">{invoiceData?.notes}</p>
         </div>
       )}
 
       <div className="mt-12 text-center text-gray-500 text-sm">
-        <p>Thank you for your business!</p>
-        <p className="mt-1">Payment is due by {format(new Date(invoiceData.dueDate), "MMM d, yyyy")}</p>
+
+        <p className="mt-1">Payment is due by {format(new Date(invoiceData?.dueDate || new Date()), "MMM d, yyyy")}</p>
       </div>
     </div>
   )

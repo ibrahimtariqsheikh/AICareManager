@@ -28,24 +28,14 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const pathname = usePathname()
     const dispatch = useAppDispatch()
-    const { user, } = useAppSelector((state) => state.user)
+    const { user } = useAppSelector((state) => state.user)
     const { data: userInformation } = useGetUserQuery()
     const { data: agencyUsers } = useGetAgencyUsersQuery(userInformation?.userInfo?.agencyId || "")
 
     const isSchedulePage = pathname === "/dashboard/schedule"
-
     const { data: agency } = useGetAgencyByIdQuery(userInformation?.userInfo?.agencyId || "")
-
-
-
-
-
     const [isLoading, setIsLoading] = useState(true)
 
-    // Initial user dispatch - This is the first point where user data is dispatched to Redux
-    // The useGetUserQuery hook fetches the user's information from the API
-    // When the data is received, it's dispatched to Redux using the setUser action
-    // This sets up the core user information in the Redux store
     useEffect(() => {
         if (userInformation) {
             dispatch(setUser(userInformation))
@@ -61,10 +51,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         }
     }, [agency, dispatch])
 
-    // Secondary user dispatch - This sets up the different user types in the Redux store
-    // After the initial user dispatch, we fetch and organize agency users by their roles
-    // This separates users into three categories: care workers, office staff, and clients
-    // Each category is then dispatched to its respective Redux state
+
     useEffect(() => {
         if (agencyUsers?.data) {
             const careWorkers = agencyUsers.data.filter((user: any) => user.role === "CARE_WORKER")

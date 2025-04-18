@@ -3,6 +3,8 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight, CalendarIcon, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAppDispatch, useAppSelector } from "@/state/redux"
+import { setSelectedDateRange } from "@/state/slices/invoiceSlice"
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const MONTHS = [
@@ -57,7 +59,8 @@ export function CustomDateRangeSelector({
     disabled = false,
 }: DateRangeSelectorProps) {
     const [isOpen, setIsOpen] = React.useState(false)
-    const [dateRange, setDateRange] = React.useState<{ from: Date; to: Date } | undefined>(initialDateRange)
+    const dateRange = useAppSelector((state) => state.invoice.selectedDateRange)
+    const dispatch = useAppDispatch()
     const [hoverDate, setHoverDate] = React.useState<Date | null>(null)
     const [currentMonth, setCurrentMonth] = React.useState(() => {
         if (initialDateRange?.from) return new Date(initialDateRange.from)
@@ -85,7 +88,8 @@ export function CustomDateRangeSelector({
     const handleDateSelect = (date: Date) => {
         if (selectionState === "start") {
             // Start new selection
-            setDateRange({ from: date, to: date })
+            dispatch(setSelectedDateRange({ from: date, to: date }))
+
             setSelectionState("end")
         } else {
             // Complete selection
@@ -98,7 +102,7 @@ export function CustomDateRangeSelector({
                 newRange = { from: dateRange?.from || date, to: date }
             }
 
-            setDateRange(newRange)
+            dispatch(setSelectedDateRange(newRange))
             setSelectionState("start")
             onRangeChange?.(newRange)
             setIsOpen(false)
@@ -113,7 +117,7 @@ export function CustomDateRangeSelector({
     // Clear the selection
     const handleClear = (e: React.MouseEvent) => {
         e.stopPropagation()
-        setDateRange(undefined)
+        dispatch(setSelectedDateRange(undefined))
         setSelectionState("start")
         onRangeChange?.(undefined)
     }
@@ -200,7 +204,7 @@ export function CustomDateRangeSelector({
     const isSelected = (date: Date) => {
         if (!dateRange) return false
 
-        return isSameDay(date, dateRange.from) || isSameDay(date, dateRange.to)
+        return isSameDay(date, dateRange.from || new Date()) || isSameDay(date, dateRange.to || new Date())
     }
 
     // Check if a date is in the selected range
@@ -229,11 +233,11 @@ export function CustomDateRangeSelector({
     const formatDateRange = () => {
         if (!dateRange) return placeholder
 
-        if (isSameDay(dateRange.from, dateRange.to)) {
+        if (dateRange.from && dateRange.to && isSameDay(dateRange.from, dateRange.to)) {
             return formatDate(dateRange.from)
         }
 
-        return `${formatDate(dateRange.from)} - ${formatDate(dateRange.to)}`
+        return `${formatDate(dateRange.from || new Date())} - ${formatDate(dateRange.to || new Date())}`
     }
 
     // Generate weeks array for rendering
@@ -354,7 +358,7 @@ export function CustomDateRangeSelector({
                     <div className="mt-4 pt-2 border-t flex justify-between">
                         <button
                             onClick={() => {
-                                setDateRange(undefined)
+                                dispatch(setSelectedDateRange(undefined))
                                 setSelectionState("start")
                             }}
                             className="text-sm text-muted-foreground hover:text-foreground"
@@ -367,7 +371,7 @@ export function CustomDateRangeSelector({
                                 onClick={() => {
                                     if (dateRange?.from) {
                                         const newRange = { from: dateRange.from, to: dateRange.from }
-                                        setDateRange(newRange)
+                                        dispatch(setSelectedDateRange(newRange))
                                         onRangeChange?.(newRange)
                                         setIsOpen(false)
                                     }

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { cn } from "../../lib/utils"
+import { cn } from "@/lib/utils"
 import { buttonVariants } from "./button"
 
 // Import the Locale type from date-fns
@@ -13,6 +13,7 @@ export interface CalendarProps {
     mode?: "single" | "range" | "multiple"
     selected?: Date | Date[] | { from: Date; to: Date }
     onSelect?: (date: Date | undefined) => void
+    onRangeChange?: (range: { from: Date; to: Date } | undefined) => void
     disabled?: { from: Date; to: Date }[] | ((date: Date) => boolean)
     className?: string
     classNames?: Record<string, string>
@@ -30,26 +31,22 @@ export interface CalendarProps {
     modifiers?: Record<string, (date: Date) => boolean>
     modifiersClassNames?: Record<string, string>
     styles?: Record<string, React.CSSProperties>
+    isDateRangeCalendar?: boolean
 }
 
 function Calendar({
-    mode = "single",
     selected,
     onSelect,
+    onRangeChange,
     disabled,
     className,
     classNames,
     showOutsideDays = true,
     month: propMonth,
     defaultMonth,
-    numberOfMonths = 1,
-    fromDate,
-    toDate,
-    captionLayout = "buttons",
     weekStartsOn = 0,
     fixedWeeks = false,
-    ...props
-}: CalendarProps) {
+    isDateRangeCalendar = false }: CalendarProps) {
     // State for current month
     const [currentMonth, setCurrentMonth] = React.useState(() => {
         if (propMonth) return propMonth
@@ -67,7 +64,14 @@ function Calendar({
     })
 
     // State for animation direction
-    const [direction, setDirection] = React.useState(0)
+    const [, setDirection] = React.useState(0)
+
+    // Date range selection states
+    const [selectionState, setSelectionState] = React.useState<"start" | "end">("start")
+    const [hoverDate, setHoverDate] = React.useState<Date | null>(null)
+    const [dateRange, setDateRange] = React.useState<{ from: Date; to: Date } | undefined>(
+        selected as { from: Date; to: Date } | undefined,
+    )
 
     // Update month when prop changes
     React.useEffect(() => {
@@ -75,6 +79,13 @@ function Calendar({
             setCurrentMonth(propMonth)
         }
     }, [propMonth])
+
+    // Update dateRange when selected changes
+    React.useEffect(() => {
+        if (isDateRangeCalendar && selected && (selected as any).from) {
+            setDateRange(selected as { from: Date; to: Date })
+        }
+    }, [selected, isDateRangeCalendar])
 
     // Get days in month
     const getDaysInMonth = (year: number, month: number) => {
@@ -90,7 +101,7 @@ function Calendar({
     const prevMonth = () => {
         setDirection(-1)
         setCurrentMonth((prev) => {
-            const newMonth = new Date(prev)
+            const newMonth = new Date(prev || new Date())
             newMonth.setMonth(newMonth.getMonth() - 1)
             return newMonth
         })
@@ -100,7 +111,7 @@ function Calendar({
     const nextMonth = () => {
         setDirection(1)
         setCurrentMonth((prev) => {
-            const newMonth = new Date(prev)
+            const newMonth = new Date(prev || new Date())
             newMonth.setMonth(newMonth.getMonth() + 1)
             return newMonth
         })
@@ -109,6 +120,11 @@ function Calendar({
     // Format date as YYYY-MM-DD for comparison
     const formatDateKey = (date: Date) => {
         return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+    }
+
+    // Check if two dates are the same day
+    const isSameDay = (date1: Date, date2: Date) => {
+        return formatDateKey(date1) === formatDateKey(date2)
     }
 
     // Check if a date is selected
@@ -121,7 +137,7 @@ function Calendar({
 
         if ((selected as any).from && (selected as any).to) {
             const { from, to } = selected as { from: Date; to: Date }
-            return date >= from && date <= to
+            return isSameDay(date, from) || isSameDay(date, to)
         }
 
         return formatDateKey(selected as Date) === formatDateKey(date)
@@ -148,6 +164,36 @@ function Calendar({
         return disabled.some((range) => date >= range.from && date <= range.to)
     }
 
+    // Check if a date is in the selected range
+    const isInRange = (date: Date) => {
+        if (!isDateRangeCalendar) {
+            if (!selected || !(selected as any).from || !(selected as any).to) return false
+            const { from, to } = selected as { from: Date; to: Date }
+            return date > from && date < to
+        }
+
+        // Date range calendar specific logic
+        if (!dateRange) return false
+
+        // If we're selecting the end date, show preview of range
+        if (selectionState === "end" && hoverDate && dateRange.from) {
+            if (hoverDate < dateRange.from) {
+                return date > hoverDate && date < dateRange.from
+            } else {
+                return date > dateRange.from && date < hoverDate
+            }
+        }
+
+        return (
+            dateRange.from &&
+            dateRange.to &&
+            date > dateRange.from &&
+            date < dateRange.to &&
+            !isSameDay(date, dateRange.from) &&
+            !isSameDay(date, dateRange.to)
+        )
+    }
+
     // Generate array of months
     const getMonths = () => {
         return Array.from({ length: 12 }, (_, i) => {
@@ -167,14 +213,14 @@ function Calendar({
 
     // Handle month change
     const handleMonthChange = (month: string) => {
-        const newDate = new Date(currentMonth)
+        const newDate = new Date(currentMonth || new Date())
         newDate.setMonth(Number.parseInt(month))
         setCurrentMonth(newDate)
     }
 
     // Handle year change
     const handleYearChange = (year: string) => {
-        const newDate = new Date(currentMonth)
+        const newDate = new Date(currentMonth || new Date())
         newDate.setFullYear(Number.parseInt(year))
         setCurrentMonth(newDate)
     }
@@ -182,11 +228,53 @@ function Calendar({
     // Handle date selection
     const handleDateSelect = (date: Date) => {
         if (isDateDisabled(date)) return
-        onSelect?.(date)
+
+        if (isDateRangeCalendar) {
+            // Date range selection logic
+            if (selectionState === "start") {
+                // Start new selection
+                const newRange = { from: date, to: date }
+                setDateRange(newRange)
+                setSelectionState("end")
+
+                // Also call the regular onSelect if provided
+                onSelect?.(date)
+            } else {
+                // Complete selection
+                let newRange
+
+                if (date < (dateRange?.from || new Date())) {
+                    // If end date is before start date, swap them
+                    newRange = { from: date, to: dateRange?.from || date }
+                } else {
+                    newRange = { from: dateRange?.from || date, to: date }
+                }
+
+                setDateRange(newRange)
+                setSelectionState("start")
+
+                // Call the range change callback
+                onRangeChange?.(newRange)
+
+                // Also call the regular onSelect if provided
+                onSelect?.(date)
+            }
+        } else {
+            // Regular date selection
+            onSelect?.(date)
+        }
+    }
+
+    // Handle date hover for preview in date range mode
+    const handleDateHover = (date: Date) => {
+        if (isDateRangeCalendar) {
+            setHoverDate(date)
+        }
     }
 
     // Generate calendar grid
     const renderCalendarGrid = () => {
+        if (!currentMonth) return []
         const year = currentMonth.getFullYear()
         const month = currentMonth.getMonth()
         const daysInMonth = getDaysInMonth(year, month)
@@ -251,33 +339,12 @@ function Calendar({
         return weeks
     }
 
-    // Get month name
-    const getMonthName = (date: Date) => {
-        return date.toLocaleString("default", { month: "long" })
-    }
-
     // Weekday headers
     const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
     const orderedWeekdays = [...weekdays.slice(weekStartsOn), ...weekdays.slice(0, weekStartsOn)]
 
     // Generate calendar
     const weeks = renderCalendarGrid()
-
-    // Animation variants
-    const variants = {
-        enter: (direction: number) => ({
-            x: direction > 0 ? 200 : -200,
-            opacity: 0,
-        }),
-        center: {
-            x: 0,
-            opacity: 1,
-        },
-        exit: (direction: number) => ({
-            x: direction < 0 ? 200 : -200,
-            opacity: 0,
-        }),
-    }
 
     return (
         <div
@@ -286,6 +353,19 @@ function Calendar({
                 className,
             )}
         >
+            {isDateRangeCalendar && (
+                <div className="mb-3 pb-2 border-b">
+                    <h4 className="font-medium text-sm">
+                        {selectionState === "start" ? "Select start date" : "Select end date"}
+                    </h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                        {selectionState === "start"
+                            ? "Choose the first day of your range"
+                            : `Start date: ${dateRange?.from.toLocaleDateString()}`}
+                    </p>
+                </div>
+            )}
+
             <div className={cn("space-y-4", classNames?.month)}>
                 <div className={cn("flex justify-between pt-1 relative items-center w-full gap-2", classNames?.caption)}>
                     <button
@@ -306,7 +386,7 @@ function Calendar({
                         )}
                     >
                         <select
-                            value={currentMonth.getMonth()}
+                            value={currentMonth?.getMonth() || 0}
                             onChange={(e) => handleMonthChange(e.target.value)}
                             className="bg-background border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-8"
                             aria-label="Select month"
@@ -318,7 +398,7 @@ function Calendar({
                             ))}
                         </select>
                         <select
-                            value={currentMonth.getFullYear()}
+                            value={currentMonth?.getFullYear() || 0}
                             onChange={(e) => handleYearChange(e.target.value)}
                             className="bg-background border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-8"
                             aria-label="Select year"
@@ -374,18 +454,12 @@ function Calendar({
                                     const isSelected = isDateSelected(day.date)
                                     const isDayToday = isToday(day.date)
                                     const isDisabled = isDateDisabled(day.date)
-                                    const isRangeStart =
-                                        selected &&
-                                        (selected as any).from &&
-                                        formatDateKey(day.date) === formatDateKey((selected as any).from)
-                                    const isRangeEnd =
-                                        selected && (selected as any).to && formatDateKey(day.date) === formatDateKey((selected as any).to)
-                                    const isInRange =
-                                        selected &&
-                                        (selected as any).from &&
-                                        (selected as any).to &&
-                                        day.date > (selected as any).from &&
-                                        day.date < (selected as any).to
+                                    const inRange = isInRange(day.date)
+
+                                    // Range-specific classes
+                                    const isRangeStart = selected && (selected as any).from && isSameDay(day.date, (selected as any).from)
+
+                                    const isRangeEnd = selected && (selected as any).to && isSameDay(day.date, (selected as any).to)
 
                                     return (
                                         <div
@@ -393,7 +467,7 @@ function Calendar({
                                             className={cn(
                                                 "relative h-9 w-9 p-0 text-center flex items-center justify-center flex-shrink-0",
                                                 day.isOutside && classNames?.day_outside,
-                                                isInRange && "bg-primary/20",
+                                                inRange && "bg-primary/20",
                                                 isRangeStart && "rounded-l-md [&>button]:rounded-l-md",
                                                 isRangeEnd && "rounded-r-md [&>button]:rounded-r-md",
                                                 classNames?.cell,
@@ -401,6 +475,7 @@ function Calendar({
                                         >
                                             <button
                                                 onClick={() => handleDateSelect(day.date)}
+                                                onMouseEnter={() => handleDateHover(day.date)}
                                                 className={cn(
                                                     buttonVariants({ variant: "ghost" }),
                                                     "h-9 w-9 p-0 font-normal relative overflow-hidden",
@@ -437,6 +512,35 @@ function Calendar({
                         ))}
                     </div>
                 </div>
+
+                {isDateRangeCalendar && (
+                    <div className="mt-4 pt-2 border-t flex justify-between">
+                        <button
+                            onClick={() => {
+                                setDateRange(undefined)
+                                setSelectionState("start")
+                                onRangeChange?.(undefined)
+                            }}
+                            className="text-sm text-muted-foreground hover:text-foreground"
+                        >
+                            Clear
+                        </button>
+
+                        {selectionState === "end" && dateRange?.from && (
+                            <button
+                                onClick={() => {
+                                    const newRange = { from: dateRange.from, to: dateRange.from }
+                                    setDateRange(newRange)
+                                    onRangeChange?.(newRange)
+                                    setSelectionState("start")
+                                }}
+                                className="text-sm font-medium text-primary hover:text-primary/90"
+                            >
+                                Use Single Day
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     )

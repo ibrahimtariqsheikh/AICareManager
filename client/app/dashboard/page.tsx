@@ -25,6 +25,7 @@ import { Avatar, AvatarFallback } from "../../components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
 
 import { Skeleton } from "../../components/ui/skeleton"
+import { useRouter } from "next/navigation"
 
 
 export default function DashboardPage() {
@@ -170,6 +171,8 @@ export default function DashboardPage() {
         )
     }
 
+    const router = useRouter()
+
 
 
 
@@ -188,7 +191,7 @@ export default function DashboardPage() {
                             <div className="p-2 rounded-md bg-gray-100">
                                 <Users className="h-5 w-5 text-gray-700" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Patients</h3>
+                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Clients</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
                             <div className="text-3xl font-bold text-gray-800">{dashboardData.stats.totalClients}</div>
@@ -198,7 +201,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         <div className="text-sm text-gray-500">Patient increase in 7 days.</div>
-                        <div className="flex justify-end mt-2">
+                        <div className="flex justify-end mt-2" onClick={() => router.push("/dashboard/users")}>
                             <Button variant="link" className="text-gray-600 p-0 h-auto">
                                 See details
                             </Button>
@@ -222,7 +225,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         <div className="text-sm text-gray-500">Appointment increase in 7 days.</div>
-                        <div className="flex justify-end mt-2">
+                        <div className="flex justify-end mt-2" onClick={() => router.push("/dashboard/schedule")}>
                             <Button variant="link" className="text-gray-600 p-0 h-auto">
                                 See details
                             </Button>

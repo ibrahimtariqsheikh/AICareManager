@@ -7,6 +7,15 @@ import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Prof
 import { DashboardData } from "@/app/dashboard/types"
 
 
+export interface CreateUserInput {
+  email: string
+  firstName: string
+  lastName: string
+  role: string
+  subRole?: string
+}
+
+
 
 
 export interface ScheduleInput {
@@ -67,7 +76,6 @@ export interface SchedulesResponse {
   }
 }
 
-// // Create invitation input type
 export interface CreateInvitationInput {
   inviterUserId: string
   email: string
@@ -76,7 +84,6 @@ export interface CreateInvitationInput {
   expirationDays: number
 }
 
-// // Cancel invitation input type
 export interface CancelInvitationInput {
   invitationId: string
   userId: string
@@ -88,19 +95,7 @@ export interface AcceptInvitationInput {
   userId: string
 }
 
-// // Add Location interface that was missing
-// export interface Location {
-//   id: string
-//   name: string
-//   address: string
-//   city: string
-//   state: string
-//   zipCode: string
-//   country: string
-//   agencyId: string
-//   createdAt?: string
-//   updatedAt?: string
-// }
+
 
 export interface UsersResponse {
   data: User[]
@@ -116,176 +111,6 @@ export interface UserQueryParams {
   agencyId?: string
 }
 
-// // Update the ClientQueryParams interface in your API file
-// export interface ClientQueryParams {
-//   status?: string
-//   userId?: string // Use userId to filter clients by user's agency
-// }
-
-// export interface DashboardData {
-//   user: {
-//     firstName: string;
-//     role: string;
-//     agency: {
-//       id: string;
-//       name: string;
-//       isActive: boolean;
-//       isSuspended: boolean;
-//       hasScheduleV2: boolean;
-//       hasEMAR: boolean;
-//       hasFinance: boolean;
-//       isWeek1And2ScheduleEnabled: boolean;
-//       hasPoliciesAndProcedures: boolean;
-//       isTestAccount: boolean;
-//       address?: string;
-//       city?: string;
-//       state?: string;
-//       zipCode?: string;
-//       phone?: string;
-//       email?: string;
-//       createdAt: string;
-//       hasAdvancedReporting?: boolean;
-//     };
-//   };
-//   agency: {
-//     id: string;
-//     name: string;
-//     isActive: boolean;
-//     isSuspended: boolean;
-//     hasScheduleV2: boolean;
-//     hasEMAR: boolean;
-//     hasFinance: boolean;
-//     isWeek1And2ScheduleEnabled: boolean;
-//     hasPoliciesAndProcedures: boolean;
-//     isTestAccount: boolean;
-//   };
-//   stats: {
-//     totalClients: number;
-//     totalCareWorkers: number;
-//     totalOfficeStaff: number;
-//     totalSchedules: number;
-//     totalReports: number;
-//     totalDocuments: number;
-//     totalMileageRecords: number;
-//     unreadNotifications: number;
-//   };
-//   schedules: Array<{
-//     id: string;
-//     clientName: string;
-//     careWorkerName: string;
-//     date: string;
-//     startTime: string;
-//     endTime: string;
-//     type: string;
-//     status: string;
-//     notes?: string;
-//     title?: string;
-//   }>;
-//   notifications: Array<{
-//     id: string;
-//     title: string;
-//     message: string;
-//     type: 'SCHEDULE' | 'REPORT' | 'DOCUMENT' | 'SYSTEM' | 'ALERT';
-//     createdAt: string;
-//   }>;
-// }
-
-
-
-export interface CreateUserInput {
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: Role;
-    subRole?: SubRole;
-    cognitoId: string;
-    invitedById?: string;
-    agencyId?: string;
-}
-
-// // Medication interfaces
-// export interface MedicationRecord {
-//   id: string;
-//   medicationId: string;
-//   clientId: string;
-//   userId: string;
-//   dosage: string;
-//   frequency: string;
-//   startDate: Date;
-//   endDate?: Date;
-//   notes?: string;
-//   morningDose: boolean;
-//   lunchDose: boolean;
-//   eveningDose: boolean;
-//   bedtimeDose: boolean;
-//   asNeededDose: boolean;
-//   medication: {
-//     name: string;
-//     isSpecialist: boolean;
-//     url: string;
-//     source: string;
-//   };
-// }
-
-// export interface MedicationAdministration {
-//   id: string;
-//   medicationRecordId: string;
-//   administeredById: string;
-//   administeredAt: Date;
-//   doseType: 'MORNING' | 'LUNCH' | 'EVENING' | 'BEDTIME' | 'AS_NEEDED';
-//   doseTaken: boolean;
-//   notes?: string;
-//   administeredBy: {
-//     id: string;
-//     firstName: string;
-//     lastName: string;
-//   };
-// }
-
-// // Report interfaces
-// export interface Report {
-//   id: string;
-//   clientId: string;
-//   userId: string;
-//   condition: string;
-//   summary: string;
-//   checkInTime: string;
-//   checkOutTime: string | null;
-//   checkInDistance?: number;
-//   checkOutDistance?: number;
-//   tasksCompleted: ReportTask[];
-//   client: {
-//     id: string;
-//     firstName: string;
-//     lastName: string;
-//   };
-//   caregiver: {
-//     id: string;
-//     firstName: string;
-//     lastName: string;
-//   };
-//   hasSignature?: boolean;
-// }
-
-// export interface ReportTask {
-//   id: string;
-//   reportId: string;
-//   taskName: string;
-//   completed: boolean;
-// }
-
-// // Document interfaces
-// export interface Document {
-//   id: string;
-//   title: string;
-//   fileUrl: string;
-//   uploadedAt: Date;
-//   userId?: string;
-//   clientId?: string;
-//   agencyId?: string;
-// }
-
-// // Add new interfaces for user update
 export interface UpdateUserInput {
     id: string;
     email?: string;
@@ -405,7 +230,8 @@ export const api = createApi({
     "Reports",
     "Chat",
     "RateSheets",
-    "Groups"
+    "Groups",
+    "Invoices"
   ],
   endpoints: (build) => ({
     // Get user
@@ -461,6 +287,11 @@ export const api = createApi({
     getReportById: build.query<Report, string>({
       query: (id) => `/reports/${id}`,
       providesTags: ["Reports"],
+    }),
+
+    getCurrentInvoiceNumber: build.query<number, void>({
+      query: () => `/invoices/current-invoice-number`,
+      providesTags: ["Invoices"],
     }),
 
 
@@ -1005,4 +836,5 @@ export const {
   useUpdateAgencyMutation,
   useCreateAgencyMutation,
   useDeleteAgencyMutation,
+  useGetCurrentInvoiceNumberQuery,
 } = api

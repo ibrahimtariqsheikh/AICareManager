@@ -7,7 +7,7 @@ import { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar } from "@/components/ui/calender"
 import {
     Popover,
     PopoverContent,
@@ -56,9 +56,14 @@ export function DatePickerWithRange({
                         initialFocus
                         mode="range"
                         defaultMonth={date?.from}
-                        selected={date}
-                        onSelect={setDate}
-                        numberOfMonths={2}
+                        selected={date ? { from: date.from, to: date.to } : undefined}
+                        onSelect={(range) => {
+                            if (range) {
+                                setDate({ from: range.from, to: range.to });
+                            } else {
+                                setDate(undefined);
+                            }
+                        }}
                     />
                     <div className="flex items-center justify-between p-3 border-t">
                         <div className="flex gap-2">

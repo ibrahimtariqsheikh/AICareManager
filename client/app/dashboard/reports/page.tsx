@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import {
     AlertCircle,
-    Calendar,
+
     Clock,
     Download,
     Eye,
@@ -33,27 +33,15 @@ import { useGetAgencyReportsQuery } from "@/state/api"
 import { useAppSelector } from "@/state/redux"
 import type { Report } from "../types"
 import { CalendarIcon } from "lucide-react"
-import { Calendar as DatePicker } from "@/components/ui/calendar"
+
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button as PopoverButton } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import type { DateRange } from "react-day-picker"
+import { Calendar } from "@/components/ui/calender"
+import { DateRange } from "react-day-picker"
 
-// Mock data types
-interface UserType {
-    id: string
-    name: string
-    role: string
-    avatar?: string
-}
 
-interface Task {
-    id: string
-    name: string
-    completed: boolean
-    icon: string
-}
 
 interface PayrollEntry {
     id: string
@@ -66,10 +54,10 @@ interface PayrollEntry {
 
 export default function ReportsPage() {
     const [searchQuery, setSearchQuery] = useState("")
-    const [activeTab, setActiveTab] = useState("visits")
+    const [, setActiveTab] = useState("visits")
     const [isLoading, setIsLoading] = useState(true)
     const [selectedReport, setSelectedReportState] = useState<Report | null>(null)
-    const [isDetailViewOpen, setIsDetailViewOpen] = useState(false)
+    const [, setIsDetailViewOpen] = useState(false)
     const [isAIDialogOpen, setIsAIDialogOpen] = useState(false)
     const [filterOptions, setFilterOptions] = useState({
         dateFrom: "",
@@ -83,7 +71,7 @@ export default function ReportsPage() {
     })
     const [isFilterOpen, setIsFilterOpen] = useState(false)
     const agencyId = useAppSelector((state) => state.user.user.userInfo?.agency?.id)
-    const { data: reports, isLoading: isReportsLoading } = useGetAgencyReportsQuery(agencyId as string)
+    const { data: reports, isLoading: _ } = useGetAgencyReportsQuery(agencyId as string)
     const clients = useAppSelector((state) => state.user.clients)
     const careWorkers = useAppSelector((state) => state.user.careWorkers)
 
@@ -95,17 +83,11 @@ export default function ReportsPage() {
 
     const [payrollData, setPayrollData] = useState<PayrollEntry[]>([])
     const [payrollFilterType, setPayrollFilterType] = useState<"clients" | "careWorkers">("clients")
-    const [payrollDateRange, setPayrollDateRange] = useState({
-        from: new Date(2025, 3, 1), // April 1, 2025
-        to: new Date(2025, 3, 10), // April 10, 2025
-    })
+
     const [selectedClients, setSelectedClients] = useState<string[]>([])
     const [showArchivedClients, setShowArchivedClients] = useState(false)
 
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: undefined,
-        to: undefined,
-    })
+    const [date, setDate] = useState<DateRange | undefined>(undefined)
 
     // Update filter options when date range changes
     useEffect(() => {
@@ -124,7 +106,7 @@ export default function ReportsPage() {
         setTimeout(() => {
             // Mock payroll data
             const mockPayrollData: PayrollEntry[] =
-                (payrollFilterType === "clients" ? clients : careWorkers)?.map((user) => ({
+                (payrollFilterType === "clients" ? clients : careWorkers)?.map((user: any) => ({
                     id: user.id,
                     name: `${user.firstName} ${user.lastName}`,
                     actualDuration: "00:00",
@@ -408,13 +390,12 @@ export default function ReportsPage() {
                                             </PopoverButton>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0">
-                                            <DatePicker
-                                                initialFocus
+                                            <Calendar
                                                 mode="range"
-                                                defaultMonth={date?.from}
-                                                selected={date}
-                                                onSelect={setDate}
-                                                numberOfMonths={2}
+                                                onSelect={(date) => setDate({ from: date, to: date })}
+                                                disabled={[]}
+                                                className="w-auto"
+
                                             />
                                         </PopoverContent>
                                     </Popover>

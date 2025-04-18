@@ -4,21 +4,17 @@ import type * as React from "react"
 import {
     LayoutDashboardIcon,
     UsersIcon,
-    BarChart3,
     Calendar,
     Settings,
     HelpCircle,
-    Command,
     LogOut,
     Moon,
     Sun,
     Building2,
-    Bot,
     Mail,
     File,
-    Rocket,
     Plus,
-    Bell,
+
     CommandIcon,
     Search,
     ChevronDown,
@@ -32,20 +28,19 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
+
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Avatar, AvatarFallback } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { useTheme } from "next-themes"
-import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarRail } from "../../components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from "../../components/ui/sidebar"
 import { useAppSelector, useAppDispatch } from "../../state/redux"
 import { signOut } from "aws-amplify/auth"
 import { logout } from "../../state/slices/authSlice"
-import { Badge } from "../ui/badge"
+
 import Image from "next/image"
 import ChatbotModern from "../icons/chatbot-modern"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { motion } from "framer-motion"
 
@@ -138,7 +133,10 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     const { theme, setTheme } = useTheme()
     const pathname = usePathname()
     const router = useRouter()
+
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+    let agencyList = user?.userInfo?.agenciesOwned || []
+
 
     const handleLogout = async () => {
         try {
@@ -195,25 +193,14 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                     </p>
                                     <div className="border-b border-border w-[95%] mx-auto my-2" />
                                     <div className="text-xs text-muted-foreground w-full flex flex-col gap-2">
-                                        {/* Dummy agency data for now */}
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold text-neutral-900">1.</span>
-                                            <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
-                                                AK Care
+                                        {agencyList?.map((agency: any, index: number) => (
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-bold text-neutral-900">{index + 1}.</span>
+                                                <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
+                                                    {agency.name}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold text-neutral-900">2.</span>
-                                            <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
-                                                Sunshine Care
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold text-neutral-900">3.</span>
-                                            <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
-                                                Golden Care
-                                            </div>
-                                        </div>
+                                        ))}
                                     </div>
                                     <div>
                                         <Button className="w-full mt-2">

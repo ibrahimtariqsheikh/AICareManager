@@ -4,9 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  extensions = [postgis]
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Invitation {
@@ -14,23 +13,18 @@ model Invitation {
   email     String           @unique
   token     String           @unique
   role      Role
-  subRole   SubRole? // Added subRole field
+  subRole   SubRole?
   expiresAt DateTime
   status    InvitationStatus @default(PENDING)
   createdAt DateTime         @default(now())
-
-  // Who sent the invitation
   inviterId String
-  inviter   User   @relation("SentInvitations", fields: [inviterId], references: [id], onDelete: Cascade)
+  inviter   User             @relation("SentInvitations", fields: [inviterId], references: [id], onDelete: Cascade)
 }
 
-// ======== AGENCY MANAGEMENT MODELS ========
-//Contact Person
-
 model Agency {
-  id                         String   @id @default(cuid())
+  id                         String                   @id @default(cuid())
   name                       String
-  email                      String   @default("example@agency.com")
+  email                      String                   @default("example@agency.com")
   description                String?
   address                    String?
   extension                  Int?
@@ -40,46 +34,42 @@ model Agency {
   logo                       String?
   primaryColor               String?
   secondaryColor             String?
-  isActive                   Boolean  @default(true)
-  isSuspended                Boolean  @default(false)
-  hasScheduleV2              Boolean  @default(true)
-  hasEMAR                    Boolean  @default(false)
-  hasFinance                 Boolean  @default(false)
-  isWeek1And2ScheduleEnabled Boolean  @default(false)
-  hasPoliciesAndProcedures   Boolean  @default(false)
-  isTestAccount              Boolean  @default(false)
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
-
-  users           User[]
-  schedules       Schedule[]
-  invoices        Invoice[]
-  mileageRecords  MileageRecord[]
-  incidentReports IncidentReport[]
-  medications     MedicationDatabaseLink[]
-  visitTypes      VisitType[]
-  riskCategories  RiskCategory[]
-
-  documents Document[] @relation("AgencyDocuments")
-
-  Report      Report[]
-  groups      Group[]
-  rateSheets  RateSheet[]
-  customTasks CustomTask[]
-
-  //extra fields
-  licenseNumber  String?
-  certifications Certification[]
-  operatingHours OperatingHours[]
-  timeZone       String           @default("UTC")
-  currency       String           @default("CAD")
-  reminders      Reminder[]
-  maxUsers       Int?
-  maxClients     Int?
-  maxCareWorkers Int?
-
-  auditLogs     AuditLog[]
-  announcements Announcement[]
+  isActive                   Boolean                  @default(true)
+  isSuspended                Boolean                  @default(false)
+  hasScheduleV2              Boolean                  @default(true)
+  hasEMAR                    Boolean                  @default(false)
+  hasFinance                 Boolean                  @default(false)
+  isWeek1And2ScheduleEnabled Boolean                  @default(false)
+  hasPoliciesAndProcedures   Boolean                  @default(false)
+  isTestAccount              Boolean                  @default(false)
+  createdAt                  DateTime                 @default(now())
+  updatedAt                  DateTime                 @updatedAt
+  licenseNumber              String?
+  timeZone                   String                   @default("UTC")
+  currency                   String                   @default("CAD")
+  maxUsers                   Int?
+  maxClients                 Int?
+  maxCareWorkers             Int?
+  announcements              Announcement[]
+  auditLogs                  AuditLog[]
+  certifications             Certification[]
+  customTasks                CustomTask[]
+  documents                  Document[]               @relation("AgencyDocuments")
+  groups                     Group[]
+  incidentReports            IncidentReport[]
+  invoices                   Invoice[]
+  medications                MedicationDatabaseLink[]
+  mileageRecords             MileageRecord[]
+  operatingHours             OperatingHours[]
+  rateSheets                 RateSheet[]
+  reminders                  Reminder[]
+  Report                     Report[]
+  riskCategories             RiskCategory[]
+  schedules                  Schedule[]
+  users                      User[]
+  ownerId                    String?
+  owner                      User?                    @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  visitTypes                 VisitType[]
 }
 
 model Announcement {
@@ -94,28 +84,536 @@ model Announcement {
   requiresAcknowledgment Boolean              @default(false)
   createdAt              DateTime             @default(now())
   updatedAt              DateTime             @updatedAt
-
-  // Relations
-  agency      Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  agencyId    String
-  createdBy   User   @relation("AnnouncementCreator", fields: [createdById], references: [id])
-  createdById String
-
-  // Many-to-many relation for targeted user roles
-  targetRoles Role[]
-
-  // Many-to-many relation for users who have acknowledged
-  acknowledgedBy User[] @relation("AnnouncementAcknowledgements")
-
-  // Optional attachment
-  attachmentUrl  String?
-  attachmentType String?
-  User           User?   @relation(fields: [userId], references: [id])
-  userId         String?
+  agencyId               String
+  createdById            String
+  targetRoles            Role[]
+  attachmentUrl          String?
+  attachmentType         String?
+  userId                 String?
+  agency                 Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  createdBy              User                 @relation("AnnouncementCreator", fields: [createdById], references: [id])
+  User                   User?                @relation(fields: [userId], references: [id])
+  acknowledgedBy         User[]               @relation("AnnouncementAcknowledgements")
 
   @@index([agencyId])
   @@index([publishDate])
   @@index([status])
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  entityType  String
+  entityId    String
+  description String
+  changes     Json?
+  ipAddress   String?
+  userAgent   String?
+  performedAt DateTime    @default(now())
+  agencyId    String
+  userId      String?
+  agency      Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  user        User?       @relation(fields: [userId], references: [id])
+
+  @@index([agencyId])
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([performedAt])
+}
+
+model Certification {
+  id                String              @id @default(cuid())
+  name              String
+  issuingAuthority  String
+  certificationCode String?
+  issueDate         DateTime
+  expiryDate        DateTime
+  status            CertificationStatus @default(ACTIVE)
+  documentUrl       String?
+  notes             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  agencyId          String
+  agency            Agency              @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId])
+}
+
+model OperatingHours {
+  id        String    @id @default(cuid())
+  dayOfWeek DayOfWeek
+  isOpen    Boolean   @default(true)
+  openTime  String    @default("09:00")
+  closeTime String    @default("17:00")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  agencyId  String
+  agency    Agency    @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@unique([agencyId, dayOfWeek])
+  @@index([agencyId])
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name      String
+  agencyId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Agency    Agency?  @relation(fields: [agencyId], references: [id])
+  clients   User[]
+}
+
+model RateSheet {
+  id         String        @id @default(cuid())
+  name       String
+  hourlyRate Float
+  staffType  RateSheetType
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  agencyId   String?
+  Agency     Agency?       @relation(fields: [agencyId], references: [id])
+}
+
+model CustomTask {
+  id          String              @id @default(cuid())
+  name        String
+  placeholder String
+  category    CustomTaskCategory
+  frequency   CustomTaskFrequency
+  priority    CustomTaskPriority
+  icon        String?
+  agencyId    String?
+  Agency      Agency?             @relation(fields: [agencyId], references: [id])
+}
+
+model ClientCareAssignment {
+  id              String   @id @default(cuid())
+  clientId        String
+  userId          String
+  isDecisionMaker Boolean  @default(false)
+  assignedAt      DateTime @default(now())
+  client          User     @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
+  user            User     @relation("CareWorkerAssignments", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, userId])
+}
+
+model User {
+  id                        String                     @id @default(cuid())
+  cognitoId                 String                     @unique
+  email                     String                     @unique
+  firstName                 String
+  lastName                  String
+  role                      Role
+  subRole                   SubRole?
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  agencyId                  String?
+  invitedById               String?
+  title                     String?
+  addressLine1              String?
+  addressLine2              String?
+  townOrCity                String?
+  county                    String?
+  postalCode                String?
+  propertyAccess            String?
+  phoneNumber               String?
+  nhsNumber                 String?
+  dnraOrder                 Boolean?                   @default(false)
+  chargeRate                Float?                     @default(25.0)
+  mobility                  String?
+  likesDislikes             String?
+  dateOfBirth               DateTime?
+  languages                 String?
+  allergies                 String?
+  interests                 String?
+  history                   String?
+  preferredName             String?
+  groupId                   String?
+  createdAnnouncements      Announcement[]             @relation("AnnouncementCreator")
+  Announcement              Announcement[]
+  AuditLog                  AuditLog[]
+  careOutcomes              CareOutcome[]
+  clientAssignments         ClientCareAssignment[]     @relation("ClientAssignments")
+  careAssignments           ClientCareAssignment[]     @relation("CareWorkerAssignments")
+  communicationLogs         CommunicationLog[]
+  communicationPreference   CommunicationPreference?
+  Document                  Document[]
+  documents                 Document[]                 @relation("UserDocuments")
+  familyAccess              FamilyAccess[]
+  incidentReports           IncidentReport[]
+  sentInvitations           Invitation[]               @relation("SentInvitations")
+  Invoice                   Invoice[]
+  keyContacts               KeyContact[]
+  medicationAdministrations MedicationAdministration[] @relation("AdministeredMedications")
+  careWorkerMedications     MedicationRecord[]         @relation("CareWorkerMedications")
+  clientMedications         MedicationRecord[]         @relation("ClientMedications")
+  receivedMessages          Message[]                  @relation("MessageReceiver")
+  sentMessages              Message[]                  @relation("MessageSender")
+  careWorkerMileage         MileageRecord[]            @relation("CareWorkerMileage")
+  clientMileage             MileageRecord[]            @relation("ClientMileage")
+  Notification              Notification[]
+  profile                   Profile?
+  reminders                 Reminder[]
+  clientReports             Report[]                   @relation("ReportClient")
+  careReports               Report[]                   @relation("ReportCaregiver")
+  reportEdits               ReportEdit[]
+  riskAssessments           RiskAssessment[]
+  clientSchedules           Schedule[]                 @relation("ClientSchedules")
+  careWorkerSchedules       Schedule[]                 @relation("CareWorkerSchedules")
+  agency                    Agency?                    @relation(fields: [agencyId], references: [id])
+  agenciesOwned             Agency[]                   @relation("AgencyOwner")
+  Group                     Group?                     @relation(fields: [groupId], references: [id])
+  invitedBy                 User?                      @relation("UserInvites", fields: [invitedById], references: [id])
+  invitedUsers              User[]                     @relation("UserInvites")
+  acknowledgedAnnouncements Announcement[]             @relation("AnnouncementAcknowledgements")
+}
+
+model CommunicationPreference {
+  id     String  @id @default(cuid())
+  userId String  @unique
+  email  Boolean @default(true)
+  sms    Boolean @default(false)
+  phone  Boolean @default(true)
+  notes  String?
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FamilyAccess {
+  id       String  @id @default(cuid())
+  clientId String
+  name     String
+  relation String
+  phone    String
+  email    String?
+  client   User    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model MedicationDatabaseLink {
+  id               String             @id @default(cuid())
+  name             String
+  isSpecialist     Boolean            @default(false)
+  url              String
+  source           String
+  agencyId         String
+  agency           Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  MedicationRecord MedicationRecord[]
+}
+
+model VisitType {
+  id          String     @id @default(cuid())
+  agencyId    String
+  name        String
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  schedules   Schedule[]
+  agency      Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+}
+
+model Schedule {
+  id          String       @id @default(cuid())
+  agencyId    String
+  clientId    String
+  userId      String
+  date        DateTime
+  startTime   String
+  endTime     String
+  status      String       @default("PENDING")
+  type        ScheduleType @default(APPOINTMENT)
+  notes       String?
+  chargeRate  Float?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  visitTypeId String?
+  agency      Agency       @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client      User         @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
+  user        User         @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
+  visitType   VisitType?   @relation(fields: [visitTypeId], references: [id])
+
+  @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
+  @@index([userId, date])
+  @@index([clientId, date])
+  @@index([agencyId])
+}
+
+model Report {
+  id                        String                     @id @default(cuid())
+  clientId                  String
+  agencyId                  String
+  userId                    String
+  title                     String?
+  condition                 String
+  summary                   String
+  checkInTime               DateTime
+  checkOutTime              DateTime?
+  createdAt                 DateTime                   @default(now())
+  checkInDistance           Float?
+  checkOutDistance          Float?
+  checkInLocation           String?
+  checkOutLocation          String?
+  hasSignature              Boolean                    @default(false)
+  signatureImageUrl         String?
+  status                    ReportStatus               @default(COMPLETED)
+  lastEditedAt              DateTime?
+  lastEditedBy              String?
+  lastEditReason            String?
+  bodyMapObservations       BodyMapObservation[]
+  medicationAdministrations MedicationAdministration[]
+  agency                    Agency                     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client                    User                       @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
+  caregiver                 User                       @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
+  alerts                    ReportAlert[]
+  editHistory               ReportEdit[]
+  tasksCompleted            ReportTask[]
+}
+
+model ReportTask {
+  id          String    @id @default(cuid())
+  reportId    String
+  taskName    String
+  completed   Boolean   @default(false)
+  notes       String?
+  taskIcon    String?
+  taskType    String?
+  completedAt DateTime?
+  report      Report    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+model ReportAlert {
+  id         String        @id @default(cuid())
+  reportId   String
+  type       AlertType
+  message    String
+  severity   AlertSeverity
+  createdAt  DateTime      @default(now())
+  resolved   Boolean       @default(false)
+  resolvedAt DateTime?
+  resolvedBy String?
+  report     Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+model BodyMapObservation {
+  id        String   @id @default(cuid())
+  reportId  String
+  bodyPart  String
+  condition String
+  notes     String?
+  createdAt DateTime @default(now())
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+model ReportEdit {
+  id          String   @id @default(cuid())
+  reportId    String
+  editedBy    String
+  editedAt    DateTime @default(now())
+  reason      String
+  changesJson String
+  editor      User     @relation(fields: [editedBy], references: [id], onDelete: Cascade)
+  report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+model MedicationRecord {
+  id                    String                     @id @default(cuid())
+  medicationId          String
+  clientId              String
+  userId                String
+  dosage                String
+  frequency             String
+  startDate             DateTime
+  endDate               DateTime?
+  notes                 String?
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  morningDose           Boolean                    @default(false)
+  lunchDose             Boolean                    @default(false)
+  eveningDose           Boolean                    @default(false)
+  bedtimeDose           Boolean                    @default(false)
+  asNeededDose          Boolean                    @default(false)
+  administrationRecords MedicationAdministration[]
+  user                  User                       @relation("CareWorkerMedications", fields: [userId], references: [id], onDelete: Cascade, map: "MedicationRecord_care_worker_fkey")
+  client                User                       @relation("ClientMedications", fields: [clientId], references: [id], onDelete: Cascade, map: "MedicationRecord_client_fkey")
+  medication            MedicationDatabaseLink     @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+
+  @@index([medicationId])
+  @@index([clientId])
+  @@index([userId])
+}
+
+model MedicationAdministration {
+  id                 String           @id @default(cuid())
+  medicationRecordId String
+  administeredById   String
+  administeredAt     DateTime
+  doseType           DoseType
+  doseTaken          Boolean          @default(true)
+  notes              String?
+  createdAt          DateTime         @default(now())
+  reportId           String?
+  administeredBy     User             @relation("AdministeredMedications", fields: [administeredById], references: [id], onDelete: Cascade)
+  medicationRecord   MedicationRecord @relation(fields: [medicationRecordId], references: [id], onDelete: Cascade)
+  report             Report?          @relation(fields: [reportId], references: [id])
+
+  @@index([medicationRecordId])
+  @@index([administeredById])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber Int           @default(autoincrement())
+  agencyId      String
+  clientId      String?
+  amount        Float
+  description   String
+  issuedAt      DateTime      @default(now())
+  dueDate       DateTime
+  status        InvoiceStatus
+  agency        Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client        User?         @relation(fields: [clientId], references: [id])
+}
+
+model MileageRecord {
+  id           String   @id @default(cuid())
+  agencyId     String
+  clientId     String
+  userId       String
+  date         DateTime
+  startMileage Float
+  endMileage   Float
+  totalMiles   Float
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  agency       Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  user         User     @relation("CareWorkerMileage", fields: [userId], references: [id], onDelete: Cascade, map: "MileageRecord_care_worker_fkey")
+  client       User     @relation("ClientMileage", fields: [clientId], references: [id], onDelete: Cascade, map: "MileageRecord_client_fkey")
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([userId])
+}
+
+model Document {
+  id         String   @id @default(cuid())
+  title      String
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+  userId     String?
+  clientId   String?
+  agencyId   String?
+  agency     Agency?  @relation("AgencyDocuments", fields: [agencyId], references: [id])
+  client     User?    @relation(fields: [clientId], references: [id])
+  user       User?    @relation("UserDocuments", fields: [userId], references: [id])
+}
+
+model Profile {
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  phone     String?
+  avatarUrl String?
+  address   String?
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model IncidentReport {
+  id          String        @id @default(cuid())
+  reporterId  String
+  agencyId    String
+  description String
+  severity    SeverityLevel
+  reportedAt  DateTime      @default(now())
+  agency      Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  reporter    User          @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  sentAt     DateTime @default(now())
+  receiver   User     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model KeyContact {
+  id       String  @id @default(cuid())
+  clientId String
+  name     String
+  relation String
+  phone    String
+  email    String?
+  client   User    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model CareOutcome {
+  id       String @id @default(cuid())
+  clientId String
+  outcome  String
+  client   User   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model CommunicationLog {
+  id        String   @id @default(cuid())
+  clientId  String
+  message   String
+  createdAt DateTime @default(now())
+  client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model RiskCategory {
+  id              String           @id @default(cuid())
+  agencyId        String
+  name            String
+  description     String?
+  createdAt       DateTime         @default(now())
+  riskAssessments RiskAssessment[]
+  agency          Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+}
+
+model RiskAssessment {
+  id                 String       @id @default(cuid())
+  clientId           String
+  riskCategoryId     String
+  description        String
+  affectedParties    String
+  mitigationStrategy String
+  likelihood         Int
+  severity           Int
+  riskScore          Int
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  client             User         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  riskCategory       RiskCategory @relation(fields: [riskCategoryId], references: [id], onDelete: Cascade)
+}
+
+model Reminder {
+  id        String   @id @default(cuid())
+  clientId  String
+  title     String
+  message   String?
+  dueDate   DateTime
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  agencyId  String?
+  Agency    Agency?  @relation(fields: [agencyId], references: [id])
+  client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 enum AnnouncementPriority {
@@ -129,29 +627,6 @@ enum AnnouncementStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
-}
-
-model AuditLog {
-  id          String      @id @default(cuid())
-  action      AuditAction
-  entityType  String // The type of entity that was affected (e.g., "User", "Client", "Visit")
-  entityId    String // The ID of the entity that was affected
-  description String
-  changes     Json? // Store the before/after values
-  ipAddress   String?
-  userAgent   String?
-  performedAt DateTime    @default(now())
-
-  // Relations
-  agency   Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  agencyId String
-  user     User?   @relation(fields: [userId], references: [id])
-  userId   String? // Nullable in case of system actions
-
-  @@index([agencyId])
-  @@index([userId])
-  @@index([entityType, entityId])
-  @@index([performedAt])
 }
 
 enum AuditAction {
@@ -169,49 +644,12 @@ enum AuditAction {
   SYSTEM
 }
 
-model Certification {
-  id                String              @id @default(cuid())
-  name              String
-  issuingAuthority  String
-  certificationCode String?
-  issueDate         DateTime
-  expiryDate        DateTime
-  status            CertificationStatus @default(ACTIVE)
-  documentUrl       String?
-  notes             String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-
-  // Relation to Agency
-  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  agencyId String
-
-  @@index([agencyId])
-}
-
 enum CertificationStatus {
   ACTIVE
   EXPIRED
   PENDING
   REVOKED
   SUSPENDED
-}
-
-model OperatingHours {
-  id        String    @id @default(cuid())
-  dayOfWeek DayOfWeek
-  isOpen    Boolean   @default(true)
-  openTime  String    @default("09:00") // 24-hour format
-  closeTime String    @default("17:00") // 24-hour format
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  // Relation to Agency
-  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  agencyId String
-
-  @@unique([agencyId, dayOfWeek])
-  @@index([agencyId])
 }
 
 enum DayOfWeek {
@@ -222,27 +660,6 @@ enum DayOfWeek {
   FRIDAY
   SATURDAY
   SUNDAY
-}
-
-model Group {
-  id        String   @id @default(cuid())
-  name      String
-  clients   User[]
-  Agency    Agency?  @relation(fields: [agencyId], references: [id])
-  agencyId  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model RateSheet {
-  id         String        @id @default(cuid())
-  name       String
-  hourlyRate Float
-  staffType  RateSheetType
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  Agency     Agency?       @relation(fields: [agencyId], references: [id])
-  agencyId   String?
 }
 
 enum RateSheetType {
@@ -272,518 +689,6 @@ enum CustomTaskPriority {
   HIGH
 }
 
-model CustomTask {
-  id          String              @id @default(cuid())
-  name        String
-  placeholder String
-  category    CustomTaskCategory
-  frequency   CustomTaskFrequency
-  priority    CustomTaskPriority
-  icon        String?
-  Agency      Agency?             @relation(fields: [agencyId], references: [id])
-  agencyId    String?
-}
-
-model ClientCareAssignment {
-  id              String   @id @default(cuid())
-  clientId        String
-  userId          String
-  isDecisionMaker Boolean  @default(false)
-  assignedAt      DateTime @default(now())
-
-  client User @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
-  user   User @relation("CareWorkerAssignments", fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([clientId, userId])
-}
-
-model User {
-  id              String       @id @default(cuid())
-  cognitoId       String       @unique
-  email           String       @unique
-  firstName       String
-  lastName        String
-  role            Role
-  subRole         SubRole? // Added subRole field
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  sentInvitations Invitation[] @relation("SentInvitations")
-
-  // Agency relationship
-  agencyId String?
-  agency   Agency? @relation(fields: [agencyId], references: [id], onDelete: SetNull)
-
-  // User management
-  invitedById  String?
-  invitedBy    User?   @relation("UserInvites", fields: [invitedById], references: [id], onDelete: SetNull)
-  invitedUsers User[]  @relation("UserInvites")
-
-  // Client-specific fields (only for users with CLIENT role)
-  title          String?
-  addressLine1   String?
-  addressLine2   String?
-  townOrCity     String?
-  county         String?
-  postalCode     String?
-  propertyAccess String?
-  phoneNumber    String?
-  nhsNumber      String?
-  dnraOrder      Boolean?  @default(false)
-  chargeRate     Float?    @default(25.0)
-  mobility       String?
-  likesDislikes  String?
-  dateOfBirth    DateTime?
-  languages      String?
-  allergies      String?
-  interests      String?
-  history        String?
-  preferredName  String? // Added preferred name
-
-  // Communication preferences - NEW
-  communicationPreference CommunicationPreference?
-
-  // Client care relationships
-  careAssignments       ClientCareAssignment[] @relation("CareWorkerAssignments")
-  clientAssignments     ClientCareAssignment[] @relation("ClientAssignments")
-  careWorkerSchedules   Schedule[]             @relation("CareWorkerSchedules")
-  clientSchedules       Schedule[]             @relation("ClientSchedules")
-  careReports           Report[]               @relation("ReportCaregiver")
-  clientReports         Report[]               @relation("ReportClient")
-  careWorkerMedications MedicationRecord[]     @relation("CareWorkerMedications")
-  clientMedications     MedicationRecord[]     @relation("ClientMedications")
-  careWorkerMileage     MileageRecord[]        @relation("CareWorkerMileage")
-  clientMileage         MileageRecord[]        @relation("ClientMileage")
-
-  // Other relationships
-  profile                   Profile?
-  sentMessages              Message[]                  @relation("MessageSender")
-  receivedMessages          Message[]                  @relation("MessageReceiver")
-  medicationRecords         MedicationRecord[]
-  mileageRecords            MileageRecord[]
-  documents                 Document[]                 @relation("UserDocuments")
-  incidentReports           IncidentReport[]
-  keyContacts               KeyContact[]
-  careOutcomes              CareOutcome[]
-  Invoice                   Invoice[]
-  Document                  Document[]
-  Notification              Notification[]
-  riskAssessments           RiskAssessment[] // Added risk assessments
-  familyAccess              FamilyAccess[] // Added family access
-  communicationLogs         CommunicationLog[] // Added communication logs
-  reminders                 Reminder[] // Added reminders
-  medicationAdministrations MedicationAdministration[] @relation("AdministeredMedications")
-  reportEdits               ReportEdit[] // Added report edits relation
-  Group                     Group?                     @relation(fields: [groupId], references: [id])
-  groupId                   String?
-
-  // Announcement relations
-  createdAnnouncements      Announcement[] @relation("AnnouncementCreator")
-  acknowledgedAnnouncements Announcement[] @relation("AnnouncementAcknowledgements")
-  Announcement              Announcement[]
-  AuditLog                  AuditLog[]
-}
-
-// NEW MODEL: Communication Preference
-model CommunicationPreference {
-  id     String  @id @default(cuid())
-  userId String  @unique
-  email  Boolean @default(true)
-  sms    Boolean @default(false)
-  phone  Boolean @default(true)
-  notes  String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-// NEW MODEL: Family Access
-model FamilyAccess {
-  id       String  @id @default(cuid())
-  clientId String
-  name     String
-  relation String
-  phone    String
-  email    String?
-
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
-}
-
-model MedicationDatabaseLink {
-  id           String  @id @default(cuid())
-  name         String
-  isSpecialist Boolean @default(false)
-  url          String
-  source       String
-
-  agencyId         String
-  agency           Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  MedicationRecord MedicationRecord[]
-}
-
-// ======== CARE DELIVERY MODELS ========
-
-// NEW MODEL: Visit Type
-model VisitType {
-  id          String   @id @default(cuid())
-  agencyId    String
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  agency    Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  schedules Schedule[]
-}
-
-model Schedule {
-  id         String       @id @default(cuid())
-  agencyId   String
-  clientId   String
-  userId     String
-  date       DateTime
-  startTime  String
-  endTime    String
-  status     String       @default("PENDING")
-  type       ScheduleType @default(APPOINTMENT)
-  notes      String?
-  chargeRate Float?
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-
-  // Added visit type relationship
-  visitTypeId String?
-  visitType   VisitType? @relation(fields: [visitTypeId], references: [id], onDelete: SetNull)
-
-  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client User   @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
-  user   User   @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
-  @@index([userId, date])
-  @@index([clientId, date])
-  @@index([agencyId])
-}
-
-model Report {
-  id           String    @id @default(cuid())
-  clientId     String
-  agencyId     String
-  userId       String
-  title        String?
-  condition    String
-  summary      String
-  checkInTime  DateTime
-  checkOutTime DateTime?
-  createdAt    DateTime  @default(now())
-
-  // Location data
-  checkInDistance  Float?
-  checkOutDistance Float?
-  checkInLocation  String? // Added for storing location name/address
-  checkOutLocation String? // Added for storing location name/address
-
-  // Client signature
-  hasSignature      Boolean @default(false) // Added for tracking if signature was obtained
-  signatureImageUrl String? // Added for storing signature image URL
-
-  // Report status and metadata
-  status         ReportStatus @default(COMPLETED)
-  lastEditedAt   DateTime?
-  lastEditedBy   String?
-  lastEditReason String?
-
-  // Related data
-  tasksCompleted            ReportTask[]
-  alerts                    ReportAlert[] // Added relation to alerts
-  bodyMapObservations       BodyMapObservation[] // Added relation to body map
-  medicationAdministrations MedicationAdministration[] // Added relation to medication administrations
-  editHistory               ReportEdit[]
-
-  client    User   @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
-  caregiver User   @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
-  agency    Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-}
-
-model ReportTask {
-  id          String    @id @default(cuid())
-  reportId    String
-  taskName    String
-  completed   Boolean   @default(false)
-  notes       String? // Added for task-specific notes
-  taskIcon    String? // Added for storing icon type
-  taskType    String? // Added for categorizing tasks
-  completedAt DateTime? // Added timestamp for when task was completed
-
-  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
-}
-
-// New model for report alerts
-model ReportAlert {
-  id         String        @id @default(cuid())
-  reportId   String
-  type       AlertType
-  message    String
-  severity   AlertSeverity
-  createdAt  DateTime      @default(now())
-  resolved   Boolean       @default(false)
-  resolvedAt DateTime?
-  resolvedBy String?
-
-  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
-}
-
-// New model for body map observations
-model BodyMapObservation {
-  id        String   @id @default(cuid())
-  reportId  String
-  bodyPart  String
-  condition String
-  notes     String?
-  createdAt DateTime @default(now())
-
-  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
-}
-
-// New model for tracking report edits
-model ReportEdit {
-  id          String   @id @default(cuid())
-  reportId    String
-  editedBy    String
-  editedAt    DateTime @default(now())
-  reason      String
-  changesJson String // JSON string containing changes made
-
-  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  editor User   @relation(fields: [editedBy], references: [id], onDelete: Cascade)
-}
-
-model MedicationRecord {
-  id           String    @id @default(cuid())
-  medicationId String
-  clientId     String
-  userId       String
-  dosage       String
-  frequency    String
-  startDate    DateTime
-  endDate      DateTime?
-  notes        String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  // Define which times this medication should be taken
-  morningDose  Boolean @default(false)
-  lunchDose    Boolean @default(false)
-  eveningDose  Boolean @default(false)
-  bedtimeDose  Boolean @default(false)
-  asNeededDose Boolean @default(false)
-
-  medication            MedicationDatabaseLink     @relation(fields: [medicationId], references: [id], onDelete: Cascade)
-  client                User                       @relation("ClientMedications", fields: [clientId], references: [id], onDelete: Cascade, map: "MedicationRecord_client_fkey")
-  user                  User                       @relation("CareWorkerMedications", fields: [userId], references: [id], onDelete: Cascade, map: "MedicationRecord_care_worker_fkey")
-  User                  User                       @relation(fields: [userId], references: [id])
-  administrationRecords MedicationAdministration[]
-
-  @@index([medicationId])
-  @@index([clientId])
-  @@index([userId])
-}
-
-model MedicationAdministration {
-  id                 String   @id @default(cuid())
-  medicationRecordId String
-  administeredById   String
-  administeredAt     DateTime
-  doseType           DoseType
-  doseTaken          Boolean  @default(true)
-  notes              String?
-  createdAt          DateTime @default(now())
-
-  medicationRecord MedicationRecord @relation(fields: [medicationRecordId], references: [id], onDelete: Cascade)
-  administeredBy   User             @relation("AdministeredMedications", fields: [administeredById], references: [id], onDelete: Cascade)
-  report           Report?          @relation(fields: [reportId], references: [id])
-  reportId         String?
-
-  @@index([medicationRecordId])
-  @@index([administeredById])
-}
-
-// ======== SHARED/SUPPORT MODELS ========
-
-model Invoice {
-  id          String        @id @default(cuid())
-  agencyId    String
-  clientId    String?
-  amount      Float
-  description String
-  issuedAt    DateTime      @default(now())
-  dueDate     DateTime
-  status      InvoiceStatus
-
-  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client User?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
-}
-
-model MileageRecord {
-  id           String   @id @default(cuid())
-  agencyId     String
-  clientId     String
-  userId       String
-  date         DateTime
-  startMileage Float
-  endMileage   Float
-  totalMiles   Float
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client User   @relation("ClientMileage", fields: [clientId], references: [id], onDelete: Cascade, map: "MileageRecord_client_fkey")
-  user   User   @relation("CareWorkerMileage", fields: [userId], references: [id], onDelete: Cascade, map: "MileageRecord_care_worker_fkey")
-  User   User   @relation(fields: [userId], references: [id])
-
-  @@index([agencyId])
-  @@index([clientId])
-  @@index([userId])
-}
-
-model Document {
-  id         String   @id @default(cuid())
-  title      String
-  fileUrl    String
-  uploadedAt DateTime @default(now())
-
-  // Optional relations - a document can belong to any of these
-  userId   String?
-  clientId String?
-  agencyId String?
-
-  user   User?   @relation("UserDocuments", fields: [userId], references: [id], onDelete: SetNull)
-  client User?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  agency Agency? @relation("AgencyDocuments", fields: [agencyId], references: [id], onDelete: SetNull)
-}
-
-model Profile {
-  id        String  @id @default(cuid())
-  userId    String  @unique
-  phone     String?
-  avatarUrl String?
-  address   String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model IncidentReport {
-  id          String        @id @default(cuid())
-  reporterId  String
-  agencyId    String
-  description String
-  severity    SeverityLevel
-  reportedAt  DateTime      @default(now())
-
-  reporter User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
-  agency   Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-}
-
-model Message {
-  id         String   @id @default(cuid())
-  senderId   String
-  receiverId String
-  content    String
-  sentAt     DateTime @default(now())
-
-  sender   User @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver User @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
-}
-
-model KeyContact {
-  id       String  @id @default(cuid())
-  clientId String
-  name     String
-  relation String
-  phone    String
-  email    String?
-
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
-}
-
-model CareOutcome {
-  id       String @id @default(cuid())
-  clientId String
-  outcome  String
-
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
-}
-
-// NEW MODEL: Communication Log
-model CommunicationLog {
-  id        String   @id @default(cuid())
-  clientId  String
-  message   String
-  createdAt DateTime @default(now())
-
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
-}
-
-// NEW MODEL: Risk Category
-model RiskCategory {
-  id          String   @id @default(cuid())
-  agencyId    String
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-
-  agency          Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  riskAssessments RiskAssessment[]
-}
-
-// NEW MODEL: Risk Assessment
-model RiskAssessment {
-  id                 String   @id @default(cuid())
-  clientId           String
-  riskCategoryId     String
-  description        String
-  affectedParties    String
-  mitigationStrategy String
-  likelihood         Int // 1-5 scale
-  severity           Int // 1-5 scale
-  riskScore          Int // likelihood * severity
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
-  client       User         @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  riskCategory RiskCategory @relation(fields: [riskCategoryId], references: [id], onDelete: Cascade)
-}
-
-// NEW MODEL: Reminder
-model Reminder {
-  id        String   @id @default(cuid())
-  clientId  String
-  title     String
-  message   String?
-  dueDate   DateTime
-  completed Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  client   User    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  Agency   Agency? @relation(fields: [agencyId], references: [id])
-  agencyId String?
-}
-
-model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  title     String
-  message   String
-  type      NotificationType
-  read      Boolean          @default(false)
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-// ======== ENUMS ========
 enum Role {
   SOFTWARE_OWNER
   ADMIN
@@ -793,9 +698,7 @@ enum Role {
   FAMILY
 }
 
-// NEW ENUM: SubRole
 enum SubRole {
-  // Office staff subroles
   FINANCE_MANAGER
   HR_MANAGER
   CARE_MANAGER
@@ -805,8 +708,6 @@ enum SubRole {
   QUALITY_ASSURANCE_MANAGER
   MARKETING_COORDINATOR
   COMPLIANCE_OFFICER
-
-  // Care worker subroles
   CAREGIVER
   SENIOR_CAREGIVER
   JUNIOR_CAREGIVER
@@ -815,8 +716,6 @@ enum SubRole {
   PART_TIME_CAREGIVER
   SPECIALIZED_CAREGIVER
   NURSING_ASSISTANT
-
-  // Client subroles
   SERVICE_USER
   FAMILY_AND_FRIENDS
   OTHER

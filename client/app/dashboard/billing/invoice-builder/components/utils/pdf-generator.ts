@@ -1,18 +1,21 @@
 import { jsPDF } from "jspdf"
 import { format } from "date-fns"
-import type { InvoiceData, InvoiceItem } from "../../types"
+import type {  InvoiceItem } from "../../types"
 import { User } from "@/types/prismaTypes"
-import { DateRange } from "react-big-calendar"
+import { RootState, useAppSelector } from "@/state/redux"
 
 export function generatePDF(
   client: User,
-  invoiceData: InvoiceData,
+
   items: InvoiceItem[],
   subtotal: number,
   tax: number,
   total: number,
-  dateRange: DateRange | null,
+
 ): jsPDF {
+
+const invoiceData = useAppSelector((state: RootState) => state.invoice.invoiceData)
+const dateRange = useAppSelector((state: RootState) => state.invoice.selectedDateRange)
   try {
     // Create a new PDF document
     const doc = new jsPDF({
@@ -50,9 +53,9 @@ export function generatePDF(
     // Add invoice details
     doc.setFontSize(10)
     doc.setTextColor(secondaryTextColor)
-    doc.text(`Invoice #${invoiceData.invoiceNumber ?? ""}`, 170, 45, { align: "right" })
-    doc.text(`Issue Date: ${invoiceData.issueDate ? format(new Date(invoiceData.issueDate), "MMM d, yyyy") : "-"}`, 170, 50, { align: "right" })
-    doc.text(`Due Date: ${invoiceData.dueDate ? format(new Date(invoiceData.dueDate), "MMM d, yyyy") : "-"}`, 170, 55, { align: "right" })
+    doc.text(`Invoice #${invoiceData?.invoiceNumber ?? ""}`, 170, 45, { align: "right" })
+    doc.text(`Issue Date: ${invoiceData?.issueDate ? format(new Date(invoiceData.issueDate), "MMM d, yyyy") : "-"}`, 170, 50, { align: "right" })
+    doc.text(`Due Date: ${invoiceData?.dueDate ? format(new Date(invoiceData.dueDate), "MMM d, yyyy") : "-"}`, 170, 55, { align: "right" })
 
     // Add client info
     doc.setFontSize(12)
@@ -61,7 +64,7 @@ export function generatePDF(
 
     doc.setFontSize(10)
     doc.setTextColor(secondaryTextColor)
-    doc.text(client.firstName + " " + client.lastName ?? "", 20, 82)
+    doc.text(client.firstName + " " + client.lastName, 20, 82)
   
 
     // Add service period
@@ -150,7 +153,7 @@ export function generatePDF(
     })
 
     // Add notes if any
-    if (invoiceData.notes != null && invoiceData.notes !== "") {
+    if (invoiceData?.notes != null && invoiceData?.notes !== "") {
       yPos += 20
 
       // Check if we need a new page
@@ -167,16 +170,16 @@ export function generatePDF(
       doc.setTextColor(secondaryTextColor)
 
       // Split notes into lines to avoid overflow
-      const splitNotes = doc.splitTextToSize(invoiceData.notes, 170)
+      const splitNotes = doc.splitTextToSize(invoiceData?.notes ?? "", 170)
       doc.text(splitNotes, tableLeft, yPos + 10)
     }
 
     // Add footer
     doc.setFontSize(10)
     doc.setTextColor(secondaryTextColor)
-    doc.text("Thank you for your business!", 105, 280, { align: "center" })
+
     doc.text(
-      invoiceData.dueDate
+        invoiceData?.dueDate
         ? `Payment is due by ${format(new Date(invoiceData.dueDate), "MMM d, yyyy")}`
         : "Payment is due upon receipt",
       105,
