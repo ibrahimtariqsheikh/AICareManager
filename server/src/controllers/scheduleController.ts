@@ -38,28 +38,26 @@ type ScheduleResponse = {
   notes?: string | null
   color: string
   careWorker: {
-    firstName: string
-    lastName: string
+    fullName: string
   }
   client: {
-    firstName: string
-    lastName: string
+    fullName: string
   }
 }
 
 type ScheduleWithRelations = Schedule & {
   client: {
     id: string;
-    firstName: string;
-    lastName: string;
+    fullName: string;
     phoneNumber?: string;
-    addressLine1?: string;
-    townOrCity?: string;
+    address?: string;
+    city?: string;
+    province?: string;
+    postalCode?: string;
   };
   user: {
     id: string;
-    firstName: string;
-    lastName: string;
+    fullName: string;
   };
 }
 
@@ -236,18 +234,18 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
         client: {
           select: {
             id: true,
-            firstName: true,
-            lastName: true,
+            fullName: true,
             phoneNumber: true,
-            addressLine1: true,
-            townOrCity: true,
+            address: true,
+            city: true,
+            province: true,
+            postalCode: true,
           },
         },
         user: {
           select: {
             id: true,
-            firstName: true,
-            lastName: true,
+            fullName: true,
           },
         },
       },
@@ -261,7 +259,7 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
     // Format schedules for frontend display
     const formattedSchedules = schedules.map((schedule) => ({
       id: schedule.id,
-      title: `${schedule.client.firstName} ${schedule.client.lastName} with ${schedule.user.firstName} ${schedule.user.lastName}`,
+      title: `${schedule.client.fullName} with ${schedule.user.fullName}`,
       start: schedule.startTime,
       end: schedule.endTime,
       date: schedule.date,
@@ -274,12 +272,10 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
       notes: schedule.notes,
       color: getEventColor(schedule.type as ScheduleType),
       careWorker: {
-        firstName: schedule.user.firstName,
-        lastName: schedule.user.lastName,
+        fullName: schedule.user.fullName,
       },
       client: {
-        firstName: schedule.client.firstName,
-        lastName: schedule.client.lastName,
+        fullName: schedule.client.fullName,
       },
     }))
 
@@ -428,15 +424,13 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
           client: {
             select: {
               id: true,
-              firstName: true,
-              lastName: true,
+              fullName: true,
             },
           },
           user: {
             select: {
               id: true,
-              firstName: true,
-              lastName: true,
+              fullName: true,
             },
           },
         },
@@ -445,7 +439,7 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
       // Format response to match frontend expectations
       const formattedSchedule: ScheduleResponse = {
         id: schedule.id,
-        title: `${schedule.client.firstName} ${schedule.client.lastName} with ${schedule.user.firstName} ${schedule.user.lastName}`,
+        title: `${schedule.client.fullName} with ${schedule.user.fullName}`,
         start: schedule.startTime,
         end: schedule.endTime,
         date: schedule.date,
@@ -458,12 +452,10 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
         notes: schedule.notes || undefined,
         color: getEventColor(schedule.type as ScheduleType),
         careWorker: {
-          firstName: schedule.user.firstName,
-          lastName: schedule.user.lastName,
+          fullName: schedule.user.fullName,
         },
         client: {
-          firstName: schedule.client.firstName,
-          lastName: schedule.client.lastName,
+          fullName: schedule.client.fullName,
         },
       }
 
@@ -626,15 +618,13 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
           client: {
             select: {
               id: true,
-              firstName: true,
-              lastName: true,
+              fullName: true,
             },
           },
           user: {
             select: {
               id: true,
-              firstName: true,
-              lastName: true,
+              fullName: true,
             },
           },
         },
@@ -643,7 +633,7 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
       // Format response to match frontend expectations
       const formattedSchedule: ScheduleResponse = {
         id: updatedSchedule.id,
-        title: `${updatedSchedule.client.firstName} ${updatedSchedule.client.lastName} with ${updatedSchedule.user.firstName} ${updatedSchedule.user.lastName}`,
+        title: `${updatedSchedule.client.fullName} with ${updatedSchedule.user.fullName}`,
         start: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.startTime}`),
         end: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.endTime}`),
         date: updatedSchedule.date,
@@ -656,12 +646,10 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
         notes: updatedSchedule.notes || undefined,
         color: getEventColor(updatedSchedule.type as ScheduleType),
         careWorker: {
-          firstName: updatedSchedule.user.firstName,
-          lastName: updatedSchedule.user.lastName,
+          fullName: updatedSchedule.user.fullName,
         },
         client: {
-          firstName: updatedSchedule.client.firstName,
-          lastName: updatedSchedule.client.lastName,
+          fullName: updatedSchedule.client.fullName,
         },
       }
 

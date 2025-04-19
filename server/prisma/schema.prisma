@@ -161,7 +161,7 @@ model Group {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Agency    Agency?  @relation(fields: [agencyId], references: [id])
-  clients   User[]
+  clients   User[]   @relation("GroupUsers")
 }
 
 model RateSheet {
@@ -200,37 +200,33 @@ model ClientCareAssignment {
 }
 
 model User {
-  id                        String                     @id @default(cuid())
-  cognitoId                 String                     @unique
-  email                     String                     @unique
-  firstName                 String
-  lastName                  String
-  role                      Role
-  subRole                   SubRole?
-  createdAt                 DateTime                   @default(now())
-  updatedAt                 DateTime                   @updatedAt
-  agencyId                  String?
-  invitedById               String?
-  title                     String?
-  addressLine1              String?
-  addressLine2              String?
-  townOrCity                String?
-  county                    String?
-  postalCode                String?
-  propertyAccess            String?
-  phoneNumber               String?
-  nhsNumber                 String?
-  dnraOrder                 Boolean?                   @default(false)
-  chargeRate                Float?                     @default(25.0)
-  mobility                  String?
-  likesDislikes             String?
-  dateOfBirth               DateTime?
-  languages                 String?
-  allergies                 String?
-  interests                 String?
-  history                   String?
-  preferredName             String?
-  groupId                   String?
+  id             String    @id @default(cuid())
+  cognitoId      String    @unique
+  email          String    @unique
+  fullName       String    @default("")
+  preferredName  String?
+  role           Role
+  subRole        SubRole?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  agencyId       String?
+  invitedById    String?
+  address        String?
+  city           String?
+  province       String?
+  postalCode     String?
+  propertyAccess String?
+  phoneNumber    String?
+  nhsNumber      String?
+  dnraOrder      Boolean?  @default(false)
+  mobility       String?
+  likesDislikes  String?
+  dateOfBirth    DateTime?
+  languages      String?
+  allergies      String?
+  interests      String?
+  history        String?
+
   createdAnnouncements      Announcement[]             @relation("AnnouncementCreator")
   Announcement              Announcement[]
   AuditLog                  AuditLog[]
@@ -264,7 +260,7 @@ model User {
   careWorkerSchedules       Schedule[]                 @relation("CareWorkerSchedules")
   agency                    Agency?                    @relation(fields: [agencyId], references: [id])
   agenciesOwned             Agency[]                   @relation("AgencyOwner")
-  Group                     Group?                     @relation(fields: [groupId], references: [id])
+  groups                    Group[]                    @relation("GroupUsers")
   invitedBy                 User?                      @relation("UserInvites", fields: [invitedById], references: [id])
   invitedUsers              User[]                     @relation("UserInvites")
   acknowledgedAnnouncements Announcement[]             @relation("AnnouncementAcknowledgements")

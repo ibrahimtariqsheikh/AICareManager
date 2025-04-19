@@ -31,7 +31,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
         },
       },
       orderBy: {
-        firstName: "asc",
+        fullName: "asc",
       },
     });
 
@@ -83,7 +83,7 @@ export const getFilteredUsers = async (req: Request, res: Response): Promise<voi
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email, role, subRole, firstName, lastName, cognitoId, agencyId } = req.body;
+        const { email, role, subRole, fullName, cognitoId, agencyId } = req.body;
 
         // Validate required fields
         if (!email || !role) {
@@ -117,8 +117,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         const user = await prisma.user.create({
             data: {
                 email,
-                firstName: firstName || "",
-                lastName: lastName || "",
+                fullName: fullName || "",
                 role,
                 subRole,
                 cognitoId: cognitoId || crypto.randomBytes(16).toString("hex"),
@@ -208,31 +207,29 @@ export const getClients = async (req: Request, res: Response): Promise<void> => 
       where,
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
-        addressLine1: true,
-        townOrCity: true,
+        fullName: true,
+        address: true,
+        city: true,
+        province: true,
         postalCode: true,
         phoneNumber: true,
         createdAt: true,
         updatedAt: true,
       },
       orderBy: {
-        firstName: "asc",
+        fullName: "asc",
       },
     });
 
     // Format clients for the frontend
     const formattedClients = clients.map((client: { 
       id: string;
-      firstName: string;
-      lastName: string;
+      fullName: string;
       createdAt: Date;
       updatedAt: Date;
     }) => ({
       id: client.id,
-      firstName: client.firstName,
-      lastName: client.lastName,
+      fullName: client.fullName,
       status: "Active", // Default status
       dateAdded: client.createdAt,
       color: getRandomColor(client.id),
@@ -277,7 +274,7 @@ export const getAgencyUsers = async (req: Request, res: Response): Promise<void>
                 },
             },
             orderBy: {
-                firstName: "asc",
+                fullName: "asc",
             },
         });
 
@@ -339,7 +336,14 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                     },
                 },
                 agency: true,
-       
+                keyContacts: true,
+                careOutcomes: true,
+                incidentReports: true,
+                riskAssessments: true,
+                familyAccess: true,
+                communicationLogs: true,
+                documents: true,
+                
             },
         });
 
@@ -370,7 +374,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const { email, role, subRole, firstName, lastName, agencyId } = req.body;
+        const { email, role, subRole, fullName, agencyId } = req.body;
 
         // Validate role if provided
         if (role && !Object.values(Role).includes(role)) {
@@ -411,8 +415,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
             where: { id },
             data: {
                 email: email || undefined,
-                firstName: firstName || undefined,
-                lastName: lastName || undefined,
+                fullName: fullName || undefined,
                 role: role || undefined,
                 subRole: subRole || undefined,
                 agencyId: agencyId || undefined,

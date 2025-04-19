@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, Notebook, ChevronDown } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useAppSelector } from "@/state/redux"
@@ -12,6 +12,9 @@ import BankNotes from "@/components/icons/bank-notes"
 import EventIcon from "@/components/icons/eventicon"
 import HomeModern from "@/components/icons/home-modern"
 import { AppointmentEvent } from "../types"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 
 export interface Client {
@@ -351,6 +354,8 @@ export function CustomDayView({
         }
     }, [spaceTheme])
 
+    const router = useRouter()
+
     // Drag event handlers
     const handleDragStart = (eventId: string, _clientId: string) => {
         setActiveEvent(eventId)
@@ -559,10 +564,24 @@ export function CustomDayView({
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-1">
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <button className="text-neutral-500 hover:text-neutral-700">
+                                                        <MoreVertical className="h-4 w-4" />
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-fit">
+                                                    <div className="border-b border-border" />
+                                                    <Button variant="ghost" className="flex justify-start items-center gap-2 text-xs w-32 "
+                                                        onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                        Edit User
+                                                    </Button>
+                                                    <div className="border-b border-border" />
 
-                                            <button className="text-neutral-500 hover:text-neutral-700">
-                                                <MoreVertical className="h-4 w-4" />
-                                            </button>
+                                                </PopoverContent>
+                                            </Popover>
                                         </div>
                                     </div>
                                 </div>

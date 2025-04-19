@@ -586,8 +586,7 @@ export const updateAgencyGroup = async (req: Request, res: Response): Promise<vo
                 clients: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                         email: true
                     }
                 }
@@ -671,8 +670,7 @@ export const createAgencyGroup = async (req: Request, res: Response): Promise<vo
                 clients: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                         email: true
                     }
                 }

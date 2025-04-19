@@ -4664,6 +4664,7 @@ export namespace Prisma {
     clientSchedules: number
     careWorkerSchedules: number
     agenciesOwned: number
+    groups: number
     invitedUsers: number
     acknowledgedAnnouncements: number
   }
@@ -4699,6 +4700,7 @@ export namespace Prisma {
     clientSchedules?: boolean | UserCountOutputTypeCountClientSchedulesArgs
     careWorkerSchedules?: boolean | UserCountOutputTypeCountCareWorkerSchedulesArgs
     agenciesOwned?: boolean | UserCountOutputTypeCountAgenciesOwnedArgs
+    groups?: boolean | UserCountOutputTypeCountGroupsArgs
     invitedUsers?: boolean | UserCountOutputTypeCountInvitedUsersArgs
     acknowledgedAnnouncements?: boolean | UserCountOutputTypeCountAcknowledgedAnnouncementsArgs
   }
@@ -4922,6 +4924,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAgenciesOwnedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AgencyWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountGroupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupWhereInput
   }
 
   /**
@@ -17305,43 +17314,30 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
-    _avg: UserAvgAggregateOutputType | null
-    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
-  }
-
-  export type UserAvgAggregateOutputType = {
-    chargeRate: number | null
-  }
-
-  export type UserSumAggregateOutputType = {
-    chargeRate: number | null
   }
 
   export type UserMinAggregateOutputType = {
     id: string | null
     cognitoId: string | null
     email: string | null
-    firstName: string | null
-    lastName: string | null
+    fullName: string | null
+    preferredName: string | null
     role: $Enums.Role | null
     subRole: $Enums.SubRole | null
     createdAt: Date | null
     updatedAt: Date | null
     agencyId: string | null
     invitedById: string | null
-    title: string | null
-    addressLine1: string | null
-    addressLine2: string | null
-    townOrCity: string | null
-    county: string | null
+    address: string | null
+    city: string | null
+    province: string | null
     postalCode: string | null
     propertyAccess: string | null
     phoneNumber: string | null
     nhsNumber: string | null
     dnraOrder: boolean | null
-    chargeRate: number | null
     mobility: string | null
     likesDislikes: string | null
     dateOfBirth: Date | null
@@ -17349,33 +17345,28 @@ export namespace Prisma {
     allergies: string | null
     interests: string | null
     history: string | null
-    preferredName: string | null
-    groupId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
     cognitoId: string | null
     email: string | null
-    firstName: string | null
-    lastName: string | null
+    fullName: string | null
+    preferredName: string | null
     role: $Enums.Role | null
     subRole: $Enums.SubRole | null
     createdAt: Date | null
     updatedAt: Date | null
     agencyId: string | null
     invitedById: string | null
-    title: string | null
-    addressLine1: string | null
-    addressLine2: string | null
-    townOrCity: string | null
-    county: string | null
+    address: string | null
+    city: string | null
+    province: string | null
     postalCode: string | null
     propertyAccess: string | null
     phoneNumber: string | null
     nhsNumber: string | null
     dnraOrder: boolean | null
-    chargeRate: number | null
     mobility: string | null
     likesDislikes: string | null
     dateOfBirth: Date | null
@@ -17383,33 +17374,28 @@ export namespace Prisma {
     allergies: string | null
     interests: string | null
     history: string | null
-    preferredName: string | null
-    groupId: string | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     cognitoId: number
     email: number
-    firstName: number
-    lastName: number
+    fullName: number
+    preferredName: number
     role: number
     subRole: number
     createdAt: number
     updatedAt: number
     agencyId: number
     invitedById: number
-    title: number
-    addressLine1: number
-    addressLine2: number
-    townOrCity: number
-    county: number
+    address: number
+    city: number
+    province: number
     postalCode: number
     propertyAccess: number
     phoneNumber: number
     nhsNumber: number
     dnraOrder: number
-    chargeRate: number
     mobility: number
     likesDislikes: number
     dateOfBirth: number
@@ -17417,43 +17403,30 @@ export namespace Prisma {
     allergies: number
     interests: number
     history: number
-    preferredName: number
-    groupId: number
     _all: number
   }
 
-
-  export type UserAvgAggregateInputType = {
-    chargeRate?: true
-  }
-
-  export type UserSumAggregateInputType = {
-    chargeRate?: true
-  }
 
   export type UserMinAggregateInputType = {
     id?: true
     cognitoId?: true
     email?: true
-    firstName?: true
-    lastName?: true
+    fullName?: true
+    preferredName?: true
     role?: true
     subRole?: true
     createdAt?: true
     updatedAt?: true
     agencyId?: true
     invitedById?: true
-    title?: true
-    addressLine1?: true
-    addressLine2?: true
-    townOrCity?: true
-    county?: true
+    address?: true
+    city?: true
+    province?: true
     postalCode?: true
     propertyAccess?: true
     phoneNumber?: true
     nhsNumber?: true
     dnraOrder?: true
-    chargeRate?: true
     mobility?: true
     likesDislikes?: true
     dateOfBirth?: true
@@ -17461,33 +17434,28 @@ export namespace Prisma {
     allergies?: true
     interests?: true
     history?: true
-    preferredName?: true
-    groupId?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     cognitoId?: true
     email?: true
-    firstName?: true
-    lastName?: true
+    fullName?: true
+    preferredName?: true
     role?: true
     subRole?: true
     createdAt?: true
     updatedAt?: true
     agencyId?: true
     invitedById?: true
-    title?: true
-    addressLine1?: true
-    addressLine2?: true
-    townOrCity?: true
-    county?: true
+    address?: true
+    city?: true
+    province?: true
     postalCode?: true
     propertyAccess?: true
     phoneNumber?: true
     nhsNumber?: true
     dnraOrder?: true
-    chargeRate?: true
     mobility?: true
     likesDislikes?: true
     dateOfBirth?: true
@@ -17495,33 +17463,28 @@ export namespace Prisma {
     allergies?: true
     interests?: true
     history?: true
-    preferredName?: true
-    groupId?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     cognitoId?: true
     email?: true
-    firstName?: true
-    lastName?: true
+    fullName?: true
+    preferredName?: true
     role?: true
     subRole?: true
     createdAt?: true
     updatedAt?: true
     agencyId?: true
     invitedById?: true
-    title?: true
-    addressLine1?: true
-    addressLine2?: true
-    townOrCity?: true
-    county?: true
+    address?: true
+    city?: true
+    province?: true
     postalCode?: true
     propertyAccess?: true
     phoneNumber?: true
     nhsNumber?: true
     dnraOrder?: true
-    chargeRate?: true
     mobility?: true
     likesDislikes?: true
     dateOfBirth?: true
@@ -17529,8 +17492,6 @@ export namespace Prisma {
     allergies?: true
     interests?: true
     history?: true
-    preferredName?: true
-    groupId?: true
     _all?: true
   }
 
@@ -17572,18 +17533,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: UserAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: UserSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -17614,8 +17563,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
-    _avg?: UserAvgAggregateInputType
-    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -17624,25 +17571,22 @@ export namespace Prisma {
     id: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName: string
+    preferredName: string | null
     role: $Enums.Role
     subRole: $Enums.SubRole | null
     createdAt: Date
     updatedAt: Date
     agencyId: string | null
     invitedById: string | null
-    title: string | null
-    addressLine1: string | null
-    addressLine2: string | null
-    townOrCity: string | null
-    county: string | null
+    address: string | null
+    city: string | null
+    province: string | null
     postalCode: string | null
     propertyAccess: string | null
     phoneNumber: string | null
     nhsNumber: string | null
     dnraOrder: boolean | null
-    chargeRate: number | null
     mobility: string | null
     likesDislikes: string | null
     dateOfBirth: Date | null
@@ -17650,11 +17594,7 @@ export namespace Prisma {
     allergies: string | null
     interests: string | null
     history: string | null
-    preferredName: string | null
-    groupId: string | null
     _count: UserCountAggregateOutputType | null
-    _avg: UserAvgAggregateOutputType | null
-    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -17677,25 +17617,22 @@ export namespace Prisma {
     id?: boolean
     cognitoId?: boolean
     email?: boolean
-    firstName?: boolean
-    lastName?: boolean
+    fullName?: boolean
+    preferredName?: boolean
     role?: boolean
     subRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     agencyId?: boolean
     invitedById?: boolean
-    title?: boolean
-    addressLine1?: boolean
-    addressLine2?: boolean
-    townOrCity?: boolean
-    county?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
     postalCode?: boolean
     propertyAccess?: boolean
     phoneNumber?: boolean
     nhsNumber?: boolean
     dnraOrder?: boolean
-    chargeRate?: boolean
     mobility?: boolean
     likesDislikes?: boolean
     dateOfBirth?: boolean
@@ -17703,8 +17640,6 @@ export namespace Prisma {
     allergies?: boolean
     interests?: boolean
     history?: boolean
-    preferredName?: boolean
-    groupId?: boolean
     createdAnnouncements?: boolean | User$createdAnnouncementsArgs<ExtArgs>
     Announcement?: boolean | User$AnnouncementArgs<ExtArgs>
     AuditLog?: boolean | User$AuditLogArgs<ExtArgs>
@@ -17738,7 +17673,7 @@ export namespace Prisma {
     careWorkerSchedules?: boolean | User$careWorkerSchedulesArgs<ExtArgs>
     agency?: boolean | User$agencyArgs<ExtArgs>
     agenciesOwned?: boolean | User$agenciesOwnedArgs<ExtArgs>
-    Group?: boolean | User$GroupArgs<ExtArgs>
+    groups?: boolean | User$groupsArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
     invitedUsers?: boolean | User$invitedUsersArgs<ExtArgs>
     acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
@@ -17749,25 +17684,22 @@ export namespace Prisma {
     id?: boolean
     cognitoId?: boolean
     email?: boolean
-    firstName?: boolean
-    lastName?: boolean
+    fullName?: boolean
+    preferredName?: boolean
     role?: boolean
     subRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     agencyId?: boolean
     invitedById?: boolean
-    title?: boolean
-    addressLine1?: boolean
-    addressLine2?: boolean
-    townOrCity?: boolean
-    county?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
     postalCode?: boolean
     propertyAccess?: boolean
     phoneNumber?: boolean
     nhsNumber?: boolean
     dnraOrder?: boolean
-    chargeRate?: boolean
     mobility?: boolean
     likesDislikes?: boolean
     dateOfBirth?: boolean
@@ -17775,10 +17707,7 @@ export namespace Prisma {
     allergies?: boolean
     interests?: boolean
     history?: boolean
-    preferredName?: boolean
-    groupId?: boolean
     agency?: boolean | User$agencyArgs<ExtArgs>
-    Group?: boolean | User$GroupArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -17786,25 +17715,22 @@ export namespace Prisma {
     id?: boolean
     cognitoId?: boolean
     email?: boolean
-    firstName?: boolean
-    lastName?: boolean
+    fullName?: boolean
+    preferredName?: boolean
     role?: boolean
     subRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     agencyId?: boolean
     invitedById?: boolean
-    title?: boolean
-    addressLine1?: boolean
-    addressLine2?: boolean
-    townOrCity?: boolean
-    county?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
     postalCode?: boolean
     propertyAccess?: boolean
     phoneNumber?: boolean
     nhsNumber?: boolean
     dnraOrder?: boolean
-    chargeRate?: boolean
     mobility?: boolean
     likesDislikes?: boolean
     dateOfBirth?: boolean
@@ -17812,10 +17738,7 @@ export namespace Prisma {
     allergies?: boolean
     interests?: boolean
     history?: boolean
-    preferredName?: boolean
-    groupId?: boolean
     agency?: boolean | User$agencyArgs<ExtArgs>
-    Group?: boolean | User$GroupArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -17823,25 +17746,22 @@ export namespace Prisma {
     id?: boolean
     cognitoId?: boolean
     email?: boolean
-    firstName?: boolean
-    lastName?: boolean
+    fullName?: boolean
+    preferredName?: boolean
     role?: boolean
     subRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     agencyId?: boolean
     invitedById?: boolean
-    title?: boolean
-    addressLine1?: boolean
-    addressLine2?: boolean
-    townOrCity?: boolean
-    county?: boolean
+    address?: boolean
+    city?: boolean
+    province?: boolean
     postalCode?: boolean
     propertyAccess?: boolean
     phoneNumber?: boolean
     nhsNumber?: boolean
     dnraOrder?: boolean
-    chargeRate?: boolean
     mobility?: boolean
     likesDislikes?: boolean
     dateOfBirth?: boolean
@@ -17849,11 +17769,9 @@ export namespace Prisma {
     allergies?: boolean
     interests?: boolean
     history?: boolean
-    preferredName?: boolean
-    groupId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cognitoId" | "email" | "firstName" | "lastName" | "role" | "subRole" | "createdAt" | "updatedAt" | "agencyId" | "invitedById" | "title" | "addressLine1" | "addressLine2" | "townOrCity" | "county" | "postalCode" | "propertyAccess" | "phoneNumber" | "nhsNumber" | "dnraOrder" | "chargeRate" | "mobility" | "likesDislikes" | "dateOfBirth" | "languages" | "allergies" | "interests" | "history" | "preferredName" | "groupId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cognitoId" | "email" | "fullName" | "preferredName" | "role" | "subRole" | "createdAt" | "updatedAt" | "agencyId" | "invitedById" | "address" | "city" | "province" | "postalCode" | "propertyAccess" | "phoneNumber" | "nhsNumber" | "dnraOrder" | "mobility" | "likesDislikes" | "dateOfBirth" | "languages" | "allergies" | "interests" | "history", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdAnnouncements?: boolean | User$createdAnnouncementsArgs<ExtArgs>
     Announcement?: boolean | User$AnnouncementArgs<ExtArgs>
@@ -17888,7 +17806,7 @@ export namespace Prisma {
     careWorkerSchedules?: boolean | User$careWorkerSchedulesArgs<ExtArgs>
     agency?: boolean | User$agencyArgs<ExtArgs>
     agenciesOwned?: boolean | User$agenciesOwnedArgs<ExtArgs>
-    Group?: boolean | User$GroupArgs<ExtArgs>
+    groups?: boolean | User$groupsArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
     invitedUsers?: boolean | User$invitedUsersArgs<ExtArgs>
     acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
@@ -17896,12 +17814,10 @@ export namespace Prisma {
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | User$agencyArgs<ExtArgs>
-    Group?: boolean | User$GroupArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
   }
   export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | User$agencyArgs<ExtArgs>
-    Group?: boolean | User$GroupArgs<ExtArgs>
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
   }
 
@@ -17941,7 +17857,7 @@ export namespace Prisma {
       careWorkerSchedules: Prisma.$SchedulePayload<ExtArgs>[]
       agency: Prisma.$AgencyPayload<ExtArgs> | null
       agenciesOwned: Prisma.$AgencyPayload<ExtArgs>[]
-      Group: Prisma.$GroupPayload<ExtArgs> | null
+      groups: Prisma.$GroupPayload<ExtArgs>[]
       invitedBy: Prisma.$UserPayload<ExtArgs> | null
       invitedUsers: Prisma.$UserPayload<ExtArgs>[]
       acknowledgedAnnouncements: Prisma.$AnnouncementPayload<ExtArgs>[]
@@ -17950,25 +17866,22 @@ export namespace Prisma {
       id: string
       cognitoId: string
       email: string
-      firstName: string
-      lastName: string
+      fullName: string
+      preferredName: string | null
       role: $Enums.Role
       subRole: $Enums.SubRole | null
       createdAt: Date
       updatedAt: Date
       agencyId: string | null
       invitedById: string | null
-      title: string | null
-      addressLine1: string | null
-      addressLine2: string | null
-      townOrCity: string | null
-      county: string | null
+      address: string | null
+      city: string | null
+      province: string | null
       postalCode: string | null
       propertyAccess: string | null
       phoneNumber: string | null
       nhsNumber: string | null
       dnraOrder: boolean | null
-      chargeRate: number | null
       mobility: string | null
       likesDislikes: string | null
       dateOfBirth: Date | null
@@ -17976,8 +17889,6 @@ export namespace Prisma {
       allergies: string | null
       interests: string | null
       history: string | null
-      preferredName: string | null
-      groupId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -18405,7 +18316,7 @@ export namespace Prisma {
     careWorkerSchedules<T extends User$careWorkerSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, User$careWorkerSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agency<T extends User$agencyArgs<ExtArgs> = {}>(args?: Subset<T, User$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     agenciesOwned<T extends User$agenciesOwnedArgs<ExtArgs> = {}>(args?: Subset<T, User$agenciesOwnedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Group<T extends User$GroupArgs<ExtArgs> = {}>(args?: Subset<T, User$GroupArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    groups<T extends User$groupsArgs<ExtArgs> = {}>(args?: Subset<T, User$groupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invitedBy<T extends User$invitedByArgs<ExtArgs> = {}>(args?: Subset<T, User$invitedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     invitedUsers<T extends User$invitedUsersArgs<ExtArgs> = {}>(args?: Subset<T, User$invitedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     acknowledgedAnnouncements<T extends User$acknowledgedAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, User$acknowledgedAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -18441,25 +18352,22 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'String'>
     readonly cognitoId: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
-    readonly firstName: FieldRef<"User", 'String'>
-    readonly lastName: FieldRef<"User", 'String'>
+    readonly fullName: FieldRef<"User", 'String'>
+    readonly preferredName: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly subRole: FieldRef<"User", 'SubRole'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly agencyId: FieldRef<"User", 'String'>
     readonly invitedById: FieldRef<"User", 'String'>
-    readonly title: FieldRef<"User", 'String'>
-    readonly addressLine1: FieldRef<"User", 'String'>
-    readonly addressLine2: FieldRef<"User", 'String'>
-    readonly townOrCity: FieldRef<"User", 'String'>
-    readonly county: FieldRef<"User", 'String'>
+    readonly address: FieldRef<"User", 'String'>
+    readonly city: FieldRef<"User", 'String'>
+    readonly province: FieldRef<"User", 'String'>
     readonly postalCode: FieldRef<"User", 'String'>
     readonly propertyAccess: FieldRef<"User", 'String'>
     readonly phoneNumber: FieldRef<"User", 'String'>
     readonly nhsNumber: FieldRef<"User", 'String'>
     readonly dnraOrder: FieldRef<"User", 'Boolean'>
-    readonly chargeRate: FieldRef<"User", 'Float'>
     readonly mobility: FieldRef<"User", 'String'>
     readonly likesDislikes: FieldRef<"User", 'String'>
     readonly dateOfBirth: FieldRef<"User", 'DateTime'>
@@ -18467,8 +18375,6 @@ export namespace Prisma {
     readonly allergies: FieldRef<"User", 'String'>
     readonly interests: FieldRef<"User", 'String'>
     readonly history: FieldRef<"User", 'String'>
-    readonly preferredName: FieldRef<"User", 'String'>
-    readonly groupId: FieldRef<"User", 'String'>
   }
     
 
@@ -19642,9 +19548,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.Group
+   * User.groups
    */
-  export type User$GroupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$groupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Group
      */
@@ -19658,6 +19564,11 @@ export namespace Prisma {
      */
     include?: GroupInclude<ExtArgs> | null
     where?: GroupWhereInput
+    orderBy?: GroupOrderByWithRelationInput | GroupOrderByWithRelationInput[]
+    cursor?: GroupWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GroupScalarFieldEnum | GroupScalarFieldEnum[]
   }
 
   /**
@@ -48101,34 +48012,29 @@ export namespace Prisma {
     id: 'id',
     cognitoId: 'cognitoId',
     email: 'email',
-    firstName: 'firstName',
-    lastName: 'lastName',
+    fullName: 'fullName',
+    preferredName: 'preferredName',
     role: 'role',
     subRole: 'subRole',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     agencyId: 'agencyId',
     invitedById: 'invitedById',
-    title: 'title',
-    addressLine1: 'addressLine1',
-    addressLine2: 'addressLine2',
-    townOrCity: 'townOrCity',
-    county: 'county',
+    address: 'address',
+    city: 'city',
+    province: 'province',
     postalCode: 'postalCode',
     propertyAccess: 'propertyAccess',
     phoneNumber: 'phoneNumber',
     nhsNumber: 'nhsNumber',
     dnraOrder: 'dnraOrder',
-    chargeRate: 'chargeRate',
     mobility: 'mobility',
     likesDislikes: 'likesDislikes',
     dateOfBirth: 'dateOfBirth',
     languages: 'languages',
     allergies: 'allergies',
     interests: 'interests',
-    history: 'history',
-    preferredName: 'preferredName',
-    groupId: 'groupId'
+    history: 'history'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -49830,25 +49736,22 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     cognitoId?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    firstName?: StringFilter<"User"> | string
-    lastName?: StringFilter<"User"> | string
+    fullName?: StringFilter<"User"> | string
+    preferredName?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     subRole?: EnumSubRoleNullableFilter<"User"> | $Enums.SubRole | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     agencyId?: StringNullableFilter<"User"> | string | null
     invitedById?: StringNullableFilter<"User"> | string | null
-    title?: StringNullableFilter<"User"> | string | null
-    addressLine1?: StringNullableFilter<"User"> | string | null
-    addressLine2?: StringNullableFilter<"User"> | string | null
-    townOrCity?: StringNullableFilter<"User"> | string | null
-    county?: StringNullableFilter<"User"> | string | null
+    address?: StringNullableFilter<"User"> | string | null
+    city?: StringNullableFilter<"User"> | string | null
+    province?: StringNullableFilter<"User"> | string | null
     postalCode?: StringNullableFilter<"User"> | string | null
     propertyAccess?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
     nhsNumber?: StringNullableFilter<"User"> | string | null
     dnraOrder?: BoolNullableFilter<"User"> | boolean | null
-    chargeRate?: FloatNullableFilter<"User"> | number | null
     mobility?: StringNullableFilter<"User"> | string | null
     likesDislikes?: StringNullableFilter<"User"> | string | null
     dateOfBirth?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -49856,8 +49759,6 @@ export namespace Prisma {
     allergies?: StringNullableFilter<"User"> | string | null
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
-    preferredName?: StringNullableFilter<"User"> | string | null
-    groupId?: StringNullableFilter<"User"> | string | null
     createdAnnouncements?: AnnouncementListRelationFilter
     Announcement?: AnnouncementListRelationFilter
     AuditLog?: AuditLogListRelationFilter
@@ -49891,7 +49792,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleListRelationFilter
     agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     agenciesOwned?: AgencyListRelationFilter
-    Group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
+    groups?: GroupListRelationFilter
     invitedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     invitedUsers?: UserListRelationFilter
     acknowledgedAnnouncements?: AnnouncementListRelationFilter
@@ -49901,25 +49802,22 @@ export namespace Prisma {
     id?: SortOrder
     cognitoId?: SortOrder
     email?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
+    fullName?: SortOrder
+    preferredName?: SortOrderInput | SortOrder
     role?: SortOrder
     subRole?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     agencyId?: SortOrderInput | SortOrder
     invitedById?: SortOrderInput | SortOrder
-    title?: SortOrderInput | SortOrder
-    addressLine1?: SortOrderInput | SortOrder
-    addressLine2?: SortOrderInput | SortOrder
-    townOrCity?: SortOrderInput | SortOrder
-    county?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    province?: SortOrderInput | SortOrder
     postalCode?: SortOrderInput | SortOrder
     propertyAccess?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     nhsNumber?: SortOrderInput | SortOrder
     dnraOrder?: SortOrderInput | SortOrder
-    chargeRate?: SortOrderInput | SortOrder
     mobility?: SortOrderInput | SortOrder
     likesDislikes?: SortOrderInput | SortOrder
     dateOfBirth?: SortOrderInput | SortOrder
@@ -49927,8 +49825,6 @@ export namespace Prisma {
     allergies?: SortOrderInput | SortOrder
     interests?: SortOrderInput | SortOrder
     history?: SortOrderInput | SortOrder
-    preferredName?: SortOrderInput | SortOrder
-    groupId?: SortOrderInput | SortOrder
     createdAnnouncements?: AnnouncementOrderByRelationAggregateInput
     Announcement?: AnnouncementOrderByRelationAggregateInput
     AuditLog?: AuditLogOrderByRelationAggregateInput
@@ -49962,7 +49858,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleOrderByRelationAggregateInput
     agency?: AgencyOrderByWithRelationInput
     agenciesOwned?: AgencyOrderByRelationAggregateInput
-    Group?: GroupOrderByWithRelationInput
+    groups?: GroupOrderByRelationAggregateInput
     invitedBy?: UserOrderByWithRelationInput
     invitedUsers?: UserOrderByRelationAggregateInput
     acknowledgedAnnouncements?: AnnouncementOrderByRelationAggregateInput
@@ -49975,25 +49871,22 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    firstName?: StringFilter<"User"> | string
-    lastName?: StringFilter<"User"> | string
+    fullName?: StringFilter<"User"> | string
+    preferredName?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     subRole?: EnumSubRoleNullableFilter<"User"> | $Enums.SubRole | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     agencyId?: StringNullableFilter<"User"> | string | null
     invitedById?: StringNullableFilter<"User"> | string | null
-    title?: StringNullableFilter<"User"> | string | null
-    addressLine1?: StringNullableFilter<"User"> | string | null
-    addressLine2?: StringNullableFilter<"User"> | string | null
-    townOrCity?: StringNullableFilter<"User"> | string | null
-    county?: StringNullableFilter<"User"> | string | null
+    address?: StringNullableFilter<"User"> | string | null
+    city?: StringNullableFilter<"User"> | string | null
+    province?: StringNullableFilter<"User"> | string | null
     postalCode?: StringNullableFilter<"User"> | string | null
     propertyAccess?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
     nhsNumber?: StringNullableFilter<"User"> | string | null
     dnraOrder?: BoolNullableFilter<"User"> | boolean | null
-    chargeRate?: FloatNullableFilter<"User"> | number | null
     mobility?: StringNullableFilter<"User"> | string | null
     likesDislikes?: StringNullableFilter<"User"> | string | null
     dateOfBirth?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -50001,8 +49894,6 @@ export namespace Prisma {
     allergies?: StringNullableFilter<"User"> | string | null
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
-    preferredName?: StringNullableFilter<"User"> | string | null
-    groupId?: StringNullableFilter<"User"> | string | null
     createdAnnouncements?: AnnouncementListRelationFilter
     Announcement?: AnnouncementListRelationFilter
     AuditLog?: AuditLogListRelationFilter
@@ -50036,7 +49927,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleListRelationFilter
     agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     agenciesOwned?: AgencyListRelationFilter
-    Group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
+    groups?: GroupListRelationFilter
     invitedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     invitedUsers?: UserListRelationFilter
     acknowledgedAnnouncements?: AnnouncementListRelationFilter
@@ -50046,25 +49937,22 @@ export namespace Prisma {
     id?: SortOrder
     cognitoId?: SortOrder
     email?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
+    fullName?: SortOrder
+    preferredName?: SortOrderInput | SortOrder
     role?: SortOrder
     subRole?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     agencyId?: SortOrderInput | SortOrder
     invitedById?: SortOrderInput | SortOrder
-    title?: SortOrderInput | SortOrder
-    addressLine1?: SortOrderInput | SortOrder
-    addressLine2?: SortOrderInput | SortOrder
-    townOrCity?: SortOrderInput | SortOrder
-    county?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    province?: SortOrderInput | SortOrder
     postalCode?: SortOrderInput | SortOrder
     propertyAccess?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     nhsNumber?: SortOrderInput | SortOrder
     dnraOrder?: SortOrderInput | SortOrder
-    chargeRate?: SortOrderInput | SortOrder
     mobility?: SortOrderInput | SortOrder
     likesDislikes?: SortOrderInput | SortOrder
     dateOfBirth?: SortOrderInput | SortOrder
@@ -50072,13 +49960,9 @@ export namespace Prisma {
     allergies?: SortOrderInput | SortOrder
     interests?: SortOrderInput | SortOrder
     history?: SortOrderInput | SortOrder
-    preferredName?: SortOrderInput | SortOrder
-    groupId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
-    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
-    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -50088,25 +49972,22 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"User"> | string
     cognitoId?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
-    firstName?: StringWithAggregatesFilter<"User"> | string
-    lastName?: StringWithAggregatesFilter<"User"> | string
+    fullName?: StringWithAggregatesFilter<"User"> | string
+    preferredName?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     subRole?: EnumSubRoleNullableWithAggregatesFilter<"User"> | $Enums.SubRole | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     agencyId?: StringNullableWithAggregatesFilter<"User"> | string | null
     invitedById?: StringNullableWithAggregatesFilter<"User"> | string | null
-    title?: StringNullableWithAggregatesFilter<"User"> | string | null
-    addressLine1?: StringNullableWithAggregatesFilter<"User"> | string | null
-    addressLine2?: StringNullableWithAggregatesFilter<"User"> | string | null
-    townOrCity?: StringNullableWithAggregatesFilter<"User"> | string | null
-    county?: StringNullableWithAggregatesFilter<"User"> | string | null
+    address?: StringNullableWithAggregatesFilter<"User"> | string | null
+    city?: StringNullableWithAggregatesFilter<"User"> | string | null
+    province?: StringNullableWithAggregatesFilter<"User"> | string | null
     postalCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     propertyAccess?: StringNullableWithAggregatesFilter<"User"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     nhsNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     dnraOrder?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
-    chargeRate?: FloatNullableWithAggregatesFilter<"User"> | number | null
     mobility?: StringNullableWithAggregatesFilter<"User"> | string | null
     likesDislikes?: StringNullableWithAggregatesFilter<"User"> | string | null
     dateOfBirth?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -50114,8 +49995,6 @@ export namespace Prisma {
     allergies?: StringNullableWithAggregatesFilter<"User"> | string | null
     interests?: StringNullableWithAggregatesFilter<"User"> | string | null
     history?: StringNullableWithAggregatesFilter<"User"> | string | null
-    preferredName?: StringNullableWithAggregatesFilter<"User"> | string | null
-    groupId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type CommunicationPreferenceWhereInput = {
@@ -52764,7 +52643,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     Agency?: AgencyCreateNestedOneWithoutGroupsInput
-    clients?: UserCreateNestedManyWithoutGroupInput
+    clients?: UserCreateNestedManyWithoutGroupsInput
   }
 
   export type GroupUncheckedCreateInput = {
@@ -52773,7 +52652,7 @@ export namespace Prisma {
     agencyId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    clients?: UserUncheckedCreateNestedManyWithoutGroupInput
+    clients?: UserUncheckedCreateNestedManyWithoutGroupsInput
   }
 
   export type GroupUpdateInput = {
@@ -52782,7 +52661,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Agency?: AgencyUpdateOneWithoutGroupsNestedInput
-    clients?: UserUpdateManyWithoutGroupNestedInput
+    clients?: UserUpdateManyWithoutGroupsNestedInput
   }
 
   export type GroupUncheckedUpdateInput = {
@@ -52791,7 +52670,7 @@ export namespace Prisma {
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    clients?: UserUncheckedUpdateManyWithoutGroupNestedInput
+    clients?: UserUncheckedUpdateManyWithoutGroupsNestedInput
   }
 
   export type GroupCreateManyInput = {
@@ -53020,23 +52899,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -53044,7 +52920,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -53078,7 +52953,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -53088,25 +52963,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -53114,8 +52986,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -53148,6 +53018,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -53156,23 +53027,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -53180,7 +53048,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -53214,7 +53081,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -53224,25 +53091,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -53250,8 +53114,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -53284,6 +53146,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -53292,25 +53155,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -53318,31 +53178,26 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -53350,32 +53205,28 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -53383,8 +53234,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommunicationPreferenceCreateInput = {
@@ -56413,17 +56262,6 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type CareOutcomeListRelationFilter = {
     every?: CareOutcomeWhereInput
     some?: CareOutcomeWhereInput
@@ -56512,11 +56350,6 @@ export namespace Prisma {
     none?: AgencyWhereInput
   }
 
-  export type GroupNullableScalarRelationFilter = {
-    is?: GroupWhereInput | null
-    isNot?: GroupWhereInput | null
-  }
-
   export type CareOutcomeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -56573,25 +56406,22 @@ export namespace Prisma {
     id?: SortOrder
     cognitoId?: SortOrder
     email?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
+    fullName?: SortOrder
+    preferredName?: SortOrder
     role?: SortOrder
     subRole?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     agencyId?: SortOrder
     invitedById?: SortOrder
-    title?: SortOrder
-    addressLine1?: SortOrder
-    addressLine2?: SortOrder
-    townOrCity?: SortOrder
-    county?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    province?: SortOrder
     postalCode?: SortOrder
     propertyAccess?: SortOrder
     phoneNumber?: SortOrder
     nhsNumber?: SortOrder
     dnraOrder?: SortOrder
-    chargeRate?: SortOrder
     mobility?: SortOrder
     likesDislikes?: SortOrder
     dateOfBirth?: SortOrder
@@ -56599,37 +56429,28 @@ export namespace Prisma {
     allergies?: SortOrder
     interests?: SortOrder
     history?: SortOrder
-    preferredName?: SortOrder
-    groupId?: SortOrder
-  }
-
-  export type UserAvgOrderByAggregateInput = {
-    chargeRate?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
     cognitoId?: SortOrder
     email?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
+    fullName?: SortOrder
+    preferredName?: SortOrder
     role?: SortOrder
     subRole?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     agencyId?: SortOrder
     invitedById?: SortOrder
-    title?: SortOrder
-    addressLine1?: SortOrder
-    addressLine2?: SortOrder
-    townOrCity?: SortOrder
-    county?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    province?: SortOrder
     postalCode?: SortOrder
     propertyAccess?: SortOrder
     phoneNumber?: SortOrder
     nhsNumber?: SortOrder
     dnraOrder?: SortOrder
-    chargeRate?: SortOrder
     mobility?: SortOrder
     likesDislikes?: SortOrder
     dateOfBirth?: SortOrder
@@ -56637,33 +56458,28 @@ export namespace Prisma {
     allergies?: SortOrder
     interests?: SortOrder
     history?: SortOrder
-    preferredName?: SortOrder
-    groupId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     cognitoId?: SortOrder
     email?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
+    fullName?: SortOrder
+    preferredName?: SortOrder
     role?: SortOrder
     subRole?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     agencyId?: SortOrder
     invitedById?: SortOrder
-    title?: SortOrder
-    addressLine1?: SortOrder
-    addressLine2?: SortOrder
-    townOrCity?: SortOrder
-    county?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    province?: SortOrder
     postalCode?: SortOrder
     propertyAccess?: SortOrder
     phoneNumber?: SortOrder
     nhsNumber?: SortOrder
     dnraOrder?: SortOrder
-    chargeRate?: SortOrder
     mobility?: SortOrder
     likesDislikes?: SortOrder
     dateOfBirth?: SortOrder
@@ -56671,12 +56487,6 @@ export namespace Prisma {
     allergies?: SortOrder
     interests?: SortOrder
     history?: SortOrder
-    preferredName?: SortOrder
-    groupId?: SortOrder
-  }
-
-  export type UserSumOrderByAggregateInput = {
-    chargeRate?: SortOrder
   }
 
   export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -56685,22 +56495,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type CommunicationPreferenceCountOrderByAggregateInput = {
@@ -56818,6 +56612,17 @@ export namespace Prisma {
     not?: NestedEnumScheduleTypeFilter<$PrismaModel> | $Enums.ScheduleType
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type VisitTypeNullableScalarRelationFilter = {
     is?: VisitTypeWhereInput | null
     isNot?: VisitTypeWhereInput | null
@@ -56898,6 +56703,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumScheduleTypeFilter<$PrismaModel>
     _max?: NestedEnumScheduleTypeFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type EnumReportStatusFilter<$PrismaModel = never> = {
@@ -58812,17 +58633,15 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput
   }
 
-  export type UserCreateNestedManyWithoutGroupInput = {
-    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
-    createMany?: UserCreateManyGroupInputEnvelope
+  export type UserCreateNestedManyWithoutGroupsInput = {
+    create?: XOR<UserCreateWithoutGroupsInput, UserUncheckedCreateWithoutGroupsInput> | UserCreateWithoutGroupsInput[] | UserUncheckedCreateWithoutGroupsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupsInput | UserCreateOrConnectWithoutGroupsInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type UserUncheckedCreateNestedManyWithoutGroupInput = {
-    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
-    createMany?: UserCreateManyGroupInputEnvelope
+  export type UserUncheckedCreateNestedManyWithoutGroupsInput = {
+    create?: XOR<UserCreateWithoutGroupsInput, UserUncheckedCreateWithoutGroupsInput> | UserCreateWithoutGroupsInput[] | UserUncheckedCreateWithoutGroupsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupsInput | UserCreateOrConnectWithoutGroupsInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
@@ -58836,31 +58655,29 @@ export namespace Prisma {
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutGroupsInput, AgencyUpdateWithoutGroupsInput>, AgencyUncheckedUpdateWithoutGroupsInput>
   }
 
-  export type UserUpdateManyWithoutGroupNestedInput = {
-    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutGroupInput | UserUpsertWithWhereUniqueWithoutGroupInput[]
-    createMany?: UserCreateManyGroupInputEnvelope
+  export type UserUpdateManyWithoutGroupsNestedInput = {
+    create?: XOR<UserCreateWithoutGroupsInput, UserUncheckedCreateWithoutGroupsInput> | UserCreateWithoutGroupsInput[] | UserUncheckedCreateWithoutGroupsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupsInput | UserCreateOrConnectWithoutGroupsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutGroupsInput | UserUpsertWithWhereUniqueWithoutGroupsInput[]
     set?: UserWhereUniqueInput | UserWhereUniqueInput[]
     disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
     delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutGroupInput | UserUpdateWithWhereUniqueWithoutGroupInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutGroupInput | UserUpdateManyWithWhereWithoutGroupInput[]
+    update?: UserUpdateWithWhereUniqueWithoutGroupsInput | UserUpdateWithWhereUniqueWithoutGroupsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutGroupsInput | UserUpdateManyWithWhereWithoutGroupsInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
-  export type UserUncheckedUpdateManyWithoutGroupNestedInput = {
-    create?: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput> | UserCreateWithoutGroupInput[] | UserUncheckedCreateWithoutGroupInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutGroupInput | UserCreateOrConnectWithoutGroupInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutGroupInput | UserUpsertWithWhereUniqueWithoutGroupInput[]
-    createMany?: UserCreateManyGroupInputEnvelope
+  export type UserUncheckedUpdateManyWithoutGroupsNestedInput = {
+    create?: XOR<UserCreateWithoutGroupsInput, UserUncheckedCreateWithoutGroupsInput> | UserCreateWithoutGroupsInput[] | UserUncheckedCreateWithoutGroupsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutGroupsInput | UserCreateOrConnectWithoutGroupsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutGroupsInput | UserUpsertWithWhereUniqueWithoutGroupsInput[]
     set?: UserWhereUniqueInput | UserWhereUniqueInput[]
     disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
     delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutGroupInput | UserUpdateWithWhereUniqueWithoutGroupInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutGroupInput | UserUpdateManyWithWhereWithoutGroupInput[]
+    update?: UserUpdateWithWhereUniqueWithoutGroupsInput | UserUpdateWithWhereUniqueWithoutGroupsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutGroupsInput | UserUpdateManyWithWhereWithoutGroupsInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
@@ -59176,10 +58993,10 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput | AgencyWhereUniqueInput[]
   }
 
-  export type GroupCreateNestedOneWithoutClientsInput = {
-    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
-    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput
-    connect?: GroupWhereUniqueInput
+  export type GroupCreateNestedManyWithoutClientsInput = {
+    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput> | GroupCreateWithoutClientsInput[] | GroupUncheckedCreateWithoutClientsInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput | GroupCreateOrConnectWithoutClientsInput[]
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
   }
 
   export type UserCreateNestedOneWithoutInvitedUsersInput = {
@@ -59423,6 +59240,12 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput | AgencyWhereUniqueInput[]
   }
 
+  export type GroupUncheckedCreateNestedManyWithoutClientsInput = {
+    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput> | GroupCreateWithoutClientsInput[] | GroupUncheckedCreateWithoutClientsInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput | GroupCreateOrConnectWithoutClientsInput[]
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutInvitedByInput = {
     create?: XOR<UserCreateWithoutInvitedByInput, UserUncheckedCreateWithoutInvitedByInput> | UserCreateWithoutInvitedByInput[] | UserUncheckedCreateWithoutInvitedByInput[]
     connectOrCreate?: UserCreateOrConnectWithoutInvitedByInput | UserCreateOrConnectWithoutInvitedByInput[]
@@ -59438,14 +59261,6 @@ export namespace Prisma {
 
   export type NullableBoolFieldUpdateOperationsInput = {
     set?: boolean | null
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type AnnouncementUpdateManyWithoutCreatedByNestedInput = {
@@ -59898,14 +59713,17 @@ export namespace Prisma {
     deleteMany?: AgencyScalarWhereInput | AgencyScalarWhereInput[]
   }
 
-  export type GroupUpdateOneWithoutClientsNestedInput = {
-    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
-    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput
-    upsert?: GroupUpsertWithoutClientsInput
-    disconnect?: GroupWhereInput | boolean
-    delete?: GroupWhereInput | boolean
-    connect?: GroupWhereUniqueInput
-    update?: XOR<XOR<GroupUpdateToOneWithWhereWithoutClientsInput, GroupUpdateWithoutClientsInput>, GroupUncheckedUpdateWithoutClientsInput>
+  export type GroupUpdateManyWithoutClientsNestedInput = {
+    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput> | GroupCreateWithoutClientsInput[] | GroupUncheckedCreateWithoutClientsInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput | GroupCreateOrConnectWithoutClientsInput[]
+    upsert?: GroupUpsertWithWhereUniqueWithoutClientsInput | GroupUpsertWithWhereUniqueWithoutClientsInput[]
+    set?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    disconnect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    delete?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    update?: GroupUpdateWithWhereUniqueWithoutClientsInput | GroupUpdateWithWhereUniqueWithoutClientsInput[]
+    updateMany?: GroupUpdateManyWithWhereWithoutClientsInput | GroupUpdateManyWithWhereWithoutClientsInput[]
+    deleteMany?: GroupScalarWhereInput | GroupScalarWhereInput[]
   }
 
   export type UserUpdateOneWithoutInvitedUsersNestedInput = {
@@ -60385,6 +60203,19 @@ export namespace Prisma {
     deleteMany?: AgencyScalarWhereInput | AgencyScalarWhereInput[]
   }
 
+  export type GroupUncheckedUpdateManyWithoutClientsNestedInput = {
+    create?: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput> | GroupCreateWithoutClientsInput[] | GroupUncheckedCreateWithoutClientsInput[]
+    connectOrCreate?: GroupCreateOrConnectWithoutClientsInput | GroupCreateOrConnectWithoutClientsInput[]
+    upsert?: GroupUpsertWithWhereUniqueWithoutClientsInput | GroupUpsertWithWhereUniqueWithoutClientsInput[]
+    set?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    disconnect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    delete?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
+    update?: GroupUpdateWithWhereUniqueWithoutClientsInput | GroupUpdateWithWhereUniqueWithoutClientsInput[]
+    updateMany?: GroupUpdateManyWithWhereWithoutClientsInput | GroupUpdateManyWithWhereWithoutClientsInput[]
+    deleteMany?: GroupScalarWhereInput | GroupScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutInvitedByNestedInput = {
     create?: XOR<UserCreateWithoutInvitedByInput, UserUncheckedCreateWithoutInvitedByInput> | UserCreateWithoutInvitedByInput[] | UserUncheckedCreateWithoutInvitedByInput[]
     connectOrCreate?: UserCreateOrConnectWithoutInvitedByInput | UserCreateOrConnectWithoutInvitedByInput[]
@@ -60578,6 +60409,14 @@ export namespace Prisma {
 
   export type EnumScheduleTypeFieldUpdateOperationsInput = {
     set?: $Enums.ScheduleType
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type AgencyUpdateOneRequiredWithoutSchedulesNestedInput = {
@@ -61901,22 +61740,6 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
   export type NestedEnumScheduleTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ScheduleType | EnumScheduleTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ScheduleType[] | ListEnumScheduleTypeFieldRefInput<$PrismaModel>
@@ -61932,6 +61755,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumScheduleTypeFilter<$PrismaModel>
     _max?: NestedEnumScheduleTypeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumReportStatusFilter<$PrismaModel = never> = {
@@ -62073,23 +61912,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -62097,7 +61933,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -62130,7 +61965,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -62140,25 +61975,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -62166,8 +61998,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -62199,6 +62029,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -62223,23 +62054,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -62247,7 +62075,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -62280,7 +62107,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -62290,25 +62117,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -62316,8 +62140,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -62349,6 +62171,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -62540,7 +62363,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    clients?: UserCreateNestedManyWithoutGroupInput
+    clients?: UserCreateNestedManyWithoutGroupsInput
   }
 
   export type GroupUncheckedCreateWithoutAgencyInput = {
@@ -62548,7 +62371,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    clients?: UserUncheckedCreateNestedManyWithoutGroupInput
+    clients?: UserUncheckedCreateNestedManyWithoutGroupsInput
   }
 
   export type GroupCreateOrConnectWithoutAgencyInput = {
@@ -62907,23 +62730,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -62931,7 +62751,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -62964,7 +62783,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -62974,24 +62793,21 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -62999,8 +62815,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -63033,6 +62847,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -63051,23 +62866,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -63075,7 +62887,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -63108,7 +62919,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -63118,25 +62929,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -63144,8 +62952,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -63177,6 +62983,7 @@ export namespace Prisma {
     riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -63743,25 +63550,22 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     cognitoId?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    firstName?: StringFilter<"User"> | string
-    lastName?: StringFilter<"User"> | string
+    fullName?: StringFilter<"User"> | string
+    preferredName?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     subRole?: EnumSubRoleNullableFilter<"User"> | $Enums.SubRole | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     agencyId?: StringNullableFilter<"User"> | string | null
     invitedById?: StringNullableFilter<"User"> | string | null
-    title?: StringNullableFilter<"User"> | string | null
-    addressLine1?: StringNullableFilter<"User"> | string | null
-    addressLine2?: StringNullableFilter<"User"> | string | null
-    townOrCity?: StringNullableFilter<"User"> | string | null
-    county?: StringNullableFilter<"User"> | string | null
+    address?: StringNullableFilter<"User"> | string | null
+    city?: StringNullableFilter<"User"> | string | null
+    province?: StringNullableFilter<"User"> | string | null
     postalCode?: StringNullableFilter<"User"> | string | null
     propertyAccess?: StringNullableFilter<"User"> | string | null
     phoneNumber?: StringNullableFilter<"User"> | string | null
     nhsNumber?: StringNullableFilter<"User"> | string | null
     dnraOrder?: BoolNullableFilter<"User"> | boolean | null
-    chargeRate?: FloatNullableFilter<"User"> | number | null
     mobility?: StringNullableFilter<"User"> | string | null
     likesDislikes?: StringNullableFilter<"User"> | string | null
     dateOfBirth?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -63769,8 +63573,6 @@ export namespace Prisma {
     allergies?: StringNullableFilter<"User"> | string | null
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
-    preferredName?: StringNullableFilter<"User"> | string | null
-    groupId?: StringNullableFilter<"User"> | string | null
   }
 
   export type UserUpsertWithoutAgenciesOwnedInput = {
@@ -63788,23 +63590,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -63812,7 +63611,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -63845,7 +63643,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -63855,25 +63653,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -63881,8 +63676,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -63914,6 +63707,7 @@ export namespace Prisma {
     riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -64053,23 +63847,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -64077,7 +63868,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
@@ -64110,7 +63900,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -64120,25 +63910,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -64146,8 +63933,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
@@ -64179,6 +63964,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -64192,23 +63978,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -64216,7 +63999,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
@@ -64249,7 +64031,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -64259,25 +64041,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -64285,8 +64064,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
@@ -64318,6 +64095,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -64331,23 +64109,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -64355,7 +64130,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -64389,7 +64163,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
   }
@@ -64398,25 +64172,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -64424,8 +64195,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -64458,6 +64227,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
   }
 
@@ -64590,23 +64360,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64614,7 +64381,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
@@ -64647,7 +64413,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -64657,25 +64423,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64683,8 +64446,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
@@ -64716,6 +64477,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -64735,23 +64497,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64759,7 +64518,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
@@ -64792,7 +64550,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -64802,25 +64560,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64828,8 +64583,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
@@ -64861,6 +64614,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -64988,23 +64742,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -65012,7 +64763,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
@@ -65045,7 +64795,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -65055,25 +64805,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -65081,8 +64828,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
@@ -65114,6 +64859,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -65247,23 +64993,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65271,7 +65014,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
@@ -65304,7 +65046,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -65314,25 +65056,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65340,8 +65079,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
@@ -65373,6 +65110,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -65904,27 +65642,24 @@ export namespace Prisma {
     create: XOR<AgencyCreateWithoutGroupsInput, AgencyUncheckedCreateWithoutGroupsInput>
   }
 
-  export type UserCreateWithoutGroupInput = {
+  export type UserCreateWithoutGroupsInput = {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -65932,7 +65667,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -65971,29 +65705,26 @@ export namespace Prisma {
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
   }
 
-  export type UserUncheckedCreateWithoutGroupInput = {
+  export type UserUncheckedCreateWithoutGroupsInput = {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -66001,7 +65732,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -66038,14 +65768,9 @@ export namespace Prisma {
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
 
-  export type UserCreateOrConnectWithoutGroupInput = {
+  export type UserCreateOrConnectWithoutGroupsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput>
-  }
-
-  export type UserCreateManyGroupInputEnvelope = {
-    data: UserCreateManyGroupInput | UserCreateManyGroupInput[]
-    skipDuplicates?: boolean
+    create: XOR<UserCreateWithoutGroupsInput, UserUncheckedCreateWithoutGroupsInput>
   }
 
   export type AgencyUpsertWithoutGroupsInput = {
@@ -66157,20 +65882,20 @@ export namespace Prisma {
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
-  export type UserUpsertWithWhereUniqueWithoutGroupInput = {
+  export type UserUpsertWithWhereUniqueWithoutGroupsInput = {
     where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutGroupInput, UserUncheckedUpdateWithoutGroupInput>
-    create: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput>
+    update: XOR<UserUpdateWithoutGroupsInput, UserUncheckedUpdateWithoutGroupsInput>
+    create: XOR<UserCreateWithoutGroupsInput, UserUncheckedCreateWithoutGroupsInput>
   }
 
-  export type UserUpdateWithWhereUniqueWithoutGroupInput = {
+  export type UserUpdateWithWhereUniqueWithoutGroupsInput = {
     where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutGroupInput, UserUncheckedUpdateWithoutGroupInput>
+    data: XOR<UserUpdateWithoutGroupsInput, UserUncheckedUpdateWithoutGroupsInput>
   }
 
-  export type UserUpdateManyWithWhereWithoutGroupInput = {
+  export type UserUpdateManyWithWhereWithoutGroupsInput = {
     where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutGroupInput>
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutGroupsInput>
   }
 
   export type AgencyCreateWithoutRateSheetsInput = {
@@ -66601,23 +66326,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -66625,7 +66347,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -66658,7 +66379,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -66668,25 +66389,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -66694,8 +66412,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -66727,6 +66443,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -66740,23 +66457,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -66764,7 +66478,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -66797,7 +66510,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -66807,25 +66520,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -66833,8 +66543,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -66866,6 +66574,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -66890,23 +66599,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66914,7 +66620,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -66947,7 +66652,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -66957,25 +66662,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66983,8 +66685,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -67016,6 +66716,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -67035,23 +66736,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -67059,7 +66757,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -67092,7 +66789,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -67102,25 +66799,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -67128,8 +66822,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -67161,6 +66853,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -68447,23 +68140,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -68471,7 +68161,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -68505,7 +68194,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -68514,25 +68203,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -68540,8 +68226,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -68574,6 +68258,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
 
@@ -68586,23 +68271,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -68610,7 +68292,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -68644,7 +68325,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -68653,24 +68334,21 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -68678,8 +68356,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -68712,6 +68388,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -69607,31 +69284,20 @@ export namespace Prisma {
     ownerId?: StringNullableFilter<"Agency"> | string | null
   }
 
-  export type GroupUpsertWithoutClientsInput = {
+  export type GroupUpsertWithWhereUniqueWithoutClientsInput = {
+    where: GroupWhereUniqueInput
     update: XOR<GroupUpdateWithoutClientsInput, GroupUncheckedUpdateWithoutClientsInput>
     create: XOR<GroupCreateWithoutClientsInput, GroupUncheckedCreateWithoutClientsInput>
-    where?: GroupWhereInput
   }
 
-  export type GroupUpdateToOneWithWhereWithoutClientsInput = {
-    where?: GroupWhereInput
+  export type GroupUpdateWithWhereUniqueWithoutClientsInput = {
+    where: GroupWhereUniqueInput
     data: XOR<GroupUpdateWithoutClientsInput, GroupUncheckedUpdateWithoutClientsInput>
   }
 
-  export type GroupUpdateWithoutClientsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Agency?: AgencyUpdateOneWithoutGroupsNestedInput
-  }
-
-  export type GroupUncheckedUpdateWithoutClientsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type GroupUpdateManyWithWhereWithoutClientsInput = {
+    where: GroupScalarWhereInput
+    data: XOR<GroupUpdateManyMutationInput, GroupUncheckedUpdateManyWithoutClientsInput>
   }
 
   export type UserUpsertWithoutInvitedUsersInput = {
@@ -69649,23 +69315,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -69673,7 +69336,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -69707,7 +69369,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -69716,25 +69378,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -69742,8 +69401,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -69776,6 +69433,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
 
@@ -69815,23 +69473,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -69839,7 +69494,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -69872,7 +69526,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -69882,25 +69536,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -69908,8 +69559,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -69941,6 +69590,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -69965,23 +69615,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -69989,7 +69636,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -70022,7 +69668,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -70032,25 +69678,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70058,8 +69701,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -70091,6 +69732,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -70099,23 +69741,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -70123,7 +69762,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -70156,7 +69794,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -70166,25 +69804,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -70192,8 +69827,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -70225,6 +69858,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -70249,23 +69883,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70273,7 +69904,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -70306,7 +69936,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -70316,25 +69946,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70342,8 +69969,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -70375,6 +70000,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -71032,23 +70658,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -71056,7 +70679,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -71089,7 +70711,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -71099,25 +70721,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -71125,8 +70744,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -71158,6 +70775,7 @@ export namespace Prisma {
     riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -71171,23 +70789,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -71195,7 +70810,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -71228,7 +70842,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -71238,25 +70852,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -71264,8 +70875,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -71297,6 +70906,7 @@ export namespace Prisma {
     riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -71453,23 +71063,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -71477,7 +71084,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -71510,7 +71116,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -71520,25 +71126,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -71546,8 +71149,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -71579,6 +71180,7 @@ export namespace Prisma {
     riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -71598,23 +71200,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -71622,7 +71221,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -71655,7 +71253,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -71665,25 +71263,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -71691,8 +71286,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -71724,6 +71317,7 @@ export namespace Prisma {
     riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -71922,23 +71516,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -71946,7 +71537,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -71979,7 +71569,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -71989,25 +71579,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -72015,8 +71602,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -72048,6 +71633,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -72061,23 +71647,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -72085,7 +71668,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -72118,7 +71700,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -72128,25 +71710,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -72154,8 +71733,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -72187,6 +71764,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -72452,23 +72030,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72476,7 +72051,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -72509,7 +72083,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -72519,25 +72093,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72545,8 +72116,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -72578,6 +72147,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -72597,23 +72167,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72621,7 +72188,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -72654,7 +72220,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -72664,25 +72230,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72690,8 +72253,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -72723,6 +72284,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -73180,23 +72742,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -73204,7 +72763,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -73237,7 +72795,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -73247,25 +72805,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -73273,8 +72828,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -73306,6 +72859,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -73389,23 +72943,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -73413,7 +72964,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -73446,7 +72996,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -73456,25 +73006,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -73482,8 +73029,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -73515,6 +73060,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -73620,23 +73166,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -73644,7 +73187,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -73677,7 +73219,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -73687,25 +73229,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -73713,8 +73252,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -73746,6 +73283,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -73759,23 +73297,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -73783,7 +73318,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -73816,7 +73350,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -73826,25 +73360,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -73852,8 +73383,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -73885,6 +73414,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -73948,23 +73478,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -73972,7 +73499,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -74005,7 +73531,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -74015,25 +73541,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74041,8 +73564,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -74074,6 +73595,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -74093,23 +73615,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74117,7 +73636,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -74150,7 +73668,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -74160,25 +73678,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74186,8 +73701,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -74219,6 +73732,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -74256,23 +73770,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -74280,7 +73791,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -74313,7 +73823,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -74323,25 +73833,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -74349,8 +73856,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -74382,6 +73887,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -74508,23 +74014,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74532,7 +74035,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -74565,7 +74067,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -74575,25 +74077,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74601,8 +74100,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -74634,6 +74131,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -74859,23 +74357,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -74883,7 +74378,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -74916,7 +74410,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -74926,25 +74420,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -74952,8 +74443,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -74985,6 +74474,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -75118,23 +74608,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75142,7 +74629,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -75175,7 +74661,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -75185,25 +74671,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75211,8 +74694,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -75244,6 +74725,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -75355,23 +74837,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -75379,7 +74858,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -75412,7 +74890,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -75422,25 +74900,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -75448,8 +74923,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -75481,6 +74954,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -75494,23 +74968,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -75518,7 +74989,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -75551,7 +75021,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -75561,25 +75031,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -75587,8 +75054,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -75620,6 +75085,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -75753,23 +75219,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75777,7 +75240,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -75810,7 +75272,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -75820,25 +75282,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75846,8 +75305,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -75879,6 +75336,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -75898,23 +75356,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75922,7 +75377,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -75955,7 +75409,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -75965,25 +75419,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75991,8 +75442,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -76024,6 +75473,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -76135,23 +75585,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -76159,7 +75606,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -76192,7 +75638,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -76202,25 +75648,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -76228,8 +75671,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -76261,6 +75702,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -76274,23 +75716,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -76298,7 +75737,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -76331,7 +75769,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -76341,25 +75779,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -76367,8 +75802,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -76400,6 +75833,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -76533,23 +75967,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76557,7 +75988,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -76590,7 +76020,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -76600,25 +76030,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76626,8 +76053,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -76659,6 +76084,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -76678,23 +76104,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76702,7 +76125,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -76735,7 +76157,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -76745,25 +76167,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76771,8 +76190,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -76804,6 +76221,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -76812,23 +76230,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -76836,7 +76251,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -76869,7 +76283,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -76879,25 +76293,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -76905,8 +76316,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -76938,6 +76347,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -76962,23 +76372,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76986,7 +76393,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -77019,7 +76425,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -77029,25 +76435,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77055,8 +76458,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -77088,6 +76489,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -77199,23 +76601,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -77223,7 +76622,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -77256,7 +76654,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -77266,25 +76664,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -77292,8 +76687,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -77325,6 +76718,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -77458,23 +76852,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77482,7 +76873,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -77515,7 +76905,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -77525,25 +76915,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77551,8 +76938,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -77584,6 +76969,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -77592,23 +76978,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -77616,7 +76999,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -77649,7 +77031,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -77659,25 +77041,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -77685,8 +77064,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -77718,6 +77095,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -77731,23 +77109,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -77755,7 +77130,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -77788,7 +77162,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -77798,25 +77172,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -77824,8 +77195,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -77857,6 +77226,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -77881,23 +77251,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77905,7 +77272,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -77938,7 +77304,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -77948,25 +77314,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77974,8 +77337,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -78007,6 +77368,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -78026,23 +77388,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78050,7 +77409,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -78083,7 +77441,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -78093,25 +77451,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78119,8 +77474,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -78152,6 +77505,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -78160,23 +77514,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -78184,7 +77535,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -78217,7 +77567,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -78227,25 +77577,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -78253,8 +77600,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -78286,6 +77631,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -78310,23 +77656,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78334,7 +77677,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -78367,7 +77709,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -78377,25 +77719,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78403,8 +77742,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -78436,6 +77773,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -78444,23 +77782,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -78468,7 +77803,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -78501,7 +77835,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -78511,25 +77845,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -78537,8 +77868,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -78570,6 +77899,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -78594,23 +77924,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78618,7 +77945,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -78651,7 +77977,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -78661,25 +77987,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78687,8 +78010,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -78720,6 +78041,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -78728,23 +78050,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -78752,7 +78071,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -78785,7 +78103,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -78795,25 +78113,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -78821,8 +78136,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -78854,6 +78167,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -78878,23 +78192,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78902,7 +78213,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -78935,7 +78245,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -78945,25 +78255,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78971,8 +78278,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -79004,6 +78309,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -79276,23 +78582,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -79300,7 +78603,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -79333,7 +78635,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -79343,25 +78645,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -79369,8 +78668,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -79402,6 +78699,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -79447,23 +78745,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79471,7 +78766,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -79504,7 +78798,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -79514,25 +78808,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79540,8 +78831,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -79573,6 +78862,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -79711,23 +79001,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -79735,7 +79022,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -79768,7 +79054,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -79778,25 +79064,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -79804,8 +79087,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -79837,6 +79118,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -79970,23 +79252,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79994,7 +79273,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -80027,7 +79305,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -80037,25 +79315,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80063,8 +79338,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -80096,6 +79369,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -80104,23 +79378,20 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -80128,7 +79399,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogCreateNestedManyWithoutUserInput
@@ -80161,7 +79431,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
     agency?: AgencyCreateNestedOneWithoutUsersInput
     agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    Group?: GroupCreateNestedOneWithoutClientsInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
@@ -80171,25 +79441,22 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -80197,8 +79464,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
     Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -80230,6 +79495,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
     careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
@@ -80254,23 +79520,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80278,7 +79541,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -80311,7 +79573,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -80321,25 +79583,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80347,8 +79606,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -80380,6 +79637,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -80574,24 +79832,21 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -80599,8 +79854,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
   }
 
   export type VisitTypeCreateManyAgencyInput = {
@@ -80813,7 +80066,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    clients?: UserUpdateManyWithoutGroupNestedInput
+    clients?: UserUpdateManyWithoutGroupsNestedInput
   }
 
   export type GroupUncheckedUpdateWithoutAgencyInput = {
@@ -80821,7 +80074,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    clients?: UserUncheckedUpdateManyWithoutGroupNestedInput
+    clients?: UserUncheckedUpdateManyWithoutGroupsNestedInput
   }
 
   export type GroupUncheckedUpdateManyWithoutAgencyInput = {
@@ -81191,23 +80444,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81215,7 +80465,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -81248,7 +80497,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
@@ -81258,24 +80507,21 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81283,8 +80529,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -81317,6 +80561,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -81325,24 +80570,21 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81350,8 +80592,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VisitTypeUpdateWithoutAgencyInput = {
@@ -81384,23 +80624,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81408,7 +80645,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -81442,7 +80678,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
   }
@@ -81451,25 +80687,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81477,8 +80710,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -81511,6 +80742,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
   }
 
@@ -81518,25 +80750,22 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81544,64 +80773,26 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type UserCreateManyGroupInput = {
-    id?: string
-    cognitoId: string
-    email: string
-    firstName: string
-    lastName: string
-    role: $Enums.Role
-    subRole?: $Enums.SubRole | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    agencyId?: string | null
-    invitedById?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
-    postalCode?: string | null
-    propertyAccess?: string | null
-    phoneNumber?: string | null
-    nhsNumber?: string | null
-    dnraOrder?: boolean | null
-    chargeRate?: number | null
-    mobility?: string | null
-    likesDislikes?: string | null
-    dateOfBirth?: Date | string | null
-    languages?: string | null
-    allergies?: string | null
-    interests?: string | null
-    history?: string | null
-    preferredName?: string | null
-  }
-
-  export type UserUpdateWithoutGroupInput = {
+  export type UserUpdateWithoutGroupsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81609,7 +80800,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -81648,29 +80838,26 @@ export namespace Prisma {
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutGroupInput = {
+  export type UserUncheckedUpdateWithoutGroupsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81678,7 +80865,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -81715,29 +80901,26 @@ export namespace Prisma {
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
 
-  export type UserUncheckedUpdateManyWithoutGroupInput = {
+  export type UserUncheckedUpdateManyWithoutGroupsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
     invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81745,7 +80928,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AnnouncementCreateManyCreatedByInput = {
@@ -82127,24 +81309,21 @@ export namespace Prisma {
     id?: string
     cognitoId: string
     email: string
-    firstName: string
-    lastName: string
+    fullName?: string
+    preferredName?: string | null
     role: $Enums.Role
     subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
-    title?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    townOrCity?: string | null
-    county?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
     postalCode?: string | null
     propertyAccess?: string | null
     phoneNumber?: string | null
     nhsNumber?: string | null
     dnraOrder?: boolean | null
-    chargeRate?: number | null
     mobility?: string | null
     likesDislikes?: string | null
     dateOfBirth?: Date | string | null
@@ -82152,8 +81331,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    preferredName?: string | null
-    groupId?: string | null
   }
 
   export type AnnouncementUpdateWithoutCreatedByInput = {
@@ -83345,27 +82522,48 @@ export namespace Prisma {
     maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type GroupUpdateWithoutClientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Agency?: AgencyUpdateOneWithoutGroupsNestedInput
+  }
+
+  export type GroupUncheckedUpdateWithoutClientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GroupUncheckedUpdateManyWithoutClientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserUpdateWithoutInvitedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -83373,7 +82571,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
@@ -83407,7 +82604,7 @@ export namespace Prisma {
     careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
     agency?: AgencyUpdateOneWithoutUsersNestedInput
     agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    Group?: GroupUpdateOneWithoutClientsNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -83416,24 +82613,21 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -83441,8 +82635,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
     Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -83475,6 +82667,7 @@ export namespace Prisma {
     clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
     careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
@@ -83483,24 +82676,21 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine1?: NullableStringFieldUpdateOperationsInput | string | null
-    addressLine2?: NullableStringFieldUpdateOperationsInput | string | null
-    townOrCity?: NullableStringFieldUpdateOperationsInput | string | null
-    county?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
     dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     mobility?: NullableStringFieldUpdateOperationsInput | string | null
     likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -83508,8 +82698,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    groupId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AnnouncementUpdateWithoutAcknowledgedByInput = {

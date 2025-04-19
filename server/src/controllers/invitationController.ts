@@ -245,8 +245,7 @@ export const getUserInvitations = async (req: Request, res: Response): Promise<v
                 inviter: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                         email: true,
                     },
                 },
@@ -276,8 +275,7 @@ export const getInvitationsByEmail = async (req: Request, res: Response): Promis
                 inviter: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                         email: true,
                     },
                 },

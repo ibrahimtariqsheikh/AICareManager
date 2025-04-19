@@ -116,12 +116,7 @@ export function InvoiceSettings() {
                   mode="single"
                   selected={invoiceData?.issueDate ? new Date(invoiceData.issueDate) : new Date()}
                   onSelect={(date) =>
-                    dispatch(
-                      setInvoiceData({
-                        ...invoiceData,
-                        issueDate: date ? format(date, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd"),
-                      })
-                    )
+                    dispatch(setInvoiceData({ issueDate: date ? format(date, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") }))
                   }
                 />
               </PopoverContent>
@@ -148,10 +143,7 @@ export function InvoiceSettings() {
                   mode="single"
                   selected={invoiceData?.dueDate ? new Date(invoiceData?.dueDate) : new Date()}
                   onSelect={(date) =>
-                    dispatch(setInvoiceData({
-                      ...invoiceData,
-                      dueDate: date ? format(date, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd")
-                    }))
+                    dispatch(setInvoiceData({ dueDate: date ? format(date, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") }))
                   }
                   className="w-full"
                   classNames={{

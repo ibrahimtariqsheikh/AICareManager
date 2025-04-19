@@ -35,8 +35,7 @@ import { Role } from "../../../../types/prismaTypes";
 const signupSchema = z.object({
     email: z.string().email("Please enter a valid email address"),
     username: z.string().min(3, "Username must be at least 3 characters"),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    fullName: z.string().min(1, "Full name is required"),
     role: z.string(),
     password: z.string().min(8, "Password must be at least 8 characters"),
 });
@@ -72,8 +71,7 @@ const SignupForm = ({
         defaultValues: {
             email: invitationData?.email || "",
             username: "",
-            firstName: "",
-            lastName: "",
+            fullName: "",
             role: invitationData?.role || "CLIENT",
             password: "",
         },
@@ -104,8 +102,7 @@ const SignupForm = ({
                 dispatch(signupUser({
                     email: values.email,
                     password: values.password,
-                    firstName: values.firstName,
-                    lastName: values.lastName,
+                    fullName: values.fullName,
                     username: values.username,
                     role: values.role,
                     agencyId: invitationData?.inviterId ?? "" // Changed from inviterId to agencyId
@@ -123,11 +120,10 @@ const SignupForm = ({
                 //CREATE USER IN DATABASE
                 await createUser({
                     email: values.email,
-                    firstName: values.firstName,
-                    lastName: values.lastName,
+                    fullName: values.fullName,
                     role: values.role as Role,
                     cognitoId: result.user.cognitoId ?? "",
-                    invitedById: invitationData?.inviterId ?? "" // Changed from inviterId to invitedById
+                    inviterId: invitationData?.inviterId ?? ""
                 })
                 toast.success("Account created successfully!");
                 router.push("/dashboard");
@@ -150,31 +146,19 @@ const SignupForm = ({
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
-                                name="firstName"
+                                name="fullName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>First Name</FormLabel>
+                                        <FormLabel>Full Name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter your first name" {...field} />
+                                            <Input placeholder="Enter your full name" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
 
-                            <FormField
-                                control={form.control}
-                                name="lastName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Last Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter your last name" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+
                         </div>
 
                         {/* Email in its own row */}

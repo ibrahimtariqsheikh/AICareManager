@@ -9,10 +9,11 @@ import { DashboardData } from "@/app/dashboard/types"
 
 export interface CreateUserInput {
   email: string
-  firstName: string
-  lastName: string
+  fullName: string
   role: string
   subRole?: string
+  cognitoId: string
+  inviterId: string
 }
 
 
@@ -81,6 +82,7 @@ export interface CreateInvitationInput {
   email: string
   role: string
   subRole?: string
+  
   expirationDays: number
 }
 

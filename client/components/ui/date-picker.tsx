@@ -3,11 +3,9 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
-import { DateRange } from "react-day-picker"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar } from "@/components/ui/calender"
 import {
     Popover,
     PopoverContent,
@@ -39,7 +37,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
                     mode="single"
                     selected={date}
                     onSelect={(newDate) => newDate && setDate(newDate)}
-                    initialFocus
+
                 />
             </PopoverContent>
         </Popover>

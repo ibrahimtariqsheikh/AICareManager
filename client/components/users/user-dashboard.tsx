@@ -61,15 +61,15 @@ export function UserDashboard() {
 
 
     // Handle creating user
-    const handleAddUser = async (firstName: string, lastName: string, agencyId: string, email: string, role: Role, subRole?: SubRole) => {
+    const handleAddUser = async (fullName: string, agencyId: string, email: string, role: Role, subRole?: SubRole) => {
         try {
             const newUserInput = {
                 email,
                 role,
-                firstName,
-                lastName,
+                fullName,
                 cognitoId: uuidv4(),
                 agencyId,
+                inviterId: userData?.userInfo?.id || "",
                 ...(subRole ? { subRole } : {})
             };
 

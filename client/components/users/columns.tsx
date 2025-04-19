@@ -44,21 +44,19 @@ export const columns: ColumnDef<User>[] = [
             </Button>
         ),
         cell: ({ row }) => {
-            const firstName = row.original.firstName || ""
-            const lastName = row.original.lastName || ""
-            const fullName = `${firstName} ${lastName}`.trim()
-            const email = row.original.email || ""
+            const fullName = row.original.fullName || ""
 
-            const getInitials = (firstName?: string, lastName?: string) => {
-                if (!firstName && !lastName) return "??"
-                return `${firstName?.[0] || ""}${lastName?.[0] || ""}`
+
+            const getInitials = (fullName?: string) => {
+                if (!fullName) return "??"
+                return `${fullName?.[0] || ""}`
             }
 
             return (
                 <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
                         <AvatarImage src={row.original.profile?.avatarUrl || ""} alt={fullName} />
-                        <AvatarFallback>{getInitials(firstName, lastName)}</AvatarFallback>
+                        <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
                         <div className="font-medium text-gray-800">{fullName}</div>

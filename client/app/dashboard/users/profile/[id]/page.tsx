@@ -9,8 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Calendar, Edit, Mail, Phone } from "lucide-react"
 import { useGetUserAllDetailsQuery } from "@/state/api"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { EmergencyContact, Medication, RiskAssessment } from "@/types/profileTypes"
+
 
 export default function UserProfilePage() {
     const router = useRouter()

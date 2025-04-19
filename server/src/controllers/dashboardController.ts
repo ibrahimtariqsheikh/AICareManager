@@ -52,15 +52,13 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 client: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
                 user: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
             },
@@ -114,15 +112,13 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 client: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
                 caregiver: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
             },
@@ -146,15 +142,13 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 client: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
                 user: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
             },
@@ -177,9 +171,9 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
         const transformedSchedules = schedules.map(schedule => ({
             id: schedule.id,
             title: schedule.type,
-            clientName: `${schedule.client.firstName} ${schedule.client.lastName}`,
+            clientName: `${schedule.client.fullName}`,
             clientId: schedule.client.id,
-            careWorkerName: `${schedule.user.firstName} ${schedule.user.lastName}`,
+            careWorkerName: `${schedule.user.fullName}`,
             careWorkerId: schedule.user.id,
             date: schedule.date,
             startTime: schedule.startTime,
@@ -228,15 +222,13 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 client: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
                 user: {
                     select: {
                         id: true,
-                        firstName: true,
-                        lastName: true,
+                        fullName: true,
                     },
                 },
             },

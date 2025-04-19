@@ -145,8 +145,7 @@ export const getAdministrationHistory = async (req: Request, res: Response): Pro
         administeredBy: {
           select: {
             id: true,
-            firstName: true,
-            lastName: true
+            fullName: true,
           }
         }
       },

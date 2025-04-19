@@ -23,8 +23,7 @@ interface SignUpInput {
   email: string;
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   role: string;
   agencyId?: string;
 }
@@ -47,8 +46,7 @@ interface ConfirmResetPasswordInput {
 interface UserInfo {
   cognitoId?: string;
   email?: string;
-  firstName?: string;
-  lastName?: string;
+  fullName?: string;
   role?: string;
   agencyId?: string;
 }
@@ -176,8 +174,7 @@ export const signupUser = createAsyncThunk(
         isSignUpComplete,
         user: {
           email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
+          fullName: userData.fullName,
           role: userData.role,
           cognitoId: userId
         } 

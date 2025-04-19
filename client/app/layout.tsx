@@ -4,7 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Providers from "./providers"
 import { Toaster } from "../components/ui/sonner"
-import { useGetUserQuery } from "../state/api"
+
 
 const font = Inter({ subsets: ["latin"] })
 

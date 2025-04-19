@@ -15,8 +15,7 @@ interface AddUsersNewDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
     onAddUser: (
-        firstName: string,
-        lastName: string,
+        fullName: string,
         agencyId: string,
         email: string,
         role: Role,
@@ -26,8 +25,7 @@ interface AddUsersNewDialogProps {
 }
 
 export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUser }: AddUsersNewDialogProps) {
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
+    const [fullName, setFullName] = useState("")
     const [email, setEmail] = useState("")
     const [subRole, setSubRole] = useState<SubRole | undefined>(undefined)
     const { user } = useAppSelector((state) => state.user)
@@ -37,10 +35,9 @@ export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUse
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        await onAddUser(firstName, lastName, user?.userInfo?.agencyId || "", email, activeUserType as Role, subRole)
+        await onAddUser(fullName, user?.userInfo?.agencyId || "", email, activeUserType as Role, subRole)
         onOpenChange(false)
-        setFirstName("")
-        setLastName("")
+        setFullName("")
         setEmail("")
         setSubRole(undefined)
     }
@@ -91,25 +88,15 @@ export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUse
                                 <div className="space-y-2 flex-1">
                                     <Label htmlFor="firstName">First Name</Label>
                                     <Input
-                                        id="firstName"
+                                        id="fullName"
                                         type="text"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
+                                        value={fullName}
+                                        onChange={(e) => setFullName(e.target.value)}
                                         required
                                         className="text-black border border-gray-300"
                                     />
                                 </div>
-                                <div className="space-y-2 flex-1">
-                                    <Label htmlFor="lastName">Last Name</Label>
-                                    <Input
-                                        id="lastName"
-                                        type="text"
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                        required
-                                        className="text-black border border-gray-300"
-                                    />
-                                </div>
+
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>

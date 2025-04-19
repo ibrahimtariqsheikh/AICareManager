@@ -88,7 +88,7 @@ export interface Agency {
 
 export interface DashboardData {
     user: {
-        firstName: string;
+        fullName: string;
         role: string;
         agency: Agency;
     };
