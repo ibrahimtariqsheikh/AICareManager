@@ -52,12 +52,14 @@ model Agency {
   hasScheduleV2                Boolean                     @default(true)
   hasEMAR                      Boolean                     @default(false)
   hasFinance                   Boolean                     @default(false)
+  //not required
   isWeek1And2ScheduleEnabled   Boolean                     @default(false)
   hasPoliciesAndProcedures     Boolean                     @default(false)
   isTestAccount                Boolean                     @default(false)
   allowCareWorkersEditCheckIn  Boolean                     @default(false)
   allowFamilyReviews           Boolean                     @default(false)
   enableFamilySchedule         Boolean                     @default(false)
+  //not required
   enableWeek1And2Scheduling    Boolean                     @default(false)
   lateVisitThreshold           String                      @default("15")
   enableDistanceAlerts         Boolean                     @default(true)
@@ -73,6 +75,7 @@ model Agency {
   notificationFrequency        NotificationFrequency       @default(DAILY)
   createdAt                    DateTime                    @default(now())
   updatedAt                    DateTime                    @updatedAt
+  //not required
   licenseNumber                String?
   timeZone                     String                      @default("UTC")
   currency                     String                      @default("CAD")
@@ -89,6 +92,7 @@ model Agency {
   invoices                     Invoice[]
   medications                  MedicationDatabaseLink[]
   mileageRecords               MileageRecord[]
+  //not required
   operatingHours               OperatingHours[]
   rateSheets                   RateSheet[]
   reminders                    Reminder[]
