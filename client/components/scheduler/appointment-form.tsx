@@ -50,7 +50,7 @@ const formSchema = z.object({
     endTime: z.string({
         required_error: "Please select an end time",
     }),
-    type: z.enum(["WEEKLY_CHECKUP", "APPOINTMENT", "HOME_VISIT", "OTHER", "CHECKUP", "EMERGENCY", "ROUTINE"], {
+    type: z.string({
         required_error: "Please select an appointment type",
     }),
     status: z.enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELED"], {

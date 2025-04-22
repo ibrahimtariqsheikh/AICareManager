@@ -7,6 +7,7 @@ import { Calendar, FileText, Pill, SaveIcon, UserIcon, Code } from "lucide-react
 import { motion, AnimatePresence } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
 import { useGetUserByIdQuery } from "@/state/api"
+import { z } from "zod"
 import { cn } from "@/lib/utils"
 import { PatientInformation } from "../components/patient-information"
 import AppointmentHistory from "../components/appointmenthistory"
@@ -14,6 +15,7 @@ import { MedicalHistory } from "../components/medicalHistory"
 import { EMAR as EMARComponent } from "../components/emar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+
 
 
 
@@ -215,7 +217,7 @@ const EditUserPage = () => {
 
                         {isActive === "EMAR" && <EMARComponent user={user} />}
                     </motion.div>
-                    <div className="flex flex-row gap-4 mt-8 justify-end">
+                    {/* <div className="flex flex-row gap-4 mt-8 justify-end">
                         <Button variant={"outline"} className="bg-white" onClick={() => router.back()}>
                             Cancel
                         </Button>
@@ -223,7 +225,7 @@ const EditUserPage = () => {
                             Save Changes
                             <SaveIcon className="w-4 h-4 ml-2" />
                         </Button>
-                    </div>
+                    </div> */}
                 </AnimatePresence>
             </div>
             {/* Debug Panel */}

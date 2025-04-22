@@ -373,24 +373,10 @@ assignedTasks:true}
     }
 };
 
-// Update user
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const { email, role, subRole, fullName, agencyId } = req.body;
-
-        // Validate role if provided
-        if (role && !Object.values(Role).includes(role)) {
-            res.status(400).json({ error: "Invalid role" });
-            return;
-        }
-
-        // Validate subrole if provided
-        if (subRole && !Object.values(SubRole).includes(subRole)) {
-            res.status(400).json({ error: "Invalid subrole" });
-            return;
-        }
-
+        
         // Check if user exists
         const existingUser = await prisma.user.findUnique({
             where: { id },
@@ -401,36 +387,43 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
-        // Check if email is being changed and if it's already taken
-        if (email && email !== existingUser.email) {
-            const emailTaken = await prisma.user.findUnique({
-                where: { email },
-            });
+        // Extract only the scalar fields that can be directly updated
+        const {
+            cognitoId, email, fullName, preferredName, role, subRole,
+            address, city, province, postalCode, propertyAccess, phoneNumber,
+            nhsNumber, dnraOrder, mobility, likesDislikes, dateOfBirth,
+            languages, allergies, interests, history
+        } = req.body;
 
-            if (emailTaken) {
-                res.status(400).json({ error: "Email already taken" });
-                return;
-            }
-        }
-
-        // Update user in database
+        // Update only with scalar fields
         const updatedUser = await prisma.user.update({
             where: { id },
             data: {
-                email: email || undefined,
-                fullName: fullName || undefined,
-                role: role || undefined,
-                subRole: subRole || undefined,
-                agencyId: agencyId || undefined,
+                cognitoId, email, fullName, preferredName, role, subRole,
+                address, city, province, postalCode, propertyAccess, phoneNumber,
+                nhsNumber, dnraOrder, mobility, likesDislikes, dateOfBirth,
+                languages, allergies, interests, history,
+       
+                agency: req.body.agencyId ? {
+                    connect: { id: req.body.agencyId }
+                } : undefined,
+               
             },
             include: {
-                profile: {
-                    select: {
-                        avatarUrl: true,
-                        phone: true,
-                    },
-                },
+                profile: true,
                 agency: true,
+                keyContacts: true,
+                careOutcomes: true,
+                incidentReports: true,
+                riskAssessments: true,
+                familyAccess: true,
+                communicationLogs: true,
+                documents: true,
+                visitTypes: {
+                    include: {
+                        assignedTasks: true
+                    }
+                }
             },
         });
 
@@ -450,7 +443,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
         console.error("Error updating user:", error);
         res.status(500).json({ error: "Failed to update user" });
     }
-};
+}
 
 // Helper function to get a random color based on ID
 function getRandomColor(id: string): string {

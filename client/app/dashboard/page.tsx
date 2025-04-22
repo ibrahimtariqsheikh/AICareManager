@@ -26,23 +26,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 
 import { Skeleton } from "../../components/ui/skeleton"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 
 export default function DashboardPage() {
     const { user } = useAppSelector((state) => state.user)
+    const [shouldFetch, setShouldFetch] = useState(false)
 
 
-    console.log("user?.userInfo?.id", user?.userInfo?.id)
+    useEffect(() => {
+        if (user?.userInfo?.id) {
+            setShouldFetch(true)
+        }
+    }, [user?.userInfo?.id])
 
     const {
         data: dashboardData,
-        isLoading,
+        isLoading: isDashboardLoading,
         error,
     } = useGetDashboardDataQuery(user?.userInfo?.id || "", {
-        skip: !user?.userInfo?.id,
+        skip: !shouldFetch,
     })
 
-    console.log(dashboardData)
+    const isLoading = !shouldFetch || isDashboardLoading
 
     // Animation variants for staggered animations
 

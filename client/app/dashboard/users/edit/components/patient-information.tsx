@@ -1,5 +1,9 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -15,21 +19,48 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Mail, Pencil, Phone, PlusCircle, Trash2 } from "lucide-react"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Mail, Pencil, Phone, PlusCircle, Trash2, Save } from "lucide-react"
+import { toast } from "sonner"
+import type { KeyContact, Task, VisitType, User } from "@/types/prismaTypes"
+import {
+    useAddEmergencyContactMutation,
+    useEditEmergencyContactMutation,
+    useDeleteEmergencyContactMutation,
+    useAddVisitTypeMutation,
+    useAddVisitTypeTaskMutation,
+} from "@/state/api"
+import type { EmergencyContact } from "@/types/profileTypes"
+import { useDispatch } from "react-redux"
+import { useUpdateUserMutation } from "@/state/api"
+import { updateUser as updateUserAction } from "@/state/slices/userSlice"
 
-import { useEffect, useState } from "react"
-import { KeyContact, Task, VisitType, User } from "@/types/prismaTypes"
-import { useToast } from "@/components/ui/use-toast"
-import { useAddEmergencyContactMutation, useEditEmergencyContactMutation, useDeleteEmergencyContactMutation, useAddVisitTypeMutation, useAddVisitTypeTaskMutation } from "@/state/api"
-import { EmergencyContact } from "@/types/profileTypes"
 
-
-
-
-
+// Define the form schema with Zod
+const formSchema = z.object({
+    preferredName: z.string().optional(),
+    fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
+    phoneNumber: z.string().optional(),
+    email: z.string().email({ message: "Please enter a valid email address." }),
+    address: z.string().optional(),
+    city: z.string().optional(),
+    province: z.string().optional(),
+    postalCode: z.string().optional(),
+    role: z.string(),
+    subRole: z.string(),
+    allergies: z.string().optional(),
+    interests: z.string().optional(),
+    history: z.string().optional(),
+    languages: z.string().optional(),
+    nhsNumber: z.string().optional(),
+    mobility: z.string().optional(),
+    likesDislikes: z.string().optional(),
+    propertyAccess: z.string().optional(),
+    dnraOrder: z.boolean().optional(),
+})
 
 export const PatientInformation = ({ user }: { user: User }) => {
-    const { toast } = useToast()
+    const dispatch = useDispatch()
     const [selectedRole, setSelectedRole] = useState<string>(user?.role || "CLIENT")
     const [dialogOpen, setDialogOpen] = useState(false)
     const [newContact, setNewContact] = useState<Partial<KeyContact>>({
@@ -39,13 +70,10 @@ export const PatientInformation = ({ user }: { user: User }) => {
         email: "",
     })
     const [keyContacts, setKeyContacts] = useState<KeyContact[]>(user?.keyContacts || [])
-
-    // Add these state variables to the component
     const [visitTypes, setVisitTypes] = useState<VisitType[]>(user?.visitTypes || [])
     const [visitDialogOpen, setVisitDialogOpen] = useState(false)
     const [taskDialogOpen, setTaskDialogOpen] = useState(false)
     const [selectedVisitType, setSelectedVisitType] = useState<string | null>(null)
-
     const [newVisitType, setNewVisitType] = useState<Partial<VisitType>>({
         name: "",
         description: "",
@@ -54,10 +82,13 @@ export const PatientInformation = ({ user }: { user: User }) => {
         type: "",
         careworkerNotes: "",
     })
-
-    // Add these functions for editing and deleting contacts
     const [editingContact, setEditingContact] = useState<KeyContact | null>(null)
     const [editDialogOpen, setEditDialogOpen] = useState(false)
+    const [dateOfBirth, setDateOfBirth] = useState<Date>(
+        user?.dateOfBirth ? preserveDateOnly(user.dateOfBirth) : new Date(),
+    )
+    const [isSaving, setIsSaving] = useState(false)
+    const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation()
 
     // API mutation hooks
     const [addEmergencyContact, { isLoading: isAddingContact }] = useAddEmergencyContactMutation()
@@ -65,6 +96,124 @@ export const PatientInformation = ({ user }: { user: User }) => {
     const [deleteEmergencyContact, { isLoading: isDeletingContact }] = useDeleteEmergencyContactMutation()
     const [addVisitType, { isLoading: isAddingVisitType }] = useAddVisitTypeMutation()
     const [addVisitTypeTask, { isLoading: isAddingTask }] = useAddVisitTypeTaskMutation()
+
+    // Initialize the form with React Hook Form
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            preferredName: user?.preferredName || "",
+            fullName: user?.fullName || "",
+            phoneNumber: user?.phoneNumber || "",
+            email: user?.email || "",
+            address: user?.address || "",
+            city: user?.city || "",
+            province: user?.province || "",
+            postalCode: user?.postalCode || "",
+            role: user?.role || "CLIENT",
+            subRole: user?.subRole || "SERVICE_USER",
+            allergies: user?.allergies || "",
+            interests: user?.interests || "",
+            history: user?.history || "",
+            languages: user?.languages || "",
+            nhsNumber: user?.nhsNumber || "",
+            mobility: user?.mobility || "",
+            likesDislikes: user?.likesDislikes || "",
+            propertyAccess: user?.propertyAccess || "",
+            dnraOrder: user?.dnraOrder || false,
+        },
+    })
+
+    // Update form values when user data changes
+    useEffect(() => {
+        if (user) {
+            form.reset({
+                preferredName: user.preferredName || "",
+                fullName: user.fullName || "",
+                phoneNumber: user.phoneNumber || "",
+                email: user.email || "",
+                address: user.address || "",
+                city: user.city || "",
+                province: user.province || "",
+                postalCode: user.postalCode || "",
+                role: user.role || "CLIENT",
+                subRole: user.subRole || "SERVICE_USER",
+                allergies: user.allergies || "",
+                interests: user.interests || "",
+                history: user.history || "",
+                languages: user.languages || "",
+                nhsNumber: user.nhsNumber || "",
+                mobility: user.mobility || "",
+                likesDislikes: user.likesDislikes || "",
+                propertyAccess: user.propertyAccess || "",
+                dnraOrder: user.dnraOrder || false,
+            })
+        }
+    }, [user, form])
+
+    useEffect(() => {
+        if (user?.dateOfBirth) {
+            setDateOfBirth(preserveDateOnly(user.dateOfBirth))
+        }
+        if (user?.keyContacts) {
+            setKeyContacts(user.keyContacts)
+        }
+        if (user?.visitTypes) {
+            setVisitTypes(user.visitTypes)
+        }
+    }, [user?.dateOfBirth, user?.keyContacts, user?.visitTypes])
+
+    function preserveDateOnly(dateString: string): Date {
+        if (!dateString) {
+            throw new Error("Date string is undefined")
+        }
+        const [year, month, day] = dateString.split("T")[0].split("-").map(Number)
+        if (!year || !month || !day) {
+            throw new Error("Invalid date string")
+        }
+        return new Date(Date.UTC(year, month - 1, day, 12, 0, 0))
+    }
+
+    const formatDateForAPI = (date: Date): string => {
+        // Format as YYYY-MM-DD with T00:00:00.000Z
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, "0")
+        const day = String(date.getDate()).padStart(2, "0")
+        return `${year}-${month}-${day}T00:00:00.000Z`
+    }
+
+    // Form submission handler
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        setIsSaving(true)
+        try {
+            toast.loading("Updating patient information...")
+            console.log("data", data)
+            // Create updated user object with form data
+            const updatedUser = {
+                ...user,
+                ...data,
+                dateOfBirth: formatDateForAPI(dateOfBirth),
+                keyContacts,
+                visitTypes,
+            }
+
+            console.log("updatedUser", updatedUser)
+
+            // Update Redux state
+            dispatch(updateUserAction(updatedUser))
+            const result = await updateUser(updatedUser)
+            console.log(result)
+
+            // Here you would normally call your API to update the backend
+            // But as per your request, you'll handle that part yourself
+
+            toast.success("Patient information has been updated successfully.")
+        } catch (error) {
+            console.error("Error updating patient information:", error)
+            toast.error(`Failed to update patient information. Please try again. ${error}`)
+        } finally {
+            setIsSaving(false)
+        }
+    }
 
     const handleEditContact = (contact: KeyContact) => {
         setEditingContact(contact)
@@ -82,7 +231,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
             }).unwrap()
 
             // Update local state with the returned contact
-            const updatedContacts = keyContacts.map((contact: KeyContact) => (contact.phone === result.phone ? result : contact))
+            const updatedContacts = keyContacts.map((contact: KeyContact) => (contact.id === result.id ? result : contact))
             setKeyContacts(updatedContacts)
 
             toast({
@@ -127,41 +276,6 @@ export const PatientInformation = ({ user }: { user: User }) => {
             })
             console.error("Failed to delete contact:", error)
         }
-    }
-
-    useEffect(() => {
-        if (user?.dateOfBirth) {
-            setDateOfBirth(preserveDateOnly(user.dateOfBirth))
-        }
-        if (user?.keyContacts) {
-            setKeyContacts(user.keyContacts)
-        }
-        if (user?.visitTypes) {
-            setVisitTypes(user.visitTypes)
-        }
-    }, [user?.dateOfBirth, user?.keyContacts, user?.visitTypes])
-
-    const preserveDateOnly = (dateString: string): Date => {
-        if (!dateString) {
-            throw new Error("Date string is undefined")
-        }
-        const [year, month, day] = dateString.split("T")[0].split("-").map(Number)
-        if (!year || !month || !day) {
-            throw new Error("Invalid date string")
-        }
-        return new Date(Date.UTC(year, month - 1, day, 12, 0, 0))
-    }
-
-    const [dateOfBirth, setDateOfBirth] = useState<Date>(
-        user?.dateOfBirth ? preserveDateOnly(user.dateOfBirth) : new Date(),
-    )
-
-    const formatDateForAPI = (date: Date): string => {
-        // Format as YYYY-MM-DD with T00:00:00.000Z
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, "0")
-        const day = String(date.getDate()).padStart(2, "0")
-        return `${year}-${month}-${day}T00:00:00.000Z`
     }
 
     const handleAddContact = async () => {
@@ -314,560 +428,630 @@ export const PatientInformation = ({ user }: { user: User }) => {
         OTHER: "OTHER",
     }
 
-    // Helper function to render array data sections
-    const renderArraySection = (title: string, data: any[], emptyMessage: string) => {
-        return (
-            <Card className="p-6 mt-6">
-                <CardHeader>
-                    <CardTitle>{title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {data && data.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {data.map((item, index) => (
-                                <div key={item.id || index} className="bg-neutral-100 p-4 rounded-md shadow-sm">
-                                    {Object.entries(item).map(([key, value]) => {
-                                        if (key !== "id" && key !== "clientId" && key !== "userId") {
-                                            return (
-                                                <div key={key} className="mb-1">
-                                                    <span className="text-xs font-medium text-neutral-500 capitalize">
-                                                        {key.replace(/([A-Z])/g, " $1").trim()}:
-                                                    </span>
-                                                    <span className="text-sm ml-1">{String(value)}</span>
-                                                </div>
-                                            )
-                                        }
-                                        return null
-                                    })}
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-neutral-500 text-sm">{emptyMessage}</p>
-                    )}
-                </CardContent>
-            </Card>
-        )
-    }
-
     return (
-        <>
-            <Card className="p-6">
-                <CardHeader>
-                    <CardTitle>Patient Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">UserID</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="UserID"
-                                value={user?.id || ""}
-                                readOnly
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Date of Birth</Label>
-                            <DatePicker
-                                date={dateOfBirth}
-                                setDate={(newDate: Date) => {
-                                    setDateOfBirth(newDate)
-                                    // When saving to API, use formatDateForAPI(newDate)
-                                    console.log("Date for API:", formatDateForAPI(newDate))
-                                }}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Preferred Name</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="Preferred Name"
-                                value={user?.preferredName || ""}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Full Name</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="Full Name"
-                                value={user?.fullName || ""}
-                            />
-                        </div>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="flex justify-end mb-4">
+                    <Button type="submit" className="flex items-center gap-2" disabled={isSaving}>
+                        <Save className="h-4 w-4" />
+                        {isSaving ? "Saving..." : "Save Changes"}
+                    </Button>
+                </div>
 
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Contact Number</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="Contact Number"
-                                value={user?.phoneNumber || ""}
-                            />
-                        </div>
-                        <div className="space-y-2 ">
-                            <Label className="text-sm text-neutral-500">Email Address</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="Email Address"
-                                value={user?.email || ""}
-                            />
-                        </div>
-                        <div className="space-y-2 ">
-                            <Label className="text-sm text-neutral-500">Address</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="Address"
-                                value={user?.address || ""}
-                            />
-                        </div>
-                        <div className="space-y-2 ">
-                            <Label className="text-sm text-neutral-500">City</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="City"
-                                value={user?.city || ""}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Postal Code</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="Postal Code"
-                                value={user?.postalCode || ""}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Province</Label>
-                            <Input
-                                type="text"
-                                className="text-md text-neutral-900 font-medium"
-                                placeholder="Province"
-                                value={user?.province || ""}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Role</Label>
-                            <Select value={selectedRole} onValueChange={(value: string) => setSelectedRole(value)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select Role" className="text-neutral-900 font-medium" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.values(Role).map((role) => (
-                                        <SelectItem key={role} value={role}>
-                                            {role}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm text-neutral-500">Sub Role</Label>
-                            <Select defaultValue={user?.subRole}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select Sub Role" className="text-neutral-900 font-medium" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(SubRole)
-                                        .filter(([key]) => {
-                                            if (selectedRole === "OFFICE_STAFF") {
-                                                return [
-                                                    "FINANCE_MANAGER",
-                                                    "HR_MANAGER",
-                                                    "CARE_MANAGER",
-                                                    "SCHEDULING_COORDINATOR",
-                                                    "OFFICE_ADMINISTRATOR",
-                                                    "RECEPTIONIST",
-                                                    "QUALITY_ASSURANCE_MANAGER",
-                                                    "MARKETING_COORDINATOR",
-                                                    "COMPLIANCE_OFFICER",
-                                                ].includes(key)
-                                            }
-                                            if (selectedRole === "CARE_WORKER") {
-                                                return [
-                                                    "CAREGIVER",
-                                                    "SENIOR_CAREGIVER",
-                                                    "JUNIOR_CAREGIVER",
-                                                    "TRAINEE_CAREGIVER",
-                                                    "LIVE_IN_CAREGIVER",
-                                                    "PART_TIME_CAREGIVER",
-                                                    "SPECIALIZED_CAREGIVER",
-                                                    "NURSING_ASSISTANT",
-                                                ].includes(key)
-                                            }
-                                            if (selectedRole === "CLIENT") {
-                                                return ["SERVICE_USER", "FAMILY_AND_FRIENDS", "OTHER"].includes(key)
-                                            }
-                                            return false
-                                        })
-                                        .map(([key, value]) => (
-                                            <SelectItem key={key} value={value}>
-                                                {value}
-                                            </SelectItem>
-                                        ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card className="p-6 mt-6">
-                <CardHeader>
-                    <CardTitle>Personal Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-6">
-                        <div>
-                            <h3 className="text-md font-semibold mb-2">Allergies</h3>
-                            <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
-                                <p className="text-sm text-neutral-700">{user?.allergies || "No allergies recorded"}</p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="text-md font-semibold mb-2">Interests</h3>
-                            <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
-                                <p className="text-sm text-neutral-700">{user?.interests || "No interests recorded"}</p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 className="text-md font-semibold mb-2">Medical History</h3>
-                            <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
-                                <p className="text-sm text-neutral-700">{user?.history || "No medical history recorded"}</p>
-                            </div>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Two-column grid for Emergency Contacts and Additional Information */}
-            <div className="grid grid-cols-1 gap-6 mt-6">
-                {/* Emergency Contacts Card */}
                 <Card className="p-6">
+                    <CardHeader>
+                        <CardTitle>Patient Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Label className="text-sm text-neutral-500">UserID</Label>
+                                <Input
+                                    type="text"
+                                    className="text-md text-neutral-900 font-medium"
+                                    placeholder="UserID"
+                                    value={user?.id || ""}
+                                    readOnly
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm text-neutral-500">Date of Birth</Label>
+                                <DatePicker
+                                    date={dateOfBirth}
+                                    setDate={(newDate: Date) => {
+                                        setDateOfBirth(newDate)
+                                    }}
+                                />
+                            </div>
+
+                            <FormField
+                                control={form.control}
+                                name="preferredName"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Preferred Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Preferred Name" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="fullName"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Full Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Full Name" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="phoneNumber"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Contact Number</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Contact Number" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Email Address</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                type="email"
+                                                className="text-md text-neutral-900 font-medium"
+                                                placeholder="Email Address"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="address"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Address</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Address" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="city"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">City</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="City" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="postalCode"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Postal Code</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Postal Code" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="province"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Province</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Province" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="role"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Role</FormLabel>
+                                        <Select
+                                            value={field.value}
+                                            onValueChange={(value) => {
+                                                field.onChange(value)
+                                                setSelectedRole(value)
+                                            }}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Role" className="text-neutral-900 font-medium" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {Object.values(Role).map((role) => (
+                                                    <SelectItem key={role} value={role}>
+                                                        {role}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="subRole"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                        <FormLabel className="text-sm text-neutral-500">Sub Role</FormLabel>
+                                        <Select value={field.value} onValueChange={field.onChange}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Sub Role" className="text-neutral-900 font-medium" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {Object.entries(SubRole)
+                                                    .filter(([key]) => {
+                                                        if (selectedRole === "OFFICE_STAFF") {
+                                                            return [
+                                                                "FINANCE_MANAGER",
+                                                                "HR_MANAGER",
+                                                                "CARE_MANAGER",
+                                                                "SCHEDULING_COORDINATOR",
+                                                                "OFFICE_ADMINISTRATOR",
+                                                                "RECEPTIONIST",
+                                                                "QUALITY_ASSURANCE_MANAGER",
+                                                                "MARKETING_COORDINATOR",
+                                                                "COMPLIANCE_OFFICER",
+                                                            ].includes(key)
+                                                        }
+                                                        if (selectedRole === "CARE_WORKER") {
+                                                            return [
+                                                                "CAREGIVER",
+                                                                "SENIOR_CAREGIVER",
+                                                                "JUNIOR_CAREGIVER",
+                                                                "TRAINEE_CAREGIVER",
+                                                                "LIVE_IN_CAREGIVER",
+                                                                "PART_TIME_CAREGIVER",
+                                                                "SPECIALIZED_CAREGIVER",
+                                                                "NURSING_ASSISTANT",
+                                                            ].includes(key)
+                                                        }
+                                                        if (selectedRole === "CLIENT") {
+                                                            return ["SERVICE_USER", "FAMILY_AND_FRIENDS", "OTHER"].includes(key)
+                                                        }
+                                                        return false
+                                                    })
+                                                    .map(([key, value]) => (
+                                                        <SelectItem key={key} value={value}>
+                                                            {value}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="p-6 mt-6">
+                    <CardHeader>
+                        <CardTitle>Personal Details</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-6">
+                            <FormField
+                                control={form.control}
+                                name="allergies"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <h3 className="text-md font-semibold mb-2">Allergies</h3>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                className="border-0 bg-transparent p-0 text-sm text-neutral-700"
+                                                placeholder="No allergies recorded"
+                                            />
+
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="interests"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <h3 className="text-md font-semibold mb-2">Interests</h3>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                className="border-0 bg-transparent p-0 text-sm text-neutral-700"
+                                                placeholder="No interests recorded"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="history"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <h3 className="text-md font-semibold mb-2">Medical History</h3>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                className="border-0 bg-transparent p-0 text-sm text-neutral-700"
+                                                placeholder="No medical history recorded"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Two-column grid for Emergency Contacts and Additional Information */}
+                <div className="grid grid-cols-1 gap-6 mt-6">
+                    {/* Emergency Contacts Card */}
+                    <Card className="p-6">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle>Emergency Contacts</CardTitle>
+                            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button variant="default" size="sm" className="flex items-center gap-1">
+                                        <PlusCircle className="h-4 w-4" />
+                                        <span>Add Contact</span>
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Add Emergency Contact</DialogTitle>
+                                        <DialogDescription>
+                                            Add a new emergency contact for this patient. Fill out the form below.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="name">Name</Label>
+                                            <Input
+                                                id="name"
+                                                placeholder="Full name"
+                                                value={newContact.name}
+                                                onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="relation">Relationship</Label>
+                                            <Select
+                                                value={newContact.relation}
+                                                onValueChange={(value) => setNewContact({ ...newContact, relation: value })}
+                                            >
+                                                <SelectTrigger id="relation">
+                                                    <SelectValue placeholder="Select relationship" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Spouse">Spouse</SelectItem>
+                                                    <SelectItem value="Parent">Parent</SelectItem>
+                                                    <SelectItem value="Child">Child</SelectItem>
+                                                    <SelectItem value="Sibling">Sibling</SelectItem>
+                                                    <SelectItem value="Friend">Friend</SelectItem>
+                                                    <SelectItem value="Caregiver">Caregiver</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="phone">Phone Number</Label>
+                                            <Input
+                                                id="phone"
+                                                placeholder="(555) 123-4567"
+                                                value={newContact.phone}
+                                                onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="email">Email Address</Label>
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                placeholder="contact@example.com"
+                                                value={newContact.email}
+                                                onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            onClick={handleAddContact}
+                                            disabled={!newContact.name || !newContact.phone || isAddingContact}
+                                        >
+                                            {isAddingContact ? "Adding..." : "Add Contact"}
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </CardHeader>
+                        <CardContent>
+                            {keyContacts && keyContacts.length > 0 ? (
+                                <div className="space-y-4">
+                                    {keyContacts.map((contact: KeyContact) => (
+                                        <div
+                                            key={contact.id}
+                                            className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-shadow"
+                                        >
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="bg-emerald-100 text-emerald-700 h-10 w-10 rounded-full flex items-center justify-center font-semibold">
+                                                        {contact.name.substring(0, 2).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-md font-semibold">{contact.name}</h4>
+                                                        <p className="text-sm text-neutral-600">{contact.relation}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0"
+                                                        onClick={() => handleEditContact(contact)}
+                                                        disabled={isEditingContact || isDeletingContact}
+                                                    >
+                                                        <Pencil className="h-4 w-4" />
+                                                        <span className="sr-only">Edit</span>
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                                        onClick={() => handleDeleteContact(contact.id)}
+                                                        disabled={isEditingContact || isDeletingContact}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                        <span className="sr-only">Delete</span>
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <Phone className="h-4 w-4 text-neutral-500" />
+                                                    <span>{contact.phone}</span>
+                                                </div>
+                                                {contact.email && (
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <Mail className="h-4 w-4 text-neutral-500" />
+                                                        <span>{contact.email}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-8">
+                                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 mb-4">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="text-neutral-500"
+                                        >
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                        </svg>
+                                    </div>
+                                    <p className="text-neutral-500 text-sm">No emergency contacts available.</p>
+                                    <p className="text-neutral-400 text-xs mt-1">Add contacts using the button above.</p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Visit Types Card */}
+                <Card className="p-6 mt-6">
                     <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Emergency Contacts</CardTitle>
-                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <CardTitle>Visit Types</CardTitle>
+                        <Dialog open={visitDialogOpen} onOpenChange={setVisitDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button variant="default" size="sm" className="flex items-center gap-1">
                                     <PlusCircle className="h-4 w-4" />
-                                    <span>Add Contact</span>
+                                    <span>Add Visit Type</span>
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>
-                                    <DialogTitle>Add Emergency Contact</DialogTitle>
-                                    <DialogDescription>
-                                        Add a new emergency contact for this patient. Fill out the form below.
-                                    </DialogDescription>
+                                    <DialogTitle>Add Visit Type</DialogTitle>
+                                    <DialogDescription>Create a new visit type for this patient.</DialogDescription>
                                 </DialogHeader>
                                 <div className="grid gap-4 py-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name">Name</Label>
+                                        <Label htmlFor="visit-name">Visit Name</Label>
                                         <Input
-                                            id="name"
-                                            placeholder="Full name"
-                                            value={newContact.name}
-                                            onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+                                            id="visit-name"
+                                            placeholder="e.g. Morning Visit, Medication Check"
+                                            value={newVisitType.name}
+                                            onChange={(e) => setNewVisitType({ ...newVisitType, name: e.target.value })}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="relation">Relationship</Label>
-                                        <Select
-                                            value={newContact.relation}
-                                            onValueChange={(value) => setNewContact({ ...newContact, relation: value })}
-                                        >
-                                            <SelectTrigger id="relation">
-                                                <SelectValue placeholder="Select relationship" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Spouse">Spouse</SelectItem>
-                                                <SelectItem value="Parent">Parent</SelectItem>
-                                                <SelectItem value="Child">Child</SelectItem>
-                                                <SelectItem value="Sibling">Sibling</SelectItem>
-                                                <SelectItem value="Friend">Friend</SelectItem>
-                                                <SelectItem value="Caregiver">Caregiver</SelectItem>
-                                                <SelectItem value="Other">Other</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="phone">Phone Number</Label>
+                                        <Label htmlFor="visit-description">Description</Label>
                                         <Input
-                                            id="phone"
-                                            placeholder="(555) 123-4567"
-                                            value={newContact.phone}
-                                            onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email Address</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            placeholder="contact@example.com"
-                                            value={newContact.email}
-                                            onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                                            id="visit-description"
+                                            placeholder="Describe the purpose of this visit"
+                                            value={newVisitType.description}
+                                            onChange={(e) => setNewVisitType({ ...newVisitType, description: e.target.value })}
                                         />
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                                    <Button variant="outline" onClick={() => setVisitDialogOpen(false)}>
                                         Cancel
                                     </Button>
-                                    <Button
-                                        onClick={handleAddContact}
-                                        disabled={!newContact.name || !newContact.phone || isAddingContact}
-                                    >
-                                        {isAddingContact ? "Adding..." : "Add Contact"}
+                                    <Button onClick={handleAddVisitType} disabled={!newVisitType.name || isAddingVisitType}>
+                                        {isAddingVisitType ? "Adding..." : "Add Visit Type"}
                                     </Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
                     </CardHeader>
                     <CardContent>
-                        {keyContacts && keyContacts.length > 0 ? (
-                            <div className="space-y-4">
-                                {keyContacts.map((contact: KeyContact) => (
-                                    <div
-                                        key={contact.id}
-                                        className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-shadow"
-                                    >
-                                        <div className="flex justify-between items-start">
-                                            <div className="flex items-center gap-3">
-                                                <div className="bg-emerald-100 text-emerald-700 h-10 w-10 rounded-full flex items-center justify-center font-semibold">
-                                                    {contact.name.substring(0, 2).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <h4 className="text-md font-semibold">{contact.name}</h4>
-                                                    <p className="text-sm text-neutral-600">{contact.relation}</p>
-                                                </div>
+                        {visitTypes && visitTypes.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-6">
+                                {visitTypes.map((visitType) => (
+                                    <div key={visitType.id} className="bg-neutral-50 p-4 rounded-md border border-neutral-200">
+                                        <div className="flex justify-between items-start mb-3">
+                                            <div>
+                                                <h3 className="text-lg font-semibold">{visitType.name}</h3>
+                                                <p className="text-sm text-neutral-600">{visitType.description}</p>
                                             </div>
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="h-8 w-8 p-0"
-                                                    onClick={() => handleEditContact(contact)}
-                                                    disabled={isEditingContact || isDeletingContact}
-                                                >
-                                                    <Pencil className="h-4 w-4" />
-                                                    <span className="sr-only">Edit</span>
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
-                                                    onClick={() => handleDeleteContact(contact.id)}
-                                                    disabled={isEditingContact || isDeletingContact}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                    <span className="sr-only">Delete</span>
-                                                </Button>
-                                            </div>
+                                            <Dialog
+                                                open={taskDialogOpen && selectedVisitType === visitType.id}
+                                                onOpenChange={(open) => {
+                                                    setTaskDialogOpen(open)
+                                                    if (open) setSelectedVisitType(visitType.id)
+                                                    else setSelectedVisitType(null)
+                                                }}
+                                            >
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline" size="sm" className="flex items-center gap-1">
+                                                        <PlusCircle className="h-4 w-4" />
+                                                        <span>Add Task</span>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[425px]">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Add Task to {visitType.name}</DialogTitle>
+                                                        <DialogDescription>Add a new task to this visit type.</DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="grid gap-4 py-4">
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="task-type">Task Type</Label>
+                                                            <Select
+                                                                value={newTask.type}
+                                                                onValueChange={(value) => setNewTask({ ...newTask, type: value })}
+                                                            >
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select task type" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="MEDICATION">Medication</SelectItem>
+                                                                    <SelectItem value="HYGIENE">Hygiene</SelectItem>
+                                                                    <SelectItem value="MEAL">Meal</SelectItem>
+                                                                    <SelectItem value="EXERCISE">Exercise</SelectItem>
+                                                                    <SelectItem value="SOCIAL">Social</SelectItem>
+                                                                    <SelectItem value="OTHER">Other</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="task-notes">Careworker Notes</Label>
+                                                            <Input
+                                                                id="task-notes"
+                                                                placeholder="Instructions for careworkers"
+                                                                value={newTask.careworkerNotes}
+                                                                onChange={(e) => setNewTask({ ...newTask, careworkerNotes: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <Button variant="outline" onClick={() => setTaskDialogOpen(false)}>
+                                                            Cancel
+                                                        </Button>
+                                                        <Button onClick={handleAddTask} disabled={!newTask.type || isAddingTask}>
+                                                            {isAddingTask ? "Adding..." : "Add Task"}
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
                                         </div>
-                                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <Phone className="h-4 w-4 text-neutral-500" />
-                                                <span>{contact.phone}</span>
-                                            </div>
-                                            {contact.email && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <Mail className="h-4 w-4 text-neutral-500" />
-                                                    <span>{contact.email}</span>
+
+                                        {/* Tasks List */}
+                                        <div className="mt-3">
+                                            <h4 className="text-sm font-medium mb-2">Assigned Tasks:</h4>
+                                            {visitType.assignedTasks && visitType.assignedTasks.length > 0 ? (
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                    {visitType.assignedTasks.map((task: Task) => (
+                                                        <div key={task.id} className="bg-white p-3 rounded border border-neutral-200">
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-medium">
+                                                                    {task.type}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-sm text-neutral-700">{task.careworkerNotes || "No notes provided"}</p>
+                                                        </div>
+                                                    ))}
                                                 </div>
+                                            ) : (
+                                                <p className="text-sm text-neutral-500">No tasks assigned to this visit type.</p>
                                             )}
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-8">
-                                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 mb-4">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="text-neutral-500"
-                                    >
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                    </svg>
-                                </div>
-                                <p className="text-neutral-500 text-sm">No emergency contacts available.</p>
-                                <p className="text-neutral-400 text-xs mt-1">Add contacts using the button above.</p>
-                            </div>
+                            <p className="text-neutral-500 text-sm">No visit types available. Add a visit type to get started.</p>
                         )}
                     </CardContent>
                 </Card>
-
-                {/* Personal Details Card with Allergies, Interests, and History */}
-
-            </div>
-
-            {/* Visit Types Card */}
-            <Card className="p-6 mt-6">
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Visit Types</CardTitle>
-                    <Dialog open={visitDialogOpen} onOpenChange={setVisitDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button variant="default" size="sm" className="flex items-center gap-1">
-                                <PlusCircle className="h-4 w-4" />
-                                <span>Add Visit Type</span>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                                <DialogTitle>Add Visit Type</DialogTitle>
-                                <DialogDescription>Create a new visit type for this patient.</DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="visit-name">Visit Name</Label>
-                                    <Input
-                                        id="visit-name"
-                                        placeholder="e.g. Morning Visit, Medication Check"
-                                        value={newVisitType.name}
-                                        onChange={(e) => setNewVisitType({ ...newVisitType, name: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="visit-description">Description</Label>
-                                    <Input
-                                        id="visit-description"
-                                        placeholder="Describe the purpose of this visit"
-                                        value={newVisitType.description}
-                                        onChange={(e) => setNewVisitType({ ...newVisitType, description: e.target.value })}
-                                    />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button variant="outline" onClick={() => setVisitDialogOpen(false)}>
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleAddVisitType} disabled={!newVisitType.name || isAddingVisitType}>
-                                    {isAddingVisitType ? "Adding..." : "Add Visit Type"}
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                </CardHeader>
-                <CardContent>
-                    {visitTypes && visitTypes.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-6">
-                            {visitTypes.map((visitType) => (
-                                <div key={visitType.id} className="bg-neutral-50 p-4 rounded-md border border-neutral-200">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div>
-                                            <h3 className="text-lg font-semibold">{visitType.name}</h3>
-                                            <p className="text-sm text-neutral-600">{visitType.description}</p>
-                                        </div>
-                                        <Dialog
-                                            open={taskDialogOpen && selectedVisitType === visitType.id}
-                                            onOpenChange={(open) => {
-                                                setTaskDialogOpen(open)
-                                                if (open) setSelectedVisitType(visitType.id)
-                                                else setSelectedVisitType(null)
-                                            }}
-                                        >
-                                            <DialogTrigger asChild>
-                                                <Button variant="outline" size="sm" className="flex items-center gap-1">
-                                                    <PlusCircle className="h-4 w-4" />
-                                                    <span>Add Task</span>
-                                                </Button>
-                                            </DialogTrigger>
-                                            <DialogContent className="sm:max-w-[425px]">
-                                                <DialogHeader>
-                                                    <DialogTitle>Add Task to {visitType.name}</DialogTitle>
-                                                    <DialogDescription>Add a new task to this visit type.</DialogDescription>
-                                                </DialogHeader>
-                                                <div className="grid gap-4 py-4">
-                                                    <div className="space-y-2">
-                                                        <Label htmlFor="task-type">Task Type</Label>
-                                                        <Select
-                                                            value={newTask.type}
-                                                            onValueChange={(value) => setNewTask({ ...newTask, type: value })}
-                                                        >
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select task type" />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                <SelectItem value="MEDICATION">Medication</SelectItem>
-                                                                <SelectItem value="HYGIENE">Hygiene</SelectItem>
-                                                                <SelectItem value="MEAL">Meal</SelectItem>
-                                                                <SelectItem value="EXERCISE">Exercise</SelectItem>
-                                                                <SelectItem value="SOCIAL">Social</SelectItem>
-                                                                <SelectItem value="OTHER">Other</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <Label htmlFor="task-notes">Careworker Notes</Label>
-                                                        <Input
-                                                            id="task-notes"
-                                                            placeholder="Instructions for careworkers"
-                                                            value={newTask.careworkerNotes}
-                                                            onChange={(e) => setNewTask({ ...newTask, careworkerNotes: e.target.value })}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button variant="outline" onClick={() => setTaskDialogOpen(false)}>
-                                                        Cancel
-                                                    </Button>
-                                                    <Button onClick={handleAddTask} disabled={!newTask.type || isAddingTask}>
-                                                        {isAddingTask ? "Adding..." : "Add Task"}
-                                                    </Button>
-                                                </DialogFooter>
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
-
-                                    {/* Tasks List */}
-                                    <div className="mt-3">
-                                        <h4 className="text-sm font-medium mb-2">Assigned Tasks:</h4>
-                                        {visitType.assignedTasks && visitType.assignedTasks.length > 0 ? (
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                {visitType.assignedTasks.map((task: Task) => (
-                                                    <div key={task.id} className="bg-white p-3 rounded border border-neutral-200">
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-medium">
-                                                                {task.type}
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-sm text-neutral-700">{task.careworkerNotes || "No notes provided"}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <p className="text-sm text-neutral-500">No tasks assigned to this visit type.</p>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-neutral-500 text-sm">No visit types available. Add a visit type to get started.</p>
-                    )}
-                </CardContent>
-            </Card>
-
-
+            </form>
 
             <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
                 <DialogContent className="sm:max-w-[425px]">
@@ -944,6 +1128,6 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </>
+        </Form>
     )
 }

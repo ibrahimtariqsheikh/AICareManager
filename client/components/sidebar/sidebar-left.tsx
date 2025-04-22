@@ -105,11 +105,11 @@ const navigation: NavigationSection[] = [
                 icon: CreditCard,
                 href: "/dashboard/billing",
             },
-            {
-                title: "Invites",
-                icon: Mail,
-                href: "/dashboard/invites",
-            },
+            // {
+            //     title: "Invites",
+            //     icon: Mail,
+            //     href: "/dashboard/invites",
+            // },
         ],
     },
     {

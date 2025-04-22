@@ -112,14 +112,6 @@ export interface UserQueryParams {
   agencyId?: string
 }
 
-export interface UpdateUserInput {
-    id: string;
-    email?: string;
-    fullName?: string;
-    role?: Role;
-    subRole?: SubRole;
-    agencyId?: string;
-}
 
 export interface UserResponse {
     data: User & {
@@ -276,7 +268,14 @@ export const api = createApi({
       },
       providesTags: ["Users"],
     }),
-
+    //update user
+    updateUser: build.mutation<User, User>({
+      query: (user) => ({
+        url: "/users",
+        method: "PUT",
+        body: user,
+      }),
+    }),
     // Get filtered users for scheduling
     getFilteredUsers: build.query<{ careWorkers: User[], clients: User[], officeStaff: User[] }, string>({
       query: (inviterId) => `/users/filtered/${inviterId}`,

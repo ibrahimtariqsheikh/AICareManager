@@ -136,6 +136,9 @@ const userSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    updateUser: (state, action: PayloadAction<User>) => {
+      state.currentUser = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -186,6 +189,7 @@ export const {
   setLoading,
   setError,
   setActiveUserType,
+  updateUser,
 } = userSlice.actions
 export default userSlice.reducer
 
