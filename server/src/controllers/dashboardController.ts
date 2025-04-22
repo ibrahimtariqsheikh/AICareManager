@@ -49,18 +49,8 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 agencyId: user.agencyId,
             },
             include: {
-                client: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
-                user: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
+                client: true,
+                user: true,
             },
         });
         console.log("Found schedules:", schedules.length);

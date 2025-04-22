@@ -591,13 +591,7 @@ export const updateAgencyGroup = async (req: Request, res: Response): Promise<vo
                 agencyId: true,
                 createdAt: true,
                 updatedAt: true,
-                clients: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                        email: true
-                    }
-                }
+                clients: true
             }
         });
 
@@ -675,13 +669,7 @@ export const createAgencyGroup = async (req: Request, res: Response): Promise<vo
                 agencyId: true,
                 createdAt: true,
                 updatedAt: true,
-                clients: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                        email: true
-                    }
-                }
+                clients: true,
             }
         });
 
