@@ -1,12 +1,12 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Geist } from "next/font/google"
 import "./globals.css"
 import Providers from "./providers"
 import { Toaster } from "../components/ui/sonner"
 
 
-const font = Inter({ subsets: ["latin"] })
+const font = Geist({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "AI Care Manager",

@@ -66,7 +66,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
 
             const processedEvent: ProcessedCalendarEvent = {
                 id: schedule.id,
-                title: `${schedule.client.firstName} ${schedule.client.lastName} - ${schedule.type}`,
+                title: `${schedule.client.fullName} - ${schedule.type}`,
                 start,
                 end,
                 date,
@@ -79,12 +79,10 @@ export function Calendar({ onEventSelect }: CalendarProps) {
                 notes: schedule.notes ?? "",
                 color: schedule.color || '#10b981',
                 careWorker: {
-                    firstName: schedule.user!.firstName,
-                    lastName: schedule.user!.lastName,
+                    fullName: schedule.user!.fullName,
                 },
                 client: {
-                    firstName: schedule.client!.firstName,
-                    lastName: schedule.client!.lastName,
+                    fullName: schedule.client!.fullName,
                 },
             }
 

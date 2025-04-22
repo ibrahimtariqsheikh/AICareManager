@@ -283,7 +283,7 @@ export function CustomMonthView({
     // Get staff color and name
     const getStaffInfo = useCallback((event: AppointmentEvent) => {
         const staffMember = staffMembers.find((s) => s.id === event.resourceId)
-        const staffName = staffMember ? `${staffMember.firstName} ${staffMember.lastName}` : "Staff"
+        const staffName = staffMember ? `${staffMember.fullName}` : "Staff"
         return { staffName }
     }, [staffMembers])
 

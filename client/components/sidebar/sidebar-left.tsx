@@ -19,6 +19,7 @@ import {
     Search,
     ChevronDown,
     CreditCard,
+    Rocket,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -43,6 +44,7 @@ import Image from "next/image"
 import ChatbotModern from "../icons/chatbot-modern"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { motion } from "framer-motion"
+import { User } from "@/types/prismaTypes"
 
 interface NavigationItem {
     title: string
@@ -86,17 +88,17 @@ const navigation: NavigationSection[] = [
                 icon: UsersIcon,
                 href: "/dashboard/users",
             },
-
-            {
-                title: "Reports",
-                icon: File,
-                href: "/dashboard/reports",
-            },
             {
                 title: "Schedule",
                 icon: Calendar,
                 href: "/dashboard/schedule",
             },
+            {
+                title: "Reports",
+                icon: File,
+                href: "/dashboard/reports",
+            },
+
 
             {
                 title: "Billing",
@@ -128,7 +130,8 @@ const navigation: NavigationSection[] = [
 ]
 
 export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const { user } = useAppSelector((state) => state.user)
+    const { user: userInformation } = useAppSelector((state) => state.user)
+    const user = userInformation?.userInfo as User
     const dispatch = useAppDispatch()
     const { theme, setTheme } = useTheme()
     const pathname = usePathname()
@@ -151,7 +154,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     }
 
     return (
-        <Sidebar className="border-r-0 w-[250px] bg-white" {...props}>
+        <Sidebar className={cn("border-r-0 w-[250px]", theme === "dark" ? "bg-[#171717]" : "bg-[#f6f7f9]")} {...props}>
             <SidebarHeader className="px-4 py-3 mt-2">
                 <div className="flex items-center gap-3">
                     <motion.div
@@ -219,12 +222,12 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
             <SidebarContent className="px-3 py-4">
                 <div className="text-xs text-neutral-700 flex items-center gap-1 justify-between mb-4 bg-neutral-100 rounded-md px-3 py-2 border border-neutral-300 hover:border-neutral-400 cursor-pointer hover:bg-neutral-200 transition-all duration-200 group">
                     <div className="flex items-center gap-1 ">    <Search className="h-3.5 w-3.5 text-neutral-600 mr-1" />
-                        Quick Search    </div> <kbd className="flex items-center gap-1 justify-center w-fit px-1.5 py-0.5 text-xs font-medium text-neutral-800 bg-neutral-200"><CommandIcon className="inline-block w-3 h-3" />K</kbd>
+                        Quick Search    </div> <kbd className="flex items-center gap-1 justify-center w-fit px-1.5 py-0.5 text-xs font-medium text-neutral-800 bg-neutral-200 rounded-md"><CommandIcon className="inline-block w-3 h-3" />K</kbd>
                 </div>
 
                 {navigation.map((section) => (
                     <div key={section.title} className="space-y-2 mb-6">
-                        <h3 className="px-2 text-xs font-semibold text-neutral-600">
+                        <h3 className={cn("px-2 text-xs font-semibold", theme === "dark" ? "text-neutral-400" : "text-neutral-600")}>
                             {section.title.toUpperCase()}
                         </h3>
                         <div className="space-y-1">
@@ -236,13 +239,14 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         href={item.href}
                                         className={cn(
                                             "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                                            theme === "dark" ? "text-neutral-400" : "text-neutral-600",
                                             isActive
-                                                ? "bg-neutral-100 text-neutral-900 font-medium"
-                                                : "hover:bg-neutral-100 hover:text-neutral-900"
+                                                ? "bg-neutral-200/80 text-neutral-900 font-medium"
+                                                : cn("hover:bg-neutral-200/80 hover:text-neutral-900", theme === "dark" ? "hover:bg-neutral-800/80" : "hover:bg-neutral-200/80")
                                         )}
                                     >
-                                        <item.icon className="h-4 w-4 text-neutral-900" />
-                                        <span className="flex items-center gap-2 text-xs justify-between w-full">
+                                        <item.icon className={cn("h-4 w-4", theme === "dark" ? "text-neutral-200" : "text-neutral-600")} />
+                                        <span className={cn("flex items-center gap-2 text-sm justify-between w-full", theme === "dark" ? "text-neutral-200" : "text-neutral-600")}>
                                             {item.title}
 
                                         </span>
@@ -254,27 +258,23 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                 ))}
             </SidebarContent>
             <SidebarFooter className="my-4">
-                <div className="flex flex-col gap-2 items-center">
-
-
-                    {/* <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
-                        <div className="flex flex-row items-center gap-2 justify-between">
-                            <div className="flex flex-row items-center gap-2">
-                                <Rocket className="h-4 w-4  text-blue-600" />
-                                <span className="text-xs text-blue-600 font-semibold">
-                                    Get Started Now
-                                </span>
-                            </div>
-                            <div className="text-xs text-blue-600 font-semibold bg-blue-400/20 rounded-md px-2 py-[2px] border border-blue-400/10">1/3</div>
+                <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
+                    <div className="flex flex-row items-center gap-2 justify-between">
+                        <div className="flex flex-row items-center gap-2">
+                            <Rocket className="h-4 w-4  text-blue-600" />
+                            <span className="text-xs text-blue-600 font-semibold">
+                                Get Started Now
+                            </span>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="text-xs text-blue-600 font-semibold bg-blue-400/20 rounded-md px-2 py-[2px] border border-blue-400/10">1/3</div>
+                    </div>
+                    <div className="flex items-center gap-1">
 
-                            <div className="w-full h-1.5 bg-blue-400/20 rounded-full overflow-hidden">
-                                <div className="bg-blue-600 h-full w-1/3"></div>
-                            </div>
+                        <div className="w-full h-1.5 bg-blue-400/20 rounded-full overflow-hidden">
+                            <div className="bg-blue-600 h-full w-1/3"></div>
                         </div>
+                    </div>
 
-                    </div> */}
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-4">
                     <DropdownMenu open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
@@ -283,16 +283,16 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                 <Button variant="ghost" className="flex items-center gap-2 w-full justify-start">
                                     <Avatar className="h-8 w-8">
                                         <AvatarFallback className="bg-blue-400/20 text-blue-600">
-                                            {user?.userInfo?.firstName?.[0]}
-                                            {user?.userInfo?.lastName?.[0]}
+                                            {user?.fullName?.[0]}
+
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="flex flex-col items-start">
                                         <span className="text-sm font-semibold ">
-                                            {user?.userInfo?.firstName} {user?.userInfo?.lastName}
+                                            {user?.fullName}
                                         </span>
                                         <span className="text-xs text-neutral-600">
-                                            {user?.userInfo?.email}
+                                            {user?.email}
                                         </span>
                                     </div>
                                 </Button>

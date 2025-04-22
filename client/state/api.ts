@@ -3,8 +3,9 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { Message } from "@/app/dashboard/chatbot/chatbot-client"
 
-import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration, CustomTask, Group, RateSheet } from "../types/prismaTypes"
+import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration, CustomTask, Group, RateSheet, VisitType, Task } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
+import { EmergencyContact } from "@/types/profileTypes"
 
 
 export interface CreateUserInput {
@@ -630,6 +631,41 @@ export const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+//new methods here
+addEmergencyContact: build.mutation<EmergencyContact, { userId: string; contact: EmergencyContact }>({
+  query: ({ userId, contact }) => ({
+    url: `/users/${userId}/emergency-contacts`,
+    method: "POST",
+    body: contact,
+  }),
+}),
+editEmergencyContact: build.mutation<EmergencyContact, { userId: string; contactId: string; contact: EmergencyContact }>({
+  query: ({ userId, contactId, contact }) => ({
+    url: `/users/${userId}/emergency-contacts/${contactId}`,
+    method: "PUT",
+    body: contact,
+  }),
+}),
+deleteEmergencyContact: build.mutation<void, { userId: string; contactId: string }>({
+  query: ({ userId, contactId }) => ({
+    url: `/users/${userId}/emergency-contacts/${contactId}`,
+    method: "DELETE",
+  }),
+}),
+addVisitType: build.mutation<VisitType, { userId: string; visitType: VisitType }>({
+  query: ({ userId, visitType }) => ({
+    url: `/users/${userId}/visit-types`,
+    method: "POST",
+    body: visitType,
+  }),
+}),
+addVisitTypeTask: build.mutation<Task, { userId: string; visitTypeId: string; task: Task }>({
+  query: ({ userId, visitTypeId, task }) => ({
+    url: `/users/${userId}/visit-types/${visitTypeId}/tasks`,
+    method: "POST",
+    body: task,
+  }),
+}),
 
     // Get all user details by ID
     getUserAllDetails: build.query<UserAllDetailsResponse, string>({
@@ -655,6 +691,8 @@ export const api = createApi({
       query: (agencyId) => `/agencies/${agencyId}/groups`,
       providesTags: ["Groups"],
     }),
+
+
 
     // Group endpoints
     getGroups: build.query<GroupResponse[], string>({
@@ -839,4 +877,9 @@ export const {
   useCreateAgencyMutation,
   useDeleteAgencyMutation,
   useGetCurrentInvoiceNumberQuery,
+  useAddEmergencyContactMutation,
+  useEditEmergencyContactMutation,
+  useDeleteEmergencyContactMutation,
+  useAddVisitTypeMutation,
+  useAddVisitTypeTaskMutation,
 } = api

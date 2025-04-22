@@ -285,6 +285,14 @@ export const getAgencyById = async (req: Request, res: Response): Promise<void> 
         const { id } = req.params;
         const agency = await prisma.agency.findUnique({
             where: { id },
+            include: {
+               announcements: true,
+               operatingHours: true,
+               rateSheets: true,
+               customTasks: true,
+               groups: true,
+               
+            }
         });
         
         if (!agency) {

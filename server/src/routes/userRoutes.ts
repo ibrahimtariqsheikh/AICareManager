@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createUser, getUsers, getUser, getFilteredUsers, getAgencyUsers, getUserById, updateUser, getUserAllDetails } from "../controllers/userControllers"
+import { createUser, getUsers, getUser, getFilteredUsers, getAgencyUsers, getUserById, updateUser, getUserAllDetails, addEmergencyContact, editEmergencyContact, deleteEmergencyContact, addVisitType, addVisitTypeTask } from "../controllers/userControllers"
 
 const router = Router()
 
@@ -26,6 +26,25 @@ router.put("/:id", updateUser)
 
 // Get a specific user by cognitoId
 router.get("/:cognitoId", getUser)
+
+// Add emergency contact
+router.post("/:userId/emergency-contacts", addEmergencyContact)
+
+// Edit emergency contact
+router.put("/:userId/emergency-contacts/:contactId", editEmergencyContact)
+
+// Delete emergency contact
+router.delete("/:userId/emergency-contacts/:contactId", deleteEmergencyContact)
+
+// Add visit type
+router.post("/:userId/visit-types", addVisitType)
+
+// Add visit type task
+router.post("/:userId/visit-types/:visitTypeId/tasks", addVisitTypeTask)
+
+
+
+
 
 export default router
 

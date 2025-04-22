@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
@@ -9,11 +8,11 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
-import { toast } from "sonner"
 import {
     Bell,
     Building,
     Calendar,
+
     Clock,
     FileText,
     Key,
@@ -27,25 +26,24 @@ import {
 } from "lucide-react"
 import { signOut } from "aws-amplify/auth"
 import { useRouter } from "next/navigation"
+import { useAppSelector, useAppDispatch } from "@/state/redux"
+import { setDistanceThresholdRedux, setLateVisitThresholdRedux, setNotificationFrequencyRedux, setPreferredNotificationMethodRedux, toggleAllowCareWorkersEditCheckInRedux, toggleAllowFamilyReviewsRedux, toggleCareWorkerVisitAlertsRedux, toggleClientAndCareWorkerRemindersRedux, toggleClientBirthdayRemindersRedux, toggleDistanceAlertsRedux, toggleEnableFamilyScheduleRedux, toggleEnableWeek1And2SchedulingRedux, toggleLateVisitAlertsRedux, toggleMissedMedicationAlertsRedux, toggleReviewNotificationsRedux } from "@/state/slices/agencySlice"
+import { useUpdateAgencyMutation } from "@/state/api"
+import { toast } from "sonner"
+
+
+type PreferredNotificationMethod = "EMAIL" | "SMS" | "PHONE"
+type NotificationFrequency = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY"
+
 
 export default function SettingsPage() {
-    // Agency settings state
-    const [allowCareWorkersEditCheckIn, setAllowCareWorkersEditCheckIn] = useState(false)
-    const [allowFamilyReviews, setAllowFamilyReviews] = useState(false)
-    const [enableFamilySchedule, setEnableFamilySchedule] = useState(false)
-    const [enableWeek1And2Scheduling, setEnableWeek1And2Scheduling] = useState(false)
-    const [lateVisitThreshold, setLateVisitThreshold] = useState("15")
-    const [enableDistanceAlerts, setEnableDistanceAlerts] = useState(true)
-    const [distanceThreshold, setDistanceThreshold] = useState("10")
 
-    // Notification settings state
-    const [lateVisitAlerts, setLateVisitAlerts] = useState(true)
-    const [clientBirthdayReminders, setClientBirthdayReminders] = useState(true)
-    const [careWorkerVisitAlerts, setCareWorkerVisitAlerts] = useState(true)
-    const [missedMedicationAlerts, setMissedMedicationAlerts] = useState(true)
-    const [clientAndCareWorkerReminders, setClientAndCareWorkerReminders] = useState(true)
-    const [distanceAlerts, setDistanceAlerts] = useState(true)
-    const [reviewNotifications, setReviewNotifications] = useState(true)
+
+
+
+    const { agency } = useAppSelector((state: any) => state.agency)
+    console.log(agency)
+    const dispatch = useAppDispatch()
 
     const router = useRouter()
 
@@ -54,16 +52,87 @@ export default function SettingsPage() {
         router.push("/")
     }
 
-    // Handle save settings
-    const handleSaveSettings = () => {
-        toast.success("Settings saved successfully")
+    const toggleAllowCareWorkersEditCheckIn = () => {
+        dispatch(toggleAllowCareWorkersEditCheckInRedux(!agency?.allowCareWorkersEditCheckIn))
     }
+
+    const toggleAllowFamilyReviews = () => {
+        dispatch(toggleAllowFamilyReviewsRedux(!agency?.allowFamilyReviews))
+    }
+
+    const toggleEnableFamilySchedule = () => {
+        dispatch(toggleEnableFamilyScheduleRedux(!agency?.enableFamilySchedule))
+    }
+
+    const toggleEnableWeek1And2Scheduling = () => {
+        dispatch(toggleEnableWeek1And2SchedulingRedux(!agency?.enableWeek1And2Scheduling))
+    }
+
+    const toggleDistanceAlerts = () => {
+        dispatch(toggleDistanceAlertsRedux(!agency?.enableDistanceAlerts))
+    }
+
+    const setLateVisitThreshold = (value: string) => {
+        dispatch(setLateVisitThresholdRedux(value))
+    }
+
+    const setDistanceThreshold = (value: string) => {
+        dispatch(setDistanceThresholdRedux(value))
+    }
+
+    const setNotificationFrequency = (value: NotificationFrequency) => {
+        dispatch(setNotificationFrequencyRedux(value))
+    }
+
+    const setPreferredNotificationMethod = (value: PreferredNotificationMethod) => {
+        dispatch(setPreferredNotificationMethodRedux(value))
+    }
+
+    const toggleLateVisitAlerts = () => {
+        dispatch(toggleLateVisitAlertsRedux(!agency?.lateVisitAlerts))
+    }
+
+    const toggleClientBirthdayReminders = () => {
+        dispatch(toggleClientBirthdayRemindersRedux(!agency?.clientBirthdayReminders))
+    }
+
+    const toggleCareWorkerVisitAlerts = () => {
+        dispatch(toggleCareWorkerVisitAlertsRedux(!agency?.careWorkerVisitAlerts))
+    }
+
+    const toggleMissedMedicationAlerts = () => {
+        dispatch(toggleMissedMedicationAlertsRedux(!agency?.missedMedicationAlerts))
+    }
+
+    const toggleClientAndCareWorkerReminders = () => {
+        dispatch(toggleClientAndCareWorkerRemindersRedux(!agency?.clientAndCareWorkerReminders))
+    }
+
+    const toggleReviewNotifications = () => {
+        dispatch(toggleReviewNotificationsRedux(!agency?.reviewNotifications))
+    }
+
+    const saveSettings = async () => {
+        toast.loading("Saving settings...")
+        const result = await useUpdateAgencyMutation({
+            agency: agency,
+            agencyId: agency?.id,
+        })
+
+        toast.success("Settings saved")
+        console.log(result)
+    }
+
+
+
 
     return (
         <div className="flex-1 space-y-6 p-6">
             <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
-                <Button onClick={handleSaveSettings}>
+                <Button onClick={() => {
+                    saveSettings()
+                }}>
                     <Save className="mr-2 h-4 w-4" />
                     Save Changes
                 </Button>
@@ -105,8 +174,12 @@ export default function SettingsPage() {
                                     </div>
                                     <Switch
                                         id="allow-edit-checkin"
-                                        checked={allowCareWorkersEditCheckIn}
-                                        onCheckedChange={setAllowCareWorkersEditCheckIn}
+                                        checked={agency?.allowCareWorkersEditCheckIn}
+                                        onCheckedChange={
+                                            () => {
+                                                toggleAllowCareWorkersEditCheckIn()
+                                            }
+                                        }
                                     />
                                 </div>
 
@@ -121,8 +194,12 @@ export default function SettingsPage() {
                                     </div>
                                     <Switch
                                         id="allow-family-reviews"
-                                        checked={allowFamilyReviews}
-                                        onCheckedChange={setAllowFamilyReviews}
+                                        checked={agency?.allowFamilyReviews}
+                                        onCheckedChange={
+                                            () => {
+                                                toggleAllowFamilyReviews()
+                                            }
+                                        }
                                     />
                                 </div>
 
@@ -139,8 +216,12 @@ export default function SettingsPage() {
                                         <span className="inline-block bg-sky-100 text-sky-700 text-xs px-2 py-0.5 rounded-full mr-2">New</span>
                                         <Switch
                                             id="enable-family-schedule"
-                                            checked={enableFamilySchedule}
-                                            onCheckedChange={setEnableFamilySchedule}
+                                            checked={agency?.enableFamilySchedule}
+                                            onCheckedChange={
+                                                () => {
+                                                    toggleEnableFamilySchedule()
+                                                }
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -156,8 +237,12 @@ export default function SettingsPage() {
                                     </div>
                                     <Switch
                                         id="enable-week-scheduling"
-                                        checked={enableWeek1And2Scheduling}
-                                        onCheckedChange={setEnableWeek1And2Scheduling}
+                                        checked={agency?.enableWeek1And2Scheduling}
+                                        onCheckedChange={
+                                            () => {
+                                                toggleEnableWeek1And2Scheduling()
+                                            }
+                                        }
                                     />
                                 </div>
 
@@ -172,8 +257,10 @@ export default function SettingsPage() {
                                             <Input
                                                 id="late-visit-threshold"
                                                 type="number"
-                                                value={lateVisitThreshold}
-                                                onChange={(e) => setLateVisitThreshold(e.target.value)}
+                                                value={agency?.lateVisitThreshold}
+                                                onChange={(e) => {
+                                                    setLateVisitThreshold(e.target.value)
+                                                }}
                                                 className="w-20 mr-2"
                                             />
                                             <span>minutes</span>
@@ -187,17 +274,23 @@ export default function SettingsPage() {
                                             </Label>
                                             <Switch
                                                 id="enable-distance-alerts"
-                                                checked={enableDistanceAlerts}
-                                                onCheckedChange={setEnableDistanceAlerts}
+                                                checked={agency?.enableDistanceAlerts}
+                                                onCheckedChange={
+                                                    () => {
+                                                        toggleDistanceAlerts()
+                                                    }
+                                                }
                                             />
                                         </div>
-                                        {enableDistanceAlerts && (
+                                        {agency?.enableDistanceAlerts && (
                                             <div className="flex items-center mt-2">
                                                 <Input
                                                     id="distance-threshold"
                                                     type="number"
-                                                    value={distanceThreshold}
-                                                    onChange={(e) => setDistanceThreshold(e.target.value)}
+                                                    value={agency?.distanceThreshold}
+                                                    onChange={(e) => {
+                                                        setDistanceThreshold(e.target.value)
+                                                    }}
                                                     className="w-20 mr-2"
                                                 />
                                                 <span>meters</span>
@@ -265,7 +358,11 @@ export default function SettingsPage() {
                                         Late visit alerts
                                     </Label>
                                 </div>
-                                <Switch id="late-visit-alerts" checked={lateVisitAlerts} onCheckedChange={setLateVisitAlerts} />
+                                <Switch id="late-visit-alerts" checked={agency?.lateVisitAlerts} onCheckedChange={
+                                    () => {
+                                        toggleLateVisitAlerts()
+                                    }
+                                } />
                             </div>
 
                             <div className="flex items-center justify-between p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
@@ -277,8 +374,12 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch
                                     id="client-birthday-reminders"
-                                    checked={clientBirthdayReminders}
-                                    onCheckedChange={setClientBirthdayReminders}
+                                    checked={agency?.clientBirthdayReminders}
+                                    onCheckedChange={
+                                        () => {
+                                            toggleClientBirthdayReminders()
+                                        }
+                                    }
                                 />
                             </div>
 
@@ -291,8 +392,12 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch
                                     id="care-worker-visit-alerts"
-                                    checked={careWorkerVisitAlerts}
-                                    onCheckedChange={setCareWorkerVisitAlerts}
+                                    checked={agency?.careWorkerVisitAlerts}
+                                    onCheckedChange={
+                                        () => {
+                                            toggleCareWorkerVisitAlerts()
+                                        }
+                                    }
                                 />
                             </div>
 
@@ -305,8 +410,12 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch
                                     id="missed-medication-alerts"
-                                    checked={missedMedicationAlerts}
-                                    onCheckedChange={setMissedMedicationAlerts}
+                                    checked={agency?.missedMedicationAlerts}
+                                    onCheckedChange={
+                                        () => {
+                                            toggleMissedMedicationAlerts()
+                                        }
+                                    }
                                 />
                             </div>
 
@@ -319,8 +428,12 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch
                                     id="client-care-worker-reminders"
-                                    checked={clientAndCareWorkerReminders}
-                                    onCheckedChange={setClientAndCareWorkerReminders}
+                                    checked={agency?.clientAndCareWorkerReminders}
+                                    onCheckedChange={
+                                        () => {
+                                            toggleClientAndCareWorkerReminders()
+                                        }
+                                    }
                                 />
                             </div>
 
@@ -331,7 +444,11 @@ export default function SettingsPage() {
                                         Distance alerts
                                     </Label>
                                 </div>
-                                <Switch id="distance-alerts" checked={distanceAlerts} onCheckedChange={setDistanceAlerts} />
+                                <Switch id="distance-alerts" checked={agency?.distanceAlerts} onCheckedChange={
+                                    () => {
+                                        toggleDistanceAlerts()
+                                    }
+                                } />
                             </div>
 
                             <div className="flex items-center justify-between p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm">
@@ -343,8 +460,12 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch
                                     id="review-notifications"
-                                    checked={reviewNotifications}
-                                    onCheckedChange={setReviewNotifications}
+                                    checked={agency?.reviewNotifications}
+                                    onCheckedChange={
+                                        () => {
+                                            toggleReviewNotifications()
+                                        }
+                                    }
                                 />
                             </div>
                         </CardContent>
@@ -358,29 +479,37 @@ export default function SettingsPage() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="notification-method">Preferred notification method</Label>
-                                <Select defaultValue="email">
+                                <Select defaultValue={agency?.preferredNotificationMethod} onValueChange={
+                                    (value) => {
+                                        setPreferredNotificationMethod(value as PreferredNotificationMethod)
+                                    }
+                                }>
                                     <SelectTrigger id="notification-method">
                                         <SelectValue placeholder="Select notification method" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="email">Email</SelectItem>
-                                        <SelectItem value="sms">SMS</SelectItem>
-                                        <SelectItem value="push">Push Notifications</SelectItem>
-                                        <SelectItem value="all">All Methods</SelectItem>
+                                        <SelectItem value="EMAIL">Email</SelectItem>
+                                        <SelectItem value="SMS">SMS</SelectItem>
+                                        <SelectItem value="PHONE">Phone Call</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="notification-frequency">Notification frequency</Label>
-                                <Select defaultValue="immediate">
+                                <Select defaultValue={agency?.notificationFrequency} onValueChange={
+                                    (value) => {
+                                        setNotificationFrequency(value as NotificationFrequency)
+                                    }
+                                }>
                                     <SelectTrigger id="notification-frequency">
                                         <SelectValue placeholder="Select frequency" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="immediate">Immediate</SelectItem>
-                                        <SelectItem value="hourly">Hourly Digest</SelectItem>
-                                        <SelectItem value="daily">Daily Digest</SelectItem>
+                                        <SelectItem value="DAILY">Daily</SelectItem>
+                                        <SelectItem value="WEEKLY">Weekly</SelectItem>
+                                        <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                        <SelectItem value="YEARLY">Yearly</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -446,8 +575,17 @@ export default function SettingsPage() {
                             </div>
                         </CardContent>
                     </Card>
+
                 </TabsContent>
             </Tabs>
+
+            <div className="flex flex-col gap-2 ">
+                <h2 className="text-2xl font-bold my-6">Agency Object</h2>
+                <pre className="bg-gray-100 p-4 rounded-md">
+                    {JSON.stringify(agency, null, 2)}
+                </pre>
+            </div>
+
         </div>
     )
 }

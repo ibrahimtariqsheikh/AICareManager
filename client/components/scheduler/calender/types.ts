@@ -39,12 +39,10 @@ export interface AppointmentEvent {
   notes?: string
   color: string
   careWorker?: {
-    firstName: string
-    lastName: string
+    fullName: string
   }
   client?: {
-    firstName: string
-    lastName: string
+    fullName: string
   }
 }
 
@@ -74,12 +72,10 @@ export interface ProcessedCalendarEvent {
     notes?: string | undefined
     color: string
     careWorker: {
-        firstName: string
-        lastName: string
+        fullName: string
     }
     client: {
-        firstName: string
-        lastName: string
+        fullName: string
     }
 }
 

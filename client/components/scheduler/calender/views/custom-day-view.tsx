@@ -19,8 +19,7 @@ import { useRouter } from "next/navigation"
 
 export interface Client {
     id: string
-    firstName: string
-    lastName: string
+    fullName: string
     profile?: {
         avatarUrl?: string
     }
@@ -542,19 +541,19 @@ export function CustomDayView({
                                             <Avatar className="h-6 w-6 bg-neutral-100">
                                                 <AvatarImage
                                                     src={user.profile?.avatarUrl || "/placeholder.svg"}
-                                                    alt={`${user.firstName} ${user.lastName}`}
+                                                    alt={`${user.fullName}`}
 
 
 
                                                 />
                                                 <AvatarFallback className="text-xs font-medium bg-neutral-100">
-                                                    {user.firstName?.[0]}
+                                                    {user.fullName?.[0]}
 
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="flex mb-[2px] flex-col justify-start items-start  font-medium">
                                                 <span className="text-sm font-medium truncate text-neutral-800">
-                                                    {user.firstName} {user.lastName}
+                                                    {user.fullName}
                                                 </span>
                                                 <div
                                                     className="text-[13px] text-neutral-500 flex items-center gap-1"
@@ -707,9 +706,7 @@ export function CustomDayView({
 
                                             }}
                                         >
-                                            {/* <div className="client-name-label">
-                                                {client.firstName} {client.lastName}
-                                            </div> */}
+
 
                                             {eventsByUser[user.id]?.map((event) => {
                                                 const pos = eventPositions[event.id]
@@ -753,7 +750,7 @@ export function CustomDayView({
                                                         <div className={cn("text-[10px] mt-1 text-blue-800")}>
                                                             {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </div>
-                                                        <div className="text-xs font-semibold text-blue-800 flex flex-row items-center gap-1 justify-start mt-1"><User className="h-3.5 w-3.5" /><div className="text-blue-800">{event.careWorker?.firstName} {event.careWorker?.lastName}</div>  </div>
+                                                        <div className="text-xs font-semibold text-blue-800 flex flex-row items-center gap-1 justify-start mt-1"><User className="h-3.5 w-3.5" /><div className="text-blue-800">{event.careWorker?.fullName}</div>  </div>
                                                     </motion.div>
                                                 )
                                             })}

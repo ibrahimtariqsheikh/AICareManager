@@ -343,7 +343,10 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                 familyAccess: true,
                 communicationLogs: true,
                 documents: true,
-                
+visitTypes: {
+include:{
+assignedTasks:true}
+}
             },
         });
 
@@ -455,3 +458,130 @@ function getRandomColor(id: string): string {
   const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
   return colors[hash % colors.length];
 }
+
+// Add emergency contact
+export const addEmergencyContact = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { userId } = req.params;
+      const contact = req.body; 
+
+const newContact = await prisma.keyContact.create({
+  data: {
+    name: contact.name,
+    relation: contact.relation,
+    phone: contact.phone,
+    email: contact.email,
+    client: {
+      connect: {
+        id: userId,
+      },
+    },
+  },
+});
+
+        res.status(201).json(newContact);
+    } catch (error) {
+        console.error("Error adding emergency contact:", error);
+        res.status(500).json({ error: "Failed to add emergency contact" });
+    }
+};
+
+// Edit emergency contact
+export const editEmergencyContact = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { userId, contactId } = req.params;
+        const contact = req.body;
+        console.log("editEmergencyContact");
+        console.log(req.body);
+        console.log(req.params);
+
+        const updatedContact = await prisma.keyContact.update({
+            where: { id: contactId },
+            data: {
+                name: contact.name,
+                relation: contact.relation,
+                phone: contact.phone,
+                email: contact.email,
+                client: {
+                      connect: {
+                        id: userId,
+                    },
+                },
+            },
+        });
+
+        res.status(200).json(updatedContact);
+    } catch (error) {
+        console.error("Error editing emergency contact:", error);
+        res.status(500).json({ error: "Failed to edit emergency contact" });
+    }
+};
+
+
+// Delete emergency contact
+export const deleteEmergencyContact = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { userId, contactId } = req.params; 
+
+        await prisma.keyContact.delete({
+            where: { id: contactId },
+        });
+
+        res.status(204).json({ message: "Emergency contact deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting emergency contact:", error);
+        res.status(500).json({ error: "Failed to delete emergency contact" });
+    }
+};
+
+// Add visit type
+export const addVisitType = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { userId } = req.params;
+        const  visitType  = req.body;
+console.log(visitType);
+
+        const newVisitType = await prisma.visitType.create({
+            data: {
+                ...visitType,
+                userId,
+            },
+        });
+
+        res.status(201).json(newVisitType);
+    } catch (error) {
+        console.error("Error adding visit type:", error);
+        res.status(500).json({ error: "Failed to add visit type" });
+    }
+};
+
+// Add visit type task
+export const addVisitTypeTask = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { userId, visitTypeId } = req.params;
+        const task  = req.body;  
+console.log(task);
+
+        const newVisitTypeTask = await prisma.task.create({
+            data: {
+                ...task,
+                visitTypeId,
+            },
+        });
+
+        res.status(201).json(newVisitTypeTask);
+    } catch (error) {
+        console.error("Error adding visit type task:", error);
+        res.status(500).json({ error: "Failed to add visit type task" });
+    }
+};
+
+
+
+
+
+
+
+
+
+

@@ -15,56 +15,119 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { PlusCircle } from "lucide-react"
+import { Mail, Pencil, Phone, PlusCircle, Trash2 } from "lucide-react"
 
 import { useEffect, useState } from "react"
+import { KeyContact, Task, VisitType, User } from "@/types/prismaTypes"
+import { useToast } from "@/components/ui/use-toast"
+import { useAddEmergencyContactMutation, useEditEmergencyContactMutation, useDeleteEmergencyContactMutation, useAddVisitTypeMutation, useAddVisitTypeTaskMutation } from "@/state/api"
+import { EmergencyContact } from "@/types/profileTypes"
 
-// Define types based on the provided data structure
-type KeyContact = {
-    id: string
-    clientId?: string
-    userId?: string
-    name: string
-    relation: string
-    phone: string
-    email?: string
-}
 
-type User = {
-    id: string
-    email: string
-    fullName: string
-    preferredName?: string
-    role: string
-    subRole: string
-    address?: string
-    city?: string
-    province?: string
-    postalCode?: string
-    phoneNumber?: string
-    dateOfBirth?: string
-    allergies?: string
-    interests?: string
-    history?: string
-    keyContacts?: KeyContact[]
-    careOutcomes?: any[]
-    incidentReports?: any[]
-    riskAssessments?: any[]
-    familyAccess?: any[]
-    communicationLogs?: any[]
-    documents?: any[]
-    [key: string]: any
-}
+
+
+
 
 export const PatientInformation = ({ user }: { user: User }) => {
+    const { toast } = useToast()
     const [selectedRole, setSelectedRole] = useState<string>(user?.role || "CLIENT")
     const [dialogOpen, setDialogOpen] = useState(false)
     const [newContact, setNewContact] = useState<Partial<KeyContact>>({
         name: "",
         relation: "",
         phone: "",
+        email: "",
     })
     const [keyContacts, setKeyContacts] = useState<KeyContact[]>(user?.keyContacts || [])
+
+    // Add these state variables to the component
+    const [visitTypes, setVisitTypes] = useState<VisitType[]>(user?.visitTypes || [])
+    const [visitDialogOpen, setVisitDialogOpen] = useState(false)
+    const [taskDialogOpen, setTaskDialogOpen] = useState(false)
+    const [selectedVisitType, setSelectedVisitType] = useState<string | null>(null)
+
+    const [newVisitType, setNewVisitType] = useState<Partial<VisitType>>({
+        name: "",
+        description: "",
+    })
+    const [newTask, setNewTask] = useState<Partial<Task>>({
+        type: "",
+        careworkerNotes: "",
+    })
+
+    // Add these functions for editing and deleting contacts
+    const [editingContact, setEditingContact] = useState<KeyContact | null>(null)
+    const [editDialogOpen, setEditDialogOpen] = useState(false)
+
+    // API mutation hooks
+    const [addEmergencyContact, { isLoading: isAddingContact }] = useAddEmergencyContactMutation()
+    const [editEmergencyContact, { isLoading: isEditingContact }] = useEditEmergencyContactMutation()
+    const [deleteEmergencyContact, { isLoading: isDeletingContact }] = useDeleteEmergencyContactMutation()
+    const [addVisitType, { isLoading: isAddingVisitType }] = useAddVisitTypeMutation()
+    const [addVisitTypeTask, { isLoading: isAddingTask }] = useAddVisitTypeTaskMutation()
+
+    const handleEditContact = (contact: KeyContact) => {
+        setEditingContact(contact)
+        setEditDialogOpen(true)
+    }
+
+    const handleUpdateContact = async () => {
+        if (!editingContact || !user?.id) return
+
+        try {
+            const result = await editEmergencyContact({
+                userId: user.id,
+                contactId: editingContact.id,
+                contact: editingContact as EmergencyContact,
+            }).unwrap()
+
+            // Update local state with the returned contact
+            const updatedContacts = keyContacts.map((contact: KeyContact) => (contact.phone === result.phone ? result : contact))
+            setKeyContacts(updatedContacts)
+
+            toast({
+                title: "Contact updated",
+                description: "Emergency contact has been updated successfully.",
+            })
+
+            setEditingContact(null)
+            setEditDialogOpen(false)
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to update emergency contact. Please try again.",
+                variant: "destructive",
+            })
+            console.error("Failed to update contact:", error)
+        }
+    }
+
+    const handleDeleteContact = async (contactId: string) => {
+        if (!user?.id) return
+
+        try {
+            await deleteEmergencyContact({
+                userId: user.id,
+                contactId: contactId,
+            }).unwrap()
+
+            // Update local state
+            const updatedContacts = keyContacts.filter((contact) => contact.id !== contactId)
+            setKeyContacts(updatedContacts)
+
+            toast({
+                title: "Contact deleted",
+                description: "Emergency contact has been removed successfully.",
+            })
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to delete emergency contact. Please try again.",
+                variant: "destructive",
+            })
+            console.error("Failed to delete contact:", error)
+        }
+    }
 
     useEffect(() => {
         if (user?.dateOfBirth) {
@@ -73,7 +136,10 @@ export const PatientInformation = ({ user }: { user: User }) => {
         if (user?.keyContacts) {
             setKeyContacts(user.keyContacts)
         }
-    }, [user?.dateOfBirth, user?.keyContacts])
+        if (user?.visitTypes) {
+            setVisitTypes(user.visitTypes)
+        }
+    }, [user?.dateOfBirth, user?.keyContacts, user?.visitTypes])
 
     const preserveDateOnly = (dateString: string): Date => {
         if (!dateString) {
@@ -98,19 +164,119 @@ export const PatientInformation = ({ user }: { user: User }) => {
         return `${year}-${month}-${day}T00:00:00.000Z`
     }
 
-    const handleAddContact = () => {
-        // In a real app, you would make an API call here
-        const newKeyContact: KeyContact = {
-            id: `temp-${Date.now()}`, // In a real app, the backend would generate this
-            name: newContact.name || "",
-            relation: newContact.relation || "",
-            phone: newContact.phone || "",
-            userId: user?.id || "",
-        }
+    const handleAddContact = async () => {
+        if (!user?.id) return
 
-        setKeyContacts([...keyContacts, newKeyContact])
-        setNewContact({ name: "", relation: "", phone: "" })
-        setDialogOpen(false)
+        try {
+            const newKeyContact = {
+                name: newContact.name || "",
+                relation: newContact.relation || "",
+                phone: newContact.phone || "",
+                email: newContact.email || "",
+            }
+
+            const result = await addEmergencyContact({
+                userId: user.id,
+                contact: newKeyContact as unknown as EmergencyContact,
+            }).unwrap()
+
+            // Update local state with the returned contact that includes the ID
+            setKeyContacts([...keyContacts, result])
+
+            toast({
+                title: "Contact added",
+                description: "Emergency contact has been added successfully.",
+            })
+
+            setNewContact({ name: "", relation: "", phone: "", email: "" })
+            setDialogOpen(false)
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to add emergency contact. Please try again.",
+                variant: "destructive",
+            })
+            console.error("Failed to add contact:", error)
+        }
+    }
+
+    const handleAddVisitType = async () => {
+        if (!user?.id) return
+
+        try {
+            const visitTypeData = {
+                name: newVisitType.name || "",
+                description: newVisitType.description || "",
+            }
+
+            const result = await addVisitType({
+                userId: user.id,
+                visitType: visitTypeData as VisitType,
+            }).unwrap()
+
+            // Update local state with the returned visit type
+            setVisitTypes([...visitTypes, result])
+
+            toast({
+                title: "Visit type added",
+                description: "New visit type has been created successfully.",
+            })
+
+            setNewVisitType({ name: "", description: "" })
+            setVisitDialogOpen(false)
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to add visit type. Please try again.",
+                variant: "destructive",
+            })
+            console.error("Failed to add visit type:", error)
+        }
+    }
+
+    const handleAddTask = async () => {
+        if (!selectedVisitType || !user?.id) return
+
+        try {
+            const taskData = {
+                type: newTask.type || "",
+                careworkerNotes: newTask.careworkerNotes || "",
+            }
+
+            const result = await addVisitTypeTask({
+                userId: user.id,
+                visitTypeId: selectedVisitType,
+                task: taskData as Task,
+            }).unwrap()
+
+            // Update local state
+            const updatedVisitTypes = visitTypes.map((visitType) => {
+                if (visitType.id === selectedVisitType) {
+                    return {
+                        ...visitType,
+                        assignedTasks: [...(visitType.assignedTasks || []), result],
+                    }
+                }
+                return visitType
+            })
+
+            setVisitTypes(updatedVisitTypes)
+
+            toast({
+                title: "Task added",
+                description: "New task has been added to the visit type.",
+            })
+
+            setNewTask({ type: "", careworkerNotes: "" })
+            setTaskDialogOpen(false)
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to add task. Please try again.",
+                variant: "destructive",
+            })
+            console.error("Failed to add task:", error)
+        }
     }
 
     const Role = {
@@ -352,15 +518,45 @@ export const PatientInformation = ({ user }: { user: User }) => {
                 </CardContent>
             </Card>
 
+            <Card className="p-6 mt-6">
+                <CardHeader>
+                    <CardTitle>Personal Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-6">
+                        <div>
+                            <h3 className="text-md font-semibold mb-2">Allergies</h3>
+                            <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
+                                <p className="text-sm text-neutral-700">{user?.allergies || "No allergies recorded"}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-md font-semibold mb-2">Interests</h3>
+                            <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
+                                <p className="text-sm text-neutral-700">{user?.interests || "No interests recorded"}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-md font-semibold mb-2">Medical History</h3>
+                            <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
+                                <p className="text-sm text-neutral-700">{user?.history || "No medical history recorded"}</p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
             {/* Two-column grid for Emergency Contacts and Additional Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="grid grid-cols-1 gap-6 mt-6">
                 {/* Emergency Contacts Card */}
                 <Card className="p-6">
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Emergency Contacts</CardTitle>
                         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                             <DialogTrigger asChild>
-                                <Button variant="outline" size="sm" className="flex items-center gap-1">
+                                <Button variant="default" size="sm" className="flex items-center gap-1">
                                     <PlusCircle className="h-4 w-4" />
                                     <span>Add Contact</span>
                                 </Button>
@@ -384,12 +580,23 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="relation">Relationship</Label>
-                                        <Input
-                                            id="relation"
-                                            placeholder="e.g. Spouse, Child, Parent"
+                                        <Select
                                             value={newContact.relation}
-                                            onChange={(e) => setNewContact({ ...newContact, relation: e.target.value })}
-                                        />
+                                            onValueChange={(value) => setNewContact({ ...newContact, relation: value })}
+                                        >
+                                            <SelectTrigger id="relation">
+                                                <SelectValue placeholder="Select relationship" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Spouse">Spouse</SelectItem>
+                                                <SelectItem value="Parent">Parent</SelectItem>
+                                                <SelectItem value="Child">Child</SelectItem>
+                                                <SelectItem value="Sibling">Sibling</SelectItem>
+                                                <SelectItem value="Friend">Friend</SelectItem>
+                                                <SelectItem value="Caregiver">Caregiver</SelectItem>
+                                                <SelectItem value="Other">Other</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
@@ -400,13 +607,26 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                             onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
                                         />
                                     </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email">Email Address</Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            placeholder="contact@example.com"
+                                            value={newContact.email}
+                                            onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
                                 <DialogFooter>
                                     <Button variant="outline" onClick={() => setDialogOpen(false)}>
                                         Cancel
                                     </Button>
-                                    <Button onClick={handleAddContact} disabled={!newContact.name || !newContact.phone}>
-                                        Add Contact
+                                    <Button
+                                        onClick={handleAddContact}
+                                        disabled={!newContact.name || !newContact.phone || isAddingContact}
+                                    >
+                                        {isAddingContact ? "Adding..." : "Add Contact"}
                                     </Button>
                                 </DialogFooter>
                             </DialogContent>
@@ -414,61 +634,316 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     </CardHeader>
                     <CardContent>
                         {keyContacts && keyContacts.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div className="space-y-4">
                                 {keyContacts.map((contact: KeyContact) => (
-                                    <div key={contact.id} className="bg-neutral-100 p-4 rounded-md shadow-sm">
-                                        <h4 className="text-md font-semibold mb-1">{contact.name}</h4>
-                                        <p className="text-xs text-neutral-700">{contact.relation}</p>
-                                        <p className="text-xs text-neutral-700">{contact.phone}</p>
-                                        {contact.email && <p className="text-xs text-neutral-700">{contact.email}</p>}
+                                    <div
+                                        key={contact.id}
+                                        className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-shadow"
+                                    >
+                                        <div className="flex justify-between items-start">
+                                            <div className="flex items-center gap-3">
+                                                <div className="bg-emerald-100 text-emerald-700 h-10 w-10 rounded-full flex items-center justify-center font-semibold">
+                                                    {contact.name.substring(0, 2).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-md font-semibold">{contact.name}</h4>
+                                                    <p className="text-sm text-neutral-600">{contact.relation}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0"
+                                                    onClick={() => handleEditContact(contact)}
+                                                    disabled={isEditingContact || isDeletingContact}
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                    <span className="sr-only">Edit</span>
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                                    onClick={() => handleDeleteContact(contact.id)}
+                                                    disabled={isEditingContact || isDeletingContact}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                    <span className="sr-only">Delete</span>
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <Phone className="h-4 w-4 text-neutral-500" />
+                                                <span>{contact.phone}</span>
+                                            </div>
+                                            {contact.email && (
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <Mail className="h-4 w-4 text-neutral-500" />
+                                                    <span>{contact.email}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-neutral-500 text-sm">No emergency contacts available.</p>
+                            <div className="text-center py-8">
+                                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 mb-4">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-neutral-500"
+                                    >
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                </div>
+                                <p className="text-neutral-500 text-sm">No emergency contacts available.</p>
+                                <p className="text-neutral-400 text-xs mt-1">Add contacts using the button above.</p>
+                            </div>
                         )}
                     </CardContent>
                 </Card>
 
                 {/* Personal Details Card with Allergies, Interests, and History */}
-                <Card className="p-6">
-                    <CardHeader>
-                        <CardTitle>Personal Details</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="text-md font-semibold mb-2">Allergies</h3>
-                                <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
-                                    <p className="text-sm text-neutral-700">{user?.allergies || "No allergies recorded"}</p>
-                                </div>
-                            </div>
 
-                            <div>
-                                <h3 className="text-md font-semibold mb-2">Interests</h3>
-                                <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
-                                    <p className="text-sm text-neutral-700">{user?.interests || "No interests recorded"}</p>
-                                </div>
-                            </div>
-
-                            <div>
-                                <h3 className="text-md font-semibold mb-2">Medical History</h3>
-                                <div className="bg-neutral-50 p-3 rounded-md border border-neutral-200">
-                                    <p className="text-sm text-neutral-700">{user?.history || "No medical history recorded"}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
 
-            {/* Additional sections for arrays */}
-            {renderArraySection("Care Outcomes", user?.careOutcomes || [], "No care outcomes available.")}
-            {renderArraySection("Incident Reports", user?.incidentReports || [], "No incident reports available.")}
-            {renderArraySection("Risk Assessments", user?.riskAssessments || [], "No risk assessments available.")}
-            {renderArraySection("Family Access", user?.familyAccess || [], "No family access records available.")}
-            {renderArraySection("Communication Logs", user?.communicationLogs || [], "No communication logs available.")}
-            {renderArraySection("Documents", user?.documents || [], "No documents available.")}
+            {/* Visit Types Card */}
+            <Card className="p-6 mt-6">
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle>Visit Types</CardTitle>
+                    <Dialog open={visitDialogOpen} onOpenChange={setVisitDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="default" size="sm" className="flex items-center gap-1">
+                                <PlusCircle className="h-4 w-4" />
+                                <span>Add Visit Type</span>
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Add Visit Type</DialogTitle>
+                                <DialogDescription>Create a new visit type for this patient.</DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="visit-name">Visit Name</Label>
+                                    <Input
+                                        id="visit-name"
+                                        placeholder="e.g. Morning Visit, Medication Check"
+                                        value={newVisitType.name}
+                                        onChange={(e) => setNewVisitType({ ...newVisitType, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="visit-description">Description</Label>
+                                    <Input
+                                        id="visit-description"
+                                        placeholder="Describe the purpose of this visit"
+                                        value={newVisitType.description}
+                                        onChange={(e) => setNewVisitType({ ...newVisitType, description: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setVisitDialogOpen(false)}>
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleAddVisitType} disabled={!newVisitType.name || isAddingVisitType}>
+                                    {isAddingVisitType ? "Adding..." : "Add Visit Type"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </CardHeader>
+                <CardContent>
+                    {visitTypes && visitTypes.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-6">
+                            {visitTypes.map((visitType) => (
+                                <div key={visitType.id} className="bg-neutral-50 p-4 rounded-md border border-neutral-200">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 className="text-lg font-semibold">{visitType.name}</h3>
+                                            <p className="text-sm text-neutral-600">{visitType.description}</p>
+                                        </div>
+                                        <Dialog
+                                            open={taskDialogOpen && selectedVisitType === visitType.id}
+                                            onOpenChange={(open) => {
+                                                setTaskDialogOpen(open)
+                                                if (open) setSelectedVisitType(visitType.id)
+                                                else setSelectedVisitType(null)
+                                            }}
+                                        >
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline" size="sm" className="flex items-center gap-1">
+                                                    <PlusCircle className="h-4 w-4" />
+                                                    <span>Add Task</span>
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[425px]">
+                                                <DialogHeader>
+                                                    <DialogTitle>Add Task to {visitType.name}</DialogTitle>
+                                                    <DialogDescription>Add a new task to this visit type.</DialogDescription>
+                                                </DialogHeader>
+                                                <div className="grid gap-4 py-4">
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="task-type">Task Type</Label>
+                                                        <Select
+                                                            value={newTask.type}
+                                                            onValueChange={(value) => setNewTask({ ...newTask, type: value })}
+                                                        >
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select task type" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="MEDICATION">Medication</SelectItem>
+                                                                <SelectItem value="HYGIENE">Hygiene</SelectItem>
+                                                                <SelectItem value="MEAL">Meal</SelectItem>
+                                                                <SelectItem value="EXERCISE">Exercise</SelectItem>
+                                                                <SelectItem value="SOCIAL">Social</SelectItem>
+                                                                <SelectItem value="OTHER">Other</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="task-notes">Careworker Notes</Label>
+                                                        <Input
+                                                            id="task-notes"
+                                                            placeholder="Instructions for careworkers"
+                                                            value={newTask.careworkerNotes}
+                                                            onChange={(e) => setNewTask({ ...newTask, careworkerNotes: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button variant="outline" onClick={() => setTaskDialogOpen(false)}>
+                                                        Cancel
+                                                    </Button>
+                                                    <Button onClick={handleAddTask} disabled={!newTask.type || isAddingTask}>
+                                                        {isAddingTask ? "Adding..." : "Add Task"}
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+
+                                    {/* Tasks List */}
+                                    <div className="mt-3">
+                                        <h4 className="text-sm font-medium mb-2">Assigned Tasks:</h4>
+                                        {visitType.assignedTasks && visitType.assignedTasks.length > 0 ? (
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                {visitType.assignedTasks.map((task: Task) => (
+                                                    <div key={task.id} className="bg-white p-3 rounded border border-neutral-200">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-medium">
+                                                                {task.type}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-sm text-neutral-700">{task.careworkerNotes || "No notes provided"}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-sm text-neutral-500">No tasks assigned to this visit type.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-neutral-500 text-sm">No visit types available. Add a visit type to get started.</p>
+                    )}
+                </CardContent>
+            </Card>
+
+
+
+            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Edit Emergency Contact</DialogTitle>
+                        <DialogDescription>Update the information for this emergency contact.</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-name">Name</Label>
+                            <Input
+                                id="edit-name"
+                                placeholder="Full name"
+                                value={editingContact?.name || ""}
+                                onChange={(e) => setEditingContact(editingContact ? { ...editingContact, name: e.target.value } : null)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-relation">Relationship</Label>
+                            <Select
+                                value={editingContact?.relation || ""}
+                                onValueChange={(value) =>
+                                    setEditingContact(editingContact ? { ...editingContact, relation: value } : null)
+                                }
+                            >
+                                <SelectTrigger id="edit-relation">
+                                    <SelectValue placeholder="Select relationship" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Spouse">Spouse</SelectItem>
+                                    <SelectItem value="Parent">Parent</SelectItem>
+                                    <SelectItem value="Child">Child</SelectItem>
+                                    <SelectItem value="Sibling">Sibling</SelectItem>
+                                    <SelectItem value="Friend">Friend</SelectItem>
+                                    <SelectItem value="Caregiver">Caregiver</SelectItem>
+                                    <SelectItem value="Other">Other</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-phone">Phone Number</Label>
+                            <Input
+                                id="edit-phone"
+                                placeholder="(555) 123-4567"
+                                value={editingContact?.phone || ""}
+                                onChange={(e) =>
+                                    setEditingContact(editingContact ? { ...editingContact, phone: e.target.value } : null)
+                                }
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-email">Email Address</Label>
+                            <Input
+                                id="edit-email"
+                                type="email"
+                                placeholder="contact@example.com"
+                                value={editingContact?.email || ""}
+                                onChange={(e) =>
+                                    setEditingContact(editingContact ? { ...editingContact, email: e.target.value } : null)
+                                }
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleUpdateContact}
+                            disabled={!editingContact?.name || !editingContact?.phone || isEditingContact}
+                        >
+                            {isEditingContact ? "Updating..." : "Update Contact"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

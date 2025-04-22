@@ -84,6 +84,11 @@ export type FamilyAccess = $Result.DefaultSelection<Prisma.$FamilyAccessPayload>
  */
 export type MedicationDatabaseLink = $Result.DefaultSelection<Prisma.$MedicationDatabaseLinkPayload>
 /**
+ * Model Task
+ * 
+ */
+export type Task = $Result.DefaultSelection<Prisma.$TaskPayload>
+/**
  * Model VisitType
  * 
  */
@@ -198,7 +203,50 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
  * Enums
  */
 export namespace $Enums {
-  export const AnnouncementPriority: {
+  export const NotificationFrequency: {
+  DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
+  MONTHLY: 'MONTHLY',
+  YEARLY: 'YEARLY'
+};
+
+export type NotificationFrequency = (typeof NotificationFrequency)[keyof typeof NotificationFrequency]
+
+
+export const PreferredNotificationMethod: {
+  EMAIL: 'EMAIL',
+  SMS: 'SMS',
+  PHONE: 'PHONE'
+};
+
+export type PreferredNotificationMethod = (typeof PreferredNotificationMethod)[keyof typeof PreferredNotificationMethod]
+
+
+export const TaskType: {
+  MEDICATION: 'MEDICATION',
+  BODYMAP: 'BODYMAP',
+  FOOD: 'FOOD',
+  DRINKS: 'DRINKS',
+  PERSONALCARE: 'PERSONALCARE',
+  HYGIENE: 'HYGIENE',
+  TOILET_ASSISTANCE: 'TOILET_ASSISTANCE',
+  REPOSITIONING: 'REPOSITIONING',
+  COMPANIONSHIP: 'COMPANIONSHIP',
+  LAUNDRY: 'LAUNDRY',
+  GROCERIES: 'GROCERIES',
+  HOUSEWORK: 'HOUSEWORK',
+  CHORES: 'CHORES',
+  INCIDENT_RESPONSE: 'INCIDENT_RESPONSE',
+  FIRE_SAFETY: 'FIRE_SAFETY',
+  BLOOD_PRESSURE: 'BLOOD_PRESSURE',
+  VITALS: 'VITALS',
+  OTHER: 'OTHER'
+};
+
+export type TaskType = (typeof TaskType)[keyof typeof TaskType]
+
+
+export const AnnouncementPriority: {
   LOW: 'LOW',
   NORMAL: 'NORMAL',
   HIGH: 'HIGH',
@@ -443,6 +491,18 @@ export const AlertSeverity: {
 export type AlertSeverity = (typeof AlertSeverity)[keyof typeof AlertSeverity]
 
 }
+
+export type NotificationFrequency = $Enums.NotificationFrequency
+
+export const NotificationFrequency: typeof $Enums.NotificationFrequency
+
+export type PreferredNotificationMethod = $Enums.PreferredNotificationMethod
+
+export const PreferredNotificationMethod: typeof $Enums.PreferredNotificationMethod
+
+export type TaskType = $Enums.TaskType
+
+export const TaskType: typeof $Enums.TaskType
 
 export type AnnouncementPriority = $Enums.AnnouncementPriority
 
@@ -792,6 +852,16 @@ export class PrismaClient<
     * ```
     */
   get medicationDatabaseLink(): Prisma.MedicationDatabaseLinkDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.task`: Exposes CRUD operations for the **Task** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tasks
+    * const tasks = await prisma.task.findMany()
+    * ```
+    */
+  get task(): Prisma.TaskDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.visitType`: Exposes CRUD operations for the **VisitType** model.
@@ -1466,6 +1536,7 @@ export namespace Prisma {
     CommunicationPreference: 'CommunicationPreference',
     FamilyAccess: 'FamilyAccess',
     MedicationDatabaseLink: 'MedicationDatabaseLink',
+    Task: 'Task',
     VisitType: 'VisitType',
     Schedule: 'Schedule',
     Report: 'Report',
@@ -1506,7 +1577,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "invitation" | "agency" | "announcement" | "auditLog" | "certification" | "operatingHours" | "group" | "rateSheet" | "customTask" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
+      modelProps: "invitation" | "agency" | "announcement" | "auditLog" | "certification" | "operatingHours" | "group" | "rateSheet" | "customTask" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "task" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2543,6 +2614,80 @@ export namespace Prisma {
           count: {
             args: Prisma.MedicationDatabaseLinkCountArgs<ExtArgs>
             result: $Utils.Optional<MedicationDatabaseLinkCountAggregateOutputType> | number
+          }
+        }
+      }
+      Task: {
+        payload: Prisma.$TaskPayload<ExtArgs>
+        fields: Prisma.TaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          findFirst: {
+            args: Prisma.TaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          findMany: {
+            args: Prisma.TaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>[]
+          }
+          create: {
+            args: Prisma.TaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          createMany: {
+            args: Prisma.TaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>[]
+          }
+          delete: {
+            args: Prisma.TaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          update: {
+            args: Prisma.TaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.TaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.TaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          aggregate: {
+            args: Prisma.TaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTask>
+          }
+          groupBy: {
+            args: Prisma.TaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TaskCountArgs<ExtArgs>
+            result: $Utils.Optional<TaskCountAggregateOutputType> | number
           }
         }
       }
@@ -4272,6 +4417,7 @@ export namespace Prisma {
     communicationPreference?: CommunicationPreferenceOmit
     familyAccess?: FamilyAccessOmit
     medicationDatabaseLink?: MedicationDatabaseLinkOmit
+    task?: TaskOmit
     visitType?: VisitTypeOmit
     schedule?: ScheduleOmit
     report?: ReportOmit
@@ -4405,7 +4551,6 @@ export namespace Prisma {
     riskCategories: number
     schedules: number
     users: number
-    visitTypes: number
   }
 
   export type AgencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4426,7 +4571,6 @@ export namespace Prisma {
     riskCategories?: boolean | AgencyCountOutputTypeCountRiskCategoriesArgs
     schedules?: boolean | AgencyCountOutputTypeCountSchedulesArgs
     users?: boolean | AgencyCountOutputTypeCountUsersArgs
-    visitTypes?: boolean | AgencyCountOutputTypeCountVisitTypesArgs
   }
 
   // Custom InputTypes
@@ -4559,13 +4703,6 @@ export namespace Prisma {
     where?: UserWhereInput
   }
 
-  /**
-   * AgencyCountOutputType without action
-   */
-  export type AgencyCountOutputTypeCountVisitTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VisitTypeWhereInput
-  }
-
 
   /**
    * Count Type AnnouncementCountOutputType
@@ -4667,6 +4804,7 @@ export namespace Prisma {
     groups: number
     invitedUsers: number
     acknowledgedAnnouncements: number
+    visitTypes: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4703,6 +4841,7 @@ export namespace Prisma {
     groups?: boolean | UserCountOutputTypeCountGroupsArgs
     invitedUsers?: boolean | UserCountOutputTypeCountInvitedUsersArgs
     acknowledgedAnnouncements?: boolean | UserCountOutputTypeCountAcknowledgedAnnouncementsArgs
+    visitTypes?: boolean | UserCountOutputTypeCountVisitTypesArgs
   }
 
   // Custom InputTypes
@@ -4947,6 +5086,13 @@ export namespace Prisma {
     where?: AnnouncementWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountVisitTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VisitTypeWhereInput
+  }
+
 
   /**
    * Count Type MedicationDatabaseLinkCountOutputType
@@ -4984,11 +5130,11 @@ export namespace Prisma {
    */
 
   export type VisitTypeCountOutputType = {
-    schedules: number
+    assignedTasks: number
   }
 
   export type VisitTypeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    schedules?: boolean | VisitTypeCountOutputTypeCountSchedulesArgs
+    assignedTasks?: boolean | VisitTypeCountOutputTypeCountAssignedTasksArgs
   }
 
   // Custom InputTypes
@@ -5005,8 +5151,8 @@ export namespace Prisma {
   /**
    * VisitTypeCountOutputType without action
    */
-  export type VisitTypeCountOutputTypeCountSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ScheduleWhereInput
+  export type VisitTypeCountOutputTypeCountAssignedTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskWhereInput
   }
 
 
@@ -6304,6 +6450,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled: boolean | null
     hasPoliciesAndProcedures: boolean | null
     isTestAccount: boolean | null
+    allowCareWorkersEditCheckIn: boolean | null
+    allowFamilyReviews: boolean | null
+    enableFamilySchedule: boolean | null
+    enableWeek1And2Scheduling: boolean | null
+    lateVisitThreshold: string | null
+    enableDistanceAlerts: boolean | null
+    distanceThreshold: string | null
+    lateVisitAlerts: boolean | null
+    clientBirthdayReminders: boolean | null
+    careWorkerVisitAlerts: boolean | null
+    missedMedicationAlerts: boolean | null
+    clientAndCareWorkerReminders: boolean | null
+    distanceAlerts: boolean | null
+    reviewNotifications: boolean | null
+    preferredNotificationMethod: $Enums.PreferredNotificationMethod | null
+    notificationFrequency: $Enums.NotificationFrequency | null
     createdAt: Date | null
     updatedAt: Date | null
     licenseNumber: string | null
@@ -6336,6 +6498,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled: boolean | null
     hasPoliciesAndProcedures: boolean | null
     isTestAccount: boolean | null
+    allowCareWorkersEditCheckIn: boolean | null
+    allowFamilyReviews: boolean | null
+    enableFamilySchedule: boolean | null
+    enableWeek1And2Scheduling: boolean | null
+    lateVisitThreshold: string | null
+    enableDistanceAlerts: boolean | null
+    distanceThreshold: string | null
+    lateVisitAlerts: boolean | null
+    clientBirthdayReminders: boolean | null
+    careWorkerVisitAlerts: boolean | null
+    missedMedicationAlerts: boolean | null
+    clientAndCareWorkerReminders: boolean | null
+    distanceAlerts: boolean | null
+    reviewNotifications: boolean | null
+    preferredNotificationMethod: $Enums.PreferredNotificationMethod | null
+    notificationFrequency: $Enums.NotificationFrequency | null
     createdAt: Date | null
     updatedAt: Date | null
     licenseNumber: string | null
@@ -6368,6 +6546,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled: number
     hasPoliciesAndProcedures: number
     isTestAccount: number
+    allowCareWorkersEditCheckIn: number
+    allowFamilyReviews: number
+    enableFamilySchedule: number
+    enableWeek1And2Scheduling: number
+    lateVisitThreshold: number
+    enableDistanceAlerts: number
+    distanceThreshold: number
+    lateVisitAlerts: number
+    clientBirthdayReminders: number
+    careWorkerVisitAlerts: number
+    missedMedicationAlerts: number
+    clientAndCareWorkerReminders: number
+    distanceAlerts: number
+    reviewNotifications: number
+    preferredNotificationMethod: number
+    notificationFrequency: number
     createdAt: number
     updatedAt: number
     licenseNumber: number
@@ -6420,6 +6614,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: true
     hasPoliciesAndProcedures?: true
     isTestAccount?: true
+    allowCareWorkersEditCheckIn?: true
+    allowFamilyReviews?: true
+    enableFamilySchedule?: true
+    enableWeek1And2Scheduling?: true
+    lateVisitThreshold?: true
+    enableDistanceAlerts?: true
+    distanceThreshold?: true
+    lateVisitAlerts?: true
+    clientBirthdayReminders?: true
+    careWorkerVisitAlerts?: true
+    missedMedicationAlerts?: true
+    clientAndCareWorkerReminders?: true
+    distanceAlerts?: true
+    reviewNotifications?: true
+    preferredNotificationMethod?: true
+    notificationFrequency?: true
     createdAt?: true
     updatedAt?: true
     licenseNumber?: true
@@ -6452,6 +6662,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: true
     hasPoliciesAndProcedures?: true
     isTestAccount?: true
+    allowCareWorkersEditCheckIn?: true
+    allowFamilyReviews?: true
+    enableFamilySchedule?: true
+    enableWeek1And2Scheduling?: true
+    lateVisitThreshold?: true
+    enableDistanceAlerts?: true
+    distanceThreshold?: true
+    lateVisitAlerts?: true
+    clientBirthdayReminders?: true
+    careWorkerVisitAlerts?: true
+    missedMedicationAlerts?: true
+    clientAndCareWorkerReminders?: true
+    distanceAlerts?: true
+    reviewNotifications?: true
+    preferredNotificationMethod?: true
+    notificationFrequency?: true
     createdAt?: true
     updatedAt?: true
     licenseNumber?: true
@@ -6484,6 +6710,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: true
     hasPoliciesAndProcedures?: true
     isTestAccount?: true
+    allowCareWorkersEditCheckIn?: true
+    allowFamilyReviews?: true
+    enableFamilySchedule?: true
+    enableWeek1And2Scheduling?: true
+    lateVisitThreshold?: true
+    enableDistanceAlerts?: true
+    distanceThreshold?: true
+    lateVisitAlerts?: true
+    clientBirthdayReminders?: true
+    careWorkerVisitAlerts?: true
+    missedMedicationAlerts?: true
+    clientAndCareWorkerReminders?: true
+    distanceAlerts?: true
+    reviewNotifications?: true
+    preferredNotificationMethod?: true
+    notificationFrequency?: true
     createdAt?: true
     updatedAt?: true
     licenseNumber?: true
@@ -6603,6 +6845,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled: boolean
     hasPoliciesAndProcedures: boolean
     isTestAccount: boolean
+    allowCareWorkersEditCheckIn: boolean
+    allowFamilyReviews: boolean
+    enableFamilySchedule: boolean
+    enableWeek1And2Scheduling: boolean
+    lateVisitThreshold: string
+    enableDistanceAlerts: boolean
+    distanceThreshold: string
+    lateVisitAlerts: boolean
+    clientBirthdayReminders: boolean
+    careWorkerVisitAlerts: boolean
+    missedMedicationAlerts: boolean
+    clientAndCareWorkerReminders: boolean
+    distanceAlerts: boolean
+    reviewNotifications: boolean
+    preferredNotificationMethod: $Enums.PreferredNotificationMethod
+    notificationFrequency: $Enums.NotificationFrequency
     createdAt: Date
     updatedAt: Date
     licenseNumber: string | null
@@ -6654,6 +6912,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: boolean
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: boolean
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: boolean
+    notificationFrequency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     licenseNumber?: boolean
@@ -6681,7 +6955,6 @@ export namespace Prisma {
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
     users?: boolean | Agency$usersArgs<ExtArgs>
     owner?: boolean | Agency$ownerArgs<ExtArgs>
-    visitTypes?: boolean | Agency$visitTypesArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agency"]>
 
@@ -6706,6 +6979,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: boolean
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: boolean
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: boolean
+    notificationFrequency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     licenseNumber?: boolean
@@ -6739,6 +7028,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: boolean
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: boolean
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: boolean
+    notificationFrequency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     licenseNumber?: boolean
@@ -6772,6 +7077,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: boolean
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: boolean
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: boolean
+    notificationFrequency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     licenseNumber?: boolean
@@ -6783,7 +7104,7 @@ export namespace Prisma {
     ownerId?: boolean
   }
 
-  export type AgencyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "description" | "address" | "extension" | "mobileNumber" | "landlineNumber" | "website" | "logo" | "primaryColor" | "secondaryColor" | "isActive" | "isSuspended" | "hasScheduleV2" | "hasEMAR" | "hasFinance" | "isWeek1And2ScheduleEnabled" | "hasPoliciesAndProcedures" | "isTestAccount" | "createdAt" | "updatedAt" | "licenseNumber" | "timeZone" | "currency" | "maxUsers" | "maxClients" | "maxCareWorkers" | "ownerId", ExtArgs["result"]["agency"]>
+  export type AgencyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "description" | "address" | "extension" | "mobileNumber" | "landlineNumber" | "website" | "logo" | "primaryColor" | "secondaryColor" | "isActive" | "isSuspended" | "hasScheduleV2" | "hasEMAR" | "hasFinance" | "isWeek1And2ScheduleEnabled" | "hasPoliciesAndProcedures" | "isTestAccount" | "allowCareWorkersEditCheckIn" | "allowFamilyReviews" | "enableFamilySchedule" | "enableWeek1And2Scheduling" | "lateVisitThreshold" | "enableDistanceAlerts" | "distanceThreshold" | "lateVisitAlerts" | "clientBirthdayReminders" | "careWorkerVisitAlerts" | "missedMedicationAlerts" | "clientAndCareWorkerReminders" | "distanceAlerts" | "reviewNotifications" | "preferredNotificationMethod" | "notificationFrequency" | "createdAt" | "updatedAt" | "licenseNumber" | "timeZone" | "currency" | "maxUsers" | "maxClients" | "maxCareWorkers" | "ownerId", ExtArgs["result"]["agency"]>
   export type AgencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     announcements?: boolean | Agency$announcementsArgs<ExtArgs>
     auditLogs?: boolean | Agency$auditLogsArgs<ExtArgs>
@@ -6803,7 +7124,6 @@ export namespace Prisma {
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
     users?: boolean | Agency$usersArgs<ExtArgs>
     owner?: boolean | Agency$ownerArgs<ExtArgs>
-    visitTypes?: boolean | Agency$visitTypesArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6834,7 +7154,6 @@ export namespace Prisma {
       schedules: Prisma.$SchedulePayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
       owner: Prisma.$UserPayload<ExtArgs> | null
-      visitTypes: Prisma.$VisitTypePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6857,6 +7176,22 @@ export namespace Prisma {
       isWeek1And2ScheduleEnabled: boolean
       hasPoliciesAndProcedures: boolean
       isTestAccount: boolean
+      allowCareWorkersEditCheckIn: boolean
+      allowFamilyReviews: boolean
+      enableFamilySchedule: boolean
+      enableWeek1And2Scheduling: boolean
+      lateVisitThreshold: string
+      enableDistanceAlerts: boolean
+      distanceThreshold: string
+      lateVisitAlerts: boolean
+      clientBirthdayReminders: boolean
+      careWorkerVisitAlerts: boolean
+      missedMedicationAlerts: boolean
+      clientAndCareWorkerReminders: boolean
+      distanceAlerts: boolean
+      reviewNotifications: boolean
+      preferredNotificationMethod: $Enums.PreferredNotificationMethod
+      notificationFrequency: $Enums.NotificationFrequency
       createdAt: Date
       updatedAt: Date
       licenseNumber: string | null
@@ -7278,7 +7613,6 @@ export namespace Prisma {
     schedules<T extends Agency$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Agency$usersArgs<ExtArgs> = {}>(args?: Subset<T, Agency$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     owner<T extends Agency$ownerArgs<ExtArgs> = {}>(args?: Subset<T, Agency$ownerArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    visitTypes<T extends Agency$visitTypesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$visitTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7328,6 +7662,22 @@ export namespace Prisma {
     readonly isWeek1And2ScheduleEnabled: FieldRef<"Agency", 'Boolean'>
     readonly hasPoliciesAndProcedures: FieldRef<"Agency", 'Boolean'>
     readonly isTestAccount: FieldRef<"Agency", 'Boolean'>
+    readonly allowCareWorkersEditCheckIn: FieldRef<"Agency", 'Boolean'>
+    readonly allowFamilyReviews: FieldRef<"Agency", 'Boolean'>
+    readonly enableFamilySchedule: FieldRef<"Agency", 'Boolean'>
+    readonly enableWeek1And2Scheduling: FieldRef<"Agency", 'Boolean'>
+    readonly lateVisitThreshold: FieldRef<"Agency", 'String'>
+    readonly enableDistanceAlerts: FieldRef<"Agency", 'Boolean'>
+    readonly distanceThreshold: FieldRef<"Agency", 'String'>
+    readonly lateVisitAlerts: FieldRef<"Agency", 'Boolean'>
+    readonly clientBirthdayReminders: FieldRef<"Agency", 'Boolean'>
+    readonly careWorkerVisitAlerts: FieldRef<"Agency", 'Boolean'>
+    readonly missedMedicationAlerts: FieldRef<"Agency", 'Boolean'>
+    readonly clientAndCareWorkerReminders: FieldRef<"Agency", 'Boolean'>
+    readonly distanceAlerts: FieldRef<"Agency", 'Boolean'>
+    readonly reviewNotifications: FieldRef<"Agency", 'Boolean'>
+    readonly preferredNotificationMethod: FieldRef<"Agency", 'PreferredNotificationMethod'>
+    readonly notificationFrequency: FieldRef<"Agency", 'NotificationFrequency'>
     readonly createdAt: FieldRef<"Agency", 'DateTime'>
     readonly updatedAt: FieldRef<"Agency", 'DateTime'>
     readonly licenseNumber: FieldRef<"Agency", 'String'>
@@ -8157,30 +8507,6 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
-  }
-
-  /**
-   * Agency.visitTypes
-   */
-  export type Agency$visitTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VisitType
-     */
-    select?: VisitTypeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VisitType
-     */
-    omit?: VisitTypeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VisitTypeInclude<ExtArgs> | null
-    where?: VisitTypeWhereInput
-    orderBy?: VisitTypeOrderByWithRelationInput | VisitTypeOrderByWithRelationInput[]
-    cursor?: VisitTypeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: VisitTypeScalarFieldEnum | VisitTypeScalarFieldEnum[]
   }
 
   /**
@@ -17677,6 +18003,7 @@ export namespace Prisma {
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
     invitedUsers?: boolean | User$invitedUsersArgs<ExtArgs>
     acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
+    visitTypes?: boolean | User$visitTypesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -17810,6 +18137,7 @@ export namespace Prisma {
     invitedBy?: boolean | User$invitedByArgs<ExtArgs>
     invitedUsers?: boolean | User$invitedUsersArgs<ExtArgs>
     acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
+    visitTypes?: boolean | User$visitTypesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17861,6 +18189,7 @@ export namespace Prisma {
       invitedBy: Prisma.$UserPayload<ExtArgs> | null
       invitedUsers: Prisma.$UserPayload<ExtArgs>[]
       acknowledgedAnnouncements: Prisma.$AnnouncementPayload<ExtArgs>[]
+      visitTypes: Prisma.$VisitTypePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18320,6 +18649,7 @@ export namespace Prisma {
     invitedBy<T extends User$invitedByArgs<ExtArgs> = {}>(args?: Subset<T, User$invitedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     invitedUsers<T extends User$invitedUsersArgs<ExtArgs> = {}>(args?: Subset<T, User$invitedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     acknowledgedAnnouncements<T extends User$acknowledgedAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, User$acknowledgedAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    visitTypes<T extends User$visitTypesArgs<ExtArgs> = {}>(args?: Subset<T, User$visitTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19636,6 +19966,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AnnouncementScalarFieldEnum | AnnouncementScalarFieldEnum[]
+  }
+
+  /**
+   * User.visitTypes
+   */
+  export type User$visitTypesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisitType
+     */
+    select?: VisitTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisitType
+     */
+    omit?: VisitTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisitTypeInclude<ExtArgs> | null
+    where?: VisitTypeWhereInput
+    orderBy?: VisitTypeOrderByWithRelationInput | VisitTypeOrderByWithRelationInput[]
+    cursor?: VisitTypeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: VisitTypeScalarFieldEnum | VisitTypeScalarFieldEnum[]
   }
 
   /**
@@ -22901,6 +23255,1051 @@ export namespace Prisma {
 
 
   /**
+   * Model Task
+   */
+
+  export type AggregateTask = {
+    _count: TaskCountAggregateOutputType | null
+    _min: TaskMinAggregateOutputType | null
+    _max: TaskMaxAggregateOutputType | null
+  }
+
+  export type TaskMinAggregateOutputType = {
+    id: string | null
+    type: $Enums.TaskType | null
+    careworkerNotes: string | null
+    visitTypeId: string | null
+  }
+
+  export type TaskMaxAggregateOutputType = {
+    id: string | null
+    type: $Enums.TaskType | null
+    careworkerNotes: string | null
+    visitTypeId: string | null
+  }
+
+  export type TaskCountAggregateOutputType = {
+    id: number
+    type: number
+    careworkerNotes: number
+    visitTypeId: number
+    _all: number
+  }
+
+
+  export type TaskMinAggregateInputType = {
+    id?: true
+    type?: true
+    careworkerNotes?: true
+    visitTypeId?: true
+  }
+
+  export type TaskMaxAggregateInputType = {
+    id?: true
+    type?: true
+    careworkerNotes?: true
+    visitTypeId?: true
+  }
+
+  export type TaskCountAggregateInputType = {
+    id?: true
+    type?: true
+    careworkerNotes?: true
+    visitTypeId?: true
+    _all?: true
+  }
+
+  export type TaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Task to aggregate.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Tasks
+    **/
+    _count?: true | TaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TaskMaxAggregateInputType
+  }
+
+  export type GetTaskAggregateType<T extends TaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTask[P]>
+      : GetScalarType<T[P], AggregateTask[P]>
+  }
+
+
+
+
+  export type TaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskWhereInput
+    orderBy?: TaskOrderByWithAggregationInput | TaskOrderByWithAggregationInput[]
+    by: TaskScalarFieldEnum[] | TaskScalarFieldEnum
+    having?: TaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TaskCountAggregateInputType | true
+    _min?: TaskMinAggregateInputType
+    _max?: TaskMaxAggregateInputType
+  }
+
+  export type TaskGroupByOutputType = {
+    id: string
+    type: $Enums.TaskType
+    careworkerNotes: string | null
+    visitTypeId: string
+    _count: TaskCountAggregateOutputType | null
+    _min: TaskMinAggregateOutputType | null
+    _max: TaskMaxAggregateOutputType | null
+  }
+
+  type GetTaskGroupByPayload<T extends TaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TaskGroupByOutputType[P]>
+            : GetScalarType<T[P], TaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    careworkerNotes?: boolean
+    visitTypeId?: boolean
+    visitType?: boolean | VisitTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["task"]>
+
+  export type TaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    careworkerNotes?: boolean
+    visitTypeId?: boolean
+    visitType?: boolean | VisitTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["task"]>
+
+  export type TaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    careworkerNotes?: boolean
+    visitTypeId?: boolean
+    visitType?: boolean | VisitTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["task"]>
+
+  export type TaskSelectScalar = {
+    id?: boolean
+    type?: boolean
+    careworkerNotes?: boolean
+    visitTypeId?: boolean
+  }
+
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "careworkerNotes" | "visitTypeId", ExtArgs["result"]["task"]>
+  export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    visitType?: boolean | VisitTypeDefaultArgs<ExtArgs>
+  }
+  export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    visitType?: boolean | VisitTypeDefaultArgs<ExtArgs>
+  }
+  export type TaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    visitType?: boolean | VisitTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Task"
+    objects: {
+      visitType: Prisma.$VisitTypePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      type: $Enums.TaskType
+      careworkerNotes: string | null
+      visitTypeId: string
+    }, ExtArgs["result"]["task"]>
+    composites: {}
+  }
+
+  type TaskGetPayload<S extends boolean | null | undefined | TaskDefaultArgs> = $Result.GetResult<Prisma.$TaskPayload, S>
+
+  type TaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TaskCountAggregateInputType | true
+    }
+
+  export interface TaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Task'], meta: { name: 'Task' } }
+    /**
+     * Find zero or one Task that matches the filter.
+     * @param {TaskFindUniqueArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TaskFindUniqueArgs>(args: SelectSubset<T, TaskFindUniqueArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Task that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TaskFindUniqueOrThrowArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TaskFindUniqueOrThrowArgs>(args: SelectSubset<T, TaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Task that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskFindFirstArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TaskFindFirstArgs>(args?: SelectSubset<T, TaskFindFirstArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Task that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskFindFirstOrThrowArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TaskFindFirstOrThrowArgs>(args?: SelectSubset<T, TaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Tasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tasks
+     * const tasks = await prisma.task.findMany()
+     * 
+     * // Get first 10 Tasks
+     * const tasks = await prisma.task.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const taskWithIdOnly = await prisma.task.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TaskFindManyArgs>(args?: SelectSubset<T, TaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Task.
+     * @param {TaskCreateArgs} args - Arguments to create a Task.
+     * @example
+     * // Create one Task
+     * const Task = await prisma.task.create({
+     *   data: {
+     *     // ... data to create a Task
+     *   }
+     * })
+     * 
+     */
+    create<T extends TaskCreateArgs>(args: SelectSubset<T, TaskCreateArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Tasks.
+     * @param {TaskCreateManyArgs} args - Arguments to create many Tasks.
+     * @example
+     * // Create many Tasks
+     * const task = await prisma.task.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TaskCreateManyArgs>(args?: SelectSubset<T, TaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Tasks and returns the data saved in the database.
+     * @param {TaskCreateManyAndReturnArgs} args - Arguments to create many Tasks.
+     * @example
+     * // Create many Tasks
+     * const task = await prisma.task.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Tasks and only return the `id`
+     * const taskWithIdOnly = await prisma.task.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TaskCreateManyAndReturnArgs>(args?: SelectSubset<T, TaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Task.
+     * @param {TaskDeleteArgs} args - Arguments to delete one Task.
+     * @example
+     * // Delete one Task
+     * const Task = await prisma.task.delete({
+     *   where: {
+     *     // ... filter to delete one Task
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TaskDeleteArgs>(args: SelectSubset<T, TaskDeleteArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Task.
+     * @param {TaskUpdateArgs} args - Arguments to update one Task.
+     * @example
+     * // Update one Task
+     * const task = await prisma.task.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TaskUpdateArgs>(args: SelectSubset<T, TaskUpdateArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Tasks.
+     * @param {TaskDeleteManyArgs} args - Arguments to filter Tasks to delete.
+     * @example
+     * // Delete a few Tasks
+     * const { count } = await prisma.task.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TaskDeleteManyArgs>(args?: SelectSubset<T, TaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tasks
+     * const task = await prisma.task.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TaskUpdateManyArgs>(args: SelectSubset<T, TaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tasks and returns the data updated in the database.
+     * @param {TaskUpdateManyAndReturnArgs} args - Arguments to update many Tasks.
+     * @example
+     * // Update many Tasks
+     * const task = await prisma.task.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Tasks and only return the `id`
+     * const taskWithIdOnly = await prisma.task.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TaskUpdateManyAndReturnArgs>(args: SelectSubset<T, TaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Task.
+     * @param {TaskUpsertArgs} args - Arguments to update or create a Task.
+     * @example
+     * // Update or create a Task
+     * const task = await prisma.task.upsert({
+     *   create: {
+     *     // ... data to create a Task
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Task we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TaskUpsertArgs>(args: SelectSubset<T, TaskUpsertArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCountArgs} args - Arguments to filter Tasks to count.
+     * @example
+     * // Count the number of Tasks
+     * const count = await prisma.task.count({
+     *   where: {
+     *     // ... the filter for the Tasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends TaskCountArgs>(
+      args?: Subset<T, TaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Task.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TaskAggregateArgs>(args: Subset<T, TaskAggregateArgs>): Prisma.PrismaPromise<GetTaskAggregateType<T>>
+
+    /**
+     * Group by Task.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TaskGroupByArgs['orderBy'] }
+        : { orderBy?: TaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Task model
+   */
+  readonly fields: TaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Task.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    visitType<T extends VisitTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, VisitTypeDefaultArgs<ExtArgs>>): Prisma__VisitTypeClient<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Task model
+   */
+  interface TaskFieldRefs {
+    readonly id: FieldRef<"Task", 'String'>
+    readonly type: FieldRef<"Task", 'TaskType'>
+    readonly careworkerNotes: FieldRef<"Task", 'String'>
+    readonly visitTypeId: FieldRef<"Task", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Task findUnique
+   */
+  export type TaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task findUniqueOrThrow
+   */
+  export type TaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task findFirst
+   */
+  export type TaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tasks.
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tasks.
+     */
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Task findFirstOrThrow
+   */
+  export type TaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tasks.
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tasks.
+     */
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Task findMany
+   */
+  export type TaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Tasks to fetch.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Tasks.
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Task create
+   */
+  export type TaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Task.
+     */
+    data: XOR<TaskCreateInput, TaskUncheckedCreateInput>
+  }
+
+  /**
+   * Task createMany
+   */
+  export type TaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Tasks.
+     */
+    data: TaskCreateManyInput | TaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Task createManyAndReturn
+   */
+  export type TaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many Tasks.
+     */
+    data: TaskCreateManyInput | TaskCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Task update
+   */
+  export type TaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Task.
+     */
+    data: XOR<TaskUpdateInput, TaskUncheckedUpdateInput>
+    /**
+     * Choose, which Task to update.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task updateMany
+   */
+  export type TaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Tasks.
+     */
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyInput>
+    /**
+     * Filter which Tasks to update
+     */
+    where?: TaskWhereInput
+    /**
+     * Limit how many Tasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Task updateManyAndReturn
+   */
+  export type TaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * The data used to update Tasks.
+     */
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyInput>
+    /**
+     * Filter which Tasks to update
+     */
+    where?: TaskWhereInput
+    /**
+     * Limit how many Tasks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Task upsert
+   */
+  export type TaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Task to update in case it exists.
+     */
+    where: TaskWhereUniqueInput
+    /**
+     * In case the Task found by the `where` argument doesn't exist, create a new Task with this data.
+     */
+    create: XOR<TaskCreateInput, TaskUncheckedCreateInput>
+    /**
+     * In case the Task was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TaskUpdateInput, TaskUncheckedUpdateInput>
+  }
+
+  /**
+   * Task delete
+   */
+  export type TaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter which Task to delete.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task deleteMany
+   */
+  export type TaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Tasks to delete
+     */
+    where?: TaskWhereInput
+    /**
+     * Limit how many Tasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Task without action
+   */
+  export type TaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model VisitType
    */
 
@@ -22912,58 +24311,58 @@ export namespace Prisma {
 
   export type VisitTypeMinAggregateOutputType = {
     id: string | null
-    agencyId: string | null
     name: string | null
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userId: string | null
   }
 
   export type VisitTypeMaxAggregateOutputType = {
     id: string | null
-    agencyId: string | null
     name: string | null
     description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userId: string | null
   }
 
   export type VisitTypeCountAggregateOutputType = {
     id: number
-    agencyId: number
     name: number
     description: number
     createdAt: number
     updatedAt: number
+    userId: number
     _all: number
   }
 
 
   export type VisitTypeMinAggregateInputType = {
     id?: true
-    agencyId?: true
     name?: true
     description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
   }
 
   export type VisitTypeMaxAggregateInputType = {
     id?: true
-    agencyId?: true
     name?: true
     description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
   }
 
   export type VisitTypeCountAggregateInputType = {
     id?: true
-    agencyId?: true
     name?: true
     description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
     _all?: true
   }
 
@@ -23041,11 +24440,11 @@ export namespace Prisma {
 
   export type VisitTypeGroupByOutputType = {
     id: string
-    agencyId: string
     name: string
     description: string | null
     createdAt: Date
     updatedAt: Date
+    userId: string
     _count: VisitTypeCountAggregateOutputType | null
     _min: VisitTypeMinAggregateOutputType | null
     _max: VisitTypeMaxAggregateOutputType | null
@@ -23067,71 +24466,71 @@ export namespace Prisma {
 
   export type VisitTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    agencyId?: boolean
     name?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    schedules?: boolean | VisitType$schedulesArgs<ExtArgs>
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    userId?: boolean
+    assignedTasks?: boolean | VisitType$assignedTasksArgs<ExtArgs>
+    User?: boolean | VisitType$UserArgs<ExtArgs>
     _count?: boolean | VisitTypeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["visitType"]>
 
   export type VisitTypeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    agencyId?: boolean
     name?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    userId?: boolean
+    User?: boolean | VisitType$UserArgs<ExtArgs>
   }, ExtArgs["result"]["visitType"]>
 
   export type VisitTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    agencyId?: boolean
     name?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    userId?: boolean
+    User?: boolean | VisitType$UserArgs<ExtArgs>
   }, ExtArgs["result"]["visitType"]>
 
   export type VisitTypeSelectScalar = {
     id?: boolean
-    agencyId?: boolean
     name?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
   }
 
-  export type VisitTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "agencyId" | "name" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["visitType"]>
+  export type VisitTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["visitType"]>
   export type VisitTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    schedules?: boolean | VisitType$schedulesArgs<ExtArgs>
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    assignedTasks?: boolean | VisitType$assignedTasksArgs<ExtArgs>
+    User?: boolean | VisitType$UserArgs<ExtArgs>
     _count?: boolean | VisitTypeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type VisitTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    User?: boolean | VisitType$UserArgs<ExtArgs>
   }
   export type VisitTypeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    User?: boolean | VisitType$UserArgs<ExtArgs>
   }
 
   export type $VisitTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "VisitType"
     objects: {
-      schedules: Prisma.$SchedulePayload<ExtArgs>[]
-      agency: Prisma.$AgencyPayload<ExtArgs>
+      assignedTasks: Prisma.$TaskPayload<ExtArgs>[]
+      User: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      agencyId: string
       name: string
       description: string | null
       createdAt: Date
       updatedAt: Date
+      userId: string
     }, ExtArgs["result"]["visitType"]>
     composites: {}
   }
@@ -23526,8 +24925,8 @@ export namespace Prisma {
    */
   export interface Prisma__VisitTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    schedules<T extends VisitType$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, VisitType$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    assignedTasks<T extends VisitType$assignedTasksArgs<ExtArgs> = {}>(args?: Subset<T, VisitType$assignedTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    User<T extends VisitType$UserArgs<ExtArgs> = {}>(args?: Subset<T, VisitType$UserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23558,11 +24957,11 @@ export namespace Prisma {
    */
   interface VisitTypeFieldRefs {
     readonly id: FieldRef<"VisitType", 'String'>
-    readonly agencyId: FieldRef<"VisitType", 'String'>
     readonly name: FieldRef<"VisitType", 'String'>
     readonly description: FieldRef<"VisitType", 'String'>
     readonly createdAt: FieldRef<"VisitType", 'DateTime'>
     readonly updatedAt: FieldRef<"VisitType", 'DateTime'>
+    readonly userId: FieldRef<"VisitType", 'String'>
   }
     
 
@@ -23959,27 +25358,46 @@ export namespace Prisma {
   }
 
   /**
-   * VisitType.schedules
+   * VisitType.assignedTasks
    */
-  export type VisitType$schedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type VisitType$assignedTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Schedule
+     * Select specific fields to fetch from the Task
      */
-    select?: ScheduleSelect<ExtArgs> | null
+    select?: TaskSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Schedule
+     * Omit specific fields from the Task
      */
-    omit?: ScheduleOmit<ExtArgs> | null
+    omit?: TaskOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ScheduleInclude<ExtArgs> | null
-    where?: ScheduleWhereInput
-    orderBy?: ScheduleOrderByWithRelationInput | ScheduleOrderByWithRelationInput[]
-    cursor?: ScheduleWhereUniqueInput
+    include?: TaskInclude<ExtArgs> | null
+    where?: TaskWhereInput
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    cursor?: TaskWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ScheduleScalarFieldEnum | ScheduleScalarFieldEnum[]
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * VisitType.User
+   */
+  export type VisitType$UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -24274,7 +25692,6 @@ export namespace Prisma {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
-    visitType?: boolean | Schedule$visitTypeArgs<ExtArgs>
   }, ExtArgs["result"]["schedule"]>
 
   export type ScheduleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24295,7 +25712,6 @@ export namespace Prisma {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
-    visitType?: boolean | Schedule$visitTypeArgs<ExtArgs>
   }, ExtArgs["result"]["schedule"]>
 
   export type ScheduleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24316,7 +25732,6 @@ export namespace Prisma {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
-    visitType?: boolean | Schedule$visitTypeArgs<ExtArgs>
   }, ExtArgs["result"]["schedule"]>
 
   export type ScheduleSelectScalar = {
@@ -24341,19 +25756,16 @@ export namespace Prisma {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
-    visitType?: boolean | Schedule$visitTypeArgs<ExtArgs>
   }
   export type ScheduleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
-    visitType?: boolean | Schedule$visitTypeArgs<ExtArgs>
   }
   export type ScheduleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
-    visitType?: boolean | Schedule$visitTypeArgs<ExtArgs>
   }
 
   export type $SchedulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24362,7 +25774,6 @@ export namespace Prisma {
       agency: Prisma.$AgencyPayload<ExtArgs>
       client: Prisma.$UserPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
-      visitType: Prisma.$VisitTypePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24776,7 +26187,6 @@ export namespace Prisma {
     agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    visitType<T extends Schedule$visitTypeArgs<ExtArgs> = {}>(args?: Subset<T, Schedule$visitTypeArgs<ExtArgs>>): Prisma__VisitTypeClient<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25213,25 +26623,6 @@ export namespace Prisma {
      * Limit how many Schedules to delete.
      */
     limit?: number
-  }
-
-  /**
-   * Schedule.visitType
-   */
-  export type Schedule$visitTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VisitType
-     */
-    select?: VisitTypeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VisitType
-     */
-    omit?: VisitTypeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VisitTypeInclude<ExtArgs> | null
-    where?: VisitTypeWhereInput
   }
 
   /**
@@ -47873,6 +49264,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled: 'isWeek1And2ScheduleEnabled',
     hasPoliciesAndProcedures: 'hasPoliciesAndProcedures',
     isTestAccount: 'isTestAccount',
+    allowCareWorkersEditCheckIn: 'allowCareWorkersEditCheckIn',
+    allowFamilyReviews: 'allowFamilyReviews',
+    enableFamilySchedule: 'enableFamilySchedule',
+    enableWeek1And2Scheduling: 'enableWeek1And2Scheduling',
+    lateVisitThreshold: 'lateVisitThreshold',
+    enableDistanceAlerts: 'enableDistanceAlerts',
+    distanceThreshold: 'distanceThreshold',
+    lateVisitAlerts: 'lateVisitAlerts',
+    clientBirthdayReminders: 'clientBirthdayReminders',
+    careWorkerVisitAlerts: 'careWorkerVisitAlerts',
+    missedMedicationAlerts: 'missedMedicationAlerts',
+    clientAndCareWorkerReminders: 'clientAndCareWorkerReminders',
+    distanceAlerts: 'distanceAlerts',
+    reviewNotifications: 'reviewNotifications',
+    preferredNotificationMethod: 'preferredNotificationMethod',
+    notificationFrequency: 'notificationFrequency',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     licenseNumber: 'licenseNumber',
@@ -48076,13 +49483,23 @@ export namespace Prisma {
   export type MedicationDatabaseLinkScalarFieldEnum = (typeof MedicationDatabaseLinkScalarFieldEnum)[keyof typeof MedicationDatabaseLinkScalarFieldEnum]
 
 
+  export const TaskScalarFieldEnum: {
+    id: 'id',
+    type: 'type',
+    careworkerNotes: 'careworkerNotes',
+    visitTypeId: 'visitTypeId'
+  };
+
+  export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
   export const VisitTypeScalarFieldEnum: {
     id: 'id',
-    agencyId: 'agencyId',
     name: 'name',
     description: 'description',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    userId: 'userId'
   };
 
   export type VisitTypeScalarFieldEnum = (typeof VisitTypeScalarFieldEnum)[keyof typeof VisitTypeScalarFieldEnum]
@@ -48528,6 +49945,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'PreferredNotificationMethod'
+   */
+  export type EnumPreferredNotificationMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreferredNotificationMethod'>
+    
+
+
+  /**
+   * Reference to a field of type 'PreferredNotificationMethod[]'
+   */
+  export type ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreferredNotificationMethod[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationFrequency'
+   */
+  export type EnumNotificationFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationFrequency'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationFrequency[]'
+   */
+  export type ListEnumNotificationFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationFrequency[]'>
+    
+
+
+  /**
    * Reference to a field of type 'AnnouncementPriority'
    */
   export type EnumAnnouncementPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnouncementPriority'>
@@ -48678,6 +50123,20 @@ export namespace Prisma {
    * Reference to a field of type 'CustomTaskPriority[]'
    */
   export type ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskPriority[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TaskType'
+   */
+  export type EnumTaskTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskType'>
+    
+
+
+  /**
+   * Reference to a field of type 'TaskType[]'
+   */
+  export type ListEnumTaskTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskType[]'>
     
 
 
@@ -48895,6 +50354,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFilter<"Agency"> | boolean
     hasPoliciesAndProcedures?: BoolFilter<"Agency"> | boolean
     isTestAccount?: BoolFilter<"Agency"> | boolean
+    allowCareWorkersEditCheckIn?: BoolFilter<"Agency"> | boolean
+    allowFamilyReviews?: BoolFilter<"Agency"> | boolean
+    enableFamilySchedule?: BoolFilter<"Agency"> | boolean
+    enableWeek1And2Scheduling?: BoolFilter<"Agency"> | boolean
+    lateVisitThreshold?: StringFilter<"Agency"> | string
+    enableDistanceAlerts?: BoolFilter<"Agency"> | boolean
+    distanceThreshold?: StringFilter<"Agency"> | string
+    lateVisitAlerts?: BoolFilter<"Agency"> | boolean
+    clientBirthdayReminders?: BoolFilter<"Agency"> | boolean
+    careWorkerVisitAlerts?: BoolFilter<"Agency"> | boolean
+    missedMedicationAlerts?: BoolFilter<"Agency"> | boolean
+    clientAndCareWorkerReminders?: BoolFilter<"Agency"> | boolean
+    distanceAlerts?: BoolFilter<"Agency"> | boolean
+    reviewNotifications?: BoolFilter<"Agency"> | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFilter<"Agency"> | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFilter<"Agency"> | $Enums.NotificationFrequency
     createdAt?: DateTimeFilter<"Agency"> | Date | string
     updatedAt?: DateTimeFilter<"Agency"> | Date | string
     licenseNumber?: StringNullableFilter<"Agency"> | string | null
@@ -48922,7 +50397,6 @@ export namespace Prisma {
     schedules?: ScheduleListRelationFilter
     users?: UserListRelationFilter
     owner?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-    visitTypes?: VisitTypeListRelationFilter
   }
 
   export type AgencyOrderByWithRelationInput = {
@@ -48946,6 +50420,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: SortOrder
     hasPoliciesAndProcedures?: SortOrder
     isTestAccount?: SortOrder
+    allowCareWorkersEditCheckIn?: SortOrder
+    allowFamilyReviews?: SortOrder
+    enableFamilySchedule?: SortOrder
+    enableWeek1And2Scheduling?: SortOrder
+    lateVisitThreshold?: SortOrder
+    enableDistanceAlerts?: SortOrder
+    distanceThreshold?: SortOrder
+    lateVisitAlerts?: SortOrder
+    clientBirthdayReminders?: SortOrder
+    careWorkerVisitAlerts?: SortOrder
+    missedMedicationAlerts?: SortOrder
+    clientAndCareWorkerReminders?: SortOrder
+    distanceAlerts?: SortOrder
+    reviewNotifications?: SortOrder
+    preferredNotificationMethod?: SortOrder
+    notificationFrequency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     licenseNumber?: SortOrderInput | SortOrder
@@ -48973,7 +50463,6 @@ export namespace Prisma {
     schedules?: ScheduleOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
     owner?: UserOrderByWithRelationInput
-    visitTypes?: VisitTypeOrderByRelationAggregateInput
   }
 
   export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -49000,6 +50489,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFilter<"Agency"> | boolean
     hasPoliciesAndProcedures?: BoolFilter<"Agency"> | boolean
     isTestAccount?: BoolFilter<"Agency"> | boolean
+    allowCareWorkersEditCheckIn?: BoolFilter<"Agency"> | boolean
+    allowFamilyReviews?: BoolFilter<"Agency"> | boolean
+    enableFamilySchedule?: BoolFilter<"Agency"> | boolean
+    enableWeek1And2Scheduling?: BoolFilter<"Agency"> | boolean
+    lateVisitThreshold?: StringFilter<"Agency"> | string
+    enableDistanceAlerts?: BoolFilter<"Agency"> | boolean
+    distanceThreshold?: StringFilter<"Agency"> | string
+    lateVisitAlerts?: BoolFilter<"Agency"> | boolean
+    clientBirthdayReminders?: BoolFilter<"Agency"> | boolean
+    careWorkerVisitAlerts?: BoolFilter<"Agency"> | boolean
+    missedMedicationAlerts?: BoolFilter<"Agency"> | boolean
+    clientAndCareWorkerReminders?: BoolFilter<"Agency"> | boolean
+    distanceAlerts?: BoolFilter<"Agency"> | boolean
+    reviewNotifications?: BoolFilter<"Agency"> | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFilter<"Agency"> | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFilter<"Agency"> | $Enums.NotificationFrequency
     createdAt?: DateTimeFilter<"Agency"> | Date | string
     updatedAt?: DateTimeFilter<"Agency"> | Date | string
     licenseNumber?: StringNullableFilter<"Agency"> | string | null
@@ -49027,7 +50532,6 @@ export namespace Prisma {
     schedules?: ScheduleListRelationFilter
     users?: UserListRelationFilter
     owner?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-    visitTypes?: VisitTypeListRelationFilter
   }, "id">
 
   export type AgencyOrderByWithAggregationInput = {
@@ -49051,6 +50555,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: SortOrder
     hasPoliciesAndProcedures?: SortOrder
     isTestAccount?: SortOrder
+    allowCareWorkersEditCheckIn?: SortOrder
+    allowFamilyReviews?: SortOrder
+    enableFamilySchedule?: SortOrder
+    enableWeek1And2Scheduling?: SortOrder
+    lateVisitThreshold?: SortOrder
+    enableDistanceAlerts?: SortOrder
+    distanceThreshold?: SortOrder
+    lateVisitAlerts?: SortOrder
+    clientBirthdayReminders?: SortOrder
+    careWorkerVisitAlerts?: SortOrder
+    missedMedicationAlerts?: SortOrder
+    clientAndCareWorkerReminders?: SortOrder
+    distanceAlerts?: SortOrder
+    reviewNotifications?: SortOrder
+    preferredNotificationMethod?: SortOrder
+    notificationFrequency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     licenseNumber?: SortOrderInput | SortOrder
@@ -49091,6 +50611,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolWithAggregatesFilter<"Agency"> | boolean
     hasPoliciesAndProcedures?: BoolWithAggregatesFilter<"Agency"> | boolean
     isTestAccount?: BoolWithAggregatesFilter<"Agency"> | boolean
+    allowCareWorkersEditCheckIn?: BoolWithAggregatesFilter<"Agency"> | boolean
+    allowFamilyReviews?: BoolWithAggregatesFilter<"Agency"> | boolean
+    enableFamilySchedule?: BoolWithAggregatesFilter<"Agency"> | boolean
+    enableWeek1And2Scheduling?: BoolWithAggregatesFilter<"Agency"> | boolean
+    lateVisitThreshold?: StringWithAggregatesFilter<"Agency"> | string
+    enableDistanceAlerts?: BoolWithAggregatesFilter<"Agency"> | boolean
+    distanceThreshold?: StringWithAggregatesFilter<"Agency"> | string
+    lateVisitAlerts?: BoolWithAggregatesFilter<"Agency"> | boolean
+    clientBirthdayReminders?: BoolWithAggregatesFilter<"Agency"> | boolean
+    careWorkerVisitAlerts?: BoolWithAggregatesFilter<"Agency"> | boolean
+    missedMedicationAlerts?: BoolWithAggregatesFilter<"Agency"> | boolean
+    clientAndCareWorkerReminders?: BoolWithAggregatesFilter<"Agency"> | boolean
+    distanceAlerts?: BoolWithAggregatesFilter<"Agency"> | boolean
+    reviewNotifications?: BoolWithAggregatesFilter<"Agency"> | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodWithAggregatesFilter<"Agency"> | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyWithAggregatesFilter<"Agency"> | $Enums.NotificationFrequency
     createdAt?: DateTimeWithAggregatesFilter<"Agency"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Agency"> | Date | string
     licenseNumber?: StringNullableWithAggregatesFilter<"Agency"> | string | null
@@ -49796,6 +51332,7 @@ export namespace Prisma {
     invitedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     invitedUsers?: UserListRelationFilter
     acknowledgedAnnouncements?: AnnouncementListRelationFilter
+    visitTypes?: VisitTypeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -49862,6 +51399,7 @@ export namespace Prisma {
     invitedBy?: UserOrderByWithRelationInput
     invitedUsers?: UserOrderByRelationAggregateInput
     acknowledgedAnnouncements?: AnnouncementOrderByRelationAggregateInput
+    visitTypes?: VisitTypeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -49931,6 +51469,7 @@ export namespace Prisma {
     invitedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     invitedUsers?: UserListRelationFilter
     acknowledgedAnnouncements?: AnnouncementListRelationFilter
+    visitTypes?: VisitTypeListRelationFilter
   }, "id" | "cognitoId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -50180,29 +51719,79 @@ export namespace Prisma {
     agencyId?: StringWithAggregatesFilter<"MedicationDatabaseLink"> | string
   }
 
+  export type TaskWhereInput = {
+    AND?: TaskWhereInput | TaskWhereInput[]
+    OR?: TaskWhereInput[]
+    NOT?: TaskWhereInput | TaskWhereInput[]
+    id?: StringFilter<"Task"> | string
+    type?: EnumTaskTypeFilter<"Task"> | $Enums.TaskType
+    careworkerNotes?: StringNullableFilter<"Task"> | string | null
+    visitTypeId?: StringFilter<"Task"> | string
+    visitType?: XOR<VisitTypeScalarRelationFilter, VisitTypeWhereInput>
+  }
+
+  export type TaskOrderByWithRelationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    careworkerNotes?: SortOrderInput | SortOrder
+    visitTypeId?: SortOrder
+    visitType?: VisitTypeOrderByWithRelationInput
+  }
+
+  export type TaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TaskWhereInput | TaskWhereInput[]
+    OR?: TaskWhereInput[]
+    NOT?: TaskWhereInput | TaskWhereInput[]
+    type?: EnumTaskTypeFilter<"Task"> | $Enums.TaskType
+    careworkerNotes?: StringNullableFilter<"Task"> | string | null
+    visitTypeId?: StringFilter<"Task"> | string
+    visitType?: XOR<VisitTypeScalarRelationFilter, VisitTypeWhereInput>
+  }, "id">
+
+  export type TaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    careworkerNotes?: SortOrderInput | SortOrder
+    visitTypeId?: SortOrder
+    _count?: TaskCountOrderByAggregateInput
+    _max?: TaskMaxOrderByAggregateInput
+    _min?: TaskMinOrderByAggregateInput
+  }
+
+  export type TaskScalarWhereWithAggregatesInput = {
+    AND?: TaskScalarWhereWithAggregatesInput | TaskScalarWhereWithAggregatesInput[]
+    OR?: TaskScalarWhereWithAggregatesInput[]
+    NOT?: TaskScalarWhereWithAggregatesInput | TaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Task"> | string
+    type?: EnumTaskTypeWithAggregatesFilter<"Task"> | $Enums.TaskType
+    careworkerNotes?: StringNullableWithAggregatesFilter<"Task"> | string | null
+    visitTypeId?: StringWithAggregatesFilter<"Task"> | string
+  }
+
   export type VisitTypeWhereInput = {
     AND?: VisitTypeWhereInput | VisitTypeWhereInput[]
     OR?: VisitTypeWhereInput[]
     NOT?: VisitTypeWhereInput | VisitTypeWhereInput[]
     id?: StringFilter<"VisitType"> | string
-    agencyId?: StringFilter<"VisitType"> | string
     name?: StringFilter<"VisitType"> | string
     description?: StringNullableFilter<"VisitType"> | string | null
     createdAt?: DateTimeFilter<"VisitType"> | Date | string
     updatedAt?: DateTimeFilter<"VisitType"> | Date | string
-    schedules?: ScheduleListRelationFilter
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    userId?: StringFilter<"VisitType"> | string
+    assignedTasks?: TaskListRelationFilter
+    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type VisitTypeOrderByWithRelationInput = {
     id?: SortOrder
-    agencyId?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    schedules?: ScheduleOrderByRelationAggregateInput
-    agency?: AgencyOrderByWithRelationInput
+    userId?: SortOrder
+    assignedTasks?: TaskOrderByRelationAggregateInput
+    User?: UserOrderByWithRelationInput
   }
 
   export type VisitTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -50210,22 +51799,22 @@ export namespace Prisma {
     AND?: VisitTypeWhereInput | VisitTypeWhereInput[]
     OR?: VisitTypeWhereInput[]
     NOT?: VisitTypeWhereInput | VisitTypeWhereInput[]
-    agencyId?: StringFilter<"VisitType"> | string
     name?: StringFilter<"VisitType"> | string
     description?: StringNullableFilter<"VisitType"> | string | null
     createdAt?: DateTimeFilter<"VisitType"> | Date | string
     updatedAt?: DateTimeFilter<"VisitType"> | Date | string
-    schedules?: ScheduleListRelationFilter
-    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    userId?: StringFilter<"VisitType"> | string
+    assignedTasks?: TaskListRelationFilter
+    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type VisitTypeOrderByWithAggregationInput = {
     id?: SortOrder
-    agencyId?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
     _count?: VisitTypeCountOrderByAggregateInput
     _max?: VisitTypeMaxOrderByAggregateInput
     _min?: VisitTypeMinOrderByAggregateInput
@@ -50236,11 +51825,11 @@ export namespace Prisma {
     OR?: VisitTypeScalarWhereWithAggregatesInput[]
     NOT?: VisitTypeScalarWhereWithAggregatesInput | VisitTypeScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"VisitType"> | string
-    agencyId?: StringWithAggregatesFilter<"VisitType"> | string
     name?: StringWithAggregatesFilter<"VisitType"> | string
     description?: StringNullableWithAggregatesFilter<"VisitType"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"VisitType"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"VisitType"> | Date | string
+    userId?: StringWithAggregatesFilter<"VisitType"> | string
   }
 
   export type ScheduleWhereInput = {
@@ -50264,7 +51853,6 @@ export namespace Prisma {
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    visitType?: XOR<VisitTypeNullableScalarRelationFilter, VisitTypeWhereInput> | null
   }
 
   export type ScheduleOrderByWithRelationInput = {
@@ -50285,7 +51873,6 @@ export namespace Prisma {
     agency?: AgencyOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
-    visitType?: VisitTypeOrderByWithRelationInput
   }
 
   export type ScheduleWhereUniqueInput = Prisma.AtLeast<{
@@ -50310,7 +51897,6 @@ export namespace Prisma {
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    visitType?: XOR<VisitTypeNullableScalarRelationFilter, VisitTypeWhereInput> | null
   }, "id" | "unique_schedule_appointment">
 
   export type ScheduleOrderByWithAggregationInput = {
@@ -51946,6 +53532,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -51972,7 +53574,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateInput = {
@@ -51996,6 +53597,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -52022,7 +53639,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUpdateInput = {
@@ -52046,6 +53662,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52072,7 +53704,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateInput = {
@@ -52096,6 +53727,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52122,7 +53769,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateManyInput = {
@@ -52146,6 +53792,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -52178,6 +53840,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52209,6 +53887,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52957,6 +54651,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -53021,6 +54716,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -53085,6 +54781,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -53149,6 +54846,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -53426,24 +55124,72 @@ export namespace Prisma {
     agencyId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type TaskCreateInput = {
+    id?: string
+    type: $Enums.TaskType
+    careworkerNotes?: string | null
+    visitType: VisitTypeCreateNestedOneWithoutAssignedTasksInput
+  }
+
+  export type TaskUncheckedCreateInput = {
+    id?: string
+    type: $Enums.TaskType
+    careworkerNotes?: string | null
+    visitTypeId: string
+  }
+
+  export type TaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+    careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    visitType?: VisitTypeUpdateOneRequiredWithoutAssignedTasksNestedInput
+  }
+
+  export type TaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+    careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    visitTypeId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TaskCreateManyInput = {
+    id?: string
+    type: $Enums.TaskType
+    careworkerNotes?: string | null
+    visitTypeId: string
+  }
+
+  export type TaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+    careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+    careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    visitTypeId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type VisitTypeCreateInput = {
     id?: string
     name: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    schedules?: ScheduleCreateNestedManyWithoutVisitTypeInput
-    agency: AgencyCreateNestedOneWithoutVisitTypesInput
+    assignedTasks?: TaskCreateNestedManyWithoutVisitTypeInput
+    User?: UserCreateNestedOneWithoutVisitTypesInput
   }
 
   export type VisitTypeUncheckedCreateInput = {
     id?: string
-    agencyId: string
     name: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutVisitTypeInput
+    userId: string
+    assignedTasks?: TaskUncheckedCreateNestedManyWithoutVisitTypeInput
   }
 
   export type VisitTypeUpdateInput = {
@@ -53452,27 +55198,27 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    schedules?: ScheduleUpdateManyWithoutVisitTypeNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutVisitTypesNestedInput
+    assignedTasks?: TaskUpdateManyWithoutVisitTypeNestedInput
+    User?: UserUpdateOneWithoutVisitTypesNestedInput
   }
 
   export type VisitTypeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    agencyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    schedules?: ScheduleUncheckedUpdateManyWithoutVisitTypeNestedInput
+    userId?: StringFieldUpdateOperationsInput | string
+    assignedTasks?: TaskUncheckedUpdateManyWithoutVisitTypeNestedInput
   }
 
   export type VisitTypeCreateManyInput = {
     id?: string
-    agencyId: string
     name: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userId: string
   }
 
   export type VisitTypeUpdateManyMutationInput = {
@@ -53485,11 +55231,11 @@ export namespace Prisma {
 
   export type VisitTypeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    agencyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ScheduleCreateInput = {
@@ -53503,10 +55249,10 @@ export namespace Prisma {
     chargeRate?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    visitTypeId?: string | null
     agency: AgencyCreateNestedOneWithoutSchedulesInput
     client: UserCreateNestedOneWithoutClientSchedulesInput
     user: UserCreateNestedOneWithoutCareWorkerSchedulesInput
-    visitType?: VisitTypeCreateNestedOneWithoutSchedulesInput
   }
 
   export type ScheduleUncheckedCreateInput = {
@@ -53537,10 +55283,10 @@ export namespace Prisma {
     chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
     agency?: AgencyUpdateOneRequiredWithoutSchedulesNestedInput
     client?: UserUpdateOneRequiredWithoutClientSchedulesNestedInput
     user?: UserUpdateOneRequiredWithoutCareWorkerSchedulesNestedInput
-    visitType?: VisitTypeUpdateOneWithoutSchedulesNestedInput
   }
 
   export type ScheduleUncheckedUpdateInput = {
@@ -53588,6 +55334,7 @@ export namespace Prisma {
     chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ScheduleUncheckedUpdateManyInput = {
@@ -55339,6 +57086,20 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type EnumPreferredNotificationMethodFilter<$PrismaModel = never> = {
+    equals?: $Enums.PreferredNotificationMethod | EnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPreferredNotificationMethodFilter<$PrismaModel> | $Enums.PreferredNotificationMethod
+  }
+
+  export type EnumNotificationFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationFrequency | EnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationFrequencyFilter<$PrismaModel> | $Enums.NotificationFrequency
+  }
+
   export type AnnouncementListRelationFilter = {
     every?: AnnouncementWhereInput
     some?: AnnouncementWhereInput
@@ -55446,12 +57207,6 @@ export namespace Prisma {
     isNot?: UserWhereInput | null
   }
 
-  export type VisitTypeListRelationFilter = {
-    every?: VisitTypeWhereInput
-    some?: VisitTypeWhereInput
-    none?: VisitTypeWhereInput
-  }
-
   export type AnnouncementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -55520,10 +57275,6 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type VisitTypeOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type AgencyCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -55545,6 +57296,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: SortOrder
     hasPoliciesAndProcedures?: SortOrder
     isTestAccount?: SortOrder
+    allowCareWorkersEditCheckIn?: SortOrder
+    allowFamilyReviews?: SortOrder
+    enableFamilySchedule?: SortOrder
+    enableWeek1And2Scheduling?: SortOrder
+    lateVisitThreshold?: SortOrder
+    enableDistanceAlerts?: SortOrder
+    distanceThreshold?: SortOrder
+    lateVisitAlerts?: SortOrder
+    clientBirthdayReminders?: SortOrder
+    careWorkerVisitAlerts?: SortOrder
+    missedMedicationAlerts?: SortOrder
+    clientAndCareWorkerReminders?: SortOrder
+    distanceAlerts?: SortOrder
+    reviewNotifications?: SortOrder
+    preferredNotificationMethod?: SortOrder
+    notificationFrequency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     licenseNumber?: SortOrder
@@ -55586,6 +57353,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: SortOrder
     hasPoliciesAndProcedures?: SortOrder
     isTestAccount?: SortOrder
+    allowCareWorkersEditCheckIn?: SortOrder
+    allowFamilyReviews?: SortOrder
+    enableFamilySchedule?: SortOrder
+    enableWeek1And2Scheduling?: SortOrder
+    lateVisitThreshold?: SortOrder
+    enableDistanceAlerts?: SortOrder
+    distanceThreshold?: SortOrder
+    lateVisitAlerts?: SortOrder
+    clientBirthdayReminders?: SortOrder
+    careWorkerVisitAlerts?: SortOrder
+    missedMedicationAlerts?: SortOrder
+    clientAndCareWorkerReminders?: SortOrder
+    distanceAlerts?: SortOrder
+    reviewNotifications?: SortOrder
+    preferredNotificationMethod?: SortOrder
+    notificationFrequency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     licenseNumber?: SortOrder
@@ -55618,6 +57401,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: SortOrder
     hasPoliciesAndProcedures?: SortOrder
     isTestAccount?: SortOrder
+    allowCareWorkersEditCheckIn?: SortOrder
+    allowFamilyReviews?: SortOrder
+    enableFamilySchedule?: SortOrder
+    enableWeek1And2Scheduling?: SortOrder
+    lateVisitThreshold?: SortOrder
+    enableDistanceAlerts?: SortOrder
+    distanceThreshold?: SortOrder
+    lateVisitAlerts?: SortOrder
+    clientBirthdayReminders?: SortOrder
+    careWorkerVisitAlerts?: SortOrder
+    missedMedicationAlerts?: SortOrder
+    clientAndCareWorkerReminders?: SortOrder
+    distanceAlerts?: SortOrder
+    reviewNotifications?: SortOrder
+    preferredNotificationMethod?: SortOrder
+    notificationFrequency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     licenseNumber?: SortOrder
@@ -55678,6 +57477,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumPreferredNotificationMethodWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PreferredNotificationMethod | EnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPreferredNotificationMethodWithAggregatesFilter<$PrismaModel> | $Enums.PreferredNotificationMethod
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPreferredNotificationMethodFilter<$PrismaModel>
+    _max?: NestedEnumPreferredNotificationMethodFilter<$PrismaModel>
+  }
+
+  export type EnumNotificationFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationFrequency | EnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.NotificationFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
   }
 
   export type EnumAnnouncementPriorityFilter<$PrismaModel = never> = {
@@ -56350,6 +58169,12 @@ export namespace Prisma {
     none?: AgencyWhereInput
   }
 
+  export type VisitTypeListRelationFilter = {
+    every?: VisitTypeWhereInput
+    some?: VisitTypeWhereInput
+    none?: VisitTypeWhereInput
+  }
+
   export type CareOutcomeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -56399,6 +58224,10 @@ export namespace Prisma {
   }
 
   export type AgencyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type VisitTypeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -56578,31 +58407,84 @@ export namespace Prisma {
     agencyId?: SortOrder
   }
 
+  export type EnumTaskTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TaskType | EnumTaskTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTaskTypeFilter<$PrismaModel> | $Enums.TaskType
+  }
+
+  export type VisitTypeScalarRelationFilter = {
+    is?: VisitTypeWhereInput
+    isNot?: VisitTypeWhereInput
+  }
+
+  export type TaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    careworkerNotes?: SortOrder
+    visitTypeId?: SortOrder
+  }
+
+  export type TaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    careworkerNotes?: SortOrder
+    visitTypeId?: SortOrder
+  }
+
+  export type TaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    careworkerNotes?: SortOrder
+    visitTypeId?: SortOrder
+  }
+
+  export type EnumTaskTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TaskType | EnumTaskTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTaskTypeWithAggregatesFilter<$PrismaModel> | $Enums.TaskType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTaskTypeFilter<$PrismaModel>
+    _max?: NestedEnumTaskTypeFilter<$PrismaModel>
+  }
+
+  export type TaskListRelationFilter = {
+    every?: TaskWhereInput
+    some?: TaskWhereInput
+    none?: TaskWhereInput
+  }
+
+  export type TaskOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type VisitTypeCountOrderByAggregateInput = {
     id?: SortOrder
-    agencyId?: SortOrder
     name?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type VisitTypeMaxOrderByAggregateInput = {
     id?: SortOrder
-    agencyId?: SortOrder
     name?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type VisitTypeMinOrderByAggregateInput = {
     id?: SortOrder
-    agencyId?: SortOrder
     name?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type EnumScheduleTypeFilter<$PrismaModel = never> = {
@@ -56621,11 +58503,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type VisitTypeNullableScalarRelationFilter = {
-    is?: VisitTypeWhereInput | null
-    isNot?: VisitTypeWhereInput | null
   }
 
   export type ScheduleUnique_schedule_appointmentCompoundUniqueInput = {
@@ -57791,13 +59668,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type VisitTypeCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<VisitTypeCreateWithoutAgencyInput, VisitTypeUncheckedCreateWithoutAgencyInput> | VisitTypeCreateWithoutAgencyInput[] | VisitTypeUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: VisitTypeCreateOrConnectWithoutAgencyInput | VisitTypeCreateOrConnectWithoutAgencyInput[]
-    createMany?: VisitTypeCreateManyAgencyInputEnvelope
-    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-  }
-
   export type AnnouncementUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
@@ -57917,13 +59787,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type VisitTypeUncheckedCreateNestedManyWithoutAgencyInput = {
-    create?: XOR<VisitTypeCreateWithoutAgencyInput, VisitTypeUncheckedCreateWithoutAgencyInput> | VisitTypeCreateWithoutAgencyInput[] | VisitTypeUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: VisitTypeCreateOrConnectWithoutAgencyInput | VisitTypeCreateOrConnectWithoutAgencyInput[]
-    createMany?: VisitTypeCreateManyAgencyInputEnvelope
-    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
@@ -57938,6 +59801,14 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type EnumPreferredNotificationMethodFieldUpdateOperationsInput = {
+    set?: $Enums.PreferredNotificationMethod
+  }
+
+  export type EnumNotificationFrequencyFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationFrequency
   }
 
   export type AnnouncementUpdateManyWithoutAgencyNestedInput = {
@@ -58188,20 +60059,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAgenciesOwnedInput, UserUpdateWithoutAgenciesOwnedInput>, UserUncheckedUpdateWithoutAgenciesOwnedInput>
   }
 
-  export type VisitTypeUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<VisitTypeCreateWithoutAgencyInput, VisitTypeUncheckedCreateWithoutAgencyInput> | VisitTypeCreateWithoutAgencyInput[] | VisitTypeUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: VisitTypeCreateOrConnectWithoutAgencyInput | VisitTypeCreateOrConnectWithoutAgencyInput[]
-    upsert?: VisitTypeUpsertWithWhereUniqueWithoutAgencyInput | VisitTypeUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: VisitTypeCreateManyAgencyInputEnvelope
-    set?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    disconnect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    delete?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    update?: VisitTypeUpdateWithWhereUniqueWithoutAgencyInput | VisitTypeUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: VisitTypeUpdateManyWithWhereWithoutAgencyInput | VisitTypeUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
-  }
-
   export type AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
@@ -58438,20 +60295,6 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutAgencyInput | UserUpdateWithWhereUniqueWithoutAgencyInput[]
     updateMany?: UserUpdateManyWithWhereWithoutAgencyInput | UserUpdateManyWithWhereWithoutAgencyInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
-  }
-
-  export type VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput = {
-    create?: XOR<VisitTypeCreateWithoutAgencyInput, VisitTypeUncheckedCreateWithoutAgencyInput> | VisitTypeCreateWithoutAgencyInput[] | VisitTypeUncheckedCreateWithoutAgencyInput[]
-    connectOrCreate?: VisitTypeCreateOrConnectWithoutAgencyInput | VisitTypeCreateOrConnectWithoutAgencyInput[]
-    upsert?: VisitTypeUpsertWithWhereUniqueWithoutAgencyInput | VisitTypeUpsertWithWhereUniqueWithoutAgencyInput[]
-    createMany?: VisitTypeCreateManyAgencyInputEnvelope
-    set?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    disconnect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    delete?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
-    update?: VisitTypeUpdateWithWhereUniqueWithoutAgencyInput | VisitTypeUpdateWithWhereUniqueWithoutAgencyInput[]
-    updateMany?: VisitTypeUpdateManyWithWhereWithoutAgencyInput | VisitTypeUpdateManyWithWhereWithoutAgencyInput[]
-    deleteMany?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
   }
 
   export type AnnouncementCreatetargetRolesInput = {
@@ -59018,6 +60861,13 @@ export namespace Prisma {
     connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
   }
 
+  export type VisitTypeCreateNestedManyWithoutUserInput = {
+    create?: XOR<VisitTypeCreateWithoutUserInput, VisitTypeUncheckedCreateWithoutUserInput> | VisitTypeCreateWithoutUserInput[] | VisitTypeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutUserInput | VisitTypeCreateOrConnectWithoutUserInput[]
+    createMany?: VisitTypeCreateManyUserInputEnvelope
+    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+  }
+
   export type AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
@@ -59257,6 +61107,13 @@ export namespace Prisma {
     create?: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput> | AnnouncementCreateWithoutAcknowledgedByInput[] | AnnouncementUncheckedCreateWithoutAcknowledgedByInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutAcknowledgedByInput | AnnouncementCreateOrConnectWithoutAcknowledgedByInput[]
     connect?: AnnouncementWhereUniqueInput | AnnouncementWhereUniqueInput[]
+  }
+
+  export type VisitTypeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<VisitTypeCreateWithoutUserInput, VisitTypeUncheckedCreateWithoutUserInput> | VisitTypeCreateWithoutUserInput[] | VisitTypeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutUserInput | VisitTypeCreateOrConnectWithoutUserInput[]
+    createMany?: VisitTypeCreateManyUserInputEnvelope
+    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
   }
 
   export type NullableBoolFieldUpdateOperationsInput = {
@@ -59763,6 +61620,20 @@ export namespace Prisma {
     deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
   }
 
+  export type VisitTypeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<VisitTypeCreateWithoutUserInput, VisitTypeUncheckedCreateWithoutUserInput> | VisitTypeCreateWithoutUserInput[] | VisitTypeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutUserInput | VisitTypeCreateOrConnectWithoutUserInput[]
+    upsert?: VisitTypeUpsertWithWhereUniqueWithoutUserInput | VisitTypeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: VisitTypeCreateManyUserInputEnvelope
+    set?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    disconnect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    delete?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    update?: VisitTypeUpdateWithWhereUniqueWithoutUserInput | VisitTypeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: VisitTypeUpdateManyWithWhereWithoutUserInput | VisitTypeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
+  }
+
   export type AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
@@ -60243,6 +62114,20 @@ export namespace Prisma {
     deleteMany?: AnnouncementScalarWhereInput | AnnouncementScalarWhereInput[]
   }
 
+  export type VisitTypeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<VisitTypeCreateWithoutUserInput, VisitTypeUncheckedCreateWithoutUserInput> | VisitTypeCreateWithoutUserInput[] | VisitTypeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutUserInput | VisitTypeCreateOrConnectWithoutUserInput[]
+    upsert?: VisitTypeUpsertWithWhereUniqueWithoutUserInput | VisitTypeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: VisitTypeCreateManyUserInputEnvelope
+    set?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    disconnect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    delete?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+    update?: VisitTypeUpdateWithWhereUniqueWithoutUserInput | VisitTypeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: VisitTypeUpdateManyWithWhereWithoutUserInput | VisitTypeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutCommunicationPreferenceInput = {
     create?: XOR<UserCreateWithoutCommunicationPreferenceInput, UserUncheckedCreateWithoutCommunicationPreferenceInput>
     connectOrCreate?: UserCreateOrConnectWithoutCommunicationPreferenceInput
@@ -60327,60 +62212,80 @@ export namespace Prisma {
     deleteMany?: MedicationRecordScalarWhereInput | MedicationRecordScalarWhereInput[]
   }
 
-  export type ScheduleCreateNestedManyWithoutVisitTypeInput = {
-    create?: XOR<ScheduleCreateWithoutVisitTypeInput, ScheduleUncheckedCreateWithoutVisitTypeInput> | ScheduleCreateWithoutVisitTypeInput[] | ScheduleUncheckedCreateWithoutVisitTypeInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutVisitTypeInput | ScheduleCreateOrConnectWithoutVisitTypeInput[]
-    createMany?: ScheduleCreateManyVisitTypeInputEnvelope
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
+  export type VisitTypeCreateNestedOneWithoutAssignedTasksInput = {
+    create?: XOR<VisitTypeCreateWithoutAssignedTasksInput, VisitTypeUncheckedCreateWithoutAssignedTasksInput>
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutAssignedTasksInput
+    connect?: VisitTypeWhereUniqueInput
   }
 
-  export type AgencyCreateNestedOneWithoutVisitTypesInput = {
-    create?: XOR<AgencyCreateWithoutVisitTypesInput, AgencyUncheckedCreateWithoutVisitTypesInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutVisitTypesInput
-    connect?: AgencyWhereUniqueInput
+  export type EnumTaskTypeFieldUpdateOperationsInput = {
+    set?: $Enums.TaskType
   }
 
-  export type ScheduleUncheckedCreateNestedManyWithoutVisitTypeInput = {
-    create?: XOR<ScheduleCreateWithoutVisitTypeInput, ScheduleUncheckedCreateWithoutVisitTypeInput> | ScheduleCreateWithoutVisitTypeInput[] | ScheduleUncheckedCreateWithoutVisitTypeInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutVisitTypeInput | ScheduleCreateOrConnectWithoutVisitTypeInput[]
-    createMany?: ScheduleCreateManyVisitTypeInputEnvelope
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
+  export type VisitTypeUpdateOneRequiredWithoutAssignedTasksNestedInput = {
+    create?: XOR<VisitTypeCreateWithoutAssignedTasksInput, VisitTypeUncheckedCreateWithoutAssignedTasksInput>
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutAssignedTasksInput
+    upsert?: VisitTypeUpsertWithoutAssignedTasksInput
+    connect?: VisitTypeWhereUniqueInput
+    update?: XOR<XOR<VisitTypeUpdateToOneWithWhereWithoutAssignedTasksInput, VisitTypeUpdateWithoutAssignedTasksInput>, VisitTypeUncheckedUpdateWithoutAssignedTasksInput>
   }
 
-  export type ScheduleUpdateManyWithoutVisitTypeNestedInput = {
-    create?: XOR<ScheduleCreateWithoutVisitTypeInput, ScheduleUncheckedCreateWithoutVisitTypeInput> | ScheduleCreateWithoutVisitTypeInput[] | ScheduleUncheckedCreateWithoutVisitTypeInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutVisitTypeInput | ScheduleCreateOrConnectWithoutVisitTypeInput[]
-    upsert?: ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput | ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput[]
-    createMany?: ScheduleCreateManyVisitTypeInputEnvelope
-    set?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    disconnect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    delete?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    update?: ScheduleUpdateWithWhereUniqueWithoutVisitTypeInput | ScheduleUpdateWithWhereUniqueWithoutVisitTypeInput[]
-    updateMany?: ScheduleUpdateManyWithWhereWithoutVisitTypeInput | ScheduleUpdateManyWithWhereWithoutVisitTypeInput[]
-    deleteMany?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
+  export type TaskCreateNestedManyWithoutVisitTypeInput = {
+    create?: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput> | TaskCreateWithoutVisitTypeInput[] | TaskUncheckedCreateWithoutVisitTypeInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutVisitTypeInput | TaskCreateOrConnectWithoutVisitTypeInput[]
+    createMany?: TaskCreateManyVisitTypeInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
-  export type AgencyUpdateOneRequiredWithoutVisitTypesNestedInput = {
-    create?: XOR<AgencyCreateWithoutVisitTypesInput, AgencyUncheckedCreateWithoutVisitTypesInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutVisitTypesInput
-    upsert?: AgencyUpsertWithoutVisitTypesInput
-    connect?: AgencyWhereUniqueInput
-    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutVisitTypesInput, AgencyUpdateWithoutVisitTypesInput>, AgencyUncheckedUpdateWithoutVisitTypesInput>
+  export type UserCreateNestedOneWithoutVisitTypesInput = {
+    create?: XOR<UserCreateWithoutVisitTypesInput, UserUncheckedCreateWithoutVisitTypesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVisitTypesInput
+    connect?: UserWhereUniqueInput
   }
 
-  export type ScheduleUncheckedUpdateManyWithoutVisitTypeNestedInput = {
-    create?: XOR<ScheduleCreateWithoutVisitTypeInput, ScheduleUncheckedCreateWithoutVisitTypeInput> | ScheduleCreateWithoutVisitTypeInput[] | ScheduleUncheckedCreateWithoutVisitTypeInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutVisitTypeInput | ScheduleCreateOrConnectWithoutVisitTypeInput[]
-    upsert?: ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput | ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput[]
-    createMany?: ScheduleCreateManyVisitTypeInputEnvelope
-    set?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    disconnect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    delete?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    update?: ScheduleUpdateWithWhereUniqueWithoutVisitTypeInput | ScheduleUpdateWithWhereUniqueWithoutVisitTypeInput[]
-    updateMany?: ScheduleUpdateManyWithWhereWithoutVisitTypeInput | ScheduleUpdateManyWithWhereWithoutVisitTypeInput[]
-    deleteMany?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
+  export type TaskUncheckedCreateNestedManyWithoutVisitTypeInput = {
+    create?: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput> | TaskCreateWithoutVisitTypeInput[] | TaskUncheckedCreateWithoutVisitTypeInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutVisitTypeInput | TaskCreateOrConnectWithoutVisitTypeInput[]
+    createMany?: TaskCreateManyVisitTypeInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type TaskUpdateManyWithoutVisitTypeNestedInput = {
+    create?: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput> | TaskCreateWithoutVisitTypeInput[] | TaskUncheckedCreateWithoutVisitTypeInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutVisitTypeInput | TaskCreateOrConnectWithoutVisitTypeInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutVisitTypeInput | TaskUpsertWithWhereUniqueWithoutVisitTypeInput[]
+    createMany?: TaskCreateManyVisitTypeInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutVisitTypeInput | TaskUpdateWithWhereUniqueWithoutVisitTypeInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutVisitTypeInput | TaskUpdateManyWithWhereWithoutVisitTypeInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutVisitTypesNestedInput = {
+    create?: XOR<UserCreateWithoutVisitTypesInput, UserUncheckedCreateWithoutVisitTypesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVisitTypesInput
+    upsert?: UserUpsertWithoutVisitTypesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVisitTypesInput, UserUpdateWithoutVisitTypesInput>, UserUncheckedUpdateWithoutVisitTypesInput>
+  }
+
+  export type TaskUncheckedUpdateManyWithoutVisitTypeNestedInput = {
+    create?: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput> | TaskCreateWithoutVisitTypeInput[] | TaskUncheckedCreateWithoutVisitTypeInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutVisitTypeInput | TaskCreateOrConnectWithoutVisitTypeInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutVisitTypeInput | TaskUpsertWithWhereUniqueWithoutVisitTypeInput[]
+    createMany?: TaskCreateManyVisitTypeInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutVisitTypeInput | TaskUpdateWithWhereUniqueWithoutVisitTypeInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutVisitTypeInput | TaskUpdateManyWithWhereWithoutVisitTypeInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
   export type AgencyCreateNestedOneWithoutSchedulesInput = {
@@ -60399,12 +62304,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutCareWorkerSchedulesInput, UserUncheckedCreateWithoutCareWorkerSchedulesInput>
     connectOrCreate?: UserCreateOrConnectWithoutCareWorkerSchedulesInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type VisitTypeCreateNestedOneWithoutSchedulesInput = {
-    create?: XOR<VisitTypeCreateWithoutSchedulesInput, VisitTypeUncheckedCreateWithoutSchedulesInput>
-    connectOrCreate?: VisitTypeCreateOrConnectWithoutSchedulesInput
-    connect?: VisitTypeWhereUniqueInput
   }
 
   export type EnumScheduleTypeFieldUpdateOperationsInput = {
@@ -60441,16 +62340,6 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutCareWorkerSchedulesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCareWorkerSchedulesInput, UserUpdateWithoutCareWorkerSchedulesInput>, UserUncheckedUpdateWithoutCareWorkerSchedulesInput>
-  }
-
-  export type VisitTypeUpdateOneWithoutSchedulesNestedInput = {
-    create?: XOR<VisitTypeCreateWithoutSchedulesInput, VisitTypeUncheckedCreateWithoutSchedulesInput>
-    connectOrCreate?: VisitTypeCreateOrConnectWithoutSchedulesInput
-    upsert?: VisitTypeUpsertWithoutSchedulesInput
-    disconnect?: VisitTypeWhereInput | boolean
-    delete?: VisitTypeWhereInput | boolean
-    connect?: VisitTypeWhereUniqueInput
-    update?: XOR<XOR<VisitTypeUpdateToOneWithWhereWithoutSchedulesInput, VisitTypeUpdateWithoutSchedulesInput>, VisitTypeUncheckedUpdateWithoutSchedulesInput>
   }
 
   export type BodyMapObservationCreateNestedManyWithoutReportInput = {
@@ -61447,6 +63336,20 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedEnumPreferredNotificationMethodFilter<$PrismaModel = never> = {
+    equals?: $Enums.PreferredNotificationMethod | EnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPreferredNotificationMethodFilter<$PrismaModel> | $Enums.PreferredNotificationMethod
+  }
+
+  export type NestedEnumNotificationFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationFrequency | EnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationFrequencyFilter<$PrismaModel> | $Enums.NotificationFrequency
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -61497,6 +63400,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPreferredNotificationMethodWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PreferredNotificationMethod | EnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PreferredNotificationMethod[] | ListEnumPreferredNotificationMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPreferredNotificationMethodWithAggregatesFilter<$PrismaModel> | $Enums.PreferredNotificationMethod
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPreferredNotificationMethodFilter<$PrismaModel>
+    _max?: NestedEnumPreferredNotificationMethodFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNotificationFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationFrequency | EnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.NotificationFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
   }
 
   export type NestedEnumAnnouncementPriorityFilter<$PrismaModel = never> = {
@@ -61740,6 +63663,23 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumTaskTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TaskType | EnumTaskTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTaskTypeFilter<$PrismaModel> | $Enums.TaskType
+  }
+
+  export type NestedEnumTaskTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TaskType | EnumTaskTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTaskTypeWithAggregatesFilter<$PrismaModel> | $Enums.TaskType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTaskTypeFilter<$PrismaModel>
+    _max?: NestedEnumTaskTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumScheduleTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ScheduleType | EnumScheduleTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ScheduleType[] | ListEnumScheduleTypeFieldRefInput<$PrismaModel>
@@ -61969,6 +63909,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -62032,6 +63973,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -62111,6 +64053,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -62174,6 +64117,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnnouncementCreateWithoutAgencyInput = {
@@ -62695,9 +64639,9 @@ export namespace Prisma {
     chargeRate?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    visitTypeId?: string | null
     client: UserCreateNestedOneWithoutClientSchedulesInput
     user: UserCreateNestedOneWithoutCareWorkerSchedulesInput
-    visitType?: VisitTypeCreateNestedOneWithoutSchedulesInput
   }
 
   export type ScheduleUncheckedCreateWithoutAgencyInput = {
@@ -62787,6 +64731,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgencyInput = {
@@ -62850,6 +64795,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgencyInput = {
@@ -62923,6 +64869,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgenciesOwnedInput = {
@@ -62986,39 +64933,12 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgenciesOwnedInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutAgenciesOwnedInput, UserUncheckedCreateWithoutAgenciesOwnedInput>
-  }
-
-  export type VisitTypeCreateWithoutAgencyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    schedules?: ScheduleCreateNestedManyWithoutVisitTypeInput
-  }
-
-  export type VisitTypeUncheckedCreateWithoutAgencyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutVisitTypeInput
-  }
-
-  export type VisitTypeCreateOrConnectWithoutAgencyInput = {
-    where: VisitTypeWhereUniqueInput
-    create: XOR<VisitTypeCreateWithoutAgencyInput, VisitTypeUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type VisitTypeCreateManyAgencyInputEnvelope = {
-    data: VisitTypeCreateManyAgencyInput | VisitTypeCreateManyAgencyInput[]
-    skipDuplicates?: boolean
   }
 
   export type AnnouncementUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -63647,6 +65567,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgenciesOwnedInput = {
@@ -63710,34 +65631,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
-  }
-
-  export type VisitTypeUpsertWithWhereUniqueWithoutAgencyInput = {
-    where: VisitTypeWhereUniqueInput
-    update: XOR<VisitTypeUpdateWithoutAgencyInput, VisitTypeUncheckedUpdateWithoutAgencyInput>
-    create: XOR<VisitTypeCreateWithoutAgencyInput, VisitTypeUncheckedCreateWithoutAgencyInput>
-  }
-
-  export type VisitTypeUpdateWithWhereUniqueWithoutAgencyInput = {
-    where: VisitTypeWhereUniqueInput
-    data: XOR<VisitTypeUpdateWithoutAgencyInput, VisitTypeUncheckedUpdateWithoutAgencyInput>
-  }
-
-  export type VisitTypeUpdateManyWithWhereWithoutAgencyInput = {
-    where: VisitTypeScalarWhereInput
-    data: XOR<VisitTypeUpdateManyMutationInput, VisitTypeUncheckedUpdateManyWithoutAgencyInput>
-  }
-
-  export type VisitTypeScalarWhereInput = {
-    AND?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
-    OR?: VisitTypeScalarWhereInput[]
-    NOT?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
-    id?: StringFilter<"VisitType"> | string
-    agencyId?: StringFilter<"VisitType"> | string
-    name?: StringFilter<"VisitType"> | string
-    description?: StringNullableFilter<"VisitType"> | string | null
-    createdAt?: DateTimeFilter<"VisitType"> | Date | string
-    updatedAt?: DateTimeFilter<"VisitType"> | Date | string
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutAnnouncementsInput = {
@@ -63761,6 +65655,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -63786,7 +65696,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutAnnouncementsInput = {
@@ -63810,6 +65719,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -63835,7 +65760,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutAnnouncementsInput = {
@@ -63904,6 +65828,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedAnnouncementsInput = {
@@ -63967,6 +65892,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedAnnouncementsInput = {
@@ -64035,6 +65961,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAnnouncementInput = {
@@ -64098,6 +66025,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAnnouncementInput = {
@@ -64166,6 +66094,7 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput = {
@@ -64229,6 +66158,7 @@ export namespace Prisma {
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput = {
@@ -64268,6 +66198,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64293,7 +66239,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutAnnouncementsInput = {
@@ -64317,6 +66262,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64342,7 +66303,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutCreatedAnnouncementsInput = {
@@ -64417,6 +66377,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedAnnouncementsInput = {
@@ -64480,6 +66441,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutAnnouncementInput = {
@@ -64554,6 +66516,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAnnouncementInput = {
@@ -64617,6 +66580,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutAcknowledgedAnnouncementsInput = {
@@ -64656,6 +66620,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -64681,7 +66661,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutAuditLogsInput = {
@@ -64705,6 +66684,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -64730,7 +66725,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutAuditLogsInput = {
@@ -64799,6 +66793,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogInput = {
@@ -64862,6 +66857,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAuditLogInput = {
@@ -64901,6 +66897,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64926,7 +66938,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutAuditLogsInput = {
@@ -64950,6 +66961,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64975,7 +67002,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutAuditLogInput = {
@@ -65050,6 +67076,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogInput = {
@@ -65113,6 +67140,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutCertificationsInput = {
@@ -65136,6 +67164,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65161,7 +67205,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutCertificationsInput = {
@@ -65185,6 +67228,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65210,7 +67269,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutCertificationsInput = {
@@ -65250,6 +67308,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65275,7 +67349,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutCertificationsInput = {
@@ -65299,6 +67372,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65324,7 +67413,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutOperatingHoursInput = {
@@ -65348,6 +67436,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65373,7 +67477,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutOperatingHoursInput = {
@@ -65397,6 +67500,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65422,7 +67541,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutOperatingHoursInput = {
@@ -65462,6 +67580,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65487,7 +67621,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutOperatingHoursInput = {
@@ -65511,6 +67644,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65536,7 +67685,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutGroupsInput = {
@@ -65560,6 +67708,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65585,7 +67749,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutGroupsInput = {
@@ -65609,6 +67772,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65634,7 +67813,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutGroupsInput = {
@@ -65703,6 +67881,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutGroupsInput = {
@@ -65766,6 +67945,7 @@ export namespace Prisma {
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutGroupsInput = {
@@ -65805,6 +67985,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65830,7 +68026,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutGroupsInput = {
@@ -65854,6 +68049,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65879,7 +68090,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutGroupsInput = {
@@ -65919,6 +68129,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65944,7 +68170,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRateSheetsInput = {
@@ -65968,6 +68193,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -65993,7 +68234,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRateSheetsInput = {
@@ -66033,6 +68273,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66058,7 +68314,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRateSheetsInput = {
@@ -66082,6 +68337,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66107,7 +68378,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutCustomTasksInput = {
@@ -66131,6 +68401,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -66156,7 +68442,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutCustomTasksInput = {
@@ -66180,6 +68465,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -66205,7 +68506,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutCustomTasksInput = {
@@ -66245,6 +68545,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66270,7 +68586,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutCustomTasksInput = {
@@ -66294,6 +68609,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66319,7 +68650,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutClientAssignmentsInput = {
@@ -66383,6 +68713,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientAssignmentsInput = {
@@ -66446,6 +68777,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientAssignmentsInput = {
@@ -66514,6 +68846,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareAssignmentsInput = {
@@ -66577,6 +68910,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareAssignmentsInput = {
@@ -66656,6 +68990,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientAssignmentsInput = {
@@ -66719,6 +69054,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareAssignmentsInput = {
@@ -66793,6 +69129,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareAssignmentsInput = {
@@ -66856,6 +69193,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnnouncementCreateWithoutCreatedByInput = {
@@ -67831,9 +70169,9 @@ export namespace Prisma {
     chargeRate?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    visitTypeId?: string | null
     agency: AgencyCreateNestedOneWithoutSchedulesInput
     user: UserCreateNestedOneWithoutCareWorkerSchedulesInput
-    visitType?: VisitTypeCreateNestedOneWithoutSchedulesInput
   }
 
   export type ScheduleUncheckedCreateWithoutClientInput = {
@@ -67873,9 +70211,9 @@ export namespace Prisma {
     chargeRate?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    visitTypeId?: string | null
     agency: AgencyCreateNestedOneWithoutSchedulesInput
     client: UserCreateNestedOneWithoutClientSchedulesInput
-    visitType?: VisitTypeCreateNestedOneWithoutSchedulesInput
   }
 
   export type ScheduleUncheckedCreateWithoutUserInput = {
@@ -67925,6 +70263,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -67950,7 +70304,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutUsersInput = {
@@ -67974,6 +70327,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -67999,7 +70368,6 @@ export namespace Prisma {
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutUsersInput = {
@@ -68028,6 +70396,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -68053,7 +70437,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutOwnerInput = {
@@ -68077,6 +70460,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -68102,7 +70501,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutOwnerInput = {
@@ -68197,6 +70595,7 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutClientsInput
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvitedUsersInput = {
@@ -68260,6 +70659,7 @@ export namespace Prisma {
     agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvitedUsersInput = {
@@ -68328,6 +70728,7 @@ export namespace Prisma {
     groups?: GroupCreateNestedManyWithoutClientsInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvitedByInput = {
@@ -68391,6 +70792,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvitedByInput = {
@@ -68446,6 +70848,34 @@ export namespace Prisma {
   export type AnnouncementCreateOrConnectWithoutAcknowledgedByInput = {
     where: AnnouncementWhereUniqueInput
     create: XOR<AnnouncementCreateWithoutAcknowledgedByInput, AnnouncementUncheckedCreateWithoutAcknowledgedByInput>
+  }
+
+  export type VisitTypeCreateWithoutUserInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedTasks?: TaskCreateNestedManyWithoutVisitTypeInput
+  }
+
+  export type VisitTypeUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedTasks?: TaskUncheckedCreateNestedManyWithoutVisitTypeInput
+  }
+
+  export type VisitTypeCreateOrConnectWithoutUserInput = {
+    where: VisitTypeWhereUniqueInput
+    create: XOR<VisitTypeCreateWithoutUserInput, VisitTypeUncheckedCreateWithoutUserInput>
+  }
+
+  export type VisitTypeCreateManyUserInputEnvelope = {
+    data: VisitTypeCreateManyUserInput | VisitTypeCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type AnnouncementUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -69156,6 +71586,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69181,7 +71627,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutUsersInput = {
@@ -69205,6 +71650,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69230,7 +71691,6 @@ export namespace Prisma {
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -69273,6 +71733,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFilter<"Agency"> | boolean
     hasPoliciesAndProcedures?: BoolFilter<"Agency"> | boolean
     isTestAccount?: BoolFilter<"Agency"> | boolean
+    allowCareWorkersEditCheckIn?: BoolFilter<"Agency"> | boolean
+    allowFamilyReviews?: BoolFilter<"Agency"> | boolean
+    enableFamilySchedule?: BoolFilter<"Agency"> | boolean
+    enableWeek1And2Scheduling?: BoolFilter<"Agency"> | boolean
+    lateVisitThreshold?: StringFilter<"Agency"> | string
+    enableDistanceAlerts?: BoolFilter<"Agency"> | boolean
+    distanceThreshold?: StringFilter<"Agency"> | string
+    lateVisitAlerts?: BoolFilter<"Agency"> | boolean
+    clientBirthdayReminders?: BoolFilter<"Agency"> | boolean
+    careWorkerVisitAlerts?: BoolFilter<"Agency"> | boolean
+    missedMedicationAlerts?: BoolFilter<"Agency"> | boolean
+    clientAndCareWorkerReminders?: BoolFilter<"Agency"> | boolean
+    distanceAlerts?: BoolFilter<"Agency"> | boolean
+    reviewNotifications?: BoolFilter<"Agency"> | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFilter<"Agency"> | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFilter<"Agency"> | $Enums.NotificationFrequency
     createdAt?: DateTimeFilter<"Agency"> | Date | string
     updatedAt?: DateTimeFilter<"Agency"> | Date | string
     licenseNumber?: StringNullableFilter<"Agency"> | string | null
@@ -69372,6 +71848,7 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedUsersInput = {
@@ -69435,6 +71912,7 @@ export namespace Prisma {
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutInvitedByInput = {
@@ -69467,6 +71945,34 @@ export namespace Prisma {
   export type AnnouncementUpdateManyWithWhereWithoutAcknowledgedByInput = {
     where: AnnouncementScalarWhereInput
     data: XOR<AnnouncementUpdateManyMutationInput, AnnouncementUncheckedUpdateManyWithoutAcknowledgedByInput>
+  }
+
+  export type VisitTypeUpsertWithWhereUniqueWithoutUserInput = {
+    where: VisitTypeWhereUniqueInput
+    update: XOR<VisitTypeUpdateWithoutUserInput, VisitTypeUncheckedUpdateWithoutUserInput>
+    create: XOR<VisitTypeCreateWithoutUserInput, VisitTypeUncheckedCreateWithoutUserInput>
+  }
+
+  export type VisitTypeUpdateWithWhereUniqueWithoutUserInput = {
+    where: VisitTypeWhereUniqueInput
+    data: XOR<VisitTypeUpdateWithoutUserInput, VisitTypeUncheckedUpdateWithoutUserInput>
+  }
+
+  export type VisitTypeUpdateManyWithWhereWithoutUserInput = {
+    where: VisitTypeScalarWhereInput
+    data: XOR<VisitTypeUpdateManyMutationInput, VisitTypeUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type VisitTypeScalarWhereInput = {
+    AND?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
+    OR?: VisitTypeScalarWhereInput[]
+    NOT?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
+    id?: StringFilter<"VisitType"> | string
+    name?: StringFilter<"VisitType"> | string
+    description?: StringNullableFilter<"VisitType"> | string | null
+    createdAt?: DateTimeFilter<"VisitType"> | Date | string
+    updatedAt?: DateTimeFilter<"VisitType"> | Date | string
+    userId?: StringFilter<"VisitType"> | string
   }
 
   export type UserCreateWithoutCommunicationPreferenceInput = {
@@ -69530,6 +72036,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationPreferenceInput = {
@@ -69593,6 +72100,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationPreferenceInput = {
@@ -69672,6 +72180,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationPreferenceInput = {
@@ -69735,6 +72244,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutFamilyAccessInput = {
@@ -69798,6 +72308,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFamilyAccessInput = {
@@ -69861,6 +72372,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFamilyAccessInput = {
@@ -69940,6 +72452,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFamilyAccessInput = {
@@ -70003,6 +72516,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutMedicationsInput = {
@@ -70026,6 +72540,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -70051,7 +72581,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMedicationsInput = {
@@ -70075,6 +72604,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -70100,7 +72645,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMedicationsInput = {
@@ -70188,6 +72732,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70213,7 +72773,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMedicationsInput = {
@@ -70237,6 +72796,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70262,7 +72837,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type MedicationRecordUpsertWithWhereUniqueWithoutMedicationInput = {
@@ -70281,274 +72855,376 @@ export namespace Prisma {
     data: XOR<MedicationRecordUpdateManyMutationInput, MedicationRecordUncheckedUpdateManyWithoutMedicationInput>
   }
 
-  export type ScheduleCreateWithoutVisitTypeInput = {
+  export type VisitTypeCreateWithoutAssignedTasksInput = {
     id?: string
-    date: Date | string
-    startTime: string
-    endTime: string
-    status?: string
-    type?: $Enums.ScheduleType
-    notes?: string | null
-    chargeRate?: number | null
+    name: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    agency: AgencyCreateNestedOneWithoutSchedulesInput
-    client: UserCreateNestedOneWithoutClientSchedulesInput
-    user: UserCreateNestedOneWithoutCareWorkerSchedulesInput
+    User?: UserCreateNestedOneWithoutVisitTypesInput
   }
 
-  export type ScheduleUncheckedCreateWithoutVisitTypeInput = {
+  export type VisitTypeUncheckedCreateWithoutAssignedTasksInput = {
     id?: string
-    agencyId: string
-    clientId: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     userId: string
-    date: Date | string
-    startTime: string
-    endTime: string
-    status?: string
-    type?: $Enums.ScheduleType
-    notes?: string | null
-    chargeRate?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
-  export type ScheduleCreateOrConnectWithoutVisitTypeInput = {
-    where: ScheduleWhereUniqueInput
-    create: XOR<ScheduleCreateWithoutVisitTypeInput, ScheduleUncheckedCreateWithoutVisitTypeInput>
+  export type VisitTypeCreateOrConnectWithoutAssignedTasksInput = {
+    where: VisitTypeWhereUniqueInput
+    create: XOR<VisitTypeCreateWithoutAssignedTasksInput, VisitTypeUncheckedCreateWithoutAssignedTasksInput>
   }
 
-  export type ScheduleCreateManyVisitTypeInputEnvelope = {
-    data: ScheduleCreateManyVisitTypeInput | ScheduleCreateManyVisitTypeInput[]
+  export type VisitTypeUpsertWithoutAssignedTasksInput = {
+    update: XOR<VisitTypeUpdateWithoutAssignedTasksInput, VisitTypeUncheckedUpdateWithoutAssignedTasksInput>
+    create: XOR<VisitTypeCreateWithoutAssignedTasksInput, VisitTypeUncheckedCreateWithoutAssignedTasksInput>
+    where?: VisitTypeWhereInput
+  }
+
+  export type VisitTypeUpdateToOneWithWhereWithoutAssignedTasksInput = {
+    where?: VisitTypeWhereInput
+    data: XOR<VisitTypeUpdateWithoutAssignedTasksInput, VisitTypeUncheckedUpdateWithoutAssignedTasksInput>
+  }
+
+  export type VisitTypeUpdateWithoutAssignedTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    User?: UserUpdateOneWithoutVisitTypesNestedInput
+  }
+
+  export type VisitTypeUncheckedUpdateWithoutAssignedTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TaskCreateWithoutVisitTypeInput = {
+    id?: string
+    type: $Enums.TaskType
+    careworkerNotes?: string | null
+  }
+
+  export type TaskUncheckedCreateWithoutVisitTypeInput = {
+    id?: string
+    type: $Enums.TaskType
+    careworkerNotes?: string | null
+  }
+
+  export type TaskCreateOrConnectWithoutVisitTypeInput = {
+    where: TaskWhereUniqueInput
+    create: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput>
+  }
+
+  export type TaskCreateManyVisitTypeInputEnvelope = {
+    data: TaskCreateManyVisitTypeInput | TaskCreateManyVisitTypeInput[]
     skipDuplicates?: boolean
   }
 
-  export type AgencyCreateWithoutVisitTypesInput = {
+  export type UserCreateWithoutVisitTypesInput = {
     id?: string
-    name: string
-    email?: string
-    description?: string | null
-    address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
-    website?: string | null
-    logo?: string | null
-    primaryColor?: string | null
-    secondaryColor?: string | null
-    isActive?: boolean
-    isSuspended?: boolean
-    hasScheduleV2?: boolean
-    hasEMAR?: boolean
-    hasFinance?: boolean
-    isWeek1And2ScheduleEnabled?: boolean
-    hasPoliciesAndProcedures?: boolean
-    isTestAccount?: boolean
+    cognitoId: string
+    email: string
+    fullName?: string
+    preferredName?: string | null
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    licenseNumber?: string | null
-    timeZone?: string
-    currency?: string
-    maxUsers?: number | null
-    maxClients?: number | null
-    maxCareWorkers?: number | null
-    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
-    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
-    certifications?: CertificationCreateNestedManyWithoutAgencyInput
-    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
-    documents?: DocumentCreateNestedManyWithoutAgencyInput
-    groups?: GroupCreateNestedManyWithoutAgencyInput
-    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
-    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
-    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
-    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
-    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
-    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
-    reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
-    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
-    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
-    users?: UserCreateNestedManyWithoutAgencyInput
-    owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    Document?: DocumentCreateNestedManyWithoutClientInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    Notification?: NotificationCreateNestedManyWithoutUserInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
   }
 
-  export type AgencyUncheckedCreateWithoutVisitTypesInput = {
+  export type UserUncheckedCreateWithoutVisitTypesInput = {
     id?: string
-    name: string
-    email?: string
-    description?: string | null
-    address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
-    website?: string | null
-    logo?: string | null
-    primaryColor?: string | null
-    secondaryColor?: string | null
-    isActive?: boolean
-    isSuspended?: boolean
-    hasScheduleV2?: boolean
-    hasEMAR?: boolean
-    hasFinance?: boolean
-    isWeek1And2ScheduleEnabled?: boolean
-    hasPoliciesAndProcedures?: boolean
-    isTestAccount?: boolean
+    cognitoId: string
+    email: string
+    fullName?: string
+    preferredName?: string | null
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    licenseNumber?: string | null
-    timeZone?: string
-    currency?: string
-    maxUsers?: number | null
-    maxClients?: number | null
-    maxCareWorkers?: number | null
-    ownerId?: string | null
-    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
-    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
-    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
-    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
-    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
-    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
-    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
-    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
-    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
-    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
-    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
-    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
-    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    agencyId?: string | null
+    invitedById?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
   }
 
-  export type AgencyCreateOrConnectWithoutVisitTypesInput = {
-    where: AgencyWhereUniqueInput
-    create: XOR<AgencyCreateWithoutVisitTypesInput, AgencyUncheckedCreateWithoutVisitTypesInput>
+  export type UserCreateOrConnectWithoutVisitTypesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutVisitTypesInput, UserUncheckedCreateWithoutVisitTypesInput>
   }
 
-  export type ScheduleUpsertWithWhereUniqueWithoutVisitTypeInput = {
-    where: ScheduleWhereUniqueInput
-    update: XOR<ScheduleUpdateWithoutVisitTypeInput, ScheduleUncheckedUpdateWithoutVisitTypeInput>
-    create: XOR<ScheduleCreateWithoutVisitTypeInput, ScheduleUncheckedCreateWithoutVisitTypeInput>
+  export type TaskUpsertWithWhereUniqueWithoutVisitTypeInput = {
+    where: TaskWhereUniqueInput
+    update: XOR<TaskUpdateWithoutVisitTypeInput, TaskUncheckedUpdateWithoutVisitTypeInput>
+    create: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput>
   }
 
-  export type ScheduleUpdateWithWhereUniqueWithoutVisitTypeInput = {
-    where: ScheduleWhereUniqueInput
-    data: XOR<ScheduleUpdateWithoutVisitTypeInput, ScheduleUncheckedUpdateWithoutVisitTypeInput>
+  export type TaskUpdateWithWhereUniqueWithoutVisitTypeInput = {
+    where: TaskWhereUniqueInput
+    data: XOR<TaskUpdateWithoutVisitTypeInput, TaskUncheckedUpdateWithoutVisitTypeInput>
   }
 
-  export type ScheduleUpdateManyWithWhereWithoutVisitTypeInput = {
-    where: ScheduleScalarWhereInput
-    data: XOR<ScheduleUpdateManyMutationInput, ScheduleUncheckedUpdateManyWithoutVisitTypeInput>
+  export type TaskUpdateManyWithWhereWithoutVisitTypeInput = {
+    where: TaskScalarWhereInput
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutVisitTypeInput>
   }
 
-  export type AgencyUpsertWithoutVisitTypesInput = {
-    update: XOR<AgencyUpdateWithoutVisitTypesInput, AgencyUncheckedUpdateWithoutVisitTypesInput>
-    create: XOR<AgencyCreateWithoutVisitTypesInput, AgencyUncheckedCreateWithoutVisitTypesInput>
-    where?: AgencyWhereInput
+  export type TaskScalarWhereInput = {
+    AND?: TaskScalarWhereInput | TaskScalarWhereInput[]
+    OR?: TaskScalarWhereInput[]
+    NOT?: TaskScalarWhereInput | TaskScalarWhereInput[]
+    id?: StringFilter<"Task"> | string
+    type?: EnumTaskTypeFilter<"Task"> | $Enums.TaskType
+    careworkerNotes?: StringNullableFilter<"Task"> | string | null
+    visitTypeId?: StringFilter<"Task"> | string
   }
 
-  export type AgencyUpdateToOneWithWhereWithoutVisitTypesInput = {
-    where?: AgencyWhereInput
-    data: XOR<AgencyUpdateWithoutVisitTypesInput, AgencyUncheckedUpdateWithoutVisitTypesInput>
+  export type UserUpsertWithoutVisitTypesInput = {
+    update: XOR<UserUpdateWithoutVisitTypesInput, UserUncheckedUpdateWithoutVisitTypesInput>
+    create: XOR<UserCreateWithoutVisitTypesInput, UserUncheckedCreateWithoutVisitTypesInput>
+    where?: UserWhereInput
   }
 
-  export type AgencyUpdateWithoutVisitTypesInput = {
+  export type UserUpdateToOneWithWhereWithoutVisitTypesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutVisitTypesInput, UserUncheckedUpdateWithoutVisitTypesInput>
+  }
+
+  export type UserUpdateWithoutVisitTypesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    isSuspended?: BoolFieldUpdateOperationsInput | boolean
-    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
-    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
-    hasFinance?: BoolFieldUpdateOperationsInput | boolean
-    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
-    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
-    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    timeZone?: StringFieldUpdateOperationsInput | string
-    currency?: StringFieldUpdateOperationsInput | string
-    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
-    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
-    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
-    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
-    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
-    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
-    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUpdateManyWithoutAgencyNestedInput
-    groups?: GroupUpdateManyWithoutAgencyNestedInput
-    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
-    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
-    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
-    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
-    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
-    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
-    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
-    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
-    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
-    users?: UserUpdateManyWithoutAgencyNestedInput
-    owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    Document?: DocumentUpdateManyWithoutClientNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
   }
 
-  export type AgencyUncheckedUpdateWithoutVisitTypesInput = {
+  export type UserUncheckedUpdateWithoutVisitTypesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
-    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    isSuspended?: BoolFieldUpdateOperationsInput | boolean
-    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
-    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
-    hasFinance?: BoolFieldUpdateOperationsInput | boolean
-    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
-    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
-    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    timeZone?: StringFieldUpdateOperationsInput | string
-    currency?: StringFieldUpdateOperationsInput | string
-    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
-    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
-    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
-    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
-    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
-    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
-    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
-    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
-    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
-    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
-    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
-    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
-    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
-    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
-    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
-    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
-    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
-    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
-    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
   }
 
   export type AgencyCreateWithoutSchedulesInput = {
@@ -70572,6 +73248,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -70597,7 +73289,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutSchedulesInput = {
@@ -70621,6 +73312,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -70646,7 +73353,6 @@ export namespace Prisma {
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutSchedulesInput = {
@@ -70715,6 +73421,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientSchedulesInput = {
@@ -70778,6 +73485,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientSchedulesInput = {
@@ -70846,6 +73554,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerSchedulesInput = {
@@ -70909,34 +73618,12 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerSchedulesInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCareWorkerSchedulesInput, UserUncheckedCreateWithoutCareWorkerSchedulesInput>
-  }
-
-  export type VisitTypeCreateWithoutSchedulesInput = {
-    id?: string
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    agency: AgencyCreateNestedOneWithoutVisitTypesInput
-  }
-
-  export type VisitTypeUncheckedCreateWithoutSchedulesInput = {
-    id?: string
-    agencyId: string
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type VisitTypeCreateOrConnectWithoutSchedulesInput = {
-    where: VisitTypeWhereUniqueInput
-    create: XOR<VisitTypeCreateWithoutSchedulesInput, VisitTypeUncheckedCreateWithoutSchedulesInput>
   }
 
   export type AgencyUpsertWithoutSchedulesInput = {
@@ -70971,6 +73658,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70996,7 +73699,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutSchedulesInput = {
@@ -71020,6 +73722,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71045,7 +73763,6 @@ export namespace Prisma {
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientSchedulesInput = {
@@ -71120,6 +73837,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientSchedulesInput = {
@@ -71183,6 +73901,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerSchedulesInput = {
@@ -71257,6 +73976,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerSchedulesInput = {
@@ -71320,35 +74040,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
-  }
-
-  export type VisitTypeUpsertWithoutSchedulesInput = {
-    update: XOR<VisitTypeUpdateWithoutSchedulesInput, VisitTypeUncheckedUpdateWithoutSchedulesInput>
-    create: XOR<VisitTypeCreateWithoutSchedulesInput, VisitTypeUncheckedCreateWithoutSchedulesInput>
-    where?: VisitTypeWhereInput
-  }
-
-  export type VisitTypeUpdateToOneWithWhereWithoutSchedulesInput = {
-    where?: VisitTypeWhereInput
-    data: XOR<VisitTypeUpdateWithoutSchedulesInput, VisitTypeUncheckedUpdateWithoutSchedulesInput>
-  }
-
-  export type VisitTypeUpdateWithoutSchedulesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agency?: AgencyUpdateOneRequiredWithoutVisitTypesNestedInput
-  }
-
-  export type VisitTypeUncheckedUpdateWithoutSchedulesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    agencyId?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type BodyMapObservationCreateWithoutReportInput = {
@@ -71430,6 +74122,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -71455,7 +74163,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutReportInput = {
@@ -71479,6 +74186,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -71504,7 +74227,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutReportInput = {
@@ -71573,6 +74295,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientReportsInput = {
@@ -71636,6 +74359,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientReportsInput = {
@@ -71704,6 +74428,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareReportsInput = {
@@ -71767,6 +74492,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareReportsInput = {
@@ -71938,6 +74664,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71963,7 +74705,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutReportInput = {
@@ -71987,6 +74728,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72012,7 +74769,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientReportsInput = {
@@ -72087,6 +74843,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientReportsInput = {
@@ -72150,6 +74907,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareReportsInput = {
@@ -72224,6 +74982,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareReportsInput = {
@@ -72287,6 +75046,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ReportAlertUpsertWithWhereUniqueWithoutReportInput = {
@@ -72799,6 +75559,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReportEditsInput = {
@@ -72862,6 +75623,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReportEditsInput = {
@@ -73000,6 +75762,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportEditsInput = {
@@ -73063,6 +75826,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ReportUpsertWithoutEditHistoryInput = {
@@ -73223,6 +75987,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMedicationsInput = {
@@ -73286,6 +76051,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMedicationsInput = {
@@ -73354,6 +76120,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientMedicationsInput = {
@@ -73417,6 +76184,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientMedicationsInput = {
@@ -73535,6 +76303,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMedicationsInput = {
@@ -73598,6 +76367,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutClientMedicationsInput = {
@@ -73672,6 +76442,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMedicationsInput = {
@@ -73735,6 +76506,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MedicationDatabaseLinkUpsertWithoutMedicationRecordInput = {
@@ -73827,6 +76599,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMedicationAdministrationsInput = {
@@ -73890,6 +76663,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMedicationAdministrationsInput = {
@@ -74071,6 +76845,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationAdministrationsInput = {
@@ -74134,6 +76909,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MedicationRecordUpsertWithoutAdministrationRecordsInput = {
@@ -74271,6 +77047,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -74296,7 +77088,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutInvoicesInput = {
@@ -74320,6 +77111,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -74345,7 +77152,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutInvoicesInput = {
@@ -74414,6 +77220,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvoiceInput = {
@@ -74477,6 +77284,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvoiceInput = {
@@ -74516,6 +77324,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74541,7 +77365,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutInvoicesInput = {
@@ -74565,6 +77388,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74590,7 +77429,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutInvoiceInput = {
@@ -74665,6 +77503,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoiceInput = {
@@ -74728,6 +77567,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutMileageRecordsInput = {
@@ -74751,6 +77591,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -74776,7 +77632,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMileageRecordsInput = {
@@ -74800,6 +77655,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -74825,7 +77696,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMileageRecordsInput = {
@@ -74894,6 +77764,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMileageInput = {
@@ -74957,6 +77828,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMileageInput = {
@@ -75025,6 +77897,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientMileageInput = {
@@ -75088,6 +77961,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientMileageInput = {
@@ -75127,6 +78001,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75152,7 +78042,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMileageRecordsInput = {
@@ -75176,6 +78065,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75201,7 +78106,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerMileageInput = {
@@ -75276,6 +78180,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMileageInput = {
@@ -75339,6 +78244,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutClientMileageInput = {
@@ -75413,6 +78319,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMileageInput = {
@@ -75476,6 +78383,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutDocumentsInput = {
@@ -75499,6 +78407,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -75524,7 +78448,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutDocumentsInput = {
@@ -75548,6 +78471,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -75573,7 +78512,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutDocumentsInput = {
@@ -75642,6 +78580,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocumentInput = {
@@ -75705,6 +78644,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocumentInput = {
@@ -75773,6 +78713,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -75836,6 +78777,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocumentsInput = {
@@ -75875,6 +78817,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75900,7 +78858,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutDocumentsInput = {
@@ -75924,6 +78881,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75949,7 +78922,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutDocumentInput = {
@@ -76024,6 +78996,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentInput = {
@@ -76087,6 +79060,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutDocumentsInput = {
@@ -76161,6 +79135,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -76224,6 +79199,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutProfileInput = {
@@ -76287,6 +79263,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -76350,6 +79327,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -76429,6 +79407,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -76492,6 +79471,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutIncidentReportsInput = {
@@ -76515,6 +79495,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -76540,7 +79536,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutIncidentReportsInput = {
@@ -76564,6 +79559,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -76589,7 +79600,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutIncidentReportsInput = {
@@ -76658,6 +79668,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutIncidentReportsInput = {
@@ -76721,6 +79732,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutIncidentReportsInput = {
@@ -76760,6 +79772,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76785,7 +79813,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutIncidentReportsInput = {
@@ -76809,6 +79836,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76834,7 +79877,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutIncidentReportsInput = {
@@ -76909,6 +79951,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutIncidentReportsInput = {
@@ -76972,6 +80015,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutReceivedMessagesInput = {
@@ -77035,6 +80079,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedMessagesInput = {
@@ -77098,6 +80143,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedMessagesInput = {
@@ -77166,6 +80212,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentMessagesInput = {
@@ -77229,6 +80276,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentMessagesInput = {
@@ -77308,6 +80356,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
@@ -77371,6 +80420,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutSentMessagesInput = {
@@ -77445,6 +80495,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentMessagesInput = {
@@ -77508,6 +80559,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKeyContactsInput = {
@@ -77571,6 +80623,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKeyContactsInput = {
@@ -77634,6 +80687,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutKeyContactsInput = {
@@ -77713,6 +80767,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKeyContactsInput = {
@@ -77776,6 +80831,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCareOutcomesInput = {
@@ -77839,6 +80895,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareOutcomesInput = {
@@ -77902,6 +80959,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareOutcomesInput = {
@@ -77981,6 +81039,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareOutcomesInput = {
@@ -78044,6 +81103,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCommunicationLogsInput = {
@@ -78107,6 +81167,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationLogsInput = {
@@ -78170,6 +81231,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationLogsInput = {
@@ -78249,6 +81311,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -78312,6 +81375,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RiskAssessmentCreateWithoutRiskCategoryInput = {
@@ -78371,6 +81435,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -78396,7 +81476,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRiskCategoriesInput = {
@@ -78420,6 +81499,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -78445,7 +81540,6 @@ export namespace Prisma {
     Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRiskCategoriesInput = {
@@ -78501,6 +81595,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78526,7 +81636,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRiskCategoriesInput = {
@@ -78550,6 +81659,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78575,7 +81700,6 @@ export namespace Prisma {
     Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutRiskAssessmentsInput = {
@@ -78639,6 +81763,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRiskAssessmentsInput = {
@@ -78702,6 +81827,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRiskAssessmentsInput = {
@@ -78802,6 +81928,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRiskAssessmentsInput = {
@@ -78865,6 +81992,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RiskCategoryUpsertWithoutRiskAssessmentsInput = {
@@ -78915,6 +82043,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -78940,7 +82084,6 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRemindersInput = {
@@ -78964,6 +82107,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -78989,7 +82148,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRemindersInput = {
@@ -79058,6 +82216,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRemindersInput = {
@@ -79121,6 +82280,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRemindersInput = {
@@ -79160,6 +82320,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -79185,7 +82361,6 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRemindersInput = {
@@ -79209,6 +82384,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -79234,7 +82425,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutRemindersInput = {
@@ -79309,6 +82499,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRemindersInput = {
@@ -79372,6 +82563,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotificationInput = {
@@ -79435,6 +82627,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationInput = {
@@ -79498,6 +82691,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationInput = {
@@ -79577,6 +82771,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationInput = {
@@ -79640,6 +82835,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnnouncementCreateManyAgencyInput = {
@@ -79854,14 +83050,6 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-  }
-
-  export type VisitTypeCreateManyAgencyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type AnnouncementUpdateWithoutAgencyInput = {
@@ -80403,9 +83591,9 @@ export namespace Prisma {
     chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
     client?: UserUpdateOneRequiredWithoutClientSchedulesNestedInput
     user?: UserUpdateOneRequiredWithoutCareWorkerSchedulesNestedInput
-    visitType?: VisitTypeUpdateOneWithoutSchedulesNestedInput
   }
 
   export type ScheduleUncheckedUpdateWithoutAgencyInput = {
@@ -80501,6 +83689,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgencyInput = {
@@ -80564,6 +83753,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAgencyInput = {
@@ -80592,32 +83782,6 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type VisitTypeUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    schedules?: ScheduleUpdateManyWithoutVisitTypeNestedInput
-  }
-
-  export type VisitTypeUncheckedUpdateWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    schedules?: ScheduleUncheckedUpdateManyWithoutVisitTypeNestedInput
-  }
-
-  export type VisitTypeUncheckedUpdateManyWithoutAgencyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUpdateWithoutAcknowledgedAnnouncementsInput = {
@@ -80681,6 +83845,7 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAcknowledgedAnnouncementsInput = {
@@ -80744,6 +83909,7 @@ export namespace Prisma {
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsInput = {
@@ -80836,6 +84002,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGroupsInput = {
@@ -80899,6 +84066,7 @@ export namespace Prisma {
     agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutGroupsInput = {
@@ -81295,6 +84463,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: boolean
     hasPoliciesAndProcedures?: boolean
     isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
     createdAt?: Date | string
     updatedAt?: Date | string
     licenseNumber?: string | null
@@ -81331,6 +84515,14 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
+  }
+
+  export type VisitTypeCreateManyUserInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AnnouncementUpdateWithoutCreatedByInput = {
@@ -82308,9 +85500,9 @@ export namespace Prisma {
     chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
     agency?: AgencyUpdateOneRequiredWithoutSchedulesNestedInput
     user?: UserUpdateOneRequiredWithoutCareWorkerSchedulesNestedInput
-    visitType?: VisitTypeUpdateOneWithoutSchedulesNestedInput
   }
 
   export type ScheduleUncheckedUpdateWithoutClientInput = {
@@ -82356,9 +85548,9 @@ export namespace Prisma {
     chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
     agency?: AgencyUpdateOneRequiredWithoutSchedulesNestedInput
     client?: UserUpdateOneRequiredWithoutClientSchedulesNestedInput
-    visitType?: VisitTypeUpdateOneWithoutSchedulesNestedInput
   }
 
   export type ScheduleUncheckedUpdateWithoutUserInput = {
@@ -82414,6 +85606,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82439,7 +85647,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutOwnerInput = {
@@ -82463,6 +85670,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82488,7 +85711,6 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateManyWithoutOwnerInput = {
@@ -82512,6 +85734,22 @@ export namespace Prisma {
     isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
     hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
     isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82607,6 +85845,7 @@ export namespace Prisma {
     groups?: GroupUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedByInput = {
@@ -82670,6 +85909,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutInvitedByInput = {
@@ -82760,6 +86000,32 @@ export namespace Prisma {
     userId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type VisitTypeUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedTasks?: TaskUpdateManyWithoutVisitTypeNestedInput
+  }
+
+  export type VisitTypeUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedTasks?: TaskUncheckedUpdateManyWithoutVisitTypeNestedInput
+  }
+
+  export type VisitTypeUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MedicationRecordCreateManyMedicationInput = {
     id?: string
     clientId: string
@@ -82834,68 +86100,28 @@ export namespace Prisma {
     asNeededDose?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type ScheduleCreateManyVisitTypeInput = {
+  export type TaskCreateManyVisitTypeInput = {
     id?: string
-    agencyId: string
-    clientId: string
-    userId: string
-    date: Date | string
-    startTime: string
-    endTime: string
-    status?: string
-    type?: $Enums.ScheduleType
-    notes?: string | null
-    chargeRate?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    type: $Enums.TaskType
+    careworkerNotes?: string | null
   }
 
-  export type ScheduleUpdateWithoutVisitTypeInput = {
+  export type TaskUpdateWithoutVisitTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    type?: EnumScheduleTypeFieldUpdateOperationsInput | $Enums.ScheduleType
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agency?: AgencyUpdateOneRequiredWithoutSchedulesNestedInput
-    client?: UserUpdateOneRequiredWithoutClientSchedulesNestedInput
-    user?: UserUpdateOneRequiredWithoutCareWorkerSchedulesNestedInput
+    type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+    careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ScheduleUncheckedUpdateWithoutVisitTypeInput = {
+  export type TaskUncheckedUpdateWithoutVisitTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
-    agencyId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    type?: EnumScheduleTypeFieldUpdateOperationsInput | $Enums.ScheduleType
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+    careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ScheduleUncheckedUpdateManyWithoutVisitTypeInput = {
+  export type TaskUncheckedUpdateManyWithoutVisitTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
-    agencyId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    type?: EnumScheduleTypeFieldUpdateOperationsInput | $Enums.ScheduleType
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    chargeRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
+    careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BodyMapObservationCreateManyReportInput = {

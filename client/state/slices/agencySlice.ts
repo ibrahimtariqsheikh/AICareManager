@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Agency, CustomTask, Group, RateSheet, RateSheetType, User } from "../../types/agencyTypes";
+import {  CustomTask, Group, RateSheet, RateSheetType, User } from "../../types/agencyTypes";
+import { Agency, NotificationFrequency } from "@/types/prismaTypes";
+import { PreferredNotificationMethod } from "@/types/prismaTypes";
 
 
 interface AgencyState {
@@ -76,7 +78,53 @@ const agencySlice = createSlice({
         },
         setError: (state, action: PayloadAction<string | null>) => {
             state.error = action.payload;
+        },
+        toggleAllowCareWorkersEditCheckInRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.allowCareWorkersEditCheckIn = action.payload;
+        },
+        toggleAllowFamilyReviewsRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.allowFamilyReviews = action.payload;
+        },
+        toggleEnableFamilyScheduleRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.enableFamilySchedule = action.payload;
+        },
+        toggleEnableWeek1And2SchedulingRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.enableWeek1And2Scheduling = action.payload;
+        },
+        toggleLateVisitAlertsRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.lateVisitAlerts = action.payload;
+        },
+        toggleClientBirthdayRemindersRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.clientBirthdayReminders = action.payload;
+        },
+        toggleCareWorkerVisitAlertsRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.careWorkerVisitAlerts = action.payload;
+        },
+        toggleMissedMedicationAlertsRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.missedMedicationAlerts = action.payload;
+        },
+        toggleClientAndCareWorkerRemindersRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.clientAndCareWorkerReminders = action.payload;
+        },
+        toggleReviewNotificationsRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.reviewNotifications = action.payload;
+        },
+        toggleDistanceAlertsRedux: (state, action: PayloadAction<boolean>) => {
+            state.agency!.distanceAlerts = action.payload;
+        },
+        setLateVisitThresholdRedux: (state, action: PayloadAction<string>) => {
+            state.agency!.lateVisitThreshold = parseInt(action.payload);
+        },
+        setDistanceThresholdRedux: (state, action: PayloadAction<string>) => {
+            state.agency!.distanceThreshold = parseInt(action.payload);
+        },
+        setNotificationFrequencyRedux: (state, action: PayloadAction<NotificationFrequency>) => {
+            state.agency!.notificationFrequency = action.payload;
+        },
+        setPreferredNotificationMethodRedux: (state, action: PayloadAction<PreferredNotificationMethod>) => {
+            state.agency!.preferredNotificationMethod = action.payload;
         }
+        
     }
 });
 
@@ -93,7 +141,21 @@ export const {
     setRateSheets,
     setLoading,
     setError,
-    setActiveRateSheetStaffType
+    toggleAllowCareWorkersEditCheckInRedux,
+    toggleAllowFamilyReviewsRedux,
+    toggleEnableFamilyScheduleRedux,
+    toggleEnableWeek1And2SchedulingRedux,
+    toggleLateVisitAlertsRedux,
+    toggleClientBirthdayRemindersRedux,
+    toggleCareWorkerVisitAlertsRedux,
+    toggleMissedMedicationAlertsRedux,
+    toggleClientAndCareWorkerRemindersRedux,
+    toggleReviewNotificationsRedux,
+    toggleDistanceAlertsRedux,
+    setLateVisitThresholdRedux,
+    setDistanceThresholdRedux,
+    setNotificationFrequencyRedux,
+    setPreferredNotificationMethodRedux,
 } = agencySlice.actions;
 
 // Export reducer

@@ -144,11 +144,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
     return (
         <SidebarProvider className="flex h-screen">
-
             <div className="flex h-full w-full">
-
                 <div className="flex h-full">
-
                     <SidebarLeft />
                     <SidebarInset />
                 </div>

@@ -21,55 +21,83 @@ model Invitation {
   inviter   User             @relation("SentInvitations", fields: [inviterId], references: [id], onDelete: Cascade)
 }
 
+enum NotificationFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum PreferredNotificationMethod {
+  EMAIL
+  SMS
+  PHONE
+}
+
 model Agency {
-  id                         String                   @id @default(cuid())
-  name                       String
-  email                      String                   @default("example@agency.com")
-  description                String?
-  address                    String?
-  extension                  Int?
-  mobileNumber               Int?
-  landlineNumber             Int?
-  website                    String?
-  logo                       String?
-  primaryColor               String?
-  secondaryColor             String?
-  isActive                   Boolean                  @default(true)
-  isSuspended                Boolean                  @default(false)
-  hasScheduleV2              Boolean                  @default(true)
-  hasEMAR                    Boolean                  @default(false)
-  hasFinance                 Boolean                  @default(false)
-  isWeek1And2ScheduleEnabled Boolean                  @default(false)
-  hasPoliciesAndProcedures   Boolean                  @default(false)
-  isTestAccount              Boolean                  @default(false)
-  createdAt                  DateTime                 @default(now())
-  updatedAt                  DateTime                 @updatedAt
-  licenseNumber              String?
-  timeZone                   String                   @default("UTC")
-  currency                   String                   @default("CAD")
-  maxUsers                   Int?
-  maxClients                 Int?
-  maxCareWorkers             Int?
-  announcements              Announcement[]
-  auditLogs                  AuditLog[]
-  certifications             Certification[]
-  customTasks                CustomTask[]
-  documents                  Document[]               @relation("AgencyDocuments")
-  groups                     Group[]
-  incidentReports            IncidentReport[]
-  invoices                   Invoice[]
-  medications                MedicationDatabaseLink[]
-  mileageRecords             MileageRecord[]
-  operatingHours             OperatingHours[]
-  rateSheets                 RateSheet[]
-  reminders                  Reminder[]
-  Report                     Report[]
-  riskCategories             RiskCategory[]
-  schedules                  Schedule[]
-  users                      User[]
-  ownerId                    String?
-  owner                      User?                    @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  visitTypes                 VisitType[]
+  id                           String                      @id @default(cuid())
+  name                         String
+  email                        String                      @default("example@agency.com")
+  description                  String?
+  address                      String?
+  extension                    Int?
+  mobileNumber                 Int?
+  landlineNumber               Int?
+  website                      String?
+  logo                         String?
+  primaryColor                 String?
+  secondaryColor               String?
+  isActive                     Boolean                     @default(true)
+  isSuspended                  Boolean                     @default(false)
+  hasScheduleV2                Boolean                     @default(true)
+  hasEMAR                      Boolean                     @default(false)
+  hasFinance                   Boolean                     @default(false)
+  isWeek1And2ScheduleEnabled   Boolean                     @default(false)
+  hasPoliciesAndProcedures     Boolean                     @default(false)
+  isTestAccount                Boolean                     @default(false)
+  allowCareWorkersEditCheckIn  Boolean                     @default(false)
+  allowFamilyReviews           Boolean                     @default(false)
+  enableFamilySchedule         Boolean                     @default(false)
+  enableWeek1And2Scheduling    Boolean                     @default(false)
+  lateVisitThreshold           String                      @default("15")
+  enableDistanceAlerts         Boolean                     @default(true)
+  distanceThreshold            String                      @default("10")
+  lateVisitAlerts              Boolean                     @default(true)
+  clientBirthdayReminders      Boolean                     @default(true)
+  careWorkerVisitAlerts        Boolean                     @default(true)
+  missedMedicationAlerts       Boolean                     @default(true)
+  clientAndCareWorkerReminders Boolean                     @default(true)
+  distanceAlerts               Boolean                     @default(true)
+  reviewNotifications          Boolean                     @default(true)
+  preferredNotificationMethod  PreferredNotificationMethod @default(EMAIL)
+  notificationFrequency        NotificationFrequency       @default(DAILY)
+  createdAt                    DateTime                    @default(now())
+  updatedAt                    DateTime                    @updatedAt
+  licenseNumber                String?
+  timeZone                     String                      @default("UTC")
+  currency                     String                      @default("CAD")
+  maxUsers                     Int?
+  maxClients                   Int?
+  maxCareWorkers               Int?
+  announcements                Announcement[]
+  auditLogs                    AuditLog[]
+  certifications               Certification[]
+  customTasks                  CustomTask[]
+  documents                    Document[]                  @relation("AgencyDocuments")
+  groups                       Group[]
+  incidentReports              IncidentReport[]
+  invoices                     Invoice[]
+  medications                  MedicationDatabaseLink[]
+  mileageRecords               MileageRecord[]
+  operatingHours               OperatingHours[]
+  rateSheets                   RateSheet[]
+  reminders                    Reminder[]
+  Report                       Report[]
+  riskCategories               RiskCategory[]
+  schedules                    Schedule[]
+  users                        User[]
+  ownerId                      String?
+  owner                        User?                       @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 }
 
 model Announcement {
@@ -200,12 +228,13 @@ model ClientCareAssignment {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  cognitoId      String    @unique
-  email          String    @unique
-  fullName       String    @default("")
-  preferredName  String?
-  role           Role
+  id            String  @id @default(cuid())
+  cognitoId     String  @unique
+  email         String  @unique
+  fullName      String  @default("")
+  preferredName String?
+  role          Role
+
   subRole        SubRole?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -264,6 +293,7 @@ model User {
   invitedBy                 User?                      @relation("UserInvites", fields: [invitedById], references: [id])
   invitedUsers              User[]                     @relation("UserInvites")
   acknowledgedAnnouncements Announcement[]             @relation("AnnouncementAcknowledgements")
+  visitTypes                VisitType[]
 }
 
 model CommunicationPreference {
@@ -297,15 +327,44 @@ model MedicationDatabaseLink {
   MedicationRecord MedicationRecord[]
 }
 
+enum TaskType {
+  MEDICATION
+  BODYMAP
+  FOOD
+  DRINKS
+  PERSONALCARE
+  HYGIENE
+  TOILET_ASSISTANCE
+  REPOSITIONING
+  COMPANIONSHIP
+  LAUNDRY
+  GROCERIES
+  HOUSEWORK
+  CHORES
+  INCIDENT_RESPONSE
+  FIRE_SAFETY
+  BLOOD_PRESSURE
+  VITALS
+  OTHER
+}
+
+model Task {
+  id              String    @id @default(cuid())
+  type            TaskType
+  careworkerNotes String?
+  visitTypeId     String
+  visitType       VisitType @relation(fields: [visitTypeId], references: [id], onDelete: Cascade)
+}
+
 model VisitType {
-  id          String     @id @default(cuid())
-  agencyId    String
-  name        String
-  description String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  schedules   Schedule[]
-  agency      Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  assignedTasks Task[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        String
+  User          User?    @relation(fields: [userId], references: [id])
 }
 
 model Schedule {
@@ -326,7 +385,6 @@ model Schedule {
   agency      Agency       @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   client      User         @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
   user        User         @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
-  visitType   VisitType?   @relation(fields: [visitTypeId], references: [id])
 
   @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
   @@index([userId, date])
