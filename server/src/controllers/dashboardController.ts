@@ -99,18 +99,8 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 },
             },
             include: {
-                client: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
-                caregiver: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
+                client: true,
+                caregiver: true,
             },
         });
         console.log("Found reports:", reports.length);
@@ -129,18 +119,8 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 agencyId: user.agencyId,
             },
             include: {
-                client: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
-                user: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
+                client: true,
+                user: true,
             },
         });
         console.log("Found mileage records:", mileageRecords.length);
@@ -209,18 +189,8 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 },
             },
             include: {
-                client: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
-                user: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                    },
-                },
+                client: true,
+                user: true,
             },
             orderBy: {
                 date: 'asc',

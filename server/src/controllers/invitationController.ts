@@ -237,23 +237,14 @@ export const getUserInvitations = async (req: Request, res: Response): Promise<v
             whereClause.status = status as InvitationStatus;
         }
         
-        console.log("Finding invitations with where clause:", whereClause);
-        
         const invitations = await prisma.invitation.findMany({
             where: whereClause,
             include: {
-                inviter: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                        email: true,
-                    },
-                },
+                inviter: true,
             },
             orderBy: { createdAt: 'desc' },
         });
         
-        console.log(`Found ${invitations.length} invitations for user ${inviterId}`);
         res.status(200).json(invitations);
     } catch (error: any) {
         console.error("Error in getUserInvitations:", error);
@@ -272,13 +263,7 @@ export const getInvitationsByEmail = async (req: Request, res: Response): Promis
                 status: InvitationStatus.PENDING
             },
             include: {
-                inviter: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                        email: true,
-                    },
-                },
+                inviter: true,
             },
             orderBy: { createdAt: 'desc' },
         });

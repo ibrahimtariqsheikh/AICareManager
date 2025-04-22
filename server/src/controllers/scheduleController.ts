@@ -231,23 +231,8 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
     const schedules = await prisma.schedule.findMany({
       where,
       include: {
-        client: {
-          select: {
-            id: true,
-            fullName: true,
-            phoneNumber: true,
-            address: true,
-            city: true,
-            province: true,
-            postalCode: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            fullName: true,
-          },
-        },
+        client:   true,
+        user: true,
       },
       take: Number(limit),
       skip: Number(offset),
