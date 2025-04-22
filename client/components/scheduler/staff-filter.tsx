@@ -16,10 +16,10 @@ export function StaffFilter() {
     useEffect(() => {
         // In a real app, this would be an API call
         const mockStaff = [
-            { id: "staff-1", firstName: "Dr.", lastName: "Sarah Wilson" },
-            { id: "staff-2", firstName: "Nurse", lastName: "David Thompson" },
-            { id: "staff-3", firstName: "Dr.", lastName: "Lisa Martinez" },
-            { id: "staff-4", firstName: "Therapist", lastName: "James Taylor" },
+            { id: "staff-1", fullName: "Dr. Sarah Wilson" },
+            { id: "staff-2", fullName: "Nurse David Thompson" },
+            { id: "staff-3", fullName: "Dr. Lisa Martinez" },
+            { id: "staff-4", fullName: "Therapist James Taylor" },
         ]
 
         setStaffMembers(mockStaff)
@@ -69,7 +69,7 @@ export function StaffFilter() {
                                         >
                                             <CheckIcon className="h-3 w-3" />
                                         </div>
-                                        <span>{`${staff.firstName} ${staff.lastName}`}</span>
+                                        <span>{`${staff.fullName}`}</span>
                                     </CommandItem>
                                 ))}
                             </CommandGroup>

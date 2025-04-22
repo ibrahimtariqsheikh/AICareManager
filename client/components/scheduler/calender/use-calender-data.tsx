@@ -59,9 +59,8 @@ export function useCalendarData(dateRange: DateRange) {
     useEffect(() => {
         const careWorkerMembers: StaffMember[] = careWorkers.map((staff) => ({
             id: staff.id,
-            firstName: staff.firstName || "",
-            lastName: staff.lastName || "",
-            name: `${staff.firstName} ${staff.lastName}`,
+            fullName: staff.fullName || "",
+            name: `${staff.fullName}`,
             role: staff.role || "CARE_WORKER",
             color: staff.color || "#000000",
             avatar: staff.profile?.avatarUrl || "",
@@ -70,9 +69,8 @@ export function useCalendarData(dateRange: DateRange) {
 
         const officeStaffMembers: StaffMember[] = officeStaff.map((staff) => ({
             id: staff.id,
-            firstName: staff.firstName || "",
-            lastName: staff.lastName || "",
-            name: `${staff.firstName} ${staff.lastName}`,
+            fullName: staff.fullName || "",
+            name: `${staff.fullName}`,
             role: staff.role || "OFFICE_STAFF",
             color: staff.color || "#000000",
             avatar: staff.profile?.avatarUrl || "",
@@ -81,9 +79,8 @@ export function useCalendarData(dateRange: DateRange) {
 
         const formattedClients: Client[] = clients.map((client) => ({
             id: client.id,
-            firstName: client.firstName || "",
-            lastName: client.lastName || "",
-            name: `${client.firstName} ${client.lastName}`,
+            fullName: client.fullName || "",
+            name: `${client.fullName}`,
             color: client.color || "#000000",
             avatar: client.profile?.avatarUrl || "",
             selected: true,

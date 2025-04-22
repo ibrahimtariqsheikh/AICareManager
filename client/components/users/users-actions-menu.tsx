@@ -78,7 +78,7 @@ export function UserActionsMenu({ user, onDeleteUser }: UserActionsMenuProps) {
         setIsDeleting(true)
         try {
             await onDeleteUser(user.id)
-            toast.success(`${user.firstName} ${user.lastName} has been deleted`)
+            toast.success(`${user.fullName} has been deleted`)
             setIsDeleteDialogOpen(false)
         } catch (error) {
             toast.error("Failed to delete user")
@@ -149,7 +149,7 @@ export function UserActionsMenu({ user, onDeleteUser }: UserActionsMenuProps) {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete {user.firstName} {user.lastName}'s account and
+                            This action cannot be undone. This will permanently delete {user.fullName}'s account and
                             remove their data from our servers.
                         </AlertDialogDescription>
                     </AlertDialogHeader>

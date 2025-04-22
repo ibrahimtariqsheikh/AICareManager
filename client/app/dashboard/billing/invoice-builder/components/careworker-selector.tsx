@@ -26,7 +26,7 @@ export function CareWorkerSelector() {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
-                    {selectedCareWorker ? selectedCareWorker.firstName + " " + selectedCareWorker.lastName : "Select care worker..."}
+                    {selectedCareWorker ? selectedCareWorker.fullName : "Select care worker..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -39,7 +39,7 @@ export function CareWorkerSelector() {
                             {careWorkers.map((careWorker: User) => (
                                 <CommandItem
                                     key={careWorker.id}
-                                    value={careWorker.firstName + " " + careWorker.lastName}
+                                    value={careWorker.fullName}
                                     onSelect={() => {
                                         dispatch(setSelectedCareWorker(careWorker.id === selectedCareWorker?.id ? null : careWorker))
                                         setOpen(false)
@@ -50,7 +50,7 @@ export function CareWorkerSelector() {
                                     />
                                     <div className="flex flex-col">
                                         <span>
-                                            {careWorker.firstName} {careWorker.lastName}
+                                            {careWorker.fullName}
                                         </span>
                                         <span className="text-xs text-muted-foreground">{careWorker.email}</span>
                                     </div>

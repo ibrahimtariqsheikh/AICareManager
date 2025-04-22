@@ -126,7 +126,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     const startTime = form.watch("startTime")
     const endTime = form.watch("endTime")
 
-    const { data: clientData, isLoading: isClientLoading } = useGetUserByIdQuery(selectedClientId, {
+    const { data: clientData } = useGetUserByIdQuery(selectedClientId, {
         skip: !selectedClientId,
     })
 

@@ -92,9 +92,9 @@ const ReportPage = () => {
         }
     }
 
-    const clientName = `${report.client?.firstName || ""} ${report.client?.lastName || ""}`.trim() || "Unknown Client"
+    const clientName = `${report.client?.fullName || ""}`.trim() || "Unknown Client"
     const caregiverName =
-        `${report.caregiver?.firstName || ""} ${report.caregiver?.lastName || ""}`.trim() || "Unknown Caregiver"
+        `${report.caregiver?.fullName || ""}`.trim() || "Unknown Caregiver"
 
     return (
         <div className="container mx-auto py-6 ">

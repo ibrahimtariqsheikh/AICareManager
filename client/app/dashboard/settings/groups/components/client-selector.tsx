@@ -22,8 +22,7 @@ export function ClientSelector({ onClientSelect, selectedClientIds }: ClientSele
     if (searchQuery.trim() === "") {
       setFilteredClients(clients.map((client: Client) => ({
         id: client.id,
-        firstName: client.firstName,
-        lastName: client.lastName,
+        fullName: client.fullName,
         status: "ACTIVE"
       })))
     } else {
@@ -32,13 +31,11 @@ export function ClientSelector({ onClientSelect, selectedClientIds }: ClientSele
         clients
           .filter(
             (client) =>
-              client.firstName.toLowerCase().includes(query) ||
-              client.lastName.toLowerCase().includes(query)
+              client.fullName.toLowerCase().includes(query)
           )
           .map(client => ({
             id: client.id,
-            firstName: client.firstName,
-            lastName: client.lastName,
+            fullName: client.fullName,
             status: client.status || "ACTIVE"
           }))
       )
@@ -73,7 +70,7 @@ export function ClientSelector({ onClientSelect, selectedClientIds }: ClientSele
                 />
                 <label htmlFor={`client-${client.id}`} className="flex-1 text-sm cursor-pointer flex justify-between">
                   <span>
-                    {client.firstName} {client.lastName}
+                    {client.fullName}
                   </span>
                 </label>
               </div>

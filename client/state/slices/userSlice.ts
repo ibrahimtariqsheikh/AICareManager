@@ -23,8 +23,7 @@ interface UserState {
       id: string;
       cognitoId: string;
       email: string;
-      firstName: string;
-      lastName: string;
+      fullName: string;
       role: string;
       agencyId?: string;
     agenciesOwned: [

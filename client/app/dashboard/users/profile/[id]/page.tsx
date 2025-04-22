@@ -209,16 +209,15 @@ export default function UserProfilePage() {
                                 <Avatar className="h-24 w-24">
                                     <AvatarImage
                                         src=""
-                                        alt={`${userData.firstName} ${userData.lastName}`}
+                                        alt={`${userData.fullName}`}
                                     />
                                     <AvatarFallback className="text-2xl">
-                                        {userData.firstName?.[0]}
-                                        {userData.lastName?.[0]}
+                                        {userData.fullName?.[0]}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="text-center">
                                     <h2 className="font-medium">
-                                        {userData.firstName} {userData.lastName}
+                                        {userData.fullName}
                                     </h2>
                                     <p className="text-sm text-muted-foreground">{userData.email}</p>
                                 </div>

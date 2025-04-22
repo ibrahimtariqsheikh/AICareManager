@@ -34,13 +34,11 @@ const dummyReport: Report = {
   ],
   client: {
     id: "1",
-    firstName: "John",
-    lastName: "Doe"
+    fullName: "John Doe"
   },
   caregiver: {
     id: "1",
-    firstName: "Sarah",
-    lastName: "Smith"
+    fullName: "Sarah Smith"
   },
   hasSignature: true
 };
@@ -69,7 +67,7 @@ const reportSlice = createSlice({
       state.error = action.payload;
     },
     updateReport: (state, action: PayloadAction<Report>) => {
-      const index = state.reports.findIndex(report => report.id === action.payload.id);
+      const index = state.reports.findIndex((report: Report) => report.id === action.payload.id);
       if (index !== -1) {
         state.reports[index] = action.payload;
       }
@@ -78,7 +76,7 @@ const reportSlice = createSlice({
       state.reports.push(action.payload);
     },
     deleteReport: (state, action: PayloadAction<string>) => {
-      state.reports = state.reports.filter(report => report.id !== action.payload);
+      state.reports = state.reports.filter((report: Report) => report.id !== action.payload);
     },
   },
 });

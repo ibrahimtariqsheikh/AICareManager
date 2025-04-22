@@ -473,7 +473,7 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
                                                 {authUser?.userInfo?.agency?.name || "Agency"}
                                             </span>
                                             <span className="text-xs text-muted-foreground">
-                                                {authUser?.userInfo?.firstName} {authUser?.userInfo?.lastName}
+                                                {authUser?.userInfo?.fullName}
                                             </span>
                                         </div>
                                     )}

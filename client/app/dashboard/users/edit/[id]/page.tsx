@@ -7,7 +7,6 @@ import { Calendar, FileText, Pill, SaveIcon, UserIcon, Code } from "lucide-react
 import { motion, AnimatePresence } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
 import { useGetUserByIdQuery } from "@/state/api"
-import { z } from "zod"
 import { cn } from "@/lib/utils"
 import { PatientInformation } from "../components/patient-information"
 import AppointmentHistory from "../components/appointmenthistory"
@@ -16,147 +15,8 @@ import { EMAR as EMARComponent } from "../components/emar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
-// Define Role and SubRole types
-type Role = "SOFTWARE_OWNER" | "ADMIN" | "CARE_WORKER" | "OFFICE_STAFF" | "CLIENT" | "FAMILY"
-type SubRole =
-    | "FINANCE_MANAGER"
-    | "HR_MANAGER"
-    | "CARE_MANAGER"
-    | "SCHEDULING_COORDINATOR"
-    | "OFFICE_ADMINISTRATOR"
-    | "RECEPTIONIST"
-    | "QUALITY_ASSURANCE_MANAGER"
-    | "MARKETING_COORDINATOR"
-    | "COMPLIANCE_OFFICER"
-    | "CAREGIVER"
-    | "SENIOR_CAREGIVER"
-    | "JUNIOR_CAREGIVER"
-    | "TRAINEE_CAREGIVER"
-    | "LIVE_IN_CAREGIVER"
-    | "PART_TIME_CAREGIVER"
-    | "SPECIALIZED_CAREGIVER"
-    | "NURSING_ASSISTANT"
-    | "SERVICE_USER"
-    | "FAMILY_AND_FRIENDS"
-    | "OTHER"
 
-// Form Schemas
-const basicInfoSchema = z.object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z.string().email("Invalid email address"),
-    role: z.enum(["SOFTWARE_OWNER", "ADMIN", "CARE_WORKER", "OFFICE_STAFF", "CLIENT", "FAMILY"]),
-    subRole: z
-        .enum([
-            // Office staff subroles
-            "FINANCE_MANAGER",
-            "HR_MANAGER",
-            "CARE_MANAGER",
-            "SCHEDULING_COORDINATOR",
-            "OFFICE_ADMINISTRATOR",
-            "RECEPTIONIST",
-            "QUALITY_ASSURANCE_MANAGER",
-            "MARKETING_COORDINATOR",
-            "COMPLIANCE_OFFICER",
-            // Care worker subroles
-            "CAREGIVER",
-            "SENIOR_CAREGIVER",
-            "JUNIOR_CAREGIVER",
-            "TRAINEE_CAREGIVER",
-            "LIVE_IN_CAREGIVER",
-            "PART_TIME_CAREGIVER",
-            "SPECIALIZED_CAREGIVER",
-            "NURSING_ASSISTANT",
-            // Client subroles
-            "SERVICE_USER",
-            "FAMILY_AND_FRIENDS",
-            "OTHER",
-        ])
-        .optional(),
-    agencyId: z.string().optional(),
-    title: z.string().optional(),
-    preferredName: z.string().optional(),
-})
 
-// Update the addressSchema to include all address fields
-const addressSchema = z.object({
-    addressLine1: z.string().optional(),
-    addressLine2: z.string().optional(),
-    townOrCity: z.string().optional(),
-    county: z.string().optional(),
-    postalCode: z.string().optional(),
-    country: z.string().optional(),
-    propertyAccess: z.string().optional(),
-})
-
-// Update the contactSchema to include all contact fields
-const contactSchema = z.object({
-    phoneNumber: z.string().optional(),
-    alternatePhoneNumber: z.string().optional(),
-    nhsNumber: z.string().optional(),
-})
-
-// Update the personalInfoSchema to include all personal fields
-const personalInfoSchema = z.object({
-    chargeRate: z.string().optional(),
-    mobility: z.string().optional(),
-    likesDislikes: z.string().optional(),
-    languages: z.string().optional(),
-    interests: z.string().optional(),
-    dateOfBirth: z.string().optional().nullable(),
-})
-
-const emergencyContactSchema = z.object({
-    name: z.string().optional(),
-    phone: z.string().optional(),
-    relationship: z.string().optional(),
-})
-
-const medicationSchema = z.object({
-    name: z.string().optional(),
-    dosage: z.string().optional(),
-    type: z.string().optional(),
-    frequency: z.string().optional(),
-    notes: z.string().optional(),
-})
-
-// Update the medicalInfoSchema to include dnraOrder
-const medicalInfoSchema = z.object({
-    allergies: z.string().optional(),
-    history: z.string().optional(),
-    medicalNotes: z.string().optional(),
-    dnraOrder: z.boolean().optional(),
-})
-
-const preferencesSchema = z.object({
-    language: z.string().optional(),
-    secondaryLanguage: z.string().optional(),
-    timezone: z.string().optional(),
-    notificationPreferences: z.string().optional(),
-    interests: z.string().optional(),
-    hobbies: z.string().optional(),
-    dietaryRequirements: z.string().optional(),
-})
-
-const riskAssessmentSchema = z.object({
-    category: z.string().optional(),
-    description: z.string().optional(),
-    affectedParties: z.string().optional(),
-    managementPlan: z.string().optional(),
-    likelihood: z.string().optional(),
-    severity: z.string().optional(),
-})
-
-const documentSchema = z.object({
-    name: z.string().min(1, {
-        message: "Document name is required",
-    }),
-    type: z.string().min(1, {
-        message: "Document type is required",
-    }),
-    uploadDate: z.string().optional(),
-    file: z.any().optional(),
-})
 
 const EditUserPage = () => {
     const { id } = useParams()

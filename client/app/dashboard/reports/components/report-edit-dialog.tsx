@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
@@ -184,7 +183,7 @@ export function ReportEditDialog({ report, open, onOpenChange, onSuccess }: Repo
                                         .filter((user: User) => user.role === 'CARE_WORKER')
                                         .map((user: User) => (
                                             <SelectItem key={user.id} value={user.id}>
-                                                {user.firstName} {user.lastName}
+                                                {user.fullName}
                                             </SelectItem>
                                         ))}
                                 </SelectContent>
@@ -205,7 +204,7 @@ export function ReportEditDialog({ report, open, onOpenChange, onSuccess }: Repo
                                         .filter((user: User) => user.role === 'CLIENT')
                                         .map((user: User) => (
                                             <SelectItem key={user.id} value={user.id}>
-                                                {user.firstName} {user.lastName}
+                                                {user.fullName}
                                             </SelectItem>
                                         ))}
                                 </SelectContent>

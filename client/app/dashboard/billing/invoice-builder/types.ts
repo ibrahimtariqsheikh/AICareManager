@@ -13,8 +13,7 @@ export interface Client {
 
 export interface CareWorker {
   id: string
-  firstName: string
-  lastName: string
+  fullName: string
   email: string
 }
 

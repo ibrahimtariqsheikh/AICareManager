@@ -44,8 +44,7 @@ export function UserDashboard() {
 
         return users.filter((user: User) => {
             const matchesSearch = user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                user.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
+                user.fullName?.toLowerCase().includes(searchQuery.toLowerCase())
             return matchesSearch
         })
     })()

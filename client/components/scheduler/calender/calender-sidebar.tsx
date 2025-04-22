@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, ChevronDown, ChevronUp, Users, UserRound, Briefcase, Filter } from "lucide-react"
+import { Check, ChevronDown, ChevronUp, Filter } from "lucide-react"
 import { Button } from "../../ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../ui/collapsible"
 import { ScrollArea } from "../../ui/scroll-area"
@@ -36,16 +36,12 @@ interface CalendarSidebarProps {
 export function CalendarSidebar({
     showSidebar,
     sidebarMode,
-    staffMembers,
     careWorkers,
     officeStaff,
     clients,
-    toggleStaffSelection,
     toggleCareWorkerSelection,
     toggleOfficeStaffSelection,
     toggleClientSelection,
-    selectAllStaff,
-    deselectAllStaff,
     selectAllCareWorkers,
     deselectAllCareWorkers,
     selectAllOfficeStaff,
@@ -152,12 +148,12 @@ export function CalendarSidebar({
                                                     {client.selected && <Check className="h-3 w-3 text-white" />}
                                                 </div>
                                                 <Avatar className="h-6 w-6 mr-2">
-                                                    <AvatarImage src={client.avatar} alt={`${client.firstName} ${client.lastName}`} />
+                                                    <AvatarImage src={client.avatar} alt={`${client.fullName}`} />
                                                     <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staffColor }}>
                                                         {staffName.split(" ").map((n) => n[0]).join("")}
                                                     </AvatarFallback>
                                                 </Avatar>
-                                                <span className={`text-sm truncate font-medium`}>{`${client.firstName} ${client.lastName}`}</span>
+                                                <span className={`text-sm truncate font-medium`}>{`${client.fullName}`}</span>
                                             </div>
                                         )
                                     })}
@@ -224,12 +220,12 @@ export function CalendarSidebar({
                                                     {staff.selected && <Check className="h-3 w-3 text-white" />}
                                                 </div>
                                                 <Avatar className="h-6 w-6 mr-2">
-                                                    <AvatarImage src={staff.avatar} alt={`${staff.firstName} ${staff.lastName}`} />
+                                                    <AvatarImage src={staff.avatar} alt={`${staff.fullName}`} />
                                                     <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staffColor }}>
                                                         {staffName.split(" ").map((n) => n[0]).join("")}
                                                     </AvatarFallback>
                                                 </Avatar>
-                                                <span className={`text-sm truncate font-medium`}>{`${staff.firstName} ${staff.lastName}`}</span>
+                                                <span className={`text-sm truncate font-medium`}>{`${staff.fullName}`}</span>
                                             </div>
                                         )
                                     })}
@@ -296,12 +292,12 @@ export function CalendarSidebar({
                                                     {staff.selected && <Check className="h-3 w-3 text-white" />}
                                                 </div>
                                                 <Avatar className="h-6 w-6 mr-2">
-                                                    <AvatarImage src={staff.avatar} alt={`${staff.firstName} ${staff.lastName}`} />
+                                                    <AvatarImage src={staff.avatar} alt={`${staff.fullName}`} />
                                                     <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staffColor }}>
                                                         {staffName.split(" ").map((n) => n[0]).join("")}
                                                     </AvatarFallback>
                                                 </Avatar>
-                                                <span className={`text-sm truncate font-medium`}>{`${staff.firstName} ${staff.lastName}`}</span>
+                                                <span className={`text-sm truncate font-medium`}>{`${staff.fullName}`}</span>
                                             </div>
                                         )
                                     })}

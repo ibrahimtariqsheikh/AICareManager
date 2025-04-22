@@ -165,7 +165,7 @@ export function PDFPreview({ items, subtotal, tax, total }: PDFPreviewProps) {
           <div className="mt-10">
             <h2 className="text-lg font-bold text-gray-700">Bill To:</h2>
             <div className="mt-2">
-              <p className="font-medium">{selectedClient.firstName} {selectedClient.lastName}</p>
+              <p className="font-medium">{selectedClient.fullName}</p>
               <p>{selectedClient.email}</p>
 
             </div>

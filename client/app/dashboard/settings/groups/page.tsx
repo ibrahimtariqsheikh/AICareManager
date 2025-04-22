@@ -243,7 +243,7 @@ export default function ClientGroupsPage() {
                                     <div className="flex flex-wrap gap-2">
                                         {selectedClients.map((client) => (
                                             <Badge key={client.id} variant="secondary" className="flex items-center gap-1 py-1.5">
-                                                {client.firstName} {client.lastName}
+                                                {client.fullName}
                                                 <button
                                                     type="button"
                                                     onClick={() => handleRemoveClient(client.id)}
@@ -251,7 +251,7 @@ export default function ClientGroupsPage() {
                                                 >
                                                     <UserMinus className="h-3 w-3" />
                                                     <span className="sr-only">
-                                                        Remove {client.firstName} {client.lastName}
+                                                        Remove {client.fullName}
                                                     </span>
                                                 </button>
                                             </Badge>

@@ -104,12 +104,12 @@ export function getStaffColor(item: AppointmentEvent | StaffMember | Client, sta
         // This is an AppointmentEvent
         const staffMember = staffMembers?.find((s) => s.id === item.resourceId)
         const staffColor = staffMember?.color || "#888888"
-        const staffName = staffMember ? `${staffMember.firstName} ${staffMember.lastName}` : "Staff"
+        const staffName = staffMember ? `${staffMember.fullName}` : "Staff"
         return { staffColor, staffName }
     } else {
         // This is a StaffMember or Client
         const staffColor = item.color || "#888888"
-        const staffName = `${item.firstName} ${item.lastName}`
+        const staffName = `${item.fullName}`
         return { staffColor, staffName }
     }
 }

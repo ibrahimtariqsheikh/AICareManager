@@ -17,7 +17,9 @@ import {
     Pill,
     Search,
     Sparkles,
-    User,
+
+    UserIcon,
+
     Users,
     Utensils,
     X,
@@ -40,6 +42,7 @@ import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calender"
 import { DateRange } from "react-day-picker"
+
 
 
 
@@ -108,7 +111,7 @@ export default function ReportsPage() {
             const mockPayrollData: PayrollEntry[] =
                 (payrollFilterType === "clients" ? clients : careWorkers)?.map((user: any) => ({
                     id: user.id,
-                    name: `${user.firstName} ${user.lastName}`,
+                    name: user.fullName,
                     actualDuration: "00:00",
                     actualCharge: "£0.00",
                     scheduledDuration: "00:00",
@@ -148,8 +151,8 @@ export default function ReportsPage() {
         // Search query filtering
         if (searchQuery) {
             const query = searchQuery.toLowerCase()
-            const matchesClient = report?.client?.firstName?.toLowerCase().includes(query) || false
-            const matchesCareWorker = report?.caregiver?.firstName?.toLowerCase().includes(query) || false
+            const matchesClient = report?.client?.fullName?.toLowerCase().includes(query) || false
+            const matchesCareWorker = report?.caregiver?.fullName?.toLowerCase().includes(query) || false
 
             const matchesAlerts = report?.alerts?.some((alert) => alert.message.toLowerCase().includes(query)) || false
 
@@ -163,7 +166,7 @@ export default function ReportsPage() {
             return false
         }
 
-        if (filterOptions.careWorker && report.caregiver?.firstName !== filterOptions.careWorker) {
+        if (filterOptions.careWorker && report.caregiver?.fullName !== filterOptions.careWorker) {
             return false
         }
 
@@ -206,7 +209,7 @@ export default function ReportsPage() {
             const date = formatDateFns(new Date(report.checkInTime), "dd/MM/yyyy")
 
             return [
-                `"${client?.firstName} ${client?.lastName}"`,
+                `"${client?.fullName}"`,
                 `"${date}"`,
                 `"${checkInTime}"`,
                 `"${checkOutTime}"`,
@@ -266,7 +269,7 @@ export default function ReportsPage() {
             case "users":
                 return <Users className="h-4 w-4" />
             case "user":
-                return <User className="h-4 w-4" />
+                return <UserIcon className="h-4 w-4" />
             case "coffee":
                 return <div className="h-4 w-4">☕</div>
             default:
@@ -419,7 +422,7 @@ export default function ReportsPage() {
                                     <SelectContent>
                                         {careWorkers?.map((worker) => (
                                             <SelectItem key={worker.id} value={worker.id}>
-                                                {worker.firstName} {worker.lastName}
+                                                {worker.fullName}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -438,7 +441,7 @@ export default function ReportsPage() {
                                     <SelectContent>
                                         {clients?.map((client) => (
                                             <SelectItem key={client.id} value={client.id}>
-                                                {client.firstName} {client.lastName}
+                                                {client.fullName}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -527,7 +530,7 @@ export default function ReportsPage() {
                                         Date
                                     </Button>
                                     <Button variant="outline" size="sm">
-                                        <User className="h-4 w-4 mr-2" />
+                                        <UserIcon className="h-4 w-4 mr-2" />
                                         Care Worker
                                     </Button>
                                     <Button variant="outline" size="sm">
@@ -577,7 +580,7 @@ export default function ReportsPage() {
 
                                                 <div className="flex-1">
                                                     <div className="flex items-center">
-                                                        <h4 className="font-medium">{report.client?.firstName}</h4>
+                                                        <h4 className="font-medium">{report.client?.fullName}</h4>
                                                         {report.hasSignature && (
                                                             <Badge variant="outline" className="ml-2 bg-green-50 text-green-700 border-green-200">
                                                                 Signed
@@ -596,8 +599,8 @@ export default function ReportsPage() {
                                                     </div>
 
                                                     <div className="flex items-center text-sm text-muted-foreground">
-                                                        <User className="h-3 w-3 mr-1" />
-                                                        <span>{report.caregiver?.firstName}</span>
+                                                        <UserIcon className="h-3 w-3 mr-1" />
+                                                        <span>{report.caregiver?.fullName}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -910,7 +913,7 @@ export default function ReportsPage() {
                                         <SelectContent>
                                             {careWorkers?.map((worker) => (
                                                 <SelectItem key={worker.id} value={worker.id}>
-                                                    {worker.firstName} {worker.lastName}
+                                                    {worker.fullName}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

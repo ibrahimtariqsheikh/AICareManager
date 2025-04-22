@@ -54,14 +54,12 @@ export interface ScheduleResponse {
     title: string
     client: {
         id: string
-        firstName: string
-        lastName: string
+        fullName: string
         [key: string]: any
     }
     user: {
         id: string
-        firstName: string
-        lastName: string
+        fullName: string
         [key: string]: any
     }
     start?: Date
@@ -117,8 +115,7 @@ export interface UserQueryParams {
 export interface UpdateUserInput {
     id: string;
     email?: string;
-    firstName?: string;
-    lastName?: string;
+    fullName?: string;
     role?: Role;
     subRole?: SubRole;
     agencyId?: string;
@@ -186,8 +183,7 @@ export interface GroupResponse {
   name: string
   clients: {
     id: string
-    firstName: string
-    lastName: string
+    fullName: string
     status: string
   }[]
   agencyId?: string

@@ -59,9 +59,8 @@ export function InvitesTable({
     }
 
     const getInitials = (user: User) => {
-        const firstInitial = user.firstName?.[0]?.toUpperCase() || ''
-        const lastInitial = user.lastName?.[0]?.toUpperCase() || ''
-        return firstInitial + lastInitial || 'U'
+        const firstInitial = user.fullName?.[0]?.toUpperCase() || ''
+        return firstInitial || 'U'
     }
 
     return (
@@ -89,7 +88,7 @@ export function InvitesTable({
                                             </AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <div className="font-medium">{user.firstName || 'Unknown'} {user.lastName || 'User'}</div>
+                                            <div className="font-medium">{user.fullName || 'Unknown'}</div>
                                             <div className="text-sm text-gray-500">{user.role}</div>
                                         </div>
                                     </div>

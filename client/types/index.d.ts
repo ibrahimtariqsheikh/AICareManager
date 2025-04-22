@@ -89,16 +89,14 @@ declare global {
   }
 
   interface User {
-    lastName: ReactNode;
-    firstName: ReactNode;
+    fullName: ReactNode;
     cognitoInfo: AuthUser;
     userInfo: {
       id: string;
       username: string;
       email: string;
       role: string;
-      firstName: string;
-      lastName: string;
+      fullName: string;
     };
     userRole: JsonObject | JsonPrimitive | JsonArray;
   }

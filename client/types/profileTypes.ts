@@ -38,8 +38,7 @@ export interface Document {
 
 export interface Profile {
     id: string
-    firstName: string
-    lastName: string
+    fullName: string
     email: string
     role: string
     subRole?: string

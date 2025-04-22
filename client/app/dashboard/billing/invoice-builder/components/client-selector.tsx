@@ -26,7 +26,7 @@ export function ClientSelector() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
-          {selectedClient ? selectedClient.firstName + " " + selectedClient.lastName : "Select client..."}
+          {selectedClient ? selectedClient.fullName : "Select client..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -39,7 +39,7 @@ export function ClientSelector() {
               {clients.map((client: User) => (
                 <CommandItem
                   key={client.id}
-                  value={client.firstName + " " + client.lastName}
+                  value={client.fullName}
                   onSelect={() => {
                     dispatch(setSelectedClient(client.id === selectedClient?.id ? null : client))
                     setOpen(false)
@@ -50,7 +50,7 @@ export function ClientSelector() {
                   />
                   <div className="flex flex-col">
                     <span>
-                      {client.firstName} {client.lastName}
+                      {client.fullName}
                     </span>
                     <span className="text-xs text-muted-foreground">{client.email}</span>
                   </div>

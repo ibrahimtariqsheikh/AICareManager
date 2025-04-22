@@ -4,14 +4,10 @@ import { useState } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Button } from "../ui/button"
 import { Skeleton } from "../ui/skeleton"
-import { useAcceptInvitationMutation } from "../../state/api"
 import { toast } from "sonner"
-import { useAppSelector } from "../../state/redux"
 import { format } from "date-fns"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { StatusBadge } from "../ui/status-badge"
-import { Card, CardContent } from "../ui/card"
-import { CheckCircle, X, RefreshCw } from "lucide-react"
+import { RefreshCw } from "lucide-react"
 
 interface NotificationsDialogProps {
     isOpen: boolean
@@ -91,8 +87,7 @@ export function NotificationsDialog({ isOpen, setIsOpen, invitations, isLoading 
                                     <Avatar className="h-10 w-10 bg-gray-100 border-0">
                                         {invitation.inviter?.image ? <AvatarImage src={invitation.inviter.image} /> : null}
                                         <AvatarFallback className="text-gray-500 font-medium">
-                                            {invitation.inviter?.firstName?.charAt(0) || ""}
-                                            {invitation.inviter?.lastName?.charAt(0) || ""}
+                                            {invitation.inviter?.fullName?.charAt(0) || ""}
                                         </AvatarFallback>
                                     </Avatar>
 
@@ -100,7 +95,7 @@ export function NotificationsDialog({ isOpen, setIsOpen, invitations, isLoading 
                                         <div className="flex justify-between items-start">
                                             <div>
                                                 <h4 className="font-medium">
-                                                    {invitation.inviter?.firstName} {invitation.inviter?.lastName}
+                                                    {invitation.inviter?.fullName}
                                                 </h4>
                                                 <p className="text-sm text-muted-foreground">{invitation.inviter?.email}</p>
                                             </div>

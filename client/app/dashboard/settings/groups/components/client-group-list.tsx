@@ -67,7 +67,7 @@ export function ClientGroupList({ groups, onEdit, onDelete }: ClientGroupListPro
                   <div className="flex flex-wrap gap-2">
                     {(group.clients || []).map((client) => (
                       <div key={client.id} className="text-xs text-neutral-900 bg-neutral-200/60 font-medium px-2 py-1 rounded-md">
-                        {client.firstName} {client.lastName}
+                        {client.fullName}
                       </div>
                     ))}
                   </div>

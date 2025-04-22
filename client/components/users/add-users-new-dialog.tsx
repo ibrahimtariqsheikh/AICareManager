@@ -86,7 +86,7 @@ export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUse
                         <div className="space-y-4">
                             <div className="flex gap-4">
                                 <div className="space-y-2 flex-1">
-                                    <Label htmlFor="firstName">First Name</Label>
+                                    <Label htmlFor="fullName">Full Name</Label>
                                     <Input
                                         id="fullName"
                                         type="text"

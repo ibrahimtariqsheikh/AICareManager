@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, ChevronDown, ChevronUp, Filter, Calendar as CalendarIcon, CalendarDays, CalendarRange, X } from "lucide-react"
+import { Check, ChevronDown, ChevronUp, Calendar as CalendarIcon, CalendarDays, CalendarRange, X } from "lucide-react"
 import { Button } from "../ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
 import { ScrollArea } from "../ui/scroll-area"
@@ -12,10 +12,6 @@ import type { StaffMember, Client, SidebarMode } from "../scheduler/calender/typ
 import { useAppDispatch, useAppSelector } from "../../state/redux"
 import { setActiveView } from "../../state/slices/calendarSlice"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
-import { DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
-import { Dialog } from "../ui/dialog"
-import { PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Popover } from "../ui/popover"
 import { setIsHidden } from "@/state/slices/scheduleSlice"
 
 interface SidebarRightProps {
@@ -189,12 +185,12 @@ export function SidebarRight({
                                                 {client.selected && <Check className="h-3 w-3 text-white" />}
                                             </div>
                                             <Avatar className="h-6 w-6 mr-2">
-                                                <AvatarImage src={client.avatar} alt={client.firstName} />
+                                                <AvatarImage src={client.avatar} alt={client.fullName} />
                                                 <AvatarFallback className="text-xs text-white" style={{ backgroundColor: client.color }}>
-                                                    {client.firstName.split(" ").map(n => n[0]).join("")}
+                                                    {client.fullName.split(" ").map(n => n[0]).join("")}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <span className="text-sm truncate font-medium">{client.firstName}</span>
+                                            <span className="text-sm truncate font-medium">{client.fullName}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -258,12 +254,12 @@ export function SidebarRight({
                                                 {staff.selected && <Check className="h-3 w-3 text-white" />}
                                             </div>
                                             <Avatar className="h-6 w-6 mr-2">
-                                                <AvatarImage src={staff.avatar} alt={staff.firstName} />
+                                                <AvatarImage src={staff.avatar} alt={staff.fullName} />
                                                 <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staff.color }}>
-                                                    {staff.firstName.split(" ").map(n => n[0]).join("")}
+                                                    {staff.fullName.split(" ").map(n => n[0]).join("")}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <span className="text-sm truncate font-medium">{staff.firstName}</span>
+                                            <span className="text-sm truncate font-medium">{staff.fullName}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -327,12 +323,12 @@ export function SidebarRight({
                                                 {staff.selected && <Check className="h-3 w-3 text-white" />}
                                             </div>
                                             <Avatar className="h-6 w-6 mr-2">
-                                                <AvatarImage src={staff.avatar} alt={staff.firstName} />
+                                                <AvatarImage src={staff.avatar} alt={staff.fullName} />
                                                 <AvatarFallback className="text-xs text-white" style={{ backgroundColor: staff.color }}>
-                                                    {staff.firstName.split(" ").map(n => n[0]).join("")}
+                                                    {staff.fullName.split(" ").map(n => n[0]).join("")}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <span className="text-sm truncate font-medium">{staff.firstName}</span>
+                                            <span className="text-sm truncate font-medium">{staff.fullName}</span>
                                         </div>
                                     ))}
                                 </div>

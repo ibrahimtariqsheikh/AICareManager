@@ -64,7 +64,7 @@ const dateRange = useAppSelector((state: RootState) => state.invoice.selectedDat
 
     doc.setFontSize(10)
     doc.setTextColor(secondaryTextColor)
-    doc.text(client.firstName + " " + client.lastName, 20, 82)
+    doc.text(client.fullName, 20, 82)
   
 
     // Add service period
