@@ -406,18 +406,8 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
           chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
         },
         include: {
-          client: {
-            select: {
-              id: true,
-              fullName: true,
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              fullName: true,
-            },
-          },
+          client: true,
+          user: true,
         },
       }) as ScheduleWithRelations
 
@@ -600,18 +590,8 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
           chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
         },
         include: {
-          client: {
-            select: {
-              id: true,
-              fullName: true,
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              fullName: true,
-            },
-          },
+          client: true,
+          user: true,
         },
       }) as ScheduleWithRelations
 

@@ -142,12 +142,7 @@ export const getAdministrationHistory = async (req: Request, res: Response): Pro
     const history = await prisma.medicationAdministration.findMany({
       where: { medicationRecordId },
       include: {
-        administeredBy: {
-          select: {
-            id: true,
-            fullName: true,
-          }
-        }
+        administeredBy: true,
       },
       orderBy: {
         administeredAt: 'desc'
