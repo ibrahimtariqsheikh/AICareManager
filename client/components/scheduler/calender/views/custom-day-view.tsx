@@ -468,7 +468,7 @@ export function CustomDayView({
 
 
     // Theme-based style classes
-    const timelineClass = spaceTheme ? "bg-slate-900" : "bg-gray-50"
+    const timelineClass = spaceTheme ? "bg-slate-900" : "bg-white"
     const timeLabelsClass = spaceTheme ? "text-slate-400" : "text-gray-500"
     const currentTimeClass = spaceTheme ? "bg-green-500" : "bg-red-500"
     const gridLineClass = spaceTheme ? "border-slate-800" : "border-gray-200"
@@ -569,16 +569,24 @@ export function CustomDayView({
                                                         <MoreVertical className="h-4 w-4" />
                                                     </button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-fit">
-                                                    <div className="border-b border-border" />
-                                                    <Button variant="ghost" className="flex justify-start items-center gap-2 text-xs w-32 "
-                                                        onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
-                                                    >
-                                                        <Edit className="h-4 w-4" />
-                                                        Edit User
-                                                    </Button>
-                                                    <div className="border-b border-border" />
+                                                <PopoverContent className="z-50">
+                                                    <div className="flex flex-col gap-1 items-start justify-start">
+                                                        <div className="border-b border-border" />
+                                                        <Button variant="ghost" className="flex justify-start items-center gap-2 text-xs w-full"
+                                                            onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                                                        >
+                                                            <Edit className="h-4 w-4" />
+                                                            Edit Schedule Template
+                                                        </Button>
 
+                                                        <Button variant="ghost" className="flex justify-start items-center gap-2 text-xs w-full"
+                                                            onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                                                        >
+                                                            <Edit className="h-4 w-4" />
+                                                            Edit User
+                                                        </Button>
+
+                                                    </div>
                                                 </PopoverContent>
                                             </Popover>
                                         </div>

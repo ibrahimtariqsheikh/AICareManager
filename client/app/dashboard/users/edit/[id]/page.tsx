@@ -1,13 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Calendar, FileText, Pill, SaveIcon, UserIcon, Code } from "lucide-react"
+import { Calendar, FileText, Pill, UserIcon, Code } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
 import { useGetUserByIdQuery } from "@/state/api"
-import { z } from "zod"
 import { cn } from "@/lib/utils"
 import { PatientInformation } from "../components/patient-information"
 import AppointmentHistory from "../components/appointmenthistory"
@@ -15,9 +13,8 @@ import { MedicalHistory } from "../components/medicalHistory"
 import { EMAR as EMARComponent } from "../components/emar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-
-
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ScheduleTemplate } from "../components/scheduleTemplate"
 
 
 const EditUserPage = () => {
@@ -35,18 +32,6 @@ const EditUserPage = () => {
 
     const user = userData?.data as UserType
     const router = useRouter()
-    const [isActive, setIsActive] = useState("patientInformation")
-
-    const tabVariants = {
-        inactive: {
-            scale: 1,
-            transition: { duration: 0.2 },
-        },
-        active: {
-            scale: 1.05,
-            transition: { duration: 0.2 },
-        },
-    }
 
     const contentVariants = {
         hidden: {
@@ -68,6 +53,7 @@ const EditUserPage = () => {
         { id: "AppointmentHistory", label: "Appointment History", icon: Calendar },
         { id: "MedicalHistory", label: "Medical History", icon: FileText },
         { id: "EMAR", label: "EMAR", icon: Pill },
+        { id: "ScheduleTemplate", label: "Schedule Template", icon: Calendar },
     ]
 
     // Skeleton loading state
@@ -146,7 +132,7 @@ const EditUserPage = () => {
 
     return (
         <div className="flex flex-col gap-4 p-6 mx-10">
-            {/* Edit Client Button */}
+            {/* User Header */}
             <div className="flex flex-row gap-4 items-center">
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -174,60 +160,84 @@ const EditUserPage = () => {
             </div>
 
             <div className="px-6 py-4">
-                {/* Tabs Navigation */}
-                <div className="flex flex-row gap-3 mb-6">
-                    {tabs.map((tab) => (
-                        <motion.div
-                            key={tab.id}
-                            variants={tabVariants}
-                            initial="inactive"
-                            animate={isActive === tab.id ? "active" : "inactive"}
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setIsActive(tab.id)}
-                            className={cn(
-                                "px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 cursor-pointer transition-all duration-200",
-                                isActive === tab.id
-                                    ? "bg-blue-50 text-blue-700 border border-blue-300 shadow-sm"
-                                    : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200",
-                            )}
-                        >
-                            <tab.icon className="w-4 h-4" />
-                            {tab.label}
-                        </motion.div>
-                    ))}
-                </div>
-                <div className="border-b border-neutral-200 w-full h-1 my-8" />
+                {/* Tabs Navigation using shadcn Tabs */}
+                <Tabs defaultValue="patientInformation" className="w-full">
+                    <TabsList className="mb-6 bg-neutral-100 p-1 h-auto">
+                        {tabs.map((tab) => (
+                            <TabsTrigger
+                                key={tab.id}
+                                value={tab.id}
+                                className={cn(
+                                    "px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm data-[state=active]:border-blue-300",
+                                    "data-[state=inactive]:bg-transparent data-[state=inactive]:text-neutral-700",
+                                    "transition-all duration-200",
+                                )}
+                            >
+                                <tab.icon className="w-4 h-4" />
+                                {tab.label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
 
-                {/* Tab Content */}
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={isActive}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        variants={contentVariants}
-                        className="min-h-[400px]"
-                    >
-                        {isActive === "patientInformation" && <PatientInformation user={user} />}
+                    <div className="border-b border-neutral-200 w-full h-1 my-8" />
 
-                        {isActive === "AppointmentHistory" && <AppointmentHistory user={user} />}
+                    {/* Tab Content */}
+                    <AnimatePresence mode="wait">
+                        <TabsContent value="patientInformation" asChild>
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={contentVariants}
+                                className="min-h-[400px]"
+                            >
+                                <PatientInformation user={user} />
+                            </motion.div>
+                        </TabsContent>
 
-                        {isActive === "MedicalHistory" && <MedicalHistory user={user} />}
+                        <TabsContent value="AppointmentHistory" asChild>
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={contentVariants}
+                                className="min-h-[400px]"
+                            >
+                                <AppointmentHistory user={user} />
+                            </motion.div>
+                        </TabsContent>
 
-                        {isActive === "EMAR" && <EMARComponent user={user} />}
-                    </motion.div>
-                    {/* <div className="flex flex-row gap-4 mt-8 justify-end">
-                        <Button variant={"outline"} className="bg-white" onClick={() => router.back()}>
-                            Cancel
-                        </Button>
-                        <Button variant={"default"}>
-                            Save Changes
-                            <SaveIcon className="w-4 h-4 ml-2" />
-                        </Button>
-                    </div> */}
-                </AnimatePresence>
+                        <TabsContent value="MedicalHistory" asChild>
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={contentVariants}
+                                className="min-h-[400px]"
+                            >
+                                <MedicalHistory user={user} />
+                            </motion.div>
+                        </TabsContent>
+
+                        <TabsContent value="EMAR" asChild>
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={contentVariants}
+                                className="min-h-[400px]"
+                            >
+                                <EMARComponent user={user} />
+                            </motion.div>
+                        </TabsContent>
+
+                        <TabsContent value="ScheduleTemplate" asChild>
+                            <ScheduleTemplate user={user} />
+                        </TabsContent>
+                    </AnimatePresence>
+                </Tabs>
             </div>
+
             {/* Debug Panel */}
             {user && (
                 <Collapsible className="mt-8 border rounded-md">

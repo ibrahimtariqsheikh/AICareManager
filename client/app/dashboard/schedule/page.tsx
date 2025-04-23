@@ -33,9 +33,7 @@ export default function SchedulerPage() {
 
     return (
         <div className="relative container mx-auto py-4 min-h-screen min-w-full">
-            <div className="absolute top-0 right-0">
-                <Button variant="ghost" size="icon" onClick={() => dispatch(toggleRightSidebar())}><SidebarTrigger className="h-4 w-4" /></Button>
-            </div>
+
             <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex flex-col gap-2">

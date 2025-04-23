@@ -545,10 +545,10 @@ export function CustomMonthView({
                     if (el) eventRefs.current[event.id] = el
                 }}
                 className={cn(
-                    "text-xs p-2 rounded-lg shadow-sm cursor-grab active:cursor-grabbing event-card transition-all",
-                    "bg-blue-100/90",
-                    spaceTheme ? "text-white border-slate-700" : "text-black border-gray-200 ",
-                    "border-blue-600 border-l-4"
+                    "absolute rounded-lg text-xs p-2 cursor-grab ",
+                    "bg-blue-50", // Light blue background
+                    "border-gray-200 border-l-4 border-l-blue-600",
+                    "min-w-0",
                 )}
                 style={{
                     borderLeftWidth: "4px",

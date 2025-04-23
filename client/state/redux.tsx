@@ -21,8 +21,7 @@ import agencyReducer from "./slices/agencySlice"
 import patientReducer from "./slices/patientSlice"
 import chatReducer from "./slices/chatSlice"
 import invoiceReducer from "./slices/invoiceSlice"
-
-
+import templateReducer from "./slices/templateSlice"
 
 const rootReducer = combineReducers({
   global: globalReducer,
@@ -38,6 +37,7 @@ const rootReducer = combineReducers({
   patient: patientReducer,
   chat: chatReducer,
   invoice: invoiceReducer,
+  template: templateReducer,
   [api.reducerPath]: api.reducer,
 })
 

@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { setActiveScheduleUserType } from "@/state/slices/scheduleSlice"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 // Add month picker styles
 const monthPickerStyles = `
@@ -327,32 +328,32 @@ export function CustomCalendar({
                             <div className="flex items-center gap-2">
                                 {activeView === "week" && `${moment(currentDate).startOf('week').format("MMM D")} - ${moment(currentDate).endOf('week').format("MMM D, YYYY")}`}
                                 {activeView === "month" && moment(currentDate).format("MMMM YYYY")}
-                                <Dialog>
-                                    <DialogTrigger className="flex items-center gap-2">
+                                <Popover>
+                                    <PopoverTrigger className="flex items-center gap-2">
                                         <ChevronDown className="h-4 w-4" />
-                                    </DialogTrigger>
-                                    <DialogContent className="w-fit">
-                                        <DialogHeader>
-                                            <div className="flex items-center gap-4 flex-col">
-                                                <DialogTitle>Calendar</DialogTitle>
-                                                <CalendarDropdown
-                                                    mode={activeView === "week" || activeView === "month" ? "range" : "single"}
-                                                    selected={activeView === "week" || activeView === "month" ? (selectedRange ?? { from: new Date(), to: new Date() }) : (currentDate ?? new Date())}
-                                                    onSelect={handleDateSelect}
-                                                    className={cn(
-                                                        "rounded-md border w-fit",
-                                                        activeView === "month" && "month-picker",
-                                                        "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900",
-                                                        "[&_.rdp-day_range_middle]:bg-blue-50 [&_.rdp-day_range_middle]:text-blue-900",
-                                                        "[&_.rdp-day_range_start]:bg-blue-100 [&_.rdp-day_range_start]:text-blue-900",
-                                                        "[&_.rdp-day_range_end]:bg-blue-100 [&_.rdp-day_range_end]:text-blue-900"
-                                                    )}
-                                                    numberOfMonths={activeView === "week" ? 2 : 1}
-                                                />
-                                            </div>
-                                        </DialogHeader>
-                                    </DialogContent>
-                                </Dialog>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-fit">
+
+                                        <div className="flex items-center gap-4 flex-col">
+
+                                            <CalendarDropdown
+                                                mode={activeView === "week" || activeView === "month" ? "range" : "single"}
+                                                selected={activeView === "week" || activeView === "month" ? (selectedRange ?? { from: new Date(), to: new Date() }) : (currentDate ?? new Date())}
+                                                onSelect={handleDateSelect}
+                                                className={cn(
+                                                    "rounded-md border w-fit",
+                                                    activeView === "month" && "month-picker",
+                                                    "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900",
+                                                    "[&_.rdp-day_range_middle]:bg-blue-50 [&_.rdp-day_range_middle]:text-blue-900",
+                                                    "[&_.rdp-day_range_start]:bg-blue-100 [&_.rdp-day_range_start]:text-blue-900",
+                                                    "[&_.rdp-day_range_end]:bg-blue-100 [&_.rdp-day_range_end]:text-blue-900"
+                                                )}
+                                                numberOfMonths={activeView === "week" ? 2 : 1}
+                                            />
+                                        </div>
+
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </motion.div>
                     )}

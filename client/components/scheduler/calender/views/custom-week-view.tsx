@@ -10,7 +10,6 @@ import { useAppSelector } from "@/state/redux"
 
 interface CustomWeekViewProps {
     date: Date
-
     onSelectEvent: (event: AppointmentEvent) => void
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
@@ -21,7 +20,6 @@ interface CustomWeekViewProps {
 export function CustomWeekView(props: CustomWeekViewProps) {
     const {
         date,
-
         onSelectEvent,
         getEventDurationInMinutes,
         spaceTheme = false
@@ -35,15 +33,13 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
     const events = useAppSelector((state) => state.schedule.events || [])
 
-    // Get the appropriate users based on activeScheduleUserType
-
     // ====================== CONSTANTS ======================
     const HOURS = {
         START: 7,  // 7 AM
         END: 19    // 7 PM
     }
     const CELL_HEIGHT = 40 // pixels per 30-min slot
-    const TIME_COLUMN_WIDTH = 60 // pixels for time gutter
+    const TIME_COLUMN_WIDTH = 1
 
     // ====================== REFS ======================
     const calendarContainerRef = useRef<HTMLDivElement>(null)
@@ -144,7 +140,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         }
     }, [daysOfWeek, timeIntervals])
 
-    // Update event positions when calendar dimensions change
     useEffect(() => {
         if (!gridContainerRef.current || daysOfWeek.length === 0) return
 
@@ -152,6 +147,10 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         const positions: Record<string, any> = {}
         const weekStart = moment(daysOfWeek[0]).startOf('day')
         const weekEnd = moment(daysOfWeek[6]).endOf('day')
+
+        // Calculate the exact cell width dynamically
+        const exactDayColumnWidth = dayColumnWidth ||
+            ((gridContainerRef.current.offsetWidth - TIME_COLUMN_WIDTH) / 7)
 
         filteredEvents.forEach(event => {
             try {
@@ -196,8 +195,16 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                 // Convert to pixels
                 const top = (startMinutes / 30) * CELL_HEIGHT
                 const height = Math.max((durationMinutes / 30) * CELL_HEIGHT, 20) // min height 20px
-                const left = TIME_COLUMN_WIDTH + (dayIndex * dayColumnWidth) - 10
-                const width = dayColumnWidth - 4 // 4px gap
+
+                // Calculate the exact position within the column boundaries
+                // This is the critical fix to ensure events stay within their day column
+                const horizontalPadding = 4 // Small padding inside cell
+
+                // Calculate left based on exact day index position
+                const left = TIME_COLUMN_WIDTH + (dayIndex * exactDayColumnWidth) + horizontalPadding
+
+                // Ensure width is constrained to the column width minus padding
+                const width = exactDayColumnWidth - (horizontalPadding * 2)
 
                 positions[event.id] = {
                     top,
@@ -236,10 +243,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         })
     }
 
-    // Custom drag handler - updates position while dragging
-
-    // Custom drag end handler
-
     // ====================== UTILITIES ======================
     // Format time label (e.g. "8 AM", "2:30 PM")
     const formatTimeLabel = (timeSlot: string): string => {
@@ -247,11 +250,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         const hour = parseInt(hourStr || "0", 10)
         return `${hour % 12 || 12}${minuteStr === "00" ? "" : ":30"} ${hour >= 12 ? "PM" : "AM"}`
     }
-
-    // Get event background color based on type
-
-
-
 
     // Get event icon based on type
     const getEventIcon = (type: string) => {
@@ -299,8 +297,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
     }
 
-    // Check if a time slot has events (for styling)
-
     // Auto-scroll to current time on initial load
     useEffect(() => {
         if (!calendarContainerRef.current) return
@@ -318,8 +314,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     // ====================== RENDERING ======================
     return (
         <div className="h-full flex flex-col p-4">
-
-
             <div className="flex flex-col flex-1 h-full overflow-hidden">
                 {/* Calendar grid */}
                 <div className="h-full flex flex-col">
@@ -371,7 +365,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                     >
                         <div className={cn(
                             "flex relative min-h-full",
-                            spaceTheme ? "bg-zinc-900" : "bg-gray-50"
+                            spaceTheme ? "bg-zinc-900" : "bg-white"
                         )}>
                             {/* Left time labels column */}
                             <div className={cn("w-[60px] flex-shrink-0 border-r", spaceTheme ? "border-zinc-800" : "border-gray-200")}>
@@ -458,7 +452,9 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                             }}
                                             className={cn(
                                                 "absolute rounded-lg text-xs p-2 cursor-grab ",
-                                                "bg-blue-100/90 border-blue-600 border-l-4 min-w-0",
+                                                "bg-blue-50", // Light blue background
+                                                "border-gray-200 border-l-4 border-l-blue-600",
+                                                "min-w-0",
                                                 spaceTheme ? "border-slate-700" : ""
                                             )}
                                             style={{
