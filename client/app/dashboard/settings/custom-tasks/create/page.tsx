@@ -21,8 +21,7 @@ export default function CreateTaskPage() {
     const handleTaskCreated = async (task: CustomTask) => {
         setIsCreating(true)
         try {
-            // TODO: Add your API call here to save the task
-            console.log("Task created:", task)
+
             router.push("/dashboard/settings/custom-tasks")
         } catch (error) {
             console.error("Failed to create task:", error)

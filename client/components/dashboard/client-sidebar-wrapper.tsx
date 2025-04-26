@@ -95,16 +95,14 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
     const dropdownRef = useRef<HTMLDivElement>(null)
     const isMobile = useMediaQuery("(max-width: 768px)")
 
-    // Get user data from Redux store
     const { user } = useAppSelector((state) => state.user)
 
     const dispatch = useAppDispatch()
-    console.log("Prisma User", user)
+
 
     const { data: authUser } = useGetUserQuery();
 
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(
-        // Initialize all sections as expanded by default
         sidebarNavigation.reduce(
             (acc, section) => {
                 acc[section.title] = true
@@ -114,7 +112,6 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
         ),
     )
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -137,16 +134,12 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
 
     const handleLogout = async () => {
         try {
-            // Sign out using AWS Amplify
             await signOut()
 
-            // Dispatch logout action to Redux
             dispatch(logout())
 
-            console.log("Logging out...")
             setUserDropdownOpen(false)
 
-            // Redirect to login page
             window.location.href = "/"
         } catch (error) {
             console.error("Error logging out:", error)
@@ -157,7 +150,6 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
         setTheme(theme === "dark" ? "light" : "dark")
     }
 
-    // Animation variants for smoother transitions
     const logoVariants = {
         hidden: { opacity: 0, x: -20 },
         visible: {
@@ -181,7 +173,6 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
         },
     }
 
-    // Sidebar animation
     const sidebarVariants = {
         expanded: {
             width: isMobile ? "80px" : "240px",
@@ -201,7 +192,6 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
         },
     }
 
-    // Footer animation
     const footerVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: {
@@ -217,7 +207,6 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
         },
     }
 
-    // Dropdown animation
     const dropdownVariants = {
         hidden: {
             opacity: 0,
@@ -240,7 +229,6 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
         },
     }
 
-    // Determine if we should show text labels
     const showLabels = isExpanded && !isMobile
 
     return (

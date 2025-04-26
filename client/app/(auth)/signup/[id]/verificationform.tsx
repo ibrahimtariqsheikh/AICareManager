@@ -55,19 +55,15 @@ const VerificationForm = ({
     });
 
     useEffect(() => {
-        // If usernameProp is provided, use it
         if (usernameProp) {
             setUsername(usernameProp);
         }
-        // If emailProp is provided, use it
         if (emailProp) {
             setEmail(emailProp);
         }
-        // Otherwise try to get email from user state
         else if (user?.email) {
             setEmail(user.email);
         }
-        // If still no email and there's an error, try to extract from error
         else if (error && (error.includes("User already exists") || error.includes("UsernameExistsException"))) {
             const emailMatch = error.match(/email\s+([^\s]+)/i) || error.match(/username:\s*([^\s,]+)/i);
             if (emailMatch && emailMatch[1]) {
@@ -76,7 +72,6 @@ const VerificationForm = ({
             }
         }
 
-        // If we still don't have a username, show the input form
         if (!usernameProp && !username) {
             setShowUserInputs(true);
         }
@@ -86,17 +81,14 @@ const VerificationForm = ({
         try {
             setVerificationStatus("Submitting verification code...");
             if (username) {
-                console.log("Verifying code for username:", username, "Code:", values.code);
                 const result = await dispatch(verifyCode({
                     username: username,
                     code: values.code,
                 })).unwrap();
 
-                console.log("Verification result:", result);
 
                 if (result.isSignUpComplete) {
                     setVerificationStatus("Verification successful! Redirecting...");
-                    // Navigate to dashboard after successful verification
                     router.push("/dashboard");
                 } else {
                     setVerificationStatus("Verification completed but sign-up not complete.");

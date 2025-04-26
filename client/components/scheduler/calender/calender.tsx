@@ -44,7 +44,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
     }, [currentDateStr])
 
     const { data: agencySchedulesData, isLoading: isSchedulesLoading } = useGetAgencySchedulesQuery(user?.userInfo?.agencyId || "")
-    console.log('Agency Schedules:', agencySchedulesData)
+
 
     const schedules = useAppSelector((state) => state.schedule.agencySchedules)
 

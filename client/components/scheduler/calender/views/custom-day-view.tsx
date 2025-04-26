@@ -4,18 +4,20 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { useAppSelector } from "@/state/redux"
+import { useAppSelector, useAppDispatch } from "@/state/redux"
 import BankNotes from "@/components/icons/bank-notes"
 import EventIcon from "@/components/icons/eventicon"
 import HomeModern from "@/components/icons/home-modern"
-import { AppointmentEvent } from "../types"
+import type { AppointmentEvent } from "../types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-
+import type { ScheduleTemplate } from "@/types/prismaTypes"
+import { useGetScheduleTemplatesQuery } from "@/state/api"
+import { setUserTemplates, setLoadingTemplates, setTemplateError } from "@/state/slices/templateSlice"
 
 export interface Client {
     id: string
@@ -27,7 +29,6 @@ export interface Client {
 
 interface CustomDayViewProps {
     date: Date
-
     onSelectEvent: (event: AppointmentEvent) => void
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
     min?: Date
@@ -49,7 +50,6 @@ interface CustomDayViewProps {
 
 export function CustomDayView({
     date,
-
     onSelectEvent,
     onEventUpdate,
     min = new Date(new Date().setHours(7, 0, 0)),
@@ -60,15 +60,15 @@ export function CustomDayView({
     minutesPerSlot = 30,
     initialHeight = "600px",
     initialWidth = "100%",
-
 }: CustomDayViewProps) {
-
+    const dispatch = useAppDispatch()
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
     const reduxClients = useAppSelector((state) => state.user.clients || [])
     const clients = propClients || reduxClients
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
     const events = useAppSelector((state) => state.schedule.events || [])
+    const { userTemplates, isLoadingTemplates } = useAppSelector((state) => state.template)
 
     // Get the appropriate users based on activeScheduleUserType
     const displayUsers = (() => {
@@ -77,6 +77,62 @@ export function CustomDayView({
         if (activeScheduleUserType === "officeStaff") return officeStaff
         return []
     })()
+
+    const [activeDialogEventId, setActiveDialogEventId] = useState<string | null>(null)
+    const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+    const [isApplyTemplateSelected, setIsApplyTemplateSelected] = useState<boolean>(false)
+    const agencyId = useAppSelector((state) => state.user.user?.userInfo?.agencyId)
+
+    // Use the API hooks properly inside the component
+    const {
+        data: templatesData,
+        isLoading: isTemplatesLoading,
+        error: templatesError,
+    } = useGetScheduleTemplatesQuery(
+        { userId: selectedUserId || "", agencyId: agencyId || "" },
+        { skip: !selectedUserId || !agencyId },
+    )
+
+    // Update Redux state when templates data changes
+    useEffect(() => {
+        if (templatesData) {
+            dispatch(setUserTemplates(templatesData))
+        }
+        if (templatesError) {
+            dispatch(setTemplateError("Failed to load templates"))
+        }
+    }, [templatesData, templatesError, dispatch])
+
+    // Update loading state
+    useEffect(() => {
+        dispatch(setLoadingTemplates(isTemplatesLoading))
+    }, [isTemplatesLoading, dispatch])
+
+    const handleEventClick = (event: AppointmentEvent) => {
+        if (activeDialogEventId !== event.id) {
+            setActiveDialogEventId(event.id)
+            onSelectEvent(event)
+        }
+    }
+
+    const handleOpenTemplateMenu = (userId: string) => {
+        setSelectedUserId(userId)
+        setIsApplyTemplateSelected(true)
+        // Don't clear templates here, so they persist between opens
+    }
+
+    const handleApplyTemplate = async (templateId: string) => {
+        try {
+            if (!selectedUserId) return
+
+            toast.success("Template applied successfully")
+            setIsApplyTemplateSelected(false)
+            setSelectedUserId(null)
+        } catch (error) {
+            toast.error("Failed to apply template")
+            console.error("Error applying template:", error)
+        }
+    }
 
     // Refs
     const containerRef = useRef<HTMLDivElement>(null)
@@ -92,44 +148,33 @@ export function CustomDayView({
     const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
     const [calendarHeight, setCalendarHeight] = useState<string | number>(initialHeight)
     const [calendarWidth, setCalendarWidth] = useState<string | number>(initialWidth)
-    const [] = useState<boolean>(false)
-    const [] = useState<{ height: string | number; width: string | number }>({
-        height: initialHeight,
-        width: initialWidth,
-    })
 
     // Constants
     const startHour = min.getHours()
     const endHour = max.getHours()
     const slotsPerHour = 60 / minutesPerSlot
-    const slotWidth = 100 // Width of each time slot in pixels
+    const slotWidth = 100
 
-    // Calculate dynamic row height based on calendar height and number of users
     const getRowHeight = () => {
         if (typeof calendarHeight === "number") {
-            // Subtract header height (33px) and any other fixed heights
             const availableHeight = calendarHeight - 33
-            return Math.max(60, Math.floor(availableHeight / (displayUsers.length + 2 || 1))) // +2 for Labor Costs and Daily Notes
+            return Math.max(60, Math.floor(availableHeight / (displayUsers.length + 2 || 1)))
         }
-        return 80 // Default height if calendarHeight is not a number
+        return 80
     }
 
     const rowHeight = getRowHeight()
 
     // Calculate total height needed based on number of users
-    const MIN_HEIGHT = 200 // Minimum height to maintain usability
-    const EXTRA_PADDING = 30 // Extra space after last user
-    const totalHeight =
-        displayUsers.length > 0
-            ? (displayUsers.length + 2) * rowHeight + 120 + EXTRA_PADDING // +2 for Labor Costs and Daily Notes, 120px for header and controls + extra padding
-            : MIN_HEIGHT // Use minimum height when no users
+    const MIN_HEIGHT = 200
+    const EXTRA_PADDING = 30
+    const totalHeight = displayUsers.length > 0 ? (displayUsers.length + 2) * rowHeight + 120 + EXTRA_PADDING : MIN_HEIGHT
 
-    // Update calendar height if it's not explicitly set
     useEffect(() => {
         if (typeof initialHeight === "string" && initialHeight === "100%") {
             setCalendarHeight(totalHeight)
         }
-    }, [displayUsers.length, rowHeight, initialHeight])
+    }, [displayUsers.length, rowHeight, initialHeight, totalHeight])
 
     // Generate time slots
     const timeSlots = Array.from({ length: (endHour - startHour) * slotsPerHour + 1 }, (_, i) => {
@@ -140,18 +185,15 @@ export function CustomDayView({
 
     const totalWidth = timeSlots.length * slotWidth
 
-    // Group events by user
     const eventsByUser = (() => {
         const userEvents: Record<string, AppointmentEvent[]> = {
             unallocated: [],
         }
 
-        // Initialize with empty arrays for all users
         displayUsers.forEach((user) => {
             userEvents[user.id] = []
         })
 
-        // Filter events for the current day and group by user
         events
             .filter((event) => moment(event.start).isSame(date, "day"))
             .forEach((event) => {
@@ -165,7 +207,6 @@ export function CustomDayView({
         return userEvents
     })()
 
-    // Initialize display events
     useEffect(() => {
         const eventMap: Record<string, AppointmentEvent> = {}
         events
@@ -180,10 +221,8 @@ export function CustomDayView({
                 eventMap[event.id] = processedEvent
             })
         setDisplayEvents(eventMap)
-        console.log('Display Events:', eventMap)
     }, [events, date])
 
-    // Calculate positions for events
     useEffect(() => {
         if (!timelineRef.current) return
 
@@ -193,7 +232,6 @@ export function CustomDayView({
             const eventStart = moment(event.start)
             const eventEnd = moment(event.end)
 
-            // Calculate left position and width
             const startMinutes = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
             const endMinutes = (eventEnd.hours() - startHour) * 60 + eventEnd.minutes()
 
@@ -253,14 +291,14 @@ export function CustomDayView({
         if (!containerRef.current || !events.length) return
 
         // Get all events for the current day
-        const dayEvents = events.filter(event => moment(event.start).isSame(date, 'day'))
+        const dayEvents = events.filter((event) => moment(event.start).isSame(date, "day"))
 
         if (dayEvents.length === 0) return
 
         // If there are 3 or fewer events, scroll to the first event
         if (dayEvents.length <= 3) {
             const firstEvent = dayEvents.reduce((earliest, current) =>
-                moment(current.start).isBefore(moment(earliest.start)) ? current : earliest
+                moment(current.start).isBefore(moment(earliest.start)) ? current : earliest,
             )
             const eventStart = moment(firstEvent.start)
             const minutesSinceStart = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
@@ -272,6 +310,12 @@ export function CustomDayView({
             containerRef.current.scrollLeft = Math.max(0, scrollPos)
         }
     }, [date, events, startHour, slotWidth, minutesPerSlot])
+
+    useEffect(() => {
+        return () => {
+            setActiveDialogEventId(null)
+        }
+    }, [])
 
     // Add custom scrollbar style
     useEffect(() => {
@@ -444,10 +488,6 @@ export function CustomDayView({
         setActiveEvent(null)
     }
 
-
-
-
-
     const getEventIcon = (type: string) => {
         switch (type) {
             case "HOME_VISIT":
@@ -464,8 +504,6 @@ export function CustomDayView({
                 return <Calendar className="h-3.5 w-3.5" />
         }
     }
-
-
 
     // Theme-based style classes
     const timelineClass = spaceTheme ? "bg-slate-900" : "bg-white"
@@ -488,7 +526,6 @@ export function CustomDayView({
         return `${displayHours}:${minutes.toString().padStart(2, "0")} ${amPm}`
     }
 
-
     return (
         <div
             ref={calendarContainerRef}
@@ -509,7 +546,13 @@ export function CustomDayView({
                         <div className={`w-48 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`} style={{ height: "100%" }}>
                             {/* Users */}
                             <div className="h-8 font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-900">
-                                <p>{activeScheduleUserType === "clients" ? "CLIENTS" : activeScheduleUserType === "careWorker" ? "CARE WORKERS" : "OFFICE STAFF"}</p>
+                                <p>
+                                    {activeScheduleUserType === "clients"
+                                        ? "CLIENTS"
+                                        : activeScheduleUserType === "careWorker"
+                                            ? "CARE WORKERS"
+                                            : "OFFICE STAFF"}
+                                </p>
                             </div>
 
                             <div
@@ -522,7 +565,6 @@ export function CustomDayView({
                                     <ChevronDown className="h-3.5 w-3.5" />
                                 </div>
                             </div>
-
 
                             {/* User list */}
                             {displayUsers.map((user) => (
@@ -539,25 +581,14 @@ export function CustomDayView({
                                     <div className="flex items-center justify-between w-full">
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-6 w-6 bg-neutral-100">
-                                                <AvatarImage
-                                                    src={user.profile?.avatarUrl || "/placeholder.svg"}
-                                                    alt={`${user.fullName}`}
-
-
-
-                                                />
+                                                <AvatarImage src={user.profile?.avatarUrl || "/placeholder.svg"} alt={`${user.fullName}`} />
                                                 <AvatarFallback className="text-xs font-medium bg-neutral-100">
                                                     {user.fullName?.[0]}
-
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="flex mb-[2px] flex-col justify-start items-start  font-medium">
-                                                <span className="text-sm font-medium truncate text-neutral-800">
-                                                    {user.fullName}
-                                                </span>
-                                                <div
-                                                    className="text-[13px] text-neutral-500 flex items-center gap-1"
-                                                >
+                                                <span className="text-sm font-medium truncate text-neutral-800">{user.fullName}</span>
+                                                <div className="text-[13px] text-neutral-500 flex items-center gap-1">
                                                     {eventsByUser[user.id]?.length || 0} <EventIcon className="h-4 w-4 block" />
                                                 </div>
                                             </div>
@@ -570,23 +601,75 @@ export function CustomDayView({
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="z-50">
-                                                    <div className="flex flex-col gap-1 items-start justify-start">
-                                                        <div className="border-b border-border" />
-                                                        <Button variant="ghost" className="flex justify-start items-center gap-2 text-xs w-full"
-                                                            onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                            Edit Schedule Template
-                                                        </Button>
+                                                    {!isApplyTemplateSelected && (
+                                                        <div className="flex flex-col gap-1 items-start justify-start">
+                                                            <Button
+                                                                variant="ghost"
+                                                                className="flex justify-start items-center gap-2 text-xs w-full border-b border-border"
+                                                                onClick={() => handleOpenTemplateMenu(user.id)}
+                                                            >
+                                                                <Plus className="h-4 w-4" />
+                                                                Apply Schedule Template
+                                                            </Button>
+                                                            <div className="border-b border-border" />
+                                                            <Button
+                                                                variant="ghost"
+                                                                className="flex justify-start items-center gap-2 text-xs w-full border-b border-border"
+                                                                onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                                Edit Schedule Template
+                                                            </Button>
+                                                            <div className="border-b border-border" />
+                                                            <Button
+                                                                variant="ghost"
+                                                                className="flex justify-start items-center gap-2 text-xs w-full"
+                                                                onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                                Edit User
+                                                            </Button>
+                                                            <div className="border-b border-border" />
+                                                        </div>
+                                                    )}
+                                                    {isApplyTemplateSelected && (
+                                                        <div>
+                                                            <div className="flex justify-between items-center mb-2">
+                                                                <h4 className="text-sm font-medium">Select Template</h4>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    onClick={() => {
+                                                                        setIsApplyTemplateSelected(false)
+                                                                        // Don't clear the userId so the templates data remains valid
+                                                                    }}
+                                                                    className="h-6 w-6 p-0"
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
 
-                                                        <Button variant="ghost" className="flex justify-start items-center gap-2 text-xs w-full"
-                                                            onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                            Edit User
-                                                        </Button>
-
-                                                    </div>
+                                                            {isLoadingTemplates ? (
+                                                                <div className="py-2 text-center text-xs text-neutral-500">Loading templates...</div>
+                                                            ) : userTemplates.length === 0 ? (
+                                                                <div className="py-2 text-center text-xs text-neutral-500">No templates available</div>
+                                                            ) : (
+                                                                userTemplates.map((template: ScheduleTemplate) => (
+                                                                    <Button
+                                                                        key={template.id}
+                                                                        variant="ghost"
+                                                                        className="flex px-4 justify-between items-center gap-2 text-xs w-full border-b border-border"
+                                                                        onClick={() => handleApplyTemplate(template.id)}
+                                                                    >
+                                                                        <span className="truncate">{template.name}</span>
+                                                                        <div className="text-xs text-blue-500 bg-blue-500/10 px-2 py-1 rounded-md whitespace-nowrap">
+                                                                            Apply
+                                                                        </div>
+                                                                    </Button>
+                                                                ))
+                                                            )}
+                                                        </div>
+                                                    )}
                                                 </PopoverContent>
                                             </Popover>
                                         </div>
@@ -617,7 +700,7 @@ export function CustomDayView({
                                             return (
                                                 <div
                                                     key={i}
-                                                    className={`flex-shrink-0 ${timeLabelsClass} ${isHourMark ? 'text-xs font-medium' : 'text-[10px]'} px-2 py-2 text-center border-r ${gridLineClass}`}
+                                                    className={`flex-shrink-0 ${timeLabelsClass} ${isHourMark ? "text-xs font-medium" : "text-[10px]"} px-2 py-2 text-center border-r ${gridLineClass}`}
                                                     style={{ width: `${slotWidth * (slotsPerHour / 2)}px` }}
                                                 >
                                                     {moment(time).format("h:mm A")}
@@ -671,7 +754,6 @@ export function CustomDayView({
                                     }}
                                 />
 
-
                                 {/* Daily Notes row grid line */}
                                 <div
                                     className={`absolute w-full border-b ${gridLineClass}`}
@@ -711,11 +793,8 @@ export function CustomDayView({
                                                 top: `${(0 + 1) * rowHeight}px`,
                                                 height: `${rowHeight}px`,
                                                 borderColor: spaceTheme ? "#1e293b" : "#e2e8f0",
-
                                             }}
                                         >
-
-
                                             {eventsByUser[user.id]?.map((event) => {
                                                 const pos = eventPositions[event.id]
                                                 if (!pos) return null
@@ -730,7 +809,6 @@ export function CustomDayView({
                                                             "bg-blue-50", // Light blue background
                                                             "border-gray-200 border-l-4 border-l-blue-600",
                                                             "cursor-grab active:cursor-grabbing",
-
                                                         )}
                                                         style={{
                                                             left: `${pos.left || 0}px`,
@@ -748,17 +826,22 @@ export function CustomDayView({
                                                         onDragEnd={(_e, info) => handleDragEnd(event.id, info, user.id)}
                                                         onMouseEnter={() => setHoveredEvent(event.id)}
                                                         onMouseLeave={() => setHoveredEvent(null)}
-                                                        onClick={() => onSelectEvent(event)}
+                                                        onClick={() => handleEventClick(event)}
                                                         whileDrag={{ scale: 1.05 }}
                                                     >
                                                         <div className={cn("flex items-center gap-1 font-medium truncate")}>
-                                                            <span className="text-blue-800">{getEventIcon(event.type) || <HomeModern className="h-4 w-4" />}</span>
+                                                            <span className="text-blue-800">
+                                                                {getEventIcon(event.type) || <HomeModern className="h-4 w-4" />}
+                                                            </span>
                                                             <span className="text-blue-800">{event.title}</span>
                                                         </div>
                                                         <div className={cn("text-[10px] mt-1 text-blue-800")}>
                                                             {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </div>
-                                                        <div className="text-xs font-semibold text-blue-800 flex flex-row items-center gap-1 justify-start mt-1"><User className="h-3.5 w-3.5" /><div className="text-blue-800">{event.careWorker?.fullName}</div>  </div>
+                                                        <div className="text-xs font-semibold text-blue-800 flex flex-row items-center gap-1 justify-start mt-1">
+                                                            <User className="h-3.5 w-3.5" />
+                                                            <div className="text-blue-800">{event.careWorker?.fullName}</div>{" "}
+                                                        </div>
                                                     </motion.div>
                                                 )
                                             })}
@@ -772,15 +855,13 @@ export function CustomDayView({
             </div>
 
             {/* Tooltip */}
-            {
-                dragTooltip && (
-                    <div
-                        className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-3 py-1.5 rounded-md text-xs shadow-sm ${tooltipClass}`}
-                    >
-                        {dragTooltip.time}
-                    </div>
-                )
-            }
-        </div >
+            {dragTooltip && (
+                <div
+                    className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-3 py-1.5 rounded-md text-xs shadow-sm ${tooltipClass}`}
+                >
+                    {dragTooltip.time}
+                </div>
+            )}
+        </div>
     )
 }

@@ -3,7 +3,7 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { Message } from "@/app/dashboard/chatbot/chatbot-client"
 
-import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration, CustomTask, Group, RateSheet, VisitType, Task } from "../types/prismaTypes"
+import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
 import { EmergencyContact } from "@/types/profileTypes"
 
@@ -222,7 +222,8 @@ export const api = createApi({
     "Chat",
     "RateSheets",
     "Groups",
-    "Invoices"
+    "Invoices",
+    "ScheduleTemplates"
   ],
   endpoints: (build) => ({
     // Get user
@@ -291,8 +292,53 @@ export const api = createApi({
       query: () => `/invoices/current-invoice-number`,
       providesTags: ["Invoices"],
     }),
+    // Schedule Template endpoints
+    createScheduleTemplate: build.mutation<ScheduleTemplate, ScheduleTemplate>({
+      query: (template) => ({
+        url: "/templates",
+        method: "POST",
+        body: template,
+      }),
+      invalidatesTags: ["ScheduleTemplates"],
+    }),
 
+    getScheduleTemplates: build.query<ScheduleTemplate[], { userId: string, agencyId: string }>({
+      query: ({ userId, agencyId }) => `/templates/${userId}/${agencyId}`,
+      providesTags: ["ScheduleTemplates"],
+    }),
 
+    updateScheduleTemplate: build.mutation<ScheduleTemplate, ScheduleTemplate>({
+      query: (template) => ({
+        url: "/templates",
+        method: "PUT",
+        body: template,
+      }),
+      invalidatesTags: ["ScheduleTemplates"],
+    }),
+
+    activateScheduleTemplate: build.mutation<ScheduleTemplate, { id: string, userId: string }>({
+      query: ({ id, userId }) => ({
+        url: `/templates/activate/${id}/${userId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["ScheduleTemplates"],
+    }),
+
+    deactivateScheduleTemplate: build.mutation<ScheduleTemplate, { id: string }>({
+      query: ({ id }) => ({
+        url: `/templates/deactivate/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["ScheduleTemplates"],
+    }),
+
+    deleteScheduleTemplate: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/templates/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["ScheduleTemplates"],
+    }),
 
     //create user
     createUser: build.mutation<User, CreateUserInput>({
@@ -617,15 +663,6 @@ export const api = createApi({
       providesTags: ["User"],
     }),
 
-    // Update user
-    updateUser: build.mutation<UserResponse, UpdateUserInput>({
-      query: ({ id, ...body }) => ({
-        url: `/users/${id}`,
-        method: "PUT",
-        body,
-      }),
-      invalidatesTags: ["User"],
-    }),
 //new methods here
 addEmergencyContact: build.mutation<EmergencyContact, { userId: string; contact: EmergencyContact }>({
   query: ({ userId, contact }) => ({
@@ -877,4 +914,10 @@ export const {
   useDeleteEmergencyContactMutation,
   useAddVisitTypeMutation,
   useAddVisitTypeTaskMutation,
+  useCreateScheduleTemplateMutation,
+  useGetScheduleTemplatesQuery,
+  useUpdateScheduleTemplateMutation,
+  useDeleteScheduleTemplateMutation,
+  useActivateScheduleTemplateMutation,
+  useDeactivateScheduleTemplateMutation,
 } = api

@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, User } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 import { useCustomAuth } from "@/providers/auth-provider";
 import { IconMenu2 } from "@tabler/icons-react";
@@ -14,7 +14,7 @@ import { IconMenu2 } from "@tabler/icons-react";
 export function SignInToggle() {
   const router = useRouter();
   const { isLoggedIn, logout } = useCustomAuth();
-  console.log(isLoggedIn);
+
 
   return (
     <DropdownMenu>

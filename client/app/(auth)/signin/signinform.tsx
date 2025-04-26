@@ -44,7 +44,6 @@ const SigninForm: React.FC<SigninFormProps> = ({
         },
     })
 
-    // Clear error when form changes
     useEffect(() => {
         const subscription = form.watch(() => {
             if (error) {
@@ -57,7 +56,7 @@ const SigninForm: React.FC<SigninFormProps> = ({
 
     const onSubmit = async (values: SigninFormValues) => {
         try {
-            // Store username for verification or reset steps
+
             setUsernameForReset(values.username)
             setUsernameForVerification(values.username)
             setVerificationStatus("Signing in...")
@@ -69,23 +68,23 @@ const SigninForm: React.FC<SigninFormProps> = ({
                 }),
             ).unwrap()
 
-            console.log("result", result)
+
 
             if (isVerificationStep) {
                 setVerificationStatus("Account requires verification. Redirecting...")
                 setShowVerification(true)
             } else {
                 setVerificationStatus("Login successful! Redirecting to dashboard...")
-                // Navigate to dashboard after successful login
+
                 router.push("/dashboard")
-                // Force navigation to dashboard
+
                 window.location.href = "/dashboard"
             }
         } catch (err) {
             console.error("Login failed:", err)
             setVerificationStatus(`Login failed: ${err}`)
 
-            // Check if error indicates verification needed
+
             if (error && (error.includes("User not confirmed") || error.includes("UserNotConfirmedException"))) {
                 setShowVerification(true)
             }

@@ -141,7 +141,7 @@ export default function AgencyPage() {
 
     useEffect(() => {
         if (agencyRedux && !formInitialized) {
-            console.log("Setting form values from Redux data:", agencyRedux);
+
             form.reset({
                 id: agencyRedux.id || "",
                 name: agencyRedux.name || "",
@@ -176,16 +176,16 @@ export default function AgencyPage() {
         }
     }, [agencyRedux, form, formInitialized]);
 
-    // State for dialogs
+
     const [, setIsDocumentInfoOpen] = useState(false)
 
-    // Documents state - in a real app, this would come from an API
+
     const [documents, setDocuments] = useState([
         { id: "1", name: "operational_documents.pdf", type: "operational_documents", uploadedAt: new Date().toISOString() },
     ])
 
     const handleDocumentUpload = (file: File) => {
-        // In a real app, you would upload the file to your server
+
         const newDocument = {
             id: Math.random().toString(36).substring(7),
             name: file.name,
@@ -203,11 +203,9 @@ export default function AgencyPage() {
     }
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log("Form submission started");
+
         try {
-            console.log("Form submitted with data:", data);
-            console.log("Current form state:", form.getValues());
-            console.log("Form errors:", form.formState.errors);
+
 
             const result = await updateAgency({
                 agencyId: data.id,
@@ -218,7 +216,7 @@ export default function AgencyPage() {
             }).unwrap()
 
             if (result) {
-                console.log("Backend Response:", result)
+
                 // Update Redux store with the new agency data
                 dispatch(setAgency(result))
                 toast.success("Agency updated successfully!", {
@@ -227,7 +225,7 @@ export default function AgencyPage() {
                 });
             }
         } catch (error: any) {
-            console.error("Error updating agency:", error)
+
             const errorMessage = error?.data?.message || "Failed to update agency information"
             toast.error(errorMessage, {
                 duration: 4000,
@@ -244,7 +242,7 @@ export default function AgencyPage() {
             toast.success("Agency deleted successfully")
             // You might want to redirect to a different page after deletion
         } catch (error) {
-            console.error("Error deleting agency:", error)
+
             toast.error("Failed to delete agency")
         } finally {
             setIsDeleteDialogOpen(false)
@@ -253,9 +251,7 @@ export default function AgencyPage() {
 
     // Debug current form values
     const currentValues = form.watch();
-    console.log("Current form values:", currentValues);
-    console.log("Form initialized:", formInitialized);
-    console.log("Agency Redux data:", agencyRedux);
+
 
     return (
         <div className="container mx-auto py-6 space-y-6">
@@ -293,14 +289,14 @@ export default function AgencyPage() {
             ) : (
                 <Form {...form}>
                     <form onSubmit={async (e) => {
-                        console.log("Form submit event triggered");
+
                         e.preventDefault();
                         try {
                             const data = form.getValues();
-                            console.log("Form data:", data);
+
                             await onSubmit(data);
                         } catch (error) {
-                            console.error("Form submission error:", error);
+
                         }
                     }} className="space-y-6">
                         <Tabs defaultValue="general" className="w-full">

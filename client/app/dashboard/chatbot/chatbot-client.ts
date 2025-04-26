@@ -41,7 +41,6 @@ export function useChat({
   const [input, setInput] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize session ID if not exists
   useEffect(() => {
     if (!sessionId) {
       const newSessionId = uuidv4();
@@ -49,16 +48,14 @@ export function useChat({
     }
   }, [sessionId, dispatch]);
 
-  // Load chat history if available and enabled
   useEffect(() => {
     if (loadHistory && chatHistory?.messages && !isInitialized) {
-      console.log('Loading chat history:', chatHistory.messages);
+
       dispatch(setMessages(chatHistory.messages));
       setIsInitialized(true);
     }
   }, [chatHistory, dispatch, loadHistory, isInitialized]);
 
-  // Handle history error
   useEffect(() => {
     if (historyError) {
       console.error('Error loading chat history:', historyError);
@@ -103,13 +100,12 @@ export function useChat({
     dispatch(setError(null));
 
     try {
-      console.log('Sending message to server:', { messages: [...messages, userMessage], sessionId });
       const response = await sendMessage({
         messages: [...messages, userMessage],
         sessionId,
       }).unwrap() as ChatResponse;
 
-      console.log('Server response:', response);
+
 
       if (response.error) {
         throw new Error(response.error);

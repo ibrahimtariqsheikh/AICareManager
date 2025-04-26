@@ -42,7 +42,6 @@ export default function SettingsPage() {
 
 
     const { agency } = useAppSelector((state: any) => state.agency)
-    console.log(agency)
     const dispatch = useAppDispatch()
 
     const router = useRouter()
@@ -120,7 +119,7 @@ export default function SettingsPage() {
         })
 
         toast.success("Settings saved")
-        console.log(result)
+
     }
 
 

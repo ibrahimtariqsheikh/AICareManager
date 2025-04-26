@@ -78,9 +78,6 @@ export default function ReportsPage() {
     const clients = useAppSelector((state) => state.user.clients)
     const careWorkers = useAppSelector((state) => state.user.careWorkers)
 
-    console.log("reports", reports)
-    console.log("clients", clients)
-    console.log("careWorkers", careWorkers)
 
     const router = useRouter()
 

@@ -1,15 +1,55 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
 import { Button } from "../../../components/ui/button"
 import { useAppDispatch } from "@/state/redux"
 import { AppointmentForm } from "@/components/scheduler/appointment-form"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { toggleRightSidebar } from "@/state/slices/scheduleSlice"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Plus } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+// Import the Loading component
+function Loading() {
+    return (
+        <div className="p-6">
+            {/* Header Skeleton */}
+            <div className="flex items-center justify-between mb-6">
+                <div className="space-y-2">
+                    <div className="h-8 w-40 bg-muted rounded animate-pulse" />
+                    <div className="h-4 w-64 bg-muted rounded animate-pulse" />
+                </div>
+                <div className="flex items-center gap-3">
+                    <div className="h-9 w-32 bg-muted rounded animate-pulse" />
+                    <div className="h-9 w-9 bg-muted rounded animate-pulse" />
+                </div>
+            </div>
+
+            {/* Calendar View Toggle Skeleton */}
+            <div className="flex items-center gap-2 mb-6">
+                {["Day", "Week", "Month"].map((view) => (
+                    <div key={view} className="h-9 w-20 bg-muted rounded animate-pulse" />
+                ))}
+            </div>
+
+            {/* Calendar Grid Skeleton */}
+            <div className="grid grid-cols-7 gap-2 mb-4">
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                    <div key={day} className="h-8 bg-muted rounded animate-pulse" />
+                ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2">
+                {Array.from({ length: 35 }).map((_, i) => (
+                    <div key={i} className="aspect-square bg-muted rounded animate-pulse" />
+                ))}
+            </div>
+
+
+        </div>
+    )
+}
 
 export default function SchedulerPage() {
     const [view] = useState<"day" | "week" | "month">("week")
@@ -20,6 +60,32 @@ export default function SchedulerPage() {
 
     const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<any>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [showContent, setShowContent] = useState(false)
+
+    useEffect(() => {
+        // Simulate loading data
+        const loadData = async () => {
+            try {
+                // You can replace this with actual data fetching
+                await new Promise((resolve) => setTimeout(resolve, 100))
+
+                // First set showContent to true to start the fade-in animation
+                setShowContent(true)
+
+                // Then after a short delay, set isLoading to false to remove the skeleton
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 300)
+            } catch (error) {
+                console.error("Error loading scheduler data:", error)
+                setShowContent(true)
+                setIsLoading(false)
+            }
+        }
+
+        loadData()
+    }, [])
 
     const handleEventSelect = (event: any) => {
         setEditingEvent(event)
@@ -32,44 +98,52 @@ export default function SchedulerPage() {
     }
 
     return (
-        <div className="relative container mx-auto py-4 min-h-screen min-w-full">
-
-            <div className="flex flex-col space-y-4">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-3xl font-bold text-neutral-900">Schedule</h1>
-                        <p className="text-sm text-neutral-600">
-                            Manage your appointments efficiently. View, create, edit, or cancel client appointments.
-                            Track your availability and organize your professional schedule all in one place.
-                        </p>
-                    </div>
-                    <Button
-                        onClick={() => setIsAppointmentFormOpen(true)}
-                        size="sm"
-                        className="hidden sm:flex"
-                    >
-                        <Plus className="h-4 w-4 mr-1.5" />
-                        New Appointment
-                    </Button>
+        <div className="relative">
+            {isLoading && (
+                <div
+                    className={cn(
+                        "absolute inset-0 z-10 transition-opacity duration-300",
+                        showContent ? "opacity-0" : "opacity-100",
+                    )}
+                >
+                    <Loading />
                 </div>
+            )}
 
-                <div className="mb-4" />
+            <div
+                className={cn(
+                    "relative container mx-auto py-4 min-h-screen min-w-full transition-opacity duration-500",
+                    showContent ? "opacity-100" : "opacity-0",
+                )}
+            >
+                <div className="flex flex-col space-y-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="flex flex-col gap-2">
+                            <h1 className="text-3xl font-bold text-neutral-900">Schedule</h1>
+                            <p className="text-sm text-neutral-600">
+                                Manage your appointments efficiently. View, create, edit, or cancel client appointments. Track your
+                                availability and organize your professional schedule all in one place.
+                            </p>
+                        </div>
+                        <Button onClick={() => setIsAppointmentFormOpen(true)} size="sm" className="hidden sm:flex">
+                            <Plus className="h-4 w-4 mr-1.5" />
+                            New Appointment
+                        </Button>
+                    </div>
 
-                <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
+                    <div className="mb-4" />
 
-                <Dialog open={isAppointmentFormOpen} onOpenChange={setIsAppointmentFormOpen}>
-                    <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-auto">
-                        <VisuallyHidden>
-                            <DialogTitle>{editingEvent?.id ? "Edit Appointment" : "New Appointment"}</DialogTitle>
-                        </VisuallyHidden>
-                        <AppointmentForm
-                            isOpen={true}
-                            onClose={handleFormClose}
-                            event={editingEvent}
-                            isNew={!editingEvent?.id}
-                        />
-                    </DialogContent>
-                </Dialog>
+                    <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
+
+                    <Dialog open={isAppointmentFormOpen} onOpenChange={setIsAppointmentFormOpen}>
+                        <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-auto">
+                            <VisuallyHidden>
+                                <DialogTitle>{editingEvent?.id ? "Edit Appointment" : "New Appointment"}</DialogTitle>
+                            </VisuallyHidden>
+                            <AppointmentForm isOpen={true} onClose={handleFormClose} event={editingEvent} isNew={!editingEvent?.id} />
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
         </div>
     )

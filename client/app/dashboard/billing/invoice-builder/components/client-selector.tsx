@@ -19,8 +19,7 @@ export function ClientSelector() {
   const clients = useAppSelector((state) => state.user.clients)
   const dispatch = useAppDispatch()
 
-  console.log("clients", clients)
-  console.log("selectedClient", selectedClient)
+
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

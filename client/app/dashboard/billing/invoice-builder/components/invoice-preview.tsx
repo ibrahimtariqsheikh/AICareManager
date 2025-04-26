@@ -16,7 +16,6 @@ interface InvoicePreviewProps {
 export function InvoicePreview({ items, subtotal, tax, total, dateRange }: InvoicePreviewProps) {
   const invoiceData = useAppSelector((state) => state.invoice.invoiceData)
   const client = useAppSelector((state) => state.invoice.selectedClient)
-  console.log("Date Range From Invoice Preview", dateRange)
   if (!client) {
     return (
       <div className="text-center py-12">

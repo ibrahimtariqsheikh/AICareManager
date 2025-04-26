@@ -6,7 +6,6 @@ import { Calendar, FileText, Pill, UserIcon, Code } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
 import { useGetUserByIdQuery } from "@/state/api"
-import { cn } from "@/lib/utils"
 import { PatientInformation } from "../components/patient-information"
 import AppointmentHistory from "../components/appointmenthistory"
 import { MedicalHistory } from "../components/medicalHistory"
@@ -16,10 +15,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScheduleTemplate } from "../components/scheduleTemplate"
 
-
 const EditUserPage = () => {
     const { id } = useParams()
     const userId = id as string
+    const router = useRouter()
 
     const {
         data: userData,
@@ -31,7 +30,6 @@ const EditUserPage = () => {
     })
 
     const user = userData?.data as UserType
-    const router = useRouter()
 
     const contentVariants = {
         hidden: {
@@ -83,7 +81,7 @@ const EditUserPage = () => {
                             <Skeleton key={i} className="h-9 w-36 rounded-md" />
                         ))}
                     </div>
-                    <div className="border-b border-neutral-200 w-full h-1 my-8" />
+                    <div className="border-b border-border w-full h-1 my-8" />
 
                     {/* Skeleton for content */}
                     <div className="min-h-[400px] space-y-4">
@@ -112,8 +110,8 @@ const EditUserPage = () => {
     if (error) {
         return (
             <div className="flex flex-col items-center justify-center h-[60vh]">
-                <div className="text-red-500 text-xl font-semibold mb-2">Error loading user data</div>
-                <p className="text-gray-600 mb-4">There was a problem fetching the user information.</p>
+                <div className="text-destructive text-xl font-semibold mb-2">Error loading user data</div>
+                <p className="text-muted-foreground mb-4">There was a problem fetching the user information.</p>
                 <Button onClick={() => router.back()}>Go Back</Button>
             </div>
         )
@@ -123,8 +121,8 @@ const EditUserPage = () => {
     if (!user) {
         return (
             <div className="flex flex-col items-center justify-center h-[60vh]">
-                <div className="text-gray-700 text-xl font-semibold mb-2">User not found</div>
-                <p className="text-gray-600 mb-4">The requested user could not be found.</p>
+                <div className="text-foreground text-xl font-semibold mb-2">User not found</div>
+                <p className="text-muted-foreground mb-4">The requested user could not be found.</p>
                 <Button onClick={() => router.back()}>Go Back</Button>
             </div>
         )
@@ -141,7 +139,7 @@ const EditUserPage = () => {
                     className="w-full flex flex-row gap-2 items-center justify-between mx-4"
                 >
                     <div className="flex flex-row gap-2 items-center justify-between">
-                        <div className="w-10 h-10 rounded-lg bg-neutral-200/80 flex items-center justify-center text-neutral-900 font-semibold text-sm">
+                        <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-foreground font-semibold text-sm">
                             {user?.fullName?.charAt(0) || "U"}
                         </div>
                         <div>
@@ -149,10 +147,10 @@ const EditUserPage = () => {
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
-                        <p className="text-xs text-blue-500 bg-blue-50 px-2 py-1 rounded-md font-medium border border-blue-300">
+                        <p className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-md font-medium border border-primary/30">
                             {user?.role || "No Role"}
                         </p>
-                        <p className="text-xs text-neutral-500 bg-neutral-100 px-2 py-1 rounded-md font-medium border border-neutral-400">
+                        <p className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md font-medium border border-border">
                             {user?.subRole || "No Subrole"}
                         </p>
                     </div>
@@ -162,24 +160,16 @@ const EditUserPage = () => {
             <div className="px-6 py-4">
                 {/* Tabs Navigation using shadcn Tabs */}
                 <Tabs defaultValue="patientInformation" className="w-full">
-                    <TabsList className="mb-6 bg-neutral-100 p-1 h-auto">
-                        {tabs.map((tab) => (
-                            <TabsTrigger
-                                key={tab.id}
-                                value={tab.id}
-                                className={cn(
-                                    "px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm data-[state=active]:border-blue-300",
-                                    "data-[state=inactive]:bg-transparent data-[state=inactive]:text-neutral-700",
-                                    "transition-all duration-200",
-                                )}
-                            >
+                    <TabsList className="h-auto">
+                        {tabs.map((tab, index) => (
+                            <TabsTrigger key={tab.id || `tab-${index}`} value={tab.id} className="flex items-center gap-2">
                                 <tab.icon className="w-4 h-4" />
                                 {tab.label}
                             </TabsTrigger>
                         ))}
                     </TabsList>
 
-                    <div className="border-b border-neutral-200 w-full h-1 my-8" />
+                    <div className=" w-full h-1 my-4" />
 
                     {/* Tab Content */}
                     <AnimatePresence mode="wait">
@@ -232,7 +222,15 @@ const EditUserPage = () => {
                         </TabsContent>
 
                         <TabsContent value="ScheduleTemplate" asChild>
-                            <ScheduleTemplate user={user} />
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={contentVariants}
+                                className="min-h-[400px]"
+                            >
+                                <ScheduleTemplate user={user} />
+                            </motion.div>
                         </TabsContent>
                     </AnimatePresence>
                 </Tabs>
@@ -249,7 +247,7 @@ const EditUserPage = () => {
                         <span className="text-xs text-muted-foreground">Click to expand</span>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <div className="p-4 bg-slate-50 rounded-b-md overflow-auto max-h-[500px]">
+                        <div className="p-4 bg-muted/50 rounded-b-md overflow-auto max-h-[500px]">
                             <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(user, null, 2)}</pre>
                         </div>
                     </CollapsibleContent>

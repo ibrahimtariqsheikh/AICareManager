@@ -13,7 +13,7 @@ import dashboardRoutes from "./routes/dashboardRoutes"
 import reportRoutes from "./routes/reportRoutes";
 import chatRoutes from "./routes/chatRoutes";
 import invoiceRoutes from "./routes/invoiceRoutes";
-
+import scheduleTemplateRoutes from "./routes/scheduleTemplateRoute";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -33,7 +33,7 @@ app.use(cors());
 /* ROUTES */
 
 app.get("/", (req, res) => {
-  res.send("This is the home route");
+  res.send("Server is running");
 });
 
 app.use("/users", userRoutes);
@@ -44,6 +44,7 @@ app.use("/reports", reportRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/chat", chatRoutes);
 app.use("/invoices", invoiceRoutes);
+app.use("/templates", scheduleTemplateRoutes);
 /* SERVER */
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

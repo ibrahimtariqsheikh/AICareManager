@@ -8,16 +8,13 @@ const prisma = new PrismaClient();
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const { role, agencyId } = req.query;
-    console.log("getUsers");
-    console.log("role", role);
-    console.log("agencyId", agencyId);
-
+ 
     // Build where clause for filtering
     const where: any = {};
     if (role) where.role = role as Role;
     if (agencyId) where.agencyId = agencyId as string;
 
-    console.log("Fetching users with where clause:", where);
+
 
     // Get users with filtering
     const users = await prisma.user.findMany({
@@ -35,13 +32,13 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       },
     });
 
-    // Add color field for UI
+
     const usersWithColor = users.map((user) => ({
       ...user,
       color: getRandomColor(user.id),
     }));
 
-    // Return formatted response
+
     res.json({
       data: usersWithColor,
       meta: {
@@ -54,10 +51,10 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Get filtered users for scheduling
+
 export const getFilteredUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("getFilteredUsers");
+  
     const { inviterId } = req.params;
     
     const users = await prisma.user.findMany({

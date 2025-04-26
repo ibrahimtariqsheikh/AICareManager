@@ -3,56 +3,58 @@ import { api } from "../api"
 import type { ScheduleResponse } from "../api"
 import type { AppointmentEvent, SidebarMode } from "../../components/scheduler/calender/types"
 import { filterEvents } from "../../components/scheduler/calender/calender-utils"
+import { applyTemplateToSchedule } from "./templateSlice"
+import moment from "moment"
 
 // This will help serialize and deserialize dates
 function serializeEvent(event: AppointmentEvent): any {
-    // Create a copy of the event to avoid mutating the original
-    const serializedEvent = { ...event };
+  // Create a copy of the event to avoid mutating the original
+  const serializedEvent = { ...event }
 
-    // Helper function to safely convert date to ISO string
-    const toISOString = (date: Date | string | undefined): string => {
-        if (!date) return new Date().toISOString();
-        try {
-            const dateObj = date instanceof Date ? date : new Date(date);
-            if (isNaN(dateObj.getTime())) return new Date().toISOString();
-            return dateObj.toISOString();
-        } catch (error) {
-            console.error('Error serializing date:', error);
-            return new Date().toISOString();
-        }
-    };
+  // Helper function to safely convert date to ISO string
+  const toISOString = (date: Date | string | undefined): string => {
+    if (!date) return new Date().toISOString()
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date)
+      if (isNaN(dateObj.getTime())) return new Date().toISOString()
+      return dateObj.toISOString()
+    } catch (error) {
+      console.error("Error serializing date:", error)
+      return new Date().toISOString()
+    }
+  }
 
-    // Safely serialize dates
-    serializedEvent.start = toISOString(event.start);
-    serializedEvent.end = toISOString(event.end);
-    serializedEvent.date = toISOString(event.date);
+  // Safely serialize dates
+  serializedEvent.start = toISOString(event.start)
+  serializedEvent.end = toISOString(event.end)
+  serializedEvent.date = toISOString(event.date)
 
-    return serializedEvent;
+  return serializedEvent
 }
 
 function deserializeEvent(event: any): AppointmentEvent {
-    // Create a copy of the event to avoid mutating the original
-    const deserializedEvent = { ...event };
+  // Create a copy of the event to avoid mutating the original
+  const deserializedEvent = { ...event }
 
-    // Helper function to safely convert to Date
-    const toDate = (dateStr: string | Date | undefined): Date => {
-        if (!dateStr) return new Date();
-        try {
-            const date = dateStr instanceof Date ? dateStr : new Date(dateStr);
-            if (isNaN(date.getTime())) return new Date();
-            return date;
-        } catch (error) {
-            console.error('Error deserializing date:', error);
-            return new Date();
-        }
-    };
+  // Helper function to safely convert to Date
+  const toDate = (dateStr: string | Date | undefined): Date => {
+    if (!dateStr) return new Date()
+    try {
+      const date = dateStr instanceof Date ? dateStr : new Date(dateStr)
+      if (isNaN(date.getTime())) return new Date()
+      return date
+    } catch (error) {
+      console.error("Error deserializing date:", error)
+      return new Date()
+    }
+  }
 
-    // Safely deserialize dates
-    deserializedEvent.start = toDate(event.start);
-    deserializedEvent.end = toDate(event.end);
-    deserializedEvent.date = toDate(event.date);
+  // Safely deserialize dates
+  deserializedEvent.start = toDate(event.start)
+  deserializedEvent.end = toDate(event.end)
+  deserializedEvent.date = toDate(event.date)
 
-    return deserializedEvent;
+  return deserializedEvent
 }
 
 interface ScheduleState {
@@ -64,6 +66,17 @@ interface ScheduleState {
   error: string | null
   isHidden: boolean
   activeScheduleUserType: "clients" | "officeStaff" | "careWorker"
+  lastAppliedTemplate: {
+    templateId: string | null
+    date: string | null
+  }
+  // Add dialog state management
+  dialog: {
+    isOpen: boolean
+    mode: "create" | "edit" | null
+    selectedEventId: string | null
+    selectedEvent: AppointmentEvent | null
+  }
 }
 
 const initialState: ScheduleState = {
@@ -75,6 +88,17 @@ const initialState: ScheduleState = {
   error: null,
   isHidden: true,
   activeScheduleUserType: "clients",
+  lastAppliedTemplate: {
+    templateId: null,
+    date: null,
+  },
+  // Initialize dialog state
+  dialog: {
+    isOpen: false,
+    mode: null,
+    selectedEventId: null,
+    selectedEvent: null
+  }
 }
 
 const scheduleSlice = createSlice({
@@ -122,10 +146,55 @@ const scheduleSlice = createSlice({
     setIsHidden: (state, action: PayloadAction<boolean>) => {
       state.isHidden = action.payload
     },
+    // New action to clear events for a specific date
+    clearEventsForDate: (state, action: PayloadAction<string>) => {
+      const targetDate = action.payload
+      state.events = state.events.filter((event) => {
+        const eventDate = moment(event.start).format("YYYY-MM-DD")
+        return eventDate !== targetDate
+      })
+      updateFilteredEvents(state)
+    },
+    // Dialog management actions
+    openCreateDialog: (state) => {
+      state.dialog = {
+        isOpen: true,
+        mode: "create",
+        selectedEventId: null,
+        selectedEvent: null
+      }
+    },
+    openEditDialog: (state, action: PayloadAction<AppointmentEvent>) => {
+      const event = action.payload
+      state.dialog = {
+        isOpen: true,
+        mode: "edit",
+        selectedEventId: event.id,
+        selectedEvent: serializeEvent(event)
+      }
+    },
+    closeDialog: (state) => {
+      state.dialog = {
+        isOpen: false,
+        mode: null,
+        selectedEventId: null,
+        selectedEvent: null
+      }
+    }
   },
 
   extraReducers: (builder) => {
     builder
+      .addCase(applyTemplateToSchedule, (state: ScheduleState, action: PayloadAction<{ templateId: string; date: string }>) => {
+        // Store the last applied template info
+        state.lastAppliedTemplate = {
+          templateId: action.payload.templateId,
+          date: action.payload.date,
+        }
+
+        // The actual implementation will be handled by a thunk action
+        // This is just to track the state change
+      })
       .addMatcher(api.endpoints.getAgencySchedules.matchPending, (state) => {
         state.loading = true
         state.error = null
@@ -175,34 +244,34 @@ const scheduleSlice = createSlice({
 
 // Helper function to update filtered events based on current state
 function updateFilteredEvents(state: ScheduleState) {
-    // If there are no events, set filtered events to empty array
-    if (!state.events || state.events.length === 0) {
-        state.filteredEvents = [];
-        return;
-    }
+  // If there are no events, set filtered events to empty array
+  if (!state.events || state.events.length === 0) {
+    state.filteredEvents = []
+    return
+  }
 
-    // Deserialize events for processing
-    const deserializedEvents = state.events.map(deserializeEvent);
+  // Deserialize events for processing
+  const deserializedEvents = state.events.map(deserializeEvent)
 
-    // No event types anymore, so we'll pass an empty array
-    const eventTypes: any[] = [];
+  // No event types anymore, so we'll pass an empty array
+  const eventTypes: any[] = []
 
-    // Filter events based on current selections
-    const filtered = filterEvents(
-        deserializedEvents,
-        [], // careWorkerMembers
-        [], // officeStaffMembers
-        [], // formattedClients
-        eventTypes,
-        state.sidebarMode,
-    );
+  // Filter events based on current selections
+  const filtered = filterEvents(
+    deserializedEvents,
+    [], 
+    [], 
+    [], 
+    eventTypes,
+    state.sidebarMode,
+  )
 
-    // Serialize filtered events before storing in state
-    state.filteredEvents = filtered.map(serializeEvent);
+  // Serialize filtered events before storing in state
+  state.filteredEvents = filtered.map(serializeEvent)
 
-    // Log for debugging
-    console.log("Updated filtered events:", state.filteredEvents.length);
-    console.log("Sample filtered event:", state.filteredEvents[0]);
+  // Log for debugging
+  console.log("Updated filtered events:", state.filteredEvents.length)
+  console.log("Sample filtered event:", state.filteredEvents[0])
 }
 
 // Helper function to get event color based on type
@@ -235,7 +304,11 @@ export const {
   setIsHidden,
   toggleRightSidebar,
   setActiveScheduleUserType,
+  clearEventsForDate,
+  // Export new dialog actions
+  openCreateDialog,
+  openEditDialog,
+  closeDialog
 } = scheduleSlice.actions
 
 export default scheduleSlice.reducer
-

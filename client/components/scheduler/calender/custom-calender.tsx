@@ -167,11 +167,7 @@ export function CustomCalendar({
 
     const dispatch = useAppDispatch()
 
-    // Log events for debugging
-    useEffect(() => {
-        console.log("Calendar received events:", events.length)
-        console.log("Sample processed event:", events[0])
-    }, [events])
+
 
 
     if (isLoading) {

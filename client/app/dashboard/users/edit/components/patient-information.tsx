@@ -186,8 +186,8 @@ export const PatientInformation = ({ user }: { user: User }) => {
         setIsSaving(true)
         try {
             toast.loading("Updating patient information...")
-            console.log("data", data)
-            // Create updated user object with form data
+
+
             const updatedUser = {
                 ...user,
                 ...data,
@@ -196,15 +196,13 @@ export const PatientInformation = ({ user }: { user: User }) => {
                 visitTypes,
             }
 
-            console.log("updatedUser", updatedUser)
+
 
             // Update Redux state
             dispatch(updateUserAction(updatedUser))
             const result = await updateUser(updatedUser)
-            console.log(result)
 
-            // Here you would normally call your API to update the backend
-            // But as per your request, you'll handle that part yourself
+
 
             toast.success("Patient information has been updated successfully.")
         } catch (error) {
@@ -431,18 +429,18 @@ export const PatientInformation = ({ user }: { user: User }) => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="flex justify-end mb-4">
-                    <Button type="submit" className="flex items-center gap-2" disabled={isSaving}>
-                        <Save className="h-4 w-4" />
-                        {isSaving ? "Saving..." : "Save Changes"}
-                    </Button>
-                </div>
+
 
                 <Card className="p-6">
-                    <CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Patient Information</CardTitle>
+                        <Button type="submit" className="flex items-center gap-2" disabled={isSaving}>
+                            <Save className="h-4 w-4" />
+                            {isSaving ? "Saving..." : "Save Changes"}
+                        </Button>
                     </CardHeader>
                     <CardContent>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <Label className="text-sm text-neutral-500">UserID</Label>

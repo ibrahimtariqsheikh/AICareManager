@@ -19,8 +19,7 @@ export function CareWorkerSelector() {
     const careWorkers = useAppSelector((state) => state.user.careWorkers)
     const dispatch = useAppDispatch()
 
-    console.log("careWorkers", careWorkers)
-    console.log("selectedCareWorker", selectedCareWorker)
+
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

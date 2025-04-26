@@ -31,7 +31,7 @@ export function BookDemoSection() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        console.log("Form submitted:", formState)
+
         toast.success("Demo request submitted! We'll contact you shortly.")
 
         setFormState({

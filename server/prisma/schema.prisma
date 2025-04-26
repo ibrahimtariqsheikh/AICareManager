@@ -40,9 +40,9 @@ model Agency {
   email                        String                      @default("example@agency.com")
   description                  String?
   address                      String?
-  extension                    Int?
-  mobileNumber                 Int?
-  landlineNumber               Int?
+  extension                    String? // Changed from Int to String
+  mobileNumber                 String? // Changed from Int to String
+  landlineNumber               String? // Changed from Int to String
   website                      String?
   logo                         String?
   primaryColor                 String?
@@ -52,14 +52,12 @@ model Agency {
   hasScheduleV2                Boolean                     @default(true)
   hasEMAR                      Boolean                     @default(false)
   hasFinance                   Boolean                     @default(false)
-  //not required
   isWeek1And2ScheduleEnabled   Boolean                     @default(false)
   hasPoliciesAndProcedures     Boolean                     @default(false)
   isTestAccount                Boolean                     @default(false)
   allowCareWorkersEditCheckIn  Boolean                     @default(false)
   allowFamilyReviews           Boolean                     @default(false)
   enableFamilySchedule         Boolean                     @default(false)
-  //not required
   enableWeek1And2Scheduling    Boolean                     @default(false)
   lateVisitThreshold           String                      @default("15")
   enableDistanceAlerts         Boolean                     @default(true)
@@ -75,7 +73,6 @@ model Agency {
   notificationFrequency        NotificationFrequency       @default(DAILY)
   createdAt                    DateTime                    @default(now())
   updatedAt                    DateTime                    @updatedAt
-  //not required
   licenseNumber                String?
   timeZone                     String                      @default("UTC")
   currency                     String                      @default("CAD")
@@ -92,16 +89,16 @@ model Agency {
   invoices                     Invoice[]
   medications                  MedicationDatabaseLink[]
   mileageRecords               MileageRecord[]
-  //not required
   operatingHours               OperatingHours[]
   rateSheets                   RateSheet[]
   reminders                    Reminder[]
-  Report                       Report[]
+  reports                      Report[] // Renamed from Report to reports
   riskCategories               RiskCategory[]
   schedules                    Schedule[]
   users                        User[]
   ownerId                      String?
   owner                        User?                       @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  scheduleTemplates            ScheduleTemplate[]
 }
 
 model Announcement {
@@ -124,7 +121,7 @@ model Announcement {
   userId                 String?
   agency                 Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   createdBy              User                 @relation("AnnouncementCreator", fields: [createdById], references: [id])
-  User                   User?                @relation(fields: [userId], references: [id])
+  user                   User?                @relation(fields: [userId], references: [id]) // Renamed from User to user
   acknowledgedBy         User[]               @relation("AnnouncementAcknowledgements")
 
   @@index([agencyId])
@@ -192,19 +189,20 @@ model Group {
   agencyId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Agency    Agency?  @relation(fields: [agencyId], references: [id])
+  agency    Agency?  @relation(fields: [agencyId], references: [id]) // Renamed from Agency to agency
   clients   User[]   @relation("GroupUsers")
 }
 
 model RateSheet {
-  id         String        @id @default(cuid())
-  name       String
-  hourlyRate Float
-  staffType  RateSheetType
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  agencyId   String?
-  Agency     Agency?       @relation(fields: [agencyId], references: [id])
+  id             String          @id @default(cuid())
+  name           String
+  hourlyRate     Float
+  staffType      RateSheetType
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  agencyId       String?
+  agency         Agency?         @relation(fields: [agencyId], references: [id]) // Renamed from Agency to agency
+  templateVisits TemplateVisit[] // Renamed from TemplateVisit to templateVisits
 }
 
 model CustomTask {
@@ -216,7 +214,7 @@ model CustomTask {
   priority    CustomTaskPriority
   icon        String?
   agencyId    String?
-  Agency      Agency?             @relation(fields: [agencyId], references: [id])
+  agency      Agency?             @relation(fields: [agencyId], references: [id]) // Renamed from Agency to agency
 }
 
 model ClientCareAssignment {
@@ -261,19 +259,19 @@ model User {
   history        String?
 
   createdAnnouncements      Announcement[]             @relation("AnnouncementCreator")
-  Announcement              Announcement[]
-  AuditLog                  AuditLog[]
+  announcements             Announcement[] // Renamed from Announcement to announcements
+  auditLogs                 AuditLog[] // Renamed from AuditLog to auditLogs
   careOutcomes              CareOutcome[]
   clientAssignments         ClientCareAssignment[]     @relation("ClientAssignments")
   careAssignments           ClientCareAssignment[]     @relation("CareWorkerAssignments")
   communicationLogs         CommunicationLog[]
   communicationPreference   CommunicationPreference?
-  Document                  Document[]
-  documents                 Document[]                 @relation("UserDocuments")
+  documents                 Document[] // Renamed from Document to documents
+  userDocuments             Document[]                 @relation("UserDocuments") // Renamed from documents to userDocuments
   familyAccess              FamilyAccess[]
   incidentReports           IncidentReport[]
   sentInvitations           Invitation[]               @relation("SentInvitations")
-  Invoice                   Invoice[]
+  invoices                  Invoice[] // Renamed from Invoice to invoices
   keyContacts               KeyContact[]
   medicationAdministrations MedicationAdministration[] @relation("AdministeredMedications")
   careWorkerMedications     MedicationRecord[]         @relation("CareWorkerMedications")
@@ -282,7 +280,7 @@ model User {
   sentMessages              Message[]                  @relation("MessageSender")
   careWorkerMileage         MileageRecord[]            @relation("CareWorkerMileage")
   clientMileage             MileageRecord[]            @relation("ClientMileage")
-  Notification              Notification[]
+  notifications             Notification[] // Renamed from Notification to notifications
   profile                   Profile?
   reminders                 Reminder[]
   clientReports             Report[]                   @relation("ReportClient")
@@ -298,6 +296,59 @@ model User {
   invitedUsers              User[]                     @relation("UserInvites")
   acknowledgedAnnouncements Announcement[]             @relation("AnnouncementAcknowledgements")
   visitTypes                VisitType[]
+  scheduleTemplates         ScheduleTemplate[]
+}
+
+enum TemplateVisitDay {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum TemplateVisitEndStatus {
+  SAME_DAY
+  NEXT_DAY
+}
+
+model TemplateVisit {
+  id                String                 @id @default(cuid())
+  name              String
+  description       String?
+  day               TemplateVisitDay
+  startTime         String
+  endTime           String
+  endStatus         TemplateVisitEndStatus
+  isAllDayVisit     Boolean                @default(false)
+  rateSheetId       String?
+  rateSheet         RateSheet?             @relation(fields: [rateSheetId], references: [id])
+  clientVisitTypeId String? // Added field for relation
+  clientVisitType   VisitType?             @relation(fields: [clientVisitTypeId], references: [id]) // Added proper relation
+  careWorkerId      String
+  careWorker2Id     String?
+  careWorker3Id     String?
+  templateId        String
+  template          ScheduleTemplate       @relation(fields: [templateId], references: [id], onDelete: Cascade)
+}
+
+model ScheduleTemplate {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  agencyId    String
+  visits      TemplateVisit[]
+  agency      Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([agencyId])
 }
 
 model CommunicationPreference {
@@ -321,14 +372,14 @@ model FamilyAccess {
 }
 
 model MedicationDatabaseLink {
-  id               String             @id @default(cuid())
-  name             String
-  isSpecialist     Boolean            @default(false)
-  url              String
-  source           String
-  agencyId         String
-  agency           Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  MedicationRecord MedicationRecord[]
+  id                String             @id @default(cuid())
+  name              String
+  isSpecialist      Boolean            @default(false)
+  url               String
+  source            String
+  agencyId          String
+  agency            Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  medicationRecords MedicationRecord[] // Renamed from MedicationRecord to medicationRecords
 }
 
 enum TaskType {
@@ -361,14 +412,15 @@ model Task {
 }
 
 model VisitType {
-  id            String   @id @default(cuid())
-  name          String
-  description   String?
-  assignedTasks Task[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  userId        String
-  User          User?    @relation(fields: [userId], references: [id])
+  id             String          @id @default(cuid())
+  name           String
+  description    String?
+  assignedTasks  Task[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userId         String
+  user           User?           @relation(fields: [userId], references: [id])
+  templateVisits TemplateVisit[]
 }
 
 model Schedule {
@@ -656,7 +708,7 @@ model Reminder {
   completed Boolean  @default(false)
   createdAt DateTime @default(now())
   agencyId  String?
-  Agency    Agency?  @relation(fields: [agencyId], references: [id])
+  agency    Agency?  @relation(fields: [agencyId], references: [id]) // Renamed from Agency to agency
   client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 

@@ -69,6 +69,16 @@ export type ClientCareAssignment = $Result.DefaultSelection<Prisma.$ClientCareAs
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model TemplateVisit
+ * 
+ */
+export type TemplateVisit = $Result.DefaultSelection<Prisma.$TemplateVisitPayload>
+/**
+ * Model ScheduleTemplate
+ * 
+ */
+export type ScheduleTemplate = $Result.DefaultSelection<Prisma.$ScheduleTemplatePayload>
+/**
  * Model CommunicationPreference
  * 
  */
@@ -220,6 +230,27 @@ export const PreferredNotificationMethod: {
 };
 
 export type PreferredNotificationMethod = (typeof PreferredNotificationMethod)[keyof typeof PreferredNotificationMethod]
+
+
+export const TemplateVisitDay: {
+  MONDAY: 'MONDAY',
+  TUESDAY: 'TUESDAY',
+  WEDNESDAY: 'WEDNESDAY',
+  THURSDAY: 'THURSDAY',
+  FRIDAY: 'FRIDAY',
+  SATURDAY: 'SATURDAY',
+  SUNDAY: 'SUNDAY'
+};
+
+export type TemplateVisitDay = (typeof TemplateVisitDay)[keyof typeof TemplateVisitDay]
+
+
+export const TemplateVisitEndStatus: {
+  SAME_DAY: 'SAME_DAY',
+  NEXT_DAY: 'NEXT_DAY'
+};
+
+export type TemplateVisitEndStatus = (typeof TemplateVisitEndStatus)[keyof typeof TemplateVisitEndStatus]
 
 
 export const TaskType: {
@@ -499,6 +530,14 @@ export const NotificationFrequency: typeof $Enums.NotificationFrequency
 export type PreferredNotificationMethod = $Enums.PreferredNotificationMethod
 
 export const PreferredNotificationMethod: typeof $Enums.PreferredNotificationMethod
+
+export type TemplateVisitDay = $Enums.TemplateVisitDay
+
+export const TemplateVisitDay: typeof $Enums.TemplateVisitDay
+
+export type TemplateVisitEndStatus = $Enums.TemplateVisitEndStatus
+
+export const TemplateVisitEndStatus: typeof $Enums.TemplateVisitEndStatus
 
 export type TaskType = $Enums.TaskType
 
@@ -822,6 +861,26 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.templateVisit`: Exposes CRUD operations for the **TemplateVisit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TemplateVisits
+    * const templateVisits = await prisma.templateVisit.findMany()
+    * ```
+    */
+  get templateVisit(): Prisma.TemplateVisitDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.scheduleTemplate`: Exposes CRUD operations for the **ScheduleTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ScheduleTemplates
+    * const scheduleTemplates = await prisma.scheduleTemplate.findMany()
+    * ```
+    */
+  get scheduleTemplate(): Prisma.ScheduleTemplateDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.communicationPreference`: Exposes CRUD operations for the **CommunicationPreference** model.
@@ -1533,6 +1592,8 @@ export namespace Prisma {
     CustomTask: 'CustomTask',
     ClientCareAssignment: 'ClientCareAssignment',
     User: 'User',
+    TemplateVisit: 'TemplateVisit',
+    ScheduleTemplate: 'ScheduleTemplate',
     CommunicationPreference: 'CommunicationPreference',
     FamilyAccess: 'FamilyAccess',
     MedicationDatabaseLink: 'MedicationDatabaseLink',
@@ -1577,7 +1638,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "invitation" | "agency" | "announcement" | "auditLog" | "certification" | "operatingHours" | "group" | "rateSheet" | "customTask" | "clientCareAssignment" | "user" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "task" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
+      modelProps: "invitation" | "agency" | "announcement" | "auditLog" | "certification" | "operatingHours" | "group" | "rateSheet" | "customTask" | "clientCareAssignment" | "user" | "templateVisit" | "scheduleTemplate" | "communicationPreference" | "familyAccess" | "medicationDatabaseLink" | "task" | "visitType" | "schedule" | "report" | "reportTask" | "reportAlert" | "bodyMapObservation" | "reportEdit" | "medicationRecord" | "medicationAdministration" | "invoice" | "mileageRecord" | "document" | "profile" | "incidentReport" | "message" | "keyContact" | "careOutcome" | "communicationLog" | "riskCategory" | "riskAssessment" | "reminder" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2392,6 +2453,154 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      TemplateVisit: {
+        payload: Prisma.$TemplateVisitPayload<ExtArgs>
+        fields: Prisma.TemplateVisitFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TemplateVisitFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TemplateVisitFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>
+          }
+          findFirst: {
+            args: Prisma.TemplateVisitFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TemplateVisitFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>
+          }
+          findMany: {
+            args: Prisma.TemplateVisitFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>[]
+          }
+          create: {
+            args: Prisma.TemplateVisitCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>
+          }
+          createMany: {
+            args: Prisma.TemplateVisitCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TemplateVisitCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>[]
+          }
+          delete: {
+            args: Prisma.TemplateVisitDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>
+          }
+          update: {
+            args: Prisma.TemplateVisitUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>
+          }
+          deleteMany: {
+            args: Prisma.TemplateVisitDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TemplateVisitUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TemplateVisitUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>[]
+          }
+          upsert: {
+            args: Prisma.TemplateVisitUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TemplateVisitPayload>
+          }
+          aggregate: {
+            args: Prisma.TemplateVisitAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTemplateVisit>
+          }
+          groupBy: {
+            args: Prisma.TemplateVisitGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TemplateVisitGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TemplateVisitCountArgs<ExtArgs>
+            result: $Utils.Optional<TemplateVisitCountAggregateOutputType> | number
+          }
+        }
+      }
+      ScheduleTemplate: {
+        payload: Prisma.$ScheduleTemplatePayload<ExtArgs>
+        fields: Prisma.ScheduleTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ScheduleTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ScheduleTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.ScheduleTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ScheduleTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.ScheduleTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.ScheduleTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.ScheduleTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ScheduleTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.ScheduleTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          update: {
+            args: Prisma.ScheduleTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.ScheduleTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ScheduleTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ScheduleTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.ScheduleTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.ScheduleTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateScheduleTemplate>
+          }
+          groupBy: {
+            args: Prisma.ScheduleTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ScheduleTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ScheduleTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<ScheduleTemplateCountAggregateOutputType> | number
           }
         }
       }
@@ -4414,6 +4623,8 @@ export namespace Prisma {
     customTask?: CustomTaskOmit
     clientCareAssignment?: ClientCareAssignmentOmit
     user?: UserOmit
+    templateVisit?: TemplateVisitOmit
+    scheduleTemplate?: ScheduleTemplateOmit
     communicationPreference?: CommunicationPreferenceOmit
     familyAccess?: FamilyAccessOmit
     medicationDatabaseLink?: MedicationDatabaseLinkOmit
@@ -4547,10 +4758,11 @@ export namespace Prisma {
     operatingHours: number
     rateSheets: number
     reminders: number
-    Report: number
+    reports: number
     riskCategories: number
     schedules: number
     users: number
+    scheduleTemplates: number
   }
 
   export type AgencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4567,10 +4779,11 @@ export namespace Prisma {
     operatingHours?: boolean | AgencyCountOutputTypeCountOperatingHoursArgs
     rateSheets?: boolean | AgencyCountOutputTypeCountRateSheetsArgs
     reminders?: boolean | AgencyCountOutputTypeCountRemindersArgs
-    Report?: boolean | AgencyCountOutputTypeCountReportArgs
+    reports?: boolean | AgencyCountOutputTypeCountReportsArgs
     riskCategories?: boolean | AgencyCountOutputTypeCountRiskCategoriesArgs
     schedules?: boolean | AgencyCountOutputTypeCountSchedulesArgs
     users?: boolean | AgencyCountOutputTypeCountUsersArgs
+    scheduleTemplates?: boolean | AgencyCountOutputTypeCountScheduleTemplatesArgs
   }
 
   // Custom InputTypes
@@ -4678,7 +4891,7 @@ export namespace Prisma {
   /**
    * AgencyCountOutputType without action
    */
-  export type AgencyCountOutputTypeCountReportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AgencyCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReportWhereInput
   }
 
@@ -4701,6 +4914,13 @@ export namespace Prisma {
    */
   export type AgencyCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * AgencyCountOutputType without action
+   */
+  export type AgencyCountOutputTypeCountScheduleTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduleTemplateWhereInput
   }
 
 
@@ -4767,23 +4987,54 @@ export namespace Prisma {
 
 
   /**
+   * Count Type RateSheetCountOutputType
+   */
+
+  export type RateSheetCountOutputType = {
+    templateVisits: number
+  }
+
+  export type RateSheetCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    templateVisits?: boolean | RateSheetCountOutputTypeCountTemplateVisitsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RateSheetCountOutputType without action
+   */
+  export type RateSheetCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheetCountOutputType
+     */
+    select?: RateSheetCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RateSheetCountOutputType without action
+   */
+  export type RateSheetCountOutputTypeCountTemplateVisitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemplateVisitWhereInput
+  }
+
+
+  /**
    * Count Type UserCountOutputType
    */
 
   export type UserCountOutputType = {
     createdAnnouncements: number
-    Announcement: number
-    AuditLog: number
+    announcements: number
+    auditLogs: number
     careOutcomes: number
     clientAssignments: number
     careAssignments: number
     communicationLogs: number
-    Document: number
     documents: number
+    userDocuments: number
     familyAccess: number
     incidentReports: number
     sentInvitations: number
-    Invoice: number
+    invoices: number
     keyContacts: number
     medicationAdministrations: number
     careWorkerMedications: number
@@ -4792,7 +5043,7 @@ export namespace Prisma {
     sentMessages: number
     careWorkerMileage: number
     clientMileage: number
-    Notification: number
+    notifications: number
     reminders: number
     clientReports: number
     careReports: number
@@ -4805,22 +5056,23 @@ export namespace Prisma {
     invitedUsers: number
     acknowledgedAnnouncements: number
     visitTypes: number
+    scheduleTemplates: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdAnnouncements?: boolean | UserCountOutputTypeCountCreatedAnnouncementsArgs
-    Announcement?: boolean | UserCountOutputTypeCountAnnouncementArgs
-    AuditLog?: boolean | UserCountOutputTypeCountAuditLogArgs
+    announcements?: boolean | UserCountOutputTypeCountAnnouncementsArgs
+    auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
     careOutcomes?: boolean | UserCountOutputTypeCountCareOutcomesArgs
     clientAssignments?: boolean | UserCountOutputTypeCountClientAssignmentsArgs
     careAssignments?: boolean | UserCountOutputTypeCountCareAssignmentsArgs
     communicationLogs?: boolean | UserCountOutputTypeCountCommunicationLogsArgs
-    Document?: boolean | UserCountOutputTypeCountDocumentArgs
     documents?: boolean | UserCountOutputTypeCountDocumentsArgs
+    userDocuments?: boolean | UserCountOutputTypeCountUserDocumentsArgs
     familyAccess?: boolean | UserCountOutputTypeCountFamilyAccessArgs
     incidentReports?: boolean | UserCountOutputTypeCountIncidentReportsArgs
     sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
-    Invoice?: boolean | UserCountOutputTypeCountInvoiceArgs
+    invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
     keyContacts?: boolean | UserCountOutputTypeCountKeyContactsArgs
     medicationAdministrations?: boolean | UserCountOutputTypeCountMedicationAdministrationsArgs
     careWorkerMedications?: boolean | UserCountOutputTypeCountCareWorkerMedicationsArgs
@@ -4829,7 +5081,7 @@ export namespace Prisma {
     sentMessages?: boolean | UserCountOutputTypeCountSentMessagesArgs
     careWorkerMileage?: boolean | UserCountOutputTypeCountCareWorkerMileageArgs
     clientMileage?: boolean | UserCountOutputTypeCountClientMileageArgs
-    Notification?: boolean | UserCountOutputTypeCountNotificationArgs
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     reminders?: boolean | UserCountOutputTypeCountRemindersArgs
     clientReports?: boolean | UserCountOutputTypeCountClientReportsArgs
     careReports?: boolean | UserCountOutputTypeCountCareReportsArgs
@@ -4842,6 +5094,7 @@ export namespace Prisma {
     invitedUsers?: boolean | UserCountOutputTypeCountInvitedUsersArgs
     acknowledgedAnnouncements?: boolean | UserCountOutputTypeCountAcknowledgedAnnouncementsArgs
     visitTypes?: boolean | UserCountOutputTypeCountVisitTypesArgs
+    scheduleTemplates?: boolean | UserCountOutputTypeCountScheduleTemplatesArgs
   }
 
   // Custom InputTypes
@@ -4865,14 +5118,14 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountAnnouncementArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountAnnouncementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AnnouncementWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountAuditLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AuditLogWhereInput
   }
 
@@ -4907,14 +5160,14 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountDocumentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountUserDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentWhereInput
   }
 
@@ -4942,7 +5195,7 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountInvoiceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvoiceWhereInput
   }
 
@@ -5005,7 +5258,7 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountNotificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationWhereInput
   }
 
@@ -5093,17 +5346,55 @@ export namespace Prisma {
     where?: VisitTypeWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountScheduleTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduleTemplateWhereInput
+  }
+
+
+  /**
+   * Count Type ScheduleTemplateCountOutputType
+   */
+
+  export type ScheduleTemplateCountOutputType = {
+    visits: number
+  }
+
+  export type ScheduleTemplateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    visits?: boolean | ScheduleTemplateCountOutputTypeCountVisitsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ScheduleTemplateCountOutputType without action
+   */
+  export type ScheduleTemplateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplateCountOutputType
+     */
+    select?: ScheduleTemplateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleTemplateCountOutputType without action
+   */
+  export type ScheduleTemplateCountOutputTypeCountVisitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemplateVisitWhereInput
+  }
+
 
   /**
    * Count Type MedicationDatabaseLinkCountOutputType
    */
 
   export type MedicationDatabaseLinkCountOutputType = {
-    MedicationRecord: number
+    medicationRecords: number
   }
 
   export type MedicationDatabaseLinkCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    MedicationRecord?: boolean | MedicationDatabaseLinkCountOutputTypeCountMedicationRecordArgs
+    medicationRecords?: boolean | MedicationDatabaseLinkCountOutputTypeCountMedicationRecordsArgs
   }
 
   // Custom InputTypes
@@ -5120,7 +5411,7 @@ export namespace Prisma {
   /**
    * MedicationDatabaseLinkCountOutputType without action
    */
-  export type MedicationDatabaseLinkCountOutputTypeCountMedicationRecordArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MedicationDatabaseLinkCountOutputTypeCountMedicationRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MedicationRecordWhereInput
   }
 
@@ -5131,10 +5422,12 @@ export namespace Prisma {
 
   export type VisitTypeCountOutputType = {
     assignedTasks: number
+    templateVisits: number
   }
 
   export type VisitTypeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedTasks?: boolean | VisitTypeCountOutputTypeCountAssignedTasksArgs
+    templateVisits?: boolean | VisitTypeCountOutputTypeCountTemplateVisitsArgs
   }
 
   // Custom InputTypes
@@ -5153,6 +5446,13 @@ export namespace Prisma {
    */
   export type VisitTypeCountOutputTypeCountAssignedTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskWhereInput
+  }
+
+  /**
+   * VisitTypeCountOutputType without action
+   */
+  export type VisitTypeCountOutputTypeCountTemplateVisitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemplateVisitWhereInput
   }
 
 
@@ -6412,18 +6712,12 @@ export namespace Prisma {
   }
 
   export type AgencyAvgAggregateOutputType = {
-    extension: number | null
-    mobileNumber: number | null
-    landlineNumber: number | null
     maxUsers: number | null
     maxClients: number | null
     maxCareWorkers: number | null
   }
 
   export type AgencySumAggregateOutputType = {
-    extension: number | null
-    mobileNumber: number | null
-    landlineNumber: number | null
     maxUsers: number | null
     maxClients: number | null
     maxCareWorkers: number | null
@@ -6435,9 +6729,9 @@ export namespace Prisma {
     email: string | null
     description: string | null
     address: string | null
-    extension: number | null
-    mobileNumber: number | null
-    landlineNumber: number | null
+    extension: string | null
+    mobileNumber: string | null
+    landlineNumber: string | null
     website: string | null
     logo: string | null
     primaryColor: string | null
@@ -6483,9 +6777,9 @@ export namespace Prisma {
     email: string | null
     description: string | null
     address: string | null
-    extension: number | null
-    mobileNumber: number | null
-    landlineNumber: number | null
+    extension: string | null
+    mobileNumber: string | null
+    landlineNumber: string | null
     website: string | null
     logo: string | null
     primaryColor: string | null
@@ -6576,18 +6870,12 @@ export namespace Prisma {
 
 
   export type AgencyAvgAggregateInputType = {
-    extension?: true
-    mobileNumber?: true
-    landlineNumber?: true
     maxUsers?: true
     maxClients?: true
     maxCareWorkers?: true
   }
 
   export type AgencySumAggregateInputType = {
-    extension?: true
-    mobileNumber?: true
-    landlineNumber?: true
     maxUsers?: true
     maxClients?: true
     maxCareWorkers?: true
@@ -6830,9 +7118,9 @@ export namespace Prisma {
     email: string
     description: string | null
     address: string | null
-    extension: number | null
-    mobileNumber: number | null
-    landlineNumber: number | null
+    extension: string | null
+    mobileNumber: string | null
+    landlineNumber: string | null
     website: string | null
     logo: string | null
     primaryColor: string | null
@@ -6950,11 +7238,12 @@ export namespace Prisma {
     operatingHours?: boolean | Agency$operatingHoursArgs<ExtArgs>
     rateSheets?: boolean | Agency$rateSheetsArgs<ExtArgs>
     reminders?: boolean | Agency$remindersArgs<ExtArgs>
-    Report?: boolean | Agency$ReportArgs<ExtArgs>
+    reports?: boolean | Agency$reportsArgs<ExtArgs>
     riskCategories?: boolean | Agency$riskCategoriesArgs<ExtArgs>
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
     users?: boolean | Agency$usersArgs<ExtArgs>
     owner?: boolean | Agency$ownerArgs<ExtArgs>
+    scheduleTemplates?: boolean | Agency$scheduleTemplatesArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["agency"]>
 
@@ -7119,11 +7408,12 @@ export namespace Prisma {
     operatingHours?: boolean | Agency$operatingHoursArgs<ExtArgs>
     rateSheets?: boolean | Agency$rateSheetsArgs<ExtArgs>
     reminders?: boolean | Agency$remindersArgs<ExtArgs>
-    Report?: boolean | Agency$ReportArgs<ExtArgs>
+    reports?: boolean | Agency$reportsArgs<ExtArgs>
     riskCategories?: boolean | Agency$riskCategoriesArgs<ExtArgs>
     schedules?: boolean | Agency$schedulesArgs<ExtArgs>
     users?: boolean | Agency$usersArgs<ExtArgs>
     owner?: boolean | Agency$ownerArgs<ExtArgs>
+    scheduleTemplates?: boolean | Agency$scheduleTemplatesArgs<ExtArgs>
     _count?: boolean | AgencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AgencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7149,11 +7439,12 @@ export namespace Prisma {
       operatingHours: Prisma.$OperatingHoursPayload<ExtArgs>[]
       rateSheets: Prisma.$RateSheetPayload<ExtArgs>[]
       reminders: Prisma.$ReminderPayload<ExtArgs>[]
-      Report: Prisma.$ReportPayload<ExtArgs>[]
+      reports: Prisma.$ReportPayload<ExtArgs>[]
       riskCategories: Prisma.$RiskCategoryPayload<ExtArgs>[]
       schedules: Prisma.$SchedulePayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
       owner: Prisma.$UserPayload<ExtArgs> | null
+      scheduleTemplates: Prisma.$ScheduleTemplatePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7161,9 +7452,9 @@ export namespace Prisma {
       email: string
       description: string | null
       address: string | null
-      extension: number | null
-      mobileNumber: number | null
-      landlineNumber: number | null
+      extension: string | null
+      mobileNumber: string | null
+      landlineNumber: string | null
       website: string | null
       logo: string | null
       primaryColor: string | null
@@ -7608,11 +7899,12 @@ export namespace Prisma {
     operatingHours<T extends Agency$operatingHoursArgs<ExtArgs> = {}>(args?: Subset<T, Agency$operatingHoursArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OperatingHoursPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rateSheets<T extends Agency$rateSheetsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$rateSheetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reminders<T extends Agency$remindersArgs<ExtArgs> = {}>(args?: Subset<T, Agency$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Report<T extends Agency$ReportArgs<ExtArgs> = {}>(args?: Subset<T, Agency$ReportArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reports<T extends Agency$reportsArgs<ExtArgs> = {}>(args?: Subset<T, Agency$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     riskCategories<T extends Agency$riskCategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$riskCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     schedules<T extends Agency$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Agency$usersArgs<ExtArgs> = {}>(args?: Subset<T, Agency$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     owner<T extends Agency$ownerArgs<ExtArgs> = {}>(args?: Subset<T, Agency$ownerArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    scheduleTemplates<T extends Agency$scheduleTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, Agency$scheduleTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7647,9 +7939,9 @@ export namespace Prisma {
     readonly email: FieldRef<"Agency", 'String'>
     readonly description: FieldRef<"Agency", 'String'>
     readonly address: FieldRef<"Agency", 'String'>
-    readonly extension: FieldRef<"Agency", 'Int'>
-    readonly mobileNumber: FieldRef<"Agency", 'Int'>
-    readonly landlineNumber: FieldRef<"Agency", 'Int'>
+    readonly extension: FieldRef<"Agency", 'String'>
+    readonly mobileNumber: FieldRef<"Agency", 'String'>
+    readonly landlineNumber: FieldRef<"Agency", 'String'>
     readonly website: FieldRef<"Agency", 'String'>
     readonly logo: FieldRef<"Agency", 'String'>
     readonly primaryColor: FieldRef<"Agency", 'String'>
@@ -8395,9 +8687,9 @@ export namespace Prisma {
   }
 
   /**
-   * Agency.Report
+   * Agency.reports
    */
-  export type Agency$ReportArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Agency$reportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Report
      */
@@ -8507,6 +8799,30 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
+  }
+
+  /**
+   * Agency.scheduleTemplates
+   */
+  export type Agency$scheduleTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    where?: ScheduleTemplateWhereInput
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    cursor?: ScheduleTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
   }
 
   /**
@@ -8786,7 +9102,7 @@ export namespace Prisma {
     userId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    User?: boolean | Announcement$UserArgs<ExtArgs>
+    user?: boolean | Announcement$userArgs<ExtArgs>
     acknowledgedBy?: boolean | Announcement$acknowledgedByArgs<ExtArgs>
     _count?: boolean | AnnouncementCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["announcement"]>
@@ -8811,7 +9127,7 @@ export namespace Prisma {
     userId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    User?: boolean | Announcement$UserArgs<ExtArgs>
+    user?: boolean | Announcement$userArgs<ExtArgs>
   }, ExtArgs["result"]["announcement"]>
 
   export type AnnouncementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8834,7 +9150,7 @@ export namespace Prisma {
     userId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    User?: boolean | Announcement$UserArgs<ExtArgs>
+    user?: boolean | Announcement$userArgs<ExtArgs>
   }, ExtArgs["result"]["announcement"]>
 
   export type AnnouncementSelectScalar = {
@@ -8861,19 +9177,19 @@ export namespace Prisma {
   export type AnnouncementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    User?: boolean | Announcement$UserArgs<ExtArgs>
+    user?: boolean | Announcement$userArgs<ExtArgs>
     acknowledgedBy?: boolean | Announcement$acknowledgedByArgs<ExtArgs>
     _count?: boolean | AnnouncementCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AnnouncementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    User?: boolean | Announcement$UserArgs<ExtArgs>
+    user?: boolean | Announcement$userArgs<ExtArgs>
   }
   export type AnnouncementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
-    User?: boolean | Announcement$UserArgs<ExtArgs>
+    user?: boolean | Announcement$userArgs<ExtArgs>
   }
 
   export type $AnnouncementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8881,7 +9197,7 @@ export namespace Prisma {
     objects: {
       agency: Prisma.$AgencyPayload<ExtArgs>
       createdBy: Prisma.$UserPayload<ExtArgs>
-      User: Prisma.$UserPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
       acknowledgedBy: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -9298,7 +9614,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    User<T extends Announcement$UserArgs<ExtArgs> = {}>(args?: Subset<T, Announcement$UserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends Announcement$userArgs<ExtArgs> = {}>(args?: Subset<T, Announcement$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     acknowledgedBy<T extends Announcement$acknowledgedByArgs<ExtArgs> = {}>(args?: Subset<T, Announcement$acknowledgedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -9742,9 +10058,9 @@ export namespace Prisma {
   }
 
   /**
-   * Announcement.User
+   * Announcement.user
    */
-  export type Announcement$UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Announcement$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the User
      */
@@ -13372,7 +13688,7 @@ export namespace Prisma {
     agencyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    agency?: boolean | Group$agencyArgs<ExtArgs>
     clients?: boolean | Group$clientsArgs<ExtArgs>
     _count?: boolean | GroupCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["group"]>
@@ -13383,7 +13699,7 @@ export namespace Prisma {
     agencyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    agency?: boolean | Group$agencyArgs<ExtArgs>
   }, ExtArgs["result"]["group"]>
 
   export type GroupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -13392,7 +13708,7 @@ export namespace Prisma {
     agencyId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    agency?: boolean | Group$agencyArgs<ExtArgs>
   }, ExtArgs["result"]["group"]>
 
   export type GroupSelectScalar = {
@@ -13405,21 +13721,21 @@ export namespace Prisma {
 
   export type GroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["group"]>
   export type GroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    agency?: boolean | Group$agencyArgs<ExtArgs>
     clients?: boolean | Group$clientsArgs<ExtArgs>
     _count?: boolean | GroupCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GroupIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    agency?: boolean | Group$agencyArgs<ExtArgs>
   }
   export type GroupIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | Group$AgencyArgs<ExtArgs>
+    agency?: boolean | Group$agencyArgs<ExtArgs>
   }
 
   export type $GroupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Group"
     objects: {
-      Agency: Prisma.$AgencyPayload<ExtArgs> | null
+      agency: Prisma.$AgencyPayload<ExtArgs> | null
       clients: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -13822,7 +14138,7 @@ export namespace Prisma {
    */
   export interface Prisma__GroupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    Agency<T extends Group$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, Group$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    agency<T extends Group$agencyArgs<ExtArgs> = {}>(args?: Subset<T, Group$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     clients<T extends Group$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Group$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -14254,9 +14570,9 @@ export namespace Prisma {
   }
 
   /**
-   * Group.Agency
+   * Group.agency
    */
-  export type Group$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Group$agencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Agency
      */
@@ -14529,7 +14845,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     agencyId?: boolean
-    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+    agency?: boolean | RateSheet$agencyArgs<ExtArgs>
+    templateVisits?: boolean | RateSheet$templateVisitsArgs<ExtArgs>
+    _count?: boolean | RateSheetCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["rateSheet"]>
 
   export type RateSheetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14540,7 +14858,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     agencyId?: boolean
-    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+    agency?: boolean | RateSheet$agencyArgs<ExtArgs>
   }, ExtArgs["result"]["rateSheet"]>
 
   export type RateSheetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14551,7 +14869,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     agencyId?: boolean
-    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+    agency?: boolean | RateSheet$agencyArgs<ExtArgs>
   }, ExtArgs["result"]["rateSheet"]>
 
   export type RateSheetSelectScalar = {
@@ -14566,19 +14884,22 @@ export namespace Prisma {
 
   export type RateSheetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "hourlyRate" | "staffType" | "createdAt" | "updatedAt" | "agencyId", ExtArgs["result"]["rateSheet"]>
   export type RateSheetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+    agency?: boolean | RateSheet$agencyArgs<ExtArgs>
+    templateVisits?: boolean | RateSheet$templateVisitsArgs<ExtArgs>
+    _count?: boolean | RateSheetCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RateSheetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+    agency?: boolean | RateSheet$agencyArgs<ExtArgs>
   }
   export type RateSheetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | RateSheet$AgencyArgs<ExtArgs>
+    agency?: boolean | RateSheet$agencyArgs<ExtArgs>
   }
 
   export type $RateSheetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RateSheet"
     objects: {
-      Agency: Prisma.$AgencyPayload<ExtArgs> | null
+      agency: Prisma.$AgencyPayload<ExtArgs> | null
+      templateVisits: Prisma.$TemplateVisitPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14982,7 +15303,8 @@ export namespace Prisma {
    */
   export interface Prisma__RateSheetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    Agency<T extends RateSheet$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, RateSheet$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    agency<T extends RateSheet$agencyArgs<ExtArgs> = {}>(args?: Subset<T, RateSheet$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    templateVisits<T extends RateSheet$templateVisitsArgs<ExtArgs> = {}>(args?: Subset<T, RateSheet$templateVisitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15415,9 +15737,9 @@ export namespace Prisma {
   }
 
   /**
-   * RateSheet.Agency
+   * RateSheet.agency
    */
-  export type RateSheet$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RateSheet$agencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Agency
      */
@@ -15431,6 +15753,30 @@ export namespace Prisma {
      */
     include?: AgencyInclude<ExtArgs> | null
     where?: AgencyWhereInput
+  }
+
+  /**
+   * RateSheet.templateVisits
+   */
+  export type RateSheet$templateVisitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    where?: TemplateVisitWhereInput
+    orderBy?: TemplateVisitOrderByWithRelationInput | TemplateVisitOrderByWithRelationInput[]
+    cursor?: TemplateVisitWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TemplateVisitScalarFieldEnum | TemplateVisitScalarFieldEnum[]
   }
 
   /**
@@ -15640,7 +15986,7 @@ export namespace Prisma {
     priority?: boolean
     icon?: boolean
     agencyId?: boolean
-    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+    agency?: boolean | CustomTask$agencyArgs<ExtArgs>
   }, ExtArgs["result"]["customTask"]>
 
   export type CustomTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -15652,7 +15998,7 @@ export namespace Prisma {
     priority?: boolean
     icon?: boolean
     agencyId?: boolean
-    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+    agency?: boolean | CustomTask$agencyArgs<ExtArgs>
   }, ExtArgs["result"]["customTask"]>
 
   export type CustomTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -15664,7 +16010,7 @@ export namespace Prisma {
     priority?: boolean
     icon?: boolean
     agencyId?: boolean
-    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+    agency?: boolean | CustomTask$agencyArgs<ExtArgs>
   }, ExtArgs["result"]["customTask"]>
 
   export type CustomTaskSelectScalar = {
@@ -15680,19 +16026,19 @@ export namespace Prisma {
 
   export type CustomTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "placeholder" | "category" | "frequency" | "priority" | "icon" | "agencyId", ExtArgs["result"]["customTask"]>
   export type CustomTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+    agency?: boolean | CustomTask$agencyArgs<ExtArgs>
   }
   export type CustomTaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+    agency?: boolean | CustomTask$agencyArgs<ExtArgs>
   }
   export type CustomTaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | CustomTask$AgencyArgs<ExtArgs>
+    agency?: boolean | CustomTask$agencyArgs<ExtArgs>
   }
 
   export type $CustomTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "CustomTask"
     objects: {
-      Agency: Prisma.$AgencyPayload<ExtArgs> | null
+      agency: Prisma.$AgencyPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -16097,7 +16443,7 @@ export namespace Prisma {
    */
   export interface Prisma__CustomTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    Agency<T extends CustomTask$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, CustomTask$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    agency<T extends CustomTask$agencyArgs<ExtArgs> = {}>(args?: Subset<T, CustomTask$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16531,9 +16877,9 @@ export namespace Prisma {
   }
 
   /**
-   * CustomTask.Agency
+   * CustomTask.agency
    */
-  export type CustomTask$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CustomTask$agencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Agency
      */
@@ -17967,19 +18313,19 @@ export namespace Prisma {
     interests?: boolean
     history?: boolean
     createdAnnouncements?: boolean | User$createdAnnouncementsArgs<ExtArgs>
-    Announcement?: boolean | User$AnnouncementArgs<ExtArgs>
-    AuditLog?: boolean | User$AuditLogArgs<ExtArgs>
+    announcements?: boolean | User$announcementsArgs<ExtArgs>
+    auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     careOutcomes?: boolean | User$careOutcomesArgs<ExtArgs>
     clientAssignments?: boolean | User$clientAssignmentsArgs<ExtArgs>
     careAssignments?: boolean | User$careAssignmentsArgs<ExtArgs>
     communicationLogs?: boolean | User$communicationLogsArgs<ExtArgs>
     communicationPreference?: boolean | User$communicationPreferenceArgs<ExtArgs>
-    Document?: boolean | User$DocumentArgs<ExtArgs>
     documents?: boolean | User$documentsArgs<ExtArgs>
+    userDocuments?: boolean | User$userDocumentsArgs<ExtArgs>
     familyAccess?: boolean | User$familyAccessArgs<ExtArgs>
     incidentReports?: boolean | User$incidentReportsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
-    Invoice?: boolean | User$InvoiceArgs<ExtArgs>
+    invoices?: boolean | User$invoicesArgs<ExtArgs>
     keyContacts?: boolean | User$keyContactsArgs<ExtArgs>
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
     careWorkerMedications?: boolean | User$careWorkerMedicationsArgs<ExtArgs>
@@ -17988,7 +18334,7 @@ export namespace Prisma {
     sentMessages?: boolean | User$sentMessagesArgs<ExtArgs>
     careWorkerMileage?: boolean | User$careWorkerMileageArgs<ExtArgs>
     clientMileage?: boolean | User$clientMileageArgs<ExtArgs>
-    Notification?: boolean | User$NotificationArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     profile?: boolean | User$profileArgs<ExtArgs>
     reminders?: boolean | User$remindersArgs<ExtArgs>
     clientReports?: boolean | User$clientReportsArgs<ExtArgs>
@@ -18004,6 +18350,7 @@ export namespace Prisma {
     invitedUsers?: boolean | User$invitedUsersArgs<ExtArgs>
     acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
     visitTypes?: boolean | User$visitTypesArgs<ExtArgs>
+    scheduleTemplates?: boolean | User$scheduleTemplatesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -18101,19 +18448,19 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cognitoId" | "email" | "fullName" | "preferredName" | "role" | "subRole" | "createdAt" | "updatedAt" | "agencyId" | "invitedById" | "address" | "city" | "province" | "postalCode" | "propertyAccess" | "phoneNumber" | "nhsNumber" | "dnraOrder" | "mobility" | "likesDislikes" | "dateOfBirth" | "languages" | "allergies" | "interests" | "history", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdAnnouncements?: boolean | User$createdAnnouncementsArgs<ExtArgs>
-    Announcement?: boolean | User$AnnouncementArgs<ExtArgs>
-    AuditLog?: boolean | User$AuditLogArgs<ExtArgs>
+    announcements?: boolean | User$announcementsArgs<ExtArgs>
+    auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     careOutcomes?: boolean | User$careOutcomesArgs<ExtArgs>
     clientAssignments?: boolean | User$clientAssignmentsArgs<ExtArgs>
     careAssignments?: boolean | User$careAssignmentsArgs<ExtArgs>
     communicationLogs?: boolean | User$communicationLogsArgs<ExtArgs>
     communicationPreference?: boolean | User$communicationPreferenceArgs<ExtArgs>
-    Document?: boolean | User$DocumentArgs<ExtArgs>
     documents?: boolean | User$documentsArgs<ExtArgs>
+    userDocuments?: boolean | User$userDocumentsArgs<ExtArgs>
     familyAccess?: boolean | User$familyAccessArgs<ExtArgs>
     incidentReports?: boolean | User$incidentReportsArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
-    Invoice?: boolean | User$InvoiceArgs<ExtArgs>
+    invoices?: boolean | User$invoicesArgs<ExtArgs>
     keyContacts?: boolean | User$keyContactsArgs<ExtArgs>
     medicationAdministrations?: boolean | User$medicationAdministrationsArgs<ExtArgs>
     careWorkerMedications?: boolean | User$careWorkerMedicationsArgs<ExtArgs>
@@ -18122,7 +18469,7 @@ export namespace Prisma {
     sentMessages?: boolean | User$sentMessagesArgs<ExtArgs>
     careWorkerMileage?: boolean | User$careWorkerMileageArgs<ExtArgs>
     clientMileage?: boolean | User$clientMileageArgs<ExtArgs>
-    Notification?: boolean | User$NotificationArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     profile?: boolean | User$profileArgs<ExtArgs>
     reminders?: boolean | User$remindersArgs<ExtArgs>
     clientReports?: boolean | User$clientReportsArgs<ExtArgs>
@@ -18138,6 +18485,7 @@ export namespace Prisma {
     invitedUsers?: boolean | User$invitedUsersArgs<ExtArgs>
     acknowledgedAnnouncements?: boolean | User$acknowledgedAnnouncementsArgs<ExtArgs>
     visitTypes?: boolean | User$visitTypesArgs<ExtArgs>
+    scheduleTemplates?: boolean | User$scheduleTemplatesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18153,19 +18501,19 @@ export namespace Prisma {
     name: "User"
     objects: {
       createdAnnouncements: Prisma.$AnnouncementPayload<ExtArgs>[]
-      Announcement: Prisma.$AnnouncementPayload<ExtArgs>[]
-      AuditLog: Prisma.$AuditLogPayload<ExtArgs>[]
+      announcements: Prisma.$AnnouncementPayload<ExtArgs>[]
+      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       careOutcomes: Prisma.$CareOutcomePayload<ExtArgs>[]
       clientAssignments: Prisma.$ClientCareAssignmentPayload<ExtArgs>[]
       careAssignments: Prisma.$ClientCareAssignmentPayload<ExtArgs>[]
       communicationLogs: Prisma.$CommunicationLogPayload<ExtArgs>[]
       communicationPreference: Prisma.$CommunicationPreferencePayload<ExtArgs> | null
-      Document: Prisma.$DocumentPayload<ExtArgs>[]
       documents: Prisma.$DocumentPayload<ExtArgs>[]
+      userDocuments: Prisma.$DocumentPayload<ExtArgs>[]
       familyAccess: Prisma.$FamilyAccessPayload<ExtArgs>[]
       incidentReports: Prisma.$IncidentReportPayload<ExtArgs>[]
       sentInvitations: Prisma.$InvitationPayload<ExtArgs>[]
-      Invoice: Prisma.$InvoicePayload<ExtArgs>[]
+      invoices: Prisma.$InvoicePayload<ExtArgs>[]
       keyContacts: Prisma.$KeyContactPayload<ExtArgs>[]
       medicationAdministrations: Prisma.$MedicationAdministrationPayload<ExtArgs>[]
       careWorkerMedications: Prisma.$MedicationRecordPayload<ExtArgs>[]
@@ -18174,7 +18522,7 @@ export namespace Prisma {
       sentMessages: Prisma.$MessagePayload<ExtArgs>[]
       careWorkerMileage: Prisma.$MileageRecordPayload<ExtArgs>[]
       clientMileage: Prisma.$MileageRecordPayload<ExtArgs>[]
-      Notification: Prisma.$NotificationPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
       profile: Prisma.$ProfilePayload<ExtArgs> | null
       reminders: Prisma.$ReminderPayload<ExtArgs>[]
       clientReports: Prisma.$ReportPayload<ExtArgs>[]
@@ -18190,6 +18538,7 @@ export namespace Prisma {
       invitedUsers: Prisma.$UserPayload<ExtArgs>[]
       acknowledgedAnnouncements: Prisma.$AnnouncementPayload<ExtArgs>[]
       visitTypes: Prisma.$VisitTypePayload<ExtArgs>[]
+      scheduleTemplates: Prisma.$ScheduleTemplatePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18613,19 +18962,19 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     createdAnnouncements<T extends User$createdAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Announcement<T extends User$AnnouncementArgs<ExtArgs> = {}>(args?: Subset<T, User$AnnouncementArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    AuditLog<T extends User$AuditLogArgs<ExtArgs> = {}>(args?: Subset<T, User$AuditLogArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    announcements<T extends User$announcementsArgs<ExtArgs> = {}>(args?: Subset<T, User$announcementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     careOutcomes<T extends User$careOutcomesArgs<ExtArgs> = {}>(args?: Subset<T, User$careOutcomesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CareOutcomePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clientAssignments<T extends User$clientAssignmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientCareAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     careAssignments<T extends User$careAssignmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$careAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientCareAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     communicationLogs<T extends User$communicationLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$communicationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommunicationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     communicationPreference<T extends User$communicationPreferenceArgs<ExtArgs> = {}>(args?: Subset<T, User$communicationPreferenceArgs<ExtArgs>>): Prisma__CommunicationPreferenceClient<$Result.GetResult<Prisma.$CommunicationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    Document<T extends User$DocumentArgs<ExtArgs> = {}>(args?: Subset<T, User$DocumentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     documents<T extends User$documentsArgs<ExtArgs> = {}>(args?: Subset<T, User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    userDocuments<T extends User$userDocumentsArgs<ExtArgs> = {}>(args?: Subset<T, User$userDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     familyAccess<T extends User$familyAccessArgs<ExtArgs> = {}>(args?: Subset<T, User$familyAccessArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FamilyAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     incidentReports<T extends User$incidentReportsArgs<ExtArgs> = {}>(args?: Subset<T, User$incidentReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IncidentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Invoice<T extends User$InvoiceArgs<ExtArgs> = {}>(args?: Subset<T, User$InvoiceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invoices<T extends User$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     keyContacts<T extends User$keyContactsArgs<ExtArgs> = {}>(args?: Subset<T, User$keyContactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KeyContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     medicationAdministrations<T extends User$medicationAdministrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$medicationAdministrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationAdministrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     careWorkerMedications<T extends User$careWorkerMedicationsArgs<ExtArgs> = {}>(args?: Subset<T, User$careWorkerMedicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -18634,7 +18983,7 @@ export namespace Prisma {
     sentMessages<T extends User$sentMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$sentMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     careWorkerMileage<T extends User$careWorkerMileageArgs<ExtArgs> = {}>(args?: Subset<T, User$careWorkerMileageArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MileageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clientMileage<T extends User$clientMileageArgs<ExtArgs> = {}>(args?: Subset<T, User$clientMileageArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MileageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Notification<T extends User$NotificationArgs<ExtArgs> = {}>(args?: Subset<T, User$NotificationArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     profile<T extends User$profileArgs<ExtArgs> = {}>(args?: Subset<T, User$profileArgs<ExtArgs>>): Prisma__ProfileClient<$Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     reminders<T extends User$remindersArgs<ExtArgs> = {}>(args?: Subset<T, User$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clientReports<T extends User$clientReportsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -18650,6 +18999,7 @@ export namespace Prisma {
     invitedUsers<T extends User$invitedUsersArgs<ExtArgs> = {}>(args?: Subset<T, User$invitedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     acknowledgedAnnouncements<T extends User$acknowledgedAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, User$acknowledgedAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     visitTypes<T extends User$visitTypesArgs<ExtArgs> = {}>(args?: Subset<T, User$visitTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    scheduleTemplates<T extends User$scheduleTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, User$scheduleTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19125,9 +19475,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.Announcement
+   * User.announcements
    */
-  export type User$AnnouncementArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$announcementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Announcement
      */
@@ -19149,9 +19499,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.AuditLog
+   * User.auditLogs
    */
-  export type User$AuditLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the AuditLog
      */
@@ -19288,9 +19638,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.Document
+   * User.documents
    */
-  export type User$DocumentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Document
      */
@@ -19312,9 +19662,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.documents
+   * User.userDocuments
    */
-  export type User$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$userDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Document
      */
@@ -19408,9 +19758,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.Invoice
+   * User.invoices
    */
-  export type User$InvoiceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Invoice
      */
@@ -19624,9 +19974,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.Notification
+   * User.notifications
    */
-  export type User$NotificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Notification
      */
@@ -19993,6 +20343,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.scheduleTemplates
+   */
+  export type User$scheduleTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    where?: ScheduleTemplateWhereInput
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    cursor?: ScheduleTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20008,6 +20382,2370 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TemplateVisit
+   */
+
+  export type AggregateTemplateVisit = {
+    _count: TemplateVisitCountAggregateOutputType | null
+    _min: TemplateVisitMinAggregateOutputType | null
+    _max: TemplateVisitMaxAggregateOutputType | null
+  }
+
+  export type TemplateVisitMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    day: $Enums.TemplateVisitDay | null
+    startTime: string | null
+    endTime: string | null
+    endStatus: $Enums.TemplateVisitEndStatus | null
+    isAllDayVisit: boolean | null
+    rateSheetId: string | null
+    clientVisitTypeId: string | null
+    careWorkerId: string | null
+    careWorker2Id: string | null
+    careWorker3Id: string | null
+    templateId: string | null
+  }
+
+  export type TemplateVisitMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    day: $Enums.TemplateVisitDay | null
+    startTime: string | null
+    endTime: string | null
+    endStatus: $Enums.TemplateVisitEndStatus | null
+    isAllDayVisit: boolean | null
+    rateSheetId: string | null
+    clientVisitTypeId: string | null
+    careWorkerId: string | null
+    careWorker2Id: string | null
+    careWorker3Id: string | null
+    templateId: string | null
+  }
+
+  export type TemplateVisitCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    day: number
+    startTime: number
+    endTime: number
+    endStatus: number
+    isAllDayVisit: number
+    rateSheetId: number
+    clientVisitTypeId: number
+    careWorkerId: number
+    careWorker2Id: number
+    careWorker3Id: number
+    templateId: number
+    _all: number
+  }
+
+
+  export type TemplateVisitMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    day?: true
+    startTime?: true
+    endTime?: true
+    endStatus?: true
+    isAllDayVisit?: true
+    rateSheetId?: true
+    clientVisitTypeId?: true
+    careWorkerId?: true
+    careWorker2Id?: true
+    careWorker3Id?: true
+    templateId?: true
+  }
+
+  export type TemplateVisitMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    day?: true
+    startTime?: true
+    endTime?: true
+    endStatus?: true
+    isAllDayVisit?: true
+    rateSheetId?: true
+    clientVisitTypeId?: true
+    careWorkerId?: true
+    careWorker2Id?: true
+    careWorker3Id?: true
+    templateId?: true
+  }
+
+  export type TemplateVisitCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    day?: true
+    startTime?: true
+    endTime?: true
+    endStatus?: true
+    isAllDayVisit?: true
+    rateSheetId?: true
+    clientVisitTypeId?: true
+    careWorkerId?: true
+    careWorker2Id?: true
+    careWorker3Id?: true
+    templateId?: true
+    _all?: true
+  }
+
+  export type TemplateVisitAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TemplateVisit to aggregate.
+     */
+    where?: TemplateVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateVisits to fetch.
+     */
+    orderBy?: TemplateVisitOrderByWithRelationInput | TemplateVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TemplateVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateVisits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TemplateVisits
+    **/
+    _count?: true | TemplateVisitCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TemplateVisitMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TemplateVisitMaxAggregateInputType
+  }
+
+  export type GetTemplateVisitAggregateType<T extends TemplateVisitAggregateArgs> = {
+        [P in keyof T & keyof AggregateTemplateVisit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTemplateVisit[P]>
+      : GetScalarType<T[P], AggregateTemplateVisit[P]>
+  }
+
+
+
+
+  export type TemplateVisitGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TemplateVisitWhereInput
+    orderBy?: TemplateVisitOrderByWithAggregationInput | TemplateVisitOrderByWithAggregationInput[]
+    by: TemplateVisitScalarFieldEnum[] | TemplateVisitScalarFieldEnum
+    having?: TemplateVisitScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TemplateVisitCountAggregateInputType | true
+    _min?: TemplateVisitMinAggregateInputType
+    _max?: TemplateVisitMaxAggregateInputType
+  }
+
+  export type TemplateVisitGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit: boolean
+    rateSheetId: string | null
+    clientVisitTypeId: string | null
+    careWorkerId: string
+    careWorker2Id: string | null
+    careWorker3Id: string | null
+    templateId: string
+    _count: TemplateVisitCountAggregateOutputType | null
+    _min: TemplateVisitMinAggregateOutputType | null
+    _max: TemplateVisitMaxAggregateOutputType | null
+  }
+
+  type GetTemplateVisitGroupByPayload<T extends TemplateVisitGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TemplateVisitGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TemplateVisitGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TemplateVisitGroupByOutputType[P]>
+            : GetScalarType<T[P], TemplateVisitGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TemplateVisitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    day?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    endStatus?: boolean
+    isAllDayVisit?: boolean
+    rateSheetId?: boolean
+    clientVisitTypeId?: boolean
+    careWorkerId?: boolean
+    careWorker2Id?: boolean
+    careWorker3Id?: boolean
+    templateId?: boolean
+    rateSheet?: boolean | TemplateVisit$rateSheetArgs<ExtArgs>
+    clientVisitType?: boolean | TemplateVisit$clientVisitTypeArgs<ExtArgs>
+    template?: boolean | ScheduleTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["templateVisit"]>
+
+  export type TemplateVisitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    day?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    endStatus?: boolean
+    isAllDayVisit?: boolean
+    rateSheetId?: boolean
+    clientVisitTypeId?: boolean
+    careWorkerId?: boolean
+    careWorker2Id?: boolean
+    careWorker3Id?: boolean
+    templateId?: boolean
+    rateSheet?: boolean | TemplateVisit$rateSheetArgs<ExtArgs>
+    clientVisitType?: boolean | TemplateVisit$clientVisitTypeArgs<ExtArgs>
+    template?: boolean | ScheduleTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["templateVisit"]>
+
+  export type TemplateVisitSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    day?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    endStatus?: boolean
+    isAllDayVisit?: boolean
+    rateSheetId?: boolean
+    clientVisitTypeId?: boolean
+    careWorkerId?: boolean
+    careWorker2Id?: boolean
+    careWorker3Id?: boolean
+    templateId?: boolean
+    rateSheet?: boolean | TemplateVisit$rateSheetArgs<ExtArgs>
+    clientVisitType?: boolean | TemplateVisit$clientVisitTypeArgs<ExtArgs>
+    template?: boolean | ScheduleTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["templateVisit"]>
+
+  export type TemplateVisitSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    day?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    endStatus?: boolean
+    isAllDayVisit?: boolean
+    rateSheetId?: boolean
+    clientVisitTypeId?: boolean
+    careWorkerId?: boolean
+    careWorker2Id?: boolean
+    careWorker3Id?: boolean
+    templateId?: boolean
+  }
+
+  export type TemplateVisitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "day" | "startTime" | "endTime" | "endStatus" | "isAllDayVisit" | "rateSheetId" | "clientVisitTypeId" | "careWorkerId" | "careWorker2Id" | "careWorker3Id" | "templateId", ExtArgs["result"]["templateVisit"]>
+  export type TemplateVisitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    rateSheet?: boolean | TemplateVisit$rateSheetArgs<ExtArgs>
+    clientVisitType?: boolean | TemplateVisit$clientVisitTypeArgs<ExtArgs>
+    template?: boolean | ScheduleTemplateDefaultArgs<ExtArgs>
+  }
+  export type TemplateVisitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    rateSheet?: boolean | TemplateVisit$rateSheetArgs<ExtArgs>
+    clientVisitType?: boolean | TemplateVisit$clientVisitTypeArgs<ExtArgs>
+    template?: boolean | ScheduleTemplateDefaultArgs<ExtArgs>
+  }
+  export type TemplateVisitIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    rateSheet?: boolean | TemplateVisit$rateSheetArgs<ExtArgs>
+    clientVisitType?: boolean | TemplateVisit$clientVisitTypeArgs<ExtArgs>
+    template?: boolean | ScheduleTemplateDefaultArgs<ExtArgs>
+  }
+
+  export type $TemplateVisitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TemplateVisit"
+    objects: {
+      rateSheet: Prisma.$RateSheetPayload<ExtArgs> | null
+      clientVisitType: Prisma.$VisitTypePayload<ExtArgs> | null
+      template: Prisma.$ScheduleTemplatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      day: $Enums.TemplateVisitDay
+      startTime: string
+      endTime: string
+      endStatus: $Enums.TemplateVisitEndStatus
+      isAllDayVisit: boolean
+      rateSheetId: string | null
+      clientVisitTypeId: string | null
+      careWorkerId: string
+      careWorker2Id: string | null
+      careWorker3Id: string | null
+      templateId: string
+    }, ExtArgs["result"]["templateVisit"]>
+    composites: {}
+  }
+
+  type TemplateVisitGetPayload<S extends boolean | null | undefined | TemplateVisitDefaultArgs> = $Result.GetResult<Prisma.$TemplateVisitPayload, S>
+
+  type TemplateVisitCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TemplateVisitFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TemplateVisitCountAggregateInputType | true
+    }
+
+  export interface TemplateVisitDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TemplateVisit'], meta: { name: 'TemplateVisit' } }
+    /**
+     * Find zero or one TemplateVisit that matches the filter.
+     * @param {TemplateVisitFindUniqueArgs} args - Arguments to find a TemplateVisit
+     * @example
+     * // Get one TemplateVisit
+     * const templateVisit = await prisma.templateVisit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TemplateVisitFindUniqueArgs>(args: SelectSubset<T, TemplateVisitFindUniqueArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TemplateVisit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TemplateVisitFindUniqueOrThrowArgs} args - Arguments to find a TemplateVisit
+     * @example
+     * // Get one TemplateVisit
+     * const templateVisit = await prisma.templateVisit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TemplateVisitFindUniqueOrThrowArgs>(args: SelectSubset<T, TemplateVisitFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TemplateVisit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateVisitFindFirstArgs} args - Arguments to find a TemplateVisit
+     * @example
+     * // Get one TemplateVisit
+     * const templateVisit = await prisma.templateVisit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TemplateVisitFindFirstArgs>(args?: SelectSubset<T, TemplateVisitFindFirstArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TemplateVisit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateVisitFindFirstOrThrowArgs} args - Arguments to find a TemplateVisit
+     * @example
+     * // Get one TemplateVisit
+     * const templateVisit = await prisma.templateVisit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TemplateVisitFindFirstOrThrowArgs>(args?: SelectSubset<T, TemplateVisitFindFirstOrThrowArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TemplateVisits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateVisitFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TemplateVisits
+     * const templateVisits = await prisma.templateVisit.findMany()
+     * 
+     * // Get first 10 TemplateVisits
+     * const templateVisits = await prisma.templateVisit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const templateVisitWithIdOnly = await prisma.templateVisit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TemplateVisitFindManyArgs>(args?: SelectSubset<T, TemplateVisitFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TemplateVisit.
+     * @param {TemplateVisitCreateArgs} args - Arguments to create a TemplateVisit.
+     * @example
+     * // Create one TemplateVisit
+     * const TemplateVisit = await prisma.templateVisit.create({
+     *   data: {
+     *     // ... data to create a TemplateVisit
+     *   }
+     * })
+     * 
+     */
+    create<T extends TemplateVisitCreateArgs>(args: SelectSubset<T, TemplateVisitCreateArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TemplateVisits.
+     * @param {TemplateVisitCreateManyArgs} args - Arguments to create many TemplateVisits.
+     * @example
+     * // Create many TemplateVisits
+     * const templateVisit = await prisma.templateVisit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TemplateVisitCreateManyArgs>(args?: SelectSubset<T, TemplateVisitCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TemplateVisits and returns the data saved in the database.
+     * @param {TemplateVisitCreateManyAndReturnArgs} args - Arguments to create many TemplateVisits.
+     * @example
+     * // Create many TemplateVisits
+     * const templateVisit = await prisma.templateVisit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TemplateVisits and only return the `id`
+     * const templateVisitWithIdOnly = await prisma.templateVisit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TemplateVisitCreateManyAndReturnArgs>(args?: SelectSubset<T, TemplateVisitCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TemplateVisit.
+     * @param {TemplateVisitDeleteArgs} args - Arguments to delete one TemplateVisit.
+     * @example
+     * // Delete one TemplateVisit
+     * const TemplateVisit = await prisma.templateVisit.delete({
+     *   where: {
+     *     // ... filter to delete one TemplateVisit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TemplateVisitDeleteArgs>(args: SelectSubset<T, TemplateVisitDeleteArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TemplateVisit.
+     * @param {TemplateVisitUpdateArgs} args - Arguments to update one TemplateVisit.
+     * @example
+     * // Update one TemplateVisit
+     * const templateVisit = await prisma.templateVisit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TemplateVisitUpdateArgs>(args: SelectSubset<T, TemplateVisitUpdateArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TemplateVisits.
+     * @param {TemplateVisitDeleteManyArgs} args - Arguments to filter TemplateVisits to delete.
+     * @example
+     * // Delete a few TemplateVisits
+     * const { count } = await prisma.templateVisit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TemplateVisitDeleteManyArgs>(args?: SelectSubset<T, TemplateVisitDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TemplateVisits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateVisitUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TemplateVisits
+     * const templateVisit = await prisma.templateVisit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TemplateVisitUpdateManyArgs>(args: SelectSubset<T, TemplateVisitUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TemplateVisits and returns the data updated in the database.
+     * @param {TemplateVisitUpdateManyAndReturnArgs} args - Arguments to update many TemplateVisits.
+     * @example
+     * // Update many TemplateVisits
+     * const templateVisit = await prisma.templateVisit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TemplateVisits and only return the `id`
+     * const templateVisitWithIdOnly = await prisma.templateVisit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TemplateVisitUpdateManyAndReturnArgs>(args: SelectSubset<T, TemplateVisitUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TemplateVisit.
+     * @param {TemplateVisitUpsertArgs} args - Arguments to update or create a TemplateVisit.
+     * @example
+     * // Update or create a TemplateVisit
+     * const templateVisit = await prisma.templateVisit.upsert({
+     *   create: {
+     *     // ... data to create a TemplateVisit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TemplateVisit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TemplateVisitUpsertArgs>(args: SelectSubset<T, TemplateVisitUpsertArgs<ExtArgs>>): Prisma__TemplateVisitClient<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TemplateVisits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateVisitCountArgs} args - Arguments to filter TemplateVisits to count.
+     * @example
+     * // Count the number of TemplateVisits
+     * const count = await prisma.templateVisit.count({
+     *   where: {
+     *     // ... the filter for the TemplateVisits we want to count
+     *   }
+     * })
+    **/
+    count<T extends TemplateVisitCountArgs>(
+      args?: Subset<T, TemplateVisitCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TemplateVisitCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TemplateVisit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateVisitAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TemplateVisitAggregateArgs>(args: Subset<T, TemplateVisitAggregateArgs>): Prisma.PrismaPromise<GetTemplateVisitAggregateType<T>>
+
+    /**
+     * Group by TemplateVisit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TemplateVisitGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TemplateVisitGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TemplateVisitGroupByArgs['orderBy'] }
+        : { orderBy?: TemplateVisitGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TemplateVisitGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTemplateVisitGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TemplateVisit model
+   */
+  readonly fields: TemplateVisitFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TemplateVisit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TemplateVisitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    rateSheet<T extends TemplateVisit$rateSheetArgs<ExtArgs> = {}>(args?: Subset<T, TemplateVisit$rateSheetArgs<ExtArgs>>): Prisma__RateSheetClient<$Result.GetResult<Prisma.$RateSheetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    clientVisitType<T extends TemplateVisit$clientVisitTypeArgs<ExtArgs> = {}>(args?: Subset<T, TemplateVisit$clientVisitTypeArgs<ExtArgs>>): Prisma__VisitTypeClient<$Result.GetResult<Prisma.$VisitTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    template<T extends ScheduleTemplateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ScheduleTemplateDefaultArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TemplateVisit model
+   */
+  interface TemplateVisitFieldRefs {
+    readonly id: FieldRef<"TemplateVisit", 'String'>
+    readonly name: FieldRef<"TemplateVisit", 'String'>
+    readonly description: FieldRef<"TemplateVisit", 'String'>
+    readonly day: FieldRef<"TemplateVisit", 'TemplateVisitDay'>
+    readonly startTime: FieldRef<"TemplateVisit", 'String'>
+    readonly endTime: FieldRef<"TemplateVisit", 'String'>
+    readonly endStatus: FieldRef<"TemplateVisit", 'TemplateVisitEndStatus'>
+    readonly isAllDayVisit: FieldRef<"TemplateVisit", 'Boolean'>
+    readonly rateSheetId: FieldRef<"TemplateVisit", 'String'>
+    readonly clientVisitTypeId: FieldRef<"TemplateVisit", 'String'>
+    readonly careWorkerId: FieldRef<"TemplateVisit", 'String'>
+    readonly careWorker2Id: FieldRef<"TemplateVisit", 'String'>
+    readonly careWorker3Id: FieldRef<"TemplateVisit", 'String'>
+    readonly templateId: FieldRef<"TemplateVisit", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TemplateVisit findUnique
+   */
+  export type TemplateVisitFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateVisit to fetch.
+     */
+    where: TemplateVisitWhereUniqueInput
+  }
+
+  /**
+   * TemplateVisit findUniqueOrThrow
+   */
+  export type TemplateVisitFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateVisit to fetch.
+     */
+    where: TemplateVisitWhereUniqueInput
+  }
+
+  /**
+   * TemplateVisit findFirst
+   */
+  export type TemplateVisitFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateVisit to fetch.
+     */
+    where?: TemplateVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateVisits to fetch.
+     */
+    orderBy?: TemplateVisitOrderByWithRelationInput | TemplateVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TemplateVisits.
+     */
+    cursor?: TemplateVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateVisits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TemplateVisits.
+     */
+    distinct?: TemplateVisitScalarFieldEnum | TemplateVisitScalarFieldEnum[]
+  }
+
+  /**
+   * TemplateVisit findFirstOrThrow
+   */
+  export type TemplateVisitFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateVisit to fetch.
+     */
+    where?: TemplateVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateVisits to fetch.
+     */
+    orderBy?: TemplateVisitOrderByWithRelationInput | TemplateVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TemplateVisits.
+     */
+    cursor?: TemplateVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateVisits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TemplateVisits.
+     */
+    distinct?: TemplateVisitScalarFieldEnum | TemplateVisitScalarFieldEnum[]
+  }
+
+  /**
+   * TemplateVisit findMany
+   */
+  export type TemplateVisitFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * Filter, which TemplateVisits to fetch.
+     */
+    where?: TemplateVisitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TemplateVisits to fetch.
+     */
+    orderBy?: TemplateVisitOrderByWithRelationInput | TemplateVisitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TemplateVisits.
+     */
+    cursor?: TemplateVisitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TemplateVisits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TemplateVisits.
+     */
+    skip?: number
+    distinct?: TemplateVisitScalarFieldEnum | TemplateVisitScalarFieldEnum[]
+  }
+
+  /**
+   * TemplateVisit create
+   */
+  export type TemplateVisitCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TemplateVisit.
+     */
+    data: XOR<TemplateVisitCreateInput, TemplateVisitUncheckedCreateInput>
+  }
+
+  /**
+   * TemplateVisit createMany
+   */
+  export type TemplateVisitCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TemplateVisits.
+     */
+    data: TemplateVisitCreateManyInput | TemplateVisitCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TemplateVisit createManyAndReturn
+   */
+  export type TemplateVisitCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * The data used to create many TemplateVisits.
+     */
+    data: TemplateVisitCreateManyInput | TemplateVisitCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TemplateVisit update
+   */
+  export type TemplateVisitUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TemplateVisit.
+     */
+    data: XOR<TemplateVisitUpdateInput, TemplateVisitUncheckedUpdateInput>
+    /**
+     * Choose, which TemplateVisit to update.
+     */
+    where: TemplateVisitWhereUniqueInput
+  }
+
+  /**
+   * TemplateVisit updateMany
+   */
+  export type TemplateVisitUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TemplateVisits.
+     */
+    data: XOR<TemplateVisitUpdateManyMutationInput, TemplateVisitUncheckedUpdateManyInput>
+    /**
+     * Filter which TemplateVisits to update
+     */
+    where?: TemplateVisitWhereInput
+    /**
+     * Limit how many TemplateVisits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TemplateVisit updateManyAndReturn
+   */
+  export type TemplateVisitUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * The data used to update TemplateVisits.
+     */
+    data: XOR<TemplateVisitUpdateManyMutationInput, TemplateVisitUncheckedUpdateManyInput>
+    /**
+     * Filter which TemplateVisits to update
+     */
+    where?: TemplateVisitWhereInput
+    /**
+     * Limit how many TemplateVisits to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TemplateVisit upsert
+   */
+  export type TemplateVisitUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TemplateVisit to update in case it exists.
+     */
+    where: TemplateVisitWhereUniqueInput
+    /**
+     * In case the TemplateVisit found by the `where` argument doesn't exist, create a new TemplateVisit with this data.
+     */
+    create: XOR<TemplateVisitCreateInput, TemplateVisitUncheckedCreateInput>
+    /**
+     * In case the TemplateVisit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TemplateVisitUpdateInput, TemplateVisitUncheckedUpdateInput>
+  }
+
+  /**
+   * TemplateVisit delete
+   */
+  export type TemplateVisitDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    /**
+     * Filter which TemplateVisit to delete.
+     */
+    where: TemplateVisitWhereUniqueInput
+  }
+
+  /**
+   * TemplateVisit deleteMany
+   */
+  export type TemplateVisitDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TemplateVisits to delete
+     */
+    where?: TemplateVisitWhereInput
+    /**
+     * Limit how many TemplateVisits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TemplateVisit.rateSheet
+   */
+  export type TemplateVisit$rateSheetArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateSheet
+     */
+    select?: RateSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RateSheet
+     */
+    omit?: RateSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateSheetInclude<ExtArgs> | null
+    where?: RateSheetWhereInput
+  }
+
+  /**
+   * TemplateVisit.clientVisitType
+   */
+  export type TemplateVisit$clientVisitTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisitType
+     */
+    select?: VisitTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisitType
+     */
+    omit?: VisitTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisitTypeInclude<ExtArgs> | null
+    where?: VisitTypeWhereInput
+  }
+
+  /**
+   * TemplateVisit without action
+   */
+  export type TemplateVisitDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ScheduleTemplate
+   */
+
+  export type AggregateScheduleTemplate = {
+    _count: ScheduleTemplateCountAggregateOutputType | null
+    _min: ScheduleTemplateMinAggregateOutputType | null
+    _max: ScheduleTemplateMaxAggregateOutputType | null
+  }
+
+  export type ScheduleTemplateMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    userId: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type ScheduleTemplateMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    userId: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    agencyId: string | null
+  }
+
+  export type ScheduleTemplateCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    userId: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    agencyId: number
+    _all: number
+  }
+
+
+  export type ScheduleTemplateMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    userId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type ScheduleTemplateMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    userId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+  }
+
+  export type ScheduleTemplateCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    userId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    agencyId?: true
+    _all?: true
+  }
+
+  export type ScheduleTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduleTemplate to aggregate.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ScheduleTemplates
+    **/
+    _count?: true | ScheduleTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ScheduleTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ScheduleTemplateMaxAggregateInputType
+  }
+
+  export type GetScheduleTemplateAggregateType<T extends ScheduleTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateScheduleTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateScheduleTemplate[P]>
+      : GetScalarType<T[P], AggregateScheduleTemplate[P]>
+  }
+
+
+
+
+  export type ScheduleTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduleTemplateWhereInput
+    orderBy?: ScheduleTemplateOrderByWithAggregationInput | ScheduleTemplateOrderByWithAggregationInput[]
+    by: ScheduleTemplateScalarFieldEnum[] | ScheduleTemplateScalarFieldEnum
+    having?: ScheduleTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ScheduleTemplateCountAggregateInputType | true
+    _min?: ScheduleTemplateMinAggregateInputType
+    _max?: ScheduleTemplateMaxAggregateInputType
+  }
+
+  export type ScheduleTemplateGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    userId: string
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    agencyId: string
+    _count: ScheduleTemplateCountAggregateOutputType | null
+    _min: ScheduleTemplateMinAggregateOutputType | null
+    _max: ScheduleTemplateMaxAggregateOutputType | null
+  }
+
+  type GetScheduleTemplateGroupByPayload<T extends ScheduleTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ScheduleTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ScheduleTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ScheduleTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], ScheduleTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ScheduleTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    userId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    visits?: boolean | ScheduleTemplate$visitsArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    _count?: boolean | ScheduleTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleTemplate"]>
+
+  export type ScheduleTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    userId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleTemplate"]>
+
+  export type ScheduleTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    userId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleTemplate"]>
+
+  export type ScheduleTemplateSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    userId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    agencyId?: boolean
+  }
+
+  export type ScheduleTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "userId" | "isActive" | "createdAt" | "updatedAt" | "agencyId", ExtArgs["result"]["scheduleTemplate"]>
+  export type ScheduleTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    visits?: boolean | ScheduleTemplate$visitsArgs<ExtArgs>
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    _count?: boolean | ScheduleTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ScheduleTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ScheduleTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agency?: boolean | AgencyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ScheduleTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ScheduleTemplate"
+    objects: {
+      visits: Prisma.$TemplateVisitPayload<ExtArgs>[]
+      agency: Prisma.$AgencyPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      userId: string
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+      agencyId: string
+    }, ExtArgs["result"]["scheduleTemplate"]>
+    composites: {}
+  }
+
+  type ScheduleTemplateGetPayload<S extends boolean | null | undefined | ScheduleTemplateDefaultArgs> = $Result.GetResult<Prisma.$ScheduleTemplatePayload, S>
+
+  type ScheduleTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ScheduleTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ScheduleTemplateCountAggregateInputType | true
+    }
+
+  export interface ScheduleTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ScheduleTemplate'], meta: { name: 'ScheduleTemplate' } }
+    /**
+     * Find zero or one ScheduleTemplate that matches the filter.
+     * @param {ScheduleTemplateFindUniqueArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ScheduleTemplateFindUniqueArgs>(args: SelectSubset<T, ScheduleTemplateFindUniqueArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ScheduleTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ScheduleTemplateFindUniqueOrThrowArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ScheduleTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, ScheduleTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduleTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateFindFirstArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ScheduleTemplateFindFirstArgs>(args?: SelectSubset<T, ScheduleTemplateFindFirstArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduleTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateFindFirstOrThrowArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ScheduleTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, ScheduleTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ScheduleTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ScheduleTemplates
+     * const scheduleTemplates = await prisma.scheduleTemplate.findMany()
+     * 
+     * // Get first 10 ScheduleTemplates
+     * const scheduleTemplates = await prisma.scheduleTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const scheduleTemplateWithIdOnly = await prisma.scheduleTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ScheduleTemplateFindManyArgs>(args?: SelectSubset<T, ScheduleTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ScheduleTemplate.
+     * @param {ScheduleTemplateCreateArgs} args - Arguments to create a ScheduleTemplate.
+     * @example
+     * // Create one ScheduleTemplate
+     * const ScheduleTemplate = await prisma.scheduleTemplate.create({
+     *   data: {
+     *     // ... data to create a ScheduleTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends ScheduleTemplateCreateArgs>(args: SelectSubset<T, ScheduleTemplateCreateArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ScheduleTemplates.
+     * @param {ScheduleTemplateCreateManyArgs} args - Arguments to create many ScheduleTemplates.
+     * @example
+     * // Create many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ScheduleTemplateCreateManyArgs>(args?: SelectSubset<T, ScheduleTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ScheduleTemplates and returns the data saved in the database.
+     * @param {ScheduleTemplateCreateManyAndReturnArgs} args - Arguments to create many ScheduleTemplates.
+     * @example
+     * // Create many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ScheduleTemplates and only return the `id`
+     * const scheduleTemplateWithIdOnly = await prisma.scheduleTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ScheduleTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, ScheduleTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ScheduleTemplate.
+     * @param {ScheduleTemplateDeleteArgs} args - Arguments to delete one ScheduleTemplate.
+     * @example
+     * // Delete one ScheduleTemplate
+     * const ScheduleTemplate = await prisma.scheduleTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one ScheduleTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ScheduleTemplateDeleteArgs>(args: SelectSubset<T, ScheduleTemplateDeleteArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ScheduleTemplate.
+     * @param {ScheduleTemplateUpdateArgs} args - Arguments to update one ScheduleTemplate.
+     * @example
+     * // Update one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ScheduleTemplateUpdateArgs>(args: SelectSubset<T, ScheduleTemplateUpdateArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ScheduleTemplates.
+     * @param {ScheduleTemplateDeleteManyArgs} args - Arguments to filter ScheduleTemplates to delete.
+     * @example
+     * // Delete a few ScheduleTemplates
+     * const { count } = await prisma.scheduleTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ScheduleTemplateDeleteManyArgs>(args?: SelectSubset<T, ScheduleTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduleTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ScheduleTemplateUpdateManyArgs>(args: SelectSubset<T, ScheduleTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduleTemplates and returns the data updated in the database.
+     * @param {ScheduleTemplateUpdateManyAndReturnArgs} args - Arguments to update many ScheduleTemplates.
+     * @example
+     * // Update many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ScheduleTemplates and only return the `id`
+     * const scheduleTemplateWithIdOnly = await prisma.scheduleTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ScheduleTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, ScheduleTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ScheduleTemplate.
+     * @param {ScheduleTemplateUpsertArgs} args - Arguments to update or create a ScheduleTemplate.
+     * @example
+     * // Update or create a ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.upsert({
+     *   create: {
+     *     // ... data to create a ScheduleTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ScheduleTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ScheduleTemplateUpsertArgs>(args: SelectSubset<T, ScheduleTemplateUpsertArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ScheduleTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateCountArgs} args - Arguments to filter ScheduleTemplates to count.
+     * @example
+     * // Count the number of ScheduleTemplates
+     * const count = await prisma.scheduleTemplate.count({
+     *   where: {
+     *     // ... the filter for the ScheduleTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends ScheduleTemplateCountArgs>(
+      args?: Subset<T, ScheduleTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ScheduleTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ScheduleTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ScheduleTemplateAggregateArgs>(args: Subset<T, ScheduleTemplateAggregateArgs>): Prisma.PrismaPromise<GetScheduleTemplateAggregateType<T>>
+
+    /**
+     * Group by ScheduleTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ScheduleTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ScheduleTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: ScheduleTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ScheduleTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetScheduleTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ScheduleTemplate model
+   */
+  readonly fields: ScheduleTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ScheduleTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ScheduleTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    visits<T extends ScheduleTemplate$visitsArgs<ExtArgs> = {}>(args?: Subset<T, ScheduleTemplate$visitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ScheduleTemplate model
+   */
+  interface ScheduleTemplateFieldRefs {
+    readonly id: FieldRef<"ScheduleTemplate", 'String'>
+    readonly name: FieldRef<"ScheduleTemplate", 'String'>
+    readonly description: FieldRef<"ScheduleTemplate", 'String'>
+    readonly userId: FieldRef<"ScheduleTemplate", 'String'>
+    readonly isActive: FieldRef<"ScheduleTemplate", 'Boolean'>
+    readonly createdAt: FieldRef<"ScheduleTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"ScheduleTemplate", 'DateTime'>
+    readonly agencyId: FieldRef<"ScheduleTemplate", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ScheduleTemplate findUnique
+   */
+  export type ScheduleTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate findUniqueOrThrow
+   */
+  export type ScheduleTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate findFirst
+   */
+  export type ScheduleTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduleTemplates.
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduleTemplates.
+     */
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleTemplate findFirstOrThrow
+   */
+  export type ScheduleTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduleTemplates.
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduleTemplates.
+     */
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleTemplate findMany
+   */
+  export type ScheduleTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplates to fetch.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ScheduleTemplates.
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleTemplate create
+   */
+  export type ScheduleTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ScheduleTemplate.
+     */
+    data: XOR<ScheduleTemplateCreateInput, ScheduleTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * ScheduleTemplate createMany
+   */
+  export type ScheduleTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ScheduleTemplates.
+     */
+    data: ScheduleTemplateCreateManyInput | ScheduleTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ScheduleTemplate createManyAndReturn
+   */
+  export type ScheduleTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many ScheduleTemplates.
+     */
+    data: ScheduleTemplateCreateManyInput | ScheduleTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleTemplate update
+   */
+  export type ScheduleTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ScheduleTemplate.
+     */
+    data: XOR<ScheduleTemplateUpdateInput, ScheduleTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which ScheduleTemplate to update.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate updateMany
+   */
+  export type ScheduleTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ScheduleTemplates.
+     */
+    data: XOR<ScheduleTemplateUpdateManyMutationInput, ScheduleTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduleTemplates to update
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * Limit how many ScheduleTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduleTemplate updateManyAndReturn
+   */
+  export type ScheduleTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update ScheduleTemplates.
+     */
+    data: XOR<ScheduleTemplateUpdateManyMutationInput, ScheduleTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduleTemplates to update
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * Limit how many ScheduleTemplates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleTemplate upsert
+   */
+  export type ScheduleTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ScheduleTemplate to update in case it exists.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+    /**
+     * In case the ScheduleTemplate found by the `where` argument doesn't exist, create a new ScheduleTemplate with this data.
+     */
+    create: XOR<ScheduleTemplateCreateInput, ScheduleTemplateUncheckedCreateInput>
+    /**
+     * In case the ScheduleTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ScheduleTemplateUpdateInput, ScheduleTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * ScheduleTemplate delete
+   */
+  export type ScheduleTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which ScheduleTemplate to delete.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate deleteMany
+   */
+  export type ScheduleTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduleTemplates to delete
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * Limit how many ScheduleTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduleTemplate.visits
+   */
+  export type ScheduleTemplate$visitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    where?: TemplateVisitWhereInput
+    orderBy?: TemplateVisitOrderByWithRelationInput | TemplateVisitOrderByWithRelationInput[]
+    cursor?: TemplateVisitWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TemplateVisitScalarFieldEnum | TemplateVisitScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleTemplate without action
+   */
+  export type ScheduleTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
   }
 
 
@@ -22326,7 +25064,7 @@ export namespace Prisma {
     source?: boolean
     agencyId?: boolean
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    MedicationRecord?: boolean | MedicationDatabaseLink$MedicationRecordArgs<ExtArgs>
+    medicationRecords?: boolean | MedicationDatabaseLink$medicationRecordsArgs<ExtArgs>
     _count?: boolean | MedicationDatabaseLinkCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["medicationDatabaseLink"]>
 
@@ -22362,7 +25100,7 @@ export namespace Prisma {
   export type MedicationDatabaseLinkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isSpecialist" | "url" | "source" | "agencyId", ExtArgs["result"]["medicationDatabaseLink"]>
   export type MedicationDatabaseLinkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     agency?: boolean | AgencyDefaultArgs<ExtArgs>
-    MedicationRecord?: boolean | MedicationDatabaseLink$MedicationRecordArgs<ExtArgs>
+    medicationRecords?: boolean | MedicationDatabaseLink$medicationRecordsArgs<ExtArgs>
     _count?: boolean | MedicationDatabaseLinkCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MedicationDatabaseLinkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22376,7 +25114,7 @@ export namespace Prisma {
     name: "MedicationDatabaseLink"
     objects: {
       agency: Prisma.$AgencyPayload<ExtArgs>
-      MedicationRecord: Prisma.$MedicationRecordPayload<ExtArgs>[]
+      medicationRecords: Prisma.$MedicationRecordPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -22780,7 +25518,7 @@ export namespace Prisma {
   export interface Prisma__MedicationDatabaseLinkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     agency<T extends AgencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AgencyDefaultArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    MedicationRecord<T extends MedicationDatabaseLink$MedicationRecordArgs<ExtArgs> = {}>(args?: Subset<T, MedicationDatabaseLink$MedicationRecordArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    medicationRecords<T extends MedicationDatabaseLink$medicationRecordsArgs<ExtArgs> = {}>(args?: Subset<T, MedicationDatabaseLink$medicationRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicationRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23212,9 +25950,9 @@ export namespace Prisma {
   }
 
   /**
-   * MedicationDatabaseLink.MedicationRecord
+   * MedicationDatabaseLink.medicationRecords
    */
-  export type MedicationDatabaseLink$MedicationRecordArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type MedicationDatabaseLink$medicationRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the MedicationRecord
      */
@@ -24472,7 +27210,8 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     assignedTasks?: boolean | VisitType$assignedTasksArgs<ExtArgs>
-    User?: boolean | VisitType$UserArgs<ExtArgs>
+    user?: boolean | VisitType$userArgs<ExtArgs>
+    templateVisits?: boolean | VisitType$templateVisitsArgs<ExtArgs>
     _count?: boolean | VisitTypeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["visitType"]>
 
@@ -24483,7 +27222,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
-    User?: boolean | VisitType$UserArgs<ExtArgs>
+    user?: boolean | VisitType$userArgs<ExtArgs>
   }, ExtArgs["result"]["visitType"]>
 
   export type VisitTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24493,7 +27232,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
-    User?: boolean | VisitType$UserArgs<ExtArgs>
+    user?: boolean | VisitType$userArgs<ExtArgs>
   }, ExtArgs["result"]["visitType"]>
 
   export type VisitTypeSelectScalar = {
@@ -24508,21 +27247,23 @@ export namespace Prisma {
   export type VisitTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["visitType"]>
   export type VisitTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedTasks?: boolean | VisitType$assignedTasksArgs<ExtArgs>
-    User?: boolean | VisitType$UserArgs<ExtArgs>
+    user?: boolean | VisitType$userArgs<ExtArgs>
+    templateVisits?: boolean | VisitType$templateVisitsArgs<ExtArgs>
     _count?: boolean | VisitTypeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type VisitTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    User?: boolean | VisitType$UserArgs<ExtArgs>
+    user?: boolean | VisitType$userArgs<ExtArgs>
   }
   export type VisitTypeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    User?: boolean | VisitType$UserArgs<ExtArgs>
+    user?: boolean | VisitType$userArgs<ExtArgs>
   }
 
   export type $VisitTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "VisitType"
     objects: {
       assignedTasks: Prisma.$TaskPayload<ExtArgs>[]
-      User: Prisma.$UserPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
+      templateVisits: Prisma.$TemplateVisitPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24926,7 +27667,8 @@ export namespace Prisma {
   export interface Prisma__VisitTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     assignedTasks<T extends VisitType$assignedTasksArgs<ExtArgs> = {}>(args?: Subset<T, VisitType$assignedTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    User<T extends VisitType$UserArgs<ExtArgs> = {}>(args?: Subset<T, VisitType$UserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends VisitType$userArgs<ExtArgs> = {}>(args?: Subset<T, VisitType$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    templateVisits<T extends VisitType$templateVisitsArgs<ExtArgs> = {}>(args?: Subset<T, VisitType$templateVisitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TemplateVisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25382,9 +28124,9 @@ export namespace Prisma {
   }
 
   /**
-   * VisitType.User
+   * VisitType.user
    */
-  export type VisitType$UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type VisitType$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the User
      */
@@ -25398,6 +28140,30 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
+  }
+
+  /**
+   * VisitType.templateVisits
+   */
+  export type VisitType$templateVisitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVisit
+     */
+    select?: TemplateVisitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TemplateVisit
+     */
+    omit?: TemplateVisitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVisitInclude<ExtArgs> | null
+    where?: TemplateVisitWhereInput
+    orderBy?: TemplateVisitOrderByWithRelationInput | TemplateVisitOrderByWithRelationInput[]
+    cursor?: TemplateVisitWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TemplateVisitScalarFieldEnum | TemplateVisitScalarFieldEnum[]
   }
 
   /**
@@ -47181,7 +49947,7 @@ export namespace Prisma {
     completed?: boolean
     createdAt?: boolean
     agencyId?: boolean
-    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
+    agency?: boolean | Reminder$agencyArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reminder"]>
 
@@ -47194,7 +49960,7 @@ export namespace Prisma {
     completed?: boolean
     createdAt?: boolean
     agencyId?: boolean
-    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
+    agency?: boolean | Reminder$agencyArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reminder"]>
 
@@ -47207,7 +49973,7 @@ export namespace Prisma {
     completed?: boolean
     createdAt?: boolean
     agencyId?: boolean
-    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
+    agency?: boolean | Reminder$agencyArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reminder"]>
 
@@ -47224,22 +49990,22 @@ export namespace Prisma {
 
   export type ReminderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "title" | "message" | "dueDate" | "completed" | "createdAt" | "agencyId", ExtArgs["result"]["reminder"]>
   export type ReminderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
+    agency?: boolean | Reminder$agencyArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ReminderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
+    agency?: boolean | Reminder$agencyArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ReminderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Agency?: boolean | Reminder$AgencyArgs<ExtArgs>
+    agency?: boolean | Reminder$agencyArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $ReminderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Reminder"
     objects: {
-      Agency: Prisma.$AgencyPayload<ExtArgs> | null
+      agency: Prisma.$AgencyPayload<ExtArgs> | null
       client: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -47645,7 +50411,7 @@ export namespace Prisma {
    */
   export interface Prisma__ReminderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    Agency<T extends Reminder$AgencyArgs<ExtArgs> = {}>(args?: Subset<T, Reminder$AgencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    agency<T extends Reminder$agencyArgs<ExtArgs> = {}>(args?: Subset<T, Reminder$agencyArgs<ExtArgs>>): Prisma__AgencyClient<$Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -48080,9 +50846,9 @@ export namespace Prisma {
   }
 
   /**
-   * Reminder.Agency
+   * Reminder.agency
    */
-  export type Reminder$AgencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Reminder$agencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Agency
      */
@@ -49447,6 +52213,40 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const TemplateVisitScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    day: 'day',
+    startTime: 'startTime',
+    endTime: 'endTime',
+    endStatus: 'endStatus',
+    isAllDayVisit: 'isAllDayVisit',
+    rateSheetId: 'rateSheetId',
+    clientVisitTypeId: 'clientVisitTypeId',
+    careWorkerId: 'careWorkerId',
+    careWorker2Id: 'careWorker2Id',
+    careWorker3Id: 'careWorker3Id',
+    templateId: 'templateId'
+  };
+
+  export type TemplateVisitScalarFieldEnum = (typeof TemplateVisitScalarFieldEnum)[keyof typeof TemplateVisitScalarFieldEnum]
+
+
+  export const ScheduleTemplateScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    userId: 'userId',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    agencyId: 'agencyId'
+  };
+
+  export type ScheduleTemplateScalarFieldEnum = (typeof ScheduleTemplateScalarFieldEnum)[keyof typeof ScheduleTemplateScalarFieldEnum]
+
+
   export const CommunicationPreferenceScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -49924,20 +52724,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -49969,6 +52755,20 @@ export namespace Prisma {
    * Reference to a field of type 'NotificationFrequency[]'
    */
   export type ListEnumNotificationFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationFrequency[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -50123,6 +52923,34 @@ export namespace Prisma {
    * Reference to a field of type 'CustomTaskPriority[]'
    */
   export type ListEnumCustomTaskPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CustomTaskPriority[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TemplateVisitDay'
+   */
+  export type EnumTemplateVisitDayFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateVisitDay'>
+    
+
+
+  /**
+   * Reference to a field of type 'TemplateVisitDay[]'
+   */
+  export type ListEnumTemplateVisitDayFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateVisitDay[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TemplateVisitEndStatus'
+   */
+  export type EnumTemplateVisitEndStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateVisitEndStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TemplateVisitEndStatus[]'
+   */
+  export type ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateVisitEndStatus[]'>
     
 
 
@@ -50339,9 +53167,9 @@ export namespace Prisma {
     email?: StringFilter<"Agency"> | string
     description?: StringNullableFilter<"Agency"> | string | null
     address?: StringNullableFilter<"Agency"> | string | null
-    extension?: IntNullableFilter<"Agency"> | number | null
-    mobileNumber?: IntNullableFilter<"Agency"> | number | null
-    landlineNumber?: IntNullableFilter<"Agency"> | number | null
+    extension?: StringNullableFilter<"Agency"> | string | null
+    mobileNumber?: StringNullableFilter<"Agency"> | string | null
+    landlineNumber?: StringNullableFilter<"Agency"> | string | null
     website?: StringNullableFilter<"Agency"> | string | null
     logo?: StringNullableFilter<"Agency"> | string | null
     primaryColor?: StringNullableFilter<"Agency"> | string | null
@@ -50392,11 +53220,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursListRelationFilter
     rateSheets?: RateSheetListRelationFilter
     reminders?: ReminderListRelationFilter
-    Report?: ReportListRelationFilter
+    reports?: ReportListRelationFilter
     riskCategories?: RiskCategoryListRelationFilter
     schedules?: ScheduleListRelationFilter
     users?: UserListRelationFilter
     owner?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    scheduleTemplates?: ScheduleTemplateListRelationFilter
   }
 
   export type AgencyOrderByWithRelationInput = {
@@ -50458,11 +53287,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursOrderByRelationAggregateInput
     rateSheets?: RateSheetOrderByRelationAggregateInput
     reminders?: ReminderOrderByRelationAggregateInput
-    Report?: ReportOrderByRelationAggregateInput
+    reports?: ReportOrderByRelationAggregateInput
     riskCategories?: RiskCategoryOrderByRelationAggregateInput
     schedules?: ScheduleOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
     owner?: UserOrderByWithRelationInput
+    scheduleTemplates?: ScheduleTemplateOrderByRelationAggregateInput
   }
 
   export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -50474,9 +53304,9 @@ export namespace Prisma {
     email?: StringFilter<"Agency"> | string
     description?: StringNullableFilter<"Agency"> | string | null
     address?: StringNullableFilter<"Agency"> | string | null
-    extension?: IntNullableFilter<"Agency"> | number | null
-    mobileNumber?: IntNullableFilter<"Agency"> | number | null
-    landlineNumber?: IntNullableFilter<"Agency"> | number | null
+    extension?: StringNullableFilter<"Agency"> | string | null
+    mobileNumber?: StringNullableFilter<"Agency"> | string | null
+    landlineNumber?: StringNullableFilter<"Agency"> | string | null
     website?: StringNullableFilter<"Agency"> | string | null
     logo?: StringNullableFilter<"Agency"> | string | null
     primaryColor?: StringNullableFilter<"Agency"> | string | null
@@ -50527,11 +53357,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursListRelationFilter
     rateSheets?: RateSheetListRelationFilter
     reminders?: ReminderListRelationFilter
-    Report?: ReportListRelationFilter
+    reports?: ReportListRelationFilter
     riskCategories?: RiskCategoryListRelationFilter
     schedules?: ScheduleListRelationFilter
     users?: UserListRelationFilter
     owner?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    scheduleTemplates?: ScheduleTemplateListRelationFilter
   }, "id">
 
   export type AgencyOrderByWithAggregationInput = {
@@ -50596,9 +53427,9 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Agency"> | string
     description?: StringNullableWithAggregatesFilter<"Agency"> | string | null
     address?: StringNullableWithAggregatesFilter<"Agency"> | string | null
-    extension?: IntNullableWithAggregatesFilter<"Agency"> | number | null
-    mobileNumber?: IntNullableWithAggregatesFilter<"Agency"> | number | null
-    landlineNumber?: IntNullableWithAggregatesFilter<"Agency"> | number | null
+    extension?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    mobileNumber?: StringNullableWithAggregatesFilter<"Agency"> | string | null
+    landlineNumber?: StringNullableWithAggregatesFilter<"Agency"> | string | null
     website?: StringNullableWithAggregatesFilter<"Agency"> | string | null
     logo?: StringNullableWithAggregatesFilter<"Agency"> | string | null
     primaryColor?: StringNullableWithAggregatesFilter<"Agency"> | string | null
@@ -50661,7 +53492,7 @@ export namespace Prisma {
     userId?: StringNullableFilter<"Announcement"> | string | null
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
-    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     acknowledgedBy?: UserListRelationFilter
   }
 
@@ -50685,7 +53516,7 @@ export namespace Prisma {
     userId?: SortOrderInput | SortOrder
     agency?: AgencyOrderByWithRelationInput
     createdBy?: UserOrderByWithRelationInput
-    User?: UserOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
     acknowledgedBy?: UserOrderByRelationAggregateInput
   }
 
@@ -50712,7 +53543,7 @@ export namespace Prisma {
     userId?: StringNullableFilter<"Announcement"> | string | null
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
-    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     acknowledgedBy?: UserListRelationFilter
   }, "id">
 
@@ -51020,7 +53851,7 @@ export namespace Prisma {
     agencyId?: StringNullableFilter<"Group"> | string | null
     createdAt?: DateTimeFilter<"Group"> | Date | string
     updatedAt?: DateTimeFilter<"Group"> | Date | string
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     clients?: UserListRelationFilter
   }
 
@@ -51030,7 +53861,7 @@ export namespace Prisma {
     agencyId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    Agency?: AgencyOrderByWithRelationInput
+    agency?: AgencyOrderByWithRelationInput
     clients?: UserOrderByRelationAggregateInput
   }
 
@@ -51043,7 +53874,7 @@ export namespace Prisma {
     agencyId?: StringNullableFilter<"Group"> | string | null
     createdAt?: DateTimeFilter<"Group"> | Date | string
     updatedAt?: DateTimeFilter<"Group"> | Date | string
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     clients?: UserListRelationFilter
   }, "id">
 
@@ -51080,7 +53911,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RateSheet"> | Date | string
     updatedAt?: DateTimeFilter<"RateSheet"> | Date | string
     agencyId?: StringNullableFilter<"RateSheet"> | string | null
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    templateVisits?: TemplateVisitListRelationFilter
   }
 
   export type RateSheetOrderByWithRelationInput = {
@@ -51091,7 +53923,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     agencyId?: SortOrderInput | SortOrder
-    Agency?: AgencyOrderByWithRelationInput
+    agency?: AgencyOrderByWithRelationInput
+    templateVisits?: TemplateVisitOrderByRelationAggregateInput
   }
 
   export type RateSheetWhereUniqueInput = Prisma.AtLeast<{
@@ -51105,7 +53938,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RateSheet"> | Date | string
     updatedAt?: DateTimeFilter<"RateSheet"> | Date | string
     agencyId?: StringNullableFilter<"RateSheet"> | string | null
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    templateVisits?: TemplateVisitListRelationFilter
   }, "id">
 
   export type RateSheetOrderByWithAggregationInput = {
@@ -51148,7 +53982,7 @@ export namespace Prisma {
     priority?: EnumCustomTaskPriorityFilter<"CustomTask"> | $Enums.CustomTaskPriority
     icon?: StringNullableFilter<"CustomTask"> | string | null
     agencyId?: StringNullableFilter<"CustomTask"> | string | null
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }
 
   export type CustomTaskOrderByWithRelationInput = {
@@ -51160,7 +53994,7 @@ export namespace Prisma {
     priority?: SortOrder
     icon?: SortOrderInput | SortOrder
     agencyId?: SortOrderInput | SortOrder
-    Agency?: AgencyOrderByWithRelationInput
+    agency?: AgencyOrderByWithRelationInput
   }
 
   export type CustomTaskWhereUniqueInput = Prisma.AtLeast<{
@@ -51175,7 +54009,7 @@ export namespace Prisma {
     priority?: EnumCustomTaskPriorityFilter<"CustomTask"> | $Enums.CustomTaskPriority
     icon?: StringNullableFilter<"CustomTask"> | string | null
     agencyId?: StringNullableFilter<"CustomTask"> | string | null
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
   }, "id">
 
   export type CustomTaskOrderByWithAggregationInput = {
@@ -51296,19 +54130,19 @@ export namespace Prisma {
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
     createdAnnouncements?: AnnouncementListRelationFilter
-    Announcement?: AnnouncementListRelationFilter
-    AuditLog?: AuditLogListRelationFilter
+    announcements?: AnnouncementListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
     careOutcomes?: CareOutcomeListRelationFilter
     clientAssignments?: ClientCareAssignmentListRelationFilter
     careAssignments?: ClientCareAssignmentListRelationFilter
     communicationLogs?: CommunicationLogListRelationFilter
     communicationPreference?: XOR<CommunicationPreferenceNullableScalarRelationFilter, CommunicationPreferenceWhereInput> | null
-    Document?: DocumentListRelationFilter
     documents?: DocumentListRelationFilter
+    userDocuments?: DocumentListRelationFilter
     familyAccess?: FamilyAccessListRelationFilter
     incidentReports?: IncidentReportListRelationFilter
     sentInvitations?: InvitationListRelationFilter
-    Invoice?: InvoiceListRelationFilter
+    invoices?: InvoiceListRelationFilter
     keyContacts?: KeyContactListRelationFilter
     medicationAdministrations?: MedicationAdministrationListRelationFilter
     careWorkerMedications?: MedicationRecordListRelationFilter
@@ -51317,7 +54151,7 @@ export namespace Prisma {
     sentMessages?: MessageListRelationFilter
     careWorkerMileage?: MileageRecordListRelationFilter
     clientMileage?: MileageRecordListRelationFilter
-    Notification?: NotificationListRelationFilter
+    notifications?: NotificationListRelationFilter
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     reminders?: ReminderListRelationFilter
     clientReports?: ReportListRelationFilter
@@ -51333,6 +54167,7 @@ export namespace Prisma {
     invitedUsers?: UserListRelationFilter
     acknowledgedAnnouncements?: AnnouncementListRelationFilter
     visitTypes?: VisitTypeListRelationFilter
+    scheduleTemplates?: ScheduleTemplateListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -51363,19 +54198,19 @@ export namespace Prisma {
     interests?: SortOrderInput | SortOrder
     history?: SortOrderInput | SortOrder
     createdAnnouncements?: AnnouncementOrderByRelationAggregateInput
-    Announcement?: AnnouncementOrderByRelationAggregateInput
-    AuditLog?: AuditLogOrderByRelationAggregateInput
+    announcements?: AnnouncementOrderByRelationAggregateInput
+    auditLogs?: AuditLogOrderByRelationAggregateInput
     careOutcomes?: CareOutcomeOrderByRelationAggregateInput
     clientAssignments?: ClientCareAssignmentOrderByRelationAggregateInput
     careAssignments?: ClientCareAssignmentOrderByRelationAggregateInput
     communicationLogs?: CommunicationLogOrderByRelationAggregateInput
     communicationPreference?: CommunicationPreferenceOrderByWithRelationInput
-    Document?: DocumentOrderByRelationAggregateInput
     documents?: DocumentOrderByRelationAggregateInput
+    userDocuments?: DocumentOrderByRelationAggregateInput
     familyAccess?: FamilyAccessOrderByRelationAggregateInput
     incidentReports?: IncidentReportOrderByRelationAggregateInput
     sentInvitations?: InvitationOrderByRelationAggregateInput
-    Invoice?: InvoiceOrderByRelationAggregateInput
+    invoices?: InvoiceOrderByRelationAggregateInput
     keyContacts?: KeyContactOrderByRelationAggregateInput
     medicationAdministrations?: MedicationAdministrationOrderByRelationAggregateInput
     careWorkerMedications?: MedicationRecordOrderByRelationAggregateInput
@@ -51384,7 +54219,7 @@ export namespace Prisma {
     sentMessages?: MessageOrderByRelationAggregateInput
     careWorkerMileage?: MileageRecordOrderByRelationAggregateInput
     clientMileage?: MileageRecordOrderByRelationAggregateInput
-    Notification?: NotificationOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
     profile?: ProfileOrderByWithRelationInput
     reminders?: ReminderOrderByRelationAggregateInput
     clientReports?: ReportOrderByRelationAggregateInput
@@ -51400,6 +54235,7 @@ export namespace Prisma {
     invitedUsers?: UserOrderByRelationAggregateInput
     acknowledgedAnnouncements?: AnnouncementOrderByRelationAggregateInput
     visitTypes?: VisitTypeOrderByRelationAggregateInput
+    scheduleTemplates?: ScheduleTemplateOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -51433,19 +54269,19 @@ export namespace Prisma {
     interests?: StringNullableFilter<"User"> | string | null
     history?: StringNullableFilter<"User"> | string | null
     createdAnnouncements?: AnnouncementListRelationFilter
-    Announcement?: AnnouncementListRelationFilter
-    AuditLog?: AuditLogListRelationFilter
+    announcements?: AnnouncementListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
     careOutcomes?: CareOutcomeListRelationFilter
     clientAssignments?: ClientCareAssignmentListRelationFilter
     careAssignments?: ClientCareAssignmentListRelationFilter
     communicationLogs?: CommunicationLogListRelationFilter
     communicationPreference?: XOR<CommunicationPreferenceNullableScalarRelationFilter, CommunicationPreferenceWhereInput> | null
-    Document?: DocumentListRelationFilter
     documents?: DocumentListRelationFilter
+    userDocuments?: DocumentListRelationFilter
     familyAccess?: FamilyAccessListRelationFilter
     incidentReports?: IncidentReportListRelationFilter
     sentInvitations?: InvitationListRelationFilter
-    Invoice?: InvoiceListRelationFilter
+    invoices?: InvoiceListRelationFilter
     keyContacts?: KeyContactListRelationFilter
     medicationAdministrations?: MedicationAdministrationListRelationFilter
     careWorkerMedications?: MedicationRecordListRelationFilter
@@ -51454,7 +54290,7 @@ export namespace Prisma {
     sentMessages?: MessageListRelationFilter
     careWorkerMileage?: MileageRecordListRelationFilter
     clientMileage?: MileageRecordListRelationFilter
-    Notification?: NotificationListRelationFilter
+    notifications?: NotificationListRelationFilter
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     reminders?: ReminderListRelationFilter
     clientReports?: ReportListRelationFilter
@@ -51470,6 +54306,7 @@ export namespace Prisma {
     invitedUsers?: UserListRelationFilter
     acknowledgedAnnouncements?: AnnouncementListRelationFilter
     visitTypes?: VisitTypeListRelationFilter
+    scheduleTemplates?: ScheduleTemplateListRelationFilter
   }, "id" | "cognitoId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -51534,6 +54371,188 @@ export namespace Prisma {
     allergies?: StringNullableWithAggregatesFilter<"User"> | string | null
     interests?: StringNullableWithAggregatesFilter<"User"> | string | null
     history?: StringNullableWithAggregatesFilter<"User"> | string | null
+  }
+
+  export type TemplateVisitWhereInput = {
+    AND?: TemplateVisitWhereInput | TemplateVisitWhereInput[]
+    OR?: TemplateVisitWhereInput[]
+    NOT?: TemplateVisitWhereInput | TemplateVisitWhereInput[]
+    id?: StringFilter<"TemplateVisit"> | string
+    name?: StringFilter<"TemplateVisit"> | string
+    description?: StringNullableFilter<"TemplateVisit"> | string | null
+    day?: EnumTemplateVisitDayFilter<"TemplateVisit"> | $Enums.TemplateVisitDay
+    startTime?: StringFilter<"TemplateVisit"> | string
+    endTime?: StringFilter<"TemplateVisit"> | string
+    endStatus?: EnumTemplateVisitEndStatusFilter<"TemplateVisit"> | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFilter<"TemplateVisit"> | boolean
+    rateSheetId?: StringNullableFilter<"TemplateVisit"> | string | null
+    clientVisitTypeId?: StringNullableFilter<"TemplateVisit"> | string | null
+    careWorkerId?: StringFilter<"TemplateVisit"> | string
+    careWorker2Id?: StringNullableFilter<"TemplateVisit"> | string | null
+    careWorker3Id?: StringNullableFilter<"TemplateVisit"> | string | null
+    templateId?: StringFilter<"TemplateVisit"> | string
+    rateSheet?: XOR<RateSheetNullableScalarRelationFilter, RateSheetWhereInput> | null
+    clientVisitType?: XOR<VisitTypeNullableScalarRelationFilter, VisitTypeWhereInput> | null
+    template?: XOR<ScheduleTemplateScalarRelationFilter, ScheduleTemplateWhereInput>
+  }
+
+  export type TemplateVisitOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    day?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    endStatus?: SortOrder
+    isAllDayVisit?: SortOrder
+    rateSheetId?: SortOrderInput | SortOrder
+    clientVisitTypeId?: SortOrderInput | SortOrder
+    careWorkerId?: SortOrder
+    careWorker2Id?: SortOrderInput | SortOrder
+    careWorker3Id?: SortOrderInput | SortOrder
+    templateId?: SortOrder
+    rateSheet?: RateSheetOrderByWithRelationInput
+    clientVisitType?: VisitTypeOrderByWithRelationInput
+    template?: ScheduleTemplateOrderByWithRelationInput
+  }
+
+  export type TemplateVisitWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TemplateVisitWhereInput | TemplateVisitWhereInput[]
+    OR?: TemplateVisitWhereInput[]
+    NOT?: TemplateVisitWhereInput | TemplateVisitWhereInput[]
+    name?: StringFilter<"TemplateVisit"> | string
+    description?: StringNullableFilter<"TemplateVisit"> | string | null
+    day?: EnumTemplateVisitDayFilter<"TemplateVisit"> | $Enums.TemplateVisitDay
+    startTime?: StringFilter<"TemplateVisit"> | string
+    endTime?: StringFilter<"TemplateVisit"> | string
+    endStatus?: EnumTemplateVisitEndStatusFilter<"TemplateVisit"> | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFilter<"TemplateVisit"> | boolean
+    rateSheetId?: StringNullableFilter<"TemplateVisit"> | string | null
+    clientVisitTypeId?: StringNullableFilter<"TemplateVisit"> | string | null
+    careWorkerId?: StringFilter<"TemplateVisit"> | string
+    careWorker2Id?: StringNullableFilter<"TemplateVisit"> | string | null
+    careWorker3Id?: StringNullableFilter<"TemplateVisit"> | string | null
+    templateId?: StringFilter<"TemplateVisit"> | string
+    rateSheet?: XOR<RateSheetNullableScalarRelationFilter, RateSheetWhereInput> | null
+    clientVisitType?: XOR<VisitTypeNullableScalarRelationFilter, VisitTypeWhereInput> | null
+    template?: XOR<ScheduleTemplateScalarRelationFilter, ScheduleTemplateWhereInput>
+  }, "id">
+
+  export type TemplateVisitOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    day?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    endStatus?: SortOrder
+    isAllDayVisit?: SortOrder
+    rateSheetId?: SortOrderInput | SortOrder
+    clientVisitTypeId?: SortOrderInput | SortOrder
+    careWorkerId?: SortOrder
+    careWorker2Id?: SortOrderInput | SortOrder
+    careWorker3Id?: SortOrderInput | SortOrder
+    templateId?: SortOrder
+    _count?: TemplateVisitCountOrderByAggregateInput
+    _max?: TemplateVisitMaxOrderByAggregateInput
+    _min?: TemplateVisitMinOrderByAggregateInput
+  }
+
+  export type TemplateVisitScalarWhereWithAggregatesInput = {
+    AND?: TemplateVisitScalarWhereWithAggregatesInput | TemplateVisitScalarWhereWithAggregatesInput[]
+    OR?: TemplateVisitScalarWhereWithAggregatesInput[]
+    NOT?: TemplateVisitScalarWhereWithAggregatesInput | TemplateVisitScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TemplateVisit"> | string
+    name?: StringWithAggregatesFilter<"TemplateVisit"> | string
+    description?: StringNullableWithAggregatesFilter<"TemplateVisit"> | string | null
+    day?: EnumTemplateVisitDayWithAggregatesFilter<"TemplateVisit"> | $Enums.TemplateVisitDay
+    startTime?: StringWithAggregatesFilter<"TemplateVisit"> | string
+    endTime?: StringWithAggregatesFilter<"TemplateVisit"> | string
+    endStatus?: EnumTemplateVisitEndStatusWithAggregatesFilter<"TemplateVisit"> | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolWithAggregatesFilter<"TemplateVisit"> | boolean
+    rateSheetId?: StringNullableWithAggregatesFilter<"TemplateVisit"> | string | null
+    clientVisitTypeId?: StringNullableWithAggregatesFilter<"TemplateVisit"> | string | null
+    careWorkerId?: StringWithAggregatesFilter<"TemplateVisit"> | string
+    careWorker2Id?: StringNullableWithAggregatesFilter<"TemplateVisit"> | string | null
+    careWorker3Id?: StringNullableWithAggregatesFilter<"TemplateVisit"> | string | null
+    templateId?: StringWithAggregatesFilter<"TemplateVisit"> | string
+  }
+
+  export type ScheduleTemplateWhereInput = {
+    AND?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    OR?: ScheduleTemplateWhereInput[]
+    NOT?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    id?: StringFilter<"ScheduleTemplate"> | string
+    name?: StringFilter<"ScheduleTemplate"> | string
+    description?: StringNullableFilter<"ScheduleTemplate"> | string | null
+    userId?: StringFilter<"ScheduleTemplate"> | string
+    isActive?: BoolFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    agencyId?: StringFilter<"ScheduleTemplate"> | string
+    visits?: TemplateVisitListRelationFilter
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ScheduleTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    visits?: TemplateVisitOrderByRelationAggregateInput
+    agency?: AgencyOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ScheduleTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    OR?: ScheduleTemplateWhereInput[]
+    NOT?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    name?: StringFilter<"ScheduleTemplate"> | string
+    description?: StringNullableFilter<"ScheduleTemplate"> | string | null
+    userId?: StringFilter<"ScheduleTemplate"> | string
+    isActive?: BoolFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    agencyId?: StringFilter<"ScheduleTemplate"> | string
+    visits?: TemplateVisitListRelationFilter
+    agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ScheduleTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+    _count?: ScheduleTemplateCountOrderByAggregateInput
+    _max?: ScheduleTemplateMaxOrderByAggregateInput
+    _min?: ScheduleTemplateMinOrderByAggregateInput
+  }
+
+  export type ScheduleTemplateScalarWhereWithAggregatesInput = {
+    AND?: ScheduleTemplateScalarWhereWithAggregatesInput | ScheduleTemplateScalarWhereWithAggregatesInput[]
+    OR?: ScheduleTemplateScalarWhereWithAggregatesInput[]
+    NOT?: ScheduleTemplateScalarWhereWithAggregatesInput | ScheduleTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ScheduleTemplate"> | string
+    name?: StringWithAggregatesFilter<"ScheduleTemplate"> | string
+    description?: StringNullableWithAggregatesFilter<"ScheduleTemplate"> | string | null
+    userId?: StringWithAggregatesFilter<"ScheduleTemplate"> | string
+    isActive?: BoolWithAggregatesFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ScheduleTemplate"> | Date | string
+    agencyId?: StringWithAggregatesFilter<"ScheduleTemplate"> | string
   }
 
   export type CommunicationPreferenceWhereInput = {
@@ -51667,7 +54686,7 @@ export namespace Prisma {
     source?: StringFilter<"MedicationDatabaseLink"> | string
     agencyId?: StringFilter<"MedicationDatabaseLink"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    MedicationRecord?: MedicationRecordListRelationFilter
+    medicationRecords?: MedicationRecordListRelationFilter
   }
 
   export type MedicationDatabaseLinkOrderByWithRelationInput = {
@@ -51678,7 +54697,7 @@ export namespace Prisma {
     source?: SortOrder
     agencyId?: SortOrder
     agency?: AgencyOrderByWithRelationInput
-    MedicationRecord?: MedicationRecordOrderByRelationAggregateInput
+    medicationRecords?: MedicationRecordOrderByRelationAggregateInput
   }
 
   export type MedicationDatabaseLinkWhereUniqueInput = Prisma.AtLeast<{
@@ -51692,7 +54711,7 @@ export namespace Prisma {
     source?: StringFilter<"MedicationDatabaseLink"> | string
     agencyId?: StringFilter<"MedicationDatabaseLink"> | string
     agency?: XOR<AgencyScalarRelationFilter, AgencyWhereInput>
-    MedicationRecord?: MedicationRecordListRelationFilter
+    medicationRecords?: MedicationRecordListRelationFilter
   }, "id">
 
   export type MedicationDatabaseLinkOrderByWithAggregationInput = {
@@ -51780,7 +54799,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"VisitType"> | Date | string
     userId?: StringFilter<"VisitType"> | string
     assignedTasks?: TaskListRelationFilter
-    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    templateVisits?: TemplateVisitListRelationFilter
   }
 
   export type VisitTypeOrderByWithRelationInput = {
@@ -51791,7 +54811,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     assignedTasks?: TaskOrderByRelationAggregateInput
-    User?: UserOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    templateVisits?: TemplateVisitOrderByRelationAggregateInput
   }
 
   export type VisitTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -51805,7 +54826,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"VisitType"> | Date | string
     userId?: StringFilter<"VisitType"> | string
     assignedTasks?: TaskListRelationFilter
-    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    templateVisits?: TemplateVisitListRelationFilter
   }, "id">
 
   export type VisitTypeOrderByWithAggregationInput = {
@@ -53297,7 +56319,7 @@ export namespace Prisma {
     completed?: BoolFilter<"Reminder"> | boolean
     createdAt?: DateTimeFilter<"Reminder"> | Date | string
     agencyId?: StringNullableFilter<"Reminder"> | string | null
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -53310,7 +56332,7 @@ export namespace Prisma {
     completed?: SortOrder
     createdAt?: SortOrder
     agencyId?: SortOrderInput | SortOrder
-    Agency?: AgencyOrderByWithRelationInput
+    agency?: AgencyOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
   }
 
@@ -53326,7 +56348,7 @@ export namespace Prisma {
     completed?: BoolFilter<"Reminder"> | boolean
     createdAt?: DateTimeFilter<"Reminder"> | Date | string
     agencyId?: StringNullableFilter<"Reminder"> | string | null
-    Agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
+    agency?: XOR<AgencyNullableScalarRelationFilter, AgencyWhereInput> | null
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -53517,9 +56539,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -53569,11 +56591,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateInput = {
@@ -53582,9 +56605,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -53635,10 +56658,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUpdateInput = {
@@ -53647,9 +56671,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53699,11 +56723,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateInput = {
@@ -53712,9 +56737,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53765,10 +56790,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateManyInput = {
@@ -53777,9 +56803,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -53825,9 +56851,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53872,9 +56898,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53931,7 +56957,7 @@ export namespace Prisma {
     attachmentType?: string | null
     agency: AgencyCreateNestedOneWithoutAnnouncementsInput
     createdBy: UserCreateNestedOneWithoutCreatedAnnouncementsInput
-    User?: UserCreateNestedOneWithoutAnnouncementInput
+    user?: UserCreateNestedOneWithoutAnnouncementsInput
     acknowledgedBy?: UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput
   }
 
@@ -53973,7 +56999,7 @@ export namespace Prisma {
     attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
     agency?: AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput
-    User?: UserUpdateOneWithoutAnnouncementNestedInput
+    user?: UserUpdateOneWithoutAnnouncementsNestedInput
     acknowledgedBy?: UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
   }
 
@@ -54066,7 +57092,7 @@ export namespace Prisma {
     userAgent?: string | null
     performedAt?: Date | string
     agency: AgencyCreateNestedOneWithoutAuditLogsInput
-    user?: UserCreateNestedOneWithoutAuditLogInput
+    user?: UserCreateNestedOneWithoutAuditLogsInput
   }
 
   export type AuditLogUncheckedCreateInput = {
@@ -54094,7 +57120,7 @@ export namespace Prisma {
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneRequiredWithoutAuditLogsNestedInput
-    user?: UserUpdateOneWithoutAuditLogNestedInput
+    user?: UserUpdateOneWithoutAuditLogsNestedInput
   }
 
   export type AuditLogUncheckedUpdateInput = {
@@ -54336,7 +57362,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    Agency?: AgencyCreateNestedOneWithoutGroupsInput
+    agency?: AgencyCreateNestedOneWithoutGroupsInput
     clients?: UserCreateNestedManyWithoutGroupsInput
   }
 
@@ -54354,7 +57380,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Agency?: AgencyUpdateOneWithoutGroupsNestedInput
+    agency?: AgencyUpdateOneWithoutGroupsNestedInput
     clients?: UserUpdateManyWithoutGroupsNestedInput
   }
 
@@ -54397,7 +57423,8 @@ export namespace Prisma {
     staffType: $Enums.RateSheetType
     createdAt?: Date | string
     updatedAt?: Date | string
-    Agency?: AgencyCreateNestedOneWithoutRateSheetsInput
+    agency?: AgencyCreateNestedOneWithoutRateSheetsInput
+    templateVisits?: TemplateVisitCreateNestedManyWithoutRateSheetInput
   }
 
   export type RateSheetUncheckedCreateInput = {
@@ -54408,6 +57435,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     agencyId?: string | null
+    templateVisits?: TemplateVisitUncheckedCreateNestedManyWithoutRateSheetInput
   }
 
   export type RateSheetUpdateInput = {
@@ -54417,7 +57445,8 @@ export namespace Prisma {
     staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Agency?: AgencyUpdateOneWithoutRateSheetsNestedInput
+    agency?: AgencyUpdateOneWithoutRateSheetsNestedInput
+    templateVisits?: TemplateVisitUpdateManyWithoutRateSheetNestedInput
   }
 
   export type RateSheetUncheckedUpdateInput = {
@@ -54428,6 +57457,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVisits?: TemplateVisitUncheckedUpdateManyWithoutRateSheetNestedInput
   }
 
   export type RateSheetCreateManyInput = {
@@ -54467,7 +57497,7 @@ export namespace Prisma {
     frequency: $Enums.CustomTaskFrequency
     priority: $Enums.CustomTaskPriority
     icon?: string | null
-    Agency?: AgencyCreateNestedOneWithoutCustomTasksInput
+    agency?: AgencyCreateNestedOneWithoutCustomTasksInput
   }
 
   export type CustomTaskUncheckedCreateInput = {
@@ -54489,7 +57519,7 @@ export namespace Prisma {
     frequency?: EnumCustomTaskFrequencyFieldUpdateOperationsInput | $Enums.CustomTaskFrequency
     priority?: EnumCustomTaskPriorityFieldUpdateOperationsInput | $Enums.CustomTaskPriority
     icon?: NullableStringFieldUpdateOperationsInput | string | null
-    Agency?: AgencyUpdateOneWithoutCustomTasksNestedInput
+    agency?: AgencyUpdateOneWithoutCustomTasksNestedInput
   }
 
   export type CustomTaskUncheckedUpdateInput = {
@@ -54615,19 +57645,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -54636,7 +57666,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -54652,6 +57682,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -54682,19 +57713,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -54703,7 +57734,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -54717,6 +57748,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -54745,19 +57777,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -54766,7 +57798,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -54782,6 +57814,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -54812,19 +57845,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -54833,7 +57866,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -54847,6 +57880,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -54932,6 +57966,201 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TemplateVisitCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    rateSheet?: RateSheetCreateNestedOneWithoutTemplateVisitsInput
+    clientVisitType?: VisitTypeCreateNestedOneWithoutTemplateVisitsInput
+    template: ScheduleTemplateCreateNestedOneWithoutVisitsInput
+  }
+
+  export type TemplateVisitUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    rateSheetId?: string | null
+    clientVisitTypeId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    templateId: string
+  }
+
+  export type TemplateVisitUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    rateSheet?: RateSheetUpdateOneWithoutTemplateVisitsNestedInput
+    clientVisitType?: VisitTypeUpdateOneWithoutTemplateVisitsNestedInput
+    template?: ScheduleTemplateUpdateOneRequiredWithoutVisitsNestedInput
+  }
+
+  export type TemplateVisitUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    rateSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientVisitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    templateId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TemplateVisitCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    rateSheetId?: string | null
+    clientVisitTypeId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    templateId: string
+  }
+
+  export type TemplateVisitUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TemplateVisitUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    rateSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientVisitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    templateId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ScheduleTemplateCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    visits?: TemplateVisitCreateNestedManyWithoutTemplateInput
+    agency: AgencyCreateNestedOneWithoutScheduleTemplatesInput
+    user: UserCreateNestedOneWithoutScheduleTemplatesInput
+  }
+
+  export type ScheduleTemplateUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    userId: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    visits?: TemplateVisitUncheckedCreateNestedManyWithoutTemplateInput
+  }
+
+  export type ScheduleTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visits?: TemplateVisitUpdateManyWithoutTemplateNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutScheduleTemplatesNestedInput
+    user?: UserUpdateOneRequiredWithoutScheduleTemplatesNestedInput
+  }
+
+  export type ScheduleTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    visits?: TemplateVisitUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type ScheduleTemplateCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    userId: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+  }
+
+  export type ScheduleTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
   }
 
   export type CommunicationPreferenceCreateInput = {
@@ -55065,7 +58294,7 @@ export namespace Prisma {
     url: string
     source: string
     agency: AgencyCreateNestedOneWithoutMedicationsInput
-    MedicationRecord?: MedicationRecordCreateNestedManyWithoutMedicationInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutMedicationInput
   }
 
   export type MedicationDatabaseLinkUncheckedCreateInput = {
@@ -55075,7 +58304,7 @@ export namespace Prisma {
     url: string
     source: string
     agencyId: string
-    MedicationRecord?: MedicationRecordUncheckedCreateNestedManyWithoutMedicationInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutMedicationInput
   }
 
   export type MedicationDatabaseLinkUpdateInput = {
@@ -55085,7 +58314,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     source?: StringFieldUpdateOperationsInput | string
     agency?: AgencyUpdateOneRequiredWithoutMedicationsNestedInput
-    MedicationRecord?: MedicationRecordUpdateManyWithoutMedicationNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutMedicationNestedInput
   }
 
   export type MedicationDatabaseLinkUncheckedUpdateInput = {
@@ -55095,7 +58324,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     source?: StringFieldUpdateOperationsInput | string
     agencyId?: StringFieldUpdateOperationsInput | string
-    MedicationRecord?: MedicationRecordUncheckedUpdateManyWithoutMedicationNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutMedicationNestedInput
   }
 
   export type MedicationDatabaseLinkCreateManyInput = {
@@ -55179,7 +58408,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedTasks?: TaskCreateNestedManyWithoutVisitTypeInput
-    User?: UserCreateNestedOneWithoutVisitTypesInput
+    user?: UserCreateNestedOneWithoutVisitTypesInput
+    templateVisits?: TemplateVisitCreateNestedManyWithoutClientVisitTypeInput
   }
 
   export type VisitTypeUncheckedCreateInput = {
@@ -55190,6 +58420,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutVisitTypeInput
+    templateVisits?: TemplateVisitUncheckedCreateNestedManyWithoutClientVisitTypeInput
   }
 
   export type VisitTypeUpdateInput = {
@@ -55199,7 +58430,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedTasks?: TaskUpdateManyWithoutVisitTypeNestedInput
-    User?: UserUpdateOneWithoutVisitTypesNestedInput
+    user?: UserUpdateOneWithoutVisitTypesNestedInput
+    templateVisits?: TemplateVisitUpdateManyWithoutClientVisitTypeNestedInput
   }
 
   export type VisitTypeUncheckedUpdateInput = {
@@ -55210,6 +58442,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     assignedTasks?: TaskUncheckedUpdateManyWithoutVisitTypeNestedInput
+    templateVisits?: TemplateVisitUncheckedUpdateManyWithoutClientVisitTypeNestedInput
   }
 
   export type VisitTypeCreateManyInput = {
@@ -55374,7 +58607,7 @@ export namespace Prisma {
     lastEditReason?: string | null
     bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
     alerts?: ReportAlertCreateNestedManyWithoutReportInput
@@ -55430,7 +58663,7 @@ export namespace Prisma {
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
     alerts?: ReportAlertUpdateManyWithoutReportNestedInput
@@ -55831,7 +59064,7 @@ export namespace Prisma {
     administrationRecords?: MedicationAdministrationCreateNestedManyWithoutMedicationRecordInput
     user: UserCreateNestedOneWithoutCareWorkerMedicationsInput
     client: UserCreateNestedOneWithoutClientMedicationsInput
-    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordInput
+    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordsInput
   }
 
   export type MedicationRecordUncheckedCreateInput = {
@@ -55871,7 +59104,7 @@ export namespace Prisma {
     administrationRecords?: MedicationAdministrationUpdateManyWithoutMedicationRecordNestedInput
     user?: UserUpdateOneRequiredWithoutCareWorkerMedicationsNestedInput
     client?: UserUpdateOneRequiredWithoutClientMedicationsNestedInput
-    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordNestedInput
+    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordsNestedInput
   }
 
   export type MedicationRecordUncheckedUpdateInput = {
@@ -56038,7 +59271,7 @@ export namespace Prisma {
     dueDate: Date | string
     status: $Enums.InvoiceStatus
     agency: AgencyCreateNestedOneWithoutInvoicesInput
-    client?: UserCreateNestedOneWithoutInvoiceInput
+    client?: UserCreateNestedOneWithoutInvoicesInput
   }
 
   export type InvoiceUncheckedCreateInput = {
@@ -56062,7 +59295,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     agency?: AgencyUpdateOneRequiredWithoutInvoicesNestedInput
-    client?: UserUpdateOneWithoutInvoiceNestedInput
+    client?: UserUpdateOneWithoutInvoicesNestedInput
   }
 
   export type InvoiceUncheckedUpdateInput = {
@@ -56212,8 +59445,8 @@ export namespace Prisma {
     fileUrl: string
     uploadedAt?: Date | string
     agency?: AgencyCreateNestedOneWithoutDocumentsInput
-    client?: UserCreateNestedOneWithoutDocumentInput
-    user?: UserCreateNestedOneWithoutDocumentsInput
+    client?: UserCreateNestedOneWithoutDocumentsInput
+    user?: UserCreateNestedOneWithoutUserDocumentsInput
   }
 
   export type DocumentUncheckedCreateInput = {
@@ -56232,8 +59465,8 @@ export namespace Prisma {
     fileUrl?: StringFieldUpdateOperationsInput | string
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneWithoutDocumentsNestedInput
-    client?: UserUpdateOneWithoutDocumentNestedInput
-    user?: UserUpdateOneWithoutDocumentsNestedInput
+    client?: UserUpdateOneWithoutDocumentsNestedInput
+    user?: UserUpdateOneWithoutUserDocumentsNestedInput
   }
 
   export type DocumentUncheckedUpdateInput = {
@@ -56756,7 +59989,7 @@ export namespace Prisma {
     dueDate: Date | string
     completed?: boolean
     createdAt?: Date | string
-    Agency?: AgencyCreateNestedOneWithoutRemindersInput
+    agency?: AgencyCreateNestedOneWithoutRemindersInput
     client: UserCreateNestedOneWithoutRemindersInput
   }
 
@@ -56778,7 +60011,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Agency?: AgencyUpdateOneWithoutRemindersNestedInput
+    agency?: AgencyUpdateOneWithoutRemindersNestedInput
     client?: UserUpdateOneRequiredWithoutRemindersNestedInput
   }
 
@@ -56832,7 +60065,7 @@ export namespace Prisma {
     read?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutNotificationInput
+    user: UserCreateNestedOneWithoutNotificationsInput
   }
 
   export type NotificationUncheckedCreateInput = {
@@ -56854,7 +60087,7 @@ export namespace Prisma {
     read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutNotificationNestedInput
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
   }
 
   export type NotificationUncheckedUpdateInput = {
@@ -57070,17 +60303,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -57098,6 +60320,17 @@ export namespace Prisma {
     in?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
     notIn?: $Enums.NotificationFrequency[] | ListEnumNotificationFrequencyFieldRefInput<$PrismaModel>
     not?: NestedEnumNotificationFrequencyFilter<$PrismaModel> | $Enums.NotificationFrequency
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type AnnouncementListRelationFilter = {
@@ -57207,6 +60440,12 @@ export namespace Prisma {
     isNot?: UserWhereInput | null
   }
 
+  export type ScheduleTemplateListRelationFilter = {
+    every?: ScheduleTemplateWhereInput
+    some?: ScheduleTemplateWhereInput
+    none?: ScheduleTemplateWhereInput
+  }
+
   export type AnnouncementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -57275,6 +60514,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ScheduleTemplateOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type AgencyCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -57324,9 +60567,6 @@ export namespace Prisma {
   }
 
   export type AgencyAvgOrderByAggregateInput = {
-    extension?: SortOrder
-    mobileNumber?: SortOrder
-    landlineNumber?: SortOrder
     maxUsers?: SortOrder
     maxClients?: SortOrder
     maxCareWorkers?: SortOrder
@@ -57429,9 +60669,6 @@ export namespace Prisma {
   }
 
   export type AgencySumOrderByAggregateInput = {
-    extension?: SortOrder
-    mobileNumber?: SortOrder
-    landlineNumber?: SortOrder
     maxUsers?: SortOrder
     maxClients?: SortOrder
     maxCareWorkers?: SortOrder
@@ -57453,22 +60690,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -57497,6 +60718,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
     _max?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumAnnouncementPriorityFilter<$PrismaModel = never> = {
@@ -57897,6 +61134,16 @@ export namespace Prisma {
     in?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.RateSheetType[] | ListEnumRateSheetTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumRateSheetTypeFilter<$PrismaModel> | $Enums.RateSheetType
+  }
+
+  export type TemplateVisitListRelationFilter = {
+    every?: TemplateVisitWhereInput
+    some?: TemplateVisitWhereInput
+    none?: TemplateVisitWhereInput
+  }
+
+  export type TemplateVisitOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type RateSheetCountOrderByAggregateInput = {
@@ -58324,6 +61571,139 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type EnumTemplateVisitDayFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitDay | EnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitDayFilter<$PrismaModel> | $Enums.TemplateVisitDay
+  }
+
+  export type EnumTemplateVisitEndStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitEndStatus | EnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitEndStatusFilter<$PrismaModel> | $Enums.TemplateVisitEndStatus
+  }
+
+  export type RateSheetNullableScalarRelationFilter = {
+    is?: RateSheetWhereInput | null
+    isNot?: RateSheetWhereInput | null
+  }
+
+  export type VisitTypeNullableScalarRelationFilter = {
+    is?: VisitTypeWhereInput | null
+    isNot?: VisitTypeWhereInput | null
+  }
+
+  export type ScheduleTemplateScalarRelationFilter = {
+    is?: ScheduleTemplateWhereInput
+    isNot?: ScheduleTemplateWhereInput
+  }
+
+  export type TemplateVisitCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    day?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    endStatus?: SortOrder
+    isAllDayVisit?: SortOrder
+    rateSheetId?: SortOrder
+    clientVisitTypeId?: SortOrder
+    careWorkerId?: SortOrder
+    careWorker2Id?: SortOrder
+    careWorker3Id?: SortOrder
+    templateId?: SortOrder
+  }
+
+  export type TemplateVisitMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    day?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    endStatus?: SortOrder
+    isAllDayVisit?: SortOrder
+    rateSheetId?: SortOrder
+    clientVisitTypeId?: SortOrder
+    careWorkerId?: SortOrder
+    careWorker2Id?: SortOrder
+    careWorker3Id?: SortOrder
+    templateId?: SortOrder
+  }
+
+  export type TemplateVisitMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    day?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    endStatus?: SortOrder
+    isAllDayVisit?: SortOrder
+    rateSheetId?: SortOrder
+    clientVisitTypeId?: SortOrder
+    careWorkerId?: SortOrder
+    careWorker2Id?: SortOrder
+    careWorker3Id?: SortOrder
+    templateId?: SortOrder
+  }
+
+  export type EnumTemplateVisitDayWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitDay | EnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitDayWithAggregatesFilter<$PrismaModel> | $Enums.TemplateVisitDay
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTemplateVisitDayFilter<$PrismaModel>
+    _max?: NestedEnumTemplateVisitDayFilter<$PrismaModel>
+  }
+
+  export type EnumTemplateVisitEndStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitEndStatus | EnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitEndStatusWithAggregatesFilter<$PrismaModel> | $Enums.TemplateVisitEndStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTemplateVisitEndStatusFilter<$PrismaModel>
+    _max?: NestedEnumTemplateVisitEndStatusFilter<$PrismaModel>
+  }
+
+  export type ScheduleTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    userId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type ScheduleTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    userId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
+  }
+
+  export type ScheduleTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    userId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    agencyId?: SortOrder
   }
 
   export type CommunicationPreferenceCountOrderByAggregateInput = {
@@ -59668,6 +63048,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type ScheduleTemplateCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutAgencyInput, ScheduleTemplateUncheckedCreateWithoutAgencyInput> | ScheduleTemplateCreateWithoutAgencyInput[] | ScheduleTemplateUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutAgencyInput | ScheduleTemplateCreateOrConnectWithoutAgencyInput[]
+    createMany?: ScheduleTemplateCreateManyAgencyInputEnvelope
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+  }
+
   export type AnnouncementUncheckedCreateNestedManyWithoutAgencyInput = {
     create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
@@ -59787,16 +63174,15 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
+  export type ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutAgencyInput, ScheduleTemplateUncheckedCreateWithoutAgencyInput> | ScheduleTemplateCreateWithoutAgencyInput[] | ScheduleTemplateUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutAgencyInput | ScheduleTemplateCreateOrConnectWithoutAgencyInput[]
+    createMany?: ScheduleTemplateCreateManyAgencyInputEnvelope
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -59809,6 +63195,14 @@ export namespace Prisma {
 
   export type EnumNotificationFrequencyFieldUpdateOperationsInput = {
     set?: $Enums.NotificationFrequency
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type AnnouncementUpdateManyWithoutAgencyNestedInput = {
@@ -60059,6 +63453,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAgenciesOwnedInput, UserUpdateWithoutAgenciesOwnedInput>, UserUncheckedUpdateWithoutAgenciesOwnedInput>
   }
 
+  export type ScheduleTemplateUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutAgencyInput, ScheduleTemplateUncheckedCreateWithoutAgencyInput> | ScheduleTemplateCreateWithoutAgencyInput[] | ScheduleTemplateUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutAgencyInput | ScheduleTemplateCreateOrConnectWithoutAgencyInput[]
+    upsert?: ScheduleTemplateUpsertWithWhereUniqueWithoutAgencyInput | ScheduleTemplateUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ScheduleTemplateCreateManyAgencyInputEnvelope
+    set?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    disconnect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    delete?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    update?: ScheduleTemplateUpdateWithWhereUniqueWithoutAgencyInput | ScheduleTemplateUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ScheduleTemplateUpdateManyWithWhereWithoutAgencyInput | ScheduleTemplateUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+  }
+
   export type AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput = {
     create?: XOR<AnnouncementCreateWithoutAgencyInput, AnnouncementUncheckedCreateWithoutAgencyInput> | AnnouncementCreateWithoutAgencyInput[] | AnnouncementUncheckedCreateWithoutAgencyInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutAgencyInput | AnnouncementCreateOrConnectWithoutAgencyInput[]
@@ -60297,6 +63705,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutAgencyInput, ScheduleTemplateUncheckedCreateWithoutAgencyInput> | ScheduleTemplateCreateWithoutAgencyInput[] | ScheduleTemplateUncheckedCreateWithoutAgencyInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutAgencyInput | ScheduleTemplateCreateOrConnectWithoutAgencyInput[]
+    upsert?: ScheduleTemplateUpsertWithWhereUniqueWithoutAgencyInput | ScheduleTemplateUpsertWithWhereUniqueWithoutAgencyInput[]
+    createMany?: ScheduleTemplateCreateManyAgencyInputEnvelope
+    set?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    disconnect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    delete?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    update?: ScheduleTemplateUpdateWithWhereUniqueWithoutAgencyInput | ScheduleTemplateUpdateWithWhereUniqueWithoutAgencyInput[]
+    updateMany?: ScheduleTemplateUpdateManyWithWhereWithoutAgencyInput | ScheduleTemplateUpdateManyWithWhereWithoutAgencyInput[]
+    deleteMany?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+  }
+
   export type AnnouncementCreatetargetRolesInput = {
     set: $Enums.Role[]
   }
@@ -60313,9 +63735,9 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutAnnouncementInput = {
-    create?: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAnnouncementInput
+  export type UserCreateNestedOneWithoutAnnouncementsInput = {
+    create?: XOR<UserCreateWithoutAnnouncementsInput, UserUncheckedCreateWithoutAnnouncementsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnnouncementsInput
     connect?: UserWhereUniqueInput
   }
 
@@ -60364,14 +63786,14 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedAnnouncementsInput, UserUpdateWithoutCreatedAnnouncementsInput>, UserUncheckedUpdateWithoutCreatedAnnouncementsInput>
   }
 
-  export type UserUpdateOneWithoutAnnouncementNestedInput = {
-    create?: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAnnouncementInput
-    upsert?: UserUpsertWithoutAnnouncementInput
+  export type UserUpdateOneWithoutAnnouncementsNestedInput = {
+    create?: XOR<UserCreateWithoutAnnouncementsInput, UserUncheckedCreateWithoutAnnouncementsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnnouncementsInput
+    upsert?: UserUpsertWithoutAnnouncementsInput
     disconnect?: UserWhereInput | boolean
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnnouncementInput, UserUpdateWithoutAnnouncementInput>, UserUncheckedUpdateWithoutAnnouncementInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnnouncementsInput, UserUpdateWithoutAnnouncementsInput>, UserUncheckedUpdateWithoutAnnouncementsInput>
   }
 
   export type UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput = {
@@ -60406,9 +63828,9 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutAuditLogInput = {
-    create?: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAuditLogInput
+  export type UserCreateNestedOneWithoutAuditLogsInput = {
+    create?: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuditLogsInput
     connect?: UserWhereUniqueInput
   }
 
@@ -60424,14 +63846,14 @@ export namespace Prisma {
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutAuditLogsInput, AgencyUpdateWithoutAuditLogsInput>, AgencyUncheckedUpdateWithoutAuditLogsInput>
   }
 
-  export type UserUpdateOneWithoutAuditLogNestedInput = {
-    create?: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
-    connectOrCreate?: UserCreateOrConnectWithoutAuditLogInput
-    upsert?: UserUpsertWithoutAuditLogInput
+  export type UserUpdateOneWithoutAuditLogsNestedInput = {
+    create?: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuditLogsInput
+    upsert?: UserUpsertWithoutAuditLogsInput
     disconnect?: UserWhereInput | boolean
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogInput, UserUpdateWithoutAuditLogInput>, UserUncheckedUpdateWithoutAuditLogInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogsInput, UserUpdateWithoutAuditLogsInput>, UserUncheckedUpdateWithoutAuditLogsInput>
   }
 
   export type AgencyCreateNestedOneWithoutCertificationsInput = {
@@ -60530,6 +63952,20 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput
   }
 
+  export type TemplateVisitCreateNestedManyWithoutRateSheetInput = {
+    create?: XOR<TemplateVisitCreateWithoutRateSheetInput, TemplateVisitUncheckedCreateWithoutRateSheetInput> | TemplateVisitCreateWithoutRateSheetInput[] | TemplateVisitUncheckedCreateWithoutRateSheetInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutRateSheetInput | TemplateVisitCreateOrConnectWithoutRateSheetInput[]
+    createMany?: TemplateVisitCreateManyRateSheetInputEnvelope
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+  }
+
+  export type TemplateVisitUncheckedCreateNestedManyWithoutRateSheetInput = {
+    create?: XOR<TemplateVisitCreateWithoutRateSheetInput, TemplateVisitUncheckedCreateWithoutRateSheetInput> | TemplateVisitCreateWithoutRateSheetInput[] | TemplateVisitUncheckedCreateWithoutRateSheetInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutRateSheetInput | TemplateVisitCreateOrConnectWithoutRateSheetInput[]
+    createMany?: TemplateVisitCreateManyRateSheetInputEnvelope
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+  }
+
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -60550,6 +63986,34 @@ export namespace Prisma {
     delete?: AgencyWhereInput | boolean
     connect?: AgencyWhereUniqueInput
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutRateSheetsInput, AgencyUpdateWithoutRateSheetsInput>, AgencyUncheckedUpdateWithoutRateSheetsInput>
+  }
+
+  export type TemplateVisitUpdateManyWithoutRateSheetNestedInput = {
+    create?: XOR<TemplateVisitCreateWithoutRateSheetInput, TemplateVisitUncheckedCreateWithoutRateSheetInput> | TemplateVisitCreateWithoutRateSheetInput[] | TemplateVisitUncheckedCreateWithoutRateSheetInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutRateSheetInput | TemplateVisitCreateOrConnectWithoutRateSheetInput[]
+    upsert?: TemplateVisitUpsertWithWhereUniqueWithoutRateSheetInput | TemplateVisitUpsertWithWhereUniqueWithoutRateSheetInput[]
+    createMany?: TemplateVisitCreateManyRateSheetInputEnvelope
+    set?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    disconnect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    delete?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    update?: TemplateVisitUpdateWithWhereUniqueWithoutRateSheetInput | TemplateVisitUpdateWithWhereUniqueWithoutRateSheetInput[]
+    updateMany?: TemplateVisitUpdateManyWithWhereWithoutRateSheetInput | TemplateVisitUpdateManyWithWhereWithoutRateSheetInput[]
+    deleteMany?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
+  }
+
+  export type TemplateVisitUncheckedUpdateManyWithoutRateSheetNestedInput = {
+    create?: XOR<TemplateVisitCreateWithoutRateSheetInput, TemplateVisitUncheckedCreateWithoutRateSheetInput> | TemplateVisitCreateWithoutRateSheetInput[] | TemplateVisitUncheckedCreateWithoutRateSheetInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutRateSheetInput | TemplateVisitCreateOrConnectWithoutRateSheetInput[]
+    upsert?: TemplateVisitUpsertWithWhereUniqueWithoutRateSheetInput | TemplateVisitUpsertWithWhereUniqueWithoutRateSheetInput[]
+    createMany?: TemplateVisitCreateManyRateSheetInputEnvelope
+    set?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    disconnect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    delete?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    update?: TemplateVisitUpdateWithWhereUniqueWithoutRateSheetInput | TemplateVisitUpdateWithWhereUniqueWithoutRateSheetInput[]
+    updateMany?: TemplateVisitUpdateManyWithWhereWithoutRateSheetInput | TemplateVisitUpdateManyWithWhereWithoutRateSheetInput[]
+    deleteMany?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
   }
 
   export type AgencyCreateNestedOneWithoutCustomTasksInput = {
@@ -60868,6 +64332,13 @@ export namespace Prisma {
     connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
   }
 
+  export type ScheduleTemplateCreateNestedManyWithoutUserInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutUserInput, ScheduleTemplateUncheckedCreateWithoutUserInput> | ScheduleTemplateCreateWithoutUserInput[] | ScheduleTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutUserInput | ScheduleTemplateCreateOrConnectWithoutUserInput[]
+    createMany?: ScheduleTemplateCreateManyUserInputEnvelope
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+  }
+
   export type AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
@@ -61114,6 +64585,13 @@ export namespace Prisma {
     connectOrCreate?: VisitTypeCreateOrConnectWithoutUserInput | VisitTypeCreateOrConnectWithoutUserInput[]
     createMany?: VisitTypeCreateManyUserInputEnvelope
     connect?: VisitTypeWhereUniqueInput | VisitTypeWhereUniqueInput[]
+  }
+
+  export type ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutUserInput, ScheduleTemplateUncheckedCreateWithoutUserInput> | ScheduleTemplateCreateWithoutUserInput[] | ScheduleTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutUserInput | ScheduleTemplateCreateOrConnectWithoutUserInput[]
+    createMany?: ScheduleTemplateCreateManyUserInputEnvelope
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
   }
 
   export type NullableBoolFieldUpdateOperationsInput = {
@@ -61634,6 +65112,20 @@ export namespace Prisma {
     deleteMany?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
   }
 
+  export type ScheduleTemplateUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutUserInput, ScheduleTemplateUncheckedCreateWithoutUserInput> | ScheduleTemplateCreateWithoutUserInput[] | ScheduleTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutUserInput | ScheduleTemplateCreateOrConnectWithoutUserInput[]
+    upsert?: ScheduleTemplateUpsertWithWhereUniqueWithoutUserInput | ScheduleTemplateUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ScheduleTemplateCreateManyUserInputEnvelope
+    set?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    disconnect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    delete?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    update?: ScheduleTemplateUpdateWithWhereUniqueWithoutUserInput | ScheduleTemplateUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ScheduleTemplateUpdateManyWithWhereWithoutUserInput | ScheduleTemplateUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+  }
+
   export type AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<AnnouncementCreateWithoutCreatedByInput, AnnouncementUncheckedCreateWithoutCreatedByInput> | AnnouncementCreateWithoutCreatedByInput[] | AnnouncementUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: AnnouncementCreateOrConnectWithoutCreatedByInput | AnnouncementCreateOrConnectWithoutCreatedByInput[]
@@ -62128,6 +65620,144 @@ export namespace Prisma {
     deleteMany?: VisitTypeScalarWhereInput | VisitTypeScalarWhereInput[]
   }
 
+  export type ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutUserInput, ScheduleTemplateUncheckedCreateWithoutUserInput> | ScheduleTemplateCreateWithoutUserInput[] | ScheduleTemplateUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutUserInput | ScheduleTemplateCreateOrConnectWithoutUserInput[]
+    upsert?: ScheduleTemplateUpsertWithWhereUniqueWithoutUserInput | ScheduleTemplateUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ScheduleTemplateCreateManyUserInputEnvelope
+    set?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    disconnect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    delete?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    update?: ScheduleTemplateUpdateWithWhereUniqueWithoutUserInput | ScheduleTemplateUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ScheduleTemplateUpdateManyWithWhereWithoutUserInput | ScheduleTemplateUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+  }
+
+  export type RateSheetCreateNestedOneWithoutTemplateVisitsInput = {
+    create?: XOR<RateSheetCreateWithoutTemplateVisitsInput, RateSheetUncheckedCreateWithoutTemplateVisitsInput>
+    connectOrCreate?: RateSheetCreateOrConnectWithoutTemplateVisitsInput
+    connect?: RateSheetWhereUniqueInput
+  }
+
+  export type VisitTypeCreateNestedOneWithoutTemplateVisitsInput = {
+    create?: XOR<VisitTypeCreateWithoutTemplateVisitsInput, VisitTypeUncheckedCreateWithoutTemplateVisitsInput>
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutTemplateVisitsInput
+    connect?: VisitTypeWhereUniqueInput
+  }
+
+  export type ScheduleTemplateCreateNestedOneWithoutVisitsInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutVisitsInput, ScheduleTemplateUncheckedCreateWithoutVisitsInput>
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutVisitsInput
+    connect?: ScheduleTemplateWhereUniqueInput
+  }
+
+  export type EnumTemplateVisitDayFieldUpdateOperationsInput = {
+    set?: $Enums.TemplateVisitDay
+  }
+
+  export type EnumTemplateVisitEndStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TemplateVisitEndStatus
+  }
+
+  export type RateSheetUpdateOneWithoutTemplateVisitsNestedInput = {
+    create?: XOR<RateSheetCreateWithoutTemplateVisitsInput, RateSheetUncheckedCreateWithoutTemplateVisitsInput>
+    connectOrCreate?: RateSheetCreateOrConnectWithoutTemplateVisitsInput
+    upsert?: RateSheetUpsertWithoutTemplateVisitsInput
+    disconnect?: RateSheetWhereInput | boolean
+    delete?: RateSheetWhereInput | boolean
+    connect?: RateSheetWhereUniqueInput
+    update?: XOR<XOR<RateSheetUpdateToOneWithWhereWithoutTemplateVisitsInput, RateSheetUpdateWithoutTemplateVisitsInput>, RateSheetUncheckedUpdateWithoutTemplateVisitsInput>
+  }
+
+  export type VisitTypeUpdateOneWithoutTemplateVisitsNestedInput = {
+    create?: XOR<VisitTypeCreateWithoutTemplateVisitsInput, VisitTypeUncheckedCreateWithoutTemplateVisitsInput>
+    connectOrCreate?: VisitTypeCreateOrConnectWithoutTemplateVisitsInput
+    upsert?: VisitTypeUpsertWithoutTemplateVisitsInput
+    disconnect?: VisitTypeWhereInput | boolean
+    delete?: VisitTypeWhereInput | boolean
+    connect?: VisitTypeWhereUniqueInput
+    update?: XOR<XOR<VisitTypeUpdateToOneWithWhereWithoutTemplateVisitsInput, VisitTypeUpdateWithoutTemplateVisitsInput>, VisitTypeUncheckedUpdateWithoutTemplateVisitsInput>
+  }
+
+  export type ScheduleTemplateUpdateOneRequiredWithoutVisitsNestedInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutVisitsInput, ScheduleTemplateUncheckedCreateWithoutVisitsInput>
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutVisitsInput
+    upsert?: ScheduleTemplateUpsertWithoutVisitsInput
+    connect?: ScheduleTemplateWhereUniqueInput
+    update?: XOR<XOR<ScheduleTemplateUpdateToOneWithWhereWithoutVisitsInput, ScheduleTemplateUpdateWithoutVisitsInput>, ScheduleTemplateUncheckedUpdateWithoutVisitsInput>
+  }
+
+  export type TemplateVisitCreateNestedManyWithoutTemplateInput = {
+    create?: XOR<TemplateVisitCreateWithoutTemplateInput, TemplateVisitUncheckedCreateWithoutTemplateInput> | TemplateVisitCreateWithoutTemplateInput[] | TemplateVisitUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutTemplateInput | TemplateVisitCreateOrConnectWithoutTemplateInput[]
+    createMany?: TemplateVisitCreateManyTemplateInputEnvelope
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+  }
+
+  export type AgencyCreateNestedOneWithoutScheduleTemplatesInput = {
+    create?: XOR<AgencyCreateWithoutScheduleTemplatesInput, AgencyUncheckedCreateWithoutScheduleTemplatesInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutScheduleTemplatesInput
+    connect?: AgencyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutScheduleTemplatesInput = {
+    create?: XOR<UserCreateWithoutScheduleTemplatesInput, UserUncheckedCreateWithoutScheduleTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutScheduleTemplatesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TemplateVisitUncheckedCreateNestedManyWithoutTemplateInput = {
+    create?: XOR<TemplateVisitCreateWithoutTemplateInput, TemplateVisitUncheckedCreateWithoutTemplateInput> | TemplateVisitCreateWithoutTemplateInput[] | TemplateVisitUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutTemplateInput | TemplateVisitCreateOrConnectWithoutTemplateInput[]
+    createMany?: TemplateVisitCreateManyTemplateInputEnvelope
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+  }
+
+  export type TemplateVisitUpdateManyWithoutTemplateNestedInput = {
+    create?: XOR<TemplateVisitCreateWithoutTemplateInput, TemplateVisitUncheckedCreateWithoutTemplateInput> | TemplateVisitCreateWithoutTemplateInput[] | TemplateVisitUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutTemplateInput | TemplateVisitCreateOrConnectWithoutTemplateInput[]
+    upsert?: TemplateVisitUpsertWithWhereUniqueWithoutTemplateInput | TemplateVisitUpsertWithWhereUniqueWithoutTemplateInput[]
+    createMany?: TemplateVisitCreateManyTemplateInputEnvelope
+    set?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    disconnect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    delete?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    update?: TemplateVisitUpdateWithWhereUniqueWithoutTemplateInput | TemplateVisitUpdateWithWhereUniqueWithoutTemplateInput[]
+    updateMany?: TemplateVisitUpdateManyWithWhereWithoutTemplateInput | TemplateVisitUpdateManyWithWhereWithoutTemplateInput[]
+    deleteMany?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
+  }
+
+  export type AgencyUpdateOneRequiredWithoutScheduleTemplatesNestedInput = {
+    create?: XOR<AgencyCreateWithoutScheduleTemplatesInput, AgencyUncheckedCreateWithoutScheduleTemplatesInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutScheduleTemplatesInput
+    upsert?: AgencyUpsertWithoutScheduleTemplatesInput
+    connect?: AgencyWhereUniqueInput
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutScheduleTemplatesInput, AgencyUpdateWithoutScheduleTemplatesInput>, AgencyUncheckedUpdateWithoutScheduleTemplatesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutScheduleTemplatesNestedInput = {
+    create?: XOR<UserCreateWithoutScheduleTemplatesInput, UserUncheckedCreateWithoutScheduleTemplatesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutScheduleTemplatesInput
+    upsert?: UserUpsertWithoutScheduleTemplatesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutScheduleTemplatesInput, UserUpdateWithoutScheduleTemplatesInput>, UserUncheckedUpdateWithoutScheduleTemplatesInput>
+  }
+
+  export type TemplateVisitUncheckedUpdateManyWithoutTemplateNestedInput = {
+    create?: XOR<TemplateVisitCreateWithoutTemplateInput, TemplateVisitUncheckedCreateWithoutTemplateInput> | TemplateVisitCreateWithoutTemplateInput[] | TemplateVisitUncheckedCreateWithoutTemplateInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutTemplateInput | TemplateVisitCreateOrConnectWithoutTemplateInput[]
+    upsert?: TemplateVisitUpsertWithWhereUniqueWithoutTemplateInput | TemplateVisitUpsertWithWhereUniqueWithoutTemplateInput[]
+    createMany?: TemplateVisitCreateManyTemplateInputEnvelope
+    set?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    disconnect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    delete?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    update?: TemplateVisitUpdateWithWhereUniqueWithoutTemplateInput | TemplateVisitUpdateWithWhereUniqueWithoutTemplateInput[]
+    updateMany?: TemplateVisitUpdateManyWithWhereWithoutTemplateInput | TemplateVisitUpdateManyWithWhereWithoutTemplateInput[]
+    deleteMany?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutCommunicationPreferenceInput = {
     create?: XOR<UserCreateWithoutCommunicationPreferenceInput, UserUncheckedCreateWithoutCommunicationPreferenceInput>
     connectOrCreate?: UserCreateOrConnectWithoutCommunicationPreferenceInput
@@ -62243,11 +65873,25 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type TemplateVisitCreateNestedManyWithoutClientVisitTypeInput = {
+    create?: XOR<TemplateVisitCreateWithoutClientVisitTypeInput, TemplateVisitUncheckedCreateWithoutClientVisitTypeInput> | TemplateVisitCreateWithoutClientVisitTypeInput[] | TemplateVisitUncheckedCreateWithoutClientVisitTypeInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutClientVisitTypeInput | TemplateVisitCreateOrConnectWithoutClientVisitTypeInput[]
+    createMany?: TemplateVisitCreateManyClientVisitTypeInputEnvelope
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+  }
+
   export type TaskUncheckedCreateNestedManyWithoutVisitTypeInput = {
     create?: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput> | TaskCreateWithoutVisitTypeInput[] | TaskUncheckedCreateWithoutVisitTypeInput[]
     connectOrCreate?: TaskCreateOrConnectWithoutVisitTypeInput | TaskCreateOrConnectWithoutVisitTypeInput[]
     createMany?: TaskCreateManyVisitTypeInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type TemplateVisitUncheckedCreateNestedManyWithoutClientVisitTypeInput = {
+    create?: XOR<TemplateVisitCreateWithoutClientVisitTypeInput, TemplateVisitUncheckedCreateWithoutClientVisitTypeInput> | TemplateVisitCreateWithoutClientVisitTypeInput[] | TemplateVisitUncheckedCreateWithoutClientVisitTypeInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutClientVisitTypeInput | TemplateVisitCreateOrConnectWithoutClientVisitTypeInput[]
+    createMany?: TemplateVisitCreateManyClientVisitTypeInputEnvelope
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
   }
 
   export type TaskUpdateManyWithoutVisitTypeNestedInput = {
@@ -62274,6 +65918,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVisitTypesInput, UserUpdateWithoutVisitTypesInput>, UserUncheckedUpdateWithoutVisitTypesInput>
   }
 
+  export type TemplateVisitUpdateManyWithoutClientVisitTypeNestedInput = {
+    create?: XOR<TemplateVisitCreateWithoutClientVisitTypeInput, TemplateVisitUncheckedCreateWithoutClientVisitTypeInput> | TemplateVisitCreateWithoutClientVisitTypeInput[] | TemplateVisitUncheckedCreateWithoutClientVisitTypeInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutClientVisitTypeInput | TemplateVisitCreateOrConnectWithoutClientVisitTypeInput[]
+    upsert?: TemplateVisitUpsertWithWhereUniqueWithoutClientVisitTypeInput | TemplateVisitUpsertWithWhereUniqueWithoutClientVisitTypeInput[]
+    createMany?: TemplateVisitCreateManyClientVisitTypeInputEnvelope
+    set?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    disconnect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    delete?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    update?: TemplateVisitUpdateWithWhereUniqueWithoutClientVisitTypeInput | TemplateVisitUpdateWithWhereUniqueWithoutClientVisitTypeInput[]
+    updateMany?: TemplateVisitUpdateManyWithWhereWithoutClientVisitTypeInput | TemplateVisitUpdateManyWithWhereWithoutClientVisitTypeInput[]
+    deleteMany?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
+  }
+
   export type TaskUncheckedUpdateManyWithoutVisitTypeNestedInput = {
     create?: XOR<TaskCreateWithoutVisitTypeInput, TaskUncheckedCreateWithoutVisitTypeInput> | TaskCreateWithoutVisitTypeInput[] | TaskUncheckedCreateWithoutVisitTypeInput[]
     connectOrCreate?: TaskCreateOrConnectWithoutVisitTypeInput | TaskCreateOrConnectWithoutVisitTypeInput[]
@@ -62286,6 +65944,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutVisitTypeInput | TaskUpdateWithWhereUniqueWithoutVisitTypeInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutVisitTypeInput | TaskUpdateManyWithWhereWithoutVisitTypeInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type TemplateVisitUncheckedUpdateManyWithoutClientVisitTypeNestedInput = {
+    create?: XOR<TemplateVisitCreateWithoutClientVisitTypeInput, TemplateVisitUncheckedCreateWithoutClientVisitTypeInput> | TemplateVisitCreateWithoutClientVisitTypeInput[] | TemplateVisitUncheckedCreateWithoutClientVisitTypeInput[]
+    connectOrCreate?: TemplateVisitCreateOrConnectWithoutClientVisitTypeInput | TemplateVisitCreateOrConnectWithoutClientVisitTypeInput[]
+    upsert?: TemplateVisitUpsertWithWhereUniqueWithoutClientVisitTypeInput | TemplateVisitUpsertWithWhereUniqueWithoutClientVisitTypeInput[]
+    createMany?: TemplateVisitCreateManyClientVisitTypeInputEnvelope
+    set?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    disconnect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    delete?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    connect?: TemplateVisitWhereUniqueInput | TemplateVisitWhereUniqueInput[]
+    update?: TemplateVisitUpdateWithWhereUniqueWithoutClientVisitTypeInput | TemplateVisitUpdateWithWhereUniqueWithoutClientVisitTypeInput[]
+    updateMany?: TemplateVisitUpdateManyWithWhereWithoutClientVisitTypeInput | TemplateVisitUpdateManyWithWhereWithoutClientVisitTypeInput[]
+    deleteMany?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
   }
 
   export type AgencyCreateNestedOneWithoutSchedulesInput = {
@@ -62356,9 +66028,9 @@ export namespace Prisma {
     connect?: MedicationAdministrationWhereUniqueInput | MedicationAdministrationWhereUniqueInput[]
   }
 
-  export type AgencyCreateNestedOneWithoutReportInput = {
-    create?: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutReportInput
+  export type AgencyCreateNestedOneWithoutReportsInput = {
+    create?: XOR<AgencyCreateWithoutReportsInput, AgencyUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutReportsInput
     connect?: AgencyWhereUniqueInput
   }
 
@@ -62462,12 +66134,12 @@ export namespace Prisma {
     deleteMany?: MedicationAdministrationScalarWhereInput | MedicationAdministrationScalarWhereInput[]
   }
 
-  export type AgencyUpdateOneRequiredWithoutReportNestedInput = {
-    create?: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
-    connectOrCreate?: AgencyCreateOrConnectWithoutReportInput
-    upsert?: AgencyUpsertWithoutReportInput
+  export type AgencyUpdateOneRequiredWithoutReportsNestedInput = {
+    create?: XOR<AgencyCreateWithoutReportsInput, AgencyUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: AgencyCreateOrConnectWithoutReportsInput
+    upsert?: AgencyUpsertWithoutReportsInput
     connect?: AgencyWhereUniqueInput
-    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutReportInput, AgencyUpdateWithoutReportInput>, AgencyUncheckedUpdateWithoutReportInput>
+    update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutReportsInput, AgencyUpdateWithoutReportsInput>, AgencyUncheckedUpdateWithoutReportsInput>
   }
 
   export type UserUpdateOneRequiredWithoutClientReportsNestedInput = {
@@ -62695,9 +66367,9 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordInput = {
-    create?: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordInput>
-    connectOrCreate?: MedicationDatabaseLinkCreateOrConnectWithoutMedicationRecordInput
+  export type MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordsInput = {
+    create?: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordsInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordsInput>
+    connectOrCreate?: MedicationDatabaseLinkCreateOrConnectWithoutMedicationRecordsInput
     connect?: MedicationDatabaseLinkWhereUniqueInput
   }
 
@@ -62738,12 +66410,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClientMedicationsInput, UserUpdateWithoutClientMedicationsInput>, UserUncheckedUpdateWithoutClientMedicationsInput>
   }
 
-  export type MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordNestedInput = {
-    create?: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordInput>
-    connectOrCreate?: MedicationDatabaseLinkCreateOrConnectWithoutMedicationRecordInput
-    upsert?: MedicationDatabaseLinkUpsertWithoutMedicationRecordInput
+  export type MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordsNestedInput = {
+    create?: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordsInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordsInput>
+    connectOrCreate?: MedicationDatabaseLinkCreateOrConnectWithoutMedicationRecordsInput
+    upsert?: MedicationDatabaseLinkUpsertWithoutMedicationRecordsInput
     connect?: MedicationDatabaseLinkWhereUniqueInput
-    update?: XOR<XOR<MedicationDatabaseLinkUpdateToOneWithWhereWithoutMedicationRecordInput, MedicationDatabaseLinkUpdateWithoutMedicationRecordInput>, MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordInput>
+    update?: XOR<XOR<MedicationDatabaseLinkUpdateToOneWithWhereWithoutMedicationRecordsInput, MedicationDatabaseLinkUpdateWithoutMedicationRecordsInput>, MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordsInput>
   }
 
   export type MedicationAdministrationUncheckedUpdateManyWithoutMedicationRecordNestedInput = {
@@ -62814,9 +66486,9 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutInvoiceInput = {
-    create?: XOR<UserCreateWithoutInvoiceInput, UserUncheckedCreateWithoutInvoiceInput>
-    connectOrCreate?: UserCreateOrConnectWithoutInvoiceInput
+  export type UserCreateNestedOneWithoutInvoicesInput = {
+    create?: XOR<UserCreateWithoutInvoicesInput, UserUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInvoicesInput
     connect?: UserWhereUniqueInput
   }
 
@@ -62840,14 +66512,14 @@ export namespace Prisma {
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutInvoicesInput, AgencyUpdateWithoutInvoicesInput>, AgencyUncheckedUpdateWithoutInvoicesInput>
   }
 
-  export type UserUpdateOneWithoutInvoiceNestedInput = {
-    create?: XOR<UserCreateWithoutInvoiceInput, UserUncheckedCreateWithoutInvoiceInput>
-    connectOrCreate?: UserCreateOrConnectWithoutInvoiceInput
-    upsert?: UserUpsertWithoutInvoiceInput
+  export type UserUpdateOneWithoutInvoicesNestedInput = {
+    create?: XOR<UserCreateWithoutInvoicesInput, UserUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutInvoicesInput
+    upsert?: UserUpsertWithoutInvoicesInput
     disconnect?: UserWhereInput | boolean
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInvoiceInput, UserUpdateWithoutInvoiceInput>, UserUncheckedUpdateWithoutInvoiceInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInvoicesInput, UserUpdateWithoutInvoicesInput>, UserUncheckedUpdateWithoutInvoicesInput>
   }
 
   export type AgencyCreateNestedOneWithoutMileageRecordsInput = {
@@ -62898,15 +66570,15 @@ export namespace Prisma {
     connect?: AgencyWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutDocumentInput = {
-    create?: XOR<UserCreateWithoutDocumentInput, UserUncheckedCreateWithoutDocumentInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDocumentInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type UserCreateNestedOneWithoutDocumentsInput = {
     create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
     connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutUserDocumentsInput = {
+    create?: XOR<UserCreateWithoutUserDocumentsInput, UserUncheckedCreateWithoutUserDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserDocumentsInput
     connect?: UserWhereUniqueInput
   }
 
@@ -62920,16 +66592,6 @@ export namespace Prisma {
     update?: XOR<XOR<AgencyUpdateToOneWithWhereWithoutDocumentsInput, AgencyUpdateWithoutDocumentsInput>, AgencyUncheckedUpdateWithoutDocumentsInput>
   }
 
-  export type UserUpdateOneWithoutDocumentNestedInput = {
-    create?: XOR<UserCreateWithoutDocumentInput, UserUncheckedCreateWithoutDocumentInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDocumentInput
-    upsert?: UserUpsertWithoutDocumentInput
-    disconnect?: UserWhereInput | boolean
-    delete?: UserWhereInput | boolean
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDocumentInput, UserUpdateWithoutDocumentInput>, UserUncheckedUpdateWithoutDocumentInput>
-  }
-
   export type UserUpdateOneWithoutDocumentsNestedInput = {
     create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
     connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
@@ -62938,6 +66600,16 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDocumentsInput, UserUpdateWithoutDocumentsInput>, UserUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type UserUpdateOneWithoutUserDocumentsNestedInput = {
+    create?: XOR<UserCreateWithoutUserDocumentsInput, UserUncheckedCreateWithoutUserDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserDocumentsInput
+    upsert?: UserUpsertWithoutUserDocumentsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserDocumentsInput, UserUpdateWithoutUserDocumentsInput>, UserUncheckedUpdateWithoutUserDocumentsInput>
   }
 
   export type UserCreateNestedOneWithoutProfileInput = {
@@ -63170,9 +66842,9 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRemindersInput, UserUpdateWithoutRemindersInput>, UserUncheckedUpdateWithoutRemindersInput>
   }
 
-  export type UserCreateNestedOneWithoutNotificationInput = {
-    create?: XOR<UserCreateWithoutNotificationInput, UserUncheckedCreateWithoutNotificationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutNotificationInput
+  export type UserCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
     connect?: UserWhereUniqueInput
   }
 
@@ -63180,12 +66852,12 @@ export namespace Prisma {
     set?: $Enums.NotificationType
   }
 
-  export type UserUpdateOneRequiredWithoutNotificationNestedInput = {
-    create?: XOR<UserCreateWithoutNotificationInput, UserUncheckedCreateWithoutNotificationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutNotificationInput
-    upsert?: UserUpsertWithoutNotificationInput
+  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    upsert?: UserUpsertWithoutNotificationsInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationInput, UserUpdateWithoutNotificationInput>, UserUncheckedUpdateWithoutNotificationInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -63367,33 +67039,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
@@ -63420,6 +67065,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
     _max?: NestedEnumNotificationFrequencyFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumAnnouncementPriorityFilter<$PrismaModel = never> = {
@@ -63663,6 +67335,40 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumTemplateVisitDayFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitDay | EnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitDayFilter<$PrismaModel> | $Enums.TemplateVisitDay
+  }
+
+  export type NestedEnumTemplateVisitEndStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitEndStatus | EnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitEndStatusFilter<$PrismaModel> | $Enums.TemplateVisitEndStatus
+  }
+
+  export type NestedEnumTemplateVisitDayWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitDay | EnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitDay[] | ListEnumTemplateVisitDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitDayWithAggregatesFilter<$PrismaModel> | $Enums.TemplateVisitDay
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTemplateVisitDayFilter<$PrismaModel>
+    _max?: NestedEnumTemplateVisitDayFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTemplateVisitEndStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TemplateVisitEndStatus | EnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TemplateVisitEndStatus[] | ListEnumTemplateVisitEndStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTemplateVisitEndStatusWithAggregatesFilter<$PrismaModel> | $Enums.TemplateVisitEndStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTemplateVisitEndStatusFilter<$PrismaModel>
+    _max?: NestedEnumTemplateVisitEndStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumTaskTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.TaskType | EnumTaskTypeFieldRefInput<$PrismaModel>
     in?: $Enums.TaskType[] | ListEnumTaskTypeFieldRefInput<$PrismaModel>
@@ -63874,18 +67580,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -63894,7 +67600,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -63910,6 +67616,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -63940,18 +67647,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -63960,7 +67667,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -63974,6 +67681,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -64018,18 +67726,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -64038,7 +67746,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -64054,6 +67762,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -64084,18 +67793,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -64104,7 +67813,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -64118,6 +67827,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnnouncementCreateWithoutAgencyInput = {
@@ -64136,7 +67846,7 @@ export namespace Prisma {
     attachmentUrl?: string | null
     attachmentType?: string | null
     createdBy: UserCreateNestedOneWithoutCreatedAnnouncementsInput
-    User?: UserCreateNestedOneWithoutAnnouncementInput
+    user?: UserCreateNestedOneWithoutAnnouncementsInput
     acknowledgedBy?: UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput
   }
 
@@ -64180,7 +67890,7 @@ export namespace Prisma {
     ipAddress?: string | null
     userAgent?: string | null
     performedAt?: Date | string
-    user?: UserCreateNestedOneWithoutAuditLogInput
+    user?: UserCreateNestedOneWithoutAuditLogsInput
   }
 
   export type AuditLogUncheckedCreateWithoutAgencyInput = {
@@ -64279,8 +67989,8 @@ export namespace Prisma {
     title: string
     fileUrl: string
     uploadedAt?: Date | string
-    client?: UserCreateNestedOneWithoutDocumentInput
-    user?: UserCreateNestedOneWithoutDocumentsInput
+    client?: UserCreateNestedOneWithoutDocumentsInput
+    user?: UserCreateNestedOneWithoutUserDocumentsInput
   }
 
   export type DocumentUncheckedCreateWithoutAgencyInput = {
@@ -64362,7 +68072,7 @@ export namespace Prisma {
     issuedAt?: Date | string
     dueDate: Date | string
     status: $Enums.InvoiceStatus
-    client?: UserCreateNestedOneWithoutInvoiceInput
+    client?: UserCreateNestedOneWithoutInvoicesInput
   }
 
   export type InvoiceUncheckedCreateWithoutAgencyInput = {
@@ -64392,7 +68102,7 @@ export namespace Prisma {
     isSpecialist?: boolean
     url: string
     source: string
-    MedicationRecord?: MedicationRecordCreateNestedManyWithoutMedicationInput
+    medicationRecords?: MedicationRecordCreateNestedManyWithoutMedicationInput
   }
 
   export type MedicationDatabaseLinkUncheckedCreateWithoutAgencyInput = {
@@ -64401,7 +68111,7 @@ export namespace Prisma {
     isSpecialist?: boolean
     url: string
     source: string
-    MedicationRecord?: MedicationRecordUncheckedCreateNestedManyWithoutMedicationInput
+    medicationRecords?: MedicationRecordUncheckedCreateNestedManyWithoutMedicationInput
   }
 
   export type MedicationDatabaseLinkCreateOrConnectWithoutAgencyInput = {
@@ -64487,6 +68197,7 @@ export namespace Prisma {
     staffType: $Enums.RateSheetType
     createdAt?: Date | string
     updatedAt?: Date | string
+    templateVisits?: TemplateVisitCreateNestedManyWithoutRateSheetInput
   }
 
   export type RateSheetUncheckedCreateWithoutAgencyInput = {
@@ -64496,6 +68207,7 @@ export namespace Prisma {
     staffType: $Enums.RateSheetType
     createdAt?: Date | string
     updatedAt?: Date | string
+    templateVisits?: TemplateVisitUncheckedCreateNestedManyWithoutRateSheetInput
   }
 
   export type RateSheetCreateOrConnectWithoutAgencyInput = {
@@ -64696,19 +68408,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -64717,7 +68429,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -64732,6 +68444,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgencyInput = {
@@ -64761,19 +68474,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -64782,7 +68495,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -64796,6 +68509,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgencyInput = {
@@ -64834,19 +68548,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -64855,7 +68569,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -64870,6 +68584,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgenciesOwnedInput = {
@@ -64900,19 +68615,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -64921,7 +68636,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -64934,11 +68649,44 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgenciesOwnedInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutAgenciesOwnedInput, UserUncheckedCreateWithoutAgenciesOwnedInput>
+  }
+
+  export type ScheduleTemplateCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    visits?: TemplateVisitCreateNestedManyWithoutTemplateInput
+    user: UserCreateNestedOneWithoutScheduleTemplatesInput
+  }
+
+  export type ScheduleTemplateUncheckedCreateWithoutAgencyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    userId: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    visits?: TemplateVisitUncheckedCreateNestedManyWithoutTemplateInput
+  }
+
+  export type ScheduleTemplateCreateOrConnectWithoutAgencyInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    create: XOR<ScheduleTemplateCreateWithoutAgencyInput, ScheduleTemplateUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type ScheduleTemplateCreateManyAgencyInputEnvelope = {
+    data: ScheduleTemplateCreateManyAgencyInput | ScheduleTemplateCreateManyAgencyInput[]
+    skipDuplicates?: boolean
   }
 
   export type AnnouncementUpsertWithWhereUniqueWithoutAgencyInput = {
@@ -65532,19 +69280,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -65553,7 +69301,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -65568,6 +69316,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgenciesOwnedInput = {
@@ -65598,19 +69347,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -65619,7 +69368,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -65632,6 +69381,37 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ScheduleTemplateUpsertWithWhereUniqueWithoutAgencyInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    update: XOR<ScheduleTemplateUpdateWithoutAgencyInput, ScheduleTemplateUncheckedUpdateWithoutAgencyInput>
+    create: XOR<ScheduleTemplateCreateWithoutAgencyInput, ScheduleTemplateUncheckedCreateWithoutAgencyInput>
+  }
+
+  export type ScheduleTemplateUpdateWithWhereUniqueWithoutAgencyInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    data: XOR<ScheduleTemplateUpdateWithoutAgencyInput, ScheduleTemplateUncheckedUpdateWithoutAgencyInput>
+  }
+
+  export type ScheduleTemplateUpdateManyWithWhereWithoutAgencyInput = {
+    where: ScheduleTemplateScalarWhereInput
+    data: XOR<ScheduleTemplateUpdateManyMutationInput, ScheduleTemplateUncheckedUpdateManyWithoutAgencyInput>
+  }
+
+  export type ScheduleTemplateScalarWhereInput = {
+    AND?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+    OR?: ScheduleTemplateScalarWhereInput[]
+    NOT?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+    id?: StringFilter<"ScheduleTemplate"> | string
+    name?: StringFilter<"ScheduleTemplate"> | string
+    description?: StringNullableFilter<"ScheduleTemplate"> | string | null
+    userId?: StringFilter<"ScheduleTemplate"> | string
+    isActive?: BoolFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    agencyId?: StringFilter<"ScheduleTemplate"> | string
   }
 
   export type AgencyCreateWithoutAnnouncementsInput = {
@@ -65640,9 +69420,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -65691,11 +69471,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutAnnouncementsInput = {
@@ -65704,9 +69485,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -65756,10 +69537,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutAnnouncementsInput = {
@@ -65792,19 +69574,19 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -65813,7 +69595,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -65829,6 +69611,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedAnnouncementsInput = {
@@ -65858,19 +69641,19 @@ export namespace Prisma {
     allergies?: string | null
     interests?: string | null
     history?: string | null
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -65879,7 +69662,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -65893,6 +69676,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedAnnouncementsInput = {
@@ -65900,7 +69684,7 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutCreatedAnnouncementsInput, UserUncheckedCreateWithoutCreatedAnnouncementsInput>
   }
 
-  export type UserCreateWithoutAnnouncementInput = {
+  export type UserCreateWithoutAnnouncementsInput = {
     id?: string
     cognitoId: string
     email: string
@@ -65926,18 +69710,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -65946,7 +69730,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -65962,9 +69746,10 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutAnnouncementInput = {
+  export type UserUncheckedCreateWithoutAnnouncementsInput = {
     id?: string
     cognitoId: string
     email: string
@@ -65992,18 +69777,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -66012,7 +69797,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -66026,11 +69811,12 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutAnnouncementInput = {
+  export type UserCreateOrConnectWithoutAnnouncementsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
+    create: XOR<UserCreateWithoutAnnouncementsInput, UserUncheckedCreateWithoutAnnouncementsInput>
   }
 
   export type UserCreateWithoutAcknowledgedAnnouncementsInput = {
@@ -66059,19 +69845,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -66080,7 +69866,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -66095,6 +69881,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAcknowledgedAnnouncementsInput = {
@@ -66125,19 +69912,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -66146,7 +69933,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -66159,6 +69946,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAcknowledgedAnnouncementsInput = {
@@ -66183,9 +69971,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66234,11 +70022,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutAnnouncementsInput = {
@@ -66247,9 +70036,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66299,10 +70088,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutCreatedAnnouncementsInput = {
@@ -66341,19 +70131,19 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -66362,7 +70152,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -66378,6 +70168,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedAnnouncementsInput = {
@@ -66407,19 +70198,19 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -66428,7 +70219,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -66442,20 +70233,21 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUpsertWithoutAnnouncementInput = {
-    update: XOR<UserUpdateWithoutAnnouncementInput, UserUncheckedUpdateWithoutAnnouncementInput>
-    create: XOR<UserCreateWithoutAnnouncementInput, UserUncheckedCreateWithoutAnnouncementInput>
+  export type UserUpsertWithoutAnnouncementsInput = {
+    update: XOR<UserUpdateWithoutAnnouncementsInput, UserUncheckedUpdateWithoutAnnouncementsInput>
+    create: XOR<UserCreateWithoutAnnouncementsInput, UserUncheckedCreateWithoutAnnouncementsInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutAnnouncementInput = {
+  export type UserUpdateToOneWithWhereWithoutAnnouncementsInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutAnnouncementInput, UserUncheckedUpdateWithoutAnnouncementInput>
+    data: XOR<UserUpdateWithoutAnnouncementsInput, UserUncheckedUpdateWithoutAnnouncementsInput>
   }
 
-  export type UserUpdateWithoutAnnouncementInput = {
+  export type UserUpdateWithoutAnnouncementsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -66481,18 +70273,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -66501,7 +70293,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -66517,9 +70309,10 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutAnnouncementInput = {
+  export type UserUncheckedUpdateWithoutAnnouncementsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -66547,18 +70340,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -66567,7 +70360,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -66581,6 +70374,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutAcknowledgedAnnouncementsInput = {
@@ -66605,9 +70399,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -66656,11 +70450,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutAuditLogsInput = {
@@ -66669,9 +70464,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -66721,10 +70516,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutAuditLogsInput = {
@@ -66732,7 +70528,7 @@ export namespace Prisma {
     create: XOR<AgencyCreateWithoutAuditLogsInput, AgencyUncheckedCreateWithoutAuditLogsInput>
   }
 
-  export type UserCreateWithoutAuditLogInput = {
+  export type UserCreateWithoutAuditLogsInput = {
     id?: string
     cognitoId: string
     email: string
@@ -66758,18 +70554,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -66778,7 +70574,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -66794,9 +70590,10 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutAuditLogInput = {
+  export type UserUncheckedCreateWithoutAuditLogsInput = {
     id?: string
     cognitoId: string
     email: string
@@ -66824,18 +70621,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -66844,7 +70641,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -66858,11 +70655,12 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutAuditLogInput = {
+  export type UserCreateOrConnectWithoutAuditLogsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
+    create: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
   }
 
   export type AgencyUpsertWithoutAuditLogsInput = {
@@ -66882,9 +70680,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66933,11 +70731,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutAuditLogsInput = {
@@ -66946,9 +70745,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66998,24 +70797,25 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
-  export type UserUpsertWithoutAuditLogInput = {
-    update: XOR<UserUpdateWithoutAuditLogInput, UserUncheckedUpdateWithoutAuditLogInput>
-    create: XOR<UserCreateWithoutAuditLogInput, UserUncheckedCreateWithoutAuditLogInput>
+  export type UserUpsertWithoutAuditLogsInput = {
+    update: XOR<UserUpdateWithoutAuditLogsInput, UserUncheckedUpdateWithoutAuditLogsInput>
+    create: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutAuditLogInput = {
+  export type UserUpdateToOneWithWhereWithoutAuditLogsInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutAuditLogInput, UserUncheckedUpdateWithoutAuditLogInput>
+    data: XOR<UserUpdateWithoutAuditLogsInput, UserUncheckedUpdateWithoutAuditLogsInput>
   }
 
-  export type UserUpdateWithoutAuditLogInput = {
+  export type UserUpdateWithoutAuditLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -67041,18 +70841,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -67061,7 +70861,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -67077,9 +70877,10 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutAuditLogInput = {
+  export type UserUncheckedUpdateWithoutAuditLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -67107,18 +70908,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -67127,7 +70928,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -67141,6 +70942,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutCertificationsInput = {
@@ -67149,9 +70951,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -67200,11 +71002,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutCertificationsInput = {
@@ -67213,9 +71016,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -67265,10 +71068,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutCertificationsInput = {
@@ -67293,9 +71097,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67344,11 +71148,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutCertificationsInput = {
@@ -67357,9 +71162,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67409,10 +71214,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutOperatingHoursInput = {
@@ -67421,9 +71227,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -67472,11 +71278,12 @@ export namespace Prisma {
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutOperatingHoursInput = {
@@ -67485,9 +71292,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -67537,10 +71344,11 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutOperatingHoursInput = {
@@ -67565,9 +71373,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67616,11 +71424,12 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutOperatingHoursInput = {
@@ -67629,9 +71438,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67681,10 +71490,11 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyCreateWithoutGroupsInput = {
@@ -67693,9 +71503,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -67744,11 +71554,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutGroupsInput = {
@@ -67757,9 +71568,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -67809,10 +71620,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutGroupsInput = {
@@ -67846,19 +71658,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -67867,7 +71679,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -67882,6 +71694,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutGroupsInput = {
@@ -67912,19 +71725,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -67933,7 +71746,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -67946,6 +71759,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutGroupsInput = {
@@ -67970,9 +71784,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68021,11 +71835,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutGroupsInput = {
@@ -68034,9 +71849,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68086,10 +71901,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutGroupsInput = {
@@ -68114,9 +71930,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -68165,11 +71981,12 @@ export namespace Prisma {
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRateSheetsInput = {
@@ -68178,9 +71995,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -68230,15 +72047,58 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRateSheetsInput = {
     where: AgencyWhereUniqueInput
     create: XOR<AgencyCreateWithoutRateSheetsInput, AgencyUncheckedCreateWithoutRateSheetsInput>
+  }
+
+  export type TemplateVisitCreateWithoutRateSheetInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    clientVisitType?: VisitTypeCreateNestedOneWithoutTemplateVisitsInput
+    template: ScheduleTemplateCreateNestedOneWithoutVisitsInput
+  }
+
+  export type TemplateVisitUncheckedCreateWithoutRateSheetInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    clientVisitTypeId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    templateId: string
+  }
+
+  export type TemplateVisitCreateOrConnectWithoutRateSheetInput = {
+    where: TemplateVisitWhereUniqueInput
+    create: XOR<TemplateVisitCreateWithoutRateSheetInput, TemplateVisitUncheckedCreateWithoutRateSheetInput>
+  }
+
+  export type TemplateVisitCreateManyRateSheetInputEnvelope = {
+    data: TemplateVisitCreateManyRateSheetInput | TemplateVisitCreateManyRateSheetInput[]
+    skipDuplicates?: boolean
   }
 
   export type AgencyUpsertWithoutRateSheetsInput = {
@@ -68258,9 +72118,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68309,11 +72169,12 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRateSheetsInput = {
@@ -68322,9 +72183,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68374,10 +72235,47 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type TemplateVisitUpsertWithWhereUniqueWithoutRateSheetInput = {
+    where: TemplateVisitWhereUniqueInput
+    update: XOR<TemplateVisitUpdateWithoutRateSheetInput, TemplateVisitUncheckedUpdateWithoutRateSheetInput>
+    create: XOR<TemplateVisitCreateWithoutRateSheetInput, TemplateVisitUncheckedCreateWithoutRateSheetInput>
+  }
+
+  export type TemplateVisitUpdateWithWhereUniqueWithoutRateSheetInput = {
+    where: TemplateVisitWhereUniqueInput
+    data: XOR<TemplateVisitUpdateWithoutRateSheetInput, TemplateVisitUncheckedUpdateWithoutRateSheetInput>
+  }
+
+  export type TemplateVisitUpdateManyWithWhereWithoutRateSheetInput = {
+    where: TemplateVisitScalarWhereInput
+    data: XOR<TemplateVisitUpdateManyMutationInput, TemplateVisitUncheckedUpdateManyWithoutRateSheetInput>
+  }
+
+  export type TemplateVisitScalarWhereInput = {
+    AND?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
+    OR?: TemplateVisitScalarWhereInput[]
+    NOT?: TemplateVisitScalarWhereInput | TemplateVisitScalarWhereInput[]
+    id?: StringFilter<"TemplateVisit"> | string
+    name?: StringFilter<"TemplateVisit"> | string
+    description?: StringNullableFilter<"TemplateVisit"> | string | null
+    day?: EnumTemplateVisitDayFilter<"TemplateVisit"> | $Enums.TemplateVisitDay
+    startTime?: StringFilter<"TemplateVisit"> | string
+    endTime?: StringFilter<"TemplateVisit"> | string
+    endStatus?: EnumTemplateVisitEndStatusFilter<"TemplateVisit"> | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFilter<"TemplateVisit"> | boolean
+    rateSheetId?: StringNullableFilter<"TemplateVisit"> | string | null
+    clientVisitTypeId?: StringNullableFilter<"TemplateVisit"> | string | null
+    careWorkerId?: StringFilter<"TemplateVisit"> | string
+    careWorker2Id?: StringNullableFilter<"TemplateVisit"> | string | null
+    careWorker3Id?: StringNullableFilter<"TemplateVisit"> | string | null
+    templateId?: StringFilter<"TemplateVisit"> | string
   }
 
   export type AgencyCreateWithoutCustomTasksInput = {
@@ -68386,9 +72284,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -68437,11 +72335,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutCustomTasksInput = {
@@ -68450,9 +72349,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -68502,10 +72401,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutCustomTasksInput = {
@@ -68530,9 +72430,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68581,11 +72481,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutCustomTasksInput = {
@@ -68594,9 +72495,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68646,10 +72547,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutClientAssignmentsInput = {
@@ -68678,18 +72580,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -68698,7 +72600,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -68714,6 +72616,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientAssignmentsInput = {
@@ -68744,18 +72647,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -68764,7 +72667,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -68778,6 +72681,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientAssignmentsInput = {
@@ -68811,18 +72715,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -68831,7 +72735,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -68847,6 +72751,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareAssignmentsInput = {
@@ -68877,18 +72782,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -68897,7 +72802,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -68911,6 +72816,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareAssignmentsInput = {
@@ -68955,18 +72861,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -68975,7 +72881,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -68991,6 +72897,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientAssignmentsInput = {
@@ -69021,18 +72928,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -69041,7 +72948,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -69055,6 +72962,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareAssignmentsInput = {
@@ -69094,18 +73002,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -69114,7 +73022,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -69130,6 +73038,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareAssignmentsInput = {
@@ -69160,18 +73069,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -69180,7 +73089,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -69194,6 +73103,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnnouncementCreateWithoutCreatedByInput = {
@@ -69212,7 +73122,7 @@ export namespace Prisma {
     attachmentUrl?: string | null
     attachmentType?: string | null
     agency: AgencyCreateNestedOneWithoutAnnouncementsInput
-    User?: UserCreateNestedOneWithoutAnnouncementInput
+    user?: UserCreateNestedOneWithoutAnnouncementsInput
     acknowledgedBy?: UserCreateNestedManyWithoutAcknowledgedAnnouncementsInput
   }
 
@@ -69449,7 +73359,7 @@ export namespace Prisma {
     fileUrl: string
     uploadedAt?: Date | string
     agency?: AgencyCreateNestedOneWithoutDocumentsInput
-    user?: UserCreateNestedOneWithoutDocumentsInput
+    user?: UserCreateNestedOneWithoutUserDocumentsInput
   }
 
   export type DocumentUncheckedCreateWithoutClientInput = {
@@ -69477,7 +73387,7 @@ export namespace Prisma {
     fileUrl: string
     uploadedAt?: Date | string
     agency?: AgencyCreateNestedOneWithoutDocumentsInput
-    client?: UserCreateNestedOneWithoutDocumentInput
+    client?: UserCreateNestedOneWithoutDocumentsInput
   }
 
   export type DocumentUncheckedCreateWithoutUserInput = {
@@ -69689,7 +73599,7 @@ export namespace Prisma {
     asNeededDose?: boolean
     administrationRecords?: MedicationAdministrationCreateNestedManyWithoutMedicationRecordInput
     client: UserCreateNestedOneWithoutClientMedicationsInput
-    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordInput
+    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordsInput
   }
 
   export type MedicationRecordUncheckedCreateWithoutUserInput = {
@@ -69737,7 +73647,7 @@ export namespace Prisma {
     asNeededDose?: boolean
     administrationRecords?: MedicationAdministrationCreateNestedManyWithoutMedicationRecordInput
     user: UserCreateNestedOneWithoutCareWorkerMedicationsInput
-    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordInput
+    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordsInput
   }
 
   export type MedicationRecordUncheckedCreateWithoutClientInput = {
@@ -69945,7 +73855,7 @@ export namespace Prisma {
     dueDate: Date | string
     completed?: boolean
     createdAt?: Date | string
-    Agency?: AgencyCreateNestedOneWithoutRemindersInput
+    agency?: AgencyCreateNestedOneWithoutRemindersInput
   }
 
   export type ReminderUncheckedCreateWithoutClientInput = {
@@ -69988,7 +73898,7 @@ export namespace Prisma {
     lastEditReason?: string | null
     bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
     alerts?: ReportAlertCreateNestedManyWithoutReportInput
     editHistory?: ReportEditCreateNestedManyWithoutReportInput
@@ -70052,7 +73962,7 @@ export namespace Prisma {
     lastEditReason?: string | null
     bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     client: UserCreateNestedOneWithoutClientReportsInput
     alerts?: ReportAlertCreateNestedManyWithoutReportInput
     editHistory?: ReportEditCreateNestedManyWithoutReportInput
@@ -70248,9 +74158,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -70300,10 +74210,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutUsersInput = {
@@ -70312,9 +74223,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -70365,9 +74276,10 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutUsersInput = {
@@ -70381,9 +74293,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -70433,10 +74345,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutOwnerInput = {
@@ -70445,9 +74358,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -70497,10 +74410,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutOwnerInput = {
@@ -70518,7 +74432,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    Agency?: AgencyCreateNestedOneWithoutGroupsInput
+    agency?: AgencyCreateNestedOneWithoutGroupsInput
   }
 
   export type GroupUncheckedCreateWithoutClientsInput = {
@@ -70560,19 +74474,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -70581,7 +74495,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -70596,6 +74510,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvitedUsersInput = {
@@ -70626,19 +74541,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -70647,7 +74562,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -70660,6 +74575,7 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvitedUsersInput = {
@@ -70693,19 +74609,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -70714,7 +74630,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -70729,6 +74645,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvitedByInput = {
@@ -70758,19 +74675,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -70779,7 +74696,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -70793,6 +74710,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvitedByInput = {
@@ -70822,7 +74740,7 @@ export namespace Prisma {
     attachmentType?: string | null
     agency: AgencyCreateNestedOneWithoutAnnouncementsInput
     createdBy: UserCreateNestedOneWithoutCreatedAnnouncementsInput
-    User?: UserCreateNestedOneWithoutAnnouncementInput
+    user?: UserCreateNestedOneWithoutAnnouncementsInput
   }
 
   export type AnnouncementUncheckedCreateWithoutAcknowledgedByInput = {
@@ -70857,6 +74775,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedTasks?: TaskCreateNestedManyWithoutVisitTypeInput
+    templateVisits?: TemplateVisitCreateNestedManyWithoutClientVisitTypeInput
   }
 
   export type VisitTypeUncheckedCreateWithoutUserInput = {
@@ -70866,6 +74785,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutVisitTypeInput
+    templateVisits?: TemplateVisitUncheckedCreateNestedManyWithoutClientVisitTypeInput
   }
 
   export type VisitTypeCreateOrConnectWithoutUserInput = {
@@ -70875,6 +74795,38 @@ export namespace Prisma {
 
   export type VisitTypeCreateManyUserInputEnvelope = {
     data: VisitTypeCreateManyUserInput | VisitTypeCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ScheduleTemplateCreateWithoutUserInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    visits?: TemplateVisitCreateNestedManyWithoutTemplateInput
+    agency: AgencyCreateNestedOneWithoutScheduleTemplatesInput
+  }
+
+  export type ScheduleTemplateUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+    visits?: TemplateVisitUncheckedCreateNestedManyWithoutTemplateInput
+  }
+
+  export type ScheduleTemplateCreateOrConnectWithoutUserInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    create: XOR<ScheduleTemplateCreateWithoutUserInput, ScheduleTemplateUncheckedCreateWithoutUserInput>
+  }
+
+  export type ScheduleTemplateCreateManyUserInputEnvelope = {
+    data: ScheduleTemplateCreateManyUserInput | ScheduleTemplateCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -71571,9 +75523,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71623,10 +75575,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutUsersInput = {
@@ -71635,9 +75588,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71688,9 +75641,10 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUpsertWithWhereUniqueWithoutOwnerInput = {
@@ -71718,9 +75672,9 @@ export namespace Prisma {
     email?: StringFilter<"Agency"> | string
     description?: StringNullableFilter<"Agency"> | string | null
     address?: StringNullableFilter<"Agency"> | string | null
-    extension?: IntNullableFilter<"Agency"> | number | null
-    mobileNumber?: IntNullableFilter<"Agency"> | number | null
-    landlineNumber?: IntNullableFilter<"Agency"> | number | null
+    extension?: StringNullableFilter<"Agency"> | string | null
+    mobileNumber?: StringNullableFilter<"Agency"> | string | null
+    landlineNumber?: StringNullableFilter<"Agency"> | string | null
     website?: StringNullableFilter<"Agency"> | string | null
     logo?: StringNullableFilter<"Agency"> | string | null
     primaryColor?: StringNullableFilter<"Agency"> | string | null
@@ -71813,19 +75767,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -71834,7 +75788,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -71849,6 +75803,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedUsersInput = {
@@ -71879,19 +75834,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -71900,7 +75855,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -71913,6 +75868,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutInvitedByInput = {
@@ -71975,6 +75931,804 @@ export namespace Prisma {
     userId?: StringFilter<"VisitType"> | string
   }
 
+  export type ScheduleTemplateUpsertWithWhereUniqueWithoutUserInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    update: XOR<ScheduleTemplateUpdateWithoutUserInput, ScheduleTemplateUncheckedUpdateWithoutUserInput>
+    create: XOR<ScheduleTemplateCreateWithoutUserInput, ScheduleTemplateUncheckedCreateWithoutUserInput>
+  }
+
+  export type ScheduleTemplateUpdateWithWhereUniqueWithoutUserInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    data: XOR<ScheduleTemplateUpdateWithoutUserInput, ScheduleTemplateUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ScheduleTemplateUpdateManyWithWhereWithoutUserInput = {
+    where: ScheduleTemplateScalarWhereInput
+    data: XOR<ScheduleTemplateUpdateManyMutationInput, ScheduleTemplateUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type RateSheetCreateWithoutTemplateVisitsInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency?: AgencyCreateNestedOneWithoutRateSheetsInput
+  }
+
+  export type RateSheetUncheckedCreateWithoutTemplateVisitsInput = {
+    id?: string
+    name: string
+    hourlyRate: number
+    staffType: $Enums.RateSheetType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+  }
+
+  export type RateSheetCreateOrConnectWithoutTemplateVisitsInput = {
+    where: RateSheetWhereUniqueInput
+    create: XOR<RateSheetCreateWithoutTemplateVisitsInput, RateSheetUncheckedCreateWithoutTemplateVisitsInput>
+  }
+
+  export type VisitTypeCreateWithoutTemplateVisitsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedTasks?: TaskCreateNestedManyWithoutVisitTypeInput
+    user?: UserCreateNestedOneWithoutVisitTypesInput
+  }
+
+  export type VisitTypeUncheckedCreateWithoutTemplateVisitsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    assignedTasks?: TaskUncheckedCreateNestedManyWithoutVisitTypeInput
+  }
+
+  export type VisitTypeCreateOrConnectWithoutTemplateVisitsInput = {
+    where: VisitTypeWhereUniqueInput
+    create: XOR<VisitTypeCreateWithoutTemplateVisitsInput, VisitTypeUncheckedCreateWithoutTemplateVisitsInput>
+  }
+
+  export type ScheduleTemplateCreateWithoutVisitsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agency: AgencyCreateNestedOneWithoutScheduleTemplatesInput
+    user: UserCreateNestedOneWithoutScheduleTemplatesInput
+  }
+
+  export type ScheduleTemplateUncheckedCreateWithoutVisitsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    userId: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+  }
+
+  export type ScheduleTemplateCreateOrConnectWithoutVisitsInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    create: XOR<ScheduleTemplateCreateWithoutVisitsInput, ScheduleTemplateUncheckedCreateWithoutVisitsInput>
+  }
+
+  export type RateSheetUpsertWithoutTemplateVisitsInput = {
+    update: XOR<RateSheetUpdateWithoutTemplateVisitsInput, RateSheetUncheckedUpdateWithoutTemplateVisitsInput>
+    create: XOR<RateSheetCreateWithoutTemplateVisitsInput, RateSheetUncheckedCreateWithoutTemplateVisitsInput>
+    where?: RateSheetWhereInput
+  }
+
+  export type RateSheetUpdateToOneWithWhereWithoutTemplateVisitsInput = {
+    where?: RateSheetWhereInput
+    data: XOR<RateSheetUpdateWithoutTemplateVisitsInput, RateSheetUncheckedUpdateWithoutTemplateVisitsInput>
+  }
+
+  export type RateSheetUpdateWithoutTemplateVisitsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneWithoutRateSheetsNestedInput
+  }
+
+  export type RateSheetUncheckedUpdateWithoutTemplateVisitsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    hourlyRate?: FloatFieldUpdateOperationsInput | number
+    staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type VisitTypeUpsertWithoutTemplateVisitsInput = {
+    update: XOR<VisitTypeUpdateWithoutTemplateVisitsInput, VisitTypeUncheckedUpdateWithoutTemplateVisitsInput>
+    create: XOR<VisitTypeCreateWithoutTemplateVisitsInput, VisitTypeUncheckedCreateWithoutTemplateVisitsInput>
+    where?: VisitTypeWhereInput
+  }
+
+  export type VisitTypeUpdateToOneWithWhereWithoutTemplateVisitsInput = {
+    where?: VisitTypeWhereInput
+    data: XOR<VisitTypeUpdateWithoutTemplateVisitsInput, VisitTypeUncheckedUpdateWithoutTemplateVisitsInput>
+  }
+
+  export type VisitTypeUpdateWithoutTemplateVisitsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedTasks?: TaskUpdateManyWithoutVisitTypeNestedInput
+    user?: UserUpdateOneWithoutVisitTypesNestedInput
+  }
+
+  export type VisitTypeUncheckedUpdateWithoutTemplateVisitsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    assignedTasks?: TaskUncheckedUpdateManyWithoutVisitTypeNestedInput
+  }
+
+  export type ScheduleTemplateUpsertWithoutVisitsInput = {
+    update: XOR<ScheduleTemplateUpdateWithoutVisitsInput, ScheduleTemplateUncheckedUpdateWithoutVisitsInput>
+    create: XOR<ScheduleTemplateCreateWithoutVisitsInput, ScheduleTemplateUncheckedCreateWithoutVisitsInput>
+    where?: ScheduleTemplateWhereInput
+  }
+
+  export type ScheduleTemplateUpdateToOneWithWhereWithoutVisitsInput = {
+    where?: ScheduleTemplateWhereInput
+    data: XOR<ScheduleTemplateUpdateWithoutVisitsInput, ScheduleTemplateUncheckedUpdateWithoutVisitsInput>
+  }
+
+  export type ScheduleTemplateUpdateWithoutVisitsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agency?: AgencyUpdateOneRequiredWithoutScheduleTemplatesNestedInput
+    user?: UserUpdateOneRequiredWithoutScheduleTemplatesNestedInput
+  }
+
+  export type ScheduleTemplateUncheckedUpdateWithoutVisitsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TemplateVisitCreateWithoutTemplateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    rateSheet?: RateSheetCreateNestedOneWithoutTemplateVisitsInput
+    clientVisitType?: VisitTypeCreateNestedOneWithoutTemplateVisitsInput
+  }
+
+  export type TemplateVisitUncheckedCreateWithoutTemplateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    rateSheetId?: string | null
+    clientVisitTypeId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+  }
+
+  export type TemplateVisitCreateOrConnectWithoutTemplateInput = {
+    where: TemplateVisitWhereUniqueInput
+    create: XOR<TemplateVisitCreateWithoutTemplateInput, TemplateVisitUncheckedCreateWithoutTemplateInput>
+  }
+
+  export type TemplateVisitCreateManyTemplateInputEnvelope = {
+    data: TemplateVisitCreateManyTemplateInput | TemplateVisitCreateManyTemplateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AgencyCreateWithoutScheduleTemplatesInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    announcements?: AnnouncementCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskCreateNestedManyWithoutAgencyInput
+    documents?: DocumentCreateNestedManyWithoutAgencyInput
+    groups?: GroupCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleCreateNestedManyWithoutAgencyInput
+    users?: UserCreateNestedManyWithoutAgencyInput
+    owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+  }
+
+  export type AgencyUncheckedCreateWithoutScheduleTemplatesInput = {
+    id?: string
+    name: string
+    email?: string
+    description?: string | null
+    address?: string | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
+    website?: string | null
+    logo?: string | null
+    primaryColor?: string | null
+    secondaryColor?: string | null
+    isActive?: boolean
+    isSuspended?: boolean
+    hasScheduleV2?: boolean
+    hasEMAR?: boolean
+    hasFinance?: boolean
+    isWeek1And2ScheduleEnabled?: boolean
+    hasPoliciesAndProcedures?: boolean
+    isTestAccount?: boolean
+    allowCareWorkersEditCheckIn?: boolean
+    allowFamilyReviews?: boolean
+    enableFamilySchedule?: boolean
+    enableWeek1And2Scheduling?: boolean
+    lateVisitThreshold?: string
+    enableDistanceAlerts?: boolean
+    distanceThreshold?: string
+    lateVisitAlerts?: boolean
+    clientBirthdayReminders?: boolean
+    careWorkerVisitAlerts?: boolean
+    missedMedicationAlerts?: boolean
+    clientAndCareWorkerReminders?: boolean
+    distanceAlerts?: boolean
+    reviewNotifications?: boolean
+    preferredNotificationMethod?: $Enums.PreferredNotificationMethod
+    notificationFrequency?: $Enums.NotificationFrequency
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    licenseNumber?: string | null
+    timeZone?: string
+    currency?: string
+    maxUsers?: number | null
+    maxClients?: number | null
+    maxCareWorkers?: number | null
+    ownerId?: string | null
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutAgencyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutAgencyInput
+    certifications?: CertificationUncheckedCreateNestedManyWithoutAgencyInput
+    customTasks?: CustomTaskUncheckedCreateNestedManyWithoutAgencyInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAgencyInput
+    groups?: GroupUncheckedCreateNestedManyWithoutAgencyInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutAgencyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAgencyInput
+    medications?: MedicationDatabaseLinkUncheckedCreateNestedManyWithoutAgencyInput
+    mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
+    operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
+    rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
+    users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+  }
+
+  export type AgencyCreateOrConnectWithoutScheduleTemplatesInput = {
+    where: AgencyWhereUniqueInput
+    create: XOR<AgencyCreateWithoutScheduleTemplatesInput, AgencyUncheckedCreateWithoutScheduleTemplatesInput>
+  }
+
+  export type UserCreateWithoutScheduleTemplatesInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    fullName?: string
+    preferredName?: string | null
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutScheduleTemplatesInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    fullName?: string
+    preferredName?: string | null
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutScheduleTemplatesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutScheduleTemplatesInput, UserUncheckedCreateWithoutScheduleTemplatesInput>
+  }
+
+  export type TemplateVisitUpsertWithWhereUniqueWithoutTemplateInput = {
+    where: TemplateVisitWhereUniqueInput
+    update: XOR<TemplateVisitUpdateWithoutTemplateInput, TemplateVisitUncheckedUpdateWithoutTemplateInput>
+    create: XOR<TemplateVisitCreateWithoutTemplateInput, TemplateVisitUncheckedCreateWithoutTemplateInput>
+  }
+
+  export type TemplateVisitUpdateWithWhereUniqueWithoutTemplateInput = {
+    where: TemplateVisitWhereUniqueInput
+    data: XOR<TemplateVisitUpdateWithoutTemplateInput, TemplateVisitUncheckedUpdateWithoutTemplateInput>
+  }
+
+  export type TemplateVisitUpdateManyWithWhereWithoutTemplateInput = {
+    where: TemplateVisitScalarWhereInput
+    data: XOR<TemplateVisitUpdateManyMutationInput, TemplateVisitUncheckedUpdateManyWithoutTemplateInput>
+  }
+
+  export type AgencyUpsertWithoutScheduleTemplatesInput = {
+    update: XOR<AgencyUpdateWithoutScheduleTemplatesInput, AgencyUncheckedUpdateWithoutScheduleTemplatesInput>
+    create: XOR<AgencyCreateWithoutScheduleTemplatesInput, AgencyUncheckedCreateWithoutScheduleTemplatesInput>
+    where?: AgencyWhereInput
+  }
+
+  export type AgencyUpdateToOneWithWhereWithoutScheduleTemplatesInput = {
+    where?: AgencyWhereInput
+    data: XOR<AgencyUpdateWithoutScheduleTemplatesInput, AgencyUncheckedUpdateWithoutScheduleTemplatesInput>
+  }
+
+  export type AgencyUpdateWithoutScheduleTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    announcements?: AnnouncementUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
+    users?: UserUpdateManyWithoutAgencyNestedInput
+    owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+  }
+
+  export type AgencyUncheckedUpdateWithoutScheduleTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isSuspended?: BoolFieldUpdateOperationsInput | boolean
+    hasScheduleV2?: BoolFieldUpdateOperationsInput | boolean
+    hasEMAR?: BoolFieldUpdateOperationsInput | boolean
+    hasFinance?: BoolFieldUpdateOperationsInput | boolean
+    isWeek1And2ScheduleEnabled?: BoolFieldUpdateOperationsInput | boolean
+    hasPoliciesAndProcedures?: BoolFieldUpdateOperationsInput | boolean
+    isTestAccount?: BoolFieldUpdateOperationsInput | boolean
+    allowCareWorkersEditCheckIn?: BoolFieldUpdateOperationsInput | boolean
+    allowFamilyReviews?: BoolFieldUpdateOperationsInput | boolean
+    enableFamilySchedule?: BoolFieldUpdateOperationsInput | boolean
+    enableWeek1And2Scheduling?: BoolFieldUpdateOperationsInput | boolean
+    lateVisitThreshold?: StringFieldUpdateOperationsInput | string
+    enableDistanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    distanceThreshold?: StringFieldUpdateOperationsInput | string
+    lateVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientBirthdayReminders?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerVisitAlerts?: BoolFieldUpdateOperationsInput | boolean
+    missedMedicationAlerts?: BoolFieldUpdateOperationsInput | boolean
+    clientAndCareWorkerReminders?: BoolFieldUpdateOperationsInput | boolean
+    distanceAlerts?: BoolFieldUpdateOperationsInput | boolean
+    reviewNotifications?: BoolFieldUpdateOperationsInput | boolean
+    preferredNotificationMethod?: EnumPreferredNotificationMethodFieldUpdateOperationsInput | $Enums.PreferredNotificationMethod
+    notificationFrequency?: EnumNotificationFrequencyFieldUpdateOperationsInput | $Enums.NotificationFrequency
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    timeZone?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    maxUsers?: NullableIntFieldUpdateOperationsInput | number | null
+    maxClients?: NullableIntFieldUpdateOperationsInput | number | null
+    maxCareWorkers?: NullableIntFieldUpdateOperationsInput | number | null
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    announcements?: AnnouncementUncheckedUpdateManyWithoutAgencyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutAgencyNestedInput
+    certifications?: CertificationUncheckedUpdateManyWithoutAgencyNestedInput
+    customTasks?: CustomTaskUncheckedUpdateManyWithoutAgencyNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAgencyNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutAgencyNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutAgencyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAgencyNestedInput
+    medications?: MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyNestedInput
+    mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
+    operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
+    rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
+    users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+  }
+
+  export type UserUpsertWithoutScheduleTemplatesInput = {
+    update: XOR<UserUpdateWithoutScheduleTemplatesInput, UserUncheckedUpdateWithoutScheduleTemplatesInput>
+    create: XOR<UserCreateWithoutScheduleTemplatesInput, UserUncheckedCreateWithoutScheduleTemplatesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutScheduleTemplatesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutScheduleTemplatesInput, UserUncheckedUpdateWithoutScheduleTemplatesInput>
+  }
+
+  export type UserUpdateWithoutScheduleTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutScheduleTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type UserCreateWithoutCommunicationPreferenceInput = {
     id?: string
     cognitoId: string
@@ -72001,18 +76755,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -72021,7 +76775,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -72037,6 +76791,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationPreferenceInput = {
@@ -72067,18 +76822,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -72087,7 +76842,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -72101,6 +76856,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationPreferenceInput = {
@@ -72145,18 +76901,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -72165,7 +76921,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -72181,6 +76937,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationPreferenceInput = {
@@ -72211,18 +76968,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -72231,7 +76988,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -72245,6 +77002,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutFamilyAccessInput = {
@@ -72273,18 +77031,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -72293,7 +77051,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -72309,6 +77067,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFamilyAccessInput = {
@@ -72339,18 +77098,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -72359,7 +77118,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -72373,6 +77132,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFamilyAccessInput = {
@@ -72417,18 +77177,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -72437,7 +77197,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -72453,6 +77213,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFamilyAccessInput = {
@@ -72483,18 +77244,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -72503,7 +77264,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -72517,6 +77278,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutMedicationsInput = {
@@ -72525,9 +77287,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -72576,11 +77338,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMedicationsInput = {
@@ -72589,9 +77352,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -72641,10 +77404,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMedicationsInput = {
@@ -72717,9 +77481,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72768,11 +77532,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMedicationsInput = {
@@ -72781,9 +77546,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72833,10 +77598,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type MedicationRecordUpsertWithWhereUniqueWithoutMedicationInput = {
@@ -72861,7 +77627,8 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    User?: UserCreateNestedOneWithoutVisitTypesInput
+    user?: UserCreateNestedOneWithoutVisitTypesInput
+    templateVisits?: TemplateVisitCreateNestedManyWithoutClientVisitTypeInput
   }
 
   export type VisitTypeUncheckedCreateWithoutAssignedTasksInput = {
@@ -72871,6 +77638,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    templateVisits?: TemplateVisitUncheckedCreateNestedManyWithoutClientVisitTypeInput
   }
 
   export type VisitTypeCreateOrConnectWithoutAssignedTasksInput = {
@@ -72895,7 +77663,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    User?: UserUpdateOneWithoutVisitTypesNestedInput
+    user?: UserUpdateOneWithoutVisitTypesNestedInput
+    templateVisits?: TemplateVisitUpdateManyWithoutClientVisitTypeNestedInput
   }
 
   export type VisitTypeUncheckedUpdateWithoutAssignedTasksInput = {
@@ -72905,6 +77674,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    templateVisits?: TemplateVisitUncheckedUpdateManyWithoutClientVisitTypeNestedInput
   }
 
   export type TaskCreateWithoutVisitTypeInput = {
@@ -72955,19 +77725,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -72976,7 +77746,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -72991,6 +77761,7 @@ export namespace Prisma {
     invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutVisitTypesInput = {
@@ -73021,19 +77792,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -73042,7 +77813,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -73055,11 +77826,54 @@ export namespace Prisma {
     groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutVisitTypesInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutVisitTypesInput, UserUncheckedCreateWithoutVisitTypesInput>
+  }
+
+  export type TemplateVisitCreateWithoutClientVisitTypeInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    rateSheet?: RateSheetCreateNestedOneWithoutTemplateVisitsInput
+    template: ScheduleTemplateCreateNestedOneWithoutVisitsInput
+  }
+
+  export type TemplateVisitUncheckedCreateWithoutClientVisitTypeInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    rateSheetId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    templateId: string
+  }
+
+  export type TemplateVisitCreateOrConnectWithoutClientVisitTypeInput = {
+    where: TemplateVisitWhereUniqueInput
+    create: XOR<TemplateVisitCreateWithoutClientVisitTypeInput, TemplateVisitUncheckedCreateWithoutClientVisitTypeInput>
+  }
+
+  export type TemplateVisitCreateManyClientVisitTypeInputEnvelope = {
+    data: TemplateVisitCreateManyClientVisitTypeInput | TemplateVisitCreateManyClientVisitTypeInput[]
+    skipDuplicates?: boolean
   }
 
   export type TaskUpsertWithWhereUniqueWithoutVisitTypeInput = {
@@ -73125,19 +77939,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -73146,7 +77960,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -73161,6 +77975,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutVisitTypesInput = {
@@ -73191,19 +78006,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -73212,7 +78027,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -73225,6 +78040,23 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TemplateVisitUpsertWithWhereUniqueWithoutClientVisitTypeInput = {
+    where: TemplateVisitWhereUniqueInput
+    update: XOR<TemplateVisitUpdateWithoutClientVisitTypeInput, TemplateVisitUncheckedUpdateWithoutClientVisitTypeInput>
+    create: XOR<TemplateVisitCreateWithoutClientVisitTypeInput, TemplateVisitUncheckedCreateWithoutClientVisitTypeInput>
+  }
+
+  export type TemplateVisitUpdateWithWhereUniqueWithoutClientVisitTypeInput = {
+    where: TemplateVisitWhereUniqueInput
+    data: XOR<TemplateVisitUpdateWithoutClientVisitTypeInput, TemplateVisitUncheckedUpdateWithoutClientVisitTypeInput>
+  }
+
+  export type TemplateVisitUpdateManyWithWhereWithoutClientVisitTypeInput = {
+    where: TemplateVisitScalarWhereInput
+    data: XOR<TemplateVisitUpdateManyMutationInput, TemplateVisitUncheckedUpdateManyWithoutClientVisitTypeInput>
   }
 
   export type AgencyCreateWithoutSchedulesInput = {
@@ -73233,9 +78065,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -73285,10 +78117,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutSchedulesInput = {
@@ -73297,9 +78130,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -73350,9 +78183,10 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutSchedulesInput = {
@@ -73386,19 +78220,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -73407,7 +78241,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -73422,6 +78256,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientSchedulesInput = {
@@ -73452,19 +78287,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -73473,7 +78308,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -73486,6 +78321,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientSchedulesInput = {
@@ -73519,19 +78355,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -73540,7 +78376,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -73555,6 +78391,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerSchedulesInput = {
@@ -73585,19 +78422,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -73606,7 +78443,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -73619,6 +78456,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerSchedulesInput = {
@@ -73643,9 +78481,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73695,10 +78533,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutSchedulesInput = {
@@ -73707,9 +78546,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73760,9 +78599,10 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientSchedulesInput = {
@@ -73802,19 +78642,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -73823,7 +78663,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -73838,6 +78678,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientSchedulesInput = {
@@ -73868,19 +78709,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -73889,7 +78730,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -73902,6 +78743,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerSchedulesInput = {
@@ -73941,19 +78783,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -73962,7 +78804,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -73977,6 +78819,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerSchedulesInput = {
@@ -74007,19 +78850,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -74028,7 +78871,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -74041,6 +78884,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type BodyMapObservationCreateWithoutReportInput = {
@@ -74101,15 +78945,15 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type AgencyCreateWithoutReportInput = {
+  export type AgencyCreateWithoutReportsInput = {
     id?: string
     name: string
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -74163,17 +79007,18 @@ export namespace Prisma {
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
-  export type AgencyUncheckedCreateWithoutReportInput = {
+  export type AgencyUncheckedCreateWithoutReportsInput = {
     id?: string
     name: string
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -74227,11 +79072,12 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
-  export type AgencyCreateOrConnectWithoutReportInput = {
+  export type AgencyCreateOrConnectWithoutReportsInput = {
     where: AgencyWhereUniqueInput
-    create: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
+    create: XOR<AgencyCreateWithoutReportsInput, AgencyUncheckedCreateWithoutReportsInput>
   }
 
   export type UserCreateWithoutClientReportsInput = {
@@ -74260,19 +79106,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -74281,7 +79127,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     careReports?: ReportCreateNestedManyWithoutCaregiverInput
@@ -74296,6 +79142,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientReportsInput = {
@@ -74326,19 +79173,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -74347,7 +79194,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
@@ -74360,6 +79207,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientReportsInput = {
@@ -74393,19 +79241,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -74414,7 +79262,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -74429,6 +79277,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareReportsInput = {
@@ -74459,19 +79308,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -74480,7 +79329,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -74493,6 +79342,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareReportsInput = {
@@ -74632,26 +79482,26 @@ export namespace Prisma {
     data: XOR<MedicationAdministrationUpdateManyMutationInput, MedicationAdministrationUncheckedUpdateManyWithoutReportInput>
   }
 
-  export type AgencyUpsertWithoutReportInput = {
-    update: XOR<AgencyUpdateWithoutReportInput, AgencyUncheckedUpdateWithoutReportInput>
-    create: XOR<AgencyCreateWithoutReportInput, AgencyUncheckedCreateWithoutReportInput>
+  export type AgencyUpsertWithoutReportsInput = {
+    update: XOR<AgencyUpdateWithoutReportsInput, AgencyUncheckedUpdateWithoutReportsInput>
+    create: XOR<AgencyCreateWithoutReportsInput, AgencyUncheckedCreateWithoutReportsInput>
     where?: AgencyWhereInput
   }
 
-  export type AgencyUpdateToOneWithWhereWithoutReportInput = {
+  export type AgencyUpdateToOneWithWhereWithoutReportsInput = {
     where?: AgencyWhereInput
-    data: XOR<AgencyUpdateWithoutReportInput, AgencyUncheckedUpdateWithoutReportInput>
+    data: XOR<AgencyUpdateWithoutReportsInput, AgencyUncheckedUpdateWithoutReportsInput>
   }
 
-  export type AgencyUpdateWithoutReportInput = {
+  export type AgencyUpdateWithoutReportsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74705,17 +79555,18 @@ export namespace Prisma {
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
-  export type AgencyUncheckedUpdateWithoutReportInput = {
+  export type AgencyUncheckedUpdateWithoutReportsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74769,6 +79620,7 @@ export namespace Prisma {
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutClientReportsInput = {
@@ -74808,19 +79660,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -74829,7 +79681,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     careReports?: ReportUpdateManyWithoutCaregiverNestedInput
@@ -74844,6 +79696,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientReportsInput = {
@@ -74874,19 +79727,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -74895,7 +79748,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
@@ -74908,6 +79761,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCareReportsInput = {
@@ -74947,19 +79801,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -74968,7 +79822,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -74983,6 +79837,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareReportsInput = {
@@ -75013,19 +79868,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -75034,7 +79889,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -75047,6 +79902,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ReportAlertUpsertWithWhereUniqueWithoutReportInput = {
@@ -75146,7 +80002,7 @@ export namespace Prisma {
     lastEditReason?: string | null
     bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
     alerts?: ReportAlertCreateNestedManyWithoutReportInput
@@ -75216,7 +80072,7 @@ export namespace Prisma {
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
     alerts?: ReportAlertUpdateManyWithoutReportNestedInput
@@ -75270,7 +80126,7 @@ export namespace Prisma {
     lastEditReason?: string | null
     bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
     editHistory?: ReportEditCreateNestedManyWithoutReportInput
@@ -75340,7 +80196,7 @@ export namespace Prisma {
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
     editHistory?: ReportEditUpdateManyWithoutReportNestedInput
@@ -75393,7 +80249,7 @@ export namespace Prisma {
     lastEditedBy?: string | null
     lastEditReason?: string | null
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
     alerts?: ReportAlertCreateNestedManyWithoutReportInput
@@ -75463,7 +80319,7 @@ export namespace Prisma {
     lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
     alerts?: ReportAlertUpdateManyWithoutReportNestedInput
@@ -75524,19 +80380,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -75545,7 +80401,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -75560,6 +80416,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReportEditsInput = {
@@ -75590,19 +80447,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -75611,7 +80468,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -75624,6 +80481,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReportEditsInput = {
@@ -75651,7 +80509,7 @@ export namespace Prisma {
     lastEditReason?: string | null
     bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
     alerts?: ReportAlertCreateNestedManyWithoutReportInput
@@ -75727,19 +80585,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -75748,7 +80606,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -75763,6 +80621,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportEditsInput = {
@@ -75793,19 +80652,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -75814,7 +80673,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -75827,6 +80686,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ReportUpsertWithoutEditHistoryInput = {
@@ -75860,7 +80720,7 @@ export namespace Prisma {
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
     alerts?: ReportAlertUpdateManyWithoutReportNestedInput
@@ -75952,19 +80812,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
@@ -75972,7 +80832,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -75988,6 +80848,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMedicationsInput = {
@@ -76018,19 +80879,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
@@ -76038,7 +80899,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -76052,6 +80913,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMedicationsInput = {
@@ -76085,19 +80947,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -76105,7 +80967,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -76121,6 +80983,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientMedicationsInput = {
@@ -76151,19 +81014,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -76171,7 +81034,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -76185,6 +81048,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientMedicationsInput = {
@@ -76192,7 +81056,7 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutClientMedicationsInput, UserUncheckedCreateWithoutClientMedicationsInput>
   }
 
-  export type MedicationDatabaseLinkCreateWithoutMedicationRecordInput = {
+  export type MedicationDatabaseLinkCreateWithoutMedicationRecordsInput = {
     id?: string
     name: string
     isSpecialist?: boolean
@@ -76201,7 +81065,7 @@ export namespace Prisma {
     agency: AgencyCreateNestedOneWithoutMedicationsInput
   }
 
-  export type MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordInput = {
+  export type MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordsInput = {
     id?: string
     name: string
     isSpecialist?: boolean
@@ -76210,9 +81074,9 @@ export namespace Prisma {
     agencyId: string
   }
 
-  export type MedicationDatabaseLinkCreateOrConnectWithoutMedicationRecordInput = {
+  export type MedicationDatabaseLinkCreateOrConnectWithoutMedicationRecordsInput = {
     where: MedicationDatabaseLinkWhereUniqueInput
-    create: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordInput>
+    create: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordsInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordsInput>
   }
 
   export type MedicationAdministrationUpsertWithWhereUniqueWithoutMedicationRecordInput = {
@@ -76268,19 +81132,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
@@ -76288,7 +81152,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -76304,6 +81168,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMedicationsInput = {
@@ -76334,19 +81199,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
@@ -76354,7 +81219,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -76368,6 +81233,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutClientMedicationsInput = {
@@ -76407,19 +81273,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -76427,7 +81293,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -76443,6 +81309,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMedicationsInput = {
@@ -76473,19 +81340,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -76493,7 +81360,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -76507,20 +81374,21 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type MedicationDatabaseLinkUpsertWithoutMedicationRecordInput = {
-    update: XOR<MedicationDatabaseLinkUpdateWithoutMedicationRecordInput, MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordInput>
-    create: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordInput>
+  export type MedicationDatabaseLinkUpsertWithoutMedicationRecordsInput = {
+    update: XOR<MedicationDatabaseLinkUpdateWithoutMedicationRecordsInput, MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordsInput>
+    create: XOR<MedicationDatabaseLinkCreateWithoutMedicationRecordsInput, MedicationDatabaseLinkUncheckedCreateWithoutMedicationRecordsInput>
     where?: MedicationDatabaseLinkWhereInput
   }
 
-  export type MedicationDatabaseLinkUpdateToOneWithWhereWithoutMedicationRecordInput = {
+  export type MedicationDatabaseLinkUpdateToOneWithWhereWithoutMedicationRecordsInput = {
     where?: MedicationDatabaseLinkWhereInput
-    data: XOR<MedicationDatabaseLinkUpdateWithoutMedicationRecordInput, MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordInput>
+    data: XOR<MedicationDatabaseLinkUpdateWithoutMedicationRecordsInput, MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordsInput>
   }
 
-  export type MedicationDatabaseLinkUpdateWithoutMedicationRecordInput = {
+  export type MedicationDatabaseLinkUpdateWithoutMedicationRecordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSpecialist?: BoolFieldUpdateOperationsInput | boolean
@@ -76529,7 +81397,7 @@ export namespace Prisma {
     agency?: AgencyUpdateOneRequiredWithoutMedicationsNestedInput
   }
 
-  export type MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordInput = {
+  export type MedicationDatabaseLinkUncheckedUpdateWithoutMedicationRecordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     isSpecialist?: BoolFieldUpdateOperationsInput | boolean
@@ -76564,19 +81432,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
     clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
@@ -76584,7 +81452,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -76600,6 +81468,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMedicationAdministrationsInput = {
@@ -76630,19 +81499,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
     clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
@@ -76650,7 +81519,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -76664,6 +81533,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMedicationAdministrationsInput = {
@@ -76687,7 +81557,7 @@ export namespace Prisma {
     asNeededDose?: boolean
     user: UserCreateNestedOneWithoutCareWorkerMedicationsInput
     client: UserCreateNestedOneWithoutClientMedicationsInput
-    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordInput
+    medication: MedicationDatabaseLinkCreateNestedOneWithoutMedicationRecordsInput
   }
 
   export type MedicationRecordUncheckedCreateWithoutAdministrationRecordsInput = {
@@ -76733,7 +81603,7 @@ export namespace Prisma {
     lastEditedBy?: string | null
     lastEditReason?: string | null
     bodyMapObservations?: BodyMapObservationCreateNestedManyWithoutReportInput
-    agency: AgencyCreateNestedOneWithoutReportInput
+    agency: AgencyCreateNestedOneWithoutReportsInput
     client: UserCreateNestedOneWithoutClientReportsInput
     caregiver: UserCreateNestedOneWithoutCareReportsInput
     alerts?: ReportAlertCreateNestedManyWithoutReportInput
@@ -76810,19 +81680,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
     clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
@@ -76830,7 +81700,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -76846,6 +81716,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMedicationAdministrationsInput = {
@@ -76876,19 +81747,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
@@ -76896,7 +81767,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -76910,6 +81781,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MedicationRecordUpsertWithoutAdministrationRecordsInput = {
@@ -76939,7 +81811,7 @@ export namespace Prisma {
     asNeededDose?: BoolFieldUpdateOperationsInput | boolean
     user?: UserUpdateOneRequiredWithoutCareWorkerMedicationsNestedInput
     client?: UserUpdateOneRequiredWithoutClientMedicationsNestedInput
-    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordNestedInput
+    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordsNestedInput
   }
 
   export type MedicationRecordUncheckedUpdateWithoutAdministrationRecordsInput = {
@@ -76991,7 +81863,7 @@ export namespace Prisma {
     lastEditedBy?: NullableStringFieldUpdateOperationsInput | string | null
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
     alerts?: ReportAlertUpdateManyWithoutReportNestedInput
@@ -77032,9 +81904,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -77083,11 +81955,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutInvoicesInput = {
@@ -77096,9 +81969,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -77148,10 +82021,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutInvoicesInput = {
@@ -77159,7 +82033,7 @@ export namespace Prisma {
     create: XOR<AgencyCreateWithoutInvoicesInput, AgencyUncheckedCreateWithoutInvoicesInput>
   }
 
-  export type UserCreateWithoutInvoiceInput = {
+  export type UserCreateWithoutInvoicesInput = {
     id?: string
     cognitoId: string
     email: string
@@ -77185,15 +82059,15 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
@@ -77205,7 +82079,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -77221,9 +82095,10 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutInvoiceInput = {
+  export type UserUncheckedCreateWithoutInvoicesInput = {
     id?: string
     cognitoId: string
     email: string
@@ -77251,15 +82126,15 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
@@ -77271,7 +82146,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -77285,11 +82160,12 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutInvoiceInput = {
+  export type UserCreateOrConnectWithoutInvoicesInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutInvoiceInput, UserUncheckedCreateWithoutInvoiceInput>
+    create: XOR<UserCreateWithoutInvoicesInput, UserUncheckedCreateWithoutInvoicesInput>
   }
 
   export type AgencyUpsertWithoutInvoicesInput = {
@@ -77309,9 +82185,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77360,11 +82236,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutInvoicesInput = {
@@ -77373,9 +82250,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77425,24 +82302,25 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
-  export type UserUpsertWithoutInvoiceInput = {
-    update: XOR<UserUpdateWithoutInvoiceInput, UserUncheckedUpdateWithoutInvoiceInput>
-    create: XOR<UserCreateWithoutInvoiceInput, UserUncheckedCreateWithoutInvoiceInput>
+  export type UserUpsertWithoutInvoicesInput = {
+    update: XOR<UserUpdateWithoutInvoicesInput, UserUncheckedUpdateWithoutInvoicesInput>
+    create: XOR<UserCreateWithoutInvoicesInput, UserUncheckedCreateWithoutInvoicesInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutInvoiceInput = {
+  export type UserUpdateToOneWithWhereWithoutInvoicesInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutInvoiceInput, UserUncheckedUpdateWithoutInvoiceInput>
+    data: XOR<UserUpdateWithoutInvoicesInput, UserUncheckedUpdateWithoutInvoicesInput>
   }
 
-  export type UserUpdateWithoutInvoiceInput = {
+  export type UserUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -77468,15 +82346,15 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
@@ -77488,7 +82366,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -77504,9 +82382,10 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutInvoiceInput = {
+  export type UserUncheckedUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -77534,15 +82413,15 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
@@ -77554,7 +82433,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -77568,6 +82447,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutMileageRecordsInput = {
@@ -77576,9 +82456,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -77627,11 +82507,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutMileageRecordsInput = {
@@ -77640,9 +82521,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -77692,10 +82573,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutMileageRecordsInput = {
@@ -77729,19 +82611,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -77749,7 +82631,7 @@ export namespace Prisma {
     receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -77765,6 +82647,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareWorkerMileageInput = {
@@ -77795,19 +82678,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -77815,7 +82698,7 @@ export namespace Prisma {
     receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -77829,6 +82712,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareWorkerMileageInput = {
@@ -77862,19 +82746,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -77882,7 +82766,7 @@ export namespace Prisma {
     receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -77898,6 +82782,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientMileageInput = {
@@ -77928,19 +82813,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -77948,7 +82833,7 @@ export namespace Prisma {
     receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -77962,6 +82847,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientMileageInput = {
@@ -77986,9 +82872,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78037,11 +82923,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutMileageRecordsInput = {
@@ -78050,9 +82937,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78102,10 +82989,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutCareWorkerMileageInput = {
@@ -78145,19 +83033,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -78165,7 +83053,7 @@ export namespace Prisma {
     receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -78181,6 +83069,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareWorkerMileageInput = {
@@ -78211,19 +83100,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -78231,7 +83120,7 @@ export namespace Prisma {
     receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -78245,6 +83134,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutClientMileageInput = {
@@ -78284,19 +83174,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -78304,7 +83194,7 @@ export namespace Prisma {
     receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -78320,6 +83210,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientMileageInput = {
@@ -78350,19 +83241,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -78370,7 +83261,7 @@ export namespace Prisma {
     receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -78384,6 +83275,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutDocumentsInput = {
@@ -78392,9 +83284,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -78443,11 +83335,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutDocumentsInput = {
@@ -78456,9 +83349,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -78508,148 +83401,16 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutDocumentsInput = {
     where: AgencyWhereUniqueInput
     create: XOR<AgencyCreateWithoutDocumentsInput, AgencyUncheckedCreateWithoutDocumentsInput>
-  }
-
-  export type UserCreateWithoutDocumentInput = {
-    id?: string
-    cognitoId: string
-    email: string
-    fullName?: string
-    preferredName?: string | null
-    role: $Enums.Role
-    subRole?: $Enums.SubRole | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    address?: string | null
-    city?: string | null
-    province?: string | null
-    postalCode?: string | null
-    propertyAccess?: string | null
-    phoneNumber?: string | null
-    nhsNumber?: string | null
-    dnraOrder?: boolean | null
-    mobility?: string | null
-    likesDislikes?: string | null
-    dateOfBirth?: Date | string | null
-    languages?: string | null
-    allergies?: string | null
-    interests?: string | null
-    history?: string | null
-    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
-    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
-    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
-    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
-    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
-    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
-    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
-    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
-    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
-    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
-    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
-    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
-    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
-    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
-    sentMessages?: MessageCreateNestedManyWithoutSenderInput
-    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
-    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
-    profile?: ProfileCreateNestedOneWithoutUserInput
-    reminders?: ReminderCreateNestedManyWithoutClientInput
-    clientReports?: ReportCreateNestedManyWithoutClientInput
-    careReports?: ReportCreateNestedManyWithoutCaregiverInput
-    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
-    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
-    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
-    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
-    agency?: AgencyCreateNestedOneWithoutUsersInput
-    agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
-    groups?: GroupCreateNestedManyWithoutClientsInput
-    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
-    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
-    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
-    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutDocumentInput = {
-    id?: string
-    cognitoId: string
-    email: string
-    fullName?: string
-    preferredName?: string | null
-    role: $Enums.Role
-    subRole?: $Enums.SubRole | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    agencyId?: string | null
-    invitedById?: string | null
-    address?: string | null
-    city?: string | null
-    province?: string | null
-    postalCode?: string | null
-    propertyAccess?: string | null
-    phoneNumber?: string | null
-    nhsNumber?: string | null
-    dnraOrder?: boolean | null
-    mobility?: string | null
-    likesDislikes?: string | null
-    dateOfBirth?: Date | string | null
-    languages?: string | null
-    allergies?: string | null
-    interests?: string | null
-    history?: string | null
-    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
-    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
-    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
-    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
-    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
-    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
-    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
-    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
-    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
-    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
-    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
-    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
-    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
-    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
-    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
-    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
-    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
-    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
-    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
-    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
-    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
-    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
-    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
-    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
-    agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
-    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
-    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
-    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
-    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutDocumentInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutDocumentInput, UserUncheckedCreateWithoutDocumentInput>
   }
 
   export type UserCreateWithoutDocumentsInput = {
@@ -78678,18 +83439,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -78698,7 +83459,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -78714,6 +83475,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocumentsInput = {
@@ -78744,18 +83506,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -78764,7 +83526,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -78778,11 +83540,147 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocumentsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+  }
+
+  export type UserCreateWithoutUserDocumentsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    fullName?: string
+    preferredName?: string | null
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
+    clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
+    careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
+    communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
+    incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
+    sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
+    keyContacts?: KeyContactCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
+    careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
+    receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
+    sentMessages?: MessageCreateNestedManyWithoutSenderInput
+    careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    profile?: ProfileCreateNestedOneWithoutUserInput
+    reminders?: ReminderCreateNestedManyWithoutClientInput
+    clientReports?: ReportCreateNestedManyWithoutClientInput
+    careReports?: ReportCreateNestedManyWithoutCaregiverInput
+    reportEdits?: ReportEditCreateNestedManyWithoutEditorInput
+    riskAssessments?: RiskAssessmentCreateNestedManyWithoutClientInput
+    clientSchedules?: ScheduleCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleCreateNestedManyWithoutUserInput
+    agency?: AgencyCreateNestedOneWithoutUsersInput
+    agenciesOwned?: AgencyCreateNestedManyWithoutOwnerInput
+    groups?: GroupCreateNestedManyWithoutClientsInput
+    invitedBy?: UserCreateNestedOneWithoutInvitedUsersInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
+    acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutUserDocumentsInput = {
+    id?: string
+    cognitoId: string
+    email: string
+    fullName?: string
+    preferredName?: string | null
+    role: $Enums.Role
+    subRole?: $Enums.SubRole | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId?: string | null
+    invitedById?: string | null
+    address?: string | null
+    city?: string | null
+    province?: string | null
+    postalCode?: string | null
+    propertyAccess?: string | null
+    phoneNumber?: string | null
+    nhsNumber?: string | null
+    dnraOrder?: boolean | null
+    mobility?: string | null
+    likesDislikes?: string | null
+    dateOfBirth?: Date | string | null
+    languages?: string | null
+    allergies?: string | null
+    interests?: string | null
+    history?: string | null
+    createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
+    clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
+    careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
+    communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
+    incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
+    sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
+    medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
+    careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
+    receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
+    sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
+    clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
+    reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
+    clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
+    careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
+    reportEdits?: ReportEditUncheckedCreateNestedManyWithoutEditorInput
+    riskAssessments?: RiskAssessmentUncheckedCreateNestedManyWithoutClientInput
+    clientSchedules?: ScheduleUncheckedCreateNestedManyWithoutClientInput
+    careWorkerSchedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    agenciesOwned?: AgencyUncheckedCreateNestedManyWithoutOwnerInput
+    groups?: GroupUncheckedCreateNestedManyWithoutClientsInput
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutUserDocumentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUserDocumentsInput, UserUncheckedCreateWithoutUserDocumentsInput>
   }
 
   export type AgencyUpsertWithoutDocumentsInput = {
@@ -78802,9 +83700,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78853,11 +83751,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutDocumentsInput = {
@@ -78866,9 +83765,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78918,149 +83817,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
-  }
-
-  export type UserUpsertWithoutDocumentInput = {
-    update: XOR<UserUpdateWithoutDocumentInput, UserUncheckedUpdateWithoutDocumentInput>
-    create: XOR<UserCreateWithoutDocumentInput, UserUncheckedCreateWithoutDocumentInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutDocumentInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutDocumentInput, UserUncheckedUpdateWithoutDocumentInput>
-  }
-
-  export type UserUpdateWithoutDocumentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    cognitoId?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fullName?: StringFieldUpdateOperationsInput | string
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    province?: NullableStringFieldUpdateOperationsInput | string | null
-    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
-    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    mobility?: NullableStringFieldUpdateOperationsInput | string | null
-    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
-    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    languages?: NullableStringFieldUpdateOperationsInput | string | null
-    allergies?: NullableStringFieldUpdateOperationsInput | string | null
-    interests?: NullableStringFieldUpdateOperationsInput | string | null
-    history?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
-    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
-    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
-    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
-    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
-    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
-    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
-    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
-    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
-    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
-    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
-    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
-    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
-    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
-    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
-    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
-    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
-    profile?: ProfileUpdateOneWithoutUserNestedInput
-    reminders?: ReminderUpdateManyWithoutClientNestedInput
-    clientReports?: ReportUpdateManyWithoutClientNestedInput
-    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
-    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
-    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
-    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
-    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
-    agency?: AgencyUpdateOneWithoutUsersNestedInput
-    agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
-    groups?: GroupUpdateManyWithoutClientsNestedInput
-    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
-    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
-    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
-    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutDocumentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    cognitoId?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    fullName?: StringFieldUpdateOperationsInput | string
-    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
-    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    province?: NullableStringFieldUpdateOperationsInput | string | null
-    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
-    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    mobility?: NullableStringFieldUpdateOperationsInput | string | null
-    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
-    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    languages?: NullableStringFieldUpdateOperationsInput | string | null
-    allergies?: NullableStringFieldUpdateOperationsInput | string | null
-    interests?: NullableStringFieldUpdateOperationsInput | string | null
-    history?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
-    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
-    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
-    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
-    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
-    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
-    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
-    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
-    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
-    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
-    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
-    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
-    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
-    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
-    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
-    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
-    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
-    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
-    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
-    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
-    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
-    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
-    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
-    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
-    agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
-    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
-    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
-    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
-    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutDocumentsInput = {
@@ -79100,18 +83861,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -79120,7 +83881,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -79136,6 +83897,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocumentsInput = {
@@ -79166,18 +83928,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -79186,7 +83948,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -79200,6 +83962,148 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutUserDocumentsInput = {
+    update: XOR<UserUpdateWithoutUserDocumentsInput, UserUncheckedUpdateWithoutUserDocumentsInput>
+    create: XOR<UserCreateWithoutUserDocumentsInput, UserUncheckedCreateWithoutUserDocumentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUserDocumentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUserDocumentsInput, UserUncheckedUpdateWithoutUserDocumentsInput>
+  }
+
+  export type UserUpdateWithoutUserDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
+    clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
+    careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
+    communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
+    incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
+    sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
+    careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
+    receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
+    sentMessages?: MessageUpdateManyWithoutSenderNestedInput
+    careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    profile?: ProfileUpdateOneWithoutUserNestedInput
+    reminders?: ReminderUpdateManyWithoutClientNestedInput
+    clientReports?: ReportUpdateManyWithoutClientNestedInput
+    careReports?: ReportUpdateManyWithoutCaregiverNestedInput
+    reportEdits?: ReportEditUpdateManyWithoutEditorNestedInput
+    riskAssessments?: RiskAssessmentUpdateManyWithoutClientNestedInput
+    clientSchedules?: ScheduleUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUpdateManyWithoutUserNestedInput
+    agency?: AgencyUpdateOneWithoutUsersNestedInput
+    agenciesOwned?: AgencyUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUpdateManyWithoutClientsNestedInput
+    invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUserDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    preferredName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    subRole?: NullableEnumSubRoleFieldUpdateOperationsInput | $Enums.SubRole | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedById?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    province?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    propertyAccess?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    nhsNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    dnraOrder?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    mobility?: NullableStringFieldUpdateOperationsInput | string | null
+    likesDislikes?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languages?: NullableStringFieldUpdateOperationsInput | string | null
+    allergies?: NullableStringFieldUpdateOperationsInput | string | null
+    interests?: NullableStringFieldUpdateOperationsInput | string | null
+    history?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
+    clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
+    careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
+    communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
+    incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
+    sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
+    medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
+    careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
+    receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
+    sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
+    clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
+    reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
+    clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
+    careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
+    reportEdits?: ReportEditUncheckedUpdateManyWithoutEditorNestedInput
+    riskAssessments?: RiskAssessmentUncheckedUpdateManyWithoutClientNestedInput
+    clientSchedules?: ScheduleUncheckedUpdateManyWithoutClientNestedInput
+    careWorkerSchedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    agenciesOwned?: AgencyUncheckedUpdateManyWithoutOwnerNestedInput
+    groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
+    acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutProfileInput = {
@@ -79228,19 +84132,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -79249,7 +84153,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
     careReports?: ReportCreateNestedManyWithoutCaregiverInput
@@ -79264,6 +84168,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -79294,19 +84199,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -79315,7 +84220,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
     careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
@@ -79328,6 +84233,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -79372,19 +84278,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -79393,7 +84299,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
     careReports?: ReportUpdateManyWithoutCaregiverNestedInput
@@ -79408,6 +84314,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -79438,19 +84345,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -79459,7 +84366,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
     careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
@@ -79472,6 +84379,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AgencyCreateWithoutIncidentReportsInput = {
@@ -79480,9 +84388,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -79531,11 +84439,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutIncidentReportsInput = {
@@ -79544,9 +84453,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -79596,10 +84505,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutIncidentReportsInput = {
@@ -79633,18 +84543,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -79653,7 +84563,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -79669,6 +84579,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutIncidentReportsInput = {
@@ -79699,18 +84610,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -79719,7 +84630,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -79733,6 +84644,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutIncidentReportsInput = {
@@ -79757,9 +84669,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -79808,11 +84720,12 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutIncidentReportsInput = {
@@ -79821,9 +84734,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -79873,10 +84786,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutIncidentReportsInput = {
@@ -79916,18 +84830,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -79936,7 +84850,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -79952,6 +84866,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutIncidentReportsInput = {
@@ -79982,18 +84897,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -80002,7 +84917,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -80016,6 +84931,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutReceivedMessagesInput = {
@@ -80044,19 +84960,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -80064,7 +84980,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -80080,6 +84996,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedMessagesInput = {
@@ -80110,19 +85027,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -80130,7 +85047,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -80144,6 +85061,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedMessagesInput = {
@@ -80177,19 +85095,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -80197,7 +85115,7 @@ export namespace Prisma {
     receivedMessages?: MessageCreateNestedManyWithoutReceiverInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -80213,6 +85131,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentMessagesInput = {
@@ -80243,19 +85162,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -80263,7 +85182,7 @@ export namespace Prisma {
     receivedMessages?: MessageUncheckedCreateNestedManyWithoutReceiverInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -80277,6 +85196,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentMessagesInput = {
@@ -80321,19 +85241,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -80341,7 +85261,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -80357,6 +85277,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
@@ -80387,19 +85308,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -80407,7 +85328,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -80421,6 +85342,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutSentMessagesInput = {
@@ -80460,19 +85382,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -80480,7 +85402,7 @@ export namespace Prisma {
     receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -80496,6 +85418,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentMessagesInput = {
@@ -80526,19 +85449,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -80546,7 +85469,7 @@ export namespace Prisma {
     receivedMessages?: MessageUncheckedUpdateManyWithoutReceiverNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -80560,6 +85483,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutKeyContactsInput = {
@@ -80588,19 +85512,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
     clientMedications?: MedicationRecordCreateNestedManyWithoutClientInput
@@ -80608,7 +85532,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -80624,6 +85548,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKeyContactsInput = {
@@ -80654,19 +85579,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
     clientMedications?: MedicationRecordUncheckedCreateNestedManyWithoutClientInput
@@ -80674,7 +85599,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -80688,6 +85613,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutKeyContactsInput = {
@@ -80732,19 +85658,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
     clientMedications?: MedicationRecordUpdateManyWithoutClientNestedInput
@@ -80752,7 +85678,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -80768,6 +85694,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKeyContactsInput = {
@@ -80798,19 +85725,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMedications?: MedicationRecordUncheckedUpdateManyWithoutClientNestedInput
@@ -80818,7 +85745,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -80832,6 +85759,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCareOutcomesInput = {
@@ -80860,18 +85788,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -80880,7 +85808,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -80896,6 +85824,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCareOutcomesInput = {
@@ -80926,18 +85855,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -80946,7 +85875,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -80960,6 +85889,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCareOutcomesInput = {
@@ -81004,18 +85934,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -81024,7 +85954,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -81040,6 +85970,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCareOutcomesInput = {
@@ -81070,18 +86001,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -81090,7 +86021,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -81104,6 +86035,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCommunicationLogsInput = {
@@ -81132,18 +86064,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -81152,7 +86084,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -81168,6 +86100,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommunicationLogsInput = {
@@ -81198,18 +86131,18 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -81218,7 +86151,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -81232,6 +86165,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommunicationLogsInput = {
@@ -81276,18 +86210,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -81296,7 +86230,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -81312,6 +86246,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -81342,18 +86277,18 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -81362,7 +86297,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -81376,6 +86311,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RiskAssessmentCreateWithoutRiskCategoryInput = {
@@ -81420,9 +86356,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -81472,10 +86408,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
     reminders?: ReminderCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRiskCategoriesInput = {
@@ -81484,9 +86421,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -81537,9 +86474,10 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRiskCategoriesInput = {
@@ -81580,9 +86518,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -81632,10 +86570,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRiskCategoriesInput = {
@@ -81644,9 +86583,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -81697,9 +86636,10 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserCreateWithoutRiskAssessmentsInput = {
@@ -81728,19 +86668,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -81749,7 +86689,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     reminders?: ReminderCreateNestedManyWithoutClientInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
@@ -81764,6 +86704,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRiskAssessmentsInput = {
@@ -81794,19 +86735,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -81815,7 +86756,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     reminders?: ReminderUncheckedCreateNestedManyWithoutClientInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
@@ -81828,6 +86769,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRiskAssessmentsInput = {
@@ -81893,19 +86835,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -81914,7 +86856,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -81929,6 +86871,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRiskAssessmentsInput = {
@@ -81959,19 +86902,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -81980,7 +86923,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -81993,6 +86936,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RiskCategoryUpsertWithoutRiskAssessmentsInput = {
@@ -82028,9 +86972,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -82079,11 +87023,12 @@ export namespace Prisma {
     mileageRecords?: MileageRecordCreateNestedManyWithoutAgencyInput
     operatingHours?: OperatingHoursCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetCreateNestedManyWithoutAgencyInput
-    Report?: ReportCreateNestedManyWithoutAgencyInput
+    reports?: ReportCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleCreateNestedManyWithoutAgencyInput
     users?: UserCreateNestedManyWithoutAgencyInput
     owner?: UserCreateNestedOneWithoutAgenciesOwnedInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyUncheckedCreateWithoutRemindersInput = {
@@ -82092,9 +87037,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -82144,10 +87089,11 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUncheckedCreateNestedManyWithoutAgencyInput
     operatingHours?: OperatingHoursUncheckedCreateNestedManyWithoutAgencyInput
     rateSheets?: RateSheetUncheckedCreateNestedManyWithoutAgencyInput
-    Report?: ReportUncheckedCreateNestedManyWithoutAgencyInput
+    reports?: ReportUncheckedCreateNestedManyWithoutAgencyInput
     riskCategories?: RiskCategoryUncheckedCreateNestedManyWithoutAgencyInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutAgencyInput
     users?: UserUncheckedCreateNestedManyWithoutAgencyInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutAgencyInput
   }
 
   export type AgencyCreateOrConnectWithoutRemindersInput = {
@@ -82181,19 +87127,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -82202,7 +87148,7 @@ export namespace Prisma {
     sentMessages?: MessageCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordCreateNestedManyWithoutClientInput
-    Notification?: NotificationCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     clientReports?: ReportCreateNestedManyWithoutClientInput
     careReports?: ReportCreateNestedManyWithoutCaregiverInput
@@ -82217,6 +87163,7 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRemindersInput = {
@@ -82247,19 +87194,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -82268,7 +87215,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedCreateNestedManyWithoutSenderInput
     careWorkerMileage?: MileageRecordUncheckedCreateNestedManyWithoutUserInput
     clientMileage?: MileageRecordUncheckedCreateNestedManyWithoutClientInput
-    Notification?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     clientReports?: ReportUncheckedCreateNestedManyWithoutClientInput
     careReports?: ReportUncheckedCreateNestedManyWithoutCaregiverInput
@@ -82281,6 +87228,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRemindersInput = {
@@ -82305,9 +87253,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82356,11 +87304,12 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUpdateManyWithoutAgencyNestedInput
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
     owner?: UserUpdateOneWithoutAgenciesOwnedNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutRemindersInput = {
@@ -82369,9 +87318,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82421,10 +87370,11 @@ export namespace Prisma {
     mileageRecords?: MileageRecordUncheckedUpdateManyWithoutAgencyNestedInput
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type UserUpsertWithoutRemindersInput = {
@@ -82464,19 +87414,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -82485,7 +87435,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
     careReports?: ReportUpdateManyWithoutCaregiverNestedInput
@@ -82500,6 +87450,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRemindersInput = {
@@ -82530,19 +87481,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -82551,7 +87502,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
     careReports?: ReportUncheckedUpdateManyWithoutCaregiverNestedInput
@@ -82564,9 +87515,10 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type UserCreateWithoutNotificationInput = {
+  export type UserCreateWithoutNotificationsInput = {
     id?: string
     cognitoId: string
     email: string
@@ -82592,19 +87544,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceCreateNestedOneWithoutUserInput
-    Document?: DocumentCreateNestedManyWithoutClientInput
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordCreateNestedManyWithoutUserInput
@@ -82628,9 +87580,10 @@ export namespace Prisma {
     invitedUsers?: UserCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutNotificationInput = {
+  export type UserUncheckedCreateWithoutNotificationsInput = {
     id?: string
     cognitoId: string
     email: string
@@ -82658,19 +87611,19 @@ export namespace Prisma {
     interests?: string | null
     history?: string | null
     createdAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutCreatedByInput
-    Announcement?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
-    AuditLog?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    announcements?: AnnouncementUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     careOutcomes?: CareOutcomeUncheckedCreateNestedManyWithoutClientInput
     clientAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutClientInput
     careAssignments?: ClientCareAssignmentUncheckedCreateNestedManyWithoutUserInput
     communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutClientInput
     communicationPreference?: CommunicationPreferenceUncheckedCreateNestedOneWithoutUserInput
-    Document?: DocumentUncheckedCreateNestedManyWithoutClientInput
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    userDocuments?: DocumentUncheckedCreateNestedManyWithoutUserInput
     familyAccess?: FamilyAccessUncheckedCreateNestedManyWithoutClientInput
     incidentReports?: IncidentReportUncheckedCreateNestedManyWithoutReporterInput
     sentInvitations?: InvitationUncheckedCreateNestedManyWithoutInviterInput
-    Invoice?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     keyContacts?: KeyContactUncheckedCreateNestedManyWithoutClientInput
     medicationAdministrations?: MedicationAdministrationUncheckedCreateNestedManyWithoutAdministeredByInput
     careWorkerMedications?: MedicationRecordUncheckedCreateNestedManyWithoutUserInput
@@ -82692,25 +87645,26 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedByInput
     acknowledgedAnnouncements?: AnnouncementUncheckedCreateNestedManyWithoutAcknowledgedByInput
     visitTypes?: VisitTypeUncheckedCreateNestedManyWithoutUserInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutNotificationInput = {
+  export type UserCreateOrConnectWithoutNotificationsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutNotificationInput, UserUncheckedCreateWithoutNotificationInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
   }
 
-  export type UserUpsertWithoutNotificationInput = {
-    update: XOR<UserUpdateWithoutNotificationInput, UserUncheckedUpdateWithoutNotificationInput>
-    create: XOR<UserCreateWithoutNotificationInput, UserUncheckedCreateWithoutNotificationInput>
+  export type UserUpsertWithoutNotificationsInput = {
+    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutNotificationInput = {
+  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutNotificationInput, UserUncheckedUpdateWithoutNotificationInput>
+    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
   }
 
-  export type UserUpdateWithoutNotificationInput = {
+  export type UserUpdateWithoutNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -82736,19 +87690,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -82772,9 +87726,10 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutNotificationInput = {
+  export type UserUncheckedUpdateWithoutNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -82802,19 +87757,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -82836,6 +87791,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AnnouncementCreateManyAgencyInput = {
@@ -83052,6 +88008,16 @@ export namespace Prisma {
     history?: string | null
   }
 
+  export type ScheduleTemplateCreateManyAgencyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    userId: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type AnnouncementUpdateWithoutAgencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -83068,7 +88034,7 @@ export namespace Prisma {
     attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput
-    User?: UserUpdateOneWithoutAnnouncementNestedInput
+    user?: UserUpdateOneWithoutAnnouncementsNestedInput
     acknowledgedBy?: UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
   }
 
@@ -83121,7 +88087,7 @@ export namespace Prisma {
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     performedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneWithoutAuditLogNestedInput
+    user?: UserUpdateOneWithoutAuditLogsNestedInput
   }
 
   export type AuditLogUncheckedUpdateWithoutAgencyInput = {
@@ -83227,8 +88193,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     fileUrl?: StringFieldUpdateOperationsInput | string
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: UserUpdateOneWithoutDocumentNestedInput
-    user?: UserUpdateOneWithoutDocumentsNestedInput
+    client?: UserUpdateOneWithoutDocumentsNestedInput
+    user?: UserUpdateOneWithoutUserDocumentsNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutAgencyInput = {
@@ -83304,7 +88270,7 @@ export namespace Prisma {
     issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
-    client?: UserUpdateOneWithoutInvoiceNestedInput
+    client?: UserUpdateOneWithoutInvoicesNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutAgencyInput = {
@@ -83335,7 +88301,7 @@ export namespace Prisma {
     isSpecialist?: BoolFieldUpdateOperationsInput | boolean
     url?: StringFieldUpdateOperationsInput | string
     source?: StringFieldUpdateOperationsInput | string
-    MedicationRecord?: MedicationRecordUpdateManyWithoutMedicationNestedInput
+    medicationRecords?: MedicationRecordUpdateManyWithoutMedicationNestedInput
   }
 
   export type MedicationDatabaseLinkUncheckedUpdateWithoutAgencyInput = {
@@ -83344,7 +88310,7 @@ export namespace Prisma {
     isSpecialist?: BoolFieldUpdateOperationsInput | boolean
     url?: StringFieldUpdateOperationsInput | string
     source?: StringFieldUpdateOperationsInput | string
-    MedicationRecord?: MedicationRecordUncheckedUpdateManyWithoutMedicationNestedInput
+    medicationRecords?: MedicationRecordUncheckedUpdateManyWithoutMedicationNestedInput
   }
 
   export type MedicationDatabaseLinkUncheckedUpdateManyWithoutAgencyInput = {
@@ -83431,6 +88397,7 @@ export namespace Prisma {
     staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    templateVisits?: TemplateVisitUpdateManyWithoutRateSheetNestedInput
   }
 
   export type RateSheetUncheckedUpdateWithoutAgencyInput = {
@@ -83440,6 +88407,7 @@ export namespace Prisma {
     staffType?: EnumRateSheetTypeFieldUpdateOperationsInput | $Enums.RateSheetType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    templateVisits?: TemplateVisitUncheckedUpdateManyWithoutRateSheetNestedInput
   }
 
   export type RateSheetUncheckedUpdateManyWithoutAgencyInput = {
@@ -83654,19 +88622,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -83675,7 +88643,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -83690,6 +88658,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgencyInput = {
@@ -83719,19 +88688,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -83740,7 +88709,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -83754,6 +88723,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAgencyInput = {
@@ -83784,6 +88754,38 @@ export namespace Prisma {
     history?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type ScheduleTemplateUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visits?: TemplateVisitUpdateManyWithoutTemplateNestedInput
+    user?: UserUpdateOneRequiredWithoutScheduleTemplatesNestedInput
+  }
+
+  export type ScheduleTemplateUncheckedUpdateWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visits?: TemplateVisitUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type ScheduleTemplateUncheckedUpdateManyWithoutAgencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserUpdateWithoutAcknowledgedAnnouncementsInput = {
     id?: StringFieldUpdateOperationsInput | string
     cognitoId?: StringFieldUpdateOperationsInput | string
@@ -83810,19 +88812,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -83831,7 +88833,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -83846,6 +88848,7 @@ export namespace Prisma {
     invitedBy?: UserUpdateOneWithoutInvitedUsersNestedInput
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAcknowledgedAnnouncementsInput = {
@@ -83876,19 +88879,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -83897,7 +88900,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -83910,6 +88913,7 @@ export namespace Prisma {
     groups?: GroupUncheckedUpdateManyWithoutClientsNestedInput
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutAcknowledgedAnnouncementsInput = {
@@ -83967,19 +88971,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -83988,7 +88992,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -84003,6 +89007,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGroupsInput = {
@@ -84033,19 +89038,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -84054,7 +89059,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -84067,6 +89072,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutGroupsInput = {
@@ -84096,6 +89102,70 @@ export namespace Prisma {
     allergies?: NullableStringFieldUpdateOperationsInput | string | null
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TemplateVisitCreateManyRateSheetInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    clientVisitTypeId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    templateId: string
+  }
+
+  export type TemplateVisitUpdateWithoutRateSheetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    clientVisitType?: VisitTypeUpdateOneWithoutTemplateVisitsNestedInput
+    template?: ScheduleTemplateUpdateOneRequiredWithoutVisitsNestedInput
+  }
+
+  export type TemplateVisitUncheckedUpdateWithoutRateSheetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    clientVisitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    templateId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TemplateVisitUncheckedUpdateManyWithoutRateSheetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    clientVisitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    templateId?: StringFieldUpdateOperationsInput | string
   }
 
   export type AnnouncementCreateManyCreatedByInput = {
@@ -84448,9 +89518,9 @@ export namespace Prisma {
     email?: string
     description?: string | null
     address?: string | null
-    extension?: number | null
-    mobileNumber?: number | null
-    landlineNumber?: number | null
+    extension?: string | null
+    mobileNumber?: string | null
+    landlineNumber?: string | null
     website?: string | null
     logo?: string | null
     primaryColor?: string | null
@@ -84525,6 +89595,16 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ScheduleTemplateCreateManyUserInput = {
+    id?: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    agencyId: string
+  }
+
   export type AnnouncementUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -84541,7 +89621,7 @@ export namespace Prisma {
     attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
     agency?: AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput
-    User?: UserUpdateOneWithoutAnnouncementNestedInput
+    user?: UserUpdateOneWithoutAnnouncementsNestedInput
     acknowledgedBy?: UserUpdateManyWithoutAcknowledgedAnnouncementsNestedInput
   }
 
@@ -84763,7 +89843,7 @@ export namespace Prisma {
     fileUrl?: StringFieldUpdateOperationsInput | string
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneWithoutDocumentsNestedInput
-    user?: UserUpdateOneWithoutDocumentsNestedInput
+    user?: UserUpdateOneWithoutUserDocumentsNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutClientInput = {
@@ -84790,7 +89870,7 @@ export namespace Prisma {
     fileUrl?: StringFieldUpdateOperationsInput | string
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     agency?: AgencyUpdateOneWithoutDocumentsNestedInput
-    client?: UserUpdateOneWithoutDocumentNestedInput
+    client?: UserUpdateOneWithoutDocumentsNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutUserInput = {
@@ -84998,7 +90078,7 @@ export namespace Prisma {
     asNeededDose?: BoolFieldUpdateOperationsInput | boolean
     administrationRecords?: MedicationAdministrationUpdateManyWithoutMedicationRecordNestedInput
     client?: UserUpdateOneRequiredWithoutClientMedicationsNestedInput
-    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordNestedInput
+    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordsNestedInput
   }
 
   export type MedicationRecordUncheckedUpdateWithoutUserInput = {
@@ -85054,7 +90134,7 @@ export namespace Prisma {
     asNeededDose?: BoolFieldUpdateOperationsInput | boolean
     administrationRecords?: MedicationAdministrationUpdateManyWithoutMedicationRecordNestedInput
     user?: UserUpdateOneRequiredWithoutCareWorkerMedicationsNestedInput
-    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordNestedInput
+    medication?: MedicationDatabaseLinkUpdateOneRequiredWithoutMedicationRecordsNestedInput
   }
 
   export type MedicationRecordUncheckedUpdateWithoutClientInput = {
@@ -85251,7 +90331,7 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Agency?: AgencyUpdateOneWithoutRemindersNestedInput
+    agency?: AgencyUpdateOneWithoutRemindersNestedInput
   }
 
   export type ReminderUncheckedUpdateWithoutClientInput = {
@@ -85294,7 +90374,7 @@ export namespace Prisma {
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     caregiver?: UserUpdateOneRequiredWithoutCareReportsNestedInput
     alerts?: ReportAlertUpdateManyWithoutReportNestedInput
     editHistory?: ReportEditUpdateManyWithoutReportNestedInput
@@ -85370,7 +90450,7 @@ export namespace Prisma {
     lastEditReason?: NullableStringFieldUpdateOperationsInput | string | null
     bodyMapObservations?: BodyMapObservationUpdateManyWithoutReportNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutReportNestedInput
-    agency?: AgencyUpdateOneRequiredWithoutReportNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutReportsNestedInput
     client?: UserUpdateOneRequiredWithoutClientReportsNestedInput
     alerts?: ReportAlertUpdateManyWithoutReportNestedInput
     editHistory?: ReportEditUpdateManyWithoutReportNestedInput
@@ -85591,9 +90671,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85643,10 +90723,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUpdateManyWithoutAgencyNestedInput
     users?: UserUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateWithoutOwnerInput = {
@@ -85655,9 +90736,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85707,10 +90788,11 @@ export namespace Prisma {
     operatingHours?: OperatingHoursUncheckedUpdateManyWithoutAgencyNestedInput
     rateSheets?: RateSheetUncheckedUpdateManyWithoutAgencyNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutAgencyNestedInput
-    Report?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutAgencyNestedInput
     riskCategories?: RiskCategoryUncheckedUpdateManyWithoutAgencyNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutAgencyNestedInput
     users?: UserUncheckedUpdateManyWithoutAgencyNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutAgencyNestedInput
   }
 
   export type AgencyUncheckedUpdateManyWithoutOwnerInput = {
@@ -85719,9 +90801,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    extension?: NullableIntFieldUpdateOperationsInput | number | null
-    mobileNumber?: NullableIntFieldUpdateOperationsInput | number | null
-    landlineNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    landlineNumber?: NullableStringFieldUpdateOperationsInput | string | null
     website?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85765,7 +90847,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    Agency?: AgencyUpdateOneWithoutGroupsNestedInput
+    agency?: AgencyUpdateOneWithoutGroupsNestedInput
   }
 
   export type GroupUncheckedUpdateWithoutClientsInput = {
@@ -85810,19 +90892,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUpdateOneWithoutUserNestedInput
-    Document?: DocumentUpdateManyWithoutClientNestedInput
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUpdateManyWithoutUserNestedInput
@@ -85831,7 +90913,7 @@ export namespace Prisma {
     sentMessages?: MessageUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     reminders?: ReminderUpdateManyWithoutClientNestedInput
     clientReports?: ReportUpdateManyWithoutClientNestedInput
@@ -85846,6 +90928,7 @@ export namespace Prisma {
     invitedUsers?: UserUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedByInput = {
@@ -85875,19 +90958,19 @@ export namespace Prisma {
     interests?: NullableStringFieldUpdateOperationsInput | string | null
     history?: NullableStringFieldUpdateOperationsInput | string | null
     createdAnnouncements?: AnnouncementUncheckedUpdateManyWithoutCreatedByNestedInput
-    Announcement?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
-    AuditLog?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    announcements?: AnnouncementUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     careOutcomes?: CareOutcomeUncheckedUpdateManyWithoutClientNestedInput
     clientAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutClientNestedInput
     careAssignments?: ClientCareAssignmentUncheckedUpdateManyWithoutUserNestedInput
     communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutClientNestedInput
     communicationPreference?: CommunicationPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    Document?: DocumentUncheckedUpdateManyWithoutClientNestedInput
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    userDocuments?: DocumentUncheckedUpdateManyWithoutUserNestedInput
     familyAccess?: FamilyAccessUncheckedUpdateManyWithoutClientNestedInput
     incidentReports?: IncidentReportUncheckedUpdateManyWithoutReporterNestedInput
     sentInvitations?: InvitationUncheckedUpdateManyWithoutInviterNestedInput
-    Invoice?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     keyContacts?: KeyContactUncheckedUpdateManyWithoutClientNestedInput
     medicationAdministrations?: MedicationAdministrationUncheckedUpdateManyWithoutAdministeredByNestedInput
     careWorkerMedications?: MedicationRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -85896,7 +90979,7 @@ export namespace Prisma {
     sentMessages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
     careWorkerMileage?: MileageRecordUncheckedUpdateManyWithoutUserNestedInput
     clientMileage?: MileageRecordUncheckedUpdateManyWithoutClientNestedInput
-    Notification?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     reminders?: ReminderUncheckedUpdateManyWithoutClientNestedInput
     clientReports?: ReportUncheckedUpdateManyWithoutClientNestedInput
@@ -85910,6 +90993,7 @@ export namespace Prisma {
     invitedUsers?: UserUncheckedUpdateManyWithoutInvitedByNestedInput
     acknowledgedAnnouncements?: AnnouncementUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     visitTypes?: VisitTypeUncheckedUpdateManyWithoutUserNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutInvitedByInput = {
@@ -85957,7 +91041,7 @@ export namespace Prisma {
     attachmentType?: NullableStringFieldUpdateOperationsInput | string | null
     agency?: AgencyUpdateOneRequiredWithoutAnnouncementsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedAnnouncementsNestedInput
-    User?: UserUpdateOneWithoutAnnouncementNestedInput
+    user?: UserUpdateOneWithoutAnnouncementsNestedInput
   }
 
   export type AnnouncementUncheckedUpdateWithoutAcknowledgedByInput = {
@@ -86007,6 +91091,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedTasks?: TaskUpdateManyWithoutVisitTypeNestedInput
+    templateVisits?: TemplateVisitUpdateManyWithoutClientVisitTypeNestedInput
   }
 
   export type VisitTypeUncheckedUpdateWithoutUserInput = {
@@ -86016,6 +91101,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedTasks?: TaskUncheckedUpdateManyWithoutVisitTypeNestedInput
+    templateVisits?: TemplateVisitUncheckedUpdateManyWithoutClientVisitTypeNestedInput
   }
 
   export type VisitTypeUncheckedUpdateManyWithoutUserInput = {
@@ -86024,6 +91110,102 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    visits?: TemplateVisitUpdateManyWithoutTemplateNestedInput
+    agency?: AgencyUpdateOneRequiredWithoutScheduleTemplatesNestedInput
+  }
+
+  export type ScheduleTemplateUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+    visits?: TemplateVisitUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type ScheduleTemplateUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    agencyId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TemplateVisitCreateManyTemplateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    rateSheetId?: string | null
+    clientVisitTypeId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+  }
+
+  export type TemplateVisitUpdateWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    rateSheet?: RateSheetUpdateOneWithoutTemplateVisitsNestedInput
+    clientVisitType?: VisitTypeUpdateOneWithoutTemplateVisitsNestedInput
+  }
+
+  export type TemplateVisitUncheckedUpdateWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    rateSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientVisitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TemplateVisitUncheckedUpdateManyWithoutTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    rateSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientVisitTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MedicationRecordCreateManyMedicationInput = {
@@ -86106,6 +91288,22 @@ export namespace Prisma {
     careworkerNotes?: string | null
   }
 
+  export type TemplateVisitCreateManyClientVisitTypeInput = {
+    id?: string
+    name: string
+    description?: string | null
+    day: $Enums.TemplateVisitDay
+    startTime: string
+    endTime: string
+    endStatus: $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: boolean
+    rateSheetId?: string | null
+    careWorkerId: string
+    careWorker2Id?: string | null
+    careWorker3Id?: string | null
+    templateId: string
+  }
+
   export type TaskUpdateWithoutVisitTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
@@ -86122,6 +91320,54 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumTaskTypeFieldUpdateOperationsInput | $Enums.TaskType
     careworkerNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TemplateVisitUpdateWithoutClientVisitTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    rateSheet?: RateSheetUpdateOneWithoutTemplateVisitsNestedInput
+    template?: ScheduleTemplateUpdateOneRequiredWithoutVisitsNestedInput
+  }
+
+  export type TemplateVisitUncheckedUpdateWithoutClientVisitTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    rateSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    templateId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TemplateVisitUncheckedUpdateManyWithoutClientVisitTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    day?: EnumTemplateVisitDayFieldUpdateOperationsInput | $Enums.TemplateVisitDay
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    endStatus?: EnumTemplateVisitEndStatusFieldUpdateOperationsInput | $Enums.TemplateVisitEndStatus
+    isAllDayVisit?: BoolFieldUpdateOperationsInput | boolean
+    rateSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorkerId?: StringFieldUpdateOperationsInput | string
+    careWorker2Id?: NullableStringFieldUpdateOperationsInput | string | null
+    careWorker3Id?: NullableStringFieldUpdateOperationsInput | string | null
+    templateId?: StringFieldUpdateOperationsInput | string
   }
 
   export type BodyMapObservationCreateManyReportInput = {
