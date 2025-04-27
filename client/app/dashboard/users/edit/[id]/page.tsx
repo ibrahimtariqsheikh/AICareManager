@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Calendar, FileText, Pill, UserIcon, Code } from "lucide-react"
+import { Calendar, FileText, Pill, UserIcon, Code, Loader2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
 import { useGetUserByIdQuery } from "@/state/api"
@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScheduleTemplate } from "../components/scheduleTemplate"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getRandomPlaceholderImage } from "@/lib/utils"
 
 const EditUserPage = () => {
     const { id } = useParams()
@@ -138,10 +140,13 @@ const EditUserPage = () => {
                     transition={{ duration: 0.3 }}
                     className="w-full flex flex-row gap-2 items-center justify-between mx-4"
                 >
-                    <div className="flex flex-row gap-2 items-center justify-between">
-                        <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-foreground font-semibold text-sm">
-                            {user?.fullName?.charAt(0) || "U"}
-                        </div>
+                    <div className="flex flex-row gap-4 items-center justify-between">
+                        <Avatar className="w-16 h-16 bg-muted flex items-center justify-center text-foreground font-semibold text-sm">
+                            <AvatarImage src={getRandomPlaceholderImage()} />
+                            <AvatarFallback>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            </AvatarFallback>
+                        </Avatar>
                         <div>
                             <h1 className="text-2xl font-bold">{user?.fullName || "Unknown User"}</h1>
                         </div>

@@ -153,7 +153,7 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
                         {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map((page) => (
                             <Button
                                 key={page}
-                                variant={table.getState().pagination.pageIndex + 1 === page ? "default" : "outline"}
+                                variant={table.getState().pagination.pageIndex + 1 === page ? "outline" : "ghost"}
                                 size="sm"
                                 className="mx-0.5 h-8 w-8"
                                 onClick={() => table.setPageIndex(page - 1)}

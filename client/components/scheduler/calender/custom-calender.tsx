@@ -186,7 +186,7 @@ export function CustomCalendar({
 
                     {/* Controls and info row */}
                     <div className="flex justify-end items-center gap-2 px-4">
-                        <div
+                        {/* <div
                             className={cn(
                                 "text-xs flex items-center gap-1 h-8 p-3 rounded-md",
                                 spaceTheme ? "text-neutral-100 bg-neutral-900/50" : "text-neutral-900 bg-neutral-100"
@@ -205,7 +205,7 @@ export function CustomCalendar({
                             <span>
                                 {getVisibleEventsCount()} {getVisibleEventsCount() === 1 ? "event" : "events"}
                             </span>
-                        </div>
+                        </div> */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <motion.div

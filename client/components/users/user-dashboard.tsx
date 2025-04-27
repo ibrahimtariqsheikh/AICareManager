@@ -89,28 +89,17 @@ export function UserDashboard() {
     return (
         <div className="flex-1 p-6 space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-bold">User Management</h1>
-
-                    </div>
-                    <p className="text-gray-500 mt-1">Manage the users in your agency and their account permissions here.</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold">Users</h1>
+                    <p className="text-sm text-neutral-600">
+                        Manage your users efficiently. Add, edit, or delete users.
+                    </p>
                 </div>
-                <div className="flex items-center gap-3">
-                    {/* <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input type="text" id="medium-input" className="shadow-none block w-full p-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search users..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                    </div> */}
-
-                    <Button onClick={() => setIsAddUserDialogOpen(true)} >
-                        <UserPlus className="h-4 w-4 mr-2" />
-                        Add User
-                    </Button>
-
-
-
-                </div>
+                <Button onClick={() => setIsAddUserDialogOpen(true)} className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none">
+                    <UserPlus className="h-4 w-4" />
+                    Add User
+                </Button>
             </div>
 
             {/* User Type Tabs */}
@@ -140,32 +129,7 @@ export function UserDashboard() {
 
             {/* User Content */}
             <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                    {activeUserType === "CLIENT" && (
-                        <>
-                            <div className="p-1.5 rounded-full bg-blue-50">
-                                <Users className="h-4 w-4 text-blue-600" />
-                            </div>
-                            <h2 className="text-lg font-semibold">Clients</h2>
-                        </>
-                    )}
-                    {activeUserType === "CARE_WORKER" && (
-                        <>
-                            <div className="p-1.5 rounded-full bg-green-50">
-                                <UserPlus className="h-4 w-4 text-green-600" />
-                            </div>
-                            <h2 className="text-lg font-semibold">Care Workers</h2>
-                        </>
-                    )}
-                    {activeUserType === "OFFICE_STAFF" && (
-                        <>
-                            <div className="p-1.5 rounded-full bg-purple-50">
-                                <Briefcase className="h-4 w-4 text-purple-600" />
-                            </div>
-                            <h2 className="text-lg font-semibold">Office Staff</h2>
-                        </>
-                    )}
-                </div>
+
 
                 <Card className="shadow-none border-0">
                     <CardContent className="p-0">

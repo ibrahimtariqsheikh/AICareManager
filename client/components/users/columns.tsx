@@ -14,6 +14,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { User } from "@/types/prismaTypes"
+import { getRandomPlaceholderImage } from "@/lib/utils"
 
 export const columns: ColumnDef<User>[] = [
     {
@@ -38,10 +39,10 @@ export const columns: ColumnDef<User>[] = [
     {
         accessorKey: "name",
         header: ({ column }) => (
-            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
                 Name
                 <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
+            </div>
         ),
         cell: ({ row }) => {
             const fullName = row.original.fullName || ""
@@ -54,8 +55,8 @@ export const columns: ColumnDef<User>[] = [
 
             return (
                 <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                        <AvatarImage src={row.original.profile?.avatarUrl || ""} alt={fullName} />
+                    <Avatar className="h-9 w-9">
+                        <AvatarImage src={getRandomPlaceholderImage()} alt={fullName} />
                         <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
@@ -77,20 +78,31 @@ export const columns: ColumnDef<User>[] = [
 
     {
         accessorKey: "subRole",
-        header: "Subrole",
+        header: ({ column }) => (
+            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                Subrole
+            </div>
+        ),
         cell: ({ row }) => (
-            <div className="text-xs text-blue-800 bg-blue-100 font-medium rounded-md px-2 py-1 max-w-30 w-fit text-center">
-                {row.original.subRole ? row.original.subRole.replace(/_/g, " ") : "None"}
+            <div className="text-xs text-blue-700 bg-blue-100/50 font-medium rounded-md px-2 py-1 max-w-30 w-fit text-center">
+                {row.original.subRole ?
+                    row.original.subRole
+                        .split('_')
+                        .map((word: string) =>
+                            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                        )
+                        .join(' ')
+                    : "None"}
             </div>
         ),
     },
     {
         accessorKey: "createdAt",
         header: ({ column }) => (
-            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
                 Added
                 <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
+            </div>
         ),
         cell: ({ row }) => {
             const date = new Date(row.getValue("createdAt"))

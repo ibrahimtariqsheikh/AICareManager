@@ -7,8 +7,10 @@ import { useAppDispatch } from "@/state/redux"
 import { AppointmentForm } from "@/components/scheduler/appointment-form"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { Plus } from "lucide-react"
+import { Calendar1Icon, Clipboard, Plus, PlusCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import EventIcon from "@/components/icons/eventicon"
 
 // Import the Loading component
 function Loading() {
@@ -112,23 +114,39 @@ export default function SchedulerPage() {
 
             <div
                 className={cn(
-                    "relative container mx-auto py-4 min-h-screen min-w-full transition-opacity duration-500",
+                    "relative container mx-auto p-6 min-h-screen min-w-full transition-opacity duration-500",
                     showContent ? "opacity-100" : "opacity-0",
                 )}
             >
                 <div className="flex flex-col space-y-4">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div className="flex flex-col gap-2">
-                            <h1 className="text-3xl font-bold text-neutral-900">Schedule</h1>
+                        <div className="flex flex-col">
+                            <h1 className="text-xl font-bold">Schedule</h1>
                             <p className="text-sm text-neutral-600">
                                 Manage your appointments efficiently. View, create, edit, or cancel client appointments. Track your
                                 availability and organize your professional schedule all in one place.
                             </p>
                         </div>
-                        <Button onClick={() => setIsAppointmentFormOpen(true)} size="sm" className="hidden sm:flex">
-                            <Plus className="h-4 w-4 mr-1.5" />
-                            New Appointment
-                        </Button>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button size="sm" className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none">
+                                    <PlusCircle className="h-3 w-3" />
+                                    New
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-64" align="end">
+                                <div className="flex flex-col gap-2 text-xs">
+                                    <Button onClick={() => setIsAppointmentFormOpen(true)} className="w-full text-xs" variant="ghost">
+                                        <EventIcon className="h-3 w-3" />
+                                        New Appointment
+                                    </Button>
+                                    <Button onClick={() => { }} className="w-full text-xs " variant="ghost">
+                                        <Clipboard className="h-3 w-3" />
+                                        New Event
+                                    </Button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                     </div>
 
                     <div className="mb-4" />

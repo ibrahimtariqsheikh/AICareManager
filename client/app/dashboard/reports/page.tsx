@@ -320,14 +320,11 @@ export default function ReportsPage() {
 
     return (
         <div className="flex-1 space-y-4 p-6 ">
-            <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={handleExportReport}>
-                        <Download className="mr-2 h-4 w-4" />
-                        Export Report
-                    </Button>
-                </div>
+            <div className="flex flex-col">
+                <h1 className="text-xl font-bold">Reports</h1>
+                <p className="text-sm text-neutral-600">
+                    View and manage your reports.
+                </p>
             </div>
 
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">

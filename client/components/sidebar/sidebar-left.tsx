@@ -23,7 +23,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { cn } from "../../lib/utils"
+import { cn, getRandomPlaceholderImage } from "../../lib/utils"
 import { useState } from "react"
 import {
     DropdownMenu,
@@ -32,7 +32,7 @@ import {
 
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "../ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { useTheme } from "next-themes"
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from "../../components/ui/sidebar"
@@ -220,10 +220,10 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
             </SidebarHeader>
             <div className="border-b border-border w-[100%] mx-auto my-1" />
             <SidebarContent className="px-3 py-4">
-                <div className="text-xs text-neutral-700 flex items-center gap-1 justify-between mb-4 bg-neutral-100 rounded-md px-3 py-2 border border-neutral-300 hover:border-neutral-400 cursor-pointer hover:bg-neutral-200 transition-all duration-200 group">
+                {/* <div className="text-xs text-neutral-700 flex items-center gap-1 justify-between mb-4 bg-neutral-100 rounded-md px-3 py-2 border border-neutral-300 hover:border-neutral-400 cursor-pointer hover:bg-neutral-200 transition-all duration-200 group">
                     <div className="flex items-center gap-1 ">    <Search className="h-3.5 w-3.5 text-neutral-600 mr-1" />
                         Quick Search    </div> <kbd className="flex items-center gap-1 justify-center w-fit px-1.5 py-0.5 text-xs font-medium text-neutral-800 bg-neutral-200 rounded-md"><CommandIcon className="inline-block w-3 h-3" />K</kbd>
-                </div>
+                </div> */}
 
                 {navigation.map((section) => (
                     <div key={section.title} className="space-y-2 mb-6">
@@ -238,15 +238,12 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         key={item.href}
                                         href={item.href}
                                         className={cn(
-                                            "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                                            theme === "dark" ? "text-neutral-400" : "text-neutral-600",
-                                            isActive
-                                                ? "bg-neutral-200/80 text-neutral-900 font-medium"
-                                                : cn("hover:bg-neutral-200/80 hover:text-neutral-900", theme === "dark" ? "hover:bg-neutral-800/80" : "hover:bg-neutral-200/80")
+                                            "flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors",
+                                            isActive ? "bg-neutral-200/70 text-black font-medium" : "hover:bg-neutral-200/70 hover:text-black"
                                         )}
                                     >
-                                        <item.icon className={cn("h-4 w-4", theme === "dark" ? "text-neutral-200" : "text-neutral-600")} />
-                                        <span className={cn("flex items-center gap-2 text-sm justify-between w-full", theme === "dark" ? "text-neutral-200" : "text-neutral-600")}>
+                                        <item.icon className={cn("h-4 w-4", theme === "dark" ? "text-neutral-200" : "text-neutral-800")} />
+                                        <span className={cn("flex items-center gap-2 text-sm justify-between w-full", theme === "dark" ? "text-neutral-200" : "text-neutral-800")}>
                                             {item.title}
 
                                         </span>
@@ -258,7 +255,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                 ))}
             </SidebarContent>
             <SidebarFooter className="my-4">
-                <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
+                {/* <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
                     <div className="flex flex-row items-center gap-2 justify-between">
                         <div className="flex flex-row items-center gap-2">
                             <Rocket className="h-4 w-4  text-blue-600" />
@@ -275,13 +272,14 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                         </div>
                     </div>
 
-                </div>
+                </div> */}
                 <div className="flex items-center justify-between border-t border-border pt-4">
                     <DropdownMenu open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
                         <DropdownMenuTrigger asChild>
                             <div className="w-full cursor-pointer">
                                 <Button variant="ghost" className="flex items-center gap-2 w-full justify-start">
-                                    <Avatar className="h-8 w-8">
+                                    <Avatar className="h-10 w-10">
+                                        <AvatarImage src={getRandomPlaceholderImage()} alt={user?.fullName} />
                                         <AvatarFallback className="bg-blue-400/20 text-blue-600">
                                             {user?.fullName?.[0]}
 
@@ -323,6 +321,6 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                 </div>
             </SidebarFooter>
 
-        </Sidebar>
+        </Sidebar >
     )
 }

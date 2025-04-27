@@ -437,22 +437,23 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between gap-2">
-                                        <div className="text-sm text-neutral-500 mb-1">{template.description}</div>
-                                        <div className="flex items-center gap-2">
-                                            {template.visits.length > 0 && (
-                                                <>
-                                                    <div className="text-xs text-neutral-800 mb-1 font-medium bg-neutral-100 px-2 py-1 rounded-md border border-neutral-200 w-fit flex items-center gap-1">
-                                                        <User2 className="h-3.5 w-3.5 mr-1" />
-                                                        {findCareWorkerName(template.visits[0].careWorkerId) || "Unallocated"}
-                                                    </div>
-                                                    <div className="text-xs text-neutral-800 mb-1 font-medium bg-neutral-100 px-2 py-1 rounded-md border border-neutral-200 w-fit flex items-center gap-1">
-                                                        <DollarSign className="h-3.5 w-3.5 mr-1" />
-                                                        {findRateSheetName(template.visits[0].rateSheetId) || "None"}
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
+                                        <div className="text-xs text-neutral-700 mb-1">{template.description}</div>
+
                                     </div>
+                                    <div>                                        <div className="flex items-center gap-2 mt-4">
+                                        {template.visits.length > 0 && (
+                                            <>
+                                                <div className="text-xs text-neutral-800 mb-1 font-medium bg-neutral-100 px-2 py-1 rounded-md border border-neutral-200 w-fit flex items-center gap-1">
+                                                    <User2 className="h-3.5 w-3.5 mr-1" />
+                                                    {findCareWorkerName(template.visits[0].careWorkerId) || "Unallocated"}
+                                                </div>
+                                                <div className="text-xs text-neutral-800 mb-1 font-medium bg-neutral-100 px-2 py-1 rounded-md border border-neutral-200 w-fit flex items-center gap-1">
+                                                    <DollarSign className="h-3.5 w-3.5 mr-1" />
+                                                    {findRateSheetName(template.visits[0].rateSheetId) || "None"}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div></div>
                                     <div className="grid grid-cols-3 gap-2 mt-2">
                                         <button
                                             className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 border border-blue-200 px-2 py-1 rounded-md text-sm flex items-center justify-center transition-colors duration-150"

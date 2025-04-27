@@ -21,12 +21,13 @@ import {
 import { Progress } from "../../components/ui/progress"
 import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
-import { Avatar, AvatarFallback } from "../../components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
 
 import { Skeleton } from "../../components/ui/skeleton"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { getRandomPlaceholderImage } from "@/lib/utils"
 
 
 export default function DashboardPage() {
@@ -179,16 +180,19 @@ export default function DashboardPage() {
 
     const router = useRouter()
 
+    const placeholderImage = "https://camo.githubusercontent.com/5a03084fafec21ac62b3746ddbc9f38c9a7ec1f8024be719178ce9a5cb3edebf/68747470733a2f2f6176617461722e6972616e2e6c696172612e72756e2f7075626c69632f626f793f757365726e616d653d53636f7474"
+
 
 
 
     return (
-        <div className="p-6 ">
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold text-neutral-900">Dashboard</h1>
-                <p className="text-neutral-600">Overview of all your detailed of patients and your income</p>
+        <div className="p-6 space-y-6">
+            <div className="flex flex-col">
+                <h1 className="text-xl font-bold">Dashboard</h1>
+                <p className="text-sm text-neutral-600">
+                    Overview of all your detailed of patients and your income
+                </p>
             </div>
-
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <Card className="border border-gray-200 shadow-sm">
@@ -335,7 +339,10 @@ export default function DashboardPage() {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <Avatar className="h-8 w-8">
-                                                    <AvatarFallback>{schedule.clientName[0]}</AvatarFallback>
+                                                    <AvatarImage src={getRandomPlaceholderImage()} alt={schedule.clientName} />
+                                                    <AvatarFallback>
+                                                        {schedule.clientName[0]}
+                                                    </AvatarFallback>
                                                 </Avatar>
                                                 <div className="ml-3">
                                                     <div className="text-sm font-medium text-gray-900">

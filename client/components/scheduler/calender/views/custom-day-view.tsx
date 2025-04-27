@@ -6,7 +6,7 @@ import moment from "moment"
 import { toast } from "sonner"
 import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils"
+import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import BankNotes from "@/components/icons/bank-notes"
 import EventIcon from "@/components/icons/eventicon"
@@ -418,6 +418,7 @@ export function CustomDayView({
 
     const router = useRouter()
 
+
     // Drag event handlers
     const handleDragStart = (eventId: string, _clientId: string) => {
         setActiveEvent(eventId)
@@ -599,8 +600,8 @@ export function CustomDayView({
                                 >
                                     <div className="flex items-center justify-between w-full">
                                         <div className="flex items-center gap-2">
-                                            <Avatar className="h-6 w-6 bg-neutral-100">
-                                                <AvatarImage src={user.profile?.avatarUrl || "/placeholder.svg"} alt={`${user.fullName}`} />
+                                            <Avatar className="h-10 w-10 bg-neutral-100">
+                                                <AvatarImage src={getRandomPlaceholderImage()} alt={`${user.fullName}`} />
                                                 <AvatarFallback className="text-xs font-medium bg-neutral-100">
                                                     {user.fullName?.[0]}
                                                 </AvatarFallback>

@@ -43,14 +43,14 @@ export default function BillingPage() {
     return (
         <div className="container mx-auto py-6 space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-neutral-800">Billing & Finance</h1>
-                    <p className="text-neutral-700">
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold">Billing & Finance</h1>
+                    <p className="text-sm text-neutral-600">
                         Manage invoices, track payments, and analyze financial performance.
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline">
+                    <Button variant="outline" className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none">
                         <Download className="mr-2 h-4 w-4" />
                         Export
                     </Button>

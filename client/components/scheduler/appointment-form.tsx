@@ -143,7 +143,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     useEffect(() => {
         if (agency.rateSheets?.length) {
             // Filter out any invalid rate sheets and sort to prioritize showing values first
-            const validRateSheets = agency.rateSheets.filter((sheet) => sheet && sheet.id && (sheet.name || sheet.value))
+            const validRateSheets = agency.rateSheets.filter((sheet: RateSheet) => sheet && sheet.id && (sheet.name || sheet.value))
 
             // Sort rate sheets to prioritize those with values
             const sortedRateSheets = validRateSheets.sort((a, b) => {
