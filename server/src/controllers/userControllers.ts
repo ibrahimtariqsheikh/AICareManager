@@ -340,7 +340,9 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                 familyAccess: true,
                 communicationLogs: true,
                 documents: true,
-visitTypes: {
+                clientSchedules: true,
+                careWorkerSchedules: true,
+                visitTypes: {
 include:{
 assignedTasks:true}
 }

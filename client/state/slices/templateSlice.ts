@@ -39,7 +39,12 @@ export const templateSlice = createSlice({
       state.currentTemplate.visits.push(...action.payload)
     },
     removeVisitInTemplate: (state, action: PayloadAction<string>) => {
-
+      if (!state.currentTemplate || !state.currentTemplate.visits) {
+        return;
+      }
+      state.currentTemplate.visits = state.currentTemplate.visits.filter(
+        (visit: TemplateVisit) => visit.id !== action.payload
+      );
     },
     setCurrentTemplate: (state, action: PayloadAction<ScheduleTemplate>) => {
       state.currentTemplate = action.payload

@@ -665,14 +665,10 @@ export function CustomMonthView({
     }, [isDragging, ghostEvent, activeEvent, eventBeingDragged, getEventBackground, spaceTheme, getStaffInfo, formatEventTime])
 
     return (
-        <div className="h-full flex flex-col p-4">
-            <div className="flex justify-between items-center mb-4">
-                <div className="text-sm font-medium">
-                    {activeScheduleUserType === "clients" ? "Clients" : activeScheduleUserType === "careWorker" ? "Care Workers" : "Office Staff"}
-                </div>
-            </div>
+        <div className="h-[calc(100vh-100px)] flex flex-col p-4">
 
-            <div className="flex flex-col flex-1 h-full overflow-hidden">
+
+            <div className="flex flex-col flex-1 h-full">
                 {/* Calendar grid */}
                 <div className="h-full flex flex-col" ref={calendarRef}>
                     {/* Day headers */}
@@ -691,7 +687,7 @@ export function CustomMonthView({
                     </div>
 
                     {/* Calendar grid */}
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto h-full">
                         <div
                             className={`grid grid-cols-7 auto-rows-fr h-full ${spaceTheme ? "bg-black" : "bg-white"
                                 } rounded-b-lg shadow-sm`}

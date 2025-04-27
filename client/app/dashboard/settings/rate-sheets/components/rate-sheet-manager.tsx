@@ -114,276 +114,283 @@ export function RateSheetManager({ staffType }: RateSheetManagerProps) {
                     "OFFICE_STAFF";
 
             if (currentRateSheet) {
-
-                agencyId: agencyId ?? "",
+                // Update existing rate sheet
+                console.log('Updating rate sheet with data:', {
+                    agencyId: agencyId ?? "",
                     rateSheetId: currentRateSheet.id,
-                        name: values.name,
-                            hourlyRate: rateValue,
-                                staffType: serverStaffType
-            })
+                    name: values.name,
+                    hourlyRate: rateValue,
+                    staffType: serverStaffType
+                })
 
-            const result = await updateAgencyRateSheet({
-                agencyId: agencyId ?? "",
-                rateSheetId: currentRateSheet.id,
-                name: values.name,
-                hourlyRate: rateValue,
-                staffType: serverStaffType
-            }).unwrap()
+                const result = await updateAgencyRateSheet({
+                    agencyId: agencyId ?? "",
+                    rateSheetId: currentRateSheet.id,
+                    name: values.name,
+                    hourlyRate: rateValue,
+                    staffType: serverStaffType
+                }).unwrap()
 
-            // Update Redux state
-            if (rateSheets) {
-                dispatch(setRateSheets(rateSheets.map(sheet =>
-                    sheet.id === currentRateSheet.id ? result : sheet
-                )))
-            }
-        } else {
-
-
-            const result = await createAgencyRateSheet({
-                agencyId: agencyId ?? "",
-                name: values.name,
-                hourlyRate: rateValue,
-                staffType: serverStaffType
-            }).unwrap()
-
-            // Update Redux state
-            if (rateSheets) {
-                dispatch(setRateSheets([...rateSheets, result]))
-            }
-        }
-
-        toast.success(`Rate sheet ${currentRateSheet ? 'updated' : 'created'} successfully`)
-        handleCloseDialog()
-    } catch (error) {
-        console.error('Error updating rate sheet:', error)
-        toast.error(`Failed to ${currentRateSheet ? 'update' : 'create'} rate sheet`)
-    } finally {
-        setIsSubmitting(false)
-    }
-}
-
-const handleOpenDeleteDialog = (rateSheet: RateSheet) => {
-    setCurrentRateSheet(rateSheet)
-    setIsDeleteDialogOpen(true)
-}
-
-const handleDelete = async () => {
-    if (currentRateSheet) {
-        try {
-            await deleteAgencyRateSheet({
-                agencyId: agencyId ?? "",
-                rateSheetId: currentRateSheet.id
-            }).unwrap()
-
-            // Update Redux state by removing the deleted rate sheet
-            if (rateSheets) {
-                dispatch(setRateSheets(rateSheets.filter(sheet => sheet.id !== currentRateSheet.id)))
-            }
-
-            toast.success("Rate sheet deleted successfully")
-        } catch (error) {
-            toast.error("Failed to delete rate sheet")
-        }
-    }
-    setIsDeleteDialogOpen(false)
-    setCurrentRateSheet(null)
-}
-
-const getStaffTypeLabel = () => {
-    switch (staffType) {
-        case "CLIENT":
-            return "Client"
-        case "CARE_WORKER":
-            return "Care Worker"
-        case "OFFICE_STAFF":
-            return "Office Staff"
-    }
-}
-
-if (isLoading) {
-    return (
-        <div className="flex items-center justify-center h-48">
-            <Loader2 className="h-4 w-4 animate-spin text-neutral-900" />
-        </div>
-    )
-}
-
-return (
-    <div className="space-y-4">
-        <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">{getStaffTypeLabel()} Rates</h2>
-            <Button onClick={() => handleOpenDialog()} className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                <span>Add Rate</span>
-            </Button>
-        </div>
-
-        {error ? (
-            <Alert variant="destructive">
-                <AlertDescription>
-                    {('message' in error)
-                        ? error.message
-                        : 'An error occurred while fetching rate sheets'}
-                </AlertDescription>
-            </Alert>
-        ) : filteredRateSheets.length === 0 ? (
-            <EmptyState
-                title={`No ${getStaffTypeLabel()} Rates`}
-                description={`Create your first rate sheet for ${getStaffTypeLabel().toLowerCase()}s`}
-                icon={<DollarSign className="h-10 w-10 text-muted-foreground" />}
-                action={
-                    <Button onClick={() => handleOpenDialog()}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Rate
-                    </Button>
+                // Update Redux state
+                if (rateSheets) {
+                    dispatch(setRateSheets(rateSheets.map(sheet =>
+                        sheet.id === currentRateSheet.id ? result : sheet
+                    )))
                 }
-            />
-        ) : (
-            <div className="border rounded-md">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Rate (CAD/hour)</TableHead>
-                            <TableHead className="w-[100px]">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {filteredRateSheets.map((rateSheet: RateSheet) => (
-                            <TableRow key={rateSheet.id}>
-                                <TableCell className="font-medium">{rateSheet.name}</TableCell>
-                                <TableCell>
-                                    <Badge
-                                        variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
-                                    >
-                                        ${(rateSheet.hourlyRate ?? 0).toFixed(2)}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon">
-                                                <MoreVertical className="h-4 w-4" />
-                                                <span className="sr-only">Open menu</span>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem onClick={() => handleOpenDialog(rateSheet)}>
-                                                <Pencil className="h-4 w-4 mr-2" />
-                                                Edit
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onClick={() => handleOpenDeleteDialog(rateSheet)}
-                                                className="text-red-600 focus:text-red-600"
-                                            >
-                                                <Trash2 className="h-4 w-4 mr-2" />
-                                                Delete
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-        )}
+            } else {
+                // Create new rate sheet
+                console.log('Creating rate sheet with data:', {
+                    agencyId: agencyId ?? "",
+                    name: values.name,
+                    hourlyRate: rateValue,
+                    staffType: serverStaffType
+                })
 
-        {/* Create/Edit Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{currentRateSheet ? "Edit Rate Sheet" : "Create Rate Sheet"}</DialogTitle>
-                    <DialogDescription>
-                        {currentRateSheet
-                            ? "Update the details for this rate sheet"
-                            : `Add a new rate sheet for ${getStaffTypeLabel().toLowerCase()}s`}
-                    </DialogDescription>
-                </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Rate Name</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="e.g., Standard Rate, Premium Care"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="rate"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Hourly Rate (CAD)</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                const result = await createAgencyRateSheet({
+                    agencyId: agencyId ?? "",
+                    name: values.name,
+                    hourlyRate: rateValue,
+                    staffType: serverStaffType
+                }).unwrap()
+
+                // Update Redux state
+                if (rateSheets) {
+                    dispatch(setRateSheets([...rateSheets, result]))
+                }
+            }
+
+            toast.success(`Rate sheet ${currentRateSheet ? 'updated' : 'created'} successfully`)
+            handleCloseDialog()
+        } catch (error) {
+            console.error('Error updating rate sheet:', error)
+            toast.error(`Failed to ${currentRateSheet ? 'update' : 'create'} rate sheet`)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    const handleOpenDeleteDialog = (rateSheet: RateSheet) => {
+        setCurrentRateSheet(rateSheet)
+        setIsDeleteDialogOpen(true)
+    }
+
+    const handleDelete = async () => {
+        if (currentRateSheet) {
+            try {
+                await deleteAgencyRateSheet({
+                    agencyId: agencyId ?? "",
+                    rateSheetId: currentRateSheet.id
+                }).unwrap()
+
+                // Update Redux state by removing the deleted rate sheet
+                if (rateSheets) {
+                    dispatch(setRateSheets(rateSheets.filter(sheet => sheet.id !== currentRateSheet.id)))
+                }
+
+                toast.success("Rate sheet deleted successfully")
+            } catch (error) {
+                toast.error("Failed to delete rate sheet")
+            }
+        }
+        setIsDeleteDialogOpen(false)
+        setCurrentRateSheet(null)
+    }
+
+    const getStaffTypeLabel = () => {
+        switch (staffType) {
+            case "CLIENT":
+                return "Client"
+            case "CARE_WORKER":
+                return "Care Worker"
+            case "OFFICE_STAFF":
+                return "Office Staff"
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-48">
+                <Loader2 className="h-4 w-4 animate-spin text-neutral-900" />
+            </div>
+        )
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold">{getStaffTypeLabel()} Rates</h2>
+                <Button onClick={() => handleOpenDialog()} className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    <span>Add Rate</span>
+                </Button>
+            </div>
+
+            {error ? (
+                <Alert variant="destructive">
+                    <AlertDescription>
+                        {('message' in error)
+                            ? error.message
+                            : 'An error occurred while fetching rate sheets'}
+                    </AlertDescription>
+                </Alert>
+            ) : filteredRateSheets.length === 0 ? (
+                <EmptyState
+                    title={`No ${getStaffTypeLabel()} Rates`}
+                    description={`Create your first rate sheet for ${getStaffTypeLabel().toLowerCase()}s`}
+                    icon={<DollarSign className="h-10 w-10 text-muted-foreground" />}
+                    action={
+                        <Button onClick={() => handleOpenDialog()}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Rate
+                        </Button>
+                    }
+                />
+            ) : (
+                <div className="border rounded-md">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Rate (CAD/hour)</TableHead>
+                                <TableHead className="w-[100px]">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {filteredRateSheets.map((rateSheet: RateSheet) => (
+                                <TableRow key={rateSheet.id}>
+                                    <TableCell className="font-medium">{rateSheet.name}</TableCell>
+                                    <TableCell>
+                                        <Badge
+                                            variant="outline"
+                                            className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                                        >
+                                            ${(rateSheet.hourlyRate ?? 0).toFixed(2)}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon">
+                                                    <MoreVertical className="h-4 w-4" />
+                                                    <span className="sr-only">Open menu</span>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => handleOpenDialog(rateSheet)}>
+                                                    <Pencil className="h-4 w-4 mr-2" />
+                                                    Edit
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() => handleOpenDeleteDialog(rateSheet)}
+                                                    className="text-red-600 focus:text-red-600"
+                                                >
+                                                    <Trash2 className="h-4 w-4 mr-2" />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            )}
+
+            {/* Create/Edit Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{currentRateSheet ? "Edit Rate Sheet" : "Create Rate Sheet"}</DialogTitle>
+                        <DialogDescription>
+                            {currentRateSheet
+                                ? "Update the details for this rate sheet"
+                                : `Add a new rate sheet for ${getStaffTypeLabel().toLowerCase()}s`}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Rate Name</FormLabel>
+                                        <FormControl>
                                             <Input
-                                                type="number"
-                                                step="0.01"
-                                                min="0"
-                                                placeholder="0.00"
-                                                className="pl-7"
+                                                placeholder="e.g., Standard Rate, Premium Care"
                                                 {...field}
                                             />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <DialogFooter>
-                            <Button variant="outline" type="button" onClick={handleCloseDialog}>
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Saving...
-                                    </>
-                                ) : currentRateSheet ? "Save Changes" : "Create Rate Sheet"}
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="rate"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Hourly Rate (CAD)</FormLabel>
+                                        <FormControl>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                                                <Input
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    placeholder="0.00"
+                                                    className="pl-7"
+                                                    {...field}
+                                                />
+                                            </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <DialogFooter>
+                                <Button variant="outline" type="button" onClick={handleCloseDialog}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" disabled={isSubmitting}>
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Saving...
+                                        </>
+                                    ) : currentRateSheet ? "Save Changes" : "Create Rate Sheet"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                </DialogContent>
+            </Dialog>
 
-        {/* Delete Dialog */}
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Delete Rate Sheet</DialogTitle>
-                    <DialogDescription>
-                        Are you sure you want to delete this rate sheet? This action cannot be undone.
-                    </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-                        Cancel
-                    </Button>
-                    <Button variant="destructive" onClick={handleDelete} disabled={isSubmitting}>
-                        {isSubmitting ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Deleting...
-                            </>
-                        ) : "Delete"}
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    </div>
-)
+            {/* Delete Dialog */}
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete Rate Sheet</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete this rate sheet? This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={handleDelete} disabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Deleting...
+                                </>
+                            ) : "Delete"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
 }

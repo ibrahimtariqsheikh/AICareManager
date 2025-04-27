@@ -314,6 +314,31 @@ enum TemplateVisitEndStatus {
   NEXT_DAY
 }
 
+model Schedule {
+  id          String       @id @default(cuid())
+  agencyId    String
+  clientId    String
+  userId      String
+  date        DateTime
+  startTime   String
+  endTime     String
+  status      String       @default("PENDING")
+  type        ScheduleType @default(APPOINTMENT)
+  notes       String?
+  chargeRate  Float?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  visitTypeId String?
+  agency      Agency       @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client      User         @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
+  user        User         @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
+  @@index([userId, date])
+  @@index([clientId, date])
+  @@index([agencyId])
+}
+
 model TemplateVisit {
   id                String                 @id @default(cuid())
   name              String
@@ -421,31 +446,6 @@ model VisitType {
   userId         String
   user           User?           @relation(fields: [userId], references: [id])
   templateVisits TemplateVisit[]
-}
-
-model Schedule {
-  id          String       @id @default(cuid())
-  agencyId    String
-  clientId    String
-  userId      String
-  date        DateTime
-  startTime   String
-  endTime     String
-  status      String       @default("PENDING")
-  type        ScheduleType @default(APPOINTMENT)
-  notes       String?
-  chargeRate  Float?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  visitTypeId String?
-  agency      Agency       @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client      User         @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
-  user        User         @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
-  @@index([userId, date])
-  @@index([clientId, date])
-  @@index([agencyId])
 }
 
 model Report {

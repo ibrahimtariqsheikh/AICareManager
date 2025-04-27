@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
@@ -16,8 +16,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import type { ScheduleTemplate } from "@/types/prismaTypes"
-import { useGetScheduleTemplatesQuery } from "@/state/api"
+import { useApplyScheduleTemplateMutation, useGetScheduleTemplatesQuery, useGetAgencySchedulesQuery } from "@/state/api"
 import { setUserTemplates, setLoadingTemplates, setTemplateError } from "@/state/slices/templateSlice"
+import { setEvents } from "@/state/slices/scheduleSlice"
 
 export interface Client {
     id: string
@@ -93,6 +94,10 @@ export function CustomDayView({
         { skip: !selectedUserId || !agencyId },
     )
 
+    const { refetch: refetchAgencySchedules } = useGetAgencySchedulesQuery(agencyId || "", {
+        skip: !agencyId
+    })
+
     // Update Redux state when templates data changes
     useEffect(() => {
         if (templatesData) {
@@ -115,6 +120,8 @@ export function CustomDayView({
         }
     }
 
+    const [applyScheduleTemplate, { isLoading: isApplyingTemplate }] = useApplyScheduleTemplateMutation()
+
     const handleOpenTemplateMenu = (userId: string) => {
         setSelectedUserId(userId)
         setIsApplyTemplateSelected(true)
@@ -124,6 +131,18 @@ export function CustomDayView({
     const handleApplyTemplate = async (templateId: string) => {
         try {
             if (!selectedUserId) return
+
+            if (!templateId) {
+                toast.error("Missing template or user information")
+                return
+            }
+
+            const params = `${templateId}`
+            const result = await applyScheduleTemplate(params)
+            console.log("result", result)
+
+            // Refresh schedules after successful template application
+            await refetchAgencySchedules()
 
             toast.success("Template applied successfully")
             setIsApplyTemplateSelected(false)
@@ -641,7 +660,7 @@ export function CustomDayView({
                                                                     size="sm"
                                                                     onClick={() => {
                                                                         setIsApplyTemplateSelected(false)
-                                                                        // Don't clear the userId so the templates data remains valid
+
                                                                     }}
                                                                     className="h-6 w-6 p-0"
                                                                 >
@@ -650,7 +669,9 @@ export function CustomDayView({
                                                             </div>
 
                                                             {isLoadingTemplates ? (
-                                                                <div className="py-2 text-center text-xs text-neutral-500">Loading templates...</div>
+                                                                <div className="flex items-center justify-center h-full">
+                                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                                </div>
                                                             ) : userTemplates.length === 0 ? (
                                                                 <div className="py-2 text-center text-xs text-neutral-500">No templates available</div>
                                                             ) : (
@@ -658,12 +679,12 @@ export function CustomDayView({
                                                                     <Button
                                                                         key={template.id}
                                                                         variant="ghost"
-                                                                        className="flex px-4 justify-between items-center gap-2 text-xs w-full border-b border-border"
+                                                                        className="flex px-4 justify-between items-center gap-2 text-xs w-full border border-border"
                                                                         onClick={() => handleApplyTemplate(template.id)}
                                                                     >
-                                                                        <span className="truncate">{template.name}</span>
+                                                                        <span className="truncate font-medium">{template.name}</span>
                                                                         <div className="text-xs text-blue-500 bg-blue-500/10 px-2 py-1 rounded-md whitespace-nowrap">
-                                                                            Apply
+                                                                            Apply Template
                                                                         </div>
                                                                     </Button>
                                                                 ))

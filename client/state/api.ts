@@ -332,6 +332,14 @@ export const api = createApi({
       invalidatesTags: ["ScheduleTemplates"],
     }),
 
+    applyScheduleTemplate: build.mutation<void, string>({
+      query: (templateId) => ({
+        url: `/templates/apply/${templateId}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["ScheduleTemplates", "Schedule"],
+    }),
+
     deleteScheduleTemplate: build.mutation<void, string>({
       query: (id) => ({
         url: `/templates/${id}`,
@@ -920,4 +928,5 @@ export const {
   useDeleteScheduleTemplateMutation,
   useActivateScheduleTemplateMutation,
   useDeactivateScheduleTemplateMutation,
+  useApplyScheduleTemplateMutation,
 } = api

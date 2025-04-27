@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Plus, X, Save, Pencil, Trash2, AlertTriangle, Copy } from 'lucide-react'
+import { Plus, X, Save, Pencil, Trash2, AlertTriangle, Copy, User2, DollarSign } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import {
@@ -62,6 +61,8 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
     const [endType, setEndType] = useState("same")
     const [selectedCareWorker, setSelectedCareWorker] = useState("")
     const [selectedCareWorker2, setSelectedCareWorker2] = useState("")
+    const [selectedRateSheet, setSelectedRateSheet] = useState("")
+    const [selectedVisitType, setSelectedVisitType] = useState("")
     const [careWorkerCount, setCareWorkerCount] = useState("1")
     const [templateName, setTemplateName] = useState("")
     const [templateDescription, setTemplateDescription] = useState("")
@@ -125,10 +126,15 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
             day,
             startTime,
             endTime,
-            careWorker: selectedCareWorker || "Unallocated",
-            careWorker2: careWorkerCount === "2" ? selectedCareWorker2 || "Unallocated" : null,
-            careWorker3: null,
-            // Add any other required fields with default values
+            careWorkerId: selectedCareWorker || "Unallocated",
+            careWorker2Id: careWorkerCount === "2" ? selectedCareWorker2 || "Unallocated" : null,
+            careWorker3Id: null,
+            rateSheetId: selectedRateSheet || null,
+            clientVisitTypeId: selectedVisitType || null,
+            name: "Visit",
+            description: "Scheduled visit",
+            endStatus: "SAME_DAY",
+            isAllDayVisit: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         }))
@@ -138,6 +144,8 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
         dispatch(addVisitInTemplate(newVisits))
         setIsAddVisitOpen(false)
         setSelectedDays([])
+        setSelectedRateSheet("")
+        setSelectedVisitType("")
 
         toast.success(`Added ${newVisits.length} visit${newVisits.length > 1 ? "s" : ""} to schedule`)
     }
@@ -190,6 +198,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
             console.log("Update response:", response)
 
             dispatch(updateTemplate(updatedTemplate))
+            setIsEditTemplateOpen(false)
             toast.success(`Template "${currentTemplate.name}" updated successfully`)
         } catch (error: any) {
             console.error("Error saving template:", error)
@@ -308,13 +317,15 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
         setIsEditTemplateOpen(false)
         setTemplateName("")
         setTemplateDescription("")
+        setIsAddVisitOpen(false)
+
 
         toast.success(`Template "${templateName}" updated successfully`)
     }
 
     const handleDeleteTemplate = async (template: ScheduleTemplateType) => {
         try {
-            const response = await deleteScheduleTemplate(template.id).unwrap()
+            await deleteScheduleTemplate(template.id).unwrap()
             dispatch(deleteTemplate(template.id))
             setIsDeleteTemplateOpen(false)
             setTemplateToDelete(null)
@@ -360,6 +371,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
 
     useEffect(() => {
         if (currentTemplate) {
+            console.log("Current template:", currentTemplate)
         }
     }, [currentTemplate])
 
@@ -368,6 +380,20 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
         const worker = careWorkers.find((worker) => worker.id === workerId)
         return worker ? worker.fullName : null
     }
+
+    const findRateSheetName = (rateSheetId: string | null | undefined) => {
+        if (!rateSheetId || !rateSheets) return null
+        const rateSheet = rateSheets.find((sheet: RateSheet) => sheet.id === rateSheetId)
+        return rateSheet ? rateSheet.name : null
+    }
+
+    const findVisitTypeName = (clientVisitTypeId: string | null | undefined) => {
+        if (!clientVisitTypeId || !visitTypes) return null
+        const visitType = visitTypes.find((type: VisitType) => type.id === clientVisitTypeId)
+        return visitType ? visitType.name : null
+    }
+
+    console.log("Templates:", templates)
 
     return (
         <div className="space-y-6">
@@ -379,38 +405,8 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                     </span>
                 </h3>
 
-                {currentTemplate && (
-                    <motion.div
-                        initial={{ opacity: 0.95, y: -2 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0.95, y: -2 }}
-                        transition={{ duration: 0.08, ease: "easeOut" }}
-                        className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 flex items-center"
-                    >
-                        <div className="text-blue-700">
-                            <p className="font-medium">Editing template: {currentTemplate.name}</p>
-                            <p className="text-sm">
-                                Make your changes to the weekly schedule above, then click "Update Template" to save.
-                            </p>
-                        </div>
-                    </motion.div>
-                )}
-
-                <motion.div
-                    layout
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-                    initial="hidden"
-                    animate="visible"
-                    variants={{
-                        visible: {
-                            transition: {
-                                staggerChildren: 0.02,
-                            },
-                        },
-                        hidden: {},
-                    }}
-                >
-                    <AnimatePresence>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <>
                         {[...templates]
                             .sort((a, b) => {
                                 if (a.isActive && !b.isActive) return -1
@@ -418,21 +414,8 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                 return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                             })
                             .map((template) => (
-                                <motion.div
+                                <div
                                     key={template.id}
-                                    layout
-                                    initial={{ opacity: 0.95, y: 2 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0.95, y: -1 }}
-                                    whileHover={{
-                                        scale: 1.0015,
-                                    }}
-                                    transition={{
-                                        layout: { duration: 0.15, ease: "easeOut" },
-                                        opacity: { duration: 0.08 },
-                                        scale: { duration: 0.08 },
-                                        y: { duration: 0.08, ease: "easeOut" },
-                                    }}
                                     className={`border border-neutral-200 rounded-md p-4 hover:border-blue-500 transition-colors duration-200 ${template.isActive ? "border-blue-50/50" : ""}`}
                                 >
                                     <div className="flex justify-between items-start mb-2">
@@ -442,65 +425,63 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                                 {template.visits?.length || 0} visits
                                             </span>
 
-                                            <motion.span
+                                            <span
                                                 onClick={() => toggleActiveTemplate(template)}
-                                                whileHover={{ scale: 1.002 }}
-                                                whileTap={{ scale: 0.998 }}
-                                                transition={{ duration: 0.08 }}
                                                 className={cn(
                                                     `text-xs px-2 py-0.5 rounded-full cursor-pointer transition-colors duration-150`,
                                                     template.isActive ? "bg-green-100 text-green-800 " : "bg-neutral-100 text-neutral-800",
                                                 )}
                                             >
                                                 {template.isActive ? "Active" : "Draft"}
-                                            </motion.span>
+                                            </span>
                                         </div>
                                     </div>
-                                    <div className="text-sm text-neutral-500 mb-1">{template.description}</div>
-
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="text-sm text-neutral-500 mb-1">{template.description}</div>
+                                        <div className="flex items-center gap-2">
+                                            {template.visits.length > 0 && (
+                                                <>
+                                                    <div className="text-xs text-neutral-800 mb-1 font-medium bg-neutral-100 px-2 py-1 rounded-md border border-neutral-200 w-fit flex items-center gap-1">
+                                                        <User2 className="h-3.5 w-3.5 mr-1" />
+                                                        {findCareWorkerName(template.visits[0].careWorkerId) || "Unallocated"}
+                                                    </div>
+                                                    <div className="text-xs text-neutral-800 mb-1 font-medium bg-neutral-100 px-2 py-1 rounded-md border border-neutral-200 w-fit flex items-center gap-1">
+                                                        <DollarSign className="h-3.5 w-3.5 mr-1" />
+                                                        {findRateSheetName(template.visits[0].rateSheetId) || "None"}
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
                                     <div className="grid grid-cols-3 gap-2 mt-2">
-                                        <motion.button
-                                            whileHover={{ scale: 1.002 }}
-                                            whileTap={{ scale: 0.998 }}
-                                            transition={{ duration: 0.08 }}
+                                        <button
                                             className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 border border-blue-200 px-2 py-1 rounded-md text-sm flex items-center justify-center transition-colors duration-150"
                                             onClick={() => handleEditTemplate(template)}
                                         >
                                             <Pencil className="h-3.5 w-3.5 mr-1" />
                                             Edit
-                                        </motion.button>
-                                        <motion.button
-                                            whileHover={{ scale: 1.002 }}
-                                            whileTap={{ scale: 0.998 }}
-                                            transition={{ duration: 0.08 }}
+                                        </button>
+                                        <button
                                             className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 border border-blue-200 px-2 py-1 rounded-md text-sm flex items-center justify-center transition-colors duration-150"
                                             onClick={() => handleDuplicateTemplate(template)}
                                         >
                                             <Copy className="h-3.5 w-3.5 mr-1" />
                                             Copy
-                                        </motion.button>
-                                        <motion.button
-                                            whileHover={{ scale: 1.002 }}
-                                            whileTap={{ scale: 0.998 }}
-                                            transition={{ duration: 0.08 }}
+                                        </button>
+                                        <button
                                             className="text-red-600 hover:text-red-800 hover:bg-red-50 border border-red-200 px-2 py-1 rounded-md text-sm flex items-center justify-center transition-colors duration-150"
                                             onClick={() => handleDeleteTemplate(template)}
                                         >
                                             <Trash2 className="h-3.5 w-3.5 mr-1" />
                                             Delete
-                                        </motion.button>
+                                        </button>
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
-                    </AnimatePresence>
+                    </>
 
                     {templates.length < 3 && (
-                        <motion.div
-                            whileHover={{
-                                scale: 1.0015,
-                            }}
-                            whileTap={{ scale: 0.998 }}
-                            transition={{ duration: 0.08 }}
+                        <div
                             className="h-full border border-dashed border-neutral-300 rounded-md p-4 flex flex-col items-center justify-center text-neutral-500 cursor-pointer hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200"
                             onClick={() => {
                                 dispatch(clearCurrentTemplate())
@@ -509,17 +490,13 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                 setIsEditTemplateOpen(true)
                             }}
                         >
-                            <motion.div
-                                initial={{ scale: 1 }}
-                                whileHover={{ scale: 1.02 }}
-                                transition={{ duration: 0.08 }}
-                            >
+                            <div>
                                 <Plus className="h-5 w-5 mb-1" />
-                            </motion.div>
+                            </div>
                             <span className="text-sm">Create New Template</span>
-                        </motion.div>
+                        </div>
                     )}
-                </motion.div>
+                </div>
             </Card>
             {currentTemplate && (
                 <Card className="p-6">
@@ -544,12 +521,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                         <div className="flex gap-2">
                             <Dialog open={isAddVisitOpen} onOpenChange={setIsAddVisitOpen}>
                                 <DialogContent className="sm:max-w-[500px]">
-                                    <motion.div
-                                        initial={{ opacity: 0.95, y: 2 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0.95, y: 2 }}
-                                        transition={{ duration: 0.08, ease: "easeOut" }}
-                                    >
+                                    <div>
                                         <DialogHeader>
                                             <DialogTitle>Add visits</DialogTitle>
                                         </DialogHeader>
@@ -623,7 +595,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="client-charge-rate">Client charge rate</Label>
-                                                <Select>
+                                                <Select value={selectedRateSheet} onValueChange={setSelectedRateSheet}>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="None" />
                                                     </SelectTrigger>
@@ -639,7 +611,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="visit-type">Client visit type</Label>
-                                                <Select>
+                                                <Select value={selectedVisitType} onValueChange={setSelectedVisitType}>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="None" />
                                                     </SelectTrigger>
@@ -719,7 +691,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                                 Save
                                             </Button>
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 </DialogContent>
                             </Dialog>
 
@@ -757,74 +729,64 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
 
                             return (
                                 <div key={day} className="flex flex-col">
-                                    <motion.h4
-                                        className="font-medium mb-2"
-                                        initial={{ opacity: 0.98 }}
-                                        whileHover={{ opacity: 1, scale: 1.001 }}
-                                        transition={{ duration: 0.05 }}
-                                    >
-                                        {dayStringProper}
-                                    </motion.h4>
+                                    <h4 className="font-medium mb-2">{dayStringProper}</h4>
                                     <div className="space-y-2">
-                                        <AnimatePresence>
+                                        <>
                                             {uniqueVisits.map((slot: TemplateVisit) => {
                                                 console.log("Slot:", slot)
                                                 return (
-                                                    <motion.div
+                                                    <div
                                                         key={slot.id}
-                                                        initial={{ opacity: 0.98, scale: 0.995 }}
-                                                        animate={{ opacity: 1, scale: 1 }}
-                                                        exit={{ opacity: 0.98, scale: 0.995 }}
-                                                        whileHover={{
-                                                            borderColor: "rgba(156, 163, 175, 0.5)",
-                                                        }}
-                                                        transition={{ duration: 0.05, ease: "easeOut" }}
                                                         className="border border-dashed rounded-md p-3 relative hover:border-gray-400 transition-colors duration-150"
                                                     >
-                                                        <motion.button
+                                                        <button
                                                             className="absolute top-1 right-1 text-gray-400 hover:text-red-500"
                                                             onClick={() => handleRemoveVisit(slot.id)}
-                                                            whileHover={{ scale: 1.05 }}
-                                                            whileTap={{ scale: 0.95 }}
-                                                            transition={{ duration: 0.08 }}
                                                         >
                                                             <X className="h-3 w-3" />
-                                                        </motion.button>
+                                                        </button>
                                                         <div className="text-xs text-gray-500">
                                                             {slot.startTime} to {slot.endTime}
                                                         </div>
                                                         <div className="text-sm font-medium">
                                                             {findCareWorkerName(slot.careWorkerId) || "Unallocated"}
-                                                            {slot.careWorker2 && findCareWorkerName(slot.careWorker2) && (
+                                                            {slot.careWorker2Id && findCareWorkerName(slot.careWorker2Id) && (
                                                                 <>
                                                                     <br />
                                                                     <span className="text-xs text-gray-500">
-                                                                        + {findCareWorkerName(slot.careWorker2)}
+                                                                        + {findCareWorkerName(slot.careWorker2Id)}
                                                                     </span>
                                                                 </>
                                                             )}
                                                         </div>
-                                                    </motion.div>
+                                                        {(slot.rateSheetId || slot.clientVisitTypeId) && (
+                                                            <div className="mt-1 flex gap-1 flex-wrap">
+                                                                {slot.rateSheetId && (
+                                                                    <span className="text-xs px-1.5 py-0.5 bg-blue-50 text-blue-800 rounded-md border border-blue-100">
+                                                                        £ {findRateSheetName(slot.rateSheetId)}
+                                                                    </span>
+                                                                )}
+                                                                {slot.clientVisitTypeId && (
+                                                                    <span className="text-xs px-1.5 py-0.5 bg-green-50 text-green-800 rounded-md border border-green-100">
+                                                                        {findVisitTypeName(slot.clientVisitTypeId)}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 )
                                             })}
-                                        </AnimatePresence>
+                                        </>
                                         {uniqueVisits.length === 0 && (
-                                            <motion.div
-                                                whileHover={{
-                                                    borderColor: "rgba(156, 163, 175, 0.5)",
-                                                }}
-                                                whileTap={{ scale: 0.999 }}
-                                                transition={{ duration: 0.05 }}
+                                            <div
                                                 className="border border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                                                 onClick={() => {
                                                     setSelectedDays([day])
                                                     setIsAddVisitOpen(true)
                                                 }}
                                             >
-                                                <motion.span className="text-xs" initial={{ opacity: 0.8 }} whileHover={{ opacity: 1 }}>
-                                                    Add visit
-                                                </motion.span>
-                                            </motion.div>
+                                                <span className="text-xs">Add visit</span>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -837,12 +799,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
             {/* Template Edit Dialog */}
             <Dialog open={isEditTemplateOpen} onOpenChange={setIsEditTemplateOpen}>
                 <DialogContent className="sm:max-w-[500px]">
-                    <motion.div
-                        initial={{ opacity: 0.98, y: 2 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0.98, y: 2 }}
-                        transition={{ duration: 0.05, ease: "easeOut" }}
-                    >
+                    <div>
                         <DialogHeader>
                             <DialogTitle>{currentTemplate ? "Update Template" : "Save Template"}</DialogTitle>
                         </DialogHeader>
@@ -878,26 +835,28 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                 Cancel
                             </Button>
                             <Button
-                                onClick={currentTemplate ? handleUpdateTemplate : handleCreateTemplate}
+                                onClick={() => {
+                                    if (currentTemplate) {
+                                        handleUpdateTemplate()
+                                        setIsEditTemplateOpen(false)
+                                    } else {
+                                        handleCreateTemplate()
+                                    }
+                                }}
                                 disabled={!templateName.trim()}
                                 className="bg-blue-600 hover:bg-blue-700"
                             >
                                 {currentTemplate ? "Update" : "Save"}
                             </Button>
                         </DialogFooter>
-                    </motion.div>
+                    </div>
                 </DialogContent>
             </Dialog>
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={isDeleteTemplateOpen} onOpenChange={setIsDeleteTemplateOpen}>
                 <DialogContent className="sm:max-w-[500px]">
-                    <motion.div
-                        initial={{ opacity: 0.98, y: 2 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0.98, y: 2 }}
-                        transition={{ duration: 0.05, ease: "easeOut" }}
-                    >
+                    <div>
                         <DialogHeader>
                             <DialogTitle>Delete Template</DialogTitle>
                         </DialogHeader>
@@ -923,7 +882,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                 Delete Template
                             </Button>
                         </DialogFooter>
-                    </motion.div>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
