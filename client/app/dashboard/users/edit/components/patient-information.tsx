@@ -88,7 +88,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
         user?.dateOfBirth ? preserveDateOnly(user.dateOfBirth) : new Date(),
     )
     const [isSaving, setIsSaving] = useState(false)
-    const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation()
+    const [updateUser] = useUpdateUserMutation()
 
     // API mutation hooks
     const [addEmergencyContact, { isLoading: isAddingContact }] = useAddEmergencyContactMutation()
@@ -232,19 +232,12 @@ export const PatientInformation = ({ user }: { user: User }) => {
             const updatedContacts = keyContacts.map((contact: KeyContact) => (contact.id === result.id ? result : contact))
             setKeyContacts(updatedContacts)
 
-            toast({
-                title: "Contact updated",
-                description: "Emergency contact has been updated successfully.",
-            })
+            toast.success("Emergency contact has been updated successfully.")
 
             setEditingContact(null)
             setEditDialogOpen(false)
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to update emergency contact. Please try again.",
-                variant: "destructive",
-            })
+            toast.error("Failed to update emergency contact. Please try again.")
             console.error("Failed to update contact:", error)
         }
     }
@@ -262,16 +255,9 @@ export const PatientInformation = ({ user }: { user: User }) => {
             const updatedContacts = keyContacts.filter((contact) => contact.id !== contactId)
             setKeyContacts(updatedContacts)
 
-            toast({
-                title: "Contact deleted",
-                description: "Emergency contact has been removed successfully.",
-            })
+            toast.success("Emergency contact has been removed successfully.")
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to delete emergency contact. Please try again.",
-                variant: "destructive",
-            })
+            toast.error("Failed to delete emergency contact. Please try again.")
             console.error("Failed to delete contact:", error)
         }
     }
@@ -329,19 +315,12 @@ export const PatientInformation = ({ user }: { user: User }) => {
             // Update local state with the returned visit type
             setVisitTypes([...visitTypes, result])
 
-            toast({
-                title: "Visit type added",
-                description: "New visit type has been created successfully.",
-            })
+            toast.success("New visit type has been created successfully.")
 
             setNewVisitType({ name: "", description: "" })
             setVisitDialogOpen(false)
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to add visit type. Please try again.",
-                variant: "destructive",
-            })
+            toast.error("Failed to add visit type. Please try again.")
             console.error("Failed to add visit type:", error)
         }
     }
@@ -374,19 +353,12 @@ export const PatientInformation = ({ user }: { user: User }) => {
 
             setVisitTypes(updatedVisitTypes)
 
-            toast({
-                title: "Task added",
-                description: "New task has been added to the visit type.",
-            })
+            toast.success("New task has been added to the visit type.")
 
             setNewTask({ type: "", careworkerNotes: "" })
             setTaskDialogOpen(false)
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to add task. Please try again.",
-                variant: "destructive",
-            })
+            toast.error("Failed to add task. Please try again.")
             console.error("Failed to add task:", error)
         }
     }

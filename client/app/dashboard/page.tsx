@@ -9,7 +9,6 @@ import {
     Calendar,
     FileText,
     ClipboardList,
-    Building2,
     ArrowUpRight,
     Activity,
     CheckCircle2,
@@ -18,11 +17,9 @@ import {
 
     Search,
 } from "lucide-react"
-import { Progress } from "../../components/ui/progress"
 import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
 
 import { Skeleton } from "../../components/ui/skeleton"
 import { useRouter } from "next/navigation"
@@ -186,9 +183,9 @@ export default function DashboardPage() {
 
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="px-6 py-2 space-y-6">
             <div className="flex flex-col">
-                <h1 className="text-xl font-bold">Dashboard</h1>
+                <h1 className="text-lg font-bold">Dashboard</h1>
                 <p className="text-sm text-neutral-600">
                     Overview of all your detailed of patients and your income
                 </p>
@@ -249,7 +246,7 @@ export default function DashboardPage() {
                             <div className="p-2 rounded-md bg-gray-100">
                                 <FileText className="h-5 w-5 text-gray-700" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Income</h3>
+                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Revenue</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
                             <div className="text-3xl font-bold text-gray-800">$7,209.29</div>
@@ -308,13 +305,11 @@ export default function DashboardPage() {
                                     className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                             </div>
-                            <Button variant="outline" className="bg-white border-gray-200">
+                            <Button variant="outline" className="bg-white border-gray-200" >
                                 <Filter className="h-4 w-4 mr-2" />
                                 Filter
                             </Button>
-                            <Button variant="outline" className="bg-white border-gray-200">
-                                Export
-                            </Button>
+
                         </div>
                     </div>
                 </CardHeader>
@@ -387,330 +382,7 @@ export default function DashboardPage() {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                {/* <Card className="border border-gray-200 shadow-sm lg:col-span-2">
-                    <CardHeader className="border-b border-gray-100 pb-4">
-                        <div className="flex items-center">
-                            <Activity className="h-5 w-5 mr-2 text-gray-700" />
-                            <CardTitle className="text-lg font-medium text-gray-800">Admission and Discharge Trends</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                        <div className="flex items-center justify-end mb-4 gap-4">
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                                <span className="text-sm text-gray-600">Admissions</span>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
-                                <span className="text-sm text-gray-600">Discharges</span>
-                            </div>
-                        </div>
-                        <div className="h-[300px] relative">
-                            <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={admissionData}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Line type="monotone" dataKey="admissions" stroke="#3B82F6" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="discharges" stroke="#6B7280" strokeWidth={2} />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </CardContent>
-                </Card>
 
-                <Card className="border border-gray-200 shadow-sm">
-                    <CardHeader className="border-b border-gray-100 pb-4">
-                        <div className="flex items-center">
-                            <Calendar className="h-5 w-5 mr-2 text-gray-700" />
-                            <CardTitle className="text-lg font-medium text-gray-800">Doctor's Schedule</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                        <div className="grid grid-cols-3 gap-2 mb-6">
-                            <div className="bg-gray-50 p-3 rounded-md text-center">
-                                <div className="text-gray-600 text-sm mb-1">Available</div>
-                                <div className="text-2xl font-bold text-gray-800">72</div>
-                                <div className="text-xs text-gray-500">Total</div>
-                            </div>
-                            <div className="bg-gray-50 p-3 rounded-md text-center">
-                                <div className="text-gray-600 text-sm mb-1">Unavailable</div>
-                                <div className="text-2xl font-bold text-gray-800">24</div>
-                                <div className="text-xs text-gray-500">Total</div>
-                            </div>
-                            <div className="bg-gray-50 p-3 rounded-md text-center">
-                                <div className="text-gray-600 text-sm mb-1">Leave</div>
-                                <div className="text-2xl font-bold text-gray-800">16</div>
-                                <div className="text-xs text-gray-500">Total</div>
-                            </div>
-                        </div>
-
-                        <div className="mb-4">
-                            <h4 className="text-sm font-medium text-gray-700 mb-3">List of Doctor</h4>
-                            <div className="space-y-4">
-                                {[
-                                    { name: "Omar Bergson", specialty: "Anesthesiology", status: "CONFIRMED" },
-                                    { name: "Wilson Dias", specialty: "Dermatology", status: "PENDING" },
-                                    { name: "Arlene Cooper", specialty: "General Surgery", status: "CONFIRMED" },
-                                ].map((doctor, index) => (
-                                    <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
-                                        <div className="flex items-center">
-                                            <Avatar className="h-10 w-10 border border-gray-200">
-                                                <AvatarImage src={`/placeholder.svg?height=40&width=40`} alt={doctor.name} />
-                                                <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="ml-3">
-                                                <h5 className="font-medium text-gray-800">{doctor.name}</h5>
-                                                <p className="text-sm text-gray-600">{doctor.specialty}</p>
-                                            </div>
-                                        </div>
-                                        <div>{getScheduleStatusBadge(doctor.status)}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card> */}
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <Card className="border border-gray-200 shadow-sm lg:col-span-2">
-                    <CardHeader className="border-b border-gray-100 pb-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <Building2 className="h-5 w-5 mr-2 text-gray-700" />
-                                <CardTitle className="text-lg font-medium text-gray-800">Agency Information</CardTitle>
-                            </div>
-                            <Badge
-                                variant={dashboardData.user.agency.isActive ? "default" : "destructive"}
-                                className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-0"
-                            >
-                                {dashboardData.user.agency.isActive ? "Active" : "Inactive"}
-                            </Badge>
-                        </div>
-                        <CardDescription className="text-gray-600 mt-1">
-                            Details about your care agency and enabled features
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                        <Tabs defaultValue="details" className="w-full">
-                            <TabsList className="mb-4 bg-gray-100">
-                                <TabsTrigger value="details" className="data-[state=active]:bg-white">
-                                    Details
-                                </TabsTrigger>
-                                <TabsTrigger value="features" className="data-[state=active]:bg-white">
-                                    Features
-                                </TabsTrigger>
-                                <TabsTrigger value="billing" className="data-[state=active]:bg-white">
-                                    Billing
-                                </TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="details">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-4">
-                                        <div>
-                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Agency Name</h3>
-                                            <p className="text-lg font-medium text-gray-800">{dashboardData.user.agency.name}</p>
-                                        </div>
-                                        <div>
-                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Created</h3>
-                                            <p className="text-base text-gray-800">
-                                                {dashboardData.user.agency.createdAt ? new Date(dashboardData.user.agency.createdAt).toLocaleDateString() : "N/A"}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Account Type</h3>
-                                            <p className="text-base text-gray-800">
-                                                {dashboardData.user.agency.isTestAccount ? "Test Account" : "Production Account"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div>
-                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Address</h3>
-                                            <p className="text-base text-gray-800">
-                                                {dashboardData.user.agency.address || "123 Main Street, Suite 101"}
-                                            </p>
-                                            <p className="text-base text-gray-800">
-                                                {dashboardData.user.agency.city || "San Francisco"}, {dashboardData.user.agency.state || "CA"}{" "}
-                                                {dashboardData.user.agency.zipCode || "94105"}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Contact</h3>
-                                            <p className="text-base text-gray-800">{dashboardData.user.agency.phone || "(555) 123-4567"}</p>
-                                            <p className="text-base text-gray-800">
-                                                {dashboardData.user.agency.email || "contact@careagency.com"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </TabsContent>
-                            <TabsContent value="features">
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                            <span className="text-gray-800">Schedule V2</span>
-                                            {getFeatureStatus(dashboardData.user.agency.hasScheduleV2)}
-                                        </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                            <span className="text-gray-800">EMAR</span>
-                                            {getFeatureStatus(dashboardData.user.agency.hasEMAR)}
-                                        </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                            <span className="text-gray-800">Finance</span>
-                                            {getFeatureStatus(dashboardData.user.agency.hasFinance)}
-                                        </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                            <span className="text-gray-800">Policies & Procedures</span>
-                                            {getFeatureStatus(dashboardData.user.agency.hasPoliciesAndProcedures)}
-                                        </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                            <span className="text-gray-800">Week 1/2 Schedule</span>
-                                            {getFeatureStatus(dashboardData.user.agency.isWeek1And2ScheduleEnabled)}
-                                        </div>
-                                        <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                            <span className="text-gray-800">Advanced Reporting</span>
-                                            {getFeatureStatus(dashboardData.user.agency.hasAdvancedReporting)}
-                                        </div>
-                                    </div>
-                                    <Button variant="outline" size="sm" className="mt-2 bg-white border-gray-200">
-                                        Request Feature Access
-                                    </Button>
-                                </div>
-                            </TabsContent>
-                            <TabsContent value="billing">
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                        <div>
-                                            <h3 className="font-medium text-gray-800">Current Plan</h3>
-                                            <p className="text-sm text-gray-600">Professional Plan</p>
-                                        </div>
-                                        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-0">Active</Badge>
-                                    </div>
-                                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                        <div>
-                                            <h3 className="font-medium text-gray-800">Next Billing Date</h3>
-                                            <p className="text-sm text-gray-600">May 15, 2025</p>
-                                        </div>
-                                        <Button variant="outline" size="sm" className="bg-white border-gray-200">
-                                            View Invoice
-                                        </Button>
-                                    </div>
-                                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200">
-                                        <div>
-                                            <h3 className="font-medium text-gray-800">Payment Method</h3>
-                                            <p className="text-sm text-gray-600">Visa ending in 4242</p>
-                                        </div>
-                                        <Button variant="outline" size="sm" className="bg-white border-gray-200">
-                                            Update
-                                        </Button>
-                                    </div>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </CardContent>
-                </Card>
-
-                <Card className="border border-gray-200 shadow-sm">
-                    <CardHeader className="border-b border-gray-100 pb-4">
-                        <div className="flex items-center">
-                            <Activity className="h-5 w-5 mr-2 text-gray-700" />
-                            <CardTitle className="text-lg font-medium text-gray-800">Stats Breakdown</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                        <div className="space-y-4">
-                            <div className="p-3 border border-gray-200 rounded-md">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="font-medium text-gray-800">Clients</span>
-                                    <span className="text-blue-600 text-sm">+5% from last month</span>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalClients}</span>
-                                    <span className="text-sm text-gray-600">
-                                        {getPercentage(dashboardData.stats.totalClients)}% of total
-                                    </span>
-                                </div>
-                                <Progress value={getPercentage(dashboardData.stats.totalClients)} className="h-1 bg-gray-100" />
-                            </div>
-
-                            <div className="p-3 border border-gray-200 rounded-md">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="font-medium text-gray-800">Care Workers</span>
-                                    <span className="text-blue-600 text-sm">+2% from last month</span>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalCareWorkers}</span>
-                                    <span className="text-sm text-gray-600">
-                                        {getPercentage(dashboardData.stats.totalCareWorkers)}% of total
-                                    </span>
-                                </div>
-                                <Progress value={getPercentage(dashboardData.stats.totalCareWorkers)} className="h-1 bg-gray-100" />
-                            </div>
-
-                            <div className="p-3 border border-gray-200 rounded-md">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="font-medium text-gray-800">Schedules</span>
-                                    <span className="text-blue-600 text-sm">+12% from last month</span>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalSchedules}</span>
-                                    <span className="text-sm text-gray-600">
-                                        {getPercentage(dashboardData.stats.totalSchedules)}% of total
-                                    </span>
-                                </div>
-                                <Progress value={getPercentage(dashboardData.stats.totalSchedules)} className="h-1 bg-gray-100" />
-                            </div>
-
-                            <div className="p-3 border border-gray-200 rounded-md">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="font-medium text-gray-800">Reports</span>
-                                    <span className="text-blue-600 text-sm">+8% from last month</span>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalReports}</span>
-                                    <span className="text-sm text-gray-600">
-                                        {getPercentage(dashboardData.stats.totalReports)}% of total
-                                    </span>
-                                </div>
-                                <Progress value={getPercentage(dashboardData.stats.totalReports)} className="h-1 bg-gray-100" />
-                            </div>
-
-                            <div className="p-3 border border-gray-200 rounded-md">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="font-medium text-gray-800">Mileage Records</span>
-                                    <span className="text-blue-600 text-sm">+3% from last month</span>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalMileageRecords}</span>
-                                    <span className="text-sm text-gray-600">
-                                        {getPercentage(dashboardData.stats.totalMileageRecords)}% of total
-                                    </span>
-                                </div>
-                                <Progress value={getPercentage(dashboardData.stats.totalMileageRecords)} className="h-1 bg-gray-100" />
-                            </div>
-
-                            <div className="p-3 border border-gray-200 rounded-md">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="font-medium text-gray-800">Documents</span>
-                                    <span className="text-blue-600 text-sm">+7% from last month</span>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-2xl font-bold text-gray-800">{dashboardData.stats.totalDocuments}</span>
-                                    <span className="text-sm text-gray-600">
-                                        {getPercentage(dashboardData.stats.totalDocuments)}% of total
-                                    </span>
-                                </div>
-                                <Progress value={getPercentage(dashboardData.stats.totalDocuments)} className="h-1 bg-gray-100" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
 
 
         </div>

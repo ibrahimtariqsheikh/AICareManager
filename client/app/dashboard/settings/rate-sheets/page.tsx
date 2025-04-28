@@ -1,9 +1,9 @@
 "use client"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { RateSheetManager } from "./components/rate-sheet-manager"
-import { UserCircle, Users, Building2, FileSpreadsheet, DollarSign } from "lucide-react"
+import { UserCircle, Users, Building2 } from "lucide-react"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveRateSheetStaffType } from "@/state/slices/agencySlice"
 import { RateSheetType } from "@/types/agencyTypes"

@@ -11,15 +11,11 @@ import {
     Moon,
     Sun,
     Building2,
-    Mail,
     File,
     Plus,
 
-    CommandIcon,
-    Search,
     ChevronDown,
     CreditCard,
-    Rocket,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -132,6 +128,7 @@ const navigation: NavigationSection[] = [
 export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { user: userInformation } = useAppSelector((state) => state.user)
     const user = userInformation?.userInfo as User
+    console.log("user in sidebarLeft", user)
     const dispatch = useAppDispatch()
     const { theme, setTheme } = useTheme()
     const pathname = usePathname()
@@ -173,7 +170,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                         </span>
                         <span className="text-xs text-neutral-600 mt-[1px]">
                             <div className="flex items-center gap-2">
-                                {user?.userInfo?.agency?.name || "Agency"}
+                                {user?.agency.name || "Agency"}
                             </div>
                         </span>
                     </div>

@@ -128,7 +128,7 @@ export default function SettingsPage() {
     return (
         <div className="flex-1 space-y-6 p-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
+                <h2 className="text-xl font-bold tracking-tight">Settings</h2>
                 <Button onClick={() => {
                     saveSettings()
                 }}>
@@ -311,31 +311,41 @@ export default function SettingsPage() {
                                 <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
                                     onClick={() => router.push("/dashboard/settings/groups")}
                                 >
-                                    <Users className="mr-2 h-4 w-4" />
-                                    Groups
+                                    <div className="flex items-center gap-2">
+                                        <Users className="h-4 w-4" />
+                                        Groups
+                                    </div>
                                 </Button>
                                 <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
                                     onClick={() => router.push("/dashboard/settings/rate-sheets")}
                                 >
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    Rate Sheets
+                                    <div className="flex items-center gap-2">
+                                        <FileText className="h-4 w-4" />
+                                        Rate Sheets
+                                    </div>
                                 </Button>
                                 <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
                                     onClick={() => router.push("/dashboard/settings/custom-tasks")}
                                 >
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    Custom Tasks
+                                    <div className="flex items-center gap-2">
+                                        <FileText className="h-4 w-4" />
+                                        Custom Tasks
+                                    </div>
                                 </Button>
                                 <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm"
                                     onClick={() => router.push("/dashboard/settings/agency-details")}
                                 >
-                                    <Building className="mr-2 h-4 w-4" />
-                                    Agency Details & Documents
+                                    <div className="flex items-center gap-2">
+                                        <Building className="h-4 w-4" />
+                                        Agency Details & Documents
+                                    </div>
                                 </Button>
 
                                 <Button variant="outline" className="justify-start p-4 rounded-lg bg-background border border-border transition-all duration-200 hover:shadow-sm" onClick={() => router.push("/dashboard/settings/documents")}>
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    Documents
+                                    <div className="flex items-center gap-2">
+                                        <FileText className="h-4 w-4" />
+                                        Documents
+                                    </div>
                                 </Button>
                             </div>
                         </CardContent>

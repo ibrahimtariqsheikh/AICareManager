@@ -5,14 +5,8 @@ import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { fadeIn } from "../../lib/utils"
-import { Input } from "../../components/ui/input"
 import Image from "next/image"
 import { Section } from "./section"
-import { CTAButton } from "./cta-button"
-import { Button } from "../ui/button"
-import { useRouter } from "next/navigation"
-import { Button as MovingBorderButton } from "../ui/moving-border"
-import Link from "next/link"
 
 interface HeroSectionProps {
     title: string
@@ -25,7 +19,6 @@ interface HeroSectionProps {
 export function HeroSection({ title, subtitle, image, isAuthenticated = false, onDashboardClick }: HeroSectionProps) {
     const { theme } = useTheme()
     const [mounted, setMounted] = useState(false)
-    const router = useRouter()
     useEffect(() => {
         setMounted(true)
     }, [])
@@ -34,8 +27,7 @@ export function HeroSection({ title, subtitle, image, isAuthenticated = false, o
 
     // Split the title to highlight only the last two words
     const words = title.split(" ")
-    const regularWords = words.slice(0, -2).join(" ")
-    const highlightedWords = words.slice(-2).join(" ")
+
 
     return (
         <Section className="pt-20 pb-16 md:pt-32 md:pb-24 relative z-10">

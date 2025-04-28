@@ -74,7 +74,19 @@ export const columns: ColumnDef<User>[] = [
             )
         },
     },
-
+    {
+        accessorKey: "address",
+        header: ({ column }) => (
+            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                Address
+            </div>
+        ),
+        cell: ({ row }) => (
+            <div className=" w-fit text-center text-xs text-neutral-500">
+                {row.original.address}
+            </div>
+        ),
+    },
 
     {
         accessorKey: "subRole",

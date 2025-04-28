@@ -4,8 +4,6 @@ import { usePathname } from "next/navigation"
 import { SidebarProvider } from "../../components/ui/sidebar"
 import { SidebarLeft } from "../../components/sidebar/sidebar-left"
 import { SidebarInset } from "../../components/ui/sidebar"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbLink, BreadcrumbSeparator } from "../../components/ui/breadcrumb"
-import { Separator } from "../../components/ui/separator"
 import { SidebarTrigger } from "../../components/ui/sidebar"
 import { ReactNode, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../state/redux";
@@ -112,33 +110,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
 
     // Get breadcrumb items based on current path
-    const getBreadcrumbItems = () => {
-        const paths = pathname?.split("/").filter(Boolean) || []
-        const items = []
-
-        // Always show Dashboard as first item
-        items.push({
-            title: "Dashboard",
-            href: "/dashboard",
-            isCurrent: paths.length === 1
-        })
-
-        // Add other path segments
-        let currentPath = "/dashboard"
-        for (let i = 1; i < paths.length; i++) {
-            const pathSegment = paths[i]
-            if (!pathSegment) continue
-            currentPath += `/${pathSegment}`
-            const title = pathSegment.charAt(0).toUpperCase() + pathSegment.slice(1)
-            items.push({
-                title,
-                href: currentPath,
-                isCurrent: i === paths.length - 1
-            })
-        }
-
-        return items
-    }
 
 
 
