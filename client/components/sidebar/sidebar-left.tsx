@@ -73,7 +73,7 @@ const navigation: NavigationSection[] = [
                 isActive: true,
             },
             {
-                title: "AI Assistant",
+                title: "Care AI",
                 icon: ChatbotModern,
                 href: "/dashboard/chatbot",
                 isBeta: true,

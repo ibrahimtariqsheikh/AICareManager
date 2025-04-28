@@ -77,6 +77,9 @@ interface UserState {
   activeUserType: "CLIENT" | "CARE_WORKER" | "OFFICE_STAFF";
   error: string | null;
   currentUser: User | null;
+  selectedClients: User[];
+  selectedCareWorkers: User[];
+  selectedOfficeStaff: User[];
 }
 
 // Initial state
@@ -102,6 +105,9 @@ const initialState: UserState = {
   loading: false,
   error: null,
   currentUser: null,
+  selectedClients: [],
+  selectedCareWorkers: [],
+  selectedOfficeStaff: [],
 }
 
 // User Slice
@@ -138,6 +144,15 @@ const userSlice = createSlice({
     },
     updateUser: (state, action: PayloadAction<User>) => {
       state.currentUser = action.payload
+    },
+    setSelectedClients: (state, action: PayloadAction<User[]>) => {
+      state.selectedClients = action.payload
+    },
+    setSelectedCareWorkers: (state, action: PayloadAction<User[]>) => {
+      state.selectedCareWorkers = action.payload
+    },
+    setSelectedOfficeStaff: (state, action: PayloadAction<User[]>) => {
+      state.selectedOfficeStaff = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -190,6 +205,9 @@ export const {
   setError,
   setActiveUserType,
   updateUser,
+  setSelectedClients,
+  setSelectedCareWorkers,
+  setSelectedOfficeStaff,
 } = userSlice.actions
 export default userSlice.reducer
 

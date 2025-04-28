@@ -3,10 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { RateSheetManager } from "./components/rate-sheet-manager"
-import { UserCircle, Users, Building2, FileSpreadsheet } from "lucide-react"
+import { UserCircle, Users, Building2, FileSpreadsheet, DollarSign } from "lucide-react"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveRateSheetStaffType } from "@/state/slices/agencySlice"
 import { RateSheetType } from "@/types/agencyTypes"
+
 
 export default function RateSheetsPage() {
     const dispatch = useAppDispatch()
@@ -14,19 +15,18 @@ export default function RateSheetsPage() {
 
     return (
         <div className="container mx-auto py-6 space-y-6">
-            <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight">Rate Sheets</h1>
-                <p className="text-muted-foreground">Manage hourly rates for clients, care workers, and office staff</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold">Rate Sheet Management</h1>
+                    <p className="text-sm text-neutral-600">
+                        Manage your rate sheets efficiently. Add, edit, or delete rate sheets.
+                    </p>
+                </div>
+
+
             </div>
 
             <Card>
-                <CardHeader className="bg-muted/40">
-                    <div className="flex items-center gap-2">
-                        <FileSpreadsheet className="h-5 w-5 text-primary" />
-                        <CardTitle>Rate Sheet Management</CardTitle>
-                    </div>
-                    <CardDescription>Create and manage rate sheets for different staff types</CardDescription>
-                </CardHeader>
                 <CardContent className="pt-6">
                     <Tabs value={activeRateSheetStaffType} onValueChange={(value) => dispatch(setActiveRateSheetStaffType(value as RateSheetType))} className="w-full">
                         <TabsList className="grid grid-cols-3 mb-8">

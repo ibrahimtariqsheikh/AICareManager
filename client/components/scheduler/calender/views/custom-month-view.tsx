@@ -79,10 +79,10 @@ export function CustomMonthView({
     const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
 
 
-    const activeScheduleUserType = useAppSelector((state: RootState) => state.schedule.activeScheduleUserType)
-    const reduxClients = useAppSelector((state: RootState) => state.user.clients || [])
-    const careworkers = useAppSelector((state: RootState) => state.user.careWorkers || [])
-    const officeStaff = useAppSelector((state: RootState) => state.user.officeStaff || [])
+    const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
+    const reduxClients = useAppSelector((state) => state.user.clients || [])
+    const careworkers = useAppSelector((state) => state.user.careWorkers || [])
+    const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
 
     const events = useAppSelector((state) => state.schedule.events || [])
 

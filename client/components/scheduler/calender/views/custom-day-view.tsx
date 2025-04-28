@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation"
 import type { ScheduleTemplate } from "@/types/prismaTypes"
 import { useApplyScheduleTemplateMutation, useGetScheduleTemplatesQuery, useGetAgencySchedulesQuery } from "@/state/api"
 import { setUserTemplates, setLoadingTemplates, setTemplateError } from "@/state/slices/templateSlice"
-import { setEvents } from "@/state/slices/scheduleSlice"
 
 export interface Client {
     id: string
@@ -55,7 +54,6 @@ export function CustomDayView({
     onEventUpdate,
     min = new Date(new Date().setHours(7, 0, 0)),
     max = new Date(new Date().setHours(19, 0, 0)),
-    clients: propClients,
     spaceTheme = false,
     showSidebar = true,
     minutesPerSlot = 30,
@@ -64,8 +62,7 @@ export function CustomDayView({
 }: CustomDayViewProps) {
     const dispatch = useAppDispatch()
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
-    const reduxClients = useAppSelector((state) => state.user.clients || [])
-    const clients = propClients || reduxClients
+    const clients = useAppSelector((state) => state.user.clients || [])
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
     const events = useAppSelector((state) => state.schedule.events || [])
@@ -120,7 +117,7 @@ export function CustomDayView({
         }
     }
 
-    const [applyScheduleTemplate, { isLoading: isApplyingTemplate }] = useApplyScheduleTemplateMutation()
+    const [applyScheduleTemplate] = useApplyScheduleTemplateMutation()
 
     const handleOpenTemplateMenu = (userId: string) => {
         setSelectedUserId(userId)

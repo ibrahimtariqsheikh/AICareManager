@@ -156,6 +156,7 @@ export const {
     setDistanceThresholdRedux,
     setNotificationFrequencyRedux,
     setPreferredNotificationMethodRedux,
+    setActiveRateSheetStaffType,
 } = agencySlice.actions;
 
 // Export reducer

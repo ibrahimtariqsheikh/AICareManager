@@ -6,6 +6,7 @@ import moment from "moment"
 import { v4 as uuidv4 } from "uuid"
 import type { AppointmentEvent } from "../../components/scheduler/calender/types"
 import { RootState } from "../redux"
+import { TemplateVisit } from "@/types/prismaTypes"
 
 // Thunk to apply a template to a specific date
 export const applyTemplateToDay = createAsyncThunk(
@@ -36,7 +37,7 @@ export const applyTemplateToDay = createAsyncThunk(
       const targetDate = moment(date)
 
       // Convert template visits to events
-      const events: AppointmentEvent[] = template.visits.map((visit) => {
+      const events: AppointmentEvent[] = template.visits.map((visit: TemplateVisit) => {
         // Get the day of week from the visit
         const visitDay = visit.day.toUpperCase()
 

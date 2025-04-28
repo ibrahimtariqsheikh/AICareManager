@@ -8,7 +8,7 @@ import { Skeleton } from "../../ui/skeleton"
 
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveView } from "@/state/slices/calendarSlice"
-import { CalendarIcon, ChevronDown, GripVertical, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
+import { CalendarIcon, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { CalendarRange } from "lucide-react"
 import { CalendarDays } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -21,6 +21,9 @@ import { motion } from "framer-motion"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { setActiveScheduleUserType } from "@/state/slices/scheduleSlice"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
+import { setSelectedCareWorkers, setSelectedOfficeStaff } from "@/state/slices/userSlice"
+import { setSelectedClients } from "@/state/slices/userSlice"
 
 // Add month picker styles
 const monthPickerStyles = `
@@ -78,8 +81,6 @@ export function CustomCalendar({
     isLoading,
     staffMembers,
     sidebarMode,
-    spaceTheme,
-    events = [],
     getEventTypeLabel,
 }: CustomCalendarProps) {
     // Add styles to document
@@ -108,6 +109,23 @@ export function CustomCalendar({
         }
         return undefined
     })
+
+    const clients = useAppSelector((state) => state.user.clients)
+    const careWorkers = useAppSelector((state) => state.user.careWorkers)
+    const officeStaff = useAppSelector((state) => state.user.officeStaff)
+
+    const selectedClients = useAppSelector((state) => state.user.selectedClients)
+    const selectedCareWorkers = useAppSelector((state) => state.user.selectedCareWorkers)
+    const selectedOfficeStaff = useAppSelector((state) => state.user.selectedOfficeStaff)
+
+    useEffect(() => {
+        dispatch(setSelectedClients(clients))
+        dispatch(setSelectedCareWorkers(careWorkers))
+        dispatch(setSelectedOfficeStaff(officeStaff))
+    }, [])
+
+
+
 
     useEffect(() => {
         if (activeView === "week") {
@@ -144,26 +162,6 @@ export function CustomCalendar({
         return Math.round((end.getTime() - start.getTime()) / (1000 * 60))
     }
 
-    const getVisibleEventsCount = () => {
-        if (activeView === "day") {
-            return events.filter(event =>
-                moment(event.start).isSame(currentDate, 'day')
-            ).length
-        } else if (activeView === "week") {
-            const weekStart = moment(currentDate).startOf('week')
-            const weekEnd = moment(currentDate).endOf('week')
-            return events.filter(event =>
-                moment(event.start).isBetween(weekStart, weekEnd, 'day', '[]')
-            ).length
-        } else if (activeView === "month") {
-            const monthStart = moment(currentDate).startOf('month')
-            const monthEnd = moment(currentDate).endOf('month')
-            return events.filter(event =>
-                moment(event.start).isBetween(monthStart, monthEnd, 'day', '[]')
-            ).length
-        }
-        return events.length
-    }
 
     const dispatch = useAppDispatch()
 
@@ -255,6 +253,67 @@ export function CustomCalendar({
                                         className="cursor-pointer text-xs font-medium text-neutral-900"
                                     >Care Worker</DropdownMenuItem>
                                 </motion.div>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <motion.div
+                                    className="h-8 flex items-center gap-2 bg-gray-100 text-gray-600 rounded-md px-2 py-1 text-xs  cursor-pointer"
+                                    whileHover={{ scale: 1.04, borderColor: "rgb(156 163 175)" }}
+                                    whileTap={{ scale: 0.96 }}
+                                    transition={{ duration: 0.1 }}
+                                >
+                                    {activeScheduleUserType === "clients" ? (
+                                        <div className="flex items-center gap-2 text-neutral-900">
+                                            <p>Select Client(s)</p>
+                                            <ChevronDown className="h-3 w-3" />
+                                        </div>
+                                    ) : activeScheduleUserType === "officeStaff" ? (
+                                        <div className="flex items-center gap-2 text-neutral-900">
+                                            <p>Select Office Staff(s)</p>
+                                            <ChevronDown className="h-3 w-3" />
+                                        </div>
+                                    ) : activeScheduleUserType === "careWorker" ? (
+                                        <div className="flex items-center gap-2 text-neutral-900">
+                                            <p>Select Care Worker(s)</p>
+                                            <ChevronDown className="h-3 w-3" />
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-2 text-neutral-900">
+                                            <p>Select Staff(s)</p>
+                                            <ChevronDown className="h-3 w-3" />
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuLabel className="text-neutral-900 text-xs font-semibold">{activeScheduleUserType === "clients" ? "Select Client(s)" : activeScheduleUserType === "officeStaff" ? "Select Office Staff(s)" : activeScheduleUserType === "careWorker" ? "Select Care Worker(s)" : "Select Staff(s)"}</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+
+                                {activeScheduleUserType === "clients" && <div className="flex flex-col gap-2 mt-2">
+                                    {clients.map((client) => (
+                                        <div className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                                            <Checkbox checked={selectedClients.includes(client)} onCheckedChange={() => { dispatch(setSelectedClients([...selectedClients, client])) }} />
+                                            {client.fullName}
+                                        </div>
+                                    ))}
+                                </div>}
+                                {activeScheduleUserType === "careWorker" && <div className="flex flex-col gap-1">
+                                    {careWorkers.map((careWorker) => (
+                                        <div className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                                            <Checkbox checked={careWorker.selected} onCheckedChange={() => { dispatch(setSelectedCareWorkers([...selectedCareWorkers, careWorker])) }} />
+                                            {careWorker.fullName}
+                                        </div>
+                                    ))}
+                                </div>}
+                                {activeScheduleUserType === "officeStaff" && <div className="flex flex-col gap-1">
+                                    {officeStaff.map((officeStaff) => (
+                                        <div className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                                            <Checkbox checked={officeStaff.selected} onCheckedChange={() => { dispatch(setSelectedOfficeStaff([...selectedOfficeStaff, officeStaff])) }} />
+                                            {officeStaff.fullName}
+                                        </div>
+                                    ))}
+                                </div>}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>

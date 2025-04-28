@@ -149,6 +149,7 @@ const EditUserPage = () => {
                         </Avatar>
                         <div>
                             <h1 className="text-2xl font-bold">{user?.fullName || "Unknown User"}</h1>
+                            <h1 className="text-sm text-neutral-500">{user?.email || "Unknown Email"}</h1>
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 items-center">

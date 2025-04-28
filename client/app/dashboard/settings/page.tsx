@@ -578,12 +578,12 @@ export default function SettingsPage() {
                 </TabsContent>
             </Tabs>
 
-            <div className="flex flex-col gap-2 ">
+            {/* <div className="flex flex-col gap-2 ">
                 <h2 className="text-2xl font-bold my-6">Agency Object</h2>
                 <pre className="bg-gray-100 p-4 rounded-md">
                     {JSON.stringify(agency, null, 2)}
                 </pre>
-            </div>
+            </div> */}
 
         </div>
     )
