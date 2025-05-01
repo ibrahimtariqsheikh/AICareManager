@@ -83,7 +83,7 @@ export const columns: ColumnDef<User>[] = [
         ),
         cell: ({ row }) => (
             <div className=" w-fit text-center text-xs text-neutral-500">
-                {row.original.address}
+                {row.original.address || "N/A"}
             </div>
         ),
     },

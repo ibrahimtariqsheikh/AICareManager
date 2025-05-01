@@ -15,8 +15,8 @@ const ApplicationCard = ({
     application.status === "Approved"
       ? "bg-green-500"
       : application.status === "Denied"
-      ? "bg-red-500"
-      : "bg-yellow-500";
+        ? "bg-red-500"
+        : "bg-yellow-500";
 
   const contactPerson =
     userType === "manager" ? application.tenant : application.manager;

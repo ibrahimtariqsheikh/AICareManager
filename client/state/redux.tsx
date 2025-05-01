@@ -38,6 +38,7 @@ const rootReducer = combineReducers({
   chat: chatReducer,
   invoice: invoiceReducer,
   template: templateReducer,
+
   [api.reducerPath]: api.reducer,
 })
 

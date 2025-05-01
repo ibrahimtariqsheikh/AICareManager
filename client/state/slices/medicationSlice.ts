@@ -1,231 +1,281 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit"
+import { v4 as uuidv4 } from "uuid"
 
 export interface Medication {
   id: string
   name: string
   dosage: string
-  instructions: string
-  reason: string
-  route: string
   frequency: string
-  times: string[]
-  days: string[]
-  schedule: string
+  instructions?: string
+  times: {
+    morning?: boolean
+    afternoon?: boolean
+    evening?: boolean
+    bedtime?: boolean
+    asNeeded?: boolean
+  }
+}
+
+export interface MedicationLog {
+  id: string
+  medicationId: string
+  date: string
+  status: "taken" | "not-taken" | "not-reported" | "not-scheduled"
+  time: "morning" | "afternoon" | "evening" | "bedtime" | "asNeeded"
+  administeredBy?: string
   notes?: string
 }
 
-export interface MedicationAdministration {
-  id: string
-  medicationId: string
-  status: "given" | "not_given" | "refused" | "pending"
-  administeredBy: string
-  administeredTime: string
-  notes: string
-  scheduledTime: string
-}
-
-export interface MedicationCalendarEntry {
-  id: string
-  medicationId: string
-  times: string[]
-  status: Record<string, string>
-}
-
-export interface MedicationState {
+interface MedicationState {
   medications: Medication[]
-  administrations: MedicationAdministration[]
-  calendarEntries: MedicationCalendarEntry[]
-  currentView: "scheduled" | "prn"
-  selectedMedication: Medication | null
-  isMedicationDialogOpen: boolean
-  isAdministrationDialogOpen: boolean
+  medicationLogs: MedicationLog[]
+  selectedMonth: string
+  selectedYear: string
+  status: "idle" | "loading" | "succeeded" | "failed"
+  error: string | null
+  isAddMedicationModalOpen: boolean
+  isCheckInModalOpen: boolean
+  selectedMedicationId: string | null
+  selectedTimeOfDay: string | null
+  selectedDay: number | null
 }
 
 const initialState: MedicationState = {
-  medications: [
+  medications: [],
+  medicationLogs: [],
+  selectedMonth: new Date().getMonth().toString(),
+  selectedYear: new Date().getFullYear().toString(),
+  status: "idle",
+  error: null,
+  isAddMedicationModalOpen: false,
+  isCheckInModalOpen: false,
+  selectedMedicationId: null,
+  selectedTimeOfDay: null,
+  selectedDay: null,
+}
+
+export const fetchMedications = createAsyncThunk("medications/fetchMedications", async (userId: string) => {
+  // In a real app, this would be an API call
+  // For now, we'll return mock data
+  return [
     {
       id: "1",
       name: "Hydrocortisone",
       dosage: "5mg",
-      instructions: "Take 1 Tab by Mouth Twice Daily",
-      reason: "A chemical found in tobacco for...",
-      route: "oral",
-      frequency: "twice_daily",
-      times: ["08:00", "13:00"],
-      days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-      schedule: "8:00am, 1:00pm",
-      notes: ""
+      frequency: "Daily",
+      instructions: "Take with food",
+      times: {
+        morning: true,
+        afternoon: false,
+        evening: false,
+        bedtime: false,
+        asNeeded: false,
+      },
     },
     {
       id: "2",
-      name: "Lisinopril",
-      dosage: "10mg",
-      instructions: "Take 1 Tab by Mouth Once Daily",
-      reason: "Hypertension",
-      route: "oral",
-      frequency: "daily",
-      times: ["08:00"],
-      days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-      schedule: "8:00am",
-      notes: ""
+      name: "Test",
+      dosage: "1000mg",
+      frequency: "Every day",
+      instructions: "Take as directed",
+      times: {
+        morning: true,
+        afternoon: true,
+        evening: true,
+        bedtime: true,
+        asNeeded: false,
+      },
     },
-    {
-      id: "3",
-      name: "Metformin",
-      dosage: "500mg",
-      instructions: "Take 1 Tab by Mouth Twice Daily",
-      reason: "Diabetes Type 2",
-      route: "oral",
-      frequency: "twice_daily",
-      times: ["08:00", "19:00"],
-      days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-      schedule: "8:00am, 7:00pm",
-      notes: ""
-    },
-    {
-      id: "4",
-      name: "Aspirin",
-      dosage: "81mg",
-      instructions: "Take 1 Tab by Mouth Once Daily",
-      reason: "Blood Thinner",
-      route: "oral",
-      frequency: "daily",
-      times: ["08:00"],
-      days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-      schedule: "8:00am",
-      notes: ""
-    }
-  ],
-  administrations: [
-    {
-      id: "a1",
-      medicationId: "1",
-      status: "pending",
-      administeredBy: "",
-      administeredTime: "",
-      notes: "",
-      scheduledTime: new Date().setHours(8, 0, 0).toString()
-    },
-    {
-      id: "a2",
-      medicationId: "2",
-      status: "pending",
-      administeredBy: "",
-      administeredTime: "",
-      notes: "",
-      scheduledTime: new Date().setHours(8, 0, 0).toString()
-    }
-  ],
-  calendarEntries: [
-    {
-      id: "c1",
-      medicationId: "1",
-      times: ["08:00", "13:00", "19:00"],
-      status: generateRandomStatus(31)
-    },
-    {
-      id: "c2",
-      medicationId: "2",
-      times: ["08:00"],
-      status: generateRandomStatus(31)
-    },
-    {
-      id: "c3",
-      medicationId: "3",
-      times: ["08:00", "19:00"],
-      status: generateRandomStatus(31)
-    }
-  ],
-  currentView: "scheduled",
-  selectedMedication: null,
-  isMedicationDialogOpen: false,
-  isAdministrationDialogOpen: false
-}
+  ] as Medication[]
+})
 
-// Helper function to generate random status for calendar
-function generateRandomStatus(days: number) {
-  const statuses = ["taken", "not_taken", "not_reported", "not_scheduled"]
-  const result: Record<string, string> = {}
+export const fetchMedicationLogs = createAsyncThunk(
+  "medications/fetchMedicationLogs",
+  async ({ userId, month, year }: { userId: string; month: string; year: string }) => {
+    // In a real app, this would be an API call
+    // For now, we'll generate mock data
+    const logs: MedicationLog[] = []
+    const daysInMonth = new Date(Number.parseInt(year), Number.parseInt(month) + 1, 0).getDate()
 
-  for (let i = 1; i <= days; i++) {
-    // More likely to be "taken" than other statuses
-    const randomIndex = Math.floor(Math.random() * 10)
-    if (randomIndex < 7) {
-      result[i] = "taken"
-    } else if (randomIndex < 8) {
-      result[i] = "not_taken"
-    } else if (randomIndex < 9) {
-      result[i] = "not_reported"
-    } else {
-      result[i] = "not_scheduled"
+    // Generate logs for the first medication (Hydrocortisone)
+    for (let day = 1; day <= daysInMonth; day++) {
+      if (day === 7) {
+        logs.push({
+          id: `log-1-${day}`,
+          medicationId: "1",
+          date: `${year}-${Number.parseInt(month) + 1}-${day}`,
+          status: "not-taken",
+          time: "morning",
+        })
+      } else if (day === 12 || day === 13) {
+        logs.push({
+          id: `log-1-${day}`,
+          medicationId: "1",
+          date: `${year}-${Number.parseInt(month) + 1}-${day}`,
+          status: "not-reported",
+          time: "morning",
+        })
+      } else if (day === 15 || day === 16 || day === 17) {
+        logs.push({
+          id: `log-1-${day}`,
+          medicationId: "1",
+          date: `${year}-${Number.parseInt(month) + 1}-${day}`,
+          status: "not-scheduled",
+          time: "morning",
+        })
+      } else if (day <= 28) {
+        logs.push({
+          id: `log-1-${day}`,
+          medicationId: "1",
+          date: `${year}-${Number.parseInt(month) + 1}-${day}`,
+          status: "taken",
+          time: "morning",
+        })
+      }
     }
-  }
 
-  return result
-}
+    return logs
+  },
+)
 
-export const medicationSlice = createSlice({
-  name: "medication",
+export const updateMedicationLog = createAsyncThunk(
+  "medications/updateMedicationLog",
+  async ({
+    medicationId,
+    day,
+    month,
+    year,
+    timeOfDay,
+    status,
+    notes,
+  }: {
+    medicationId: string
+    day: number
+    month: string
+    year: string
+    timeOfDay: string
+    status: "taken" | "not-taken" | "not-reported"
+    notes?: string
+  }) => {
+    // Format the day to ensure it has two digits
+    const formattedDay = day < 10 ? `0${day}` : day.toString()
+    const dateString = `${year}-${Number.parseInt(month) + 1}-${formattedDay}`
+
+    // In a real app, this would be an API call
+    // For now, we'll just return the updated log
+    const log: MedicationLog = {
+      id: `log-${medicationId}-${day}-${timeOfDay}`,
+      medicationId,
+      date: dateString,
+      status,
+      time: timeOfDay as any,
+      notes: notes || "",
+      administeredBy: "Current User", // In a real app, this would be the current user
+    }
+
+    return log
+  },
+)
+
+export const addMedication = createAsyncThunk(
+  "medications/addMedication",
+  async (medication: Omit<Medication, "id">) => {
+    // In a real app, this would be an API call
+    // For now, we'll just return the new medication with an ID
+    const newMedication: Medication = {
+      ...medication,
+      id: uuidv4(), // Generate a unique ID
+    }
+
+    return newMedication
+  },
+)
+
+export const deleteMedication = createAsyncThunk("medications/deleteMedication", async (medicationId: string) => {
+  // In a real app, this would be an API call
+  // For now, we'll just return the ID
+  return medicationId
+})
+
+const medicationSlice = createSlice({
+  name: "medications",
   initialState,
   reducers: {
-    setCurrentView: (state, action: PayloadAction<"scheduled" | "prn">) => {
-      state.currentView = action.payload
+    setSelectedMonth: (state, action: PayloadAction<string>) => {
+      state.selectedMonth = action.payload
     },
-    setSelectedMedication: (state, action: PayloadAction<Medication | null>) => {
-      state.selectedMedication = action.payload
+    setSelectedYear: (state, action: PayloadAction<string>) => {
+      state.selectedYear = action.payload
     },
-    setMedicationDialogOpen: (state, action: PayloadAction<boolean>) => {
-      state.isMedicationDialogOpen = action.payload
+    openAddMedicationModal: (state) => {
+      state.isAddMedicationModalOpen = true
     },
-    setAdministrationDialogOpen: (state, action: PayloadAction<boolean>) => {
-      state.isAdministrationDialogOpen = action.payload
+    closeAddMedicationModal: (state) => {
+      state.isAddMedicationModalOpen = false
     },
-    addMedication: (state, action: PayloadAction<Omit<Medication, "id">>) => {
-      const newId = `med-${Date.now()}`
-      state.medications.push({
-        id: newId,
-        ...action.payload
+    openCheckInModal: (state, action: PayloadAction<{ medicationId: string; timeOfDay: string; day: number }>) => {
+      state.isCheckInModalOpen = true
+      state.selectedMedicationId = action.payload.medicationId
+      state.selectedTimeOfDay = action.payload.timeOfDay
+      state.selectedDay = action.payload.day
+    },
+    closeCheckInModal: (state) => {
+      state.isCheckInModalOpen = false
+      state.selectedMedicationId = null
+      state.selectedTimeOfDay = null
+      state.selectedDay = null
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchMedications.pending, (state) => {
+        state.status = "loading"
       })
-    },
-    updateMedication: (state, action: PayloadAction<Medication>) => {
-      const index = state.medications.findIndex(med => med.id === action.payload.id)
-      if (index !== -1) {
-        state.medications[index] = action.payload
-      }
-    },
-    deleteMedication: (state, action: PayloadAction<string>) => {
-      state.medications = state.medications.filter(med => med.id !== action.payload)
-    },
-    recordAdministration: (state, action: PayloadAction<Omit<MedicationAdministration, "id">>) => {
-      const newId = `adm-${Date.now()}`
-      state.administrations.push({
-        id: newId,
-        ...action.payload
+      .addCase(fetchMedications.fulfilled, (state, action) => {
+        state.status = "succeeded"
+        state.medications = action.payload
       })
-      
-      // Update calendar entry if it exists
-      const medicationId = action.payload.medicationId
-      const date = new Date(action.payload.administeredTime).getDate()
-      
-      const calendarEntry = state.calendarEntries.find(entry => entry.medicationId === medicationId)
-      if (calendarEntry) {
-        calendarEntry.status[date] = action.payload.status === "given" ? "taken" : 
-                                     action.payload.status === "not_given" ? "not_taken" : 
-                                     action.payload.status === "refused" ? "not_taken" : "not_reported"
-      }
-    }
+      .addCase(fetchMedications.rejected, (state, action) => {
+        state.status = "failed"
+        state.error = action.error.message || "Failed to fetch medications"
+      })
+      .addCase(fetchMedicationLogs.pending, (state) => {
+        state.status = "loading"
+      })
+      .addCase(fetchMedicationLogs.fulfilled, (state, action) => {
+        state.status = "succeeded"
+        state.medicationLogs = action.payload
+      })
+      .addCase(fetchMedicationLogs.rejected, (state, action) => {
+        state.status = "failed"
+        state.error = action.error.message || "Failed to fetch medication logs"
+      })
+      .addCase(updateMedicationLog.fulfilled, (state, action) => {
+        const index = state.medicationLogs.findIndex((log) => log.id === action.payload.id)
+        if (index !== -1) {
+          state.medicationLogs[index] = action.payload
+        } else {
+          state.medicationLogs.push(action.payload)
+        }
+      })
+      .addCase(addMedication.fulfilled, (state, action) => {
+        state.medications.push(action.payload)
+        state.isAddMedicationModalOpen = false
+      })
+      .addCase(deleteMedication.fulfilled, (state, action) => {
+        state.medications = state.medications.filter((medication) => medication.id !== action.payload)
+        // Also remove any logs for this medication
+        state.medicationLogs = state.medicationLogs.filter((log) => log.medicationId !== action.payload)
+      })
   },
 })
 
-export const { 
-  setCurrentView, 
-  setSelectedMedication, 
-  setMedicationDialogOpen, 
-  setAdministrationDialogOpen,
-  addMedication,
-  updateMedication,
-  deleteMedication,
-  recordAdministration
+export const {
+  setSelectedMonth,
+  setSelectedYear,
+  openAddMedicationModal,
+  closeAddMedicationModal,
+  openCheckInModal,
+  closeCheckInModal,
 } = medicationSlice.actions
-
 export default medicationSlice.reducer

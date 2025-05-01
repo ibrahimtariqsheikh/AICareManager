@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { useState } from "react"
+import { useSelector } from "react-redux"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,56 +10,35 @@ import { Badge } from "@/components/ui/badge"
 import {
     AlertCircle,
 
-    Clock,
-    Download,
+    Calendar,
+
     Eye,
     FileText,
     Filter,
     Pill,
     Search,
     Sparkles,
-
     UserIcon,
-
     Users,
     Utensils,
     X,
 } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+
 import { format as formatDateFns } from "date-fns"
 import { AIImproveDialog } from "./components/ai-improve-dialog"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useGetAgencyReportsQuery } from "@/state/api"
-import { useAppSelector } from "@/state/redux"
-import type { Report } from "../types"
-import { CalendarIcon } from "lucide-react"
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button as PopoverButton } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calender"
-import { DateRange } from "react-day-picker"
+import type { Report, ReportAlert, ReportTask } from "@/types/prismaTypes"
 
 
+import type { RootState } from "@/state/redux"
 
-
-interface PayrollEntry {
-    id: string
-    name: string
-    actualDuration: string
-    actualCharge: string
-    scheduledDuration: string
-    scheduledCharge: string
-}
 
 export default function ReportsPage() {
+
+    const { reports, isLoading, error } = useSelector((state: RootState) => state.report)
+
     const [searchQuery, setSearchQuery] = useState("")
     const [, setActiveTab] = useState("visits")
-    const [isLoading, setIsLoading] = useState(true)
     const [selectedReport, setSelectedReportState] = useState<Report | null>(null)
     const [, setIsDetailViewOpen] = useState(false)
     const [isAIDialogOpen, setIsAIDialogOpen] = useState(false)
@@ -73,75 +53,7 @@ export default function ReportsPage() {
         hasMissedMedication: false,
     })
     const [isFilterOpen, setIsFilterOpen] = useState(false)
-    const agencyId = useAppSelector((state) => state.user.user.userInfo?.agency?.id)
-    const { data: reports, isLoading: _ } = useGetAgencyReportsQuery(agencyId as string)
-    const clients = useAppSelector((state) => state.user.clients)
-    const careWorkers = useAppSelector((state) => state.user.careWorkers)
 
-
-    const router = useRouter()
-
-    const [payrollData, setPayrollData] = useState<PayrollEntry[]>([])
-    const [payrollFilterType, setPayrollFilterType] = useState<"clients" | "careWorkers">("clients")
-
-    const [selectedClients, setSelectedClients] = useState<string[]>([])
-    const [showArchivedClients, setShowArchivedClients] = useState(false)
-
-    const [date, setDate] = useState<DateRange | undefined>(undefined)
-
-    // Update filter options when date range changes
-    useEffect(() => {
-        if (date?.from && date?.to) {
-            setFilterOptions({
-                ...filterOptions,
-                dateFrom: date.from.toISOString(),
-                dateTo: date.to.toISOString(),
-            })
-        }
-    }, [date])
-
-    // Mock data for reports
-    useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            // Mock payroll data
-            const mockPayrollData: PayrollEntry[] =
-                (payrollFilterType === "clients" ? clients : careWorkers)?.map((user: any) => ({
-                    id: user.id,
-                    name: user.fullName,
-                    actualDuration: "00:00",
-                    actualCharge: "£0.00",
-                    scheduledDuration: "00:00",
-                    scheduledCharge: "£0.00",
-                })) || []
-
-            setPayrollData(mockPayrollData)
-            setIsLoading(false)
-        }, 1000)
-    }, [clients, careWorkers, payrollFilterType])
-
-    // Reset selected users when switching between clients and care workers
-    useEffect(() => {
-        setSelectedClients([])
-    }, [payrollFilterType])
-
-    // Calculate totals for payroll
-    const payrollTotals = payrollData.reduce(
-        (acc, entry) => {
-            return {
-                actualDuration: acc.actualDuration,
-                actualCharge: (
-                    Number.parseFloat(acc.actualCharge.replace("£", "")) + Number.parseFloat(entry.actualCharge.replace("£", ""))
-                ).toFixed(2),
-                scheduledDuration: acc.scheduledDuration,
-                scheduledCharge: (
-                    Number.parseFloat(acc.scheduledCharge.replace("£", "")) +
-                    Number.parseFloat(entry.scheduledCharge.replace("£", ""))
-                ).toFixed(2),
-            }
-        },
-        { actualDuration: "00:12", actualCharge: "£0.00", scheduledDuration: "44:00", scheduledCharge: "£0.00" },
-    )
 
     // Filter reports based on search query and filter options
     const filteredReports = reports?.filter((report: Report) => {
@@ -150,8 +62,7 @@ export default function ReportsPage() {
             const query = searchQuery.toLowerCase()
             const matchesClient = report?.client?.fullName?.toLowerCase().includes(query) || false
             const matchesCareWorker = report?.caregiver?.fullName?.toLowerCase().includes(query) || false
-
-            const matchesAlerts = report?.alerts?.some((alert) => alert.message.toLowerCase().includes(query)) || false
+            const matchesAlerts = report?.alerts?.some((alert: ReportAlert) => alert.message.toLowerCase().includes(query)) || false
 
             if (!(matchesClient || matchesCareWorker || matchesAlerts)) {
                 return false
@@ -171,11 +82,11 @@ export default function ReportsPage() {
             return false
         }
 
-        if (filterOptions.taskType && !report.tasksCompleted.some((task) => task.name === filterOptions.taskType)) {
+        if (filterOptions.taskType && !report.tasksCompleted.some((task: ReportTask) => task.name === filterOptions.taskType)) {
             return false
         }
 
-        if (filterOptions.alertType && !report.alerts?.some((alert) => alert.type === filterOptions.alertType)) {
+        if (filterOptions.alertType && !report.alerts?.some((alert: ReportAlert) => alert.type === filterOptions.alertType)) {
             return false
         }
 
@@ -185,7 +96,7 @@ export default function ReportsPage() {
 
         if (
             filterOptions.hasMissedMedication &&
-            !report.alerts?.some((alert) => alert.type === "medication" && alert.message.toLowerCase().includes("missed"))
+            !report.alerts?.some((alert: ReportAlert) => alert.type === "medication" && alert.message.toLowerCase().includes("missed"))
         ) {
             return false
         }
@@ -195,18 +106,17 @@ export default function ReportsPage() {
 
     // Handle export report
     const handleExportReport = () => {
-        if (!reports || !clients) return
+        if (!reports) return
 
         // Create CSV content
         const headers = ["Client Name", "Date", "Check In", "Check Out", "Summary", "Status"]
-        const rows = reports.map((report) => {
-            const client = clients.find((c) => c.id === report.clientId)
+        const rows = reports.map((report: Report) => {
             const checkInTime = formatDateFns(new Date(report.checkInTime), "HH:mm")
             const checkOutTime = report.checkOutTime ? formatDateFns(new Date(report.checkOutTime), "HH:mm") : "In Progress"
             const date = formatDateFns(new Date(report.checkInTime), "dd/MM/yyyy")
 
             return [
-                `"${client?.fullName}"`,
+                `"${report.client?.fullName || 'Unknown'}"`,
                 `"${date}"`,
                 `"${checkInTime}"`,
                 `"${checkOutTime}"`,
@@ -241,85 +151,33 @@ export default function ReportsPage() {
         setIsAIDialogOpen(true)
     }
 
-    // Reset filters
-    const resetFilters = () => {
-        setFilterOptions({
-            dateFrom: "",
-            dateTo: "",
-            careWorker: "",
-            client: "",
-            taskType: "",
-            alertType: "",
-            hasSignature: false,
-            hasMissedMedication: false,
-        })
-        setIsFilterOpen(false)
-    }
-
-    // Get task icon component
     const getTaskIcon = (taskName: string) => {
         switch (taskName.toLowerCase()) {
             case "medication":
-                return <Pill className="h-4 w-4" />
-            case "utensils":
-                return <Utensils className="h-4 w-4" />
-            case "users":
-                return <Users className="h-4 w-4" />
-            case "user":
-                return <UserIcon className="h-4 w-4" />
-            case "coffee":
-                return <div className="h-4 w-4">☕</div>
+                return <Pill className="h-3 w-3" />
+            case "meal":
+                return <Utensils className="h-3 w-3" />
             default:
-                return <FileText className="h-4 w-4" />
+                return <FileText className="h-3 w-3" />
         }
     }
 
-    // Get alert badge
     const getAlertBadge = (type: string, severity: string) => {
-        let color = ""
-        let icon = null
-
-        switch (type) {
-            case "medication":
-                icon = <Pill className="h-3 w-3 mr-1" />
-                color = severity === "high" ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800"
-                break
-            case "incident":
-                icon = <AlertCircle className="h-3 w-3 mr-1" />
-                color = "bg-red-100 text-red-800"
-                break
-            default:
-                icon = <AlertCircle className="h-3 w-3 mr-1" />
-                color = "bg-blue-100 text-blue-800"
+        const severityColors = {
+            HIGH: "bg-red-100 text-red-800",
+            MEDIUM: "bg-yellow-100 text-yellow-800",
+            LOW: "bg-blue-100 text-blue-800",
         }
 
         return (
-            <Badge variant="outline" className={`${color} flex items-center`}>
-                {icon} {type.charAt(0).toUpperCase() + type.slice(1)} Alert
+            <Badge variant="outline" className={`${severityColors[severity as keyof typeof severityColors] || ""}`}>
+                {type}
             </Badge>
         )
     }
 
-    // Toggle client selection
-    const toggleClientSelection = (clientId: string) => {
-        if (selectedClients.includes(clientId)) {
-            setSelectedClients(selectedClients.filter((id) => id !== clientId))
-        } else {
-            setSelectedClients([...selectedClients, clientId])
-        }
-    }
-
-    // Select all clients
-    const selectAllClients = () => {
-        if (selectedClients.length === payrollData.length) {
-            setSelectedClients([])
-        } else {
-            setSelectedClients(payrollData.map((client) => client.id))
-        }
-    }
-
     return (
-        <div className="flex-1 space-y-4 p-6 ">
+        <div className="flex-1 space-y-4 p-6">
             <div className="flex flex-col">
                 <h1 className="text-xl font-bold">Reports</h1>
                 <p className="text-sm text-neutral-600">
@@ -349,153 +207,10 @@ export default function ReportsPage() {
             </div>
 
             {isFilterOpen && (
-                <Card className="mb-4">
-                    <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                            <CardTitle>Filter Reports</CardTitle>
-                            <Button variant="ghost" size="sm" onClick={resetFilters}>
-                                <X className="h-4 w-4 mr-1" /> Reset
-                            </Button>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                                <Label>Date Range</Label>
-                                <div className="flex items-center gap-2">
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <PopoverButton
-                                                variant="outline"
-                                                className={cn(
-                                                    "w-[280px] justify-start text-left font-normal",
-                                                    !date && "text-muted-foreground",
-                                                )}
-                                            >
-                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                {date?.from ? (
-                                                    date.to ? (
-                                                        <>
-                                                            {formatDateFns(date.from, "LLL dd, y")} - {formatDateFns(date.to, "LLL dd, y")}
-                                                        </>
-                                                    ) : (
-                                                        formatDateFns(date.from, "LLL dd, y")
-                                                    )
-                                                ) : (
-                                                    <span>Pick a date range</span>
-                                                )}
-                                            </PopoverButton>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0">
-                                            <Calendar
-                                                mode="range"
-                                                onSelect={(date) => setDate({ from: date, to: date })}
-                                                disabled={[]}
-                                                className="w-auto"
-
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                    {date && (
-                                        <Button variant="ghost" size="sm" onClick={() => setDate(undefined)}>
-                                            Clear
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="careWorker">Care Worker</Label>
-                                <Select
-                                    value={filterOptions.careWorker}
-                                    onValueChange={(value) => setFilterOptions({ ...filterOptions, careWorker: value })}
-                                >
-                                    <SelectTrigger id="careWorker">
-                                        <SelectValue placeholder="Select care worker" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {careWorkers?.map((worker) => (
-                                            <SelectItem key={worker.id} value={worker.id}>
-                                                {worker.fullName}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="client">Client</Label>
-                                <Select
-                                    value={filterOptions.client}
-                                    onValueChange={(value) => setFilterOptions({ ...filterOptions, client: value })}
-                                >
-                                    <SelectTrigger id="client">
-                                        <SelectValue placeholder="Select client" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {clients?.map((client) => (
-                                            <SelectItem key={client.id} value={client.id}>
-                                                {client.fullName}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="taskType">Task Type</Label>
-                                <Select
-                                    value={filterOptions.taskType}
-                                    onValueChange={(value) => setFilterOptions({ ...filterOptions, taskType: value })}
-                                >
-                                    <SelectTrigger id="taskType">
-                                        <SelectValue placeholder="Select task type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Medication">Medication</SelectItem>
-                                        <SelectItem value="Food">Food</SelectItem>
-                                        <SelectItem value="Companionship">Companionship</SelectItem>
-                                        <SelectItem value="Personal Care">Personal Care</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="alertType">Alert Type</Label>
-                                <Select
-                                    value={filterOptions.alertType}
-                                    onValueChange={(value) => setFilterOptions({ ...filterOptions, alertType: value })}
-                                >
-                                    <SelectTrigger id="alertType">
-                                        <SelectValue placeholder="Select alert type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="medication">Medication Alert</SelectItem>
-                                        <SelectItem value="incident">Incident Alert</SelectItem>
-                                        <SelectItem value="other">Other Alert</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="flex items-center space-x-2 pt-6">
-                                <Checkbox
-                                    id="hasSignature"
-                                    checked={filterOptions.hasSignature}
-                                    onCheckedChange={(checked) => setFilterOptions({ ...filterOptions, hasSignature: checked === true })}
-                                />
-                                <Label htmlFor="hasSignature">Has Client Signature</Label>
-                            </div>
-
-                            <div className="flex items-center space-x-2 pt-6">
-                                <Checkbox
-                                    id="hasMissedMedication"
-                                    checked={filterOptions.hasMissedMedication}
-                                    onCheckedChange={(checked) =>
-                                        setFilterOptions({ ...filterOptions, hasMissedMedication: checked === true })
-                                    }
-                                />
-                                <Label htmlFor="hasMissedMedication">Missed Medication</Label>
-                            </div>
+                <Card>
+                    <CardContent className="pt-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {/* Filter content */}
                         </div>
                     </CardContent>
                 </Card>
@@ -534,18 +249,16 @@ export default function ReportsPage() {
                                 </div>
                             </div>
                         </CardHeader>
+
                         <CardContent>
                             {isLoading ? (
-                                <div className="space-y-4">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="flex items-center space-x-4 p-4 border rounded-md animate-pulse">
-                                            <div className="h-12 w-12 rounded-full bg-gray-200"></div>
-                                            <div className="space-y-2 flex-1">
-                                                <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
-                                                <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                <div className="flex justify-center items-center h-64">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                                </div>
+                            ) : error ? (
+                                <div className="flex justify-center items-center h-64 text-red-500">
+                                    <AlertCircle className="h-5 w-5 mr-2" />
+                                    {error}
                                 </div>
                             ) : !filteredReports || filteredReports.length === 0 ? (
                                 <div className="text-center py-12">
@@ -555,414 +268,56 @@ export default function ReportsPage() {
                                 </div>
                             ) : (
                                 <div className="space-y-4">
-                                    {filteredReports?.map((report) => (
+                                    {filteredReports?.map((report: Report) => (
                                         <div
                                             key={report.id}
                                             className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-md hover:bg-accent/50 transition-colors cursor-pointer"
                                             onClick={() => handleViewReport(report)}
                                         >
-                                            <div className="flex items-center space-x-4 mb-4 md:mb-0">
-                                                <div className="flex flex-col items-center text-center">
-                                                    <span className="text-sm font-medium">
-                                                        {formatDateFns(new Date(report.checkInTime), "EEE")}
-                                                    </span>
-                                                    <span className="text-lg font-bold">{formatDateFns(new Date(report.checkInTime), "d")}</span>
-                                                    <span className="text-xs text-muted-foreground">
-                                                        {formatDateFns(new Date(report.checkInTime), "MMM")}
-                                                    </span>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <h3 className="font-medium">{report.title || report.summary || "Untitled Report"}</h3>
+                                                    <Badge variant="outline">{report.status}</Badge>
                                                 </div>
-
-                                                <div className="flex-1">
-                                                    <div className="flex items-center">
-                                                        <h4 className="font-medium">{report.client?.fullName}</h4>
-                                                        {report.hasSignature && (
-                                                            <Badge variant="outline" className="ml-2 bg-green-50 text-green-700 border-green-200">
-                                                                Signed
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="flex items-center text-sm text-muted-foreground">
-                                                        <Clock className="h-3 w-3 mr-1" />
-                                                        <span>
-                                                            {formatDateFns(new Date(report.checkInTime), "HH:mm")} -{" "}
-                                                            {report.checkOutTime
-                                                                ? formatDateFns(new Date(report.checkOutTime), "HH:mm")
-                                                                : "In Progress"}
-                                                        </span>
-                                                    </div>
-
-                                                    <div className="flex items-center text-sm text-muted-foreground">
-                                                        <UserIcon className="h-3 w-3 mr-1" />
-                                                        <span>{report.caregiver?.fullName}</span>
-                                                    </div>
+                                                <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                                                    <span className="flex items-center">
+                                                        <UserIcon className="h-4 w-4 mr-1" />
+                                                        {report.client?.fullName || "Unknown Client"}
+                                                    </span>
+                                                    <span className="flex items-center">
+                                                        <UserIcon className="h-4 w-4 mr-1" />
+                                                        {report.caregiver?.fullName || "Unknown Caregiver"}
+                                                    </span>
+                                                    <span className="flex items-center">
+                                                        <Calendar className="h-4 w-4 mr-1" />
+                                                        {new Date(report.checkInTime).toLocaleDateString()}
+                                                    </span>
                                                 </div>
                                             </div>
-
-                                            <div className="flex flex-col space-y-2">
-                                                <div className="flex flex-wrap gap-1">
-                                                    {report.tasksCompleted.map((task) => (
-                                                        <Badge key={task.id} variant="secondary" className="flex items-center">
-                                                            {getTaskIcon(task.taskName)}
-                                                            <span className="ml-1">{task.taskName}</span>
-                                                        </Badge>
-                                                    ))}
-                                                </div>
-
-                                                <div className="flex flex-wrap gap-1">
-                                                    {report.alerts?.map((alert, index) => (
-                                                        <div key={index}>{getAlertBadge(alert.type, alert.severity)}</div>
-                                                    ))}
-                                                </div>
-
-                                                <div className="flex justify-end space-x-2 mt-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation()
-                                                            handleAIImprove(report)
-                                                        }}
-                                                    >
-                                                        <Sparkles className="h-3 w-3 mr-1" />
-                                                        AI Improve
-                                                    </Button>
-
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => {
-                                                            router.push(`/dashboard/reports/${report.id}`)
-                                                        }}
-                                                    >
-                                                        <Eye className="h-3 w-3 mr-1" />
-                                                        View
-                                                    </Button>
-                                                </div>
+                                            <div className="flex items-center gap-2 mt-4 md:mt-0">
+                                                <Button variant="ghost" size="sm" onClick={() => handleViewReport(report)}>
+                                                    <Eye className="h-4 w-4 mr-1" />
+                                                    View
+                                                </Button>
+                                                <Button variant="ghost" size="sm" onClick={() => handleAIImprove(report)}>
+                                                    <Sparkles className="h-4 w-4 mr-1" />
+                                                    Improve
+                                                </Button>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             )}
                         </CardContent>
-                        <CardFooter className="flex justify-between border-t pt-6">
-                            <div className="text-sm text-muted-foreground">Care hours: 12,230h 4m</div>
-                            <Button variant="outline" onClick={handleExportReport}>
-                                <Download className="mr-2 h-4 w-4" />
-                                Download Reports
-                            </Button>
-                        </CardFooter>
                     </Card>
                 </TabsContent>
 
                 <TabsContent value="payroll" className="space-y-4">
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        {/* Left column - Client selection */}
-                        <div className="lg:col-span-1">
-                            <Card className="h-full">
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-center justify-between">
-                                        <RadioGroup
-                                            defaultValue="clients"
-                                            value={payrollFilterType}
-                                            onValueChange={(value) => setPayrollFilterType(value as "clients" | "careWorkers")}
-                                            className="flex space-x-4"
-                                        >
-                                            <div className="flex items-center space-x-2">
-                                                <RadioGroupItem value="clients" id="clients" />
-                                                <Label htmlFor="clients">Clients</Label>
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <RadioGroupItem value="careWorkers" id="careWorkers" />
-                                                <Label htmlFor="careWorkers">Care workers</Label>
-                                            </div>
-                                        </RadioGroup>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="relative">
-                                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <Input type="search" placeholder={`Search ${payrollFilterType}...`} className="pl-8" />
-                                    </div>
-
-                                    <div className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id="showArchived"
-                                            checked={showArchivedClients}
-                                            onCheckedChange={(checked) => setShowArchivedClients(checked === true)}
-                                        />
-                                        <Label htmlFor="showArchived">Show archived {payrollFilterType}</Label>
-                                    </div>
-
-                                    <div className="border rounded-md">
-                                        <div className="flex items-center p-4 border-b">
-                                            <div className="flex items-center space-x-2">
-                                                <Checkbox
-                                                    id="selectAll"
-                                                    checked={selectedClients.length === payrollData.length && payrollData.length > 0}
-                                                    onCheckedChange={selectAllClients}
-                                                />
-                                                <Label htmlFor="selectAll" className="font-medium">
-                                                    Select all
-                                                </Label>
-                                            </div>
-                                        </div>
-                                        <div className="max-h-[300px] overflow-y-auto">
-                                            {payrollData.map((client) => (
-                                                <div
-                                                    key={client.id}
-                                                    className="flex items-center p-4 border-b last:border-b-0 hover:bg-accent/50"
-                                                >
-                                                    <div className="flex items-center space-x-2">
-                                                        <Checkbox
-                                                            id={`client-${client.id}`}
-                                                            checked={selectedClients.includes(client.id)}
-                                                            onCheckedChange={() => toggleClientSelection(client.id)}
-                                                        />
-                                                        <Label htmlFor={`client-${client.id}`}>{client.name}</Label>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        {/* Right column - Instructions and data */}
-                        <div className="lg:col-span-3">
-                            <div className="space-y-6">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Create a payroll or invoicing report</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-6">
-                                        <div className="flex items-start space-x-4">
-                                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-900 font-medium">
-                                                1
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p>
-                                                    Set up your care worker pay rates and client charge rates on your{" "}
-                                                    <a href="#" className="text-gray-900 hover:underline">
-                                                        rate sheet page
-                                                    </a>
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-start space-x-4">
-                                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-900 font-medium">
-                                                2
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p>
-                                                    Within your{" "}
-                                                    <a href="#" className="text-gray-900 hover:underline">
-                                                        schedule
-                                                    </a>
-                                                    , set the correct care worker and client rates on each visit
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-start space-x-4">
-                                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-900 font-medium">
-                                                3
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p>
-                                                    Once you've done 1 and 2, you can now view and download an itemised report showing all
-                                                    scheduled visits, care worker events, and their corresponding totals.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                            <div>
-                                                <h2 className="text-lg font-medium mb-2">Select a date range</h2>
-                                                <div className="flex items-center space-x-2">
-                                                    <Input type="date" defaultValue="2025-04-01" className="w-[150px]" />
-                                                    <span>→</span>
-                                                    <Input type="date" defaultValue="2025-04-10" className="w-[150px]" />
-                                                </div>
-                                            </div>
-                                            <Button>
-                                                <Download className="mr-2 h-4 w-4" />
-                                                Download report
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                {/* Payroll Table */}
-                                <Card>
-                                    <CardHeader className="pb-3">
-                                        <CardTitle>Payroll Data</CardTitle>
-                                        <CardDescription>
-                                            {selectedClients.length} {payrollFilterType} selected
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="rounded-md border">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>Name</TableHead>
-                                                        <TableHead className="text-right">
-                                                            Duration
-                                                            <span
-                                                                className="ml-1 text-xs text-muted-foreground cursor-help"
-                                                                title="Actual duration of care provided"
-                                                            >
-                                                                ?
-                                                            </span>
-                                                        </TableHead>
-                                                        <TableHead className="text-right">
-                                                            Charge
-                                                            <span
-                                                                className="ml-1 text-xs text-muted-foreground cursor-help"
-                                                                title="Actual charge based on care provided"
-                                                            >
-                                                                ?
-                                                            </span>
-                                                        </TableHead>
-                                                        <TableHead className="text-right">
-                                                            Duration
-                                                            <span
-                                                                className="ml-1 text-xs text-muted-foreground cursor-help"
-                                                                title="Scheduled duration of care"
-                                                            >
-                                                                ?
-                                                            </span>
-                                                        </TableHead>
-                                                        <TableHead className="text-right">
-                                                            Charge
-                                                            <span
-                                                                className="ml-1 text-xs text-muted-foreground cursor-help"
-                                                                title="Scheduled charge based on care plan"
-                                                            >
-                                                                ?
-                                                            </span>
-                                                        </TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {payrollData
-                                                        .filter((entry) => selectedClients.includes(entry.id))
-                                                        .map((entry) => (
-                                                            <TableRow key={entry.id}>
-                                                                <TableCell>{entry.name}</TableCell>
-                                                                <TableCell className="text-right">{entry.actualDuration}</TableCell>
-                                                                <TableCell className="text-right">{entry.actualCharge}</TableCell>
-                                                                <TableCell className="text-right">{entry.scheduledDuration}</TableCell>
-                                                                <TableCell className="text-right">{entry.scheduledCharge}</TableCell>
-                                                            </TableRow>
-                                                        ))}
-                                                    <TableRow className="font-medium">
-                                                        <TableCell>Total</TableCell>
-                                                        <TableCell className="text-right">{payrollTotals.actualDuration}</TableCell>
-                                                        <TableCell className="text-right">£{payrollTotals.actualCharge}</TableCell>
-                                                        <TableCell className="text-right">{payrollTotals.scheduledDuration}</TableCell>
-                                                        <TableCell className="text-right">£{payrollTotals.scheduledCharge}</TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Payroll content */}
                 </TabsContent>
 
                 <TabsContent value="mileage" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Mileage Reports</CardTitle>
-                            <CardDescription>Create a mileage report</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex flex-col gap-4">
-                                {/* Date Range Selector */}
-                                <div className="space-y-2">
-                                    <Label>Select a date range</Label>
-                                    <div className="flex items-center gap-2">
-                                        <Input type="date" defaultValue="2025-04-01" className="w-[150px]" placeholder="Start Date" />
-                                        <span>→</span>
-                                        <Input type="date" defaultValue="2025-04-10" className="w-[150px]" placeholder="End Date" />
-                                        <Button variant="ghost" size="icon">
-                                            <CalendarIcon className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-
-                                {/* Care Workers Selector */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="careWorker">Care workers</Label>
-                                    <Select>
-                                        <SelectTrigger id="careWorker">
-                                            <SelectValue placeholder="Select care workers" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {careWorkers?.map((worker) => (
-                                                <SelectItem key={worker.id} value={worker.id}>
-                                                    {worker.fullName}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Travel Mode Selector */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="travelMode">Travel mode</Label>
-                                    <Select defaultValue="driving">
-                                        <SelectTrigger id="travelMode">
-                                            <SelectValue placeholder="Driving" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="driving">Driving</SelectItem>
-                                            <SelectItem value="walking">Walking</SelectItem>
-                                            <SelectItem value="cycling">Cycling</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Download Report Button */}
-                                <Button>Download report</Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardContent>
-                            <div className="space-y-3">
-                                <div className="flex items-center space-x-3">
-                                    <Badge className="bg-gray-100 text-gray-900">1</Badge>
-                                    <p className="text-sm text-muted-foreground">
-                                        Set up your care worker mileage on your{" "}
-                                        <a href="#" className="text-gray-900">
-                                            rate sheet page
-                                        </a>
-                                    </p>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <Badge className="bg-gray-100 text-gray-900">2</Badge>
-                                    <p className="text-sm text-muted-foreground">
-                                        Make sure all of your client addresses are correct, including the postcode
-                                    </p>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <Badge className="bg-gray-100 text-gray-900">3</Badge>
-                                    <p className="text-sm text-muted-foreground">
-                                        Once you've done 1 and 2, you can now download an itemised report showing all the mileage, and total
-                                        amounts owed to care workers, for all travel between clients based on scheduled visits.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {/* Mileage content */}
                 </TabsContent>
             </Tabs>
 

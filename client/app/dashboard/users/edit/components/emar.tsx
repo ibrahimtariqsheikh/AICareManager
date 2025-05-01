@@ -1,19 +1,40 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { User } from "@/types/prismaTypes"
+"use client"
 
-export const EMAR = ({ user }: { user: User }) => {
+import { useEffect } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { fetchMedications } from "@/state/slices/medicationSlice"
+import { useAppDispatch } from "@/state/redux"
+import { User } from "@/types/prismaTypes"
+import { StatusLegend } from "./status-legend"
+import { MedicationLog } from "./medication-log"
+import { AddMedicationModal } from "@/components/add-medication-modal"
+import { CheckInModal } from "@/components/check-in-modal"
+
+interface EMARProps {
+    user: User
+}
+
+export const EMAR = ({ user }: EMARProps) => {
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(fetchMedications(user.id))
+    }, [dispatch, user.id])
+
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>EMAR</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div>
-                    <h2>EMAR 1</h2>
-                    <p>Date: 1/1/2021</p>
-                    <p>Time: 10:00 AM</p>
-                </div>
-            </CardContent>
-        </Card>
+        <div className="space-y-6">
+            <div className="flex justify-end">
+                <StatusLegend />
+            </div>
+
+            <Card>
+                <CardContent className="p-6">
+                    <MedicationLog userId={user.id} />
+                </CardContent>
+            </Card>
+
+            <AddMedicationModal userId={user.id} />
+            <CheckInModal />
+        </div>
     )
 }

@@ -88,43 +88,41 @@ export function UserDashboard() {
 
     return (
         <div className="flex-1 p-6 space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex flex-col">
-                    <h1 className="text-xl font-bold">Users</h1>
-                    <p className="text-sm text-neutral-600">
-                        Manage your users efficiently. Add, edit, or delete users.
-                    </p>
-                </div>
-                <Button onClick={() => setIsAddUserDialogOpen(true)} className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none">
-                    <UserPlus className="h-4 w-4" />
-                    Add User
-                </Button>
-            </div>
+
 
             {/* User Type Tabs */}
-            <div className="flex border-b border-gray-200">
-                <button
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CLIENT" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-                    onClick={() => dispatch(setActiveUserType("CLIENT"))}
-                >
-                    <Users className="h-4 w-4" />
-                    Clients ({clients.length})
-                </button>
-                <button
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CARE_WORKER" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-                    onClick={() => dispatch(setActiveUserType("CARE_WORKER"))}
-                >
-                    <UserPlus className="h-4 w-4" />
-                    Care Workers ({careWorkers.length})
-                </button>
-                <button
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "OFFICE_STAFF" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-                    onClick={() => dispatch(setActiveUserType("OFFICE_STAFF"))}
-                >
-                    <Briefcase className="h-4 w-4" />
-                    Office Staff ({officeStaff.length})
-                </button>
+            <div className="flex border-b border-gray-200 pb-4">
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-2">
+                        <button
+                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CLIENT" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+                            onClick={() => dispatch(setActiveUserType("CLIENT"))}
+                        >
+                            <Users className="h-4 w-4" />
+                            Clients ({clients.length})
+                        </button>
+                        <button
+                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CARE_WORKER" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+                            onClick={() => dispatch(setActiveUserType("CARE_WORKER"))}
+                        >
+                            <UserPlus className="h-4 w-4" />
+                            Care Workers ({careWorkers.length})
+                        </button>
+                        <button
+                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "OFFICE_STAFF" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+                            onClick={() => dispatch(setActiveUserType("OFFICE_STAFF"))}
+                        >
+                            <Briefcase className="h-4 w-4" />
+                            Office Staff ({officeStaff.length})
+                        </button>
+                    </div>
+                    <Button onClick={() => setIsAddUserDialogOpen(true)} >
+                        <UserPlus className="h-4 w-4" />
+                        Add User
+                    </Button>
+                </div>
+
+
             </div>
 
             {/* User Content */}

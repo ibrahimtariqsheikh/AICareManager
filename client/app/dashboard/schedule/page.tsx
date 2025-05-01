@@ -58,36 +58,11 @@ export default function SchedulerPage() {
     const [dateRange] = useState<{ from?: Date; to?: Date }>({
         from: new Date(),
     })
-    const dispatch = useAppDispatch()
+
 
     const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<any>(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [showContent, setShowContent] = useState(false)
 
-    useEffect(() => {
-        // Simulate loading data
-        const loadData = async () => {
-            try {
-                // You can replace this with actual data fetching
-                await new Promise((resolve) => setTimeout(resolve, 100))
-
-                // First set showContent to true to start the fade-in animation
-                setShowContent(true)
-
-                // Then after a short delay, set isLoading to false to remove the skeleton
-                setTimeout(() => {
-                    setIsLoading(false)
-                }, 300)
-            } catch (error) {
-                console.error("Error loading scheduler data:", error)
-                setShowContent(true)
-                setIsLoading(false)
-            }
-        }
-
-        loadData()
-    }, [])
 
     const handleEventSelect = (event: any) => {
         setEditingEvent(event)
@@ -101,37 +76,21 @@ export default function SchedulerPage() {
 
     return (
         <div className="relative">
-            {isLoading && (
-                <div
-                    className={cn(
-                        "absolute inset-0 z-10 transition-opacity duration-300",
-                        showContent ? "opacity-0" : "opacity-100",
-                    )}
-                >
-                    <Loading />
-                </div>
-            )}
+
 
             <div
                 className={cn(
                     "relative container mx-auto p-6 min-h-screen min-w-full transition-opacity duration-500",
-                    showContent ? "opacity-100" : "opacity-0",
+
                 )}
             >
                 <div className="flex flex-col space-y-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div className="flex flex-col">
-                            <h1 className="text-xl font-bold">Schedule</h1>
-                            <p className="text-sm text-neutral-600">
-                                Manage your appointments efficiently. View, create, edit, or cancel client appointments. Track your
-                                availability and organize your professional schedule all in one place.
-                            </p>
-                        </div>
+                    <div className="flex items-center justify-end">
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button size="sm" className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none">
+                                <Button size="sm" >
                                     <PlusCircle className="h-3 w-3" />
-                                    New
+                                    Create Appointment
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-64" align="end">
@@ -148,8 +107,6 @@ export default function SchedulerPage() {
                             </PopoverContent>
                         </Popover>
                     </div>
-
-                    <div className="mb-4" />
 
                     <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
 

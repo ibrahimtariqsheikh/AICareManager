@@ -8,7 +8,7 @@ import { Skeleton } from "../../ui/skeleton"
 
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveView } from "@/state/slices/calendarSlice"
-import { CalendarIcon, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
+import { CalendarIcon, ChevronDown, ChevronLeft, ChevronRight, Clipboard, PlusCircle } from "lucide-react"
 import { CalendarRange } from "lucide-react"
 import { CalendarDays } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -24,6 +24,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox"
 import { setSelectedCareWorkers, setSelectedOfficeStaff } from "@/state/slices/userSlice"
 import { setSelectedClients } from "@/state/slices/userSlice"
+import { Button } from "@/components/ui/button"
+import EventIcon from "@/components/icons/eventicon"
 
 // Add month picker styles
 const monthPickerStyles = `
@@ -92,6 +94,9 @@ export function CustomCalendar({
             document.head.removeChild(style)
         }
     }, [])
+
+    const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
+
 
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
 
@@ -184,26 +189,7 @@ export function CustomCalendar({
 
                     {/* Controls and info row */}
                     <div className="flex justify-end items-center gap-2 px-4">
-                        {/* <div
-                            className={cn(
-                                "text-xs flex items-center gap-1 h-8 p-3 rounded-md",
-                                spaceTheme ? "text-neutral-100 bg-neutral-900/50" : "text-neutral-900 bg-neutral-100"
-                            )}
-                        >
-                            <GripVertical className="h-3 w-3" />
-                            <span>Draggable</span>
-                        </div>
-                        <div
-                            className={cn(
-                                "text-xs flex items-center gap-1 h-8 p-3 rounded-md",
-                                spaceTheme ? "bg-neutral-900 text-neutral-100" : "bg-neutral-100 text-neutral-900"
-                            )}
-                        >
-                            <Calendar className="h-3.5 w-3.5" />
-                            <span>
-                                {getVisibleEventsCount()} {getVisibleEventsCount() === 1 ? "event" : "events"}
-                            </span>
-                        </div> */}
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <motion.div
@@ -436,9 +422,31 @@ export function CustomCalendar({
                         </TabsList>
                     </Tabs>
                 </div>
+
             </div>
 
-
+            {/* <div className="flex justify-end items-center">
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button size="sm" >
+                            <PlusCircle className="h-3 w-3" />
+                            Create Appointment
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64" align="end">
+                        <div className="flex flex-col gap-2 text-xs">
+                            <Button onClick={() => setIsAppointmentFormOpen(true)} className="w-full text-xs" variant="ghost">
+                                <EventIcon className="h-3 w-3" />
+                                New Appointment
+                            </Button>
+                            <Button onClick={() => { }} className="w-full text-xs " variant="ghost">
+                                <Clipboard className="h-3 w-3" />
+                                New Event
+                            </Button>
+                        </div>
+                    </PopoverContent>
+                </Popover>
+            </div> */}
             {activeView === "day" && (
                 <CustomDayView
                     currentView={activeView}

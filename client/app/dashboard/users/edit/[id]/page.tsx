@@ -7,15 +7,15 @@ import { motion, AnimatePresence } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
 import { useGetUserByIdQuery } from "@/state/api"
 import { PatientInformation } from "../components/patient-information"
-import AppointmentHistory from "../components/appointmenthistory"
-import { MedicalHistory } from "../components/medicalHistory"
-import { EMAR as EMARComponent } from "../components/emar"
+import { Reports } from "../components/user-reports"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScheduleTemplate } from "../components/scheduleTemplate"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getRandomPlaceholderImage } from "@/lib/utils"
+import AppointmentHistory from "../components/appointmenthistory"
+import { EMAR } from "../components/emar"
+import { ScheduleTemplate } from "../components/scheduleTemplate"
 
 const EditUserPage = () => {
     const { id } = useParams()
@@ -50,10 +50,11 @@ const EditUserPage = () => {
 
     const tabs = [
         { id: "patientInformation", label: "Patient Information", icon: UserIcon },
-        { id: "AppointmentHistory", label: "Appointment History", icon: Calendar },
-        { id: "MedicalHistory", label: "Medical History", icon: FileText },
-        { id: "EMAR", label: "EMAR", icon: Pill },
-        { id: "ScheduleTemplate", label: "Schedule Template", icon: Calendar },
+        { id: "appointmentHistory", label: "Appointment History", icon: Calendar },
+        { id: "reports", label: "Reports", icon: FileText },
+        { id: "emar", label: "EMAR", icon: Pill },
+        { id: "scheduleTemplate", label: "Schedule Template", icon: Calendar },
+
     ]
 
     // Skeleton loading state
@@ -166,78 +167,41 @@ const EditUserPage = () => {
             <div className="px-6 py-4">
                 {/* Tabs Navigation using shadcn Tabs */}
                 <Tabs defaultValue="patientInformation" className="w-full">
-                    <TabsList className="h-auto">
+                    <TabsList className="grid w-full grid-cols-5">
                         {tabs.map((tab, index) => (
-                            <TabsTrigger key={tab.id || `tab-${index}`} value={tab.id} className="flex items-center gap-2">
+                            <TabsTrigger
+                                key={tab.id || `tab-${index}`}
+                                value={tab.id}
+                                className="flex items-center gap-2"
+                            >
                                 <tab.icon className="w-4 h-4" />
                                 {tab.label}
                             </TabsTrigger>
                         ))}
                     </TabsList>
 
-                    <div className=" w-full h-1 my-4" />
+                    <div className="w-full h-1 my-4" />
 
                     {/* Tab Content */}
                     <AnimatePresence mode="wait">
-                        <TabsContent value="patientInformation" asChild>
-                            <motion.div
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                variants={contentVariants}
-                                className="min-h-[400px]"
-                            >
-                                <PatientInformation user={user} />
-                            </motion.div>
-                        </TabsContent>
+                        {tabs.map((tab) => (
+                            <TabsContent key={tab.id} value={tab.id} asChild>
+                                <motion.div
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit="exit"
+                                    variants={contentVariants}
+                                    className="min-h-[400px]"
+                                >
+                                    {tab.id === "patientInformation" && <PatientInformation user={user} />}
+                                    {tab.id === "appointmentHistory" && <AppointmentHistory user={user} />}
+                                    {tab.id === "reports" && <Reports user={user} />}
+                                    {tab.id === "emar" && <EMAR user={user} />}
+                                    {tab.id === "scheduleTemplate" && <ScheduleTemplate user={user} />}
 
-                        <TabsContent value="AppointmentHistory" asChild>
-                            <motion.div
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                variants={contentVariants}
-                                className="min-h-[400px]"
-                            >
-                                <AppointmentHistory user={user} />
-                            </motion.div>
-                        </TabsContent>
-
-                        <TabsContent value="MedicalHistory" asChild>
-                            <motion.div
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                variants={contentVariants}
-                                className="min-h-[400px]"
-                            >
-                                <MedicalHistory user={user} />
-                            </motion.div>
-                        </TabsContent>
-
-                        <TabsContent value="EMAR" asChild>
-                            <motion.div
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                variants={contentVariants}
-                                className="min-h-[400px]"
-                            >
-                                <EMARComponent user={user} />
-                            </motion.div>
-                        </TabsContent>
-
-                        <TabsContent value="ScheduleTemplate" asChild>
-                            <motion.div
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                variants={contentVariants}
-                                className="min-h-[400px]"
-                            >
-                                <ScheduleTemplate user={user} />
-                            </motion.div>
-                        </TabsContent>
+                                </motion.div>
+                            </TabsContent>
+                        ))}
                     </AnimatePresence>
                 </Tabs>
             </div>

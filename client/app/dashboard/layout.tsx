@@ -13,8 +13,8 @@ import { redirect } from "next/navigation"
 import * as React from "react"
 
 
-
 import { setAgency } from "@/state/slices/agencySlice";
+import { Separator } from "@/components/ui/separator";
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -109,7 +109,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         redirect("/login")
     }
 
-    // Get breadcrumb items based on current path
+    const currentPath = pathname.split("/").filter(Boolean)
+    const currentPathTitle = currentPath[currentPath.length - 1]
+    const currentPathTitleCapitalized = currentPathTitle?.charAt(0).toUpperCase() + currentPathTitle?.slice(1) || "Dashboard"
 
 
 
@@ -125,23 +127,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background z-50">
                         <div className="flex flex-1 items-center gap-2 px-3 ">
                             <SidebarTrigger className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none" />
-                            {/* <Separator orientation="vertical" className="mr-2 h-4" /> */}
-                            {/* <Breadcrumb>
-                                <BreadcrumbList>
-                                    {getBreadcrumbItems().map((item, index) => (
-                                        <React.Fragment key={item.href}>
-                                            <BreadcrumbItem>
-                                                {item.isCurrent ? (
-                                                    <BreadcrumbPage>{item.title}</BreadcrumbPage>
-                                                ) : (
-                                                    <BreadcrumbLink href={item.href}>{item.title}</BreadcrumbLink>
-                                                )}
-                                            </BreadcrumbItem>
-                                            {index < getBreadcrumbItems().length - 1 && <BreadcrumbSeparator />}
-                                        </React.Fragment>
-                                    ))}
-                                </BreadcrumbList>
-                            </Breadcrumb> */}
+                            <Separator orientation="vertical" className="mr-2 h-4" />
+                            <h1 className="text-md font-semibold">{currentPathTitleCapitalized || "Dashboard"}</h1>
                         </div>
                     </header>
                     <div className="flex flex-1 flex-col gap-4">
