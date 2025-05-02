@@ -3,155 +3,106 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Create a new medication record
-export const createMedicationRecord = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const {
-      medicationId,
-      clientId,
-      userId,
-      dosage,
-      frequency,
-      startDate,
-      endDate,
-      notes,
-      morningDose,
-      lunchDose,
-      eveningDose,
-      bedtimeDose,
-      asNeededDose
-    } = req.body;
-
-    const medicationRecord = await prisma.medicationRecord.create({
-      data: {
-        medicationId,
-        clientId,
-        userId,
-        dosage,
-        frequency,
-        startDate: new Date(startDate),
-        endDate: endDate ? new Date(endDate) : null,
-        notes,
-        morningDose,
-        lunchDose,
-        eveningDose,
-        bedtimeDose,
-        asNeededDose
-      }
-    });
-
-    res.status(201).json(medicationRecord);
-  } catch (error) {
-    console.error('Create medication record error:', error);
-    res.status(500).json({ error: 'Failed to create medication record' });
-  }
-};
-
-// Get all medication records for a client
-export const getClientMedications = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { clientId } = req.params;
-    const medications = await prisma.medicationRecord.findMany({
-      where: { clientId },
-      include: {
-        medication: true,
-        administrationRecords: true
-      }
-    });
-
-    res.status(200).json(medications);
-  } catch (error) {
-    console.error('Get client medications error:', error);
-    res.status(500).json({ error: 'Failed to fetch medications' });
-  }
-};
-
-// Update a medication record
-export const updateMedicationRecord = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-
-    if (updateData.startDate) {
-      updateData.startDate = new Date(updateData.startDate);
+export const createMedication = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const { name, dosage, frequency, instructions, morning, afternoon, evening, bedtime, asNeeded } = req.body;
+        const medication = await prisma.medication.create({
+            data: {
+                name,
+                dosage,
+                frequency,
+                instructions,
+                morning,
+                afternoon,
+                evening,
+                bedtime,
+                asNeeded,
+                user: { connect: { id: userId } },
+            },
+        });
+        res.status(201).json(medication);
+    } catch (error) {
+        console.error('Error creating medication:', error);
+        res.status(500).json({ error: 'Failed to create medication' });
     }
-    if (updateData.endDate) {
-      updateData.endDate = new Date(updateData.endDate);
+};
+
+export const getMedications = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    try {
+        const medications = await prisma.medication.findMany({
+            where: { userId },
+        });
+        res.status(200).json(medications);
+    } catch (error) {
+        console.error('Error getting medications:', error);
+        res.status(500).json({ error: 'Failed to get medications' });
     }
 
-    const medicationRecord = await prisma.medicationRecord.update({
-      where: { id },
-      data: updateData
-    });
-
-    res.status(200).json(medicationRecord);
-  } catch (error) {
-    console.error('Update medication record error:', error);
-    res.status(500).json({ error: 'Failed to update medication record' });
-  }
 };
 
-// Delete a medication record
-export const deleteMedicationRecord = async (req: Request, res: Response): Promise<void> => {
-  try {
+export const updateMedication = async (req: Request, res: Response) => {
     const { id } = req.params;
-    await prisma.medicationRecord.delete({
-      where: { id }
-    });
-
-    res.status(204).send();
-  } catch (error) {
-    console.error('Delete medication record error:', error);
-    res.status(500).json({ error: 'Failed to delete medication record' });
-  }
+    const { name, dosage, frequency, instructions, morning, afternoon, evening, bedtime, asNeeded } = req.body;
+    try {
+        const medication = await prisma.medication.update({
+            where: { id },
+            data: { name, dosage, frequency, instructions, morning, afternoon, evening, bedtime, asNeeded },
+        });
+        res.status(200).json(medication);
+    } catch (error) {
+        console.error('Error updating medication:', error);
+        res.status(500).json({ error: 'Failed to update medication' });
+    }
 };
 
-// Record medication administration
-export const recordAdministration = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const {
-      medicationRecordId,
-      administeredById,
-      doseType,
-      doseTaken,
-      notes
-    } = req.body;
-
-    const administration = await prisma.medicationAdministration.create({
-      data: {
-        medicationRecordId,
-        administeredById,
-        administeredAt: new Date(),
-        doseType,
-        doseTaken,
-        notes
-      }
-    });
-
-    res.status(201).json(administration);
-  } catch (error) {
-    console.error('Record administration error:', error);
-    res.status(500).json({ error: 'Failed to record medication administration' });
-  }
+export const deleteMedication = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        const medication = await prisma.medication.delete({
+            where: { id },
+        });
+        res.status(200).json(medication);
+    } catch (error) {
+        console.error('Error deleting medication:', error);
+        res.status(500).json({ error: 'Failed to delete medication' });
+    }
 };
 
-// Get administration history for a medication record
-export const getAdministrationHistory = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { medicationRecordId } = req.params;
-    const history = await prisma.medicationAdministration.findMany({
-      where: { medicationRecordId },
-      include: {
-        administeredBy: true,
-      },
-      orderBy: {
-        administeredAt: 'desc'
-      }
-    });
+export const createMedicationLog = async (req: Request, res: Response) => {
+    const { medicationId, userId } = req.params;
+    const { date, status, time, careworkerId, notes } = req.body;
+    try {
+        const medicationLog = await prisma.medicationLog.create({
+            data: { medication: { connect: { id: medicationId } }, date, status, time, careworkerId, notes, user: { connect: { id: userId } } },
+        });
+        res.status(201).json(medicationLog);
+    } catch (error) {
+        console.error('Error creating medication log:', error);
+        res.status(500).json({ error: 'Failed to create medication log' });
+    }
+};
 
-    res.status(200).json(history);
-  } catch (error) {
-    console.error('Get administration history error:', error);
-    res.status(500).json({ error: 'Failed to fetch administration history' });
-  }
-}; 
+export const checkInMedication = async (req: Request, res: Response) => {
+    const { medicationId, userId } = req.params;
+    const { date, time, status, notes } = req.body;
+    
+    try {
+        const medicationLog = await prisma.medicationLog.create({
+            data: {
+                medication: { connect: { id: medicationId } },
+                user: { connect: { id: userId } },
+                date: date, 
+                time,
+                status,
+                notes: notes || null,
+            },
+        });
+        
+        res.status(201).json(medicationLog);
+    } catch (error) {
+        console.error('Error checking in medication:', error);
+        res.status(500).json({ error: 'Failed to check in medication' });
+    }
+};

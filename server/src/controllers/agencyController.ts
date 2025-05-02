@@ -390,22 +390,7 @@ export const getAllIncidentReportsByAgencyId = async (req: Request, res: Respons
     }
 };
 
-// get all medication records by agency id
-export const getAllMedicationRecordsByAgencyId = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const medicationRecords = await prisma.medicationRecord.findMany({
-            where: { 
-                client: {
-                    agencyId: id
-                }
-            },
-        });
-        res.json(medicationRecords);
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching medication records", error: error });
-    }
-};
+
 
 // get all documents by agency id
 export const getAllDocumentsByAgencyId = async (req: Request, res: Response): Promise<void> => {
@@ -420,18 +405,7 @@ export const getAllDocumentsByAgencyId = async (req: Request, res: Response): Pr
     }
 };
 
-// get all medication database links by agency id
-export const getAllMedicationDatabaseLinksByAgencyId = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-        const medicationDatabaseLinks = await prisma.medicationDatabaseLink.findMany({
-            where: { agencyId: id },
-        });
-        res.json(medicationDatabaseLinks);
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching medication database links", error: error });
-    }
-};
+
 
 // get all custom tasks by agency id
 export const getAgencyCustomTasks = async (req: Request, res: Response): Promise<void> => {

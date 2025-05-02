@@ -51,12 +51,10 @@ export function AddMedicationModal() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
-        // Validate form
         if (!name || !dosage || !frequency) {
             return
         }
 
-        // Create new medication
         dispatch(
             addMedication({
                 name,
@@ -87,7 +85,7 @@ export function AddMedicationModal() {
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">Add New Medication</DialogTitle>
+                    <DialogTitle className="text-lg font-medium">Add New Medication</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-6 py-4">

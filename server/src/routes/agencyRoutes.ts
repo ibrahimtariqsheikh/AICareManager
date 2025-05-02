@@ -11,9 +11,7 @@ import {
     getAllInvoicesByAgencyId,
     getAllMileageRecordsByAgencyId,
     getAllIncidentReportsByAgencyId,
-    getAllMedicationRecordsByAgencyId,
     getAllDocumentsByAgencyId,
-    getAllMedicationDatabaseLinksByAgencyId,
     getAgencyCustomTasks,
     getAgencyGroups,
     getAgencyRateSheets,
@@ -65,8 +63,6 @@ router.get("/:id/clients", getAllClientsByAgencyId);
 router.get("/:id/invoices", getAllInvoicesByAgencyId);
 router.get("/:id/mileage-records", getAllMileageRecordsByAgencyId);
 router.get("/:id/incident-reports", getAllIncidentReportsByAgencyId);
-router.get("/:id/medication-records", getAllMedicationRecordsByAgencyId);
 router.get("/:id/documents", getAllDocumentsByAgencyId);
-router.get("/:id/medication-database-links", getAllMedicationDatabaseLinksByAgencyId);
 
 export default router;

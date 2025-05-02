@@ -14,6 +14,7 @@ import reportRoutes from "./routes/reportRoutes";
 import chatRoutes from "./routes/chatRoutes";
 import invoiceRoutes from "./routes/invoiceRoutes";
 import scheduleTemplateRoutes from "./routes/scheduleTemplateRoute";
+import medicationRoutes from "./routes/medicationRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -45,6 +46,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/chat", chatRoutes);
 app.use("/invoices", invoiceRoutes);
 app.use("/templates", scheduleTemplateRoutes);
+app.use("/medications", medicationRoutes);
 /* SERVER */
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

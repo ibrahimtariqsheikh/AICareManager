@@ -185,7 +185,7 @@ const userSlice = createSlice({
       })
       .addMatcher(api.endpoints.updateUser.matchFulfilled, (state, action) => {
         state.loading = false
-        state.currentUser = action.payload.data
+        state.currentUser = action.payload
       })
       .addMatcher(api.endpoints.updateUser.matchRejected, (state, action) => {
         state.loading = false

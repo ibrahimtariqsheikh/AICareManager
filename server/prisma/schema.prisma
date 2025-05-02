@@ -87,18 +87,18 @@ model Agency {
   groups                       Group[]
   incidentReports              IncidentReport[]
   invoices                     Invoice[]
-  medications                  MedicationDatabaseLink[]
-  mileageRecords               MileageRecord[]
-  operatingHours               OperatingHours[]
-  rateSheets                   RateSheet[]
-  reminders                    Reminder[]
-  reports                      Report[] // Renamed from Report to reports
-  riskCategories               RiskCategory[]
-  schedules                    Schedule[]
-  users                        User[]
-  ownerId                      String?
-  owner                        User?                       @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  scheduleTemplates            ScheduleTemplate[]
+
+  mileageRecords    MileageRecord[]
+  operatingHours    OperatingHours[]
+  rateSheets        RateSheet[]
+  reminders         Reminder[]
+  reports           Report[] // Renamed from Report to reports
+  riskCategories    RiskCategory[]
+  schedules         Schedule[]
+  users             User[]
+  ownerId           String?
+  owner             User?              @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  scheduleTemplates ScheduleTemplate[]
 }
 
 model Announcement {
@@ -229,6 +229,60 @@ model ClientCareAssignment {
   @@unique([clientId, userId])
 }
 
+model Medication {
+  id           String          @id @default(cuid())
+  name         String
+  dosage       String
+  frequency    String
+  instructions String?
+  morning      Boolean         @default(false)
+  afternoon    Boolean         @default(false)
+  evening      Boolean         @default(false)
+  bedtime      Boolean         @default(false)
+  asNeeded     Boolean         @default(false)
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  logs         MedicationLog[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([userId])
+}
+
+enum MedicationTime {
+  MORNING
+  AFTERNOON
+  EVENING
+  BEDTIME
+  AS_NEEDED
+}
+
+enum MedicationStatus {
+  TAKEN
+  NOT_TAKEN
+  NOT_REPORTED
+  NOT_SCHEDULED
+}
+
+model MedicationLog {
+  id           String           @id @default(uuid())
+  medication   Medication       @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  medicationId String
+  date         DateTime
+  status       MedicationStatus
+  time         MedicationTime
+  careworkerId String?
+  notes        String?
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([medicationId])
+  @@index([userId])
+  @@index([date])
+}
+
 model User {
   id            String  @id @default(cuid())
   cognitoId     String  @unique
@@ -258,45 +312,45 @@ model User {
   interests      String?
   history        String?
 
-  createdAnnouncements      Announcement[]             @relation("AnnouncementCreator")
-  announcements             Announcement[] // Renamed from Announcement to announcements
-  auditLogs                 AuditLog[] // Renamed from AuditLog to auditLogs
-  careOutcomes              CareOutcome[]
-  clientAssignments         ClientCareAssignment[]     @relation("ClientAssignments")
-  careAssignments           ClientCareAssignment[]     @relation("CareWorkerAssignments")
-  communicationLogs         CommunicationLog[]
-  communicationPreference   CommunicationPreference?
-  documents                 Document[] // Renamed from Document to documents
-  userDocuments             Document[]                 @relation("UserDocuments") // Renamed from documents to userDocuments
-  familyAccess              FamilyAccess[]
-  incidentReports           IncidentReport[]
-  sentInvitations           Invitation[]               @relation("SentInvitations")
-  invoices                  Invoice[] // Renamed from Invoice to invoices
-  keyContacts               KeyContact[]
-  medicationAdministrations MedicationAdministration[] @relation("AdministeredMedications")
-  careWorkerMedications     MedicationRecord[]         @relation("CareWorkerMedications")
-  clientMedications         MedicationRecord[]         @relation("ClientMedications")
-  receivedMessages          Message[]                  @relation("MessageReceiver")
-  sentMessages              Message[]                  @relation("MessageSender")
-  careWorkerMileage         MileageRecord[]            @relation("CareWorkerMileage")
-  clientMileage             MileageRecord[]            @relation("ClientMileage")
+  createdAnnouncements    Announcement[]           @relation("AnnouncementCreator")
+  announcements           Announcement[] // Renamed from Announcement to announcements
+  auditLogs               AuditLog[] // Renamed from AuditLog to auditLogs
+  careOutcomes            CareOutcome[]
+  clientAssignments       ClientCareAssignment[]   @relation("ClientAssignments")
+  careAssignments         ClientCareAssignment[]   @relation("CareWorkerAssignments")
+  communicationLogs       CommunicationLog[]
+  communicationPreference CommunicationPreference?
+  documents               Document[] // Renamed from Document to documents
+  userDocuments           Document[]               @relation("UserDocuments") // Renamed from documents to userDocuments
+  familyAccess            FamilyAccess[]
+  incidentReports         IncidentReport[]
+  sentInvitations         Invitation[]             @relation("SentInvitations")
+  invoices                Invoice[] // Renamed from Invoice to invoices
+  keyContacts             KeyContact[]
+
+  receivedMessages          Message[]          @relation("MessageReceiver")
+  sentMessages              Message[]          @relation("MessageSender")
+  careWorkerMileage         MileageRecord[]    @relation("CareWorkerMileage")
+  clientMileage             MileageRecord[]    @relation("ClientMileage")
   notifications             Notification[] // Renamed from Notification to notifications
   profile                   Profile?
   reminders                 Reminder[]
-  clientReports             Report[]                   @relation("ReportClient")
-  careReports               Report[]                   @relation("ReportCaregiver")
+  clientReports             Report[]           @relation("ReportClient")
+  careReports               Report[]           @relation("ReportCaregiver")
   reportEdits               ReportEdit[]
   riskAssessments           RiskAssessment[]
-  clientSchedules           Schedule[]                 @relation("ClientSchedules")
-  careWorkerSchedules       Schedule[]                 @relation("CareWorkerSchedules")
-  agency                    Agency?                    @relation(fields: [agencyId], references: [id])
-  agenciesOwned             Agency[]                   @relation("AgencyOwner")
-  groups                    Group[]                    @relation("GroupUsers")
-  invitedBy                 User?                      @relation("UserInvites", fields: [invitedById], references: [id])
-  invitedUsers              User[]                     @relation("UserInvites")
-  acknowledgedAnnouncements Announcement[]             @relation("AnnouncementAcknowledgements")
+  clientSchedules           Schedule[]         @relation("ClientSchedules")
+  careWorkerSchedules       Schedule[]         @relation("CareWorkerSchedules")
+  agency                    Agency?            @relation(fields: [agencyId], references: [id])
+  agenciesOwned             Agency[]           @relation("AgencyOwner")
+  groups                    Group[]            @relation("GroupUsers")
+  invitedBy                 User?              @relation("UserInvites", fields: [invitedById], references: [id])
+  invitedUsers              User[]             @relation("UserInvites")
+  acknowledgedAnnouncements Announcement[]     @relation("AnnouncementAcknowledgements")
   visitTypes                VisitType[]
   scheduleTemplates         ScheduleTemplate[]
+  medications               Medication[]
+  medicationLogs            MedicationLog[]
 }
 
 enum TemplateVisitDay {
@@ -396,17 +450,6 @@ model FamilyAccess {
   client   User    @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
-model MedicationDatabaseLink {
-  id                String             @id @default(cuid())
-  name              String
-  isSpecialist      Boolean            @default(false)
-  url               String
-  source            String
-  agencyId          String
-  agency            Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  medicationRecords MedicationRecord[] // Renamed from MedicationRecord to medicationRecords
-}
-
 enum TaskType {
   MEDICATION
   BODYMAP
@@ -449,34 +492,34 @@ model VisitType {
 }
 
 model Report {
-  id                        String                     @id @default(cuid())
-  clientId                  String
-  agencyId                  String
-  userId                    String
-  title                     String?
-  condition                 String
-  summary                   String
-  checkInTime               DateTime
-  checkOutTime              DateTime?
-  createdAt                 DateTime                   @default(now())
-  checkInDistance           Float?
-  checkOutDistance          Float?
-  checkInLocation           String?
-  checkOutLocation          String?
-  hasSignature              Boolean                    @default(false)
-  signatureImageUrl         String?
-  status                    ReportStatus               @default(COMPLETED)
-  lastEditedAt              DateTime?
-  lastEditedBy              String?
-  lastEditReason            String?
-  bodyMapObservations       BodyMapObservation[]
-  medicationAdministrations MedicationAdministration[]
-  agency                    Agency                     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client                    User                       @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
-  caregiver                 User                       @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
-  alerts                    ReportAlert[]
-  editHistory               ReportEdit[]
-  tasksCompleted            ReportTask[]
+  id                  String               @id @default(cuid())
+  clientId            String
+  agencyId            String
+  userId              String
+  title               String?
+  condition           String
+  summary             String
+  checkInTime         DateTime
+  checkOutTime        DateTime?
+  createdAt           DateTime             @default(now())
+  checkInDistance     Float?
+  checkOutDistance    Float?
+  checkInLocation     String?
+  checkOutLocation    String?
+  hasSignature        Boolean              @default(false)
+  signatureImageUrl   String?
+  status              ReportStatus         @default(COMPLETED)
+  lastEditedAt        DateTime?
+  lastEditedBy        String?
+  lastEditReason      String?
+  bodyMapObservations BodyMapObservation[]
+
+  agency         Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client         User          @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
+  caregiver      User          @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
+  alerts         ReportAlert[]
+  editHistory    ReportEdit[]
+  tasksCompleted ReportTask[]
 }
 
 model ReportTask {
@@ -523,51 +566,6 @@ model ReportEdit {
   changesJson String
   editor      User     @relation(fields: [editedBy], references: [id], onDelete: Cascade)
   report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
-}
-
-model MedicationRecord {
-  id                    String                     @id @default(cuid())
-  medicationId          String
-  clientId              String
-  userId                String
-  dosage                String
-  frequency             String
-  startDate             DateTime
-  endDate               DateTime?
-  notes                 String?
-  createdAt             DateTime                   @default(now())
-  updatedAt             DateTime                   @updatedAt
-  morningDose           Boolean                    @default(false)
-  lunchDose             Boolean                    @default(false)
-  eveningDose           Boolean                    @default(false)
-  bedtimeDose           Boolean                    @default(false)
-  asNeededDose          Boolean                    @default(false)
-  administrationRecords MedicationAdministration[]
-  user                  User                       @relation("CareWorkerMedications", fields: [userId], references: [id], onDelete: Cascade, map: "MedicationRecord_care_worker_fkey")
-  client                User                       @relation("ClientMedications", fields: [clientId], references: [id], onDelete: Cascade, map: "MedicationRecord_client_fkey")
-  medication            MedicationDatabaseLink     @relation(fields: [medicationId], references: [id], onDelete: Cascade)
-
-  @@index([medicationId])
-  @@index([clientId])
-  @@index([userId])
-}
-
-model MedicationAdministration {
-  id                 String           @id @default(cuid())
-  medicationRecordId String
-  administeredById   String
-  administeredAt     DateTime
-  doseType           DoseType
-  doseTaken          Boolean          @default(true)
-  notes              String?
-  createdAt          DateTime         @default(now())
-  reportId           String?
-  administeredBy     User             @relation("AdministeredMedications", fields: [administeredById], references: [id], onDelete: Cascade)
-  medicationRecord   MedicationRecord @relation(fields: [medicationRecordId], references: [id], onDelete: Cascade)
-  report             Report?          @relation(fields: [reportId], references: [id])
-
-  @@index([medicationRecordId])
-  @@index([administeredById])
 }
 
 model Invoice {

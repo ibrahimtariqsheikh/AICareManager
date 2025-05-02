@@ -1,24 +1,14 @@
 import express from 'express';
-import {
-  createMedicationRecord,
-  getClientMedications,
-  updateMedicationRecord,
-  deleteMedicationRecord,
-  recordAdministration,
-  getAdministrationHistory
-} from '../controllers/medicationController';
-import { authMiddleware } from '../middleware/authMiddleware';
+import { createMedication, deleteMedication, getMedications, updateMedication, createMedicationLog, checkInMedication } from '../controllers/medicationController';
 
 const router = express.Router();
 
-// Medication record routes
-router.post('/records', authMiddleware(['ADMIN', 'CARE_WORKER']), createMedicationRecord);
-router.get('/client/:clientId', authMiddleware(['ADMIN', 'CARE_WORKER']), getClientMedications);
-router.put('/records/:id', authMiddleware(['ADMIN', 'CARE_WORKER']), updateMedicationRecord);
-router.delete('/records/:id', authMiddleware(['ADMIN']), deleteMedicationRecord);
+router.post('/:userId', createMedication);
+router.get('/:userId', getMedications);
+router.put('/:id', updateMedication);
+router.delete('/:id', deleteMedication);
 
-// Medication administration routes
-router.post('/administration', authMiddleware(['CARE_WORKER']), recordAdministration);
-router.get('/administration/:medicationRecordId', authMiddleware(['ADMIN', 'CARE_WORKER']), getAdministrationHistory);
+router.post('/:userId/logs/:medicationId', createMedicationLog);
+router.post('/:userId/check-in/:medicationId', checkInMedication);
 
 export default router; 

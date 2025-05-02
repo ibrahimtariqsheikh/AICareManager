@@ -38,7 +38,7 @@ export const getReportById = async (req: Request, res: Response) => {
         tasksCompleted: true,
         alerts: true,
         bodyMapObservations: true,
-        medicationAdministrations: true,
+     
         editHistory: true,
         
       }

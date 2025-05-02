@@ -3,7 +3,7 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { Message } from "@/app/dashboard/chatbot/chatbot-client"
 
-import { Invitation, Schedule, Role, SubRole, ReportTask, CommunicationLog, Profile, Agency, MedicationRecord, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, MedicationAdministration, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate } from "../types/prismaTypes"
+import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
 import { EmergencyContact } from "@/types/profileTypes"
 
@@ -147,7 +147,7 @@ export interface UserAllDetailsResponse {
     history?: string;
     profile?: Profile;
     agency?: Agency;
-    medicationRecords?: MedicationRecord[];
+    medications?: Medication[];
     documents?: Document[];
     incidentReports?: IncidentReport[];
     keyContacts?: KeyContact[];
@@ -223,7 +223,9 @@ export const api = createApi({
     "RateSheets",
     "Groups",
     "Invoices",
-    "ScheduleTemplates"
+    "ScheduleTemplates",
+    "Medications",
+    "MedicationLogs"
   ],
   endpoints: (build) => ({
     // Get user
@@ -522,45 +524,51 @@ export const api = createApi({
       providesTags: ["Dashboard"],
     }),
 
-    // Medication endpoints
-    getMedicationRecords: build.query<MedicationRecord[], string>({
-      query: (clientId) => `/medications/client/${clientId}`,
-    }),
+        // Medication endpoints
+        getMedications: build.query<Medication[], string>({
+          query: (userId) => `/medications/${userId}`,
+        }),
 
-    createMedicationRecord: build.mutation<MedicationRecord, Partial<MedicationRecord>>({
-      query: (data) => ({
-        url: '/medications/records',
+    createMedication: build.mutation<Medication, { userId: string; data: Partial<Medication> }>({
+      query: ({ userId, data }) => ({
+        url: `/medications/${userId}`,
         method: 'POST',
         body: data,
       }),
     }),
 
-    updateMedicationRecord: build.mutation<MedicationRecord, { id: string; data: Partial<MedicationRecord> }>({
+    updateMedication: build.mutation<Medication, { id: string; data: Partial<Medication> }>({
       query: ({ id, data }) => ({
-        url: `/medications/records/${id}`,
+        url: `/medications/${id}`,
         method: 'PUT',
         body: data,
       }),
     }),
 
-    deleteMedicationRecord: build.mutation<void, string>({
+    deleteMedication: build.mutation<void, string>({
       query: (id) => ({
-        url: `/medications/records/${id}`,
+        url: `/medications/${id}`,
         method: 'DELETE',
       }),
     }),
 
-    recordMedicationAdministration: build.mutation<MedicationAdministration, Partial<MedicationAdministration>>({
-      query: (data) => ({
-        url: '/medications/administration',
+    createMedicationLog: build.mutation<MedicationLog, { medicationId: string; userId: string; data: Partial<MedicationLog> }>({
+      query: ({ medicationId, userId, data }) => ({
+        url: `/medications/${medicationId}/logs/${userId}`,
         method: 'POST',
         body: data,
       }),
     }),
 
-    getMedicationAdministrationHistory: build.query<MedicationAdministration[], string>({
-      query: (medicationRecordId) => `/medications/administration/${medicationRecordId}`,
+    checkInMedication: build.mutation<MedicationLog, { medicationId: string; userId: string; data: { date: string; time: "MORNING" | "AFTERNOON" | "EVENING" | "BEDTIME" | "AS_NEEDED"; status: "TAKEN" | "NOT_TAKEN" | "NOT_REPORTED" | "NOT_SCHEDULED"; notes?: string | null } }>({
+      query: ({ medicationId, userId, data }) => ({
+        url: `/medications/${userId}/check-in/${medicationId}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ["MedicationLogs"],
     }),
+    
 
     // Report endpoints
     createReport: build.mutation<Report, Partial<Report>>({
@@ -929,4 +937,10 @@ export const {
   useActivateScheduleTemplateMutation,
   useDeactivateScheduleTemplateMutation,
   useApplyScheduleTemplateMutation,
+  useCreateMedicationMutation,
+  useUpdateMedicationMutation,
+  useDeleteMedicationMutation,
+  useGetMedicationsQuery,
+  useCreateMedicationLogMutation,
+  useCheckInMedicationMutation,
 } = api
