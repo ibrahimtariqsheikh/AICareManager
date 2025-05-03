@@ -58,7 +58,7 @@ export function CheckInModal({ user }: CheckInModalProps) {
         }
 
         try {
-            const response = await checkInMedication({
+            await checkInMedication({
                 medicationId: selectedMedicationId,
                 userId: user.id,
                 data: {

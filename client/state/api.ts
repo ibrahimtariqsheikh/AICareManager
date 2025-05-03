@@ -51,6 +51,7 @@ export interface ScheduleResponse {
     createdAt: string
     updatedAt: string
     visitTypeId?: string
+    rateSheetId?: string
     title: string
     client: {
         id: string

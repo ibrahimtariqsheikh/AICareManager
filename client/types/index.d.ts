@@ -99,6 +99,7 @@ declare global {
       fullName: string;
     };
     userRole: JsonObject | JsonPrimitive | JsonArray;
+    visitTypes?: VisitType[];
   }
 
   interface Report {

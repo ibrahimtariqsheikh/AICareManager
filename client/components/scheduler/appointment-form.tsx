@@ -5,15 +5,13 @@ import type React from "react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CalendarIcon, ChevronLeft, ChevronRight, Clock, Loader2 } from "lucide-react"
+import { CalendarIcon, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import { format, addMonths, subMonths, setHours, setMinutes, isBefore, isAfter } from "date-fns"
 import { cn } from "../../lib/utils"
 
 import { useState, useEffect, useRef, useMemo } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog"
 import { Button } from "../ui/button"
-import { Textarea } from "../ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { toast } from "sonner"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "../ui/form"
 
@@ -28,6 +26,8 @@ import {
     useGetUserByIdQuery,
 } from "../../state/api"
 import type { RateSheet, VisitType } from "@/types/prismaTypes"
+import { CustomSelect } from "../ui/custom-select"
+import { CustomInput } from "../ui/custom-input"
 
 const formSchema = z.object({
     agencyId: z
@@ -122,7 +122,6 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
     })
 
     const selectedClientId = form.watch("clientId")
-    const selectedUserId = form.watch("userId")
     const startTime = form.watch("startTime")
     const endTime = form.watch("endTime")
 
@@ -146,7 +145,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
             const validRateSheets = agency.rateSheets.filter((sheet: RateSheet) => sheet && sheet.id && (sheet.name || sheet.value))
 
             // Sort rate sheets to prioritize those with values
-            const sortedRateSheets = validRateSheets.sort((a, b) => {
+            const sortedRateSheets = validRateSheets.sort((a: RateSheet, b: RateSheet) => {
                 // First prioritize sheets with values
                 if (a.value && !b.value) return -1
                 if (!a.value && b.value) return 1
@@ -287,7 +286,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                 date: data.date,
                 startTime: data.startTime,
                 endTime: data.endTime,
-                type: data.type,
+                type: data.type as "APPOINTMENT" | "WEEKLY_CHECKUP" | "HOME_VISIT" | "CHECKUP" | "EMERGENCY" | "ROUTINE" | "OTHER",
                 status: data.status,
                 notes: data.notes || "",
                 rateSheetId: data.rateSheetId || "",
@@ -398,20 +397,14 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Client</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value || ""} value={field.value || ""}>
-                                            <FormControl>
-                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                    <SelectValue placeholder="Select a client" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                {clients.map((client: any) => (
-                                                    <SelectItem key={client.id} value={client.id}>
-                                                        {client.fullName}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                        <CustomSelect
+                                            placeholder="Select a client"
+                                            options={clients.map((client: any) => ({
+                                                value: client.id,
+                                                label: client.fullName,
+                                            }))}
+                                            onChange={(value: string) => field.onChange(value)}
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -423,20 +416,14 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Care Worker</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value || ""} value={field.value || ""}>
-                                            <FormControl>
-                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                    <SelectValue placeholder="Select a care worker" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                {availableStaff.map((staffMember) => (
-                                                    <SelectItem key={staffMember.id} value={staffMember.id}>
-                                                        {staffMember.fullName}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                        <CustomSelect
+                                            placeholder="Select a care worker"
+                                            options={availableStaff.map((staffMember) => ({
+                                                value: staffMember.id,
+                                                label: staffMember.fullName,
+                                            }))}
+                                            onChange={(value: string) => field.onChange(value)}
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -458,7 +445,7 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                                         className={cn(
                                                             "w-full pl-3 text-left font-normal",
                                                             !field.value && "text-muted-foreground",
-                                                            spaceTheme && "bg-slate-800 border-slate-700 text-white",
+                                                            spaceTheme && "bg-neutral-800 border-neutral-700 ",
                                                         )}
                                                         onClick={(e) => {
                                                             e.preventDefault()
@@ -593,23 +580,14 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Time From</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                            <SelectValue placeholder="Select start time" />
-                                                            <Clock className="ml-auto h-4 w-4 opacity-50" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent
-                                                        className={`h-[200px] ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
-                                                    >
-                                                        {allTimeOptions.map((option) => (
-                                                            <SelectItem key={option.value} value={option.value}>
-                                                                {option.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
+                                                <CustomSelect
+                                                    placeholder="Select start time"
+                                                    options={allTimeOptions}
+                                                    onChange={field.onChange}
+                                                    value={field.value}
+                                                    defaultValue={field.value || ""}
+                                                    className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
+                                                />
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -621,23 +599,14 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Time To</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                            <SelectValue placeholder="Select end time" />
-                                                            <Clock className="ml-auto h-4 w-4 opacity-50" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent
-                                                        className={`h-[200px] ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
-                                                    >
-                                                        {availableEndTimes.map((option) => (
-                                                            <SelectItem key={option.value} value={option.value}>
-                                                                {option.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
+                                                <CustomSelect
+                                                    placeholder="Select end time"
+                                                    options={availableEndTimes}
+                                                    onChange={field.onChange}
+                                                    value={field.value}
+                                                    defaultValue={field.value || ""}
+                                                    className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
+                                                />
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -653,32 +622,29 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Visit Type</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value || ""} value={field.value || ""}>
-                                            <FormControl>
-                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                    <SelectValue placeholder="Select type" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                {visitTypes && visitTypes.length > 0 ? (
-                                                    visitTypes.map((type: VisitType) => (
-                                                        <SelectItem key={type.id} value={type.id}>
-                                                            {type.name}
-                                                        </SelectItem>
-                                                    ))
-                                                ) : (
-                                                    <>
-                                                        <SelectItem value="WEEKLY_CHECKUP">Weekly Checkup</SelectItem>
-                                                        <SelectItem value="APPOINTMENT">Appointment</SelectItem>
-                                                        <SelectItem value="HOME_VISIT">Home Visit</SelectItem>
-                                                        <SelectItem value="CHECKUP">Checkup</SelectItem>
-                                                        <SelectItem value="EMERGENCY">Emergency</SelectItem>
-                                                        <SelectItem value="ROUTINE">Routine</SelectItem>
-                                                        <SelectItem value="OTHER">Other</SelectItem>
-                                                    </>
-                                                )}
-                                            </SelectContent>
-                                        </Select>
+                                        <CustomSelect
+                                            placeholder="Select type"
+                                            options={
+                                                visitTypes && visitTypes.length > 0
+                                                    ? visitTypes.map((type: VisitType) => ({
+                                                        value: type.id,
+                                                        label: type.name,
+                                                    }))
+                                                    : [
+                                                        { value: "WEEKLY_CHECKUP", label: "Weekly Checkup" },
+                                                        { value: "APPOINTMENT", label: "Appointment" },
+                                                        { value: "HOME_VISIT", label: "Home Visit" },
+                                                        { value: "CHECKUP", label: "Checkup" },
+                                                        { value: "EMERGENCY", label: "Emergency" },
+                                                        { value: "ROUTINE", label: "Routine" },
+                                                        { value: "OTHER", label: "Other" },
+                                                    ]
+                                            }
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={field.value || ""}
+                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -689,19 +655,19 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Status</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                    <SelectValue placeholder="Select status" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                <SelectItem value="PENDING">Pending</SelectItem>
-                                                <SelectItem value="CONFIRMED">Confirmed</SelectItem>
-                                                <SelectItem value="COMPLETED">Completed</SelectItem>
-                                                <SelectItem value="CANCELED">Canceled</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                        <CustomSelect
+                                            placeholder="Select status"
+                                            options={[
+                                                { value: "PENDING", label: "Pending" },
+                                                { value: "CONFIRMED", label: "Confirmed" },
+                                                { value: "COMPLETED", label: "Completed" },
+                                                { value: "CANCELED", label: "Canceled" },
+                                            ]}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={field.value || ""}
+                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -715,32 +681,23 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                 render={({ field }) => (
                                     <FormItem className="w-full">
                                         <FormLabel>Rate Sheet</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                    <SelectValue placeholder="Select rate sheet" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}>
-                                                {rateSheets && rateSheets.length > 0 ? (
-                                                    rateSheets.map((rateSheet: RateSheet) => (
-                                                        <SelectItem key={rateSheet.id} value={rateSheet.id}>
-                                                            <div className="flex items-center justify-between w-full">
-                                                                {rateSheet.value ? (
-                                                                    <span className="font-medium">
-                                                                        ${rateSheet.value} - {rateSheet.name}
-                                                                    </span>
-                                                                ) : (
-                                                                    <span>{rateSheet.name}</span>
-                                                                )}
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))
-                                                ) : (
-                                                    <SelectItem value="NO_RATE_SHEET">No rate sheets available</SelectItem>
-                                                )}
-                                            </SelectContent>
-                                        </Select>
+                                        <CustomSelect
+                                            placeholder="Select rate sheet"
+                                            options={
+                                                rateSheets && rateSheets.length > 0
+                                                    ? rateSheets.map((rateSheet: RateSheet) => ({
+                                                        value: rateSheet.id,
+                                                        label: rateSheet.value
+                                                            ? `$${rateSheet.value} - ${rateSheet.name}`
+                                                            : rateSheet.name,
+                                                    }))
+                                                    : [{ value: "NO_RATE_SHEET", label: "No rate sheets available" }]
+                                            }
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={field.value || ""}
+                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -754,9 +711,8 @@ export function AppointmentForm({ isOpen, onClose, event, isNew = false, spaceTh
                                 <FormItem>
                                     <FormLabel>Notes</FormLabel>
                                     <FormControl>
-                                        <Textarea
+                                        <CustomInput
                                             placeholder="Add any additional notes here..."
-                                            className={`resize-none ${spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}`}
                                             {...field}
                                         />
                                     </FormControl>

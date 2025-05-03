@@ -34,6 +34,7 @@ import type { EmergencyContact } from "@/types/profileTypes"
 import { useDispatch } from "react-redux"
 import { useUpdateUserMutation } from "@/state/api"
 import { updateUser as updateUserAction } from "@/state/slices/userSlice"
+import { CustomInput } from "@/components/ui/custom-input"
 
 
 // Define the form schema with Zod
@@ -163,10 +164,11 @@ export const PatientInformation = ({ user }: { user: User }) => {
     }, [user?.dateOfBirth, user?.keyContacts, user?.visitTypes])
 
     function preserveDateOnly(dateString: string): Date {
-        if (!dateString) {
-            throw new Error("Date string is undefined")
+        const dateParts = dateString.split("T")[0]?.split("-")
+        if (!dateParts) {
+            throw new Error("Invalid date string format")
         }
-        const [year, month, day] = dateString.split("T")[0].split("-").map(Number)
+        const [year, month, day] = dateParts.map(Number)
         if (!year || !month || !day) {
             throw new Error("Invalid date string")
         }
@@ -200,7 +202,6 @@ export const PatientInformation = ({ user }: { user: User }) => {
 
             // Update Redux state
             dispatch(updateUserAction(updatedUser))
-            const result = await updateUser(updatedUser)
 
 
 
@@ -281,19 +282,12 @@ export const PatientInformation = ({ user }: { user: User }) => {
             // Update local state with the returned contact that includes the ID
             setKeyContacts([...keyContacts, result])
 
-            toast({
-                title: "Contact added",
-                description: "Emergency contact has been added successfully.",
-            })
+            toast.success("Emergency contact has been added successfully.")
 
             setNewContact({ name: "", relation: "", phone: "", email: "" })
             setDialogOpen(false)
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to add emergency contact. Please try again.",
-                variant: "destructive",
-            })
+            toast.error("Failed to add emergency contact. Please try again.")
             console.error("Failed to add contact:", error)
         }
     }
@@ -416,13 +410,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <Label className="text-sm text-neutral-500">UserID</Label>
-                                <Input
-                                    type="text"
-                                    className="text-md text-neutral-900 font-medium"
-                                    placeholder="UserID"
-                                    value={user?.id || ""}
-                                    readOnly
-                                />
+                                <CustomInput value={user?.id || ""} disabled />
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-sm text-neutral-500">Date of Birth</Label>
@@ -441,7 +429,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">Preferred Name</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Preferred Name" />
+                                            <CustomInput {...field} placeholder="Preferred Name" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -455,7 +443,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">Full Name</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Full Name" />
+                                            <CustomInput {...field} placeholder="Full Name" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -469,7 +457,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">Contact Number</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Contact Number" />
+                                            <CustomInput {...field} placeholder="Contact Number" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -483,12 +471,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">Email Address</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                {...field}
-                                                type="email"
-                                                className="text-md text-neutral-900 font-medium"
-                                                placeholder="Email Address"
-                                            />
+                                            <CustomInput {...field} placeholder="Email Address" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -502,7 +485,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">Address</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Address" />
+                                            <CustomInput {...field} placeholder="Address" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -516,7 +499,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">City</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="City" />
+                                            <CustomInput {...field} placeholder="City" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -530,7 +513,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">Postal Code</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Postal Code" />
+                                            <CustomInput {...field} placeholder="Postal Code" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -544,7 +527,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-sm text-neutral-500">Province</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="text-md text-neutral-900 font-medium" placeholder="Province" />
+                                            <CustomInput {...field} placeholder="Province" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -655,11 +638,8 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem>
                                         <h3 className="text-md font-semibold mb-2">Allergies</h3>
                                         <FormControl>
-                                            <Input
-                                                {...field}
-                                                className="border-0 bg-transparent p-0 text-sm text-neutral-700"
-                                                placeholder="No allergies recorded"
-                                            />
+                                            <CustomInput {...field} placeholder="No allergies recorded" />
+
 
                                         </FormControl>
                                         <FormMessage />
@@ -692,11 +672,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem>
                                         <h3 className="text-md font-semibold mb-2">Medical History</h3>
                                         <FormControl>
-                                            <Input
-                                                {...field}
-                                                className="border-0 bg-transparent p-0 text-sm text-neutral-700"
-                                                placeholder="No medical history recorded"
-                                            />
+                                            <CustomInput {...field} placeholder="No medical history recorded" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
