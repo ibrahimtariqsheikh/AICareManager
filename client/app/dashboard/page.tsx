@@ -10,8 +10,7 @@ import {
     FileText,
     ClipboardList,
     ArrowUpRight,
-    Activity,
-    CheckCircle2,
+
     AlertCircle,
     Filter,
 
@@ -25,12 +24,16 @@ import { Skeleton } from "../../components/ui/skeleton"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getRandomPlaceholderImage } from "@/lib/utils"
+import { CustomInput } from "@/components/ui/custom-input"
 
 
 export default function DashboardPage() {
     const { user } = useAppSelector((state) => state.user)
     const [shouldFetch, setShouldFetch] = useState(false)
-
+    const [searchQuery, setSearchQuery] = useState("")
+    const [showFilters, setShowFilters] = useState(false)
+    const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
+    const [selectedType, setSelectedType] = useState<string | null>(null)
 
     useEffect(() => {
         if (user?.userInfo?.id) {
@@ -48,14 +51,9 @@ export default function DashboardPage() {
 
     const isLoading = !shouldFetch || isDashboardLoading
 
-
-
-
     if (isLoading) {
         return (
             <div className="p-6 space-y-6">
-
-
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[...Array(4)].map((_, i) => (
                         <Card key={i} className="overflow-hidden">
@@ -146,19 +144,23 @@ export default function DashboardPage() {
         )
     }
 
-
-
-
     const router = useRouter()
 
-
-
-
+    const filteredSchedules = dashboardData?.schedules
+        .filter(schedule => new Date(schedule.date) >= new Date())
+        .filter(schedule => {
+            const matchesSearch = schedule.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                schedule.careWorkerName.toLowerCase().includes(searchQuery.toLowerCase())
+            const matchesStatus = !selectedStatus || schedule.status === selectedStatus
+            const matchesType = !selectedType || schedule.type === selectedType
+            return matchesSearch && matchesStatus && matchesType
+        })
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(0, 5)
 
     return (
         <div className="px-6 py-2 space-y-6 mt-4">
-
-
+            {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <Card className="border border-gray-200 shadow-sm">
                     <CardContent className="p-6">
@@ -169,7 +171,7 @@ export default function DashboardPage() {
                             <h3 className="ml-3 text-sm font-medium text-gray-600">Total Clients</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-gray-800">{dashboardData.stats.totalClients}</div>
+                            <div className="text-3xl font-bold text-gray-800">{dashboardData?.stats.totalClients}</div>
                             <div className="flex items-center text-blue-600 text-sm">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +12%
@@ -193,7 +195,7 @@ export default function DashboardPage() {
                             <h3 className="ml-3 text-sm font-medium text-gray-600">Total Appointment</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-gray-800">{dashboardData.stats.totalSchedules}</div>
+                            <div className="text-3xl font-bold text-gray-800">{dashboardData?.stats.totalSchedules}</div>
                             <div className="flex items-center text-blue-600 text-sm">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +10%
@@ -267,17 +269,54 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-2">
                             <div className="relative">
                                 <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                                <input
-                                    type="text"
+                                <CustomInput
                                     placeholder="Search appointments..."
-                                    className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className='w-[200px]'
+                                    value={searchQuery}
+                                    onChange={(value: string) => setSearchQuery(value)}
                                 />
                             </div>
-                            <Button variant="outline" className="bg-white border-gray-200" >
-                                <Filter className="h-4 w-4 mr-2" />
-                                Filter
-                            </Button>
-
+                            <div className="relative">
+                                <Button
+                                    variant="outline"
+                                    className="bg-white border-gray-200"
+                                    onClick={() => setShowFilters(!showFilters)}
+                                >
+                                    <Filter className="h-4 w-4 mr-2" />
+                                    Filter
+                                </Button>
+                                {showFilters && (
+                                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10 border border-gray-200 p-4">
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                                <select
+                                                    className="w-full border border-gray-200 rounded-md p-2 text-sm"
+                                                    value={selectedStatus || ""}
+                                                    onChange={(e) => setSelectedStatus(e.target.value || null)}
+                                                >
+                                                    <option value="">All Statuses</option>
+                                                    <option value="CONFIRMED">Confirmed</option>
+                                                    <option value="PENDING">Pending</option>
+                                                    <option value="CANCELLED">Cancelled</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                                <select
+                                                    className="w-full border border-gray-200 rounded-md p-2 text-sm"
+                                                    value={selectedType || ""}
+                                                    onChange={(e) => setSelectedType(e.target.value || null)}
+                                                >
+                                                    <option value="">All Types</option>
+                                                    <option value="APPOINTMENT">Appointment</option>
+                                                    <option value="WEEKLY_CHECKUP">Weekly Checkup</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </CardHeader>
@@ -293,67 +332,58 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-100">
-                            {dashboardData.schedules
-                                .filter(schedule => new Date(schedule.date) >= new Date())
-                                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                                .slice(0, 5)
-                                .map((schedule) => (
-                                    <tr key={schedule.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <Avatar className="h-8 w-8">
-                                                    <AvatarImage src={getRandomPlaceholderImage()} alt={schedule.clientName} />
-                                                    <AvatarFallback>
-                                                        {schedule.clientName[0]}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <div className="ml-3">
-                                                    <div className="text-sm font-medium text-gray-900">
-                                                        {schedule.clientName}
-                                                    </div>
+                            {filteredSchedules.map((schedule) => (
+                                <tr key={schedule.id} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage src={getRandomPlaceholderImage()} alt={schedule.clientName} />
+                                                <AvatarFallback>
+                                                    {schedule.clientName[0]}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div className="ml-3">
+                                                <div className="text-sm font-medium text-gray-900">
+                                                    {schedule.clientName}
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <Badge variant="outline" className={`${schedule.type === "APPOINTMENT"
-                                                ? "bg-blue-50 text-blue-700 border-blue-200"
-                                                : schedule.type === "WEEKLY_CHECKUP"
-                                                    ? "bg-green-50 text-green-700 border-green-200"
-                                                    : "bg-amber-50 text-amber-700 border-amber-200"
-                                                }`}>
-                                                {schedule.type.replace("_", " ")}
-                                            </Badge>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{new Date(schedule.date).toLocaleDateString()}</div>
-                                            <div className="text-sm text-gray-500">{schedule.startTime} - {schedule.endTime}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">
-                                                {schedule.careWorkerName}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <Badge variant="outline" className={`${schedule.status === "CONFIRMED"
-                                                ? "bg-blue-50 text-blue-700 border-blue-200"
-                                                : schedule.status === "PENDING"
-                                                    ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                                                    : "bg-red-50 text-red-700 border-red-200"
-                                                }`}>
-                                                {schedule.status}
-                                            </Badge>
-                                        </td>
-                                    </tr>
-                                ))}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <Badge variant="outline" className={`${schedule.type === "APPOINTMENT"
+                                            ? "bg-blue-50 text-blue-700 border-blue-200"
+                                            : schedule.type === "WEEKLY_CHECKUP"
+                                                ? "bg-green-50 text-green-700 border-green-200"
+                                                : "bg-amber-50 text-amber-700 border-amber-200"
+                                            }`}>
+                                            {schedule.type.replace("_", " ")}
+                                        </Badge>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm text-gray-900">{new Date(schedule.date).toLocaleDateString()}</div>
+                                        <div className="text-sm text-gray-500">{schedule.startTime} - {schedule.endTime}</div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm text-gray-900">
+                                            {schedule.careWorkerName}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <Badge variant="outline" className={`${schedule.status === "CONFIRMED"
+                                            ? "bg-blue-50 text-blue-700 border-blue-200"
+                                            : schedule.status === "PENDING"
+                                                ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                                                : "bg-red-50 text-red-700 border-red-200"
+                                            }`}>
+                                            {schedule.status}
+                                        </Badge>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </CardContent>
             </Card>
-
-
-
-
         </div>
     )
 }
-

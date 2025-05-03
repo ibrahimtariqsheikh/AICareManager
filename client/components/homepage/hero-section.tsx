@@ -229,7 +229,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                                 <img
                                     src={image || "/placeholder.svg"}
                                     alt="Landing page preview"
-                                    className="aspect-[16/9] h-auto w-full object-cover"
+                                    className="h-auto w-full object-cover"
                                 />
                             </div>
                         </motion.div>

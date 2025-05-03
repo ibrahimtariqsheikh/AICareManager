@@ -35,7 +35,7 @@ import { useDispatch } from "react-redux"
 import { useUpdateUserMutation } from "@/state/api"
 import { updateUser as updateUserAction } from "@/state/slices/userSlice"
 import { CustomInput } from "@/components/ui/custom-input"
-
+import { CustomSelect } from "@/components/ui/custom-select"
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -189,7 +189,6 @@ export const PatientInformation = ({ user }: { user: User }) => {
         try {
             toast.loading("Updating patient information...")
 
-
             const updatedUser = {
                 ...user,
                 ...data,
@@ -198,12 +197,8 @@ export const PatientInformation = ({ user }: { user: User }) => {
                 visitTypes,
             }
 
-
-
             // Update Redux state
             dispatch(updateUserAction(updatedUser))
-
-
 
             toast.success("Patient information has been updated successfully.")
         } catch (error) {
@@ -395,25 +390,26 @@ export const PatientInformation = ({ user }: { user: User }) => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-
-
-                <Card className="p-6">
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Patient Information</CardTitle>
-                        <Button type="submit" className="flex items-center gap-2" disabled={isSaving}>
+                <Card className="p-6 border border-neutral-200 duration-300 shadow-sm backdrop-blur-sm">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-xl font-semibold text-neutral-800">Patient Information</CardTitle>
+                        <Button
+                            type="submit"
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition-colors"
+                            disabled={isSaving}
+                        >
                             <Save className="h-4 w-4" />
                             {isSaving ? "Saving..." : "Save Changes"}
                         </Button>
                     </CardHeader>
                     <CardContent>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             <div className="space-y-2">
-                                <Label className="text-sm text-neutral-500">UserID</Label>
+                                <Label className="text-sm font-medium text-neutral-600">UserID</Label>
                                 <CustomInput value={user?.id || ""} disabled />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-sm text-neutral-500">Date of Birth</Label>
+                                <Label className="text-sm font-medium text-neutral-600">Date of Birth</Label>
                                 <DatePicker
                                     date={dateOfBirth}
                                     setDate={(newDate: Date) => {
@@ -427,7 +423,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="preferredName"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Preferred Name</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Preferred Name</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Preferred Name" />
                                         </FormControl>
@@ -441,7 +437,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="fullName"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Full Name</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Full Name</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Full Name" />
                                         </FormControl>
@@ -455,7 +451,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="phoneNumber"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Contact Number</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Contact Number</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Contact Number" />
                                         </FormControl>
@@ -469,7 +465,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Email Address</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Email Address</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Email Address" />
                                         </FormControl>
@@ -483,7 +479,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="address"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Address</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Address</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Address" />
                                         </FormControl>
@@ -497,7 +493,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="city"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">City</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">City</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="City" />
                                         </FormControl>
@@ -511,7 +507,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="postalCode"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Postal Code</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Postal Code</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Postal Code" />
                                         </FormControl>
@@ -525,7 +521,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="province"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Province</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Province</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Province" />
                                         </FormControl>
@@ -539,27 +535,19 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="role"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Role</FormLabel>
-                                        <Select
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Role</FormLabel>
+                                        <CustomSelect
                                             value={field.value}
-                                            onValueChange={(value) => {
+                                            onChange={(value) => {
                                                 field.onChange(value)
                                                 setSelectedRole(value)
                                             }}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Role" className="text-neutral-900 font-medium" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {Object.values(Role).map((role) => (
-                                                    <SelectItem key={role} value={role}>
-                                                        {role}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                            options={Object.values(Role).map((role) => ({
+                                                label: role,
+                                                value: role,
+                                            }))}
+                                            disabled
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -570,53 +558,48 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="subRole"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm text-neutral-500">Sub Role</FormLabel>
-                                        <Select value={field.value} onValueChange={field.onChange}>
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Sub Role" className="text-neutral-900 font-medium" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {Object.entries(SubRole)
-                                                    .filter(([key]) => {
-                                                        if (selectedRole === "OFFICE_STAFF") {
-                                                            return [
-                                                                "FINANCE_MANAGER",
-                                                                "HR_MANAGER",
-                                                                "CARE_MANAGER",
-                                                                "SCHEDULING_COORDINATOR",
-                                                                "OFFICE_ADMINISTRATOR",
-                                                                "RECEPTIONIST",
-                                                                "QUALITY_ASSURANCE_MANAGER",
-                                                                "MARKETING_COORDINATOR",
-                                                                "COMPLIANCE_OFFICER",
-                                                            ].includes(key)
-                                                        }
-                                                        if (selectedRole === "CARE_WORKER") {
-                                                            return [
-                                                                "CAREGIVER",
-                                                                "SENIOR_CAREGIVER",
-                                                                "JUNIOR_CAREGIVER",
-                                                                "TRAINEE_CAREGIVER",
-                                                                "LIVE_IN_CAREGIVER",
-                                                                "PART_TIME_CAREGIVER",
-                                                                "SPECIALIZED_CAREGIVER",
-                                                                "NURSING_ASSISTANT",
-                                                            ].includes(key)
-                                                        }
-                                                        if (selectedRole === "CLIENT") {
-                                                            return ["SERVICE_USER", "FAMILY_AND_FRIENDS", "OTHER"].includes(key)
-                                                        }
-                                                        return false
-                                                    })
-                                                    .map(([key, value]) => (
-                                                        <SelectItem key={key} value={value}>
-                                                            {value}
-                                                        </SelectItem>
-                                                    ))}
-                                            </SelectContent>
-                                        </Select>
+                                        <FormLabel className="text-sm font-medium text-neutral-600">Sub Role</FormLabel>
+                                        <CustomSelect
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            options={Object.entries(SubRole)
+                                                .filter(([key]) => {
+                                                    if (selectedRole === "OFFICE_STAFF") {
+                                                        return [
+                                                            "FINANCE_MANAGER",
+                                                            "HR_MANAGER",
+                                                            "CARE_MANAGER",
+                                                            "SCHEDULING_COORDINATOR",
+                                                            "OFFICE_ADMINISTRATOR",
+                                                            "RECEPTIONIST",
+                                                            "QUALITY_ASSURANCE_MANAGER",
+                                                            "MARKETING_COORDINATOR",
+                                                            "COMPLIANCE_OFFICER",
+                                                        ].includes(key)
+                                                    }
+                                                    if (selectedRole === "CARE_WORKER") {
+                                                        return [
+                                                            "CAREGIVER",
+                                                            "SENIOR_CAREGIVER",
+                                                            "JUNIOR_CAREGIVER",
+                                                            "TRAINEE_CAREGIVER",
+                                                            "LIVE_IN_CAREGIVER",
+                                                            "PART_TIME_CAREGIVER",
+                                                            "SPECIALIZED_CAREGIVER",
+                                                            "NURSING_ASSISTANT",
+                                                        ].includes(key)
+                                                    }
+                                                    if (selectedRole === "CLIENT") {
+                                                        return ["SERVICE_USER", "FAMILY_AND_FRIENDS", "OTHER"].includes(key)
+                                                    }
+                                                    return false
+                                                })
+                                                .map(([key, value]) => ({
+                                                    label: value,
+                                                    value: value,
+                                                }))}
+                                            placeholder="Select Sub Role"
+                                        />
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -625,9 +608,9 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     </CardContent>
                 </Card>
 
-                <Card className="p-6 mt-6">
-                    <CardHeader>
-                        <CardTitle>Personal Details</CardTitle>
+                <Card className="p-6 mt-8 shadow-sm border border-neutral-100 hover:shadow-md transition-shadow duration-300">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-xl font-semibold text-neutral-800">Personal Details</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-6">
@@ -639,8 +622,6 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                         <h3 className="text-md font-semibold mb-2">Allergies</h3>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="No allergies recorded" />
-
-
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -654,11 +635,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem>
                                         <h3 className="text-md font-semibold mb-2">Interests</h3>
                                         <FormControl>
-                                            <Input
-                                                {...field}
-                                                className="border-0 bg-transparent p-0 text-sm text-neutral-700"
-                                                placeholder="No interests recorded"
-                                            />
+                                            <CustomInput {...field} placeholder="No interests recorded" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -685,12 +662,16 @@ export const PatientInformation = ({ user }: { user: User }) => {
                 {/* Two-column grid for Emergency Contacts and Additional Information */}
                 <div className="grid grid-cols-1 gap-6 mt-6">
                     {/* Emergency Contacts Card */}
-                    <Card className="p-6">
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>Emergency Contacts</CardTitle>
+                    <Card className="p-6 shadow-sm border border-neutral-100 hover:shadow-md transition-shadow duration-300">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-xl font-semibold text-neutral-800">Emergency Contacts</CardTitle>
                             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                                 <DialogTrigger asChild>
-                                    <Button variant="default" size="sm" className="flex items-center gap-1">
+                                    <Button
+                                        variant="default"
+                                        size="sm"
+                                        className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 transition-colors"
+                                    >
                                         <PlusCircle className="h-4 w-4" />
                                         <span>Add Contact</span>
                                     </Button>
@@ -772,11 +753,11 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     {keyContacts.map((contact: KeyContact) => (
                                         <div
                                             key={contact.id}
-                                            className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-shadow"
+                                            className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-200"
                                         >
                                             <div className="flex justify-between items-start">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="bg-emerald-100 text-emerald-700 h-10 w-10 rounded-full flex items-center justify-center font-semibold">
+                                                    <div className="bg-blue-100 text-blue-700 h-10 w-10 rounded-full flex items-center justify-center font-semibold">
                                                         {contact.name.substring(0, 2).toUpperCase()}
                                                     </div>
                                                     <div>
@@ -852,12 +833,16 @@ export const PatientInformation = ({ user }: { user: User }) => {
                 </div>
 
                 {/* Visit Types Card */}
-                <Card className="p-6 mt-6">
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle>Visit Types</CardTitle>
+                <Card className="p-6 mt-8 shadow-sm border border-neutral-100 hover:shadow-md transition-shadow duration-300">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-xl font-semibold text-neutral-800">Visit Types</CardTitle>
                         <Dialog open={visitDialogOpen} onOpenChange={setVisitDialogOpen}>
                             <DialogTrigger asChild>
-                                <Button variant="default" size="sm" className="flex items-center gap-1">
+                                <Button
+                                    variant="default"
+                                    size="sm"
+                                    className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 transition-colors"
+                                >
                                     <PlusCircle className="h-4 w-4" />
                                     <span>Add Visit Type</span>
                                 </Button>
@@ -902,7 +887,10 @@ export const PatientInformation = ({ user }: { user: User }) => {
                         {visitTypes && visitTypes.length > 0 ? (
                             <div className="grid grid-cols-1 gap-6">
                                 {visitTypes.map((visitType) => (
-                                    <div key={visitType.id} className="bg-neutral-50 p-4 rounded-md border border-neutral-200">
+                                    <div
+                                        key={visitType.id}
+                                        className="bg-neutral-50 p-5 rounded-lg border border-neutral-200 hover:shadow-sm transition-all duration-300"
+                                    >
                                         <div className="flex justify-between items-start mb-3">
                                             <div>
                                                 <h3 className="text-lg font-semibold">{visitType.name}</h3>
@@ -917,7 +905,11 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                 }}
                                             >
                                                 <DialogTrigger asChild>
-                                                    <Button variant="outline" size="sm" className="flex items-center gap-1">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="flex items-center gap-1 border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800 transition-colors"
+                                                    >
                                                         <PlusCircle className="h-4 w-4" />
                                                         <span>Add Task</span>
                                                     </Button>
@@ -975,9 +967,12 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                             {visitType.assignedTasks && visitType.assignedTasks.length > 0 ? (
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                     {visitType.assignedTasks.map((task: Task) => (
-                                                        <div key={task.id} className="bg-white p-3 rounded border border-neutral-200">
+                                                        <div
+                                                            key={task.id}
+                                                            className="bg-white p-3 rounded-md border border-neutral-200 hover:border-blue-200 transition-colors duration-300"
+                                                        >
                                                             <div className="flex items-center gap-2 mb-1">
-                                                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-medium">
+                                                                <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-medium shadow-sm">
                                                                     {task.type}
                                                                 </span>
                                                             </div>

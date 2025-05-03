@@ -1,57 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
 import { Button } from "../../../components/ui/button"
-import { useAppDispatch } from "@/state/redux"
 import { AppointmentForm } from "@/components/scheduler/appointment-form"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { Calendar1Icon, Clipboard, Plus, PlusCircle } from "lucide-react"
+import { Clipboard, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import EventIcon from "@/components/icons/eventicon"
 
-// Import the Loading component
-function Loading() {
-    return (
-        <div className="p-6">
-            {/* Header Skeleton */}
-            <div className="flex items-center justify-between mb-6">
-                <div className="space-y-2">
-                    <div className="h-8 w-40 bg-muted rounded animate-pulse" />
-                    <div className="h-4 w-64 bg-muted rounded animate-pulse" />
-                </div>
-                <div className="flex items-center gap-3">
-                    <div className="h-9 w-32 bg-muted rounded animate-pulse" />
-                    <div className="h-9 w-9 bg-muted rounded animate-pulse" />
-                </div>
-            </div>
 
-            {/* Calendar View Toggle Skeleton */}
-            <div className="flex items-center gap-2 mb-6">
-                {["Day", "Week", "Month"].map((view) => (
-                    <div key={view} className="h-9 w-20 bg-muted rounded animate-pulse" />
-                ))}
-            </div>
-
-            {/* Calendar Grid Skeleton */}
-            <div className="grid grid-cols-7 gap-2 mb-4">
-                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                    <div key={day} className="h-8 bg-muted rounded animate-pulse" />
-                ))}
-            </div>
-
-            <div className="grid grid-cols-7 gap-2">
-                {Array.from({ length: 35 }).map((_, i) => (
-                    <div key={i} className="aspect-square bg-muted rounded animate-pulse" />
-                ))}
-            </div>
-
-
-        </div>
-    )
-}
 
 export default function SchedulerPage() {
     const [view] = useState<"day" | "week" | "month">("week")

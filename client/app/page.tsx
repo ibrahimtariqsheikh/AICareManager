@@ -41,8 +41,7 @@ export default function Home() {
                     title="Transform Your Healthcare with Our AI-Powered Platform"
                     subtitle="Streamline your care operations with our all-in-one platform featuring customizable forms, secure communication, medication management, and comprehensive reporting."
                     image={theme === "dark" ? "/assets/dashboard-preview.png" : "/assets/dashboard-preview-light.png"}
-                    isAuthenticated={!!user?.username}
-                    onDashboardClick={() => router.push("/dashboard")}
+
                 />
             </div>
         </div>

@@ -9,7 +9,7 @@ import {
     openCheckInModal,
     openAddMedicationModal,
 } from "@/state/slices/medicationSlice"
-import type { Medication, MedicationLog as MedicationLogType } from "@/types/prismaTypes"
+import type { Medication} from "@/types/prismaTypes"
 import React from "react"
 import { useDeleteMedicationMutation } from "@/state/api"
 import { toast } from "sonner"
