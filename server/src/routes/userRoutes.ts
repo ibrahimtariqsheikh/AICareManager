@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createUser, getUsers, getUser, getFilteredUsers, getAgencyUsers, getUserById, updateUser, getUserAllDetails, addEmergencyContact, editEmergencyContact, deleteEmergencyContact, addVisitType, addVisitTypeTask } from "../controllers/userControllers"
+import { createUser, getUsers, getUser, getFilteredUsers, getAgencyUsers, getUserById, updateUser, getUserAllDetails, addEmergencyContact, editEmergencyContact, deleteEmergencyContact, addVisitType, addVisitTypeTask, deleteUser } from "../controllers/userControllers"
 
 const router = Router()
 
@@ -41,6 +41,9 @@ router.post("/:userId/visit-types", addVisitType)
 
 // Add visit type task
 router.post("/:userId/visit-types/:visitTypeId/tasks", addVisitTypeTask)
+
+// Delete user
+router.delete("/:id", deleteUser)
 
 
 

@@ -154,6 +154,13 @@ const userSlice = createSlice({
     setSelectedOfficeStaff: (state, action: PayloadAction<User[]>) => {
       state.selectedOfficeStaff = action.payload
     },
+    removeUser: (state, action: PayloadAction<{ id: string, selectedUserType: "CLIENT" | "CARE_WORKER" | "OFFICE_STAFF" }>) => {
+      const { id, selectedUserType } = action.payload
+      state.clients = state.clients.filter((client: User) => client.id !== id)
+      state.careWorkers = state.careWorkers.filter((careWorker: User) => careWorker.id !== id)
+      state.officeStaff = state.officeStaff.filter((officeStaff: User) => officeStaff.id !== id)
+     
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -203,11 +210,12 @@ export const {
   setCurrentUser,
   setLoading,
   setError,
-  setActiveUserType,
   updateUser,
   setSelectedClients,
   setSelectedCareWorkers,
   setSelectedOfficeStaff,
+  removeUser,
+  setActiveUserType
 } = userSlice.actions
 export default userSlice.reducer
 

@@ -56,7 +56,7 @@ export function UserActionsMenu({ user, onDeleteUser }: UserActionsMenuProps) {
         }
     }
 
-    // Navigate to edit user page
+
     const handleEditUser = () => {
         router.push(`/dashboard/users/edit/${user.id}`)
     }
@@ -154,7 +154,7 @@ export function UserActionsMenu({ user, onDeleteUser }: UserActionsMenuProps) {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDeleteUser}
                             disabled={isDeleting}

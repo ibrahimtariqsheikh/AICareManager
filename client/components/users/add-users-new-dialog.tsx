@@ -74,12 +74,13 @@ export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUse
         }
     }
 
+
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Add New User</DialogTitle>
+                        <DialogTitle>Add New {activeUserType === "CLIENT" ? "Client" : activeUserType === "CARE_WORKER" ? "Care Worker" : "Office Staff"}</DialogTitle>
                         <DialogDescription>Create a new user account. Assign a role and subrole to the user.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleSubmit}>
@@ -94,7 +95,7 @@ export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUse
                                         value={fullName}
                                         onChange={setFullName}
                                         required
-                                        className="text-black border border-gray-300"
+
                                     />
                                 </div>
 

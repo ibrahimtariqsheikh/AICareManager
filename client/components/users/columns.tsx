@@ -15,6 +15,101 @@ import {
 } from "@/components/ui/dropdown-menu"
 import type { User } from "@/types/prismaTypes"
 import { getRandomPlaceholderImage } from "@/lib/utils"
+import { toast } from "sonner"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useDeleteUserMutation, useGetAgencyUsersQuery, useGetUserQuery } from "@/state/api"
+import { useAppDispatch, useAppSelector } from "@/state/redux"
+import { removeUser } from "@/state/slices/userSlice"
+
+function UserActions({ user }: { user: User }) {
+    const router = useRouter()
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [deleteUser] = useDeleteUserMutation()
+    const dispatch = useAppDispatch()
+    const selectedUserType = useAppSelector((state) => state.user.activeUserType)
+    const { data: userData } = useGetUserQuery()
+    const { refetch: refetchUsers } = useGetAgencyUsersQuery(userData?.userInfo?.agencyId || "")
+
+    const handleDeleteUser = async () => {
+        setIsDeleting(true)
+        try {
+            const response = await deleteUser(user.id)
+            if ('error' in response) {
+                const error = response.error as { status?: number }
+                if (error.status === 404) {
+                    toast.error("User not found")
+                    return
+                }
+            }
+            dispatch(removeUser({ id: user.id, selectedUserType: selectedUserType }))
+            await refetchUsers()
+            toast.success(`${user.fullName} has been deleted`)
+            setIsDeleteDialogOpen(false)
+        } catch (error) {
+            toast.error("Failed to delete user")
+            console.error("Error deleting user:", error)
+        } finally {
+            setIsDeleting(false)
+        }
+    }
+
+    const activeUserType = useAppSelector((state) => state.user.activeUserType)
+
+
+
+    return (
+        <div >
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}>
+                        Edit {activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)}>
+                        Delete {activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+
+            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the user
+                            and remove their data from our servers.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteUser} disabled={isDeleting}>
+                            {isDeleting ? "Deleting..." : "Delete"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </div>
+    )
+}
 
 export const columns: ColumnDef<User>[] = [
     {
@@ -125,26 +220,7 @@ export const columns: ColumnDef<User>[] = [
         id: "actions",
         cell: ({ row }) => {
             const user = row.original
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.id)}>Copy user ID</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>View profile</DropdownMenuItem>
-                        <DropdownMenuItem>Edit user</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">Delete user</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
+            return <UserActions user={user} />
         },
     },
 ]

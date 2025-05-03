@@ -4,10 +4,10 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-const inputVariants = cva("flex w-full rounded-md border bg-background text-foreground transition-colors relative", {
+const inputVariants = cva("flex w-full rounded-md  bg-background text-foreground transition-colors relative", {
     variants: {
         variant: {
-            default: "border text-black border-neutral-200 text-sm bg-neutral-100/50",
+            default: "text-black text-sm bg-neutral-100",
             ghost: "border-none bg-transparent shadow-none",
             outline: "border-input ring-offset-background",
         },
@@ -86,33 +86,33 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
             return state
         }, [disabled, error, success, state])
 
-        // Handle controlled component without disrupting cursor
+
         React.useEffect(() => {
             if (isControlled && inputRef.current) {
-                // Only update if the value has actually changed
+
                 const currentText = inputRef.current.textContent || ""
                 if (value !== currentText) {
-                    // Store selection
+
                     const selection = window.getSelection()
                     const range = selection?.getRangeAt(0)
                     const startOffset = range?.startOffset || 0
 
-                    // Update content
+
                     inputRef.current.textContent = value
                     setLocalValue(value)
 
-                    // Restore selection if element is focused
+
                     if (document.activeElement === inputRef.current && selection && range) {
                         setTimeout(() => {
                             try {
-                                // Create a new range
+
                                 const newRange = document.createRange()
-                                // Position cursor in the appropriate location
+
                                 newRange.setStart(inputRef.current!.firstChild || inputRef.current!,
                                     Math.min(startOffset, (value || "").length))
                                 newRange.collapse(true)
 
-                                // Apply the selection
+
                                 selection.removeAllRanges()
                                 selection.addRange(newRange)
                             } catch (e) {
@@ -124,7 +124,7 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
             }
         }, [value, isControlled])
 
-        // Handle initial default value
+
         React.useEffect(() => {
             if (defaultValue && inputRef.current && !isControlled && !localValue) {
                 inputRef.current.textContent = defaultValue
@@ -132,25 +132,25 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
             }
         }, [defaultValue, localValue, isControlled])
 
-        // Handle content changes from the editable div
+
         const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
             if (disabled) return
 
             const target = e.currentTarget
             const newValue = target.textContent || ""
 
-            // Enforce maxLength
+
             if (maxLength && newValue.length > maxLength) {
-                // Save cursor position
+
                 const selection = window.getSelection()
                 const position = selection?.focusOffset || 0
 
-                // Truncate the value
+
                 const truncated = newValue.slice(0, maxLength)
                 target.textContent = truncated
                 setLocalValue(truncated)
 
-                // Restore cursor at the right position
+
                 if (selection) {
                     setTimeout(() => {
                         try {
@@ -171,7 +171,7 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
                 return
             }
 
-            // Update internal state if not controlled
+
             if (!isControlled) {
                 setLocalValue(newValue)
             }
@@ -179,13 +179,12 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
             onChange?.(newValue)
         }
 
-        // Focus the div when clicked on the container
+
         const handleContainerClick = (e: React.MouseEvent) => {
             if (disabled) return
-            if (e.target === e.currentTarget) { // Only if clicking the container but not the input
+            if (e.target === e.currentTarget) {
                 inputRef.current?.focus()
 
-                // Place cursor at the end
                 const range = document.createRange()
                 const selection = window.getSelection()
                 if (inputRef.current && selection) {
@@ -208,7 +207,6 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
 
         const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
             setIsFocused(false)
-            // Ensure we update localValue on blur to correctly handle placeholder visibility
             if (inputRef.current) {
                 const currentValue = inputRef.current.textContent || "";
                 setLocalValue(currentValue);
@@ -217,13 +215,11 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
         }
 
         const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-            // Handle Enter key to behave like a standard input
             if (e.key === 'Enter') {
                 e.preventDefault()
             }
         }
 
-        // Determine if we should show the placeholder
         const shouldShowPlaceholder = (!isControlled && (!localValue || localValue.trim() === "")) ||
             (isControlled && (!value || value.trim() === ""));
 

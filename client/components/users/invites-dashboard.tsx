@@ -225,7 +225,7 @@ export function InvitesDashboard() {
                         />
                     </div>
 
-                    <Button onClick={() => setIsAddUserOpen(true)} className="bg-gray-900 hover:bg-gray-800">
+                    <Button onClick={() => setIsAddUserOpen(true)} className="bg-gray-900 hover:bg-gray-800" size="sm">
                         <Plus className="h-4 w-4 mr-1" />
                         Add User
                     </Button>

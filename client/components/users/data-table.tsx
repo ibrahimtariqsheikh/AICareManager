@@ -18,6 +18,8 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { CustomInput } from "../ui/custom-input"
+import { useAppSelector } from "@/hooks/useAppSelector"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -50,19 +52,34 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
         },
     })
 
-    const handleRowClick = (userId: string) => {
+    const handleRowClick = (userId: string, event: React.MouseEvent) => {
+        const targetCell = event.target instanceof HTMLElement && event.target.closest('[role="cell"]')
+
+        if (!targetCell ||
+            targetCell === event.currentTarget.lastElementChild ||
+            event.target instanceof HTMLElement && (
+                event.target.closest('button') ||
+                event.target.closest('[role="menuitem"]') ||
+                event.target.closest('[role="dialog"]')
+            )
+        ) {
+            return
+        }
+
         router.push(`/dashboard/users/edit/${userId}`)
     }
+
+    const activeUserType = useAppSelector((state) => state.user.activeUserType)
 
     return (
         <div className="space-y-4 bg-white border border-neutral-300 rounded-lg p-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <Input
-                        placeholder="Search..."
+                    <CustomInput
+                        placeholder={`Search ${activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}...`}
                         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                        onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-                        className="max-w-sm bg-neutral-200 z-10 border-none"
+                        onChange={(value: string) => table.getColumn("name")?.setFilterValue(value)}
+                        className="w-[200px] bg-neutral-100/70"
                     />
                 </div>
 
@@ -88,11 +105,16 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => handleRowClick(row.original.id)}
+                                    onClick={(event) => handleRowClick(row.original.id, event)}
                                     className="cursor-pointer"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                        <TableCell
+                                            key={cell.id}
+                                            className={cell.column.id === 'actions' ? 'cursor-default' : ''}
+                                        >
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             ))

@@ -6,6 +6,7 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Role, SubRole } from "../../types/prismaTypes"
+import { useAppSelector } from "@/hooks/useAppSelector"
 
 interface AddUserDialogProps {
     isOpen: boolean
@@ -64,11 +65,13 @@ export function AddUserDialog({ isOpen, setIsOpen, onAddUser, isLoading }: AddUs
         setIsOpen(false)
     }
 
+    const activeUserType = useAppSelector((state) => state.user.activeUserType)
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add New User</DialogTitle>
+                    <DialogTitle>Add New {activeUserType === "CLIENT" ? "Client" : activeUserType === "CARE_WORKER" ? "Care Worker" : "Office Staff"}</DialogTitle>
                     <DialogDescription>
                         Add a new user to your agency. They will receive an invitation email to join.
                     </DialogDescription>

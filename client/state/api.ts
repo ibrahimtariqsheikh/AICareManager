@@ -259,6 +259,13 @@ export const api = createApi({
         }
       },
     }),
+    deleteUser: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/users/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users"],
+    }),
     getAgencyReports: build.query<Report[], string>({
       query: (agencyId) => `/reports/agency/${agencyId}`,
       providesTags: ["Reports"],
@@ -944,4 +951,5 @@ export const {
   useGetMedicationsQuery,
   useCreateMedicationLogMutation,
   useCheckInMedicationMutation,
+  useDeleteUserMutation,
 } = api

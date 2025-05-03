@@ -80,34 +80,11 @@ export default function SchedulerPage() {
 
             <div
                 className={cn(
-                    "relative container mx-auto p-6 min-h-screen min-w-full transition-opacity duration-500",
+                    "relative container mx-auto px-6 py-2 min-h-screen min-w-full transition-opacity duration-500",
 
                 )}
             >
                 <div className="flex flex-col space-y-4">
-                    <div className="flex items-center justify-end">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button size="sm" >
-                                    <PlusCircle className="h-3 w-3" />
-                                    Create Appointment
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-64" align="end">
-                                <div className="flex flex-col gap-2 text-xs">
-                                    <Button onClick={() => setIsAppointmentFormOpen(true)} className="w-full text-xs" variant="ghost">
-                                        <EventIcon className="h-3 w-3" />
-                                        New Appointment
-                                    </Button>
-                                    <Button onClick={() => { }} className="w-full text-xs " variant="ghost">
-                                        <Clipboard className="h-3 w-3" />
-                                        New Event
-                                    </Button>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-
                     <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
 
                     <Dialog open={isAppointmentFormOpen} onOpenChange={setIsAppointmentFormOpen}>
@@ -118,6 +95,28 @@ export default function SchedulerPage() {
                             <AppointmentForm isOpen={true} onClose={handleFormClose} event={editingEvent} isNew={!editingEvent?.id} />
                         </DialogContent>
                     </Dialog>
+
+                    <div className="fixed bottom-6 right-6 z-50">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
+                                    <Plus className="h-7 w-7" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-64" align="end">
+                                <div className="flex flex-col gap-2 text-xs">
+                                    <Button onClick={() => setIsAppointmentFormOpen(true)} className="w-full text-xs" variant="ghost">
+                                        <EventIcon className="h-3 w-3" />
+                                        New Appointment
+                                    </Button>
+                                    <Button onClick={() => { }} className="w-full text-xs" variant="ghost">
+                                        <Clipboard className="h-3 w-3" />
+                                        New Event
+                                    </Button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                 </div>
             </div>
         </div>

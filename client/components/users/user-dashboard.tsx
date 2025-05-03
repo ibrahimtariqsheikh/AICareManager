@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, UserPlus, Briefcase } from 'lucide-react'
+import { Users, UserPlus, Briefcase, Plus } from 'lucide-react'
 import { toast } from "sonner"
 import {
     useGetUserQuery,
@@ -87,7 +87,7 @@ export function UserDashboard() {
     }
 
     return (
-        <div className="flex-1 p-6 space-y-6">
+        <div className="flex-1 px-6 py-2 space-y-6">
 
 
             {/* User Type Tabs */}
@@ -116,19 +116,11 @@ export function UserDashboard() {
                             Office Staff ({officeStaff.length})
                         </button>
                     </div>
-                    <Button onClick={() => setIsAddUserDialogOpen(true)} >
-                        <UserPlus className="h-4 w-4" />
-                        Add User
-                    </Button>
                 </div>
-
-
             </div>
 
             {/* User Content */}
             <div className="space-y-4">
-
-
                 <Card className="shadow-none border-0">
                     <CardContent className="p-0">
                         <UserTableUser
@@ -137,6 +129,17 @@ export function UserDashboard() {
                         />
                     </CardContent>
                 </Card>
+            </div>
+
+            {/* Floating Action Button */}
+            <div className="fixed bottom-6 right-6 z-50">
+                <Button
+                    size="icon"
+                    className="rounded-full h-14 w-14 shadow-lg"
+                    onClick={() => setIsAddUserDialogOpen(true)}
+                >
+                    <Plus className="h-7 w-7" />
+                </Button>
             </div>
 
             {/* Dialogs */}

@@ -574,9 +574,31 @@ console.log(task);
 };
 
 
+// Delete user
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;  
 
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+            where: { id },
+        });
 
+        if (!existingUser) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
 
+        await prisma.user.delete({
+            where: { id },
+        });
+
+        res.status(204).json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.log("Error deleting user:", error);
+        res.status(500).json({ error: "Failed to delete user with id: " + req.params.id });
+    }
+};
 
 
 
