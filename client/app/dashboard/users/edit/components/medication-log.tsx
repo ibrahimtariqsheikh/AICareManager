@@ -1,7 +1,7 @@
 "use client"
 
 import { useAppDispatch, useAppSelector } from "@/state/redux"
-import { ChevronLeft, ChevronRight, Calendar, Plus } from "lucide-react"
+import { ChevronLeft, ChevronRight, Calendar, Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     setSelectedMonth,
@@ -11,14 +11,16 @@ import {
 } from "@/state/slices/medicationSlice"
 import type { Medication, MedicationLog as MedicationLogType } from "@/types/prismaTypes"
 import React from "react"
-interface MedicationLogProps {
-    medications: Medication[]
-    logs: MedicationLogType[][]
-}
+import { useDeleteMedicationMutation } from "@/state/api"
+import { toast } from "sonner"
+import { deleteMedicationRedux } from "@/state/slices/medicationSlice"
 
-export const MedicationLog = ({ medications, logs }: MedicationLogProps) => {
+
+
+export const MedicationLog = () => {
     const dispatch = useAppDispatch()
-    const { selectedMonth, selectedYear } = useAppSelector((state) => state.medication)
+    const { selectedMonth, selectedYear, medications, medicationLogs: logs } = useAppSelector((state) => state.medication)
+    const [deleteMedication] = useDeleteMedicationMutation()
 
     const monthNames = [
         "January",
@@ -78,54 +80,26 @@ export const MedicationLog = ({ medications, logs }: MedicationLogProps) => {
         return day > 0 && day <= daysInMonth ? day : null
     })
 
-    // Split into weeks
+
     const weeks: number[][] = []
     for (let i = 0; i < calendarDays.length; i += 7) {
         weeks.push(calendarDays.slice(i, i + 7) as number[])
     }
 
-    // Debug function to log data
-    const debugData = () => {
-        console.log("Current month/year:", selectedMonth, selectedYear)
-        console.log("Medications:", medications)
-        console.log("Logs:", logs)
-
-        // Check for May 2, 2025 specifically
-        const flatLogs = logs.flat()
-        flatLogs.forEach((log) => {
-            const logDate = new Date(log.date)
-            console.log("Log date:", logDate, "Day:", logDate.getDate(), "Month:", logDate.getMonth(), "Status:", log.status)
-        })
-    }
-
-    // Call debug function
-    React.useEffect(() => {
-        debugData()
-    }, [selectedMonth, selectedYear, medications, logs])
 
     const getStatusForDay = (medicationId: string, day: number | undefined, timeOfDay?: string): string => {
         if (!day) return "empty"
 
         const flatLogs = logs.flat()
 
-        if (day === 2 && Number.parseInt(selectedMonth) === 4 && Number.parseInt(selectedYear) === 2025) {
-            console.log(`Checking day 2 for medication ${medicationId} and time ${timeOfDay}`)
-            const relevantLogs = flatLogs.filter((log) => log.medicationId === medicationId)
-            console.log("Relevant logs:", relevantLogs)
-        }
 
-        // Find a log for this medication, day and time
+
         const matchingLog = flatLogs.find((log) => {
             const logDate = new Date(log.date)
-            // Convert to local date for comparison
+
             const localLogDate = new Date(logDate.getTime() + logDate.getTimezoneOffset() * 60000)
 
-            // Debug specific dates
-            if (day === 2 && localLogDate.getDate() === 2) {
-                console.log("Found log for day 2:", log)
-                console.log("Log date parts:", localLogDate.getDate(), localLogDate.getMonth(), localLogDate.getFullYear())
-                console.log("Comparing with:", day, Number.parseInt(selectedMonth), Number.parseInt(selectedYear))
-            }
+
 
             return (
                 log.medicationId === medicationId &&
@@ -139,7 +113,7 @@ export const MedicationLog = ({ medications, logs }: MedicationLogProps) => {
             return matchingLog.status.toLowerCase()
         }
 
-        // Check if this time is scheduled for the medication
+
         const medication = medications.find((med) => med.id === medicationId)
         const isTimeScheduled = timeOfDay && medication && medication[timeOfDay.toLowerCase() as keyof typeof medication]
         return isTimeScheduled ? "not-reported" : "not-scheduled"
@@ -207,6 +181,18 @@ export const MedicationLog = ({ medications, logs }: MedicationLogProps) => {
         return timeLabels[timeOfDay as keyof typeof timeLabels] || { label: timeOfDay, icon: "💊" }
     }
 
+    const handleDeleteMedication = async (medicationId: string) => {
+        try {
+            const response = await deleteMedication(medicationId)
+            console.log("Response:", response)
+            dispatch(deleteMedicationRedux(medicationId))
+            toast.success("Medication deleted successfully")
+        } catch (error) {
+            toast.error("Error deleting medication")
+            console.log("Error deleting medication:", error)
+        }
+    }
+
     return (
         <div className="p-2">
             <div className="flex items-center justify-between mb-8 border-b pb-4">
@@ -237,151 +223,184 @@ export const MedicationLog = ({ medications, logs }: MedicationLogProps) => {
                 </div>
             </div>
 
-            <div className="mb-6 flex justify-between items-center">
-                <div className="flex items-center space-x-3 text-sm justify-center">
-                    <span className="legend-item flex items-center">
-                        <span className="inline-block w-4 h-4 bg-emerald-500 rounded-sm mr-1" />
-                        <span className="text-xs">Taken</span>
-                    </span>
-                    <span className="legend-item flex items-center">
-                        <span className="inline-block w-4 h-4 bg-red-500 rounded-sm mr-1" />
-                        <span className="text-xs">Not taken</span>
-                    </span>
-                    <span className="legend-item flex items-center">
-                        <span className="inline-block w-4 h-4 bg-gray-200 border border-gray-200 rounded-sm mr-1" />
-                        <span className="text-xs">Not reported</span>
-                    </span>
-                </div>
-                <div className="flex justify-end">
-                    <Button
-                        onClick={() => dispatch(openAddMedicationModal())}
-                        className="bg-neutral-100 text-neutral-800 hover:bg-neutral-200"
-                    >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Medication
-                    </Button>
-                </div>
-            </div>
+            {medications.length > 0 ? (
+                <>
+                    <div className="mb-6 flex justify-between items-center">
+                        <div className="flex items-center space-x-3 text-sm justify-center">
+                            <span className="legend-item flex items-center">
+                                <span className="inline-block w-4 h-4 bg-emerald-500 rounded-sm mr-1" />
+                                <span className="text-xs">Taken</span>
+                            </span>
+                            <span className="legend-item flex items-center">
+                                <span className="inline-block w-4 h-4 bg-red-500 rounded-sm mr-1" />
+                                <span className="text-xs">Not taken</span>
+                            </span>
+                            <span className="legend-item flex items-center">
+                                <span className="inline-block w-4 h-4 bg-gray-200 border border-gray-200 rounded-sm mr-1" />
+                                <span className="text-xs">Not reported</span>
+                            </span>
+                        </div>
+                        <div className="flex justify-end">
+                            <Button
+                                onClick={() => dispatch(openAddMedicationModal())}
+                                className="bg-neutral-100 text-neutral-800 hover:bg-neutral-200"
+                            >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Add Medication
+                            </Button>
+                        </div>
+                    </div>
 
-            {/* Medication Grid */}
-            <div className="overflow-x-auto">
-                <div className="min-w-max space-y-4">
-                    {medications.map((medication: Medication) => {
-                        // Extract time slots from medication object
-                        const timeSlots = {
-                            morning: medication.morning,
-                            afternoon: medication.afternoon,
-                            evening: medication.evening,
-                            bedtime: medication.bedtime,
-                            asNeeded: medication.asNeeded,
-                        }
+                    {/* Medication Grid */}
+                    <div className="overflow-x-auto">
+                        <div className="min-w-max space-y-4">
+                            {medications.map((medication: Medication) => {
+                                // Extract time slots from medication object
+                                const timeSlots = {
+                                    morning: medication.morning,
+                                    afternoon: medication.afternoon,
+                                    evening: medication.evening,
+                                    bedtime: medication.bedtime,
+                                    asNeeded: medication.asNeeded,
+                                }
 
-                        return (
-                            <div key={medication.id} className="bg-white p-4 rounded-lg border border-neutral-100">
-                                <div className="flex items-center mb-3 border-b pb-2">
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-semibold text-neutral-800">{medication.name}</h3>
-                                        <div className="text-sm text-neutral-600 mt-1">
-                                            <span className="font-medium">{medication.dosage}</span>
-                                            <span className="mx-1">•</span>
-                                            <span>{medication.frequency}</span>
-                                            {medication.instructions && (
-                                                <>
+                                return (
+                                    <div key={medication.id} className="bg-white p-4 rounded-lg border border-neutral-100">
+                                        <div className="flex items-center mb-3 border-b pb-2">
+                                            <div className="flex-1">
+                                                <h3 className="text-lg font-semibold text-neutral-800">{medication.name}</h3>
+                                                <div className="text-sm text-neutral-600 mt-1">
+                                                    <span className="font-medium">{medication.dosage}</span>
                                                     <span className="mx-1">•</span>
-                                                    <span>{medication.instructions}</span>
-                                                </>
-                                            )}
+                                                    <span>{medication.frequency}</span>
+                                                    {medication.instructions && (
+                                                        <>
+                                                            <span className="mx-1">•</span>
+                                                            <span>{medication.instructions}</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 hover:bg-red-50 hover:text-red-600 transition-all"
+                                                    onClick={() => handleDeleteMedication(medication.id)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </div>
+
+                                        {/* Time slots in a row */}
+                                        <div className="flex">
+                                            {Object.entries(timeSlots).map(([timeOfDay, isScheduled], index, array) => {
+                                                if (!isScheduled) return null
+
+                                                const { label } = getTimeLabel(timeOfDay)
+
+                                                return (
+                                                    <React.Fragment key={`${medication.id}-${timeOfDay}`}>
+                                                        <div className="w-[200px]">
+                                                            <div className="mb-3">
+                                                                <h3 className="text-sm font-semibold flex items-center text-neutral-800">{label}</h3>
+                                                            </div>
+
+                                                            {/* Calendar grid */}
+                                                            <div className="flex flex-col">
+                                                                {/* Weekday headers */}
+                                                                <div className="flex justify-between mb-3">
+                                                                    {["S", "M", "T", "W", "T", "F", "S"].map((day) => (
+                                                                        <div
+                                                                            key={day}
+                                                                            className="w-5 text-center text-xs font-medium text-neutral-500 uppercase"
+                                                                        >
+                                                                            {day}
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+
+                                                                {/* Calendar days - display as columns */}
+                                                                <div className="flex justify-between">
+                                                                    {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => (
+                                                                        <div key={dayIndex} className="flex flex-col gap-1.5">
+                                                                            {weeks.map((week, weekIndex) => {
+                                                                                const day = week[dayIndex]
+
+                                                                                const status = getStatusForDay(medication.id, day, timeOfDay)
+
+
+                                                                                const statusClass = getStatusClass(status)
+                                                                                const statusTitle = getStatusTitle(status)
+                                                                                const dayStatus = getDayStatus(status)
+
+                                                                                return (
+                                                                                    <div
+                                                                                        key={`${weekIndex}-${dayIndex}`}
+                                                                                        className={`w-5 h-5 ${statusClass} rounded-sm flex items-center justify-center`}
+                                                                                        title={`${day ? day : ""} - ${statusTitle}`}
+                                                                                    >
+                                                                                        {day && day <= daysInMonth && (
+                                                                                            <span className={`text-[10px] font-medium ${dayStatus}`}>{day}</span>
+                                                                                        )}
+                                                                                    </div>
+                                                                                )
+                                                                            })}
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div className="mt-4 flex justify-center">
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="bg-neutral-100 h-8"
+                                                                    onClick={() =>
+                                                                        dispatch(openCheckInModal({ medicationId: medication.id, timeOfDay, day: 1 }))
+                                                                    }
+                                                                >
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <div className="w-4 h-4 bg-emerald-500 rounded-sm" />
+                                                                        <span className="text-sm font-medium">Check in</span>
+                                                                    </div>
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                        {index < array.length - 1 && <div className="w-px h-full bg-neutral-200 mx-3" />}
+                                                    </React.Fragment>
+                                                )
+                                            })}
                                         </div>
                                     </div>
-                                    <div className="bg-blue-100/60 text-blue-600 rounded-sm px-2 py-1 text-xs font-medium">Active</div>
-                                </div>
-
-                                {/* Time slots in a row */}
-                                <div className="flex">
-                                    {Object.entries(timeSlots).map(([timeOfDay, isScheduled], index, array) => {
-                                        if (!isScheduled) return null
-
-                                        const { label } = getTimeLabel(timeOfDay)
-
-                                        return (
-                                            <React.Fragment key={`${medication.id}-${timeOfDay}`}>
-                                                <div className="w-[200px]">
-                                                    <div className="mb-3">
-                                                        <h3 className="text-sm font-semibold flex items-center text-neutral-800">{label}</h3>
-                                                    </div>
-
-                                                    {/* Calendar grid */}
-                                                    <div className="flex flex-col">
-                                                        {/* Weekday headers */}
-                                                        <div className="flex justify-between mb-3">
-                                                            {["S", "M", "T", "W", "T", "F", "S"].map((day) => (
-                                                                <div
-                                                                    key={day}
-                                                                    className="w-5 text-center text-xs font-medium text-neutral-500 uppercase"
-                                                                >
-                                                                    {day}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-
-                                                        {/* Calendar days - display as columns */}
-                                                        <div className="flex justify-between">
-                                                            {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => (
-                                                                <div key={dayIndex} className="flex flex-col gap-1.5">
-                                                                    {weeks.map((week, weekIndex) => {
-                                                                        const day = week[dayIndex]
-
-                                                                        const status = getStatusForDay(medication.id, day, timeOfDay)
-
-
-                                                                        const statusClass = getStatusClass(status)
-                                                                        const statusTitle = getStatusTitle(status)
-                                                                        const dayStatus = getDayStatus(status)
-
-                                                                        return (
-                                                                            <div
-                                                                                key={`${weekIndex}-${dayIndex}`}
-                                                                                className={`w-5 h-5 ${statusClass} rounded-sm flex items-center justify-center`}
-                                                                                title={`${day ? day : ""} - ${statusTitle}`}
-                                                                            >
-                                                                                {day && day <= daysInMonth && (
-                                                                                    <span className={`text-[10px] font-medium ${dayStatus}`}>{day}</span>
-                                                                                )}
-                                                                            </div>
-                                                                        )
-                                                                    })}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Check in button for this time of day */}
-                                                    <div className="mt-4 flex justify-center">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="bg-neutral-100 h-8"
-                                                            onClick={() =>
-                                                                dispatch(openCheckInModal({ medicationId: medication.id, timeOfDay, day: 1 }))
-                                                            }
-                                                        >
-                                                            <div className="flex items-center space-x-2">
-                                                                <div className="w-4 h-4 bg-emerald-500 rounded-sm" />
-                                                                <span className="text-sm font-medium">Check in</span>
-                                                            </div>
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                                {index < array.length - 1 && <div className="w-px h-full bg-neutral-200 mx-3" />}
-                                            </React.Fragment>
-                                        )
-                                    })}
-                                </div>
-                            </div>
-                        )
-                    })}
+                                )
+                            })}
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-12">
+                    <div className="text-center space-y-4">
+                        <div className="bg-neutral-100 p-6 rounded-full inline-block">
+                            <Calendar className="w-8 h-8 text-neutral-600" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-neutral-800">No Prescriped Medications</h3>
+                        <p className="text-neutral-600 max-w-md">
+                            Start by adding medications to track their schedule and status.
+                        </p>
+                        <Button
+                            onClick={() => dispatch(openAddMedicationModal())}
+                            className="bg-neutral-100 text-neutral-800 hover:bg-neutral-200 mt-4"
+                        >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add Medication
+                        </Button>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 }

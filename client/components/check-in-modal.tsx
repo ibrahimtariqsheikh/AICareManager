@@ -58,7 +58,7 @@ export function CheckInModal({ user }: CheckInModalProps) {
         }
 
         try {
-            await checkInMedication({
+            const response = await checkInMedication({
                 medicationId: selectedMedicationId,
                 userId: user.id,
                 data: {
@@ -100,7 +100,7 @@ export function CheckInModal({ user }: CheckInModalProps) {
         <Dialog open={isCheckInModalOpen} onOpenChange={(open) => !open && handleClose()}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">Medication Check-In</DialogTitle>
+                    <DialogTitle className="text-lg font-semibold">Medication Check-In</DialogTitle>
                 </DialogHeader>
 
                 <Form {...form}>
@@ -190,7 +190,7 @@ export function CheckInModal({ user }: CheckInModalProps) {
                             <Button type="button" variant="outline" onClick={handleClose}>
                                 Cancel
                             </Button>
-                            <Button type="submit" className=" bg-emerald-500 text-white">
+                            <Button type="submit" className=" bg-emerald-500 text-white hover:bg-emerald-600">
                                 Save Check-In
                             </Button>
                         </DialogFooter>

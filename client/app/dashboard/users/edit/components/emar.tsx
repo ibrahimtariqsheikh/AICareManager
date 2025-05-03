@@ -19,14 +19,15 @@ export const EMAR = ({ user }: EMARProps) => {
 
 
 
-    const medications = user.medications
-    const logs = user.medications.map((medication: Medication) => medication.logs)
+    const medicationsFromUser = user.medications
+    const logsFromUser = user.medications.map((medication: Medication) => medication.logs)
 
 
     useEffect(() => {
-        dispatch(setMedications(medications))
-        dispatch(setMedicationLogs(logs))
+        dispatch(setMedications(medicationsFromUser))
+        dispatch(setMedicationLogs(logsFromUser))
     }, [dispatch, user.id])
+
 
 
 
@@ -34,7 +35,7 @@ export const EMAR = ({ user }: EMARProps) => {
         <div className="space-y-6">
             <Card>
                 <CardContent className="p-6">
-                    <MedicationLog medications={medications} logs={logs} />
+                    <MedicationLog />
                 </CardContent>
             </Card>
             <AddMedicationModal user={user} />

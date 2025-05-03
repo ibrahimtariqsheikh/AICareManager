@@ -5,23 +5,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { addMedication, closeAddMedicationModal } from "@/state/slices/medicationSlice"
 import { useCreateMedicationMutation } from "@/state/api"
-import { Pill } from "lucide-react"
-import { User } from "@/types/prismaTypes"
+import { Pill, Sun, Cloud, Sunset, Moon, Clock } from "lucide-react"
+import type { User } from "@/types/prismaTypes"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { toast } from "sonner"
+import { cn } from "@/lib/utils"
 
 const formSchema = z.object({
     name: z.string().min(1, "Medication name is required"),
@@ -43,7 +36,6 @@ export function AddMedicationModal({ user }: AddMedicationModalProps) {
     const dispatch = useAppDispatch()
     const { isAddMedicationModalOpen } = useAppSelector((state) => state.medication)
     const [createMedication] = useCreateMedicationMutation()
-
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -85,12 +77,56 @@ export function AddMedicationModal({ user }: AddMedicationModalProps) {
         }
     }
 
+    // Define administration time options with icons and colors
+    const administrationTimes = [
+        {
+            name: "morning",
+            label: "Morning",
+            icon: Sun,
+            color: "text-amber-500",
+            bgColor: "bg-amber-100",
+            borderColor: "border-amber-500",
+        },
+        {
+            name: "afternoon",
+            label: "Afternoon",
+            icon: Cloud,
+            color: "text-sky-500",
+            bgColor: "bg-sky-100",
+            borderColor: "border-sky-500",
+        },
+        {
+            name: "evening",
+            label: "Evening",
+            icon: Sunset,
+            color: "text-orange-500",
+            bgColor: "bg-orange-100",
+            borderColor: "border-orange-500",
+        },
+        {
+            name: "bedtime",
+            label: "Bedtime",
+            icon: Moon,
+            color: "text-indigo-500",
+            bgColor: "bg-indigo-100",
+            borderColor: "border-indigo-500",
+        },
+        {
+            name: "asNeeded",
+            label: "As Needed",
+            icon: Clock,
+            color: "text-gray-500",
+            bgColor: "bg-gray-100",
+            borderColor: "border-gray-500",
+        },
+    ]
+
     return (
         <Dialog open={isAddMedicationModalOpen} onOpenChange={(open) => !open && handleClose()}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold flex items-center">
-                        <Pill className="mr-2 w-5 h-5" />
+                    <DialogTitle className="text-lg font-semibold flex items-center">
+                        <Pill className="mr-2 w-4 h-4" />
                         Add New Medication
                     </DialogTitle>
                 </DialogHeader>
@@ -147,36 +183,50 @@ export function AddMedicationModal({ user }: AddMedicationModalProps) {
                                     <FormItem>
                                         <FormLabel>Instructions (Optional)</FormLabel>
                                         <FormControl>
-                                            <Textarea
-                                                placeholder="Enter any special instructions"
-                                                rows={3}
-                                                {...field}
-                                            />
+                                            <Textarea placeholder="Enter any special instructions" rows={3} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
 
-                            <div className="grid gap-2">
+                            <div className="space-y-3">
                                 <FormLabel>Administration Times</FormLabel>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {["morning", "afternoon", "evening", "bedtime", "asNeeded"].map((time) => (
+                                <div className="flex w-full justify-between gap-2 bg-muted/30 p-2 rounded-lg">
+                                    {administrationTimes.map(({ name, label, icon: Icon, color, bgColor, borderColor }) => (
                                         <FormField
-                                            key={time}
+                                            key={name}
                                             control={form.control}
-                                            name={time as keyof typeof formSchema.shape}
+                                            name={name as keyof typeof formSchema.shape}
                                             render={({ field }) => (
-                                                <FormItem className="flex items-center space-x-2">
+                                                <FormItem className="flex-1">
                                                     <FormControl>
-                                                        <Checkbox
-                                                            checked={field.value as boolean}
-                                                            onCheckedChange={field.onChange}
-                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => field.onChange(!field.value)}
+                                                            className={cn(
+                                                                "w-full h-full flex flex-col items-center justify-center py-2 px-1 rounded-md transition-all duration-200",
+                                                                field.value
+                                                                    ? `${bgColor} ring-2 ${borderColor} shadow-sm`
+                                                                    : "bg-transparent hover:bg-background",
+                                                            )}
+                                                        >
+                                                            <Icon
+                                                                className={cn(
+                                                                    "h-5 w-5 mb-1 transition-transform",
+                                                                    field.value ? `${color} scale-110` : "text-muted-foreground",
+                                                                )}
+                                                            />
+                                                            <span
+                                                                className={cn(
+                                                                    "text-[10px] font-medium leading-tight text-center",
+                                                                    field.value ? "text-foreground" : "text-muted-foreground",
+                                                                )}
+                                                            >
+                                                                {label}
+                                                            </span>
+                                                        </button>
                                                     </FormControl>
-                                                    <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                                        {time.charAt(0).toUpperCase() + time.slice(1)}
-                                                    </FormLabel>
                                                 </FormItem>
                                             )}
                                         />
@@ -189,7 +239,7 @@ export function AddMedicationModal({ user }: AddMedicationModalProps) {
                             <Button type="button" variant="outline" onClick={handleClose}>
                                 Cancel
                             </Button>
-                            <Button type="submit" className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white">
+                            <Button type="submit" className="bg-emerald-500 text-white hover:bg-emerald-600">
                                 Add Medication
                             </Button>
                         </DialogFooter>
@@ -198,4 +248,4 @@ export function AddMedicationModal({ user }: AddMedicationModalProps) {
             </DialogContent>
         </Dialog>
     )
-} 
+}

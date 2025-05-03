@@ -86,6 +86,9 @@ const medicationSlice = createSlice({
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload
+    },
+    deleteMedicationRedux: (state, action: PayloadAction<string>) => {
+      state.medications = state.medications.filter((medication: Medication) => medication.id !== action.payload)
     }
   },
 })
@@ -104,6 +107,7 @@ export const {
   updateMedicationLog,
   setStatus,
   setError,
+  deleteMedicationRedux,
 } = medicationSlice.actions
 
 export default medicationSlice.reducer
