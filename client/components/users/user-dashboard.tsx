@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Users, UserPlus, Briefcase, Plus } from 'lucide-react'
 import { toast } from "sonner"
+import { useTheme } from "next-themes"
 import {
     useGetUserQuery,
     useCreateUserMutation,
@@ -26,7 +27,7 @@ export function UserDashboard() {
     // State
     const [searchQuery, _] = useState("")
     const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false)
-
+    const { theme } = useTheme()
 
     const activeUserType = useAppSelector((state) => state.user.activeUserType)
 
@@ -91,25 +92,25 @@ export function UserDashboard() {
 
 
             {/* User Type Tabs */}
-            <div className="flex border-b border-gray-200 pb-4">
+            <div className={`flex border-b ${theme === "dark" ? "border-gray-700" : "border-gray-200"} pb-4`}>
                 <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-2">
                         <button
-                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CLIENT" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CLIENT" ? `border-b-2 ${theme === "dark" ? "border-gray-100 text-gray-100" : "border-gray-900 text-gray-900"}` : theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"}`}
                             onClick={() => dispatch(setActiveUserType("CLIENT"))}
                         >
                             <Users className="h-4 w-4" />
                             Clients ({clients.length})
                         </button>
                         <button
-                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CARE_WORKER" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CARE_WORKER" ? `border-b-2 ${theme === "dark" ? "border-gray-100 text-gray-100" : "border-gray-900 text-gray-900"}` : theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"}`}
                             onClick={() => dispatch(setActiveUserType("CARE_WORKER"))}
                         >
                             <UserPlus className="h-4 w-4" />
                             Care Workers ({careWorkers.length})
                         </button>
                         <button
-                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "OFFICE_STAFF" ? "border-b-2 border-gray-900 text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "OFFICE_STAFF" ? `border-b-2 ${theme === "dark" ? "border-gray-100 text-gray-100" : "border-gray-900 text-gray-900"}` : theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"}`}
                             onClick={() => dispatch(setActiveUserType("OFFICE_STAFF"))}
                         >
                             <Briefcase className="h-4 w-4" />
@@ -121,7 +122,7 @@ export function UserDashboard() {
 
             {/* User Content */}
             <div className="space-y-4">
-                <Card className="shadow-none border-0">
+                <Card className={`shadow-none ${theme === "dark" ? "bg-zinc-900" : "bg-white"}`}>
                     <CardContent className="p-0">
                         <UserTableUser
                             users={filteredUsers}
@@ -135,7 +136,7 @@ export function UserDashboard() {
             <div className="fixed bottom-6 right-6 z-50">
                 <Button
                     size="icon"
-                    className="rounded-full h-14 w-14 shadow-lg"
+                    className={`rounded-full h-14 w-14 shadow-lg ${theme === "dark" ? "bg-purple-600 hover:bg-purple-700" : "bg-primary hover:bg-primary/90"}`}
                     onClick={() => setIsAddUserDialogOpen(true)}
                 >
                     <Plus className="h-7 w-7" />

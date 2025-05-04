@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getRandomPlaceholderImage } from "@/lib/utils"
 import { CustomInput } from "@/components/ui/custom-input"
+import { cn } from "@/lib/utils"
 
 
 export default function DashboardPage() {
@@ -162,96 +163,96 @@ export default function DashboardPage() {
         <div className="px-6 py-2 space-y-6 mt-4">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <Card className="border border-gray-200 shadow-sm">
+                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-6">
                         <div className="flex items-center mb-4">
-                            <div className="p-2 rounded-md bg-gray-100">
-                                <Users className="h-5 w-5 text-gray-700" />
+                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <Users className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Clients</h3>
+                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Clients</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-gray-800">{dashboardData?.stats.totalClients}</div>
-                            <div className="flex items-center text-blue-600 text-sm">
+                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalClients}</div>
+                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +12%
                             </div>
                         </div>
-                        <div className="text-sm text-gray-500">Patient increase in 7 days.</div>
+                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Patient increase in 7 days.</div>
                         <div className="flex justify-end mt-2" onClick={() => router.push("/dashboard/users")}>
-                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
                                 See details
                             </Button>
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card className="border border-gray-200 shadow-sm">
+                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-6">
                         <div className="flex items-center mb-4">
-                            <div className="p-2 rounded-md bg-gray-100">
-                                <Calendar className="h-5 w-5 text-gray-700" />
+                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <Calendar className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Appointment</h3>
+                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Appointment</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-gray-800">{dashboardData?.stats.totalSchedules}</div>
-                            <div className="flex items-center text-blue-600 text-sm">
+                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalSchedules}</div>
+                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +10%
                             </div>
                         </div>
-                        <div className="text-sm text-gray-500">Appointment increase in 7 days.</div>
+                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Appointment increase in 7 days.</div>
                         <div className="flex justify-end mt-2" onClick={() => router.push("/dashboard/schedule")}>
-                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
                                 See details
                             </Button>
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card className="border border-gray-200 shadow-sm">
+                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-6">
                         <div className="flex items-center mb-4">
-                            <div className="p-2 rounded-md bg-gray-100">
-                                <FileText className="h-5 w-5 text-gray-700" />
+                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <FileText className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Revenue</h3>
+                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-gray-800">$7,209.29</div>
-                            <div className="flex items-center text-blue-600 text-sm">
+                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">$7,209.29</div>
+                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +24%
                             </div>
                         </div>
-                        <div className="text-sm text-gray-500">Treatments increase in 7 days.</div>
+                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Treatments increase in 7 days.</div>
                         <div className="flex justify-end mt-2">
-                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
                                 See details
                             </Button>
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card className="border border-gray-200 shadow-sm">
+                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-6">
                         <div className="flex items-center mb-4">
-                            <div className="p-2 rounded-md bg-gray-100">
-                                <ClipboardList className="h-5 w-5 text-gray-700" />
+                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <ClipboardList className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-gray-600">Total Treatments</h3>
+                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Treatments</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-gray-800">234</div>
-                            <div className="flex items-center text-blue-600 text-sm">
+                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">234</div>
+                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
                                 <ArrowUpRight className="h-3 w-3 mr-1" />
                                 +11%
                             </div>
                         </div>
-                        <div className="text-sm text-gray-500">Income increase in 7 days.</div>
+                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Income increase in 7 days.</div>
                         <div className="flex justify-end mt-2">
-                            <Button variant="link" className="text-gray-600 p-0 h-auto">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
                                 See details
                             </Button>
                         </div>
@@ -259,16 +260,16 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            <Card className="border border-gray-200 shadow-sm mb-6">
-                <CardHeader className="border-b border-gray-100 pb-4">
+            <Card className={cn("border border-neutral-200 shadow-sm mb-6", "dark:border-neutral-800 dark:bg-card")}>
+                <CardHeader className={cn("border-b border-neutral-100 pb-4", "dark:border-neutral-800")}>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                            <ClipboardList className="h-5 w-5 mr-2 text-gray-700" />
-                            <CardTitle className="text-lg font-medium text-gray-800">Upcoming Appointments</CardTitle>
+                            <ClipboardList className="h-4 w-4 mr-2 text-neutral-700 dark:text-neutral-300" />
+                            <CardTitle className="text-lg font-medium text-neutral-800 dark:text-white">Upcoming Appointments</CardTitle>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="relative">
-                                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 dark:text-neutral-500" />
                                 <CustomInput
                                     placeholder="Search appointments..."
                                     className='w-[200px]'
@@ -279,19 +280,19 @@ export default function DashboardPage() {
                             <div className="relative">
                                 <Button
                                     variant="outline"
-                                    className="bg-white border-gray-200"
+                                    className={cn("bg-white border-neutral-200", "dark:bg-neutral-800 dark:border-neutral-700")}
                                     onClick={() => setShowFilters(!showFilters)}
                                 >
                                     <Filter className="h-4 w-4 mr-2" />
                                     Filter
                                 </Button>
                                 {showFilters && (
-                                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10 border border-gray-200 p-4">
+                                    <div className={cn("absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10 border border-neutral-200 p-4", "dark:bg-neutral-800 dark:border-neutral-700")}>
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Status</label>
                                                 <select
-                                                    className="w-full border border-gray-200 rounded-md p-2 text-sm"
+                                                    className={cn("w-full border border-neutral-200 rounded-md p-2 text-sm", "dark:bg-neutral-800 dark:border-neutral-700 dark:text-white")}
                                                     value={selectedStatus || ""}
                                                     onChange={(e) => setSelectedStatus(e.target.value || null)}
                                                 >
@@ -302,9 +303,9 @@ export default function DashboardPage() {
                                                 </select>
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Type</label>
                                                 <select
-                                                    className="w-full border border-gray-200 rounded-md p-2 text-sm"
+                                                    className={cn("w-full border border-neutral-200 rounded-md p-2 text-sm", "dark:bg-neutral-800 dark:border-neutral-700 dark:text-white")}
                                                     value={selectedType || ""}
                                                     onChange={(e) => setSelectedType(e.target.value || null)}
                                                 >
@@ -323,17 +324,17 @@ export default function DashboardPage() {
                 <CardContent className="p-0">
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b border-gray-100">
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment Type</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Care Worker</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <tr className={cn("border-b border-neutral-100", "dark:border-neutral-800")}>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Client</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Appointment Type</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Date & Time</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Care Worker</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Status</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-100">
+                        <tbody className={cn("bg-white divide-y divide-neutral-100", "dark:bg-neutral-900 dark:divide-neutral-800")}>
                             {filteredSchedules.map((schedule) => (
-                                <tr key={schedule.id} className="hover:bg-gray-50">
+                                <tr key={schedule.id} className={cn("hover:bg-neutral-50", "dark:hover:bg-neutral-800/50")}>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
                                             <Avatar className="h-8 w-8">
@@ -343,38 +344,40 @@ export default function DashboardPage() {
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="ml-3">
-                                                <div className="text-sm font-medium text-gray-900">
+                                                <div className="text-sm font-medium text-neutral-900 dark:text-white">
                                                     {schedule.clientName}
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <Badge variant="outline" className={`${schedule.type === "APPOINTMENT"
-                                            ? "bg-blue-50 text-blue-700 border-blue-200"
-                                            : schedule.type === "WEEKLY_CHECKUP"
-                                                ? "bg-green-50 text-green-700 border-green-200"
-                                                : "bg-amber-50 text-amber-700 border-amber-200"
-                                            }`}>
+                                        <Badge variant="outline" className={cn(
+                                            schedule.type === "APPOINTMENT"
+                                                ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800"
+                                                : schedule.type === "WEEKLY_CHECKUP"
+                                                    ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                                                    : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800"
+                                        )}>
                                             {schedule.type.replace("_", " ")}
                                         </Badge>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">{new Date(schedule.date).toLocaleDateString()}</div>
-                                        <div className="text-sm text-gray-500">{schedule.startTime} - {schedule.endTime}</div>
+                                        <div className="text-sm text-neutral-900 dark:text-white">{new Date(schedule.date).toLocaleDateString()}</div>
+                                        <div className="text-sm text-neutral-500 dark:text-neutral-400">{schedule.startTime} - {schedule.endTime}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">
+                                        <div className="text-sm text-neutral-900 dark:text-white">
                                             {schedule.careWorkerName}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <Badge variant="outline" className={`${schedule.status === "CONFIRMED"
-                                            ? "bg-blue-50 text-blue-700 border-blue-200"
-                                            : schedule.status === "PENDING"
-                                                ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                                                : "bg-red-50 text-red-700 border-red-200"
-                                            }`}>
+                                        <Badge variant="outline" className={cn(
+                                            schedule.status === "CONFIRMED"
+                                                ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800"
+                                                : schedule.status === "PENDING"
+                                                    ? "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800"
+                                                    : "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
+                                        )}>
                                             {schedule.status}
                                         </Badge>
                                     </td>

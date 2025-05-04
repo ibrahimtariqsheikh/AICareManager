@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils"
 const inputVariants = cva("flex w-full rounded-md  bg-background text-foreground transition-colors relative", {
     variants: {
         variant: {
-            default: "text-black text-sm bg-neutral-100",
+            default: cn("text-black text-sm bg-neutral-100", "dark:text-white dark:bg-neutral-900"),
             ghost: "border-none bg-transparent shadow-none",
-            outline: "border-input ring-offset-background",
+            outline: cn("border-input ring-offset-background", "dark:border-neutral-800"),
         },
         inputSize: {
             default: "h-10",
@@ -17,7 +17,10 @@ const inputVariants = cva("flex w-full rounded-md  bg-background text-foreground
             lg: "h-12 text-lg",
         },
         state: {
-            default: "hover:border-primary/50 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ",
+            default: cn(
+                "hover:border-primary/50 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                "dark:hover:border-primary/50 dark:focus-within:ring-primary dark:focus-within:ring-offset-2"
+            ),
             error: "border-destructive hover:border-destructive focus-within:ring-destructive",
             success: "border-green-500 hover:border-green-600 focus-within:ring-green-500",
             disabled: "opacity-50 cursor-not-allowed",

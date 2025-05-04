@@ -15,6 +15,8 @@ import * as React from "react"
 
 import { setAgency } from "@/state/slices/agencySlice";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -112,7 +114,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const currentPath = pathname.split("/").filter(Boolean)
     const currentPathTitle = currentPath[currentPath.length - 1]
     const currentPathTitleCapitalized = currentPathTitle?.charAt(0).toUpperCase() + currentPathTitle?.slice(1) || "Dashboard"
-
+    const { theme } = useTheme()
 
 
     return (
@@ -126,9 +128,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <main className="flex-1 overflow-y-auto">
                     <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background z-50">
                         <div className="flex flex-1 items-center gap-2 px-3 ">
-                            <SidebarTrigger className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none" />
-                            <Separator orientation="vertical" className="mr-2 h-4" />
-                            <h1 className="text-md font-semibold">{currentPathTitleCapitalized || "Dashboard"}</h1>
+                            <SidebarTrigger className={cn("bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none", theme === "dark" ? "bg-neutral-800 hover:bg-neutral-700 text-neutral-100 border-neutral-700" : "")} />
+                            <Separator orientation="vertical" className={cn(" h-4", theme === "dark" ? "bg-neutral-800" : "bg-neutral-200")} />
+                            <h1 className="text-sm font-medium">{currentPathTitleCapitalized || "Dashboard"}</h1>
                         </div>
                     </header>
                     <div className="flex flex-1 flex-col gap-4">

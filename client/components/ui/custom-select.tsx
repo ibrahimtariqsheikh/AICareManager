@@ -8,9 +8,9 @@ import { ChevronDown } from "lucide-react"
 const selectVariants = cva("flex w-full rounded-md border bg-background text-foreground transition-colors relative", {
     variants: {
         variant: {
-            default: "border text-black border-neutral-200 text-sm bg-neutral-100/50",
+            default: cn("border text-black border-neutral-200 text-sm bg-neutral-100/50", "dark:text-white dark:border-neutral-800 dark:bg-neutral-900/50"),
             ghost: "border-none bg-transparent shadow-none",
-            outline: "border-input ring-offset-background",
+            outline: cn("border-input ring-offset-background", "dark:border-neutral-800"),
         },
         selectSize: {
             default: "h-10",
@@ -18,7 +18,10 @@ const selectVariants = cva("flex w-full rounded-md border bg-background text-for
             lg: "h-12 text-lg",
         },
         state: {
-            default: "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+            default: cn(
+                "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                "dark:focus-within:ring-primary dark:focus-within:ring-offset-2"
+            ),
             error: "border-destructive focus-within:ring-destructive",
             success: "border-green-500 focus-within:ring-green-500",
             disabled: "opacity-50 cursor-not-allowed",
@@ -32,7 +35,7 @@ const selectVariants = cva("flex w-full rounded-md border bg-background text-for
 })
 
 const dropdownVariants = cva(
-    "absolute z-50 w-full mt-1 rounded-md border border-neutral-200 bg-white overflow-hidden",
+    "absolute z-50 w-full mt-1 rounded-md border overflow-hidden",
     {
         variants: {
             position: {
@@ -334,8 +337,14 @@ const CustomSelect = React.forwardRef<HTMLDivElement, CustomSelectProps>(
         const containerClasses = cn(
             selectVariants({ variant, selectSize, state: computedState, className }),
             "transition-all duration-200 ease-out",
-            !disabled && "hover:bg-black/[0.02] hover:border-black/[0.15]",
-            (isFocused || isOpen) && "border-black/25 shadow-[0_0_0_1px_rgba(0,0,0,0.05)]",
+            !disabled && cn(
+                "hover:bg-black/[0.02] hover:border-black/[0.15]",
+                "dark:hover:bg-white/[0.02] dark:hover:border-white/[0.15]"
+            ),
+            (isFocused || isOpen) && cn(
+                "border-black/25 shadow-[0_0_0_1px_rgba(0,0,0,0.05)]",
+                "dark:border-white/25 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05)]"
+            ),
             !disabled && "active:scale-[0.995]"
         )
 
@@ -345,7 +354,10 @@ const CustomSelect = React.forwardRef<HTMLDivElement, CustomSelectProps>(
             "transition-all",
             prefersReducedMotion ? "duration-100" : "duration-200",
             "ease-out",
-            "shadow-lg shadow-black/5 backdrop-blur-sm",
+            cn(
+                "shadow-lg shadow-black/5 backdrop-blur-sm",
+                "dark:shadow-white/5 dark:bg-neutral-900 dark:border-neutral-800"
+            ),
             isOpen ? "opacity-100" : "opacity-0 pointer-events-none",
             dropdownPosition === "bottom"
                 ? (isOpen ? "translate-y-0" : "-translate-y-2")
@@ -408,9 +420,9 @@ const CustomSelect = React.forwardRef<HTMLDivElement, CustomSelectProps>(
                                         "px-3 py-2 cursor-pointer flex items-center relative text-sm",
                                         "transition-all ease-out",
                                         prefersReducedMotion ? "duration-100" : "duration-200",
-                                        isOpen && isSelected && "bg-black/5",
-                                        isOpen && isHovered && !isDisabled && !isSelected && "bg-black/3",
-                                        !isDisabled && "hover:bg-black/5 active:scale-[0.98]",
+                                        isOpen && isSelected && cn("bg-black/5", "dark:bg-white/5"),
+                                        isOpen && isHovered && !isDisabled && !isSelected && cn("bg-black/3", "dark:bg-white/3"),
+                                        !isDisabled && cn("hover:bg-black/5 active:scale-[0.98]", "dark:hover:bg-white/5"),
                                         isSelected && "font-medium",
                                         isDisabled && "opacity-50 cursor-not-allowed text-muted-foreground",
                                         // Animation styles

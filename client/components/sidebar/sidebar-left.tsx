@@ -168,7 +168,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                         <span className="text-sm font-bold ">
                             AI Care Manager
                         </span>
-                        <span className="text-xs text-neutral-600 mt-[1px]">
+                        <span className="text-xs text-neutral-500 font-medium mt-[1px]">
                             <div className="flex items-center gap-2">
                                 {user?.agency.name || "Agency"}
                             </div>
@@ -236,11 +236,11 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         href={item.href}
                                         className={cn(
                                             "flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors",
-                                            isActive ? "bg-neutral-200/70 text-black font-medium" : "hover:bg-neutral-200/70 hover:text-black"
+                                            isActive ? cn("bg-neutral-800/70 text-black font-medium", theme === "dark" ? "bg-neutral-800/70 text-neutral-100" : "bg-neutral-200/70 text-black") : cn("hover:bg-neutral-200/70 hover:text-black", theme === "dark" ? "hover:bg-neutral-800/70 hover:text-neutral-100" : "hover:bg-neutral-200/70 hover:text-black")
                                         )}
                                     >
-                                        <item.icon className={cn("h-4 w-4", theme === "dark" ? "text-neutral-200" : "text-neutral-800")} />
-                                        <span className={cn("flex items-center gap-2 text-sm justify-between w-full", theme === "dark" ? "text-neutral-200" : "text-neutral-800")}>
+                                        <item.icon className={cn("h-4 w-4", theme === "dark" ? "text-neutral-300" : "text-neutral-800")} />
+                                        <span className={cn("flex items-center gap-2 text-sm justify-between w-full", theme === "dark" ? "text-neutral-300" : "text-neutral-800")}>
                                             {item.title}
 
                                         </span>
@@ -252,24 +252,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                 ))}
             </SidebarContent>
             <SidebarFooter className="my-4">
-                {/* <div className="flex flex-col gap-2 bg-blue-400/10 rounded-md py-2 px-2 border border-blue-400/50 hover:border-blue-400/70 mb-2 mx-1">
-                    <div className="flex flex-row items-center gap-2 justify-between">
-                        <div className="flex flex-row items-center gap-2">
-                            <Rocket className="h-4 w-4  text-blue-600" />
-                            <span className="text-xs text-blue-600 font-semibold">
-                                Get Started Now
-                            </span>
-                        </div>
-                        <div className="text-xs text-blue-600 font-semibold bg-blue-400/20 rounded-md px-2 py-[2px] border border-blue-400/10">1/3</div>
-                    </div>
-                    <div className="flex items-center gap-1">
 
-                        <div className="w-full h-1.5 bg-blue-400/20 rounded-full overflow-hidden">
-                            <div className="bg-blue-600 h-full w-1/3"></div>
-                        </div>
-                    </div>
-
-                </div> */}
                 <div className="flex items-center justify-between border-t border-border pt-4">
                     <DropdownMenu open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
                         <DropdownMenuTrigger asChild>
@@ -286,7 +269,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         <span className="text-sm font-semibold ">
                                             {user?.fullName}
                                         </span>
-                                        <span className="text-xs text-neutral-600">
+                                        <span className="text-xs text-neutral-500">
                                             {user?.email}
                                         </span>
                                     </div>

@@ -5,6 +5,7 @@ import { MoreHorizontal, ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useTheme } from "next-themes"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -34,6 +35,7 @@ import { removeUser } from "@/state/slices/userSlice"
 
 function UserActions({ user }: { user: User }) {
     const router = useRouter()
+    const { theme } = useTheme()
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [deleteUser] = useDeleteUserMutation()
@@ -67,41 +69,49 @@ function UserActions({ user }: { user: User }) {
 
     const activeUserType = useAppSelector((state) => state.user.activeUserType)
 
-
-
     return (
-        <div >
+        <div>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button variant="ghost" className={`h-8 w-8 p-0 ${theme === "dark" ? "text-gray-200 hover:text-gray-100" : ""}`}>
                         <span className="sr-only">Open menu</span>
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}>
+                <DropdownMenuContent align="end" className={theme === "dark" ? "bg-zinc-900 border-zinc-700" : ""}>
+                    <DropdownMenuLabel className={theme === "dark" ? "text-gray-200" : ""}>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator className={theme === "dark" ? "bg-zinc-700" : ""} />
+                    <DropdownMenuItem
+                        onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                        className={theme === "dark" ? "text-gray-200 hover:bg-zinc-800" : ""}
+                    >
                         Edit {activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)}>
+                    <DropdownMenuItem
+                        onClick={() => setIsDeleteDialogOpen(true)}
+                        className={theme === "dark" ? "text-gray-200 hover:bg-zinc-800" : ""}
+                    >
                         Delete {activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 
             <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <AlertDialogContent>
+                <AlertDialogContent className={theme === "dark" ? "bg-zinc-900 border-zinc-700" : ""}>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
+                        <AlertDialogTitle className={theme === "dark" ? "text-gray-200" : ""}>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription className={theme === "dark" ? "text-gray-400" : ""}>
                             This action cannot be undone. This will permanently delete the user
                             and remove their data from our servers.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteUser} disabled={isDeleting}>
+                        <AlertDialogCancel className={theme === "dark" ? "bg-zinc-800 text-gray-200 hover:bg-zinc-700" : ""}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDeleteUser}
+                            disabled={isDeleting}
+                            className={theme === "dark" ? "bg-red-600 hover:bg-red-700" : ""}
+                        >
                             {isDeleting ? "Deleting..." : "Delete"}
                         </AlertDialogAction>
                     </AlertDialogFooter>
@@ -114,34 +124,45 @@ function UserActions({ user }: { user: User }) {
 export const columns: ColumnDef<User>[] = [
     {
         id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
+        header: ({ table }: { table: any }) => {
+            const { theme } = useTheme()
+            return (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                    className={theme === "dark" ? "border-gray-600" : ""}
+                />
+            )
+        },
+        cell: ({ row }: { row: any }) => {
+            const { theme } = useTheme()
+            return (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                    className={theme === "dark" ? "border-gray-600" : ""}
+                />
+            )
+        },
         enableSorting: false,
         enableHiding: false,
     },
     {
         accessorKey: "name",
-        header: ({ column }) => (
-            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                Name
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </div>
-        ),
-        cell: ({ row }) => {
+        header: ({ column }: { column: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`flex items-center gap-2 cursor-pointer text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-neutral-700"}`} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Name
+                    <ArrowUpDown className={`ml-2 h-4 w-4 ${theme === "dark" ? "text-gray-400" : ""}`} />
+                </div>
+            )
+        },
+        cell: ({ row }: { row: any }) => {
             const fullName = row.original.fullName || ""
-
+            const { theme } = useTheme()
 
             const getInitials = (fullName?: string) => {
                 if (!fullName) return "??"
@@ -152,15 +173,15 @@ export const columns: ColumnDef<User>[] = [
                 <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9">
                         <AvatarImage src={getRandomPlaceholderImage()} alt={fullName} />
-                        <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
+                        <AvatarFallback className={theme === "dark" ? "bg-zinc-800 text-gray-200" : ""}>{getInitials(fullName)}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <div className="font-medium text-gray-800">{fullName}</div>
+                        <div className={`font-medium ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}>{fullName}</div>
                         {row.original.role === "CLIENT" && row.original.clientId && (
-                            <div className="text-xs text-gray-500">ID: {row.original.clientId.substring(0, 8)}</div>
+                            <div className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>ID: {row.original.clientId.substring(0, 8)}</div>
                         )}
                         {row.original.email && (
-                            <div className="text-xs text-gray-500">
+                            <div className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
                                 {row.original.email}
                             </div>
                         )}
@@ -171,54 +192,72 @@ export const columns: ColumnDef<User>[] = [
     },
     {
         accessorKey: "address",
-        header: ({ column }) => (
-            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                Address
-            </div>
-        ),
-        cell: ({ row }) => (
-            <div className=" w-fit text-center text-xs text-neutral-500">
-                {row.original.address || "N/A"}
-            </div>
-        ),
+        header: ({ column }: { column: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`flex items-center gap-2 cursor-pointer text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-neutral-700"}`} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Address
+                </div>
+            )
+        },
+        cell: ({ row }: { row: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`w-fit text-center text-xs ${theme === "dark" ? "text-gray-400" : "text-neutral-500"}`}>
+                    {row.original.address || "N/A"}
+                </div>
+            )
+        },
     },
-
     {
         accessorKey: "subRole",
-        header: ({ column }) => (
-            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                Subrole
-            </div>
-        ),
-        cell: ({ row }) => (
-            <div className="text-xs text-blue-700 bg-blue-100/50 font-medium rounded-md px-2 py-1 max-w-30 w-fit text-center">
-                {row.original.subRole ?
-                    row.original.subRole
-                        .split('_')
-                        .map((word: string) =>
-                            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-                        )
-                        .join(' ')
-                    : "None"}
-            </div>
-        ),
+        header: ({ column }: { column: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`flex items-center gap-2 cursor-pointer text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-neutral-700"}`} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Subrole
+                </div>
+            )
+        },
+        cell: ({ row }: { row: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`text-xs font-medium rounded-md px-2 py-1 max-w-30 w-fit text-center ${theme === "dark"
+                    ? "text-blue-300 bg-blue-900/50"
+                    : "text-blue-700 bg-blue-100/50"
+                    }`}>
+                    {row.original.subRole ?
+                        row.original.subRole
+                            .split('_')
+                            .map((word: string) =>
+                                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                            )
+                            .join(' ')
+                        : "None"}
+                </div>
+            )
+        },
     },
     {
         accessorKey: "createdAt",
-        header: ({ column }) => (
-            <div className="flex items-center gap-2 cursor-pointer text-sm font-medium text-neutral-700" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                Added
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </div>
-        ),
-        cell: ({ row }) => {
+        header: ({ column }: { column: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`flex items-center gap-2 cursor-pointer text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-neutral-700"}`} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Added
+                    <ArrowUpDown className={`ml-2 h-4 w-4 ${theme === "dark" ? "text-gray-400" : ""}`} />
+                </div>
+            )
+        },
+        cell: ({ row }: { row: any }) => {
+            const { theme } = useTheme()
             const date = new Date(row.getValue("createdAt"))
-            return <div className="text-sm text-gray-600">{date.toLocaleDateString()}</div>
+            return <div className={`text-sm ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>{date.toLocaleDateString()}</div>
         },
     },
     {
         id: "actions",
-        cell: ({ row }) => {
+        cell: ({ row }: { row: any }) => {
             const user = row.original
             return <UserActions user={user} />
         },

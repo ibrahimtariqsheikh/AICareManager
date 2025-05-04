@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
 interface HeroSectionProps {
     title: string;
@@ -10,6 +12,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
     const [mounted, setMounted] = useState(false);
+    const { theme } = useTheme()
 
     useEffect(() => {
         setMounted(true);
@@ -23,7 +26,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
         <div className="relative w-full overflow-hidden">
 
             {/* Background gradient - toned down */}
-            <div className="absolute top-0 -z-10 h-full w-full bg-white">
+            <div className={cn("absolute top-0 -z-10 h-full w-full bg-white", theme === "dark" && "bg-black")}>
                 <div className="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-blue-300/30 opacity-30 blur-[80px]" />
             </div>
 
@@ -165,7 +168,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                     transition={{ duration: 0.5 }}
                 >
                     <div className="flex justify-center">
-                        <div className="text-sm font-medium text-gray-700 bg-gray-100/70 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-200/50">
+                        <div className={cn("text-sm font-medium text-gray-700 bg-gray-100/70 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-200/50", theme === "dark" && "text-white bg-gray-800/70")}>
                             Level Up Your Care Management with AI
                         </div>
                     </div>
@@ -190,7 +193,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                     </motion.h1>
 
                     <motion.p
-                        className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-700 backdrop-blur-sm bg-white/10 rounded-lg px-4 border border-gray-100/30"
+                        className={cn("relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-700 backdrop-blur-sm bg-white/10 rounded-lg px-4 border border-gray-100/30", theme === "dark" && "text-white bg-gray-800/10")}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
@@ -223,7 +226,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                                 duration: 0.3,
                                 delay: 1.2,
                             }}
-                            className="relative z-10 rounded-3xl border border-gray-200 bg-white/90 backdrop-blur-md p-4 shadow-lg hero-soft-glow"
+                            className={cn("relative z-10 rounded-3xl border border-gray-200 bg-white/90 backdrop-blur-md p-4 shadow-lg hero-soft-glow", theme === "dark" && "bg-gray-800/90")}
                         >
                             <div className="w-full overflow-hidden rounded-xl border border-gray-200">
                                 <img
