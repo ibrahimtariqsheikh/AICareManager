@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
+import { CustomInput } from "@/components/ui/custom-input"
 
 // Define interfaces for the schedule data
 interface ClientSchedule {
@@ -200,12 +201,12 @@ const AppointmentHistory = ({ user }: { user: User }) => {
                 <div className="flex justify-between items-center mb-4">
                     <CardTitle>Appointment History</CardTitle>
                     <div className="relative w-64">
-                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-                        <Input
+                        <CustomInput
                             placeholder="Search appointments..."
                             className="pl-8"
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(value: string) => setSearchQuery(value)}
+                            icon={<Search className="h-4 w-4" />}
                         />
                     </div>
                 </div>

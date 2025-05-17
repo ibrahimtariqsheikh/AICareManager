@@ -39,7 +39,10 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData extends { id: string }, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
+        role: false,
+        email: false
+    })
     const [rowSelection, setRowSelection] = React.useState({})
     const router = useRouter()
     const { theme } = useTheme()
@@ -61,6 +64,7 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
             columnVisibility,
             rowSelection,
         },
+        globalFilterFn: "includesString",
     })
 
     const handleRowClick = (userId: string, event: React.MouseEvent) => {

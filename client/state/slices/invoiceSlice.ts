@@ -5,8 +5,8 @@ import { Invoice } from "@/types/prismaTypes";
 
 interface InvoiceData {
 invoiceNumber: string;
-issueDate: Date;
-dueDate: Date;
+issueDate: string;
+dueDate: string;
 notes: string;
 taxRate: number;
 taxEnabled: boolean;
@@ -30,8 +30,8 @@ selectedDateRange: null,
 invoices: null,
 invoiceData: {
     invoiceNumber: "",
-    issueDate: new Date(),
-    dueDate: new Date(),
+    issueDate: new Date().toISOString(),
+    dueDate: new Date().toISOString(),
     notes: "",
     taxRate: 0,
     taxEnabled: false,

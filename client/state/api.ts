@@ -36,6 +36,11 @@ export interface ScheduleUpdateInput extends Partial<ScheduleInput> {
   id: string
 }
 
+export interface CreateConversationResponse {
+  id: string
+  message: string
+}
+
 export interface ScheduleResponse {
     id: string
     agencyId: string
@@ -198,9 +203,12 @@ export const api = createApi({
       try {
         const session = await fetchAuthSession()
         const { idToken } = session.tokens ?? {}
+       
         if (idToken) {
           headers.set("Authorization", `Bearer ${idToken.toString()}`)
         }
+
+ console.log("idTokenToken", idToken?.toString())
       } catch (error) {
         console.log('No auth session found, proceeding without authentication')
       }
@@ -226,7 +234,9 @@ export const api = createApi({
     "Invoices",
     "ScheduleTemplates",
     "Medications",
-    "MedicationLogs"
+    "MedicationLogs",
+    "Conversations",
+    "Messages"
   ],
   endpoints: (build) => ({
     // Get user
@@ -618,30 +628,16 @@ export const api = createApi({
         method: 'DELETE',
       }),
     }),
-
     // Chat endpoints
-    sendMessage: build.mutation<{ message: Message; sessionId: string }, { messages: Message[]; sessionId?: string }>({
-      query: (data) => ({
-        url: "/chat/chat",
-        method: "POST",
-        body: data,
+    sendMessageInConversation: build.mutation<{ data: Message; info: string }, { content: string; conversationId: string; senderId: string; agencyId: string }>({
+      query: (message) => ({
+        url: '/messages',
+        method: 'POST',
+        body: message,
       }),
-      invalidatesTags: ["Chat"],
     }),
 
-    getChatHistory: build.query<{ messages: Message[]; sessionId: string }, string>({
-      query: (sessionId) => `/chat/chat/${sessionId}`,
-      providesTags: ["Chat"],
-    }),
-
-    clearChatHistory: build.mutation<void, string>({
-      query: (sessionId) => ({
-        url: `/chat/chat/${sessionId}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Chat"],
-    }),
-
+  
     // Document endpoints
     uploadDocument: build.mutation<Document, Partial<Document>>({
       query: (data) => ({
@@ -885,6 +881,43 @@ addVisitTypeTask: build.mutation<Task, { userId: string; visitTypeId: string; ta
       },
     }),
 
+    // Message endpoints
+    addMessage: build.mutation<Message, { senderId: string; receiverId: string; content: string; agencyId: string }>({
+      query: (message) => ({
+        url: '/messages',
+        method: 'POST',
+        body: message,
+      }),
+    }),
+
+    getMessages: build.query<Message[], string>({
+      query: (userId) => `/messages/user/${userId}`,
+    }),
+
+    getMessagesByAgency: build.query<Message[], string>({
+      query: (agencyId) => `/messages/agency/${agencyId}`,
+    }),
+
+    deleteMessage: build.mutation<void, string>({
+      query: (messageId) => ({
+        url: `/messages/${messageId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    // Create or get conversation
+    createConversation: build.mutation<{
+      id: string
+      message: string
+    }, { senderId: string; receiverId: string }>({
+      query: ({ senderId, receiverId }) => ({
+        url: "/messages/conversation",
+        method: "POST",
+        body: { senderId, receiverId },
+      }),
+      invalidatesTags: ["Conversations"],
+    }),
+
   }),
 })
 
@@ -913,9 +946,7 @@ export const {
   useUpdateReportMutation,
   useGetReportByIdQuery,
   useGetAgencySchedulesQuery,
-  useSendMessageMutation,
-  useGetChatHistoryQuery,
-  useClearChatHistoryMutation,
+
   useGetAgencyCustomTasksQuery,
   useGetAgencyGroupsQuery,
   useCreateGroupMutation,
@@ -952,4 +983,10 @@ export const {
   useCreateMedicationLogMutation,
   useCheckInMedicationMutation,
   useDeleteUserMutation,
+  useAddMessageMutation,
+  useGetMessagesQuery,
+  useGetMessagesByAgencyQuery,
+  useDeleteMessageMutation,
+  useCreateConversationMutation,
+  useSendMessageInConversationMutation
 } = api

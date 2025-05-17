@@ -20,9 +20,9 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Mail, Pencil, Phone, PlusCircle, Trash2, Save } from "lucide-react"
+import { Mail, Pencil, Phone, PlusCircle, Trash2, Save, Pill } from "lucide-react"
 import { toast } from "sonner"
-import type { KeyContact, Task, VisitType, User } from "@/types/prismaTypes"
+import { type KeyContact, type Task, type VisitType, type User } from "@/types/prismaTypes"
 import {
     useAddEmergencyContactMutation,
     useEditEmergencyContactMutation,
@@ -31,11 +31,33 @@ import {
     useAddVisitTypeTaskMutation,
 } from "@/state/api"
 import type { EmergencyContact } from "@/types/profileTypes"
-import { useDispatch } from "react-redux"
-import { useUpdateUserMutation } from "@/state/api"
+import { useAppDispatch } from "@/state/redux"
 import { updateUser as updateUserAction } from "@/state/slices/userSlice"
 import { CustomInput } from "@/components/ui/custom-input"
 import { CustomSelect } from "@/components/ui/custom-select"
+import { setActiveEditUserTab } from "@/state/slices/tabsSlice"
+
+enum TaskType {
+    MEDICATION = "MEDICATION",
+    BODYMAP = "BODYMAP",
+    FOOD = "FOOD",
+    DRINKS = "DRINKS",
+    PERSONALCARE = "PERSONALCARE",
+    HYGIENE = "HYGIENE",
+    TOILET_ASSISTANCE = "TOILET_ASSISTANCE",
+    REPOSITIONING = "REPOSITIONING",
+    COMPANIONSHIP = "COMPANIONSHIP",
+    LAUNDRY = "LAUNDRY",
+    GROCERIES = "GROCERIES",
+    HOUSEWORK = "HOUSEWORK",
+    CHORES = "CHORES",
+    INCIDENT_RESPONSE = "INCIDENT_RESPONSE",
+    FIRE_SAFETY = "FIRE_SAFETY",
+    BLOOD_PRESSURE = "BLOOD_PRESSURE",
+    VITALS = "VITALS",
+    OTHER = "OTHER",
+}
+
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -61,7 +83,7 @@ const formSchema = z.object({
 })
 
 export const PatientInformation = ({ user }: { user: User }) => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const [selectedRole, setSelectedRole] = useState<string>(user?.role || "CLIENT")
     const [dialogOpen, setDialogOpen] = useState(false)
     const [newContact, setNewContact] = useState<Partial<KeyContact>>({
@@ -89,7 +111,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
         user?.dateOfBirth ? preserveDateOnly(user.dateOfBirth) : new Date(),
     )
     const [isSaving, setIsSaving] = useState(false)
-    const [updateUser] = useUpdateUserMutation()
+
 
     // API mutation hooks
     const [addEmergencyContact, { isLoading: isAddingContact }] = useAddEmergencyContactMutation()
@@ -594,7 +616,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                     }
                                                     return false
                                                 })
-                                                .map(([key, value]) => ({
+                                                .map(([_, value]) => ({
                                                     label: value,
                                                     value: value,
                                                 }))}
@@ -922,24 +944,17 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                     <div className="grid gap-4 py-4">
                                                         <div className="space-y-2">
                                                             <Label htmlFor="task-type">Task Type</Label>
-                                                            <Select
+                                                            <CustomSelect
                                                                 value={newTask.type}
-                                                                onValueChange={(value) => setNewTask({ ...newTask, type: value })}
-                                                            >
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder="Select task type" />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    <SelectItem value="MEDICATION">Medication</SelectItem>
-                                                                    <SelectItem value="HYGIENE">Hygiene</SelectItem>
-                                                                    <SelectItem value="MEAL">Meal</SelectItem>
-                                                                    <SelectItem value="EXERCISE">Exercise</SelectItem>
-                                                                    <SelectItem value="SOCIAL">Social</SelectItem>
-                                                                    <SelectItem value="OTHER">Other</SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
+                                                                onChange={(value) => setNewTask({ ...newTask, type: value })}
+                                                                options={Object.values(TaskType).map((type) => ({
+                                                                    label: type,
+                                                                    value: type,
+                                                                }))}
+                                                                placeholder="Select task type"
+                                                            />
                                                         </div>
-                                                        <div className="space-y-2">
+                                                        {/* <div className="space-y-2">
                                                             <Label htmlFor="task-notes">Careworker Notes</Label>
                                                             <Input
                                                                 id="task-notes"
@@ -947,7 +962,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                                 value={newTask.careworkerNotes}
                                                                 onChange={(e) => setNewTask({ ...newTask, careworkerNotes: e.target.value })}
                                                             />
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                     <DialogFooter>
                                                         <Button variant="outline" onClick={() => setTaskDialogOpen(false)}>
@@ -977,6 +992,27 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                                 </span>
                                                             </div>
                                                             <p className="text-sm text-neutral-700">{task.careworkerNotes || "No notes provided"}</p>
+
+                                                            {task.type === "MEDICATION" && (
+                                                                <div className="mt-2">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        className="w-full text-sm border-blue-200 text-blue-700 hover:bg-blue-50"
+                                                                        onClick={() => {
+                                                                            try {
+                                                                                dispatch(setActiveEditUserTab("emar"))
+                                                                            } catch (error) {
+                                                                                console.error("Error switching to EMAR tab:", error)
+                                                                                toast.error("Failed to switch to Medications tab")
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        <Pill className="h-3.5 w-3.5 mr-1" />
+                                                                        Manage Medications
+                                                                    </Button>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     ))}
                                                 </div>

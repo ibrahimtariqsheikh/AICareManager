@@ -35,6 +35,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const isSchedulePage = pathname === "/dashboard/schedule"
     const { data: agency } = useGetAgencyByIdQuery(userInformation?.userInfo?.agencyId || "")
     const [isLoading, setIsLoading] = useState(true)
+    const { theme } = useTheme()
 
     useEffect(() => {
         if (userInformation) {
@@ -113,8 +114,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
     const currentPath = pathname.split("/").filter(Boolean)
     const currentPathTitle = currentPath[currentPath.length - 1]
-    const currentPathTitleCapitalized = currentPathTitle?.charAt(0).toUpperCase() + currentPathTitle?.slice(1) || "Dashboard"
-    const { theme } = useTheme()
+    const currentPathTitleCapitalized =
+        currentPathTitle
+            ? `${currentPathTitle.charAt(0).toUpperCase()}${currentPathTitle.slice(1)}`
+            : "Dashboard"
 
 
     return (

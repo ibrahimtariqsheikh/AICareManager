@@ -99,6 +99,8 @@ model Agency {
   ownerId           String?
   owner             User?              @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   scheduleTemplates ScheduleTemplate[]
+  messages          Message[]          @relation("MessageAgency")
+  leaveEvents       LeaveEvent[] // Added relation field for LeaveEvent
 }
 
 model Announcement {
@@ -230,23 +232,27 @@ model ClientCareAssignment {
 }
 
 model Medication {
-  id           String          @id @default(cuid())
+  id           String               @id @default(cuid())
   name         String
   dosage       String
   frequency    String
   instructions String?
-  morning      Boolean         @default(false)
-  afternoon    Boolean         @default(false)
-  evening      Boolean         @default(false)
-  bedtime      Boolean         @default(false)
-  asNeeded     Boolean         @default(false)
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  morning      Boolean              @default(false)
+  afternoon    Boolean              @default(false)
+  evening      Boolean              @default(false)
+  bedtime      Boolean              @default(false)
+  asNeeded     Boolean              @default(false)
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
+  visitTypeId  String?
+  visitType    VisitType?           @relation(fields: [visitTypeId], references: [id])
   logs         MedicationLog[]
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  snapshots    MedicationSnapshot[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
 
   @@index([userId])
+  @@index([visitTypeId])
 }
 
 enum MedicationTime {
@@ -284,13 +290,12 @@ model MedicationLog {
 }
 
 model User {
-  id            String  @id @default(cuid())
-  cognitoId     String  @unique
-  email         String  @unique
-  fullName      String  @default("")
-  preferredName String?
-  role          Role
-
+  id             String    @id @default(cuid())
+  cognitoId      String    @unique
+  email          String    @unique
+  fullName       String    @default("")
+  preferredName  String?
+  role           Role
   subRole        SubRole?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -312,45 +317,47 @@ model User {
   interests      String?
   history        String?
 
-  createdAnnouncements    Announcement[]           @relation("AnnouncementCreator")
-  announcements           Announcement[] // Renamed from Announcement to announcements
-  auditLogs               AuditLog[] // Renamed from AuditLog to auditLogs
-  careOutcomes            CareOutcome[]
-  clientAssignments       ClientCareAssignment[]   @relation("ClientAssignments")
-  careAssignments         ClientCareAssignment[]   @relation("CareWorkerAssignments")
-  communicationLogs       CommunicationLog[]
-  communicationPreference CommunicationPreference?
-  documents               Document[] // Renamed from Document to documents
-  userDocuments           Document[]               @relation("UserDocuments") // Renamed from documents to userDocuments
-  familyAccess            FamilyAccess[]
-  incidentReports         IncidentReport[]
-  sentInvitations         Invitation[]             @relation("SentInvitations")
-  invoices                Invoice[] // Renamed from Invoice to invoices
-  keyContacts             KeyContact[]
-
-  receivedMessages          Message[]          @relation("MessageReceiver")
-  sentMessages              Message[]          @relation("MessageSender")
-  careWorkerMileage         MileageRecord[]    @relation("CareWorkerMileage")
-  clientMileage             MileageRecord[]    @relation("ClientMileage")
-  notifications             Notification[] // Renamed from Notification to notifications
+  createdAnnouncements      Announcement[]            @relation("AnnouncementCreator")
+  announcements             Announcement[]
+  auditLogs                 AuditLog[]
+  careOutcomes              CareOutcome[]
+  clientAssignments         ClientCareAssignment[]    @relation("ClientAssignments")
+  careAssignments           ClientCareAssignment[]    @relation("CareWorkerAssignments")
+  communicationLogs         CommunicationLog[]
+  communicationPreference   CommunicationPreference?
+  documents                 Document[]
+  userDocuments             Document[]                @relation("UserDocuments")
+  familyAccess              FamilyAccess[]
+  incidentReports           IncidentReport[]
+  sentInvitations           Invitation[]              @relation("SentInvitations")
+  invoices                  Invoice[]
+  keyContacts               KeyContact[]
+  sentMessages              Message[]                 @relation("MessageSender")
+  conversations             ConversationParticipant[]
+  sentConversations         Conversation[]            @relation("ConversationSender")
+  receivedConversations     Conversation[]            @relation("ConversationReceiver")
+  careWorkerMileage         MileageRecord[]           @relation("CareWorkerMileage")
+  clientMileage             MileageRecord[]           @relation("ClientMileage")
+  notifications             Notification[]
   profile                   Profile?
   reminders                 Reminder[]
-  clientReports             Report[]           @relation("ReportClient")
-  careReports               Report[]           @relation("ReportCaregiver")
+  clientReports             Report[]                  @relation("ReportClient")
+  careReports               Report[]                  @relation("ReportCaregiver")
   reportEdits               ReportEdit[]
   riskAssessments           RiskAssessment[]
-  clientSchedules           Schedule[]         @relation("ClientSchedules")
-  careWorkerSchedules       Schedule[]         @relation("CareWorkerSchedules")
-  agency                    Agency?            @relation(fields: [agencyId], references: [id])
-  agenciesOwned             Agency[]           @relation("AgencyOwner")
-  groups                    Group[]            @relation("GroupUsers")
-  invitedBy                 User?              @relation("UserInvites", fields: [invitedById], references: [id])
-  invitedUsers              User[]             @relation("UserInvites")
-  acknowledgedAnnouncements Announcement[]     @relation("AnnouncementAcknowledgements")
+  clientSchedules           Schedule[]                @relation("ClientSchedules")
+  careWorkerSchedules       Schedule[]                @relation("CareWorkerSchedules")
+  agency                    Agency?                   @relation(fields: [agencyId], references: [id])
+  agenciesOwned             Agency[]                  @relation("AgencyOwner")
+  groups                    Group[]                   @relation("GroupUsers")
+  invitedBy                 User?                     @relation("UserInvites", fields: [invitedById], references: [id])
+  invitedUsers              User[]                    @relation("UserInvites")
+  acknowledgedAnnouncements Announcement[]            @relation("AnnouncementAcknowledgements")
   visitTypes                VisitType[]
   scheduleTemplates         ScheduleTemplate[]
   medications               Medication[]
   medicationLogs            MedicationLog[]
+  leaveEvents               LeaveEvent[] // Added relation field for LeaveEvent
 }
 
 enum TemplateVisitDay {
@@ -386,6 +393,7 @@ model Schedule {
   agency      Agency       @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   client      User         @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
   user        User         @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
+  visitType   VisitType?   @relation(fields: [visitTypeId], references: [id])
 
   @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
   @@index([userId, date])
@@ -472,11 +480,12 @@ enum TaskType {
 }
 
 model Task {
-  id              String    @id @default(cuid())
+  id              String       @id @default(cuid())
   type            TaskType
   careworkerNotes String?
   visitTypeId     String
-  visitType       VisitType @relation(fields: [visitTypeId], references: [id], onDelete: Cascade)
+  visitType       VisitType    @relation(fields: [visitTypeId], references: [id], onDelete: Cascade)
+  reportTasks     ReportTask[]
 }
 
 model VisitType {
@@ -484,11 +493,14 @@ model VisitType {
   name           String
   description    String?
   assignedTasks  Task[]
+  medications    Medication[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   userId         String
   user           User?           @relation(fields: [userId], references: [id])
   templateVisits TemplateVisit[]
+  Schedule       Schedule[]
+  reports        Report[]
 }
 
 model Report {
@@ -496,6 +508,7 @@ model Report {
   clientId            String
   agencyId            String
   userId              String
+  visitTypeId         String?
   title               String?
   condition           String
   summary             String
@@ -506,7 +519,6 @@ model Report {
   checkOutDistance    Float?
   checkInLocation     String?
   checkOutLocation    String?
-  hasSignature        Boolean              @default(false)
   signatureImageUrl   String?
   status              ReportStatus         @default(COMPLETED)
   lastEditedAt        DateTime?
@@ -514,24 +526,62 @@ model Report {
   lastEditReason      String?
   bodyMapObservations BodyMapObservation[]
 
-  agency         Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client         User          @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
-  caregiver      User          @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
-  alerts         ReportAlert[]
-  editHistory    ReportEdit[]
-  tasksCompleted ReportTask[]
+  agency             Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client             User                 @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
+  caregiver          User                 @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
+  visitType          VisitType?           @relation(fields: [visitTypeId], references: [id])
+  visitSnapshot      VisitSnapshot?
+  medicationSnapshot MedicationSnapshot[]
+  alerts             ReportAlert[]
+  editHistory        ReportEdit[]
+  tasksCompleted     ReportTask[]
+}
+
+model MedicationSnapshot {
+  id           String     @id @default(cuid())
+  reportId     String     @unique
+  medicationId String
+  medication   Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  report       Report     @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+model VisitSnapshot {
+  id                   String         @id @default(cuid())
+  reportId             String         @unique
+  visitTypeName        String
+  visitTypeDescription String?
+  createdAt            DateTime       @default(now())
+  report               Report         @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  taskSnapshots        TaskSnapshot[]
+}
+
+model TaskSnapshot {
+  id              String        @id @default(cuid())
+  visitSnapshotId String
+  originalTaskId  String?
+  taskType        TaskType
+  taskName        String
+  careworkerNotes String?
+  visitSnapshot   VisitSnapshot @relation(fields: [visitSnapshotId], references: [id], onDelete: Cascade)
+
+  @@index([visitSnapshotId])
+  @@index([originalTaskId])
 }
 
 model ReportTask {
-  id          String    @id @default(cuid())
-  reportId    String
-  taskName    String
-  completed   Boolean   @default(false)
-  notes       String?
-  taskIcon    String?
-  taskType    String?
-  completedAt DateTime?
-  report      Report    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  id           String    @id @default(cuid())
+  reportId     String
+  taskId       String?
+  taskName     String
+  completed    Boolean   @default(false)
+  notes        String?
+  taskIcon     String?
+  taskType     String?
+  completedAt  DateTime?
+  report       Report    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  originalTask Task?     @relation(fields: [taskId], references: [id])
+
+  @@index([taskId])
 }
 
 model ReportAlert {
@@ -637,13 +687,52 @@ model IncidentReport {
 }
 
 model Message {
-  id         String   @id @default(cuid())
-  senderId   String
-  receiverId String
-  content    String
-  sentAt     DateTime @default(now())
-  receiver   User     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
-  sender     User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  content        String
+  senderId       String
+  conversationId String
+  sentAt         DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  isRead         Boolean      @default(false)
+  isTyping       Boolean      @default(false)
+  sender         User         @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  agencyId       String?
+  agency         Agency?      @relation("MessageAgency", fields: [agencyId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@index([senderId])
+  @@index([conversationId])
+}
+
+model Conversation {
+  id           String                    @id @default(cuid())
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  messages     Message[]
+  senderId     String
+  sender       User                      @relation("ConversationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId   String
+  receiver     User                      @relation("ConversationReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  participants ConversationParticipant[]
+
+  @@unique([senderId, receiverId])
+  @@unique([receiverId, senderId])
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  userId         String
+  conversationId String
+  joinedAt       DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conversationId])
+  @@index([userId])
+  @@index([conversationId])
 }
 
 model KeyContact {
@@ -706,7 +795,7 @@ model Reminder {
   completed Boolean  @default(false)
   createdAt DateTime @default(now())
   agencyId  String?
-  agency    Agency?  @relation(fields: [agencyId], references: [id]) // Renamed from Agency to agency
+  agency    Agency?  @relation(fields: [agencyId], references: [id])
   client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
@@ -804,6 +893,36 @@ enum Role {
   OFFICE_STAFF
   CLIENT
   FAMILY
+}
+
+enum LeaveEventType {
+  ANNUAL_LEAVE
+  SICK_LEAVE
+  PUBLIC_HOLIDAY
+  UNPAID_LEAVE
+  MATERNITY_LEAVE
+  PATERNITY_LEAVE
+  BEREAVEMENT_LEAVE
+  EMERGENCY_LEAVE
+  MEDICAL_APPOINTMENT
+  TOIL
+  OTHER
+}
+
+model LeaveEvent {
+  id        String         @id @default(cuid())
+  eventType LeaveEventType
+  startDate DateTime
+  endDate   DateTime
+  notes     String?
+  payRate   Float?
+  color     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  userId    String?
+  user      User?          @relation(fields: [userId], references: [id])
+  agencyId  String?
+  agency    Agency?        @relation(fields: [agencyId], references: [id])
 }
 
 enum SubRole {

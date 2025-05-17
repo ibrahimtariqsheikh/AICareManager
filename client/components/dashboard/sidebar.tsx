@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BarChart3, Users, Calendar, Settings, LogOut, Home } from 'lucide-react'
+import { BarChart3, Users, Calendar, Settings, LogOut, Home, MessageCircle } from 'lucide-react'
 
 import {
     Sidebar,
@@ -50,6 +50,11 @@ export function DashboardSidebar() {
             title: "Settings",
             icon: Settings,
             href: "/dashboard/settings",
+        },
+        {
+            title: "Messages",
+            icon: MessageCircle,
+            href: "/dashboard/messages",
         },
     ]
 

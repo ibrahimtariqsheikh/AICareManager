@@ -35,7 +35,7 @@ const selectVariants = cva("flex w-full rounded-md border bg-background text-for
 })
 
 const dropdownVariants = cva(
-    "absolute z-50 w-full mt-1 rounded-md border overflow-hidden",
+    "absolute z-50 w-full mt-1 rounded-md border overflow-hidden bg-background",
     {
         variants: {
             position: {
@@ -406,7 +406,7 @@ const CustomSelect = React.forwardRef<HTMLDivElement, CustomSelectProps>(
                         boxShadow: "0 4px 25px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.1)",
                     }}
                 >
-                    <div className="py-1 overflow-auto">
+                    <div className="py-1 overflow-y-auto max-h-[inherit]">
                         {options.map((option, index) => {
                             const isSelected = option.value === selectedValue
                             const isHovered = hoveredIndex === index

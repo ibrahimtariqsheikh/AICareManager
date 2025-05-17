@@ -22,6 +22,8 @@ import patientReducer from "./slices/patientSlice"
 import chatReducer from "./slices/chatSlice"
 import invoiceReducer from "./slices/invoiceSlice"
 import templateReducer from "./slices/templateSlice"
+import tabsReducer from "./slices/tabsSlice"
+import leaveReducer from "./slices/leaveSlice"
 
 const rootReducer = combineReducers({
   global: globalReducer,
@@ -38,6 +40,8 @@ const rootReducer = combineReducers({
   chat: chatReducer,
   invoice: invoiceReducer,
   template: templateReducer,
+  tabs: tabsReducer,
+  leave: leaveReducer,
 
   [api.reducerPath]: api.reducer,
 })
@@ -49,12 +53,17 @@ export const makeStore = () => {
       getDefaultMiddleware({
         serializableCheck: {
           ignoredActions: ['api/executeQuery/fulfilled', 'api/executeQuery/rejected'],
-          ignoredPaths: ['api.queries', 'api.mutations', 'api.subscriptions'],
+          ignoredPaths: [
+            'api.queries',
+            'api.mutations',
+            'api.subscriptions',
+            'invoice.invoiceData.issueDate',
+            'invoice.invoiceData.dueDate'
+          ],
         },
       }).concat(api.middleware),
   })
 }
-
 
 export type AppStore = ReturnType<typeof makeStore>
 export type RootState = ReturnType<AppStore["getState"]>

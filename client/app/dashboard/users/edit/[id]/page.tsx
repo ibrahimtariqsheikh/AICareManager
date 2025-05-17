@@ -16,11 +16,19 @@ import { getRandomPlaceholderImage } from "@/lib/utils"
 import AppointmentHistory from "../components/appointmenthistory"
 import { EMAR } from "../components/emar"
 import { ScheduleTemplate } from "../components/scheduleTemplate"
+import { useAppSelector, useAppDispatch } from "@/state/redux"
+import { setActiveEditUserTab } from "@/state/slices/tabsSlice"
+import { useEffect, useState } from "react"
 
 const EditUserPage = () => {
     const { id } = useParams()
     const userId = id as string
     const router = useRouter()
+    const dispatch = useAppDispatch()
+    // Use state to track if tab has been initialized
+    const [tabInitialized, setTabInitialized] = useState(false)
+
+    const activeTab = useAppSelector((state) => state.tabs?.activeEditUserTab) || "patientInformation"
 
     const {
         data: userData,
@@ -32,6 +40,21 @@ const EditUserPage = () => {
     })
 
     const user = userData?.data as UserType
+
+    // Initialize the tab state on component mount
+    useEffect(() => {
+        // Only initialize once and do it safely with setTimeout
+        if (!tabInitialized) {
+            setTimeout(() => {
+                try {
+                    dispatch(setActiveEditUserTab("patientInformation"));
+                    setTabInitialized(true);
+                } catch (error) {
+                    console.error("Failed to initialize tab state:", error);
+                }
+            }, 0);
+        }
+    }, [dispatch, tabInitialized]);
 
     const contentVariants = {
         hidden: {
@@ -54,8 +77,16 @@ const EditUserPage = () => {
         { id: "reports", label: "Reports", icon: FileText },
         { id: "emar", label: "EMAR", icon: Pill },
         { id: "scheduleTemplate", label: "Schedule Template", icon: Calendar },
-
     ]
+
+    // Handle tab change
+    const handleTabChange = (value: string) => {
+        try {
+            dispatch(setActiveEditUserTab(value))
+        } catch (error) {
+            console.error("Error changing tab:", error)
+        }
+    }
 
     // Skeleton loading state
     if (isLoading) {
@@ -166,7 +197,7 @@ const EditUserPage = () => {
 
             <div className="px-6 py-4">
                 {/* Tabs Navigation using shadcn Tabs */}
-                <Tabs defaultValue="patientInformation" className="w-full">
+                <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
                     <TabsList className="grid w-full grid-cols-5">
                         {tabs.map((tab, index) => (
                             <TabsTrigger
@@ -198,7 +229,6 @@ const EditUserPage = () => {
                                     {tab.id === "reports" && <Reports user={user} />}
                                     {tab.id === "emar" && <EMAR user={user} />}
                                     {tab.id === "scheduleTemplate" && <ScheduleTemplate user={user} />}
-
                                 </motion.div>
                             </TabsContent>
                         ))}

@@ -189,6 +189,51 @@ export const columns: ColumnDef<User>[] = [
                 </div>
             )
         },
+        enableSorting: true,
+        filterFn: "includesString",
+    },
+    {
+        accessorKey: "email",
+        header: ({ column }: { column: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`flex items-center gap-2 cursor-pointer text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-neutral-700"}`} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Email
+                    <ArrowUpDown className={`ml-2 h-4 w-4 ${theme === "dark" ? "text-gray-400" : ""}`} />
+                </div>
+            )
+        },
+        cell: ({ row }: { row: any }) => {
+            const { theme } = useTheme()
+            return <div className={`text-sm ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>{row.original.email}</div>
+        },
+        enableSorting: true,
+        filterFn: "includesString",
+    },
+    {
+        accessorKey: "role",
+        header: ({ column }: { column: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`flex items-center gap-2 cursor-pointer text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-neutral-700"}`} onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Role
+                    <ArrowUpDown className={`ml-2 h-4 w-4 ${theme === "dark" ? "text-gray-400" : ""}`} />
+                </div>
+            )
+        },
+        cell: ({ row }: { row: any }) => {
+            const { theme } = useTheme()
+            return (
+                <div className={`text-xs font-medium rounded-md px-2 py-1 max-w-30 w-fit text-center ${theme === "dark"
+                    ? "text-blue-300 bg-blue-900/50"
+                    : "text-blue-700 bg-blue-100/50"
+                    }`}>
+                    {row.original.role}
+                </div>
+            )
+        },
+        enableSorting: true,
+        filterFn: "includesString",
     },
     {
         accessorKey: "address",

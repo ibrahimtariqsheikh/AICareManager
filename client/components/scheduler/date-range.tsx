@@ -14,6 +14,8 @@ interface DatePickerWithRangeProps {
 }
 
 export function DatePickerWithRange({ date, setDate }: DatePickerWithRangeProps) {
+    const selectedDate = date?.from && date?.to ? { from: date.from, to: date.to } : { from: new Date(), to: new Date() }
+
     return (
         <div className="space-y-2">
             <div className="font-medium text-sm">Date Range</div>
@@ -40,16 +42,15 @@ export function DatePickerWithRange({ date, setDate }: DatePickerWithRangeProps)
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
-                        initialFocus
                         mode="range"
-                        defaultMonth={date?.from}
-                        selected={date}
-                        onSelect={setDate}
+                        defaultMonth={date?.from || new Date()}
+                        selected={selectedDate}
+                        onRangeChange={setDate}
                         numberOfMonths={2}
+                        isDateRangeCalendar={true}
                     />
                 </PopoverContent>
             </Popover>
         </div>
     )
 }
-

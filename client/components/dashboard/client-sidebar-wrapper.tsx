@@ -4,13 +4,13 @@ import { usePathname, useRouter } from "next/navigation"
 import { motion, AnimatePresence, MotionConfig } from "framer-motion"
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from "../ui/sidebar"
 import { Button } from "../ui/button"
-import { ArrowLeft, ArrowRight, ChevronDown, HelpCircle, Users, LogOut, Moon, Sun } from "lucide-react"
+import { ArrowLeft, ArrowRight, ChevronDown, HelpCircle, Users, LogOut, Moon, Sun, MessageCircle } from "lucide-react"
 import { cn } from "../../lib/utils"
 import { useTheme } from "next-themes"
 import { useSidebar } from "../ui/sidebar-provider"
 import { useState, useRef, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { useAppSelector, useAppDispatch } from "../../state/redux"
+import { useAppDispatch } from "../../state/redux"
 import { signOut } from "aws-amplify/auth"
 import { logout } from "../../state/slices/authSlice"
 
@@ -61,6 +61,11 @@ export const sidebarNavigation: NavSection[] = [
                 icon: Calendar,
                 href: "/dashboard/schedule",
             },
+            {
+                title: "Messages",
+                icon: MessageCircle,
+                href: "/dashboard/messages",
+            },
         ],
     },
     {
@@ -85,7 +90,7 @@ interface DashboardSidebarProps {
     type: string
 }
 
-const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
+const DashboardSidebar = ({ }: DashboardSidebarProps) => {
     const pathname = usePathname()
     const router = useRouter()
     const { state, toggleSidebar } = useSidebar()
@@ -95,7 +100,7 @@ const DashboardSidebar = ({ id, type }: DashboardSidebarProps) => {
     const dropdownRef = useRef<HTMLDivElement>(null)
     const isMobile = useMediaQuery("(max-width: 768px)")
 
-    const { user } = useAppSelector((state) => state.user)
+
 
     const dispatch = useAppDispatch()
 

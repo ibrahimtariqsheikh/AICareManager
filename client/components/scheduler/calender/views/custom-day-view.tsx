@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2 } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2, HeartHandshake } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation"
 import type { ScheduleTemplate } from "@/types/prismaTypes"
 import { useApplyScheduleTemplateMutation, useGetScheduleTemplatesQuery, useGetAgencySchedulesQuery } from "@/state/api"
 import { setUserTemplates, setLoadingTemplates, setTemplateError } from "@/state/slices/templateSlice"
+import { Separator } from "@/components/ui/separator"
 
 export interface Client {
     id: string
@@ -606,7 +607,15 @@ export function CustomDayView({
                                             <div className="flex mb-[2px] flex-col justify-start items-start  font-medium">
                                                 <span className="text-sm font-medium truncate text-neutral-800">{user.fullName}</span>
                                                 <div className="text-[13px] text-neutral-500 flex items-center gap-1">
-                                                    {eventsByUser[user.id]?.length || 0} <EventIcon className="h-4 w-4 block" />
+                                                    <div className="flex items-center gap-1">
+                                                        {eventsByUser[user.id]?.length || 0} <EventIcon className="h-3.5 w-3.5 block" />
+                                                        <div className="h-3 block">
+                                                            <Separator orientation="vertical" />
+                                                        </div>
+                                                        <div className="flex items-center gap-1 ">
+                                                            {0} <HeartHandshake className="h-3.5 w-3.5 block" />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

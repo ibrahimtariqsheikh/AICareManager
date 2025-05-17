@@ -657,3 +657,32 @@ export const deleteSchedule = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ message: "Error deleting schedule", error })
   }
 }
+
+
+export const getCareWorkerSchedules = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId } = req.params
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        userId: userId as string
+      },
+      include: {
+        client: {
+          include: {
+            medications: true,
+          },
+        },
+        visitType: {
+          include: {
+            assignedTasks: true,
+          }
+        },
+      }
+    })
+    res.json(schedules)
+  } catch (error) {
+    console.error("Error fetching care worker schedules:", error)
+    res.status(500).json({ message: "Error fetching care worker schedules", error })
+  }
+}
+

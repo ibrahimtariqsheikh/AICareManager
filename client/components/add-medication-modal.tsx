@@ -34,7 +34,7 @@ interface AddMedicationModalProps {
 
 export function AddMedicationModal({ user }: AddMedicationModalProps) {
     const dispatch = useAppDispatch()
-    const { isAddMedicationModalOpen } = useAppSelector((state) => state.medication)
+    const { isAddMedicationModalOpen = false } = useAppSelector((state) => state.medication) || {}
     const [createMedication] = useCreateMedicationMutation()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -58,8 +58,13 @@ export function AddMedicationModal({ user }: AddMedicationModalProps) {
     }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        if (!user || !user.id) {
+            toast.error("Cannot add medication: missing user information")
+            return
+        }
+
         try {
-            dispatch(addMedication(values))
+            dispatch(addMedication(values as any))
             const response = await createMedication({
                 userId: user.id,
                 data: values,

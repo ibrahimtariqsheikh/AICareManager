@@ -29,12 +29,12 @@ interface CheckInModalProps {
 export function CheckInModal({ user }: CheckInModalProps) {
     const dispatch = useAppDispatch()
     const {
-        isCheckInModalOpen,
-        selectedMedicationId,
-        selectedTimeOfDay,
-        selectedDay,
-        medications,
-    } = useAppSelector((state) => state.medication)
+        isCheckInModalOpen = false,
+        selectedMedicationId = null,
+        selectedTimeOfDay = null,
+        selectedDay = null,
+        medications = [],
+    } = useAppSelector((state) => state.medication) || {}
 
     const [checkInMedication] = useCheckInMedicationMutation()
     const form = useForm<z.infer<typeof formSchema>>({
@@ -53,7 +53,8 @@ export function CheckInModal({ user }: CheckInModalProps) {
     }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        if (!selectedMedicationId || !selectedTimeOfDay || selectedDay === null) {
+        if (!selectedMedicationId || !selectedTimeOfDay || selectedDay === null || !user?.id) {
+            toast.error("Missing required information for medication check-in")
             return
         }
 

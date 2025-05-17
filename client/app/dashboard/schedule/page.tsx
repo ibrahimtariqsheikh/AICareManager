@@ -6,10 +6,12 @@ import { Button } from "../../../components/ui/button"
 import { AppointmentForm } from "@/components/scheduler/appointment-form"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { Clipboard, Plus } from "lucide-react"
+import { Heart, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import EventIcon from "@/components/icons/eventicon"
+import { EventForm } from "@/components/scheduler/event-form"
+import { Separator } from "@/components/ui/separator"
 
 
 
@@ -21,6 +23,7 @@ export default function SchedulerPage() {
 
 
     const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
+    const [isEventFormOpen, setIsEventFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<any>(null)
 
 
@@ -31,6 +34,11 @@ export default function SchedulerPage() {
 
     const handleFormClose = () => {
         setIsAppointmentFormOpen(false)
+        setEditingEvent(null)
+    }
+
+    const handleEventFormClose = () => {
+        setIsEventFormOpen(false)
         setEditingEvent(null)
     }
 
@@ -56,6 +64,15 @@ export default function SchedulerPage() {
                         </DialogContent>
                     </Dialog>
 
+                    <Dialog open={isEventFormOpen} onOpenChange={setIsEventFormOpen}>
+                        <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-auto">
+                            <VisuallyHidden>
+                                <DialogTitle>New Event</DialogTitle>
+                            </VisuallyHidden>
+                            <EventForm isOpen={true} onClose={handleEventFormClose} event={editingEvent} isNew={!editingEvent?.id} />
+                        </DialogContent>
+                    </Dialog>
+
                     <div className="fixed bottom-6 right-6 z-50">
                         <Popover>
                             <PopoverTrigger asChild>
@@ -64,13 +81,14 @@ export default function SchedulerPage() {
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-64" align="end">
-                                <div className="flex flex-col gap-2 text-xs">
+                                <div className="flex flex-col text-xs">
                                     <Button onClick={() => setIsAppointmentFormOpen(true)} className="w-full text-xs" variant="ghost">
                                         <EventIcon className="h-3 w-3" />
                                         New Appointment
                                     </Button>
-                                    <Button onClick={() => { }} className="w-full text-xs" variant="ghost">
-                                        <Clipboard className="h-3 w-3" />
+                                    <Separator className="my-1" />
+                                    <Button onClick={() => setIsEventFormOpen(true)} className="w-full text-xs" variant="ghost">
+                                        <Heart className="h-3 w-3" />
                                         New Event
                                     </Button>
                                 </div>

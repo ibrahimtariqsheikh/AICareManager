@@ -6,6 +6,7 @@ import {
   updateSchedule,
   deleteSchedule,
   getAgencySchedules,
+  getCareWorkerSchedules,
   
 } from "../controllers/scheduleController"
 
@@ -17,6 +18,6 @@ router.post("/", createSchedule)
 router.put("/:id", updateSchedule)
 router.delete("/:id", deleteSchedule)
 router.get("/agency/:agencyId", getAgencySchedules)
-
+router.get("/careworker/:userId", getCareWorkerSchedules)
 export default router
 

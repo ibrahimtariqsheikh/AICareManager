@@ -17,19 +17,16 @@ interface EMARProps {
 export const EMAR = ({ user }: EMARProps) => {
     const dispatch = useAppDispatch()
 
-
-
-    const medicationsFromUser = user.medications
-    const logsFromUser = user.medications.map((medication: Medication) => medication.logs)
-
+    // Safely access medications with fallbacks
+    const medicationsFromUser = user?.medications || []
+    const logsFromUser = medicationsFromUser.map((medication: Medication) => medication.logs || [])
 
     useEffect(() => {
-        dispatch(setMedications(medicationsFromUser))
-        dispatch(setMedicationLogs(logsFromUser))
-    }, [dispatch, user.id])
-
-
-
+        if (user && user.id) {
+            dispatch(setMedications(medicationsFromUser))
+            dispatch(setMedicationLogs(logsFromUser))
+        }
+    }, [dispatch, user?.id, medicationsFromUser, logsFromUser])
 
     return (
         <div className="space-y-6">

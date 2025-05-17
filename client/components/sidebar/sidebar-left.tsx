@@ -16,6 +16,7 @@ import {
 
     ChevronDown,
     CreditCard,
+    MessageCircle,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -101,11 +102,11 @@ const navigation: NavigationSection[] = [
                 icon: CreditCard,
                 href: "/dashboard/billing",
             },
-            // {
-            //     title: "Invites",
-            //     icon: Mail,
-            //     href: "/dashboard/invites",
-            // },
+            {
+                title: "Messages",
+                icon: MessageCircle,
+                href: "/dashboard/contacts",
+            },
         ],
     },
     {
@@ -217,10 +218,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
             </SidebarHeader>
             <div className="border-b border-border w-[100%] mx-auto my-1" />
             <SidebarContent className="px-3 py-4">
-                {/* <div className="text-xs text-neutral-700 flex items-center gap-1 justify-between mb-4 bg-neutral-100 rounded-md px-3 py-2 border border-neutral-300 hover:border-neutral-400 cursor-pointer hover:bg-neutral-200 transition-all duration-200 group">
-                    <div className="flex items-center gap-1 ">    <Search className="h-3.5 w-3.5 text-neutral-600 mr-1" />
-                        Quick Search    </div> <kbd className="flex items-center gap-1 justify-center w-fit px-1.5 py-0.5 text-xs font-medium text-neutral-800 bg-neutral-200 rounded-md"><CommandIcon className="inline-block w-3 h-3" />K</kbd>
-                </div> */}
+
 
                 {navigation.map((section) => (
                     <div key={section.title} className="space-y-2 mb-6">

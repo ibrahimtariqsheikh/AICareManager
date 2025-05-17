@@ -272,9 +272,10 @@ export default function DashboardPage() {
                                 <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 dark:text-neutral-500" />
                                 <CustomInput
                                     placeholder="Search appointments..."
-                                    className='w-[200px]'
+
                                     value={searchQuery}
                                     onChange={(value: string) => setSearchQuery(value)}
+                                    icon={<Search className="h-4 w-4" />}
                                 />
                             </div>
                             <div className="relative">

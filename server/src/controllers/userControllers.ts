@@ -318,6 +318,8 @@ export const getUserAllDetails = async (req: Request, res: Response): Promise<vo
     }
 };
 
+
+
 // Get user by ID
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
     try {

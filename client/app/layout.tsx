@@ -4,6 +4,7 @@ import { Geist } from "next/font/google"
 import "./globals.css"
 import Providers from "./providers"
 import { Toaster } from "../components/ui/sonner"
+import { MessageProvider } from './context/MessageContext'
 
 
 const font = Geist({ subsets: ["latin"] })
@@ -26,9 +27,11 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${font.className} antialiased`} suppressHydrationWarning>
-        <Providers>
-          <div className="dark:noise-bg w-full font-sans">{children}</div>
-        </Providers>
+        <MessageProvider>
+          <Providers>
+            <div className="dark:noise-bg w-full font-sans">{children}</div>
+          </Providers>
+        </MessageProvider>
         <Toaster />
       </body>
     </html>

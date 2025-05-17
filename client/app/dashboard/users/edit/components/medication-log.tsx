@@ -9,7 +9,7 @@ import {
     openCheckInModal,
     openAddMedicationModal,
 } from "@/state/slices/medicationSlice"
-import type { Medication} from "@/types/prismaTypes"
+import type { Medication } from "@/types/prismaTypes"
 import React from "react"
 import { useDeleteMedicationMutation } from "@/state/api"
 import { toast } from "sonner"
@@ -19,7 +19,8 @@ import { deleteMedicationRedux } from "@/state/slices/medicationSlice"
 
 export const MedicationLog = () => {
     const dispatch = useAppDispatch()
-    const { selectedMonth, selectedYear, medications, medicationLogs: logs } = useAppSelector((state) => state.medication)
+    const { selectedMonth = "0", selectedYear = new Date().getFullYear().toString(), medications = [], medicationLogs = [] } =
+        useAppSelector((state) => state.medication) || {}
     const [deleteMedication] = useDeleteMedicationMutation()
 
     const monthNames = [
@@ -90,7 +91,7 @@ export const MedicationLog = () => {
     const getStatusForDay = (medicationId: string, day: number | undefined, timeOfDay?: string): string => {
         if (!day) return "empty"
 
-        const flatLogs = logs.flat()
+        const flatLogs = medicationLogs.flat()
 
 
 

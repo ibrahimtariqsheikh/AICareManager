@@ -43,7 +43,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
         return isNaN(date.getTime()) ? new Date() : date
     }, [currentDateStr])
 
-    const { data: agencySchedulesData, isLoading: isSchedulesLoading } = useGetAgencySchedulesQuery(user?.userInfo?.agencyId || "")
+    const { data: _, isLoading: isSchedulesLoading } = useGetAgencySchedulesQuery(user?.userInfo?.agencyId || "")
 
 
     const schedules = useAppSelector((state) => state.schedule.agencySchedules)
@@ -53,7 +53,9 @@ export function Calendar({ onEventSelect }: CalendarProps) {
         if (!schedules || schedules.length === 0) return []
 
         return schedules.map(schedule => {
-            const [y, m, d] = schedule.date.split("T")[0].split("-").map(Number)
+            if (!schedule.date) return null;
+            const dateStr = schedule.date as string;
+            const [y, m, d] = dateStr.split("T")[0].split("-").map(Number);
             const date = new Date(y, m - 1, d);
             const [startHours, startMinutes] = schedule.startTime.split(":").map(Number) as [number, number];
             const [endHours, endMinutes] = schedule.endTime.split(":").map(Number) as [number, number];
