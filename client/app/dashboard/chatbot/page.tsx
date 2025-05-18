@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useRef, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
+import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { Lightbulb, ImageIcon, Sparkles, Database, Brain, ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
@@ -14,6 +14,7 @@ import { SearchDialog } from "@/app/dashboard/chatbot/components/search-dialog"
 import { SuggestionDialog } from "@/app/dashboard/chatbot/components/suggestion-dialog"
 import { type Message, useChat } from "@/app/dashboard/chatbot/chatbot-client"
 import Image from "next/image"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 // Define the thinking stages for the AI response
 type ThinkingStage = {
@@ -154,7 +155,10 @@ export default function ChatbotPage() {
                     {!hasMessages ? (
                         <div className="flex flex-col items-center justify-center w-full h-full px-4">
                             <div className="flex flex-col gap-4 items-center justify-center">
-                                <Image src="/logos/logo.svg" alt="logo" width={40} height={40} />
+                                <Avatar className="h-16 w-16">
+                                    <AvatarImage src="/logos/logo.svg" alt="Care.ai" />
+                                    <AvatarFallback>CA</AvatarFallback>
+                                </Avatar>
                                 <div className="flex flex-col items-center justify-center gap-1">
                                     <div className="text-xl font-bold">Hey! I'm Care.ai</div>
                                     <div className="text-sm text-neutral-500">Tell me everything you need. I'm here to help you.</div>
@@ -197,34 +201,50 @@ export default function ChatbotPage() {
                                         transition={{ duration: 0.3 }}
                                         className="message"
                                     >
-                                        <div className="flex items-start gap-4 mb-6">
-                                            <div
-                                                className={cn(
-                                                    "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border",
-                                                    msg.role === "user" ? "bg-background" : "bg-background",
-                                                )}
-                                            >
-                                                {msg.role === "user" ? "U" : "A"}
-                                            </div>
-                                            <div className="flex-1 overflow-hidden">
-                                                <div className="font-medium mb-1 flex items-center gap-2">
-                                                    {msg.role === "user" ? "You" : "Assistant"}
-                                                    <span className="text-xs text-muted-foreground">
+                                        <div className={cn(
+                                            "flex items-start gap-2 mb-4",
+                                            msg.role === "user" ? "justify-end" : "justify-start"
+                                        )}>
+                                            {msg.role === "assistant" && (
+                                                <Avatar className="h-8 w-8 shrink-0 mt-1">
+                                                    <AvatarImage
+                                                        src={msg.avatar || getRandomPlaceholderImage()}
+                                                        alt="Assistant"
+                                                    />
+                                                    <AvatarFallback>A</AvatarFallback>
+                                                </Avatar>
+                                            )}
+                                            <div className={cn(
+                                                "max-w-[75%]",
+                                                msg.role === "user" ? "order-1" : "order-1"
+                                            )}>
+                                                <div className={cn(
+                                                    "px-4 py-2 rounded-md",
+                                                    msg.role === "user" ? "bg-blue-500 text-white" : "bg-muted"
+                                                )}>
+                                                    {msg.content}
+                                                </div>
+                                                <div className={cn(
+                                                    "flex text-xs mt-1 text-muted-foreground",
+                                                    msg.role === "user" ? "justify-end" : "justify-start"
+                                                )}>
+                                                    <span>
                                                         {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], {
                                                             hour: "2-digit",
                                                             minute: "2-digit",
                                                         })}
                                                     </span>
                                                 </div>
-                                                <div
-                                                    className={cn(
-                                                        "whitespace-pre-wrap break-words p-4 rounded-lg border",
-                                                        msg.role === "user" ? "bg-background" : "bg-background",
-                                                    )}
-                                                >
-                                                    {msg.content}
-                                                </div>
                                             </div>
+                                            {msg.role === "user" && (
+                                                <Avatar className="h-8 w-8 shrink-0 mt-1 order-2">
+                                                    <AvatarImage
+                                                        src={msg.avatar || getRandomPlaceholderImage()}
+                                                        alt="You"
+                                                    />
+                                                    <AvatarFallback>U</AvatarFallback>
+                                                </Avatar>
+                                            )}
                                         </div>
                                     </motion.div>
                                 ))}
@@ -237,18 +257,16 @@ export default function ChatbotPage() {
                                         exit={{ opacity: 0 }}
                                         className="message"
                                     >
-                                        <div className="flex items-start gap-4 mb-6">
-                                            <div className="w-8 h-8 rounded-full bg-background text-foreground flex items-center justify-center shrink-0 border">
-                                                A
-                                            </div>
-                                            <div className="flex-1 overflow-hidden">
-                                                <div className="font-medium mb-1 flex items-center gap-2">
-                                                    Assistant
-                                                    <span className="text-xs text-muted-foreground">
-                                                        {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                                    </span>
-                                                </div>
-                                                <div className={cn("p-4 rounded-lg border bg-background")}>
+                                        <div className="flex items-end gap-2 justify-start mb-4">
+                                            <Avatar className="h-8 w-8 shrink-0">
+                                                <AvatarImage
+                                                    src={getRandomPlaceholderImage()}
+                                                    alt="Assistant"
+                                                />
+                                                <AvatarFallback>A</AvatarFallback>
+                                            </Avatar>
+                                            <div className="max-w-[75%] order-2">
+                                                <div className="px-4 py-2 rounded-md bg-muted">
                                                     <AnimatePresence mode="wait">
                                                         <motion.div
                                                             key={thinkingStage}
@@ -259,19 +277,21 @@ export default function ChatbotPage() {
                                                             className="flex flex-col gap-3"
                                                         >
                                                             {/* Current thinking stage */}
-                                                            <div className="flex items-center gap-2 p-2 rounded-md border">
-                                                                {thinkingStages[thinkingStage]?.icon}
-                                                                <span className="text-sm font-medium">{thinkingStages[thinkingStage]?.text}</span>
-                                                                <div className="ml-auto flex gap-1">
-                                                                    <div className="h-2 w-2 rounded-full bg-current animate-pulse"></div>
-                                                                    <div
-                                                                        className="h-2 w-2 rounded-full bg-current animate-pulse"
-                                                                        style={{ animationDelay: "300ms" }}
-                                                                    ></div>
-                                                                    <div
-                                                                        className="h-2 w-2 rounded-full bg-current animate-pulse"
-                                                                        style={{ animationDelay: "600ms" }}
-                                                                    ></div>
+                                                            <div className="px-4 py-2 rounded-md bg-muted">
+                                                                <div className="flex items-center gap-2">
+                                                                    {thinkingStages[thinkingStage]?.icon}
+                                                                    <span className="text-sm font-medium">{thinkingStages[thinkingStage]?.text}</span>
+                                                                    <div className="ml-auto flex gap-1">
+                                                                        <div className="h-2 w-2 rounded-full bg-current animate-pulse"></div>
+                                                                        <div
+                                                                            className="h-2 w-2 rounded-full bg-current animate-pulse"
+                                                                            style={{ animationDelay: "300ms" }}
+                                                                        ></div>
+                                                                        <div
+                                                                            className="h-2 w-2 rounded-full bg-current animate-pulse"
+                                                                            style={{ animationDelay: "600ms" }}
+                                                                        ></div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
 
@@ -279,24 +299,31 @@ export default function ChatbotPage() {
                                                             {Array.from({ length: thinkingStage }).map((_, idx) => (
                                                                 <div
                                                                     key={idx}
-                                                                    className="flex items-center gap-2 p-2 rounded-md border text-muted-foreground"
+                                                                    className="px-4 py-2 rounded-md bg-muted text-muted-foreground"
                                                                 >
-                                                                    {thinkingStages[idx]?.icon}
-                                                                    <span className="text-sm">{thinkingStages[idx]?.text}</span>
-                                                                    <div className="ml-auto">
-                                                                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path
-                                                                                strokeLinecap="round"
-                                                                                strokeLinejoin="round"
-                                                                                strokeWidth={2}
-                                                                                d="M5 13l4 4L19 7"
-                                                                            />
-                                                                        </svg>
+                                                                    <div className="flex items-center gap-2">
+                                                                        {thinkingStages[idx]?.icon}
+                                                                        <span className="text-sm">{thinkingStages[idx]?.text}</span>
+                                                                        <div className="ml-auto">
+                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                <path
+                                                                                    strokeLinecap="round"
+                                                                                    strokeLinejoin="round"
+                                                                                    strokeWidth={2}
+                                                                                    d="M5 13l4 4L19 7"
+                                                                                />
+                                                                            </svg>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             ))}
                                                         </motion.div>
                                                     </AnimatePresence>
+                                                </div>
+                                                <div className="flex text-xs mt-1 text-muted-foreground justify-start">
+                                                    <span>
+                                                        {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

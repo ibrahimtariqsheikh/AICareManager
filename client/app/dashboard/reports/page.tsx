@@ -1,330 +1,300 @@
 "use client"
 
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAppSelector } from "@/hooks/useAppSelector"
+import { cn } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import {
-    AlertCircle,
-
-    Calendar,
-
-    Eye,
-    FileText,
-    Filter,
-    Pill,
-    Search,
-    Sparkles,
-    UserIcon,
-    Users,
-    Utensils,
-    X,
-} from "lucide-react"
-
-import { format as formatDateFns } from "date-fns"
-import { AIImproveDialog } from "./components/ai-improve-dialog"
-
-import type { Report, ReportAlert, ReportTask } from "@/types/prismaTypes"
-
-
-import type { RootState } from "@/state/redux"
-
+import { format } from "date-fns"
+import { AlertCircle, CheckCircle, Clock, FileEdit, Flag, Search } from "lucide-react"
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { CustomInput } from "@/components/ui/custom-input"
 
 export default function ReportsPage() {
+    const { agency } = useAppSelector((state: any) => state.agency)
+    const reports = agency?.reports || []
+    console.log("reports", reports)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [isLoaded, setIsLoaded] = useState(false)
 
-    const { reports, isLoading, error } = useSelector((state: RootState) => state.report)
-
-    const [searchQuery, setSearchQuery] = useState("")
-    const [, setActiveTab] = useState("visits")
-    const [selectedReport, setSelectedReportState] = useState<Report | null>(null)
-    const [, setIsDetailViewOpen] = useState(false)
-    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false)
-    const [filterOptions, setFilterOptions] = useState({
-        dateFrom: "",
-        dateTo: "",
-        careWorker: "",
-        client: "",
-        taskType: "",
-        alertType: "",
-        hasSignature: false,
-        hasMissedMedication: false,
-    })
-    const [isFilterOpen, setIsFilterOpen] = useState(false)
-
-
-    // Filter reports based on search query and filter options
-    const filteredReports = reports?.filter((report: Report) => {
-        // Search query filtering
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase()
-            const matchesClient = report?.client?.fullName?.toLowerCase().includes(query) || false
-            const matchesCareWorker = report?.caregiver?.fullName?.toLowerCase().includes(query) || false
-            const matchesAlerts = report?.alerts?.some((alert: ReportAlert) => alert.message.toLowerCase().includes(query)) || false
-
-            if (!(matchesClient || matchesCareWorker || matchesAlerts)) {
-                return false
-            }
+    // Dummy alerts data
+    const dummyAlerts = [
+        {
+            id: 1,
+            title: "Medication Reminder",
+            type: "MEDICATION",
+            status: "PENDING",
+            client: { fullName: "John Smith" },
+            caregiver: { fullName: "Sarah Johnson" },
+            timestamp: new Date().toISOString(),
+            description: "Client missed morning medication"
+        },
+        {
+            id: 2,
+            title: "Fall Risk Alert",
+            type: "SAFETY",
+            status: "URGENT",
+            client: { fullName: "Mary Williams" },
+            caregiver: { fullName: "Michael Brown" },
+            timestamp: new Date().toISOString(),
+            description: "Client attempted to walk without assistance"
+        },
+        {
+            id: 3,
+            title: "Appointment Reminder",
+            type: "APPOINTMENT",
+            status: "INFO",
+            client: { fullName: "Robert Davis" },
+            caregiver: { fullName: "Emily Wilson" },
+            timestamp: new Date().toISOString(),
+            description: "Doctor's appointment scheduled for tomorrow"
+        },
+        {
+            id: 4,
+            title: "Behavioral Alert",
+            type: "BEHAVIOR",
+            status: "WARNING",
+            client: { fullName: "Patricia Miller" },
+            caregiver: { fullName: "David Taylor" },
+            timestamp: new Date().toISOString(),
+            description: "Unusual behavior patterns observed"
         }
+    ]
 
-        // Filter options filtering
-        if (filterOptions.dateFrom && new Date(report.checkInTime) < new Date(filterOptions.dateFrom)) {
-            return false
-        }
+    useEffect(() => {
+        setIsLoaded(true)
+    }, [])
 
-        if (filterOptions.careWorker && report.caregiver?.fullName !== filterOptions.careWorker) {
-            return false
-        }
-
-        if (filterOptions.client && report.clientId !== filterOptions.client) {
-            return false
-        }
-
-        if (filterOptions.taskType && !report.tasksCompleted.some((task: ReportTask) => task.name === filterOptions.taskType)) {
-            return false
-        }
-
-        if (filterOptions.alertType && !report.alerts?.some((alert: ReportAlert) => alert.type === filterOptions.alertType)) {
-            return false
-        }
-
-        if (filterOptions.hasSignature && !report.hasSignature) {
-            return false
-        }
-
-        if (
-            filterOptions.hasMissedMedication &&
-            !report.alerts?.some((alert: ReportAlert) => alert.type === "medication" && alert.message.toLowerCase().includes("missed"))
-        ) {
-            return false
-        }
-
-        return true
-    })
-
-    // Handle export report
-    const handleExportReport = () => {
-        if (!reports) return
-
-        // Create CSV content
-        const headers = ["Client Name", "Date", "Check In", "Check Out", "Summary", "Status"]
-        const rows = reports.map((report: Report) => {
-            const checkInTime = formatDateFns(new Date(report.checkInTime), "HH:mm")
-            const checkOutTime = report.checkOutTime ? formatDateFns(new Date(report.checkOutTime), "HH:mm") : "In Progress"
-            const date = formatDateFns(new Date(report.checkInTime), "dd/MM/yyyy")
-
-            return [
-                `"${report.client?.fullName || 'Unknown'}"`,
-                `"${date}"`,
-                `"${checkInTime}"`,
-                `"${checkOutTime}"`,
-                `"${report.summary || "N/A"}"`,
-                `"${report.status}"`,
-            ].join(",")
-        })
-
-        const csvContent = [headers.join(","), ...rows].join("\n")
-
-        // Create blob and download
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        a.download = "reports_export.csv"
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-    }
-
-    // Handle view report details
-    const handleViewReport = (report: Report) => {
-        setSelectedReportState(report)
-        setIsDetailViewOpen(true)
-    }
-
-    // Handle AI improve report
-    const handleAIImprove = (report: Report) => {
-        setSelectedReportState(report)
-        setIsAIDialogOpen(true)
-    }
-
-    const getTaskIcon = (taskName: string) => {
-        switch (taskName.toLowerCase()) {
-            case "medication":
-                return <Pill className="h-3 w-3" />
-            case "meal":
-                return <Utensils className="h-3 w-3" />
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "COMPLETED":
+                return "bg-green-600/20 text-green-900 border border-green-400/20"
+            case "DRAFT":
+                return "bg-yellow-600/20 text-yellow-900 border border-yellow-400/20"
+            case "EDITED":
+                return "bg-blue-600/20 text-blue-900 border border-blue-400/20"
+            case "FLAGGED":
+                return "bg-red-600/20 text-red-900 border border-red-400/20"
+            case "REVIEWED":
+                return "bg-purple-600/20 text-purple-900 border border-purple-400/20"
             default:
-                return <FileText className="h-3 w-3" />
+                return "bg-gray-600/20 text-gray-900 border border-gray-400/20"
         }
     }
 
-    const getAlertBadge = (type: string, severity: string) => {
-        const severityColors = {
-            HIGH: "bg-red-100 text-red-800",
-            MEDIUM: "bg-yellow-100 text-yellow-800",
-            LOW: "bg-blue-100 text-blue-800",
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case "COMPLETED":
+                return <CheckCircle className="h-3.5 w-3.5 mr-1" />
+            case "DRAFT":
+                return <Clock className="h-3.5 w-3.5 mr-1" />
+            case "EDITED":
+                return <FileEdit className="h-3.5 w-3.5 mr-1" />
+            case "FLAGGED":
+                return <Flag className="h-3.5 w-3.5 mr-1" />
+            case "REVIEWED":
+                return <AlertCircle className="h-3.5 w-3.5 mr-1" />
+            default:
+                return null
         }
-
-        return (
-            <Badge variant="outline" className={`${severityColors[severity as keyof typeof severityColors] || ""}`}>
-                {type}
-            </Badge>
-        )
     }
 
-    return (
-        <div className="flex-1 space-y-4 p-6">
-            <div className="flex flex-col">
-                <h1 className="text-xl font-bold">Reports</h1>
-                <p className="text-sm text-neutral-600">
-                    View and manage your reports.
-                </p>
-            </div>
+    const getAlertTypeColor = (type: string) => {
+        switch (type) {
+            case "MEDICATION":
+                return "bg-blue-600/20 text-blue-900 border border-blue-400/20"
+            case "SAFETY":
+                return "bg-red-600/20 text-red-900 border border-red-400/20"
+            case "APPOINTMENT":
+                return "bg-purple-600/20 text-purple-900 border border-purple-400/20"
+            case "BEHAVIOR":
+                return "bg-yellow-600/20 text-yellow-900 border border-yellow-400/20"
+            default:
+                return "bg-gray-600/20 text-gray-900 border border-gray-400/20"
+        }
+    }
 
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
-                <div className="relative flex-1">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Search reports by client, care worker, tasks, or use AI search like 'show missed medications last week'..."
-                        className="pl-8"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                <Button
-                    variant={isFilterOpen ? "default" : "outline"}
-                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                    className="whitespace-nowrap"
-                >
-                    <Filter className="h-4 w-4 mr-2" />
-                    {isFilterOpen ? "Hide Filters" : "Show Filters"}
-                </Button>
-            </div>
+    const getAlertStatusColor = (status: string) => {
+        switch (status) {
+            case "URGENT":
+                return "bg-red-600/20 text-red-900 border border-red-400/20"
+            case "WARNING":
+                return "bg-yellow-600/20 text-yellow-900 border border-yellow-400/20"
+            case "INFO":
+                return "bg-blue-600/20 text-blue-900 border border-blue-400/20"
+            case "PENDING":
+                return "bg-gray-600/20 text-gray-900 border border-gray-400/20"
+            default:
+                return "bg-gray-600/20 text-gray-900 border border-gray-400/20"
+        }
+    }
 
-            {isFilterOpen && (
-                <Card>
-                    <CardContent className="pt-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {/* Filter content */}
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+    const filteredReports = (status?: string) => {
+        let filtered = reports
 
-            <Tabs defaultValue="visits" onValueChange={setActiveTab}>
-                <TabsList className="mb-4">
-                    <TabsTrigger value="visits">Visit Reports</TabsTrigger>
-                    <TabsTrigger value="payroll">Payroll and Invoicing</TabsTrigger>
-                    <TabsTrigger value="mileage">Mileage</TabsTrigger>
-                </TabsList>
+        if (status && status !== "all") {
+            filtered = reports.filter((report: any) => report.status === status.toUpperCase())
+        }
 
-                <TabsContent value="visits" className="space-y-4">
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle>Visit Reports</CardTitle>
-                                    <CardDescription>
-                                        {isLoading ? "Loading reports..." : `${filteredReports?.length || 0} reports found`}
-                                    </CardDescription>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Button variant="outline" size="sm">
-                                        <Calendar className="h-4 w-4 mr-2" />
-                                        Date
-                                    </Button>
-                                    <Button variant="outline" size="sm">
-                                        <UserIcon className="h-4 w-4 mr-2" />
-                                        Care Worker
-                                    </Button>
-                                    <Button variant="outline" size="sm">
-                                        <Users className="h-4 w-4 mr-2" />
-                                        Client
-                                    </Button>
+        if (searchTerm) {
+            filtered = filtered.filter(
+                (report: any) =>
+                    (report.title && report.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                    (report.client?.fullName && report.client.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                    (report.caregiver?.fullName && report.caregiver.fullName.toLowerCase().includes(searchTerm.toLowerCase())),
+            )
+        }
+
+        return filtered
+    }
+
+    const renderReportItem = (report: any) => (
+        <Link href={`/dashboard/reports/${report.id}`} key={report.id} className="block transition-all duration-200">
+            <Card className="hover:bg-muted/50 transition-colors duration-200">
+                <CardContent className="p-4">
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-medium truncate">{report.title || "Untitled Report"}</h3>
+                                <div className={cn("flex items-center text-xs", getStatusColor(report.status), "rounded-md px-2 py-0.5 font-medium")}>
+                                    {getStatusIcon(report.status)}
+                                    {report.status}
                                 </div>
                             </div>
-                        </CardHeader>
+                            <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                    <span className="font-medium">Client:</span>
+                                    {report.client?.fullName}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="font-medium">Caregiver:</span>
+                                    {report.caregiver?.fullName}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="font-medium">Date:</span>
+                                    {format(new Date(report.checkInTime), "MMM dd, HH:mm")}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </Link>
+    )
 
-                        <CardContent>
-                            {isLoading ? (
-                                <div className="flex justify-center items-center h-64">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                                </div>
-                            ) : error ? (
-                                <div className="flex justify-center items-center h-64 text-red-500">
-                                    <AlertCircle className="h-5 w-5 mr-2" />
-                                    {error}
-                                </div>
-                            ) : !filteredReports || filteredReports.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                                    <h3 className="text-lg font-medium mb-2">No reports found</h3>
-                                    <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
-                                </div>
+    const renderAlertItem = (alert: any) => (
+        <Card key={alert.id} className="hover:bg-muted/50 transition-colors duration-200">
+            <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-medium truncate">{alert.title}</h3>
+                            <div className={cn("flex items-center text-xs", getAlertTypeColor(alert.type), "rounded-md px-2 py-0.5 font-medium")}>
+                                {alert.type}
+                            </div>
+                            <div className={cn("flex items-center text-xs", getAlertStatusColor(alert.status), "rounded-md px-2 py-0.5 font-medium")}>
+                                {alert.status}
+                            </div>
+                        </div>
+                        <p className="text-sm text-muted-foreground line-clamp-1">{alert.description}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                                <span className="font-medium">Client:</span>
+                                {alert.client?.fullName}
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <span className="font-medium">Caregiver:</span>
+                                {alert.caregiver?.fullName}
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <span className="font-medium">Time:</span>
+                                {format(new Date(alert.timestamp), "MMM dd, HH:mm")}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    )
+
+    return (
+        <div
+            className={`relative min-h-screen transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+        >
+            <div className="container mx-auto px-6 py-10">
+                <div className="space-y-8">
+                    <Tabs defaultValue="all" className="space-y-8">
+                        <div className="flex items-center justify-between space-y-0">
+                            <TabsList className="justify-start h-auto p-1 bg-muted/50 w-fit">
+                                <TabsTrigger
+                                    value="all"
+                                    className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                                >
+                                    Reports
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="completed"
+                                    className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                                >
+                                    Alerts
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <CustomInput
+                                placeholder="Search"
+                                value={searchTerm}
+                                icon={<Search className="h-4 w-4" />}
+                                onChange={(value: string) => setSearchTerm(value)}
+                                className="w-[300px]"
+                            />
+                        </div>
+
+                        <TabsContent value="all" className="space-y-4 mt-6">
+                            {filteredReports().length > 0 ? (
+                                <div className="grid gap-4">{filteredReports().map(renderReportItem)}</div>
                             ) : (
-                                <div className="space-y-4">
-                                    {filteredReports?.map((report: Report) => (
-                                        <div
-                                            key={report.id}
-                                            className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-md hover:bg-accent/50 transition-colors cursor-pointer"
-                                            onClick={() => handleViewReport(report)}
-                                        >
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <h3 className="font-medium">{report.title || report.summary || "Untitled Report"}</h3>
-                                                    <Badge variant="outline">{report.status}</Badge>
-                                                </div>
-                                                <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-                                                    <span className="flex items-center">
-                                                        <UserIcon className="h-4 w-4 mr-1" />
-                                                        {report.client?.fullName || "Unknown Client"}
-                                                    </span>
-                                                    <span className="flex items-center">
-                                                        <UserIcon className="h-4 w-4 mr-1" />
-                                                        {report.caregiver?.fullName || "Unknown Caregiver"}
-                                                    </span>
-                                                    <span className="flex items-center">
-                                                        <Calendar className="h-4 w-4 mr-1" />
-                                                        {new Date(report.checkInTime).toLocaleDateString()}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2 mt-4 md:mt-0">
-                                                <Button variant="ghost" size="sm" onClick={() => handleViewReport(report)}>
-                                                    <Eye className="h-4 w-4 mr-1" />
-                                                    View
-                                                </Button>
-                                                <Button variant="ghost" size="sm" onClick={() => handleAIImprove(report)}>
-                                                    <Sparkles className="h-4 w-4 mr-1" />
-                                                    Improve
-                                                </Button>
-                                            </div>
+                                <Card className="text-center py-16 border-dashed">
+                                    <CardContent className="pt-16">
+                                        <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-muted rounded-full">
+                                            <Search className="h-8 w-8 text-muted-foreground" />
                                         </div>
-                                    ))}
-                                </div>
+                                        <CardTitle className="text-lg mb-1">
+                                            {searchTerm ? "No reports match your search" : "No reports available"}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {searchTerm
+                                                ? "Try adjusting your search parameters"
+                                                : "Reports will appear here once they are created"}
+                                        </CardDescription>
+                                    </CardContent>
+                                </Card>
                             )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
+                        </TabsContent>
 
-                <TabsContent value="payroll" className="space-y-4">
-                    {/* Payroll content */}
-                </TabsContent>
-
-                <TabsContent value="mileage" className="space-y-4">
-                    {/* Mileage content */}
-                </TabsContent>
-            </Tabs>
-
-            {/* AI Improve Dialog */}
-            {selectedReport && (
-                <AIImproveDialog report={selectedReport} open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen} />
-            )}
-        </div>
+                        <TabsContent value="completed" className="space-y-4 mt-6">
+                            {dummyAlerts.length > 0 ? (
+                                <div className="grid gap-4">{dummyAlerts.map(renderAlertItem)}</div>
+                            ) : (
+                                <Card className="text-center py-16">
+                                    <CardContent className="pt-16">
+                                        <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-gray-100 rounded-full">
+                                            <AlertCircle className="h-8 w-8 text-gray-400" />
+                                        </div>
+                                        <CardTitle className="text-lg mb-1">
+                                            {searchTerm ? "No alerts match your search" : "No alerts available"}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {searchTerm ? "Try adjusting your search parameters" : "Alerts will appear here"}
+                                        </CardDescription>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </div >
+        </div >
     )
 }

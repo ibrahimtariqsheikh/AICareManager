@@ -292,6 +292,19 @@ export const getAgencyById = async (req: Request, res: Response): Promise<void> 
                rateSheets: true,
                customTasks: true,
                groups: true,
+               reminders: true,
+               reports: {
+                include: {
+                    client: true,
+                    caregiver: true,
+            
+                }
+               },
+               riskCategories: true,
+               mileageRecords: true,
+               incidentReports: true,
+               documents: true,
+               users: true,
                
             }
         });

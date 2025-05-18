@@ -4,12 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSendMessageMutation, useGetChatHistoryQuery, useClearChatHistoryMutation } from '@/state/api';
 import { RootState } from '@/state/redux';
 import { setMessages, addMessage, setLoading, setError, setSessionId, clearChat } from '@/state/slices/chatSlice';
+import { getRandomPlaceholderImage } from "@/lib/utils"
+
 
 export type Message = {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   createdAt?: string;
+  avatar?: string | undefined;
 };
 
 export type UseChatOptions = {
@@ -92,6 +95,7 @@ export function useChat({
       role: 'user',
       content: input.trim(),
       createdAt: new Date().toISOString(),
+      avatar: getRandomPlaceholderImage()
     };
 
     dispatch(addMessage(userMessage));

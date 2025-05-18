@@ -918,6 +918,29 @@ addVisitTypeTask: build.mutation<Task, { userId: string; visitTypeId: string; ta
       invalidatesTags: ["Conversations"],
     }),
 
+    // Chat endpoints
+    sendMessage: build.mutation<{ message: Message; sessionId: string }, { messages: Message[]; sessionId?: string }>({
+      query: (data) => ({
+        url: '/chat/chat',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
+    getChatHistory: build.query<{ messages: Message[]; sessionId: string }, string>({
+      query: (sessionId) => `/chat/chat/${sessionId}`,
+      providesTags: ["Chat"],
+    }),
+
+    clearChatHistory: build.mutation<{ sessionId: string; status: string }, string>({
+      query: (sessionId) => ({
+        url: `/chat/chat/${sessionId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
   }),
 })
 
@@ -988,5 +1011,8 @@ export const {
   useGetMessagesByAgencyQuery,
   useDeleteMessageMutation,
   useCreateConversationMutation,
-  useSendMessageInConversationMutation
+  useSendMessageInConversationMutation,
+  useSendMessageMutation,
+  useGetChatHistoryQuery,
+  useClearChatHistoryMutation
 } = api
