@@ -123,33 +123,6 @@ function UserActions({ user }: { user: User }) {
 
 export const columns: ColumnDef<User>[] = [
     {
-        id: "select",
-        header: ({ table }: { table: any }) => {
-            const { theme } = useTheme()
-            return (
-                <Checkbox
-                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                    className={theme === "dark" ? "border-gray-600" : ""}
-                />
-            )
-        },
-        cell: ({ row }: { row: any }) => {
-            const { theme } = useTheme()
-            return (
-                <Checkbox
-                    checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
-                    className={theme === "dark" ? "border-gray-600" : ""}
-                />
-            )
-        },
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
         accessorKey: "name",
         header: ({ column }: { column: any }) => {
             const { theme } = useTheme()
@@ -170,13 +143,13 @@ export const columns: ColumnDef<User>[] = [
             }
 
             return (
-                <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9">
+                <div className="flex items-center gap-2">
+                    <Avatar className="h-7 w-7">
                         <AvatarImage src={getRandomPlaceholderImage()} alt={fullName} />
-                        <AvatarFallback className={theme === "dark" ? "bg-zinc-800 text-gray-200" : ""}>{getInitials(fullName)}</AvatarFallback>
+                        <AvatarFallback className={`text-xs ${theme === "dark" ? "bg-zinc-800 text-gray-200" : ""}`}>{getInitials(fullName)}</AvatarFallback>
                     </Avatar>
-                    <div>
-                        <div className={`font-medium ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}>{fullName}</div>
+                    <div className="space-y-0.5">
+                        <div className={`text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}>{fullName}</div>
                         {row.original.role === "CLIENT" && row.original.clientId && (
                             <div className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>ID: {row.original.clientId.substring(0, 8)}</div>
                         )}
@@ -205,7 +178,7 @@ export const columns: ColumnDef<User>[] = [
         },
         cell: ({ row }: { row: any }) => {
             const { theme } = useTheme()
-            return <div className={`text-sm ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>{row.original.email}</div>
+            return <div className={`text-xs ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>{row.original.email}</div>
         },
         enableSorting: true,
         filterFn: "includesString",
@@ -224,7 +197,7 @@ export const columns: ColumnDef<User>[] = [
         cell: ({ row }: { row: any }) => {
             const { theme } = useTheme()
             return (
-                <div className={`text-xs font-medium rounded-md px-2 py-1 max-w-30 w-fit text-center ${theme === "dark"
+                <div className={`text-xs font-medium rounded-md px-1.5 py-0.5 max-w-30 w-fit text-center ${theme === "dark"
                     ? "text-blue-300 bg-blue-900/50"
                     : "text-blue-700 bg-blue-100/50"
                     }`}>

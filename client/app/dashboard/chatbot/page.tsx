@@ -13,7 +13,6 @@ import { FileUpload } from "@/app/dashboard/chatbot/components/file-upload"
 import { SearchDialog } from "@/app/dashboard/chatbot/components/search-dialog"
 import { SuggestionDialog } from "@/app/dashboard/chatbot/components/suggestion-dialog"
 import { type Message, useChat } from "@/app/dashboard/chatbot/chatbot-client"
-import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 // Define the thinking stages for the AI response

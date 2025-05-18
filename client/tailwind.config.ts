@@ -13,7 +13,6 @@ function addVariablesForColors({ addBase, theme }: any) {
   });
 }
 
-const colors = require("tailwindcss/colors");
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");

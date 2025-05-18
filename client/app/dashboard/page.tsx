@@ -26,6 +26,13 @@ import { useEffect, useState } from "react"
 import { getRandomPlaceholderImage } from "@/lib/utils"
 import { CustomInput } from "@/components/ui/custom-input"
 import { cn } from "@/lib/utils"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 
 export default function DashboardPage() {
@@ -54,8 +61,8 @@ export default function DashboardPage() {
 
     if (isLoading) {
         return (
-            <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                     {[...Array(4)].map((_, i) => (
                         <Card key={i} className="overflow-hidden">
                             <CardHeader className="pb-2">
@@ -74,9 +81,9 @@ export default function DashboardPage() {
                         <Skeleton className="h-6 w-1/4" />
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {[...Array(4)].map((_, i) => (
-                                <div key={i} className="space-y-2">
+                                <div key={i} className="space-y-1.5">
                                     <Skeleton className="h-4 w-1/3" />
                                     <Skeleton className="h-4 w-1/2" />
                                 </div>
@@ -160,27 +167,27 @@ export default function DashboardPage() {
         .slice(0, 5)
 
     return (
-        <div className="px-6 py-2 space-y-6 mt-4">
+        <div className="p-6 space-y-4 mt-3">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
-                    <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <Users className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
+                    <CardContent className="p-4">
+                        <div className="flex items-center mb-2">
+                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <Users className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Clients</h3>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Clients</h3>
                         </div>
-                        <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalClients}</div>
-                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                        <div className="flex justify-between items-baseline mb-0.5">
+                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalClients}</div>
+                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
+                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
                                 +12%
                             </div>
                         </div>
-                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Patient increase in 7 days.</div>
-                        <div className="flex justify-end mt-2" onClick={() => router.push("/dashboard/users")}>
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Patient increase in 7 days.</div>
+                        <div className="flex justify-end mt-1" onClick={() => router.push("/dashboard/users")}>
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
                                 See details
                             </Button>
                         </div>
@@ -188,23 +195,23 @@ export default function DashboardPage() {
                 </Card>
 
                 <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
-                    <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <Calendar className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
+                    <CardContent className="p-4">
+                        <div className="flex items-center mb-2">
+                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <Calendar className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Appointment</h3>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Appointment</h3>
                         </div>
-                        <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalSchedules}</div>
-                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                        <div className="flex justify-between items-baseline mb-0.5">
+                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalSchedules}</div>
+                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
+                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
                                 +10%
                             </div>
                         </div>
-                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Appointment increase in 7 days.</div>
-                        <div className="flex justify-end mt-2" onClick={() => router.push("/dashboard/schedule")}>
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Appointment increase in 7 days.</div>
+                        <div className="flex justify-end mt-1" onClick={() => router.push("/dashboard/schedule")}>
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
                                 See details
                             </Button>
                         </div>
@@ -212,23 +219,23 @@ export default function DashboardPage() {
                 </Card>
 
                 <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
-                    <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <FileText className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
+                    <CardContent className="p-4">
+                        <div className="flex items-center mb-2">
+                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <FileText className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
                         </div>
-                        <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">$7,209.29</div>
-                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                        <div className="flex justify-between items-baseline mb-0.5">
+                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">$7,209.29</div>
+                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
+                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
                                 +24%
                             </div>
                         </div>
-                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Treatments increase in 7 days.</div>
-                        <div className="flex justify-end mt-2">
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Treatments increase in 7 days.</div>
+                        <div className="flex justify-end mt-1">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
                                 See details
                             </Button>
                         </div>
@@ -236,23 +243,23 @@ export default function DashboardPage() {
                 </Card>
 
                 <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
-                    <CardContent className="p-6">
-                        <div className="flex items-center mb-4">
-                            <div className={cn("p-2 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <ClipboardList className="h-4 w-4 text-neutral-700 dark:text-neutral-300" />
+                    <CardContent className="p-4">
+                        <div className="flex items-center mb-2">
+                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                                <ClipboardList className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
                             </div>
-                            <h3 className="ml-3 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Treatments</h3>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Treatments</h3>
                         </div>
-                        <div className="flex justify-between items-baseline mb-1">
-                            <div className="text-3xl font-bold text-neutral-800 dark:text-white">234</div>
-                            <div className="flex items-center text-blue-600 text-sm dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-1" />
+                        <div className="flex justify-between items-baseline mb-0.5">
+                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">234</div>
+                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
+                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
                                 +11%
                             </div>
                         </div>
-                        <div className="text-sm text-neutral-500 dark:text-neutral-400">Income increase in 7 days.</div>
-                        <div className="flex justify-end mt-2">
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto">
+                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Treatments increase in 7 days.</div>
+                        <div className="flex justify-end mt-1">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
                                 See details
                             </Button>
                         </div>
@@ -260,132 +267,132 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            <Card className={cn("border border-neutral-200 shadow-sm mb-6", "dark:border-neutral-800 dark:bg-card")}>
-                <CardHeader className={cn("border-b border-neutral-100 pb-4", "dark:border-neutral-800")}>
+            {/* Recent Schedules */}
+            <Card>
+                <CardHeader className="p-4 pb-2">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <ClipboardList className="h-4 w-4 mr-2 text-neutral-700 dark:text-neutral-300" />
-                            <CardTitle className="text-lg font-medium text-neutral-800 dark:text-white">Upcoming Appointments</CardTitle>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 dark:text-neutral-500" />
-                                <CustomInput
-                                    placeholder="Search appointments..."
-
-                                    value={searchQuery}
-                                    onChange={(value: string) => setSearchQuery(value)}
-                                    icon={<Search className="h-4 w-4" />}
-                                />
-                            </div>
-                            <div className="relative">
-                                <Button
-                                    variant="outline"
-                                    className={cn("bg-white border-neutral-200", "dark:bg-neutral-800 dark:border-neutral-700")}
-                                    onClick={() => setShowFilters(!showFilters)}
-                                >
-                                    <Filter className="h-4 w-4 mr-2" />
-                                    Filter
-                                </Button>
-                                {showFilters && (
-                                    <div className={cn("absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10 border border-neutral-200 p-4", "dark:bg-neutral-800 dark:border-neutral-700")}>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Status</label>
-                                                <select
-                                                    className={cn("w-full border border-neutral-200 rounded-md p-2 text-sm", "dark:bg-neutral-800 dark:border-neutral-700 dark:text-white")}
-                                                    value={selectedStatus || ""}
-                                                    onChange={(e) => setSelectedStatus(e.target.value || null)}
-                                                >
-                                                    <option value="">All Statuses</option>
-                                                    <option value="CONFIRMED">Confirmed</option>
-                                                    <option value="PENDING">Pending</option>
-                                                    <option value="CANCELLED">Cancelled</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Type</label>
-                                                <select
-                                                    className={cn("w-full border border-neutral-200 rounded-md p-2 text-sm", "dark:bg-neutral-800 dark:border-neutral-700 dark:text-white")}
-                                                    value={selectedType || ""}
-                                                    onChange={(e) => setSelectedType(e.target.value || null)}
-                                                >
-                                                    <option value="">All Types</option>
-                                                    <option value="APPOINTMENT">Appointment</option>
-                                                    <option value="WEEKLY_CHECKUP">Weekly Checkup</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                        <CardTitle className="text-base">Recent Schedules</CardTitle>
+                        <div className="flex items-center space-x-2">
+                            <CustomInput
+                                placeholder="Search schedules..."
+                                value={searchQuery}
+                                onChange={(value: string) => setSearchQuery(value)}
+                                icon={<Search className="h-3.5 w-3.5" />}
+                                className="w-[200px] h-8"
+                            />
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setShowFilters(!showFilters)}
+                                className="h-8"
+                            >
+                                <Filter className="h-3.5 w-3.5 mr-1.5" />
+                                {showFilters ? "Hide Filters" : "Show Filters"}
+                            </Button>
                         </div>
                     </div>
                 </CardHeader>
+
+                {showFilters && (
+                    <CardContent className="p-4 pt-0">
+                        <div className="flex items-center space-x-3">
+                            <Select value={selectedStatus || ""} onValueChange={setSelectedStatus}>
+                                <SelectTrigger className="w-[150px] h-8 text-sm">
+                                    <SelectValue placeholder="Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="">All Status</SelectItem>
+                                    <SelectItem value="completed">Completed</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                                </SelectContent>
+                            </Select>
+
+                            <Select value={selectedType || ""} onValueChange={setSelectedType}>
+                                <SelectTrigger className="w-[150px] h-8 text-sm">
+                                    <SelectValue placeholder="Type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="">All Types</SelectItem>
+                                    <SelectItem value="visit">Visit</SelectItem>
+                                    <SelectItem value="appointment">Appointment</SelectItem>
+                                    <SelectItem value="task">Task</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </CardContent>
+                )}
+
                 <CardContent className="p-0">
-                    <table className="w-full">
-                        <thead>
-                            <tr className={cn("border-b border-neutral-100", "dark:border-neutral-800")}>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Client</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Appointment Type</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Date & Time</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Care Worker</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className={cn("bg-white divide-y divide-neutral-100", "dark:bg-neutral-900 dark:divide-neutral-800")}>
-                            {filteredSchedules.map((schedule) => (
-                                <tr key={schedule.id} className={cn("hover:bg-neutral-50", "dark:hover:bg-neutral-800/50")}>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <Avatar className="h-8 w-8">
-                                                <AvatarImage src={getRandomPlaceholderImage()} alt={schedule.clientName} />
-                                                <AvatarFallback>
-                                                    {schedule.clientName[0]}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="ml-3">
-                                                <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                                                    {schedule.clientName}
+                    <div className="overflow-x-auto">
+                        {filteredSchedules.length > 0 ? (
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-border bg-muted/50">
+                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
+                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Care Worker</th>
+                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                                        <th className="py-2 px-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredSchedules.map((schedule) => (
+                                        <tr key={schedule.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
+                                            <td className="py-2 px-3">
+                                                <div className="flex items-center space-x-2">
+                                                    <Avatar className="h-6 w-6">
+                                                        <AvatarImage src={getRandomPlaceholderImage()} />
+                                                        <AvatarFallback>{schedule.clientName[0]}</AvatarFallback>
+                                                    </Avatar>
+                                                    <span className="text-sm">{schedule.clientName}</span>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <Badge variant="outline" className={cn(
-                                            schedule.type === "APPOINTMENT"
-                                                ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800"
-                                                : schedule.type === "WEEKLY_CHECKUP"
-                                                    ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
-                                                    : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800"
-                                        )}>
-                                            {schedule.type.replace("_", " ")}
-                                        </Badge>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-neutral-900 dark:text-white">{new Date(schedule.date).toLocaleDateString()}</div>
-                                        <div className="text-sm text-neutral-500 dark:text-neutral-400">{schedule.startTime} - {schedule.endTime}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-neutral-900 dark:text-white">
-                                            {schedule.careWorkerName}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <Badge variant="outline" className={cn(
-                                            schedule.status === "CONFIRMED"
-                                                ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800"
-                                                : schedule.status === "PENDING"
-                                                    ? "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800"
-                                                    : "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
-                                        )}>
-                                            {schedule.status}
-                                        </Badge>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                            </td>
+                                            <td className="py-2 px-3 text-sm text-muted-foreground">{schedule.careWorkerName}</td>
+                                            <td className="py-2 px-3 text-sm text-muted-foreground">
+                                                {new Date(schedule.date).toLocaleDateString()}
+                                            </td>
+                                            <td className="py-2 px-3">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={cn(
+                                                        "text-xs",
+                                                        schedule.status === "completed" && "bg-green-100 text-green-800 border-green-200",
+                                                        schedule.status === "pending" && "bg-yellow-100 text-yellow-800 border-yellow-200",
+                                                        schedule.status === "cancelled" && "bg-red-100 text-red-800 border-red-200"
+                                                    )}
+                                                >
+                                                    {schedule.status}
+                                                </Badge>
+                                            </td>
+                                            <td className="py-2 px-3 text-right">
+                                                <Button variant="outline" size="sm" className="h-7">
+                                                    <span className="flex items-center">
+                                                        <Calendar className="h-3.5 w-3.5 mr-1" />
+                                                        View
+                                                    </span>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div className="text-center py-8">
+                                <div className="w-12 h-12 mx-auto mb-3 flex items-center justify-center bg-muted rounded-md">
+                                    <Calendar className="h-6 w-6 text-muted-foreground" />
+                                </div>
+                                <h3 className="text-base font-medium mb-1">
+                                    {searchQuery ? "No schedules match your search" : "No upcoming schedules"}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                    {searchQuery
+                                        ? "Try adjusting your search parameters"
+                                        : "Schedules will appear here once they are created"}
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </CardContent>
             </Card>
         </div>

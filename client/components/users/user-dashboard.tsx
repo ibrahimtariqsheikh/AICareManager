@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, UserPlus, Briefcase, Plus } from 'lucide-react'
+import { Users, UserPlus, Briefcase, Plus, Search } from 'lucide-react'
 import { toast } from "sonner"
 import { useTheme } from "next-themes"
 import {
@@ -21,11 +21,12 @@ import { setActiveUserType } from "@/state/slices/userSlice"
 import { v4 as uuidv4 } from "uuid"
 import { useAppSelector } from "@/state/redux"
 import { UserTableUser } from "./user-table-user"
+import { CustomInput } from "@/components/ui/custom-input"
 
 
 export function UserDashboard() {
     // State
-    const [searchQuery, _] = useState("")
+    const [searchQuery, setSearchQuery] = useState("")
     const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false)
     const { theme } = useTheme()
 
@@ -92,7 +93,7 @@ export function UserDashboard() {
 
 
             {/* User Type Tabs */}
-            <div className={`flex border-b ${theme === "dark" ? "border-gray-700" : "border-gray-200"} pb-4`}>
+            <div className={`flex border-b ${theme === "dark" ? "border-gray-700" : "border-gray-200"} pb-2`}>
                 <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-2">
                         <button
@@ -117,19 +118,24 @@ export function UserDashboard() {
                             Office Staff ({officeStaff.length})
                         </button>
                     </div>
+                    <div className="flex items-center">
+                        <CustomInput
+                            placeholder={`Search ${activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}...`}
+                            value={searchQuery}
+                            onChange={(value: string) => setSearchQuery(value)}
+                            className={`w-[200px] ${theme === "dark" ? "bg-zinc-800" : "bg-neutral-100/70"}`}
+                            icon={<Search className="h-4 w-4" />}
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* User Content */}
-            <div className="space-y-4">
-                <Card className={`shadow-none ${theme === "dark" ? "bg-zinc-900" : "bg-white"}`}>
-                    <CardContent className="p-0">
-                        <UserTableUser
-                            users={filteredUsers}
-                            isLoading={isLoadingUsers}
-                        />
-                    </CardContent>
-                </Card>
+            <div className="space-y-2">
+                <UserTableUser
+                    users={filteredUsers}
+                    isLoading={isLoadingUsers}
+                />
             </div>
 
             {/* Floating Action Button */}

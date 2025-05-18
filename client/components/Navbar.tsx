@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "../components/ui/
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useTheme } from "next-themes"
 import { useIsMobile } from "../hooks/use-mobile"
-import { LogIn, LogOut, Menu, User, Moon, Sun, ChevronRight } from 'lucide-react'
+import { LogIn, LogOut, Menu, User, Moon, Sun } from 'lucide-react'
 import { signOut } from 'aws-amplify/auth';
 import Image from "next/image"
 
@@ -282,34 +282,6 @@ const Navbar = () => {
       </motion.div>
     )
   }
-  const DemoButton = () => (
-    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-      <Button
-        className="bg-primary text-white rounded-xl relative overflow-hidden group shadow-md dark:shadow-[0_0_15px_rgba(56,182,255,0.3)]"
-        asChild
-      >
-        <Link href="/#book-demo">
-          <span className="relative z-10 flex items-center">
-            Book a Demo
-            <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary overflow-hidden">
-            <motion.div
-              className="w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
-              initial={{ x: '-100%' }}
-              animate={{ x: '100%' }}
-              transition={{
-                repeat: Infinity,
-                repeatType: "mirror",
-                duration: 1.5,
-                ease: "easeInOut"
-              }}
-            />
-          </div>
-        </Link>
-      </Button>
-    </motion.div>
-  )
   return (
     <motion.header
       className="fixed top-0 left-0 right-0  flex justify-between items-center bg-transparent backdrop-blur-md z-50  py-4 px-10  border border-border/40 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)]"

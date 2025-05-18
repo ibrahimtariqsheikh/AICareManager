@@ -87,17 +87,17 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
     const activeUserType = useAppSelector((state) => state.user.activeUserType)
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 mb-2">
             <DataTableToolbar table={table} />
-            <Card className={`${theme === "dark" ? "bg-zinc-900 border-zinc-700" : ""}`}>
+            <Card className={`${theme === "dark" ? "bg-zinc-900 border-zinc-700" : ""} m-2`}>
                 <div className="rounded-md">
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
+                                <TableRow key={headerGroup.id} className="hover:bg-transparent">
                                     {headerGroup.headers.map((header) => {
                                         return (
-                                            <TableHead key={header.id} colSpan={header.colSpan}>
+                                            <TableHead key={header.id} colSpan={header.colSpan} className="py-2">
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
@@ -122,7 +122,7 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
                                         {row.getVisibleCells().map((cell) => (
                                             <TableCell
                                                 key={cell.id}
-                                                className={`${cell.column.id === 'actions' ? 'cursor-default' : ''} ${theme === "dark" ? "text-gray-200" : "text-gray-900"}`}
+                                                className={`py-1.5 ${cell.column.id === 'actions' ? 'cursor-default' : ''} ${theme === "dark" ? "text-gray-200" : "text-gray-900"}`}
                                             >
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </TableCell>
@@ -133,7 +133,7 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
                                 <TableRow>
                                     <TableCell
                                         colSpan={columns.length}
-                                        className="h-24 text-center"
+                                        className="h-16 text-center"
                                     >
                                         No results.
                                     </TableCell>

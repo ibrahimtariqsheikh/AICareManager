@@ -21,10 +21,6 @@ import { socketService } from "@/app/services/socketService"
 // Import Message type from messageTypes
 import { Message as MessageType } from "@/types/messageTypes"
 
-// Add type definitions
-type UserProfile = {
-    avatarUrl: string | null;
-}
 
 type User = {
     id: string;
@@ -81,7 +77,6 @@ function MessagesContent() {
         messages,
         currentConversationId,
         setCurrentConversationId,
-        sendMessage,
         loadMessages,
         isLoading,
         error,

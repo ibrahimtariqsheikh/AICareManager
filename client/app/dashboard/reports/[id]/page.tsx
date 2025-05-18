@@ -1,11 +1,10 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
-import { AlertCircle, ArrowLeft, CheckCircle, Clock, Download, FileEdit, Flag, Home, MapPin } from 'lucide-react';
+import { AlertCircle, ArrowLeft, CheckCircle, Clock, Download, FileEdit, Flag, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import Image from 'next/image';
 import { useAppSelector } from "@/hooks/useAppSelector"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 
@@ -23,7 +22,6 @@ interface Task {
 }
 
 const VisitReportPage = () => {
-    const router = useRouter()
     const { agency } = useAppSelector((state: any) => state.agency)
     const [isLoaded, setIsLoaded] = useState(false)
     const [report, setReport] = useState<any>(null)
