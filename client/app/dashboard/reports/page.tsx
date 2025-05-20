@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { CustomInput } from "@/components/ui/custom-input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 
 export default function ReportsPage() {
@@ -30,6 +30,7 @@ export default function ReportsPage() {
     const [resolutionText, setResolutionText] = useState("")
     const [selectedAlert, setSelectedAlert] = useState<any>(null)
     const [reportFilter, setReportFilter] = useState("all")
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     // Report filters
     const [showReportFilters, setShowReportFilters] = useState(false)
@@ -408,7 +409,7 @@ export default function ReportsPage() {
                             </span>
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Add Resolution</DialogTitle>
                             <DialogDescription>
@@ -430,12 +431,22 @@ export default function ReportsPage() {
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" onClick={() => setSelectedAlert(null)}>
-                                Cancel
-                            </Button>
-                            <Button onClick={handleAddResolution}>
-                                Save Resolution
-                            </Button>
+                            <DialogClose asChild>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        setSelectedAlert(null)
+                                        setResolutionText("")
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                                <Button onClick={handleAddResolution}>
+                                    Save Resolution
+                                </Button>
+                            </DialogClose>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
