@@ -1,7 +1,7 @@
-# AI Care Manager  
+# AI Manager  
 
 ## Overview  
-AI Care Manager is a comprehensive healthcare management system designed to streamline communication, incident reporting, scheduling, medication records, and security for care providers. The platform offers role-based access and extensive data tracking, ensuring efficiency and compliance in healthcare settings.
+AI Manager is a comprehensive healthcare management system designed to streamline communication, incident reporting, scheduling, medication records, and security for care providers. The platform offers role-based access and extensive data tracking, ensuring efficiency and compliance in healthcare settings.
 
 ## Features  
 

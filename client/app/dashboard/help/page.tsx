@@ -32,7 +32,7 @@ export default function HelpPage() {
                 {/* Main content */}
                 <div className="flex-1">
                     <h1 className="text-3xl font-bold mb-2">Help Center</h1>
-                    <p className="text-muted-foreground mb-8">Find answers, learn how to use AI Care Manager, and get support</p>
+                    <p className="text-muted-foreground mb-8">Find answers, learn how to use AI Manager, and get support</p>
 
                     <Tabs defaultValue="getting-started" value={activeTab} onValueChange={setActiveTab} className="mb-8">
                         <TabsList className="grid grid-cols-3 mb-8">
@@ -171,7 +171,7 @@ export default function HelpPage() {
 
                                         <div className="text-sm text-muted-foreground">
                                             By clicking &quot;Select CSV File&quot; below, I acknowledge that client data submitted from my CSV file to
-                                            AI Care Manager may be used to provide and improve AI Care Manager&apos;s services as further described
+                                            AI Manager may be used to provide and improve AI Manager&apos;s services as further described
                                             in our{" "}
                                             <Link href="#" className="text-blue-500 hover:underline">
                                                 Terms of Service
@@ -222,7 +222,7 @@ export default function HelpPage() {
 
                                         <div className="text-sm text-muted-foreground">
                                             By clicking &quot;Select CSV File&quot; below, I acknowledge that care worker data submitted from my CSV
-                                            file to AI Care Manager may be used to provide and improve AI Care Manager&apos;s services as further
+                                            file to AI Manager may be used to provide and improve AI Manager&apos;s services as further
                                             described in our{" "}
                                             <Link href="#" className="text-blue-500 hover:underline">
                                                 Terms of Service
@@ -277,7 +277,7 @@ export default function HelpPage() {
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Frequently Asked Questions</CardTitle>
-                                    <CardDescription>Find answers to common questions about AI Care Manager</CardDescription>
+                                    <CardDescription>Find answers to common questions about AI Manager</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <Accordion type="single" collapsible className="w-full">
@@ -313,7 +313,7 @@ export default function HelpPage() {
                                         <AccordionItem value="item-4">
                                             <AccordionTrigger>Can I enrich client data after I upload it?</AccordionTrigger>
                                             <AccordionContent>
-                                                Yes, AI Care Manager offers data enrichment options. After upload, go to the client profile and
+                                                Yes, AI Manager offers data enrichment options. After upload, go to the client profile and
                                                 click &quot;Enrich Data.&quot; Our system can add missing contact information, verify addresses, and
                                                 suggest additional details based on available information.
                                             </AccordionContent>
@@ -412,7 +412,7 @@ export default function HelpPage() {
                                         </Button>
                                     </div>
                                 </div>
-                                <p className="text-sm font-medium">Getting Started with AI Care Manager</p>
+                                <p className="text-sm font-medium">Getting Started with AI Manager</p>
                                 <p className="text-xs text-muted-foreground">3:45 • Basic overview</p>
                             </div>
 

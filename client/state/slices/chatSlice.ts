@@ -1,5 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Message } from '@/app/dashboard/chatbot/chatbot-client';
+
+export interface MessagePart {
+  id: string;
+  type: 'text' | 'tool-invocation';
+  text?: string;
+  toolInvocation?: {
+    toolName: string;
+    toolCallId: string;
+    state: 'error' | 'loading' | 'result' | 'pending';
+    result?: any;
+    name: string;
+  };
+}
+
+export interface Message {
+  id: string;
+  role: "user" | "assistant";
+  parts: MessagePart[];
+  createdAt: number;
+  avatar?: string;
+}
 
 interface ChatState {
   messages: Message[];
@@ -19,8 +39,12 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    setMessages: (state, action: PayloadAction<Message[]>) => {
-      state.messages = action.payload;
+    setMessages: (state, action: PayloadAction<Message[] | ((prev: Message[]) => Message[])>) => {
+      if (typeof action.payload === 'function') {
+        state.messages = action.payload(state.messages);
+      } else {
+        state.messages = action.payload;
+      }
     },
     addMessage: (state, action: PayloadAction<Message>) => {
       state.messages.push(action.payload);

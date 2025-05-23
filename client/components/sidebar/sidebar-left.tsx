@@ -129,7 +129,6 @@ const navigation: NavigationSection[] = [
 export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { user: userInformation } = useAppSelector((state) => state.user)
     const user = userInformation?.userInfo as User
-    console.log("user in sidebarLeft", user)
     const dispatch = useAppDispatch()
     const { theme, setTheme } = useTheme()
     const pathname = usePathname()
@@ -159,15 +158,14 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-
                         onClick={() => router.push("/")}
                         className="flex h-9 w-9 items-center justify-center rounded-md ">
-                        <Image src="/logos/logo.svg" alt="AI Care Manager" width={30} height={30} />
+                        <Image src="/logos/logo.svg" alt="AI Manager" width={30} height={30} />
                         <div className="border-l border-border h-[27px] ml-2" />
                     </motion.div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col flex-1">
                         <span className="text-sm font-bold ">
-                            AI Care Manager
+                            AI Manager
                         </span>
                         <span className="text-xs text-neutral-500 font-medium mt-[1px]">
                             <div className="flex items-center gap-2">
@@ -175,44 +173,42 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                             </div>
                         </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                    <ChevronDown className="h-3.5 w-3.5 text-neutral-600" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
-                                <div className="flex flex-col space-y-2 p-2">
-                                    <div className="flex flex-row items-center gap-2">
-                                        <Building2 className="h-4 w-4 text-neutral-900" />
-                                        <h4 className="font-semibold text-sm">Switch Agency</h4>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <ChevronDown className="h-3.5 w-3.5 text-neutral-600" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80">
+                            <div className="flex flex-col space-y-2 p-2">
+                                <div className="flex flex-row items-center gap-2">
+                                    <Building2 className="h-4 w-4 text-neutral-900" />
+                                    <h4 className="font-semibold text-sm">Switch Agency</h4>
 
-                                    </div>
-                                    <p className="text-xs text-neutral-600 pb-2">
-                                        Switch to a different agency to manage.
-                                    </p>
-                                    <div className="border-b border-border w-[95%] mx-auto my-2" />
-                                    <div className="text-xs text-muted-foreground w-full flex flex-col gap-2">
-                                        {agencyList?.map((agency: any, index: number) => (
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-bold text-neutral-900">{index + 1}.</span>
-                                                <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
-                                                    {agency.name}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div>
-                                        <Button className="w-full mt-2">
-                                            <Plus className="h-4 w-4" />
-                                            <span className="text-xs font-medium">Create New Agency</span>
-                                        </Button>
-                                    </div>
                                 </div>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
+                                <p className="text-xs text-neutral-600 pb-2">
+                                    Switch to a different agency to manage.
+                                </p>
+                                <div className="border-b border-border w-[95%] mx-auto my-2" />
+                                <div className="text-xs text-muted-foreground w-full flex flex-col gap-2">
+                                    {agencyList?.map((agency: any, index: number) => (
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-neutral-900">{index + 1}.</span>
+                                            <div className="text-neutral-700 cursor-pointer hover:bg-neutral-200/70 bg-neutral-100 rounded-md py-2 px-4 flex-1">
+                                                {agency.name}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div>
+                                    <Button className="w-full mt-2">
+                                        <Plus className="h-4 w-4" />
+                                        <span className="text-xs font-medium">Create New Agency</span>
+                                    </Button>
+                                </div>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </div>
 
             </SidebarHeader>

@@ -279,7 +279,7 @@ const DashboardSidebar = ({ }: DashboardSidebarProps) => {
                                                     animate={{ opacity: 1 }}
                                                     transition={{ delay: 0.1 }}
                                                 >
-                                                    AI Care Manager
+                                                    AIM
                                                 </motion.h1>
                                                 <motion.p
                                                     className="text-muted-foreground text-xs"

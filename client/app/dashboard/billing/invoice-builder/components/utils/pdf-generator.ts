@@ -36,11 +36,11 @@ const dateRange = useAppSelector((state: RootState) => state.invoice.selectedDat
     // Add company info
     doc.setFontSize(10)
     doc.setTextColor(secondaryTextColor)
-    doc.text("AI Care Manager", 20, 30)
+    doc.text("AI Manager", 20, 30)
     doc.text("123 Care Street", 20, 35)
     doc.text("Toronto, ON M5V 2K4", 20, 40)
     doc.text("Canada", 20, 45)
-    doc.text("contact@aicaremanager.com", 20, 50)
+    doc.text("contact@aimanager.com", 20, 50)
     doc.text("+1 (416) 555-1234", 20, 55)
 
     // Add company logo box

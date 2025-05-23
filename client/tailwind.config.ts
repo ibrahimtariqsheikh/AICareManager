@@ -111,12 +111,17 @@ const config = {
             transform: "scale(1) translate(0px,0px)",
           },
         },
+        loading: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        }
       },
       animation: {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         blob: "blob 7s infinite",
+        'loading': 'loading 1.5s ease-in-out infinite'
       },
     },
   },

@@ -10,8 +10,8 @@ import { MessageProvider } from './context/MessageContext'
 const font = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "AI Care Manager",
-  description: "AI Care Manager",
+  title: "AIM",
+  description: "AI Manager",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

@@ -84,12 +84,12 @@ const SignupPage = ({ params }: { params: Promise<{ id: string }> }) => {
             <div className="hidden md:flex w-1/2 bg-black text-white flex-col justify-between p-10">
                 <div className="flex items-center gap-2">
                     <Blocks className="h-6 w-6" />
-                    <span className="font-medium text-lg">AI Care Manager</span>
+                    <span className="font-medium text-lg">AIM</span>
                 </div>
 
                 <div className="mb-10">
                     <p className="text-xl font-medium mb-2">
-                        &quot;AI Care Manager has streamlined our healthcare operations and improved communication between our staff and
+                        &quot;AIM has streamlined our healthcare operations and improved communication between our staff and
                         patients, making our facility more efficient than ever before.&quot;
                     </p>
                     <p className="text-sm">Dr. Ibrahim Sheikh</p>

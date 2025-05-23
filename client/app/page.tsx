@@ -8,10 +8,7 @@ import Navbar from "../components/Navbar"
 import { HeroSection } from "../components/homepage/hero-section"
 
 import { Spotlight } from "../components/ui/spotlight-new"
-// Feature data
 
-
-// Update the Home component to respect light/dark mode
 export default function Home() {
     const router = useRouter()
     const { user } = useAuthenticator((context) => [context.user])

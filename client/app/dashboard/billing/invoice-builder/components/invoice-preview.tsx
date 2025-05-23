@@ -31,7 +31,7 @@ export function InvoicePreview({ items, subtotal, tax, total, dateRange }: Invoi
         <div>
           <h1 className="text-3xl font-bold text-gray-900">INVOICE</h1>
           <div className="mt-4">
-            <p className="font-bold">AI Care Manager</p>
+            <p className="font-bold">AI Manager</p>
             <p>{client.addressLine1}</p>
             <p>{client.addressLine2}</p>
             <p>{client.townOrCity}</p>

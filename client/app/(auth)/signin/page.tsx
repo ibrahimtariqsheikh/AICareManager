@@ -159,7 +159,7 @@ const SigninPage = () => {
                         className="font-medium text-lg text-white cursor-pointer hover:text-white/80 transition-colors"
                         onClick={() => router.push("/")}
                     >
-                        AI Care Manager
+                        AIM
                     </span>
                 </motion.div>
 

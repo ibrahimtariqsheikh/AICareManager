@@ -295,8 +295,8 @@ const Navbar = () => {
         transition={{ duration: 0.2 }}
       >
         <Link href="/" className="flex items-center font-bold  gap-1">
-          <Image src="/logos/logo.svg" alt="AI Care Manager" width={35} height={35} />
-          <span className="text-lg font-bold">AI Care Manager</span>
+          <Image src="/logos/logo.svg" alt="AI Manager" width={35} height={35} />
+          <span className="text-lg font-bold">AIM</span>
         </Link>
       </motion.div>
 

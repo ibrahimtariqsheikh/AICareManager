@@ -20,7 +20,7 @@ class SocketService {
     return SocketService.instance
   }
 
-  async connect(userId: string) {
+  async connect(_userId: string) {
     if (!this.socket) {
       const serverUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
       console.log("Connecting to socket server:", serverUrl);

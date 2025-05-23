@@ -1,7 +1,7 @@
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth"
 import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { Message } from "@/app/dashboard/chatbot/chatbot-client"
+import type { Message } from "@/state/slices/chatSlice"
 
 import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
@@ -208,12 +208,31 @@ export const api = createApi({
           headers.set("Authorization", `Bearer ${idToken.toString()}`)
         }
 
- console.log("idTokenToken", idToken?.toString())
+        // Add CORS headers
+        headers.set('Access-Control-Allow-Origin', '*')
+        headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+
+        console.log("idTokenToken", idToken?.toString())
       } catch (error) {
         console.log('No auth session found, proceeding without authentication')
       }
       return headers
     },
+    // Add timeout and retry logic
+    timeout: 30000,
+    fetchFn: async (input, init) => {
+      try {
+        const response = await fetch(input, init);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response;
+      } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+      }
+    }
   }),
   reducerPath: "api",
   tagTypes: [
@@ -918,28 +937,9 @@ addVisitTypeTask: build.mutation<Task, { userId: string; visitTypeId: string; ta
       invalidatesTags: ["Conversations"],
     }),
 
-    // Chat endpoints
-    sendMessage: build.mutation<{ message: Message; sessionId: string }, { messages: Message[]; sessionId?: string }>({
-      query: (data) => ({
-        url: '/chat/chat',
-        method: 'POST',
-        body: data,
-      }),
-      invalidatesTags: ["Chat"],
-    }),
 
-    getChatHistory: build.query<{ messages: Message[]; sessionId: string }, string>({
-      query: (sessionId) => `/chat/chat/${sessionId}`,
-      providesTags: ["Chat"],
-    }),
+ 
 
-    clearChatHistory: build.mutation<{ sessionId: string; status: string }, string>({
-      query: (sessionId) => ({
-        url: `/chat/chat/${sessionId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ["Chat"],
-    }),
 
   }),
 })
@@ -1012,7 +1012,5 @@ export const {
   useDeleteMessageMutation,
   useCreateConversationMutation,
   useSendMessageInConversationMutation,
-  useSendMessageMutation,
-  useGetChatHistoryQuery,
-  useClearChatHistoryMutation
+
 } = api

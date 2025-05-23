@@ -153,7 +153,7 @@ export default function PricingPage() {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="text-muted-foreground text-lg"
                     >
-                        AI Care Manager helps you deliver better care with less paperwork. Choose the plan that works for you.
+                        AIM helps you deliver better care with less paperwork. Choose the plan that works for you.
                     </motion.p>
 
                     <motion.div

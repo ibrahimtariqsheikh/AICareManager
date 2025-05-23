@@ -135,12 +135,12 @@ export function PDFPreview({ items, subtotal, tax, total }: PDFPreviewProps) {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">INVOICE</h1>
               <div className="mt-4">
-                <p className="font-bold">AI Care Manager</p>
+                <p className="font-bold">AI Manager</p>
                 <p>{selectedClient.addressLine1}</p>
                 <p>{selectedClient.addressLine2}</p>
                 <p>{selectedClient.townOrCity}, {selectedClient.postalCode}</p>
                 <p>Canada</p>
-                <p className="mt-2">contact@aicaremanager.com</p>
+                <p className="mt-2">contact@aimanager.com</p>
                 <p>+1 (416) 555-1234</p>
               </div>
             </div>
