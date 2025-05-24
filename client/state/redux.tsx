@@ -24,6 +24,7 @@ import invoiceReducer from "./slices/invoiceSlice"
 import templateReducer from "./slices/templateSlice"
 import tabsReducer from "./slices/tabsSlice"
 import leaveReducer from "./slices/leaveSlice"
+import toolReducer from "./slices/toolSlice"
 
 const rootReducer = combineReducers({
   global: globalReducer,
@@ -42,7 +43,7 @@ const rootReducer = combineReducers({
   template: templateReducer,
   tabs: tabsReducer,
   leave: leaveReducer,
-
+  tool: toolReducer,
   [api.reducerPath]: api.reducer,
 })
 

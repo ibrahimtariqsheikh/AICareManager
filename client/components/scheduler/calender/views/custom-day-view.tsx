@@ -69,6 +69,8 @@ export function CustomDayView({
     const events = useAppSelector((state) => state.schedule.events || [])
     const { userTemplates, isLoadingTemplates } = useAppSelector((state) => state.template)
 
+    console.log(events)
+
     // Get the appropriate users based on activeScheduleUserType
     const displayUsers = (() => {
         if (activeScheduleUserType === "clients") return clients

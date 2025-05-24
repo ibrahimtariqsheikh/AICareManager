@@ -33,6 +33,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { ErrorDisplay } from "@/components/ui/error-display"
 
 
 export default function DashboardPage() {
@@ -97,32 +98,20 @@ export default function DashboardPage() {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center min-h-[80vh]">
-                <Card className="w-full max-w-md">
-                    <CardHeader>
-                        <div className="flex items-center justify-center mb-4">
-                            <div className="rounded-full bg-red-100 p-3">
-                                <AlertCircle className="h-6 w-6 text-red-600" />
-                            </div>
-                        </div>
-                        <CardTitle className="text-center">Error Loading Dashboard</CardTitle>
-                        <CardDescription className="text-center">
-                            We encountered a problem while loading your dashboard data.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {error ? JSON.stringify(error) : null}
-                        <p className="text-sm text-muted-foreground text-center mb-4">
-                            Please try refreshing the page or contact support if the problem persists.
-                        </p>
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="w-full bg-green-600 text-white hover:bg-green-700 py-2 rounded-md transition-colors"
-                        >
-                            Refresh Page
-                        </button>
-                    </CardContent>
-                </Card>
+            <div className="container mx-auto p-4">
+                <ErrorDisplay
+                    error={error}
+                    title="Dashboard Error"
+                    className="mb-4"
+                />
+                <div className="flex justify-center">
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition-colors"
+                    >
+                        Refresh Page
+                    </button>
+                </div>
             </div>
         )
     }

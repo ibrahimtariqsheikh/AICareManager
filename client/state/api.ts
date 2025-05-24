@@ -15,6 +15,7 @@ export interface CreateUserInput {
   subRole?: string
   cognitoId: string
   inviterId: string
+  agencyId: string
 }
 
 
@@ -213,7 +214,6 @@ export const api = createApi({
         headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
 
-        console.log("idTokenToken", idToken?.toString())
       } catch (error) {
         console.log('No auth session found, proceeding without authentication')
       }
@@ -225,7 +225,19 @@ export const api = createApi({
       try {
         const response = await fetch(input, init);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          // Try to parse the error response as JSON
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch {
+            errorData = { message: `HTTP error! status: ${response.status}` };
+          }
+          
+          // Create a more detailed error object
+          const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+          (error as any).status = response.status;
+          (error as any).data = errorData;
+          throw error;
         }
         return response;
       } catch (error) {
@@ -389,11 +401,14 @@ export const api = createApi({
 
     //create user
     createUser: build.mutation<User, CreateUserInput>({
-      query: (user) => ({
+      query: (user) => {
+        console.log("Trying to create user", user)
+        return {
         url: "/users",
         method: "POST",
         body: user,
-      }),
+      }
+    },
     }),
     // Update the getUserInvitations endpoint to add more debugging and error handling
     // Get user invitations
