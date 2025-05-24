@@ -686,3 +686,97 @@ export const getCareWorkerSchedules = async (req: Request, res: Response): Promi
   }
 }
 
+export const createLeaveEvent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId, startDate, endDate, notes, payRate, eventType, color, agencyId } = req.body
+
+    const leaveEvent = await prisma.leaveEvent.create({
+      data: {
+        userId,
+        agencyId,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        notes,
+        payRate: payRate ? parseFloat(payRate) : null,
+        eventType,
+        color
+      }
+    })
+
+    res.status(201).json(leaveEvent)
+  } catch (error) {
+    console.error("Error creating leave event:", error)
+    res.status(500).json({ message: "Error creating leave event", error })
+  }
+}
+
+export const getAgencyLeaveEvents = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { agencyId } = req.params
+    const leaveEvents = await prisma.leaveEvent.findMany({
+      where: {
+        agencyId: agencyId as string
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            email: true
+          }
+        }
+      }
+    })
+    res.json(leaveEvents)
+  } catch (error) {
+    console.error("Error fetching leave events:", error)
+    res.status(500).json({ message: "Error fetching leave events", error })
+  }
+}
+
+export const getUserLeaveEvents = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId } = req.params
+    const leaveEvents = await prisma.leaveEvent.findMany({
+      where: {
+        userId: userId as string
+      },
+      include: {
+        agency: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    })
+    res.json(leaveEvents)
+  } catch (error) {
+    console.error("Error fetching leave events:", error)
+    res.status(500).json({ message: "Error fetching leave events", error })
+  }
+}
+
+export const deleteLeaveEvent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+
+    const existingLeaveEvent = await prisma.leaveEvent.findUnique({
+      where: { id }
+    })
+
+    if (!existingLeaveEvent) {
+      res.status(404).json({ message: "Leave event not found" })
+      return
+    }
+
+    await prisma.leaveEvent.delete({
+      where: { id }
+    })
+
+    res.status(204).send()
+  } catch (error) {
+    console.error("Error deleting leave event:", error)
+    res.status(500).json({ message: "Error deleting leave event", error })
+  }
+}

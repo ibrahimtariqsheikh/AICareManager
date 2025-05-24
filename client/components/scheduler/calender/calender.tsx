@@ -9,10 +9,11 @@ import { useTheme } from "next-themes"
 import { CalendarIcon, PlusCircle, PlusIcon } from "lucide-react"
 import { Button } from "../../ui/button"
 import type { AppointmentEvent, ProcessedCalendarEvent } from "./types"
-import { useGetAgencySchedulesQuery } from "../../../state/api"
+import { useGetAgencySchedulesQuery, useGetAgencyLeaveEventsQuery } from "../../../state/api"
 import { useAppSelector, useAppDispatch } from "../../../state/redux"
 import { setCurrentDate } from "../../../state/slices/calendarSlice"
 import { AppointmentForm } from "../appointment-form"
+import type { LeaveEvent } from "../../../types/prismaTypes"
 
 import { CustomCalendar } from "./custom-calender"
 import type { CalendarProps } from "./types"
@@ -44,18 +45,20 @@ export function Calendar({ onEventSelect }: CalendarProps) {
     }, [currentDateStr])
 
     const { data: _, isLoading: isSchedulesLoading } = useGetAgencySchedulesQuery(user?.userInfo?.agencyId || "")
-
+    const { data: leaveEvents, isLoading: isLeaveEventsLoading } = useGetAgencyLeaveEventsQuery(user?.userInfo?.agencyId || "")
 
     const schedules = useAppSelector((state) => state.schedule.agencySchedules)
 
-
     const processedEvents = useMemo(() => {
-        if (!schedules || schedules.length === 0) return []
-
-        return schedules.map(schedule => {
+        const scheduleEvents = schedules.map(schedule => {
             if (!schedule.date) return null;
             const dateStr = schedule.date as string;
-            const [y, m, d] = dateStr.split("T")[0].split("-").map(Number);
+            const dateParts = dateStr.split("T")[0].split("-");
+            if (dateParts.length !== 3) return null;
+            const y = Number(dateParts[0]);
+            const m = Number(dateParts[1]);
+            const d = Number(dateParts[2]);
+            if (!y || !m || !d) return null;
             const date = new Date(y, m - 1, d);
             const [startHours, startMinutes] = schedule.startTime.split(":").map(Number) as [number, number];
             const [endHours, endMinutes] = schedule.endTime.split(":").map(Number) as [number, number];
@@ -86,14 +89,98 @@ export function Calendar({ onEventSelect }: CalendarProps) {
                 client: {
                     fullName: schedule.client!.fullName,
                 },
+                isLeaveEvent: false,
             }
 
             return processedEvent
-        })
+        }).filter(Boolean) as ProcessedCalendarEvent[]
 
-    }, [schedules])
+        const processedLeaveEvents = (leaveEvents || []).map((leave: LeaveEvent) => {
+            const start = new Date(leave.startDate)
+            const end = new Date(leave.endDate)
+            const date = new Date(leave.startDate)
 
+            // For leave events that span multiple days, create separate events for each day
+            const events: ProcessedCalendarEvent[] = []
+            const currentDate = new Date(start)
 
+            while (currentDate <= end) {
+                const dayStart = new Date(currentDate)
+                const dayEnd = new Date(currentDate)
+
+                // Set time to start of day for multi-day events
+                if (currentDate.getTime() === start.getTime()) {
+                    dayStart.setHours(start.getHours(), start.getMinutes(), 0, 0)
+                } else {
+                    dayStart.setHours(0, 0, 0, 0)
+                }
+
+                // Set time to end of day for multi-day events
+                if (currentDate.getTime() === end.getTime()) {
+                    dayEnd.setHours(end.getHours(), end.getMinutes(), 0, 0)
+                } else {
+                    dayEnd.setHours(23, 59, 59, 999)
+                }
+
+                events.push({
+                    id: `${leave.id}-${currentDate.toISOString()}`,
+                    title: `${leave.eventType.replace("_", " ")}`,
+                    start: dayStart,
+                    end: dayEnd,
+                    date: new Date(currentDate),
+                    startTime: format(dayStart, "HH:mm"),
+                    endTime: format(dayEnd, "HH:mm"),
+                    resourceId: leave.userId || "",
+                    clientId: leave.userId || "",
+                    type: "LEAVE",
+                    status: "CONFIRMED",
+                    notes: leave.notes || "",
+                    color: leave.color || getLeaveTypeColor(leave.eventType),
+                    careWorker: {
+                        fullName: leave.user?.fullName || "Unknown",
+                    },
+                    client: {
+                        fullName: leave.user?.fullName || "Unknown",
+                    },
+                    isLeaveEvent: true,
+                    leaveType: leave.eventType,
+                })
+
+                currentDate.setDate(currentDate.getDate() + 1)
+            }
+
+            return events
+        }).flat()
+
+        return [...scheduleEvents, ...processedLeaveEvents]
+    }, [schedules, leaveEvents])
+
+    const getLeaveTypeColor = (leaveType: string) => {
+        switch (leaveType) {
+            case "ANNUAL_LEAVE":
+                return "#4CAF50" // Green
+            case "SICK_LEAVE":
+                return "#F44336" // Red
+            case "PUBLIC_HOLIDAY":
+                return "#2196F3" // Blue
+            case "UNPAID_LEAVE":
+                return "#9E9E9E" // Grey
+            case "MATERNITY_LEAVE":
+                return "#E91E63" // Pink
+            case "PATERNITY_LEAVE":
+                return "#9C27B0" // Purple
+            case "BEREAVEMENT_LEAVE":
+                return "#795548" // Brown
+            case "EMERGENCY_LEAVE":
+                return "#FF9800" // Orange
+            case "MEDICAL_APPOINTMENT":
+                return "#00BCD4" // Cyan
+            case "TOIL":
+                return "#FFC107" // Amber
+            default:
+                return "#9E9E9E" // Grey
+        }
+    }
 
     const isMobile = useMediaQuery("(max-width: 768px)")
 

@@ -22,6 +22,18 @@ interface CalendarEventCardProps {
     style?: MotionStyle
 }
 
+type LeaveType = 'annual_leave' | 'sick_leave' | 'public_holiday' | 'unpaid_leave' | 'maternity_leave' | 'paternity_leave' | 'bereavement_leave' | 'emergency_leave' | 'medical_appointment' | 'toil' | 'default';
+
+type LeaveStyle = {
+    bg: string;
+    hoverBg: string;
+    activeBg: string;
+};
+
+type LeaveStyles = Record<LeaveType, LeaveStyle>;
+
+type LeaveTextStyle = Record<LeaveType, string>;
+
 export function CalendarEventCard({
     event,
     isActive = false,
@@ -39,36 +51,158 @@ export function CalendarEventCard({
 }: CalendarEventCardProps) {
     // Get event styling based on type
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
-        const type = event.type.toLowerCase()
-        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
+        if (event.isLeaveEvent) {
+            const leaveType = (event.leaveType?.toLowerCase() || 'default') as LeaveType;
+            const styles: LeaveStyles = {
+                annual_leave: {
+                    bg: 'bg-green-50',
+                    hoverBg: 'bg-green-100',
+                    activeBg: 'bg-green-200'
+                },
+                sick_leave: {
+                    bg: 'bg-red-50',
+                    hoverBg: 'bg-red-100',
+                    activeBg: 'bg-red-200'
+                },
+                public_holiday: {
+                    bg: 'bg-blue-50',
+                    hoverBg: 'bg-blue-100',
+                    activeBg: 'bg-blue-200'
+                },
+                unpaid_leave: {
+                    bg: 'bg-gray-50',
+                    hoverBg: 'bg-gray-100',
+                    activeBg: 'bg-gray-200'
+                },
+                maternity_leave: {
+                    bg: 'bg-pink-50',
+                    hoverBg: 'bg-pink-100',
+                    activeBg: 'bg-pink-200'
+                },
+                paternity_leave: {
+                    bg: 'bg-purple-50',
+                    hoverBg: 'bg-purple-100',
+                    activeBg: 'bg-purple-200'
+                },
+                bereavement_leave: {
+                    bg: 'bg-brown-50',
+                    hoverBg: 'bg-brown-100',
+                    activeBg: 'bg-brown-200'
+                },
+                emergency_leave: {
+                    bg: 'bg-orange-50',
+                    hoverBg: 'bg-orange-100',
+                    activeBg: 'bg-orange-200'
+                },
+                medical_appointment: {
+                    bg: 'bg-cyan-50',
+                    hoverBg: 'bg-cyan-100',
+                    activeBg: 'bg-cyan-200'
+                },
+                toil: {
+                    bg: 'bg-amber-50',
+                    hoverBg: 'bg-amber-100',
+                    activeBg: 'bg-amber-200'
+                },
+                default: {
+                    bg: 'bg-gray-50',
+                    hoverBg: 'bg-gray-100',
+                    activeBg: 'bg-gray-200'
+                }
+            };
+            const style = styles[leaveType];
+            if (spaceTheme) {
+                const bgColor = style.bg.replace('bg-', 'bg-').replace('-50', '-900/30');
+                const hoverColor = style.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40');
+                const activeColor = style.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60');
+                return isActive ? activeColor : isHovered ? hoverColor : bgColor;
+            }
+            return isActive ? style.activeBg : isHovered ? style.hoverBg : style.bg;
+        }
+
+        const type = event.type.toLowerCase();
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles;
 
         if (spaceTheme) {
-            // Convert light theme colors to dark theme
-            const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
-            const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
-            const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
-            return isActive ? activeColor : isHovered ? hoverColor : bgColor
+            const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30');
+            const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40');
+            const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60');
+            return isActive ? activeColor : isHovered ? hoverColor : bgColor;
         } else {
-            return isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg
+            return isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg;
         }
     }
 
     const getEventBorderColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
-        return styles.border
+        if (event.isLeaveEvent) {
+            const leaveType = (event.leaveType?.toLowerCase() || 'default') as LeaveType;
+            const styles: LeaveTextStyle = {
+                annual_leave: 'border-green-200',
+                sick_leave: 'border-red-200',
+                public_holiday: 'border-blue-200',
+                unpaid_leave: 'border-gray-200',
+                maternity_leave: 'border-pink-200',
+                paternity_leave: 'border-purple-200',
+                bereavement_leave: 'border-brown-200',
+                emergency_leave: 'border-orange-200',
+                medical_appointment: 'border-cyan-200',
+                toil: 'border-amber-200',
+                default: 'border-gray-200'
+            };
+            return styles[leaveType];
+        }
+
+        const type = event.type.toLowerCase();
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles;
+        return styles.border;
     }
 
     const getEventTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
-        return styles.text
+        if (event.isLeaveEvent) {
+            const leaveType = (event.leaveType?.toLowerCase() || 'default') as LeaveType;
+            const styles: LeaveTextStyle = {
+                annual_leave: 'text-green-700',
+                sick_leave: 'text-red-700',
+                public_holiday: 'text-blue-700',
+                unpaid_leave: 'text-gray-700',
+                maternity_leave: 'text-pink-700',
+                paternity_leave: 'text-purple-700',
+                bereavement_leave: 'text-brown-700',
+                emergency_leave: 'text-orange-700',
+                medical_appointment: 'text-cyan-700',
+                toil: 'text-amber-700',
+                default: 'text-gray-700'
+            };
+            return styles[leaveType];
+        }
+
+        const type = event.type.toLowerCase();
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles;
+        return styles.text;
     }
 
     const getEventMutedTextColor = (event: AppointmentEvent) => {
-        const type = event.type.toLowerCase()
-        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles
-        return styles.mutedText
+        if (event.isLeaveEvent) {
+            const leaveType = (event.leaveType?.toLowerCase() || 'default') as LeaveType;
+            const styles: LeaveTextStyle = {
+                annual_leave: 'text-green-500',
+                sick_leave: 'text-red-500',
+                public_holiday: 'text-blue-500',
+                unpaid_leave: 'text-gray-500',
+                maternity_leave: 'text-pink-500',
+                paternity_leave: 'text-purple-500',
+                bereavement_leave: 'text-brown-500',
+                emergency_leave: 'text-orange-500',
+                medical_appointment: 'text-cyan-500',
+                toil: 'text-amber-500',
+                default: 'text-gray-500'
+            };
+            return styles[leaveType];
+        }
+
+        const type = event.type.toLowerCase();
+        const styles = (eventTypeStyles[type] || eventTypeStyles.meeting) as EventStyles;
+        return styles.mutedText;
     }
 
     // Get event icon based on type

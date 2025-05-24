@@ -5,7 +5,7 @@ import moment from "moment"
 import { motion } from "framer-motion"
 import type { AppointmentEvent } from "../types"
 import { cn } from "../../../../lib/utils"
-import { Home, Video, Building2, Phone, User, Calendar } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer } from "lucide-react"
 import { useAppSelector } from "@/state/redux"
 
 interface CustomWeekViewProps {
@@ -252,20 +252,47 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     }
 
     // Get event icon based on type
-    const getEventIcon = (type: string) => {
-        switch (type) {
+    const getEventIcon = (event: AppointmentEvent) => {
+        if (event.isLeaveEvent) {
+            switch (event.leaveType) {
+                case "ANNUAL_LEAVE":
+                    return <Calendar className="h-3 w-3" />
+                case "SICK_LEAVE":
+                    return <Heart className="h-3 w-3" />
+                case "PUBLIC_HOLIDAY":
+                    return <Flag className="h-3 w-3" />
+                case "UNPAID_LEAVE":
+                    return <DollarSign className="h-3 w-3" />
+                case "MATERNITY_LEAVE":
+                    return <Baby className="h-3 w-3" />
+                case "PATERNITY_LEAVE":
+                    return <User className="h-3 w-3" />
+                case "BEREAVEMENT_LEAVE":
+                    return <Heart className="h-3 w-3" />
+                case "EMERGENCY_LEAVE":
+                    return <AlertTriangle className="h-3 w-3" />
+                case "MEDICAL_APPOINTMENT":
+                    return <Stethoscope className="h-3 w-3" />
+                case "TOIL":
+                    return <Clock className="h-3 w-3" />
+                default:
+                    return <Calendar className="h-3 w-3" />
+            }
+        }
+
+        switch (event.type) {
             case "HOME_VISIT":
-                return <Home className="h-3.5 w-3.5" />
+                return <Home className="h-3 w-3" />
             case "VIDEO_CALL":
-                return <Video className="h-3.5 w-3.5" />
+                return <Video className="h-3 w-3" />
             case "HOSPITAL":
-                return <Building2 className="h-3.5 w-3.5" />
+                return <Building2 className="h-3 w-3" />
             case "AUDIO_CALL":
-                return <Phone className="h-3.5 w-3.5" />
+                return <Phone className="h-3 w-3" />
             case "IN_PERSON":
-                return <User className="h-3.5 w-3.5" />
+                return <User className="h-3 w-3" />
             default:
-                return <Calendar className="h-3.5 w-3.5" />
+                return <Calendar className="h-3 w-3" />
         }
     }
 
@@ -310,6 +337,101 @@ export function CustomWeekView(props: CustomWeekViewProps) {
             calendarContainerRef.current.scrollTop = Math.max(0, scrollPosition)
         }
     }, [timeIntervals])
+
+    // Define event type styles
+    const eventTypeStyles: Record<string, { bg: string; text: string }> = {
+        home_visit: {
+            bg: 'bg-green-50',
+            text: 'text-green-700'
+        },
+        video_call: {
+            bg: 'bg-blue-50',
+            text: 'text-blue-700'
+        },
+        hospital: {
+            bg: 'bg-red-50',
+            text: 'text-red-700'
+        },
+        phone_call: {
+            bg: 'bg-purple-50',
+            text: 'text-purple-700'
+        },
+        meeting: {
+            bg: 'bg-amber-50',
+            text: 'text-amber-700'
+        }
+    }
+
+
+
+    // Get event background color based on type
+    const getEventBackground = (event: AppointmentEvent) => {
+        if (event.isLeaveEvent) {
+            const leaveType = (event.leaveType?.toLowerCase() || 'default') as keyof typeof styles
+            const styles = {
+                annual_leave: {
+                    bg: 'bg-green-50',
+                    text: 'text-green-700'
+                },
+                sick_leave: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                public_holiday: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                unpaid_leave: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                maternity_leave: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                paternity_leave: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                bereavement_leave: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                emergency_leave: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                medical_appointment: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                toil: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                default: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                }
+            }
+            const style = styles[leaveType] || styles.default
+            return {
+                bg: style.bg,
+                text: style.text
+            }
+        }
+
+        const type = event.type.toLowerCase()
+        const defaultStyle = {
+            bg: 'bg-blue-50',
+            text: 'text-blue-700'
+        }
+        const style = defaultStyle
+        return {
+            bg: style.bg,
+            text: style.text
+        }
+    }
 
     // ====================== RENDERING ======================
     return (
@@ -451,11 +573,11 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                                 if (element) eventElementsRef.current[event.id] = element
                                             }}
                                             className={cn(
-                                                "absolute rounded-lg text-xs p-2 cursor-grab ",
-                                                "bg-blue-50", // Light blue background
-                                                "border-gray-200 border-l-4 border-l-blue-600",
-                                                "min-w-0",
-                                                spaceTheme ? "border-slate-700" : ""
+                                                "absolute rounded-lg text-xs p-2 cursor-grab border-l-[3px]",
+
+                                                event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
+                                                getEventBackground(event).text,
+                                                getEventBackground(event).bg,
                                             )}
                                             style={{
                                                 top: `${position.top}px`,
@@ -483,15 +605,16 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                                 }
                                             }}
                                         >
-                                            <div className={cn("flex items-center gap-1 mb-1", "text-blue-800")}>
-                                                {getEventIcon(event.type)}
-                                                <span className="font-medium truncate">{event.title}</span>
+                                            <div className={cn("flex items-start gap-1 mb-1", "text-blue-800")}>
+                                                <div className="flex-shrink-0 mt-0.5">{getEventIcon(event)}</div>
+                                                <div className="font-medium break-words line-clamp-2 text-[11px]">{event.title}</div>
                                             </div>
-                                            <div className={cn("text-[10px]", "text-blue-600")}>
-                                                {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                            <div className={cn("text-[10px]", "text-blue-600 flex items-center gap-1")}>
+                                                <Timer className="h-3 w-3" /><div>{moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}</div>
                                             </div>
-                                            <div className={cn("text-[10px]", "text-blue-600")}>
-                                                {getEventTypeLabel(event.type)} • {getEventDuration(event)}
+                                            <div className={cn("text-[10px]", "text-blue-600 flex items-center gap-1")}>
+                                                <User className="h-3 w-3" />
+                                                <div className="truncate">{event.careWorker?.fullName}</div>
                                             </div>
                                         </motion.div>
                                     )

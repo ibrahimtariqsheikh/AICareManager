@@ -13,14 +13,18 @@ import { Button } from "../ui/button"
 import { toast } from "sonner"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "../ui/form"
 
-import { useAppDispatch } from "../../state/redux"
+import { useAppDispatch, useAppSelector } from "../../state/redux"
 import { addLeaveEvent, updateLeaveEvent, deleteLeaveEvent } from "../../state/slices/leaveSlice"
 import { CustomSelect } from "../ui/custom-select"
 import { CustomInput } from "../ui/custom-input"
 import { cn } from "../../lib/utils"
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
+import { useCreateLeaveEventMutation } from "../../state/api"
 
 const formSchema = z.object({
+    clientId: z.string({
+        required_error: "Please select a client",
+    }),
     leaveType: z.enum([
         "ANNUAL_LEAVE",
         "SICK_LEAVE",
@@ -56,9 +60,11 @@ interface EventFormProps {
     event?: any
     isNew?: boolean
     spaceTheme?: boolean
+    userId: string
+    agencyId: string
 }
 
-export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = false }: EventFormProps) {
+export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = false, userId, agencyId }: EventFormProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [currentMonth, setCurrentMonth] = useState(new Date())
     const [startCalendarOpen, setStartCalendarOpen] = useState(false)
@@ -66,10 +72,13 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
     const startCalendarRef = useRef<HTMLDivElement>(null)
     const endCalendarRef = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch()
+    const clients = useAppSelector((state) => state.user.clients)
+    const [createLeaveEvent] = useCreateLeaveEventMutation()
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            clientId: "",
             leaveType: "ANNUAL_LEAVE",
             startDate: new Date(),
             endDate: new Date(),
@@ -93,6 +102,7 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
             const startDate = new Date(event.start);
             const endDate = new Date(event.end);
             form.reset({
+                clientId: event.clientId,
                 leaveType: event.leaveType || "ANNUAL_LEAVE",
                 startDate,
                 endDate,
@@ -115,14 +125,31 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
                 date: data.startDate,
                 leaveType: data.leaveType,
                 notes: data.notes || "",
+                userId: data.clientId,
                 payRate: data.payRate,
                 color: getLeaveTypeColor(data.leaveType),
             }
 
             console.log("Event data being dispatched:", eventData);
 
+
+            console.log("agencyId", agencyId)
+
             if (isNew) {
-                dispatch(addLeaveEvent(eventData))
+                // Create leave event through API
+                const response = await createLeaveEvent({
+                    userId: data.clientId,
+                    startDate: data.startDate.toISOString(),
+                    endDate: data.endDate.toISOString(),
+                    notes: data.notes || "",
+                    payRate: data.payRate || 0,
+                    eventType: data.leaveType,
+                    color: getLeaveTypeColor(data.leaveType),
+                    agencyId
+                }).unwrap()
+
+                // Update local state
+                dispatch(addLeaveEvent({ ...eventData, id: response.id }))
                 toast.success("Leave request created successfully")
             } else {
                 dispatch(updateLeaveEvent(eventData))
@@ -230,35 +257,58 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="leaveType"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Leave Type</FormLabel>
-                                    <CustomSelect
-                                        placeholder="Select leave type"
-                                        options={[
-                                            { value: "ANNUAL_LEAVE", label: "Annual Leave" },
-                                            { value: "SICK_LEAVE", label: "Sick Leave" },
-                                            { value: "PUBLIC_HOLIDAY", label: "Public Holiday" },
-                                            { value: "UNPAID_LEAVE", label: "Unpaid Leave" },
-                                            { value: "MATERNITY_LEAVE", label: "Maternity Leave" },
-                                            { value: "PATERNITY_LEAVE", label: "Paternity Leave" },
-                                            { value: "BEREAVEMENT_LEAVE", label: "Bereavement Leave" },
-                                            { value: "EMERGENCY_LEAVE", label: "Emergency Leave" },
-                                            { value: "MEDICAL_APPOINTMENT", label: "Medical Appointment Leave" },
-                                            { value: "TOIL", label: "Time Off in Lieu (TOIL)" },
-                                        ]}
-                                        onChange={field.onChange}
-                                        value={field.value}
-                                        defaultValue={field.value}
-                                        className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                    />
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="clientId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Client</FormLabel>
+                                        <CustomSelect
+                                            placeholder="Select a client"
+                                            options={clients.map((client) => ({
+                                                value: client.id,
+                                                label: client.fullName,
+                                            }))}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={field.value}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="leaveType"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Leave Type</FormLabel>
+                                        <CustomSelect
+                                            placeholder="Select leave type"
+                                            options={[
+                                                { value: "ANNUAL_LEAVE", label: "Annual Leave" },
+                                                { value: "SICK_LEAVE", label: "Sick Leave" },
+                                                { value: "PUBLIC_HOLIDAY", label: "Public Holiday" },
+                                                { value: "UNPAID_LEAVE", label: "Unpaid Leave" },
+                                                { value: "MATERNITY_LEAVE", label: "Maternity Leave" },
+                                                { value: "PATERNITY_LEAVE", label: "Paternity Leave" },
+                                                { value: "BEREAVEMENT_LEAVE", label: "Bereavement Leave" },
+                                                { value: "EMERGENCY_LEAVE", label: "Emergency Leave" },
+                                                { value: "MEDICAL_APPOINTMENT", label: "Medical Appointment Leave" },
+                                                { value: "TOIL", label: "Time Off in Lieu (TOIL)" },
+                                            ]}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={field.value}
+                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
                         <div className="flex gap-4">
                             <FormField

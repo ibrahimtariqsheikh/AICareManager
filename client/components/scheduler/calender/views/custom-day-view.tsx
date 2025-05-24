@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2, HeartHandshake } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2, HeartHandshake, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
@@ -508,20 +508,142 @@ export function CustomDayView({
         setActiveEvent(null)
     }
 
-    const getEventIcon = (type: string) => {
-        switch (type) {
+    // Event type styles
+    const eventTypeStyles: Record<string, string> = {
+        home_visit: 'bg-blue-50',
+        video_call: 'bg-purple-50',
+        hospital: 'bg-red-50',
+        audio_call: 'bg-green-50',
+        in_person: 'bg-yellow-50',
+        meeting: 'bg-gray-50'
+    }
+
+    // Leave type styles
+    const leaveTypeStyles: Record<string, string> = {
+        annual_leave: 'bg-green-50',
+        sick_leave: 'bg-red-50',
+        public_holiday: 'bg-blue-50',
+        unpaid_leave: 'bg-gray-50',
+        maternity_leave: 'bg-pink-50',
+        paternity_leave: 'bg-purple-50',
+        bereavement_leave: 'bg-brown-50',
+        emergency_leave: 'bg-orange-50',
+        medical_appointment: 'bg-cyan-50',
+        toil: 'bg-amber-50',
+        default: 'bg-gray-50'
+    }
+
+    // Get event background color based on type
+    const getEventBackground = (event: AppointmentEvent) => {
+        if (event.isLeaveEvent) {
+            const leaveType = (event.leaveType?.toLowerCase() || 'default') as keyof typeof styles
+            const styles = {
+                annual_leave: {
+                    bg: 'bg-green-50',
+                    text: 'text-green-700'
+                },
+                sick_leave: {
+                    bg: 'bg-red-50',
+                    text: 'text-red-700'
+                },
+                public_holiday: {
+                    bg: 'bg-blue-50',
+                    text: 'text-blue-700'
+                },
+                unpaid_leave: {
+                    bg: 'bg-gray-50',
+                    text: 'text-gray-700'
+                },
+                maternity_leave: {
+                    bg: 'bg-pink-50',
+                    text: 'text-pink-700'
+                },
+                paternity_leave: {
+                    bg: 'bg-purple-50',
+                    text: 'text-purple-700'
+                },
+                bereavement_leave: {
+                    bg: 'bg-brown-50',
+                    text: 'text-brown-700'
+                },
+                emergency_leave: {
+                    bg: 'bg-orange-50',
+                    text: 'text-orange-700'
+                },
+                medical_appointment: {
+                    bg: 'bg-cyan-50',
+                    text: 'text-cyan-700'
+                },
+                toil: {
+                    bg: 'bg-amber-50',
+                    text: 'text-amber-700'
+                },
+                default: {
+                    bg: 'bg-blue-100',
+                    text: 'text-blue-700'
+                }
+            }
+            const style = styles[leaveType] || styles.default
+            return {
+                bg: style.bg,
+                text: style.text
+            }
+        }
+
+        const type = event.type.toLowerCase()
+        const defaultStyle = {
+            bg: 'bg-gray-50',
+            text: 'text-gray-700'
+        }
+        const style = (eventTypeStyles[type] || eventTypeStyles.meeting || defaultStyle) as { bg: string; text: string }
+        return {
+            bg: style.bg,
+            text: style.text
+        }
+    }
+
+    // Get event icon based on type
+    const getEventIcon = (event: AppointmentEvent) => {
+        if (event.isLeaveEvent) {
+            switch (event.leaveType) {
+                case "ANNUAL_LEAVE":
+                    return <Calendar className="h-3  w-3" />
+                case "SICK_LEAVE":
+                    return <Heart className="h-3 w-3" />
+                case "PUBLIC_HOLIDAY":
+                    return <Flag className="h-3 w-3" />
+                case "UNPAID_LEAVE":
+                    return <DollarSign className="h-3 w-3" />
+                case "MATERNITY_LEAVE":
+                    return <Baby className="h-3 w-3" />
+                case "PATERNITY_LEAVE":
+                    return <User className="h-3 w-3" />
+                case "BEREAVEMENT_LEAVE":
+                    return <Heart className="h-3 w-3" />
+                case "EMERGENCY_LEAVE":
+                    return <AlertTriangle className="h-3 w-3" />
+                case "MEDICAL_APPOINTMENT":
+                    return <Stethoscope className="h-3 w-3" />
+                case "TOIL":
+                    return <Clock className="h-3 w-3" />
+                default:
+                    return <Calendar className="h-3 w-3" />
+            }
+        }
+
+        switch (event.type) {
             case "HOME_VISIT":
-                return <Home className="h-3.5 w-3.5" />
+                return <Home className="h-3 w-3" />
             case "VIDEO_CALL":
-                return <Video className="h-3.5 w-3.5" />
+                return <Video className="h-3 w-3" />
             case "HOSPITAL":
-                return <Building2 className="h-3.5 w-3.5" />
+                return <Building2 className="h-3 w-3" />
             case "AUDIO_CALL":
-                return <Phone className="h-3.5 w-3.5" />
+                return <Phone className="h-3 w-3" />
             case "IN_PERSON":
-                return <User className="h-3.5 w-3.5" />
+                return <User className="h-3 w-3" />
             default:
-                return <Calendar className="h-3.5 w-3.5" />
+                return <Calendar className="h-3 w-3" />
         }
     }
 
@@ -835,10 +957,11 @@ export function CustomDayView({
                                                     <motion.div
                                                         key={event.id}
                                                         className={cn(
-                                                            "absolute p-2 text-xs rounded-md  border ",
-                                                            "bg-blue-50", // Light blue background
-                                                            "border-gray-200 border-l-4 border-l-blue-600",
-                                                            "cursor-grab active:cursor-grabbing",
+                                                            "absolute rounded-lg text-xs p-2 cursor-grab bg-blue-50 border-l-[3px] ",
+                                                            getEventBackground(event).bg,
+
+                                                            event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
+
                                                         )}
                                                         style={{
                                                             left: `${pos.left || 0}px`,
@@ -859,17 +982,17 @@ export function CustomDayView({
                                                         onClick={() => handleEventClick(event)}
                                                         whileDrag={{ scale: 1.05 }}
                                                     >
-                                                        <div className={cn("flex items-center gap-1 font-medium truncate")}>
-                                                            <span className="text-blue-800">
-                                                                {getEventIcon(event.type) || <HomeModern className="h-4 w-4" />}
+                                                        <div className={cn("flex items-center gap-1 font-medium truncate mt-1")}>
+                                                            <span className="text-blue-800  rounded-md">
+                                                                {getEventIcon(event) || <HomeModern className="h-3 w-3" />}
                                                             </span>
                                                             <span className="text-blue-800">{event.title}</span>
                                                         </div>
-                                                        <div className={cn("text-[10px] mt-1 text-blue-800")}>
-                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                        <div className={cn("text-[10px] mt-1 text-blue-800 flex items-center gap-1")}>
+                                                            <Timer className="h-3 w-3" /> {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </div>
-                                                        <div className="text-xs font-semibold text-blue-800 flex flex-row items-center gap-1 justify-start mt-1">
-                                                            <User className="h-3.5 w-3.5" />
+                                                        <div className="text-xs  text-blue-800 flex flex-row items-center gap-1 justify-start mt-1">
+                                                            <User className="h-3 w-3" />
                                                             <div className="text-blue-800">{event.careWorker?.fullName}</div>{" "}
                                                         </div>
                                                     </motion.div>

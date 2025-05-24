@@ -25,23 +25,25 @@ export interface EventType {
 export interface AppointmentEvent {
   id: string
   title: string
-  start: Date | string
-  end: Date | string
-  date: Date | string
+  start: Date
+  end: Date
+  date: Date
   startTime: string
   endTime: string
   resourceId: string
   clientId: string
   type: string
   status: string
-  notes?: string
+  notes: string
   color: string
-  careWorker?: {
+  careWorker: {
     fullName: string
   }
-  client?: {
+  client: {
     fullName: string
   }
+  isLeaveEvent?: boolean
+  leaveType?: string
 }
 
 export interface CalendarProps {
@@ -67,7 +69,7 @@ export interface ProcessedCalendarEvent {
     clientId: string
     type: string
     status: string
-    notes?: string | undefined
+    notes: string
     color: string
     careWorker: {
         fullName: string
@@ -75,6 +77,8 @@ export interface ProcessedCalendarEvent {
     client: {
         fullName: string
     }
+    isLeaveEvent?: boolean
+    leaveType?: string
 }
 
 export interface CustomCalendarProps {

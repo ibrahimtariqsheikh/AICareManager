@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import moment from "moment"
 import { motion } from "framer-motion"
-import { ChevronDown, Calendar, Clock, User, Home, Video, Building2, Phone } from "lucide-react"
+import { ChevronDown, Calendar, Clock, User, Home, Video, Building2, Phone, Heart, Flag, DollarSign, Baby, AlertTriangle, Stethoscope } from "lucide-react"
 import type { AppointmentEvent } from "../types"
 import { cn } from "../../../../lib/utils"
 import { toast } from "sonner"
@@ -243,20 +243,111 @@ export function CustomMonthView({
 
     // Get event background color based on type
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
+        if (event.isLeaveEvent) {
+            const leaveType = (event.leaveType?.toLowerCase() || 'default') as keyof typeof styles
+            const styles = {
+                annual_leave: {
+                    bg: 'bg-green-50',
+                    hoverBg: 'bg-green-100',
+                    activeBg: 'bg-green-200',
+                    text: 'text-green-700'
+                },
+                sick_leave: {
+                    bg: 'bg-red-50',
+                    hoverBg: 'bg-red-100',
+                    activeBg: 'bg-red-200',
+                    text: 'text-red-700'
+                },
+                public_holiday: {
+                    bg: 'bg-blue-50',
+                    hoverBg: 'bg-blue-100',
+                    activeBg: 'bg-blue-200',
+                    text: 'text-blue-700'
+                },
+                unpaid_leave: {
+                    bg: 'bg-gray-50',
+                    hoverBg: 'bg-gray-100',
+                    activeBg: 'bg-gray-200',
+                    text: 'text-gray-700'
+                },
+                maternity_leave: {
+                    bg: 'bg-pink-50',
+                    hoverBg: 'bg-pink-100',
+                    activeBg: 'bg-pink-200',
+                    text: 'text-pink-700'
+                },
+                paternity_leave: {
+                    bg: 'bg-purple-50',
+                    hoverBg: 'bg-purple-100',
+                    activeBg: 'bg-purple-200',
+                    text: 'text-purple-700'
+                },
+                bereavement_leave: {
+                    bg: 'bg-brown-50',
+                    hoverBg: 'bg-brown-100',
+                    activeBg: 'bg-brown-200',
+                    text: 'text-brown-700'
+                },
+                emergency_leave: {
+                    bg: 'bg-orange-50',
+                    hoverBg: 'bg-orange-100',
+                    activeBg: 'bg-orange-200',
+                    text: 'text-orange-700'
+                },
+                medical_appointment: {
+                    bg: 'bg-cyan-50',
+                    hoverBg: 'bg-cyan-100',
+                    activeBg: 'bg-cyan-200',
+                    text: 'text-cyan-700'
+                },
+                toil: {
+                    bg: 'bg-amber-50',
+                    hoverBg: 'bg-amber-100',
+                    activeBg: 'bg-amber-200',
+                    text: 'text-amber-700'
+                },
+                default: {
+                    bg: 'bg-gray-50',
+                    hoverBg: 'bg-gray-100',
+                    activeBg: 'bg-gray-200',
+                    text: 'text-gray-700'
+                }
+            }
+            const style = styles[leaveType] || styles.default
+            if (spaceTheme) {
+                const bgColor = style.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
+                const hoverColor = style.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
+                const activeColor = style.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
+                return {
+                    bg: isActive ? activeColor : isHovered ? hoverColor : bgColor,
+                    text: style.text.replace('text-', 'text-').replace('-700', '-300')
+                }
+            }
+            return {
+                bg: isActive ? style.activeBg : isHovered ? style.hoverBg : style.bg,
+                text: style.text
+            }
+        }
+
         const type = event.type.toLowerCase()
         const styles = eventTypeStyles[type] || eventTypeStyles.meeting || {
             bg: 'bg-gray-50',
             hoverBg: 'bg-gray-100',
-            activeBg: 'bg-gray-200'
+            activeBg: 'bg-gray-200',
+            text: 'text-gray-700'
         }
         if (spaceTheme) {
-            // Convert light theme colors to dark theme
             const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
             const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
             const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
-            return isActive ? activeColor : isHovered ? hoverColor : bgColor
-        } else {
-            return isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg
+            return {
+                bg: isActive ? activeColor : isHovered ? hoverColor : bgColor,
+                text: 'text-white'
+            }
+        }
+        return {
+            bg: isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg,
+            text: 'text-blue-800'
         }
     }
 
@@ -264,6 +355,33 @@ export function CustomMonthView({
 
     // Get event icon based on type
     const getEventIcon = useCallback((event: AppointmentEvent) => {
+        if (event.isLeaveEvent) {
+            switch (event.leaveType) {
+                case "ANNUAL_LEAVE":
+                    return <Calendar className="h-3.5 w-3.5" />
+                case "SICK_LEAVE":
+                    return <Heart className="h-3.5 w-3.5" />
+                case "PUBLIC_HOLIDAY":
+                    return <Flag className="h-3.5 w-3.5" />
+                case "UNPAID_LEAVE":
+                    return <DollarSign className="h-3.5 w-3.5" />
+                case "MATERNITY_LEAVE":
+                    return <Baby className="h-3.5 w-3.5" />
+                case "PATERNITY_LEAVE":
+                    return <User className="h-3.5 w-3.5" />
+                case "BEREAVEMENT_LEAVE":
+                    return <Heart className="h-3.5 w-3.5" />
+                case "EMERGENCY_LEAVE":
+                    return <AlertTriangle className="h-3.5 w-3.5" />
+                case "MEDICAL_APPOINTMENT":
+                    return <Stethoscope className="h-3.5 w-3.5" />
+                case "TOIL":
+                    return <Clock className="h-3.5 w-3.5" />
+                default:
+                    return <Calendar className="h-3.5 w-3.5" />
+            }
+        }
+
         switch (event.type) {
             case "HOME_VISIT":
                 return <Home className="h-3.5 w-3.5" />
@@ -545,13 +663,14 @@ export function CustomMonthView({
                     if (el) eventRefs.current[event.id] = el
                 }}
                 className={cn(
-                    "absolute rounded-lg text-xs p-2 cursor-grab ",
-                    "bg-blue-50", // Light blue background
-                    "border-gray-200 border-l-4 border-l-blue-600",
+                    "absolute rounded-lg text-xs p-2 cursor-grab",
+                    getEventBackground(event, isActive, isHovered).bg,
+                    event.isLeaveEvent ? "border-l-4" : "border-l-2",
+                    event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
                     "min-w-0",
                 )}
                 style={{
-                    borderLeftWidth: "4px",
+                    borderLeftWidth: event.isLeaveEvent ? "4px" : "2px",
                     boxShadow: isActive
                         ? spaceTheme
                             ? "0 8px 16px rgba(0,0,0,0.4)"
@@ -591,21 +710,31 @@ export function CustomMonthView({
 
                 {/* Event content with improved layout */}
                 <div className="flex flex-col relative z-0">
-                    <div className="flex items-center gap-1 mb-1 text-blue-800">
+                    <div className={cn(
+                        "flex items-center gap-1 mb-1",
+                        event.isLeaveEvent ? "text-" + event.color : "text-blue-800"
+                    )}>
                         {eventIcon}
                         <span className="font-medium truncate">{displayEvent.title}</span>
                     </div>
 
-                    <div className="text-[10px]  text-blue-800">
+                    <div className={cn(
+                        "text-[10px]",
+                        event.isLeaveEvent ? "text-" + event.color : "text-blue-800"
+                    )}>
                         {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
                     </div>
 
-
-
                     {/* Staff info */}
                     <div className="flex items-center gap-1 mt-1">
-                        <div className="w-2 h-2 rounded-full flex-shrink-0 bg-blue-600" />
-                        <span className="text-[10px] truncate text-blue-600 font-medium">
+                        <div className={cn(
+                            "w-2 h-2 rounded-full flex-shrink-0",
+                            event.isLeaveEvent ? "bg-" + event.color : "bg-blue-600"
+                        )} />
+                        <span className={cn(
+                            "text-[10px] truncate font-medium",
+                            event.isLeaveEvent ? "text-" + event.color : "text-blue-600"
+                        )}>
                             {staffName}
                         </span>
                     </div>
@@ -642,7 +771,7 @@ export function CustomMonthView({
             <div
                 className={cn(
                     "text-xs p-1.5 rounded-md border-2 border-dashed",
-                    getEventBackground(eventBeingDragged, false, false),
+                    getEventBackground(eventBeingDragged, false, false).bg,
                     spaceTheme ? "border-slate-500/80 bg-slate-900/30" : "border-gray-500/80 bg-gray-100/70",
                 )}
                 style={{

@@ -3,7 +3,7 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { Message } from "@/state/slices/chatSlice"
 
-import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog } from "../types/prismaTypes"
+import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog, LeaveEvent } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
 import { EmergencyContact } from "@/types/profileTypes"
 
@@ -267,7 +267,8 @@ export const api = createApi({
     "Medications",
     "MedicationLogs",
     "Conversations",
-    "Messages"
+    "Messages",
+    "LeaveEvents"
   ],
   endpoints: (build) => ({
     // Get user
@@ -504,6 +505,45 @@ export const api = createApi({
         body: { userId },
       }),
       invalidatesTags: ["Invitations"],
+    }),
+
+    createLeaveEvent: build.mutation<LeaveEvent, { 
+      userId: string; 
+      startDate: string; 
+      endDate: string; 
+      notes: string; 
+      payRate: number; 
+      eventType: string; 
+      color: string; 
+      agencyId: string 
+    }>({
+      query: (data) => ({
+        url: "/schedules/leave",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["LeaveEvents"],
+    }),
+
+    getAgencyLeaveEvents: build.query<LeaveEvent[], string>({
+      query: (agencyId) => ({
+        url: `/schedules/leave/agency/${agencyId}`,
+        method: 'GET',
+      }),
+    }),
+
+    getUserLeaveEvents: build.query<LeaveEvent[], string>({
+      query: (userId) => ({
+        url: `/schedules/leave/user/${userId}`,
+        method: 'GET',
+      }),
+    }),
+
+    deleteLeaveEvent: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/schedules/leave/${id}`,
+        method: 'DELETE',
+      }),
     }),
 
     // Get schedules with filtering
@@ -984,6 +1024,10 @@ export const {
   useUpdateReportMutation,
   useGetReportByIdQuery,
   useGetAgencySchedulesQuery,
+  useGetAgencyLeaveEventsQuery,
+  useGetUserLeaveEventsQuery,
+  useCreateLeaveEventMutation,
+  useDeleteLeaveEventMutation,
 
   useGetAgencyCustomTasksQuery,
   useGetAgencyGroupsQuery,
@@ -1026,6 +1070,5 @@ export const {
   useGetMessagesByAgencyQuery,
   useDeleteMessageMutation,
   useCreateConversationMutation,
-  useSendMessageInConversationMutation,
-
+  useSendMessageInConversationMutation
 } = api
