@@ -16,8 +16,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ArrowUpDown, Download, Edit, Eye, MoreHorizontal, Send, Trash } from "lucide-react"
 import { format } from "date-fns"
+import { cn } from "@/lib/utils"
+import { DateRange } from "react-day-picker"
 
-// Mock clients data
+
 const mockClients = [
     { id: "client1", name: "John Doe", avatar: "/placeholder.svg" },
     { id: "client2", name: "Jane Smith", avatar: "/placeholder.svg" },
@@ -34,9 +36,11 @@ interface Invoice {
     paymentMethod: string
 }
 
-// Props type not needed as we're not using params
+interface InvoiceTableProps {
+    date: DateRange | undefined
+}
 
-export function InvoiceTable(): React.JSX.Element {
+export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
     const [selectedInvoices, setSelectedInvoices] = useState<string[]>([])
     const [sortColumn, setSortColumn] = useState<string | null>(null)
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
@@ -50,14 +54,24 @@ export function InvoiceTable(): React.JSX.Element {
                     throw new Error("Failed to fetch invoices")
                 }
                 const data = await response.json()
-                setInvoices(data)
+
+                // Filter invoices based on date range if provided
+                let filteredData = data
+                if (date?.from && date?.to) {
+                    filteredData = data.filter((invoice: Invoice) => {
+                        const invoiceDate = new Date(invoice.dueDate)
+                        return invoiceDate >= date.from! && invoiceDate <= date.to!
+                    })
+                }
+
+                setInvoices(filteredData)
             } catch (error) {
                 console.error("Error fetching invoices:", error)
             }
         }
 
         fetchInvoices()
-    }, [])
+    }, [date]) // Add date as a dependency
 
     // Handle sort
     const handleSort = (column: string) => {
@@ -129,71 +143,74 @@ export function InvoiceTable(): React.JSX.Element {
         <div className="rounded-md border">
             <Table>
                 <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-12">
+                    <TableRow className="border-b border-border bg-muted/50">
+                        <TableHead className="w-12 py-2 px-3">
                             <Checkbox
                                 checked={selectedInvoices.length === invoices.length && invoices.length > 0}
                                 onCheckedChange={handleSelectAll}
                                 aria-label="Select all invoices"
                             />
                         </TableHead>
-                        <TableHead className="cursor-pointer" onClick={() => handleSort("id")}>
+                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("id")}>
                             <div className="flex items-center">
                                 Invoice ID
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
-                        <TableHead className="cursor-pointer" onClick={() => handleSort("status")}>
+                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("status")}>
                             <div className="flex items-center">
                                 Status
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
-                        <TableHead className="cursor-pointer" onClick={() => handleSort("client")}>
+                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("client")}>
                             <div className="flex items-center">
                                 Client
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
-                        <TableHead className="cursor-pointer" onClick={() => handleSort("amount")}>
+                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("amount")}>
                             <div className="flex items-center">
                                 Amount
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
-                        <TableHead className="cursor-pointer" onClick={() => handleSort("dueDate")}>
+                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("dueDate")}>
                             <div className="flex items-center">
                                 Due Date
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
-                        <TableHead className="cursor-pointer" onClick={() => handleSort("paymentMethod")}>
+                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("paymentMethod")}>
                             <div className="flex items-center">
                                 Pay Method
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
-                        <TableHead className="w-12"></TableHead>
+                        <TableHead className="w-12 py-2 px-3"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {invoices.map((invoice) => {
                         const client = mockClients.find(c => c.id === invoice.clientId)
                         return (
-                            <TableRow key={invoice.id} className={selectedInvoices.includes(invoice.id) ? "bg-muted/50" : ""}>
-                                <TableCell>
+                            <TableRow key={invoice.id} className={cn(
+                                "border-b border-border hover:bg-muted/50 transition-colors duration-200",
+                                selectedInvoices.includes(invoice.id) && "bg-muted/50"
+                            )}>
+                                <TableCell className="py-2 px-3">
                                     <Checkbox
                                         checked={selectedInvoices.includes(invoice.id)}
                                         onCheckedChange={() => handleSelectInvoice(invoice.id)}
                                         aria-label={`Select invoice ${invoice.id}`}
                                     />
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className="py-2 px-3">
                                     <div className="font-medium">{invoice.id}</div>
                                     <div className="text-sm text-muted-foreground">{invoice.description}</div>
                                 </TableCell>
-                                <TableCell>{getStatusBadge(invoice.status)}</TableCell>
-                                <TableCell>
+                                <TableCell className="py-2 px-3">{getStatusBadge(invoice.status)}</TableCell>
+                                <TableCell className="py-2 px-3">
                                     {client && (
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-8 w-8">
@@ -207,10 +224,10 @@ export function InvoiceTable(): React.JSX.Element {
                                         </div>
                                     )}
                                 </TableCell>
-                                <TableCell className="font-medium">${invoice.amount.toFixed(2)}</TableCell>
-                                <TableCell>{format(new Date(invoice.dueDate), "MMM d, yyyy")}</TableCell>
-                                <TableCell>{invoice.paymentMethod}</TableCell>
-                                <TableCell>
+                                <TableCell className="py-2 px-3 font-medium">${invoice.amount.toFixed(2)}</TableCell>
+                                <TableCell className="py-2 px-3">{format(new Date(invoice.dueDate), "MMM d, yyyy")}</TableCell>
+                                <TableCell className="py-2 px-3">{invoice.paymentMethod}</TableCell>
+                                <TableCell className="py-2 px-3">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" size="icon">

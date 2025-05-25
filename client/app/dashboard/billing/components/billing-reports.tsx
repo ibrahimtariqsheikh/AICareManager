@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Sparkles, ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { DateRange } from "react-day-picker"
 
 const data = [
     { name: "Jan", revenue: 4000, expenses: 2400 },
@@ -16,7 +17,11 @@ const data = [
     { name: "Jun", revenue: 2390, expenses: 3800 },
 ]
 
-export function BillingReports() {
+interface BillingReportsProps {
+    dateRange: DateRange | undefined
+}
+
+export function BillingReports({ }: BillingReportsProps) {
     const [showAnalysis, setShowAnalysis] = useState({
         overview: false,
         clients: false,

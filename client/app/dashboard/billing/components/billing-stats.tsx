@@ -1,10 +1,11 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DollarSign, TrendingUp, Users, CreditCard, Sparkles, ChevronDown } from "lucide-react"
+import { DollarSign, TrendingUp, Users, CreditCard, Sparkles, ChevronDown, ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 export function BillingStats() {
     const [showRecommendations, setShowRecommendations] = useState<string | null>(null)
@@ -33,19 +34,23 @@ export function BillingStats() {
     }
 
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                        Total Revenue
-                    </CardTitle>
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">$45,231.89</div>
-                    <p className="text-xs text-muted-foreground">
-                        +20.1% from last month
-                    </p>
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <CardContent className="p-4">
+                    <div className="flex items-center mb-2">
+                        <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                            <DollarSign className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                        </div>
+                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
+                    </div>
+                    <div className="flex justify-between items-baseline mb-0.5">
+                        <div className="text-2xl font-bold text-neutral-800 dark:text-white">$45,231.89</div>
+                        <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
+                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            +20.1%
+                        </div>
+                    </div>
+                    <div className="text-xs text-neutral-500 dark:text-neutral-400">From last month</div>
                     <Button
                         variant="ghost"
                         size="sm"
@@ -89,18 +94,22 @@ export function BillingStats() {
                     </AnimatePresence>
                 </CardContent>
             </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                        Active Clients
-                    </CardTitle>
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">235</div>
-                    <p className="text-xs text-muted-foreground">
-                        +12 new clients this month
-                    </p>
+            <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <CardContent className="p-4">
+                    <div className="flex items-center mb-2">
+                        <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                            <Users className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                        </div>
+                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Active Clients</h3>
+                    </div>
+                    <div className="flex justify-between items-baseline mb-0.5">
+                        <div className="text-2xl font-bold text-neutral-800 dark:text-white">235</div>
+                        <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
+                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            +12
+                        </div>
+                    </div>
+                    <div className="text-xs text-neutral-500 dark:text-neutral-400">New clients this month</div>
                     <Button
                         variant="ghost"
                         size="sm"
@@ -144,18 +153,22 @@ export function BillingStats() {
                     </AnimatePresence>
                 </CardContent>
             </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                        Outstanding Invoices
-                    </CardTitle>
-                    <CreditCard className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">$12,234</div>
-                    <p className="text-xs text-muted-foreground">
-                        15 invoices pending
-                    </p>
+            <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <CardContent className="p-4">
+                    <div className="flex items-center mb-2">
+                        <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                            <CreditCard className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                        </div>
+                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Outstanding Invoices</h3>
+                    </div>
+                    <div className="flex justify-between items-baseline mb-0.5">
+                        <div className="text-2xl font-bold text-neutral-800 dark:text-white">$12,234</div>
+                        <div className="flex items-center text-red-600 text-xs dark:text-red-400">
+                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            15
+                        </div>
+                    </div>
+                    <div className="text-xs text-neutral-500 dark:text-neutral-400">Invoices pending</div>
                     <Button
                         variant="ghost"
                         size="sm"
@@ -199,18 +212,22 @@ export function BillingStats() {
                     </AnimatePresence>
                 </CardContent>
             </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                        Profit Margin
-                    </CardTitle>
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">32.5%</div>
-                    <p className="text-xs text-muted-foreground">
-                        +2.5% from last month
-                    </p>
+            <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <CardContent className="p-4">
+                    <div className="flex items-center mb-2">
+                        <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
+                            <TrendingUp className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                        </div>
+                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Profit Margin</h3>
+                    </div>
+                    <div className="flex justify-between items-baseline mb-0.5">
+                        <div className="text-2xl font-bold text-neutral-800 dark:text-white">32.5%</div>
+                        <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
+                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            +2.5%
+                        </div>
+                    </div>
+                    <div className="text-xs text-neutral-500 dark:text-neutral-400">From last month</div>
                     <Button
                         variant="ghost"
                         size="sm"

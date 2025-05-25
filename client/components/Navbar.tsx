@@ -14,6 +14,9 @@ import { useIsMobile } from "../hooks/use-mobile"
 import { LogIn, LogOut, Menu, User, Moon, Sun } from 'lucide-react'
 import { signOut } from 'aws-amplify/auth';
 import Image from "next/image"
+import { Geist_Mono } from 'next/font/google'
+
+const geistMono = Geist_Mono({ subsets: ['latin'] })
 
 const Navbar = () => {
   const { user } = useAuthenticator((context) => [context.user])
@@ -115,7 +118,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/"
-          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/' ? 'font-semibold text-primary' : ''}`}
+          className={`text-[13px] hover:font-semibold hover:underline underline-offset-4 transition-colors ${geistMono.className} ${pathname === '/' ? 'font-semibold text-primary' : ''}`}
         >
           Home
         </Link>
@@ -123,7 +126,7 @@ const Navbar = () => {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
         <Link
           href="/pricing"
-          className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/pricing' ? 'font-semibold text-primary' : ''}`}
+          className={`text-[13px] hover:font-semibold hover:underline underline-offset-4 transition-colors ${geistMono.className} ${pathname === '/pricing' ? 'font-semibold text-primary' : ''}`}
         >
           Pricing
         </Link>
@@ -132,7 +135,7 @@ const Navbar = () => {
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
           <Link
             href="/dashboard"
-            className={`hover:font-semibold text-sm hover:underline underline-offset-4 transition-colors ${pathname === '/dashboard' ? 'font-semibold text-primary' : ''}`}
+            className={`text-[13px] hover:font-semibold hover:underline underline-offset-4 transition-colors ${geistMono.className} ${pathname === '/dashboard' ? 'font-semibold text-primary' : ''}`}
           >
             Dashboard
           </Link>
@@ -173,7 +176,7 @@ const Navbar = () => {
           {/* Navigation Links */}
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/" className="block p-2 hover:text-purple-500 transition-colors">
+              <Link href="/" className={`block p-2 hover:text-purple-500 transition-colors ${geistMono.className}`}>
                 Home
               </Link>
             </motion.div>
@@ -181,7 +184,7 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/pricing" className="block p-2 hover:text-purple-500 transition-colors">
+              <Link href="/pricing" className={`block p-2 hover:text-purple-500 transition-colors ${geistMono.className}`}>
                 Pricing
               </Link>
             </motion.div>
@@ -189,7 +192,7 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/dashboard" className="block p-2 hover:text-purple-500 transition-colors">
+              <Link href="/dashboard" className={`block p-2 hover:text-purple-500 transition-colors ${geistMono.className}`}>
                 Dashboard
               </Link>
             </motion.div>
@@ -197,7 +200,7 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/contact" className="block p-2 hover:text-purple-500 transition-colors">
+              <Link href="/contact" className={`block p-2 hover:text-purple-500 transition-colors ${geistMono.className}`}>
                 Contact
               </Link>
             </motion.div>
@@ -253,7 +256,7 @@ const Navbar = () => {
           size="icon"
           onClick={toggleTheme}
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          className="rounded-xl"
+          className="rounded-md"
         >
           {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </Button>
@@ -264,9 +267,9 @@ const Navbar = () => {
   const AuthButton = () => {
     if (user) {
       return (
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-          <Button onClick={handleSignOut} className="rounded-xl">
-            <LogOut className="w-4 h-4 mr-2" />
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }} className={`${geistMono.className}`}>
+          <Button onClick={handleSignOut} className="rounded-md">
+            <LogOut className="w-4 h-4 mr-1" />
             <span className="hidden sm:inline text-sm">Logout</span>
           </Button>
         </motion.div>
@@ -284,7 +287,7 @@ const Navbar = () => {
   }
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0  flex justify-between items-center bg-transparent backdrop-blur-md z-50  py-4 px-10  border border-border/40 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)]"
+      className="fixed top-0 left-0 right-0 lg:mx-24 mx-3 mt-4 px-3 rounded-lg py-2 bg-white/80 flex justify-between items-center backdrop-blur-md z-50 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)] border border-muted-foreground/20"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -294,9 +297,9 @@ const Navbar = () => {
         whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.2 }}
       >
-        <Link href="/" className="flex items-center font-bold  gap-1">
+        <Link href="/" className="flex items-center font-bold gap-1">
           <Image src="/logos/logo.svg" alt="AI Manager" width={35} height={35} />
-          <span className="text-lg font-bold">AIM</span>
+          <span className={`text-lg font-bold ml-1 ${geistMono.className}`}>AIM</span>
         </Link>
       </motion.div>
 
@@ -307,9 +310,8 @@ const Navbar = () => {
           ) : (
             <>
               <NavLinks key="desktop" />
-              <ThemeToggle />
-              <AuthButton />
 
+              <AuthButton />
             </>
           )}
         </AnimatePresence>

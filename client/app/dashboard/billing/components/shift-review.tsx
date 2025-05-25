@@ -1,6 +1,7 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
+import { DateRange } from "react-day-picker"
 
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,7 +12,11 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AlertCircle, CheckCircle2, Clock, Edit, Sparkles } from "lucide-react"
 
-export function ShiftReview() {
+interface ShiftReviewProps {
+    date: DateRange | undefined
+}
+
+export function ShiftReview({ }: ShiftReviewProps) {
     const [activeTab, setActiveTab] = useState("pending")
 
     // Mock data for shifts
@@ -183,7 +188,7 @@ export function ShiftReview() {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {shift.exceptions.length > 0 && getExceptionBadge(shift.exceptions[0].severity)}
+                                                {shift.exceptions.length > 0 && shift.exceptions[0] && getExceptionBadge(shift.exceptions[0].severity)}
                                                 <Button variant="outline" size="sm" className="flex items-center gap-1">
                                                     <Edit className="h-4 w-4" />
                                                     <span>Edit Shift</span>
@@ -214,7 +219,7 @@ export function ShiftReview() {
                                                 ))}
                                             </div>
 
-                                            {shift.exceptions.length > 0 && (
+                                            {shift.exceptions.length > 0 && shift.exceptions[0] && (
                                                 <div className="mt-4 p-4 border rounded-md bg-yellow-50 border-yellow-200">
                                                     <div className="flex items-center justify-between mb-2">
                                                         <div className="font-medium text-yellow-800 flex items-center gap-2">

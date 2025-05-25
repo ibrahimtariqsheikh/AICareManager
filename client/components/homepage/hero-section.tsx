@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { Geist_Mono } from 'next/font/google'
 
 interface HeroSectionProps {
     title: string;
@@ -9,6 +10,9 @@ interface HeroSectionProps {
     image: string;
 
 }
+
+const geistMono = Geist_Mono({ subsets: ['latin'] })
+
 
 export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
     const [mounted, setMounted] = useState(false);
@@ -168,39 +172,40 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                     transition={{ duration: 0.5 }}
                 >
                     <div className="flex justify-center">
-                        <div className={cn("text-sm font-medium text-gray-700 bg-gray-100/70 px-4 py-2 rounded-lg backdrop-blur-sm border border-gray-200/50", theme === "dark" && "text-white bg-gray-800/70")}>
+                        <div className={cn("text-[14px] bg-blue-500/10 text-blue-500 font-medium border border-blue-500/20 rounded-full px-4 py-2 relative", theme === "dark" && "text-white bg-gray-800/70", geistMono.className)}>
+                            <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl -z-10 animate-pulse"></div>
                             Level Up Your Care Management with AI
                         </div>
                     </div>
+                    <div>
+                        <motion.h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight px-2">
+                            {title.split(" ").map((word, index) => (
+                                <motion.span
+                                    key={index}
+                                    initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
+                                    animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                                    transition={{
+                                        duration: 0.3,
+                                        delay: index * 0.1,
+                                        ease: "easeInOut",
+                                    }}
+                                    className={`mr-2 inline-block ${index >= words.length - 2 ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600" : ""
+                                        }`}
+                                >
+                                    {word}
+                                </motion.span>
+                            ))}
+                        </motion.h1>
 
-                    <motion.h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight px-2">
-                        {title.split(" ").map((word, index) => (
-                            <motion.span
-                                key={index}
-                                initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
-                                animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-                                transition={{
-                                    duration: 0.3,
-                                    delay: index * 0.1,
-                                    ease: "easeInOut",
-                                }}
-                                className={`mr-2 inline-block ${index >= words.length - 2 ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600" : ""
-                                    }`}
-                            >
-                                {word}
-                            </motion.span>
-                        ))}
-                    </motion.h1>
-
-                    <motion.p
-                        className={cn("relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-700 backdrop-blur-sm bg-white/10 rounded-lg px-4 border border-gray-100/30", theme === "dark" && "text-white bg-gray-800/10")}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
-                    >
-                        {subtitle}
-                    </motion.p>
-
+                        <motion.p
+                            className={cn("relative z-10 mx-auto max-w-xl py-4 text-center text-md font-normal text-neutral-800 backdrop-blur-sm bg-white/10 rounded-lg px-4 border border-gray-100/30", theme === "dark" && "text-white bg-gray-800/10")}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                        >
+                            {subtitle}
+                        </motion.p>
+                    </div>
                     {/* Floating dashboard preview with reduced glow */}
                     <motion.div
                         className="max-w-5xl mx-auto relative"

@@ -13,26 +13,26 @@ interface BillingActionsProps {
 export function BillingActions({ showFilters }: BillingActionsProps) {
     return (
         <div className="space-y-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
                 <div className="relative flex-1">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search invoices..."
-                        className="pl-8"
+                        className="pl-8 h-8"
                     />
                 </div>
-                <Button variant="outline">
+                <Button variant="outline" size="sm" className="h-8">
                     <Download className="mr-2 h-4 w-4" />
                     Export
                 </Button>
             </div>
 
             {showFilters && (
-                <div className="grid gap-4 md:grid-cols-3">
-                    <div className="space-y-2">
+                <div className="grid gap-3 md:grid-cols-3">
+                    <div className="space-y-1.5">
                         <Label>Status</Label>
                         <Select>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-8">
                                 <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                             <SelectContent>
@@ -43,10 +43,10 @@ export function BillingActions({ showFilters }: BillingActionsProps) {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                         <Label>Client</Label>
                         <Select>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-8">
                                 <SelectValue placeholder="Select client" />
                             </SelectTrigger>
                             <SelectContent>
@@ -56,10 +56,10 @@ export function BillingActions({ showFilters }: BillingActionsProps) {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                         <Label>Amount Range</Label>
                         <Select>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-8">
                                 <SelectValue placeholder="Select range" />
                             </SelectTrigger>
                             <SelectContent>

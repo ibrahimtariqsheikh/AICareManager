@@ -9,7 +9,7 @@ import { ProfitCalculator } from "./components/profit-calculator"
 import { ShiftReview } from "./components/shift-review"
 import { BillingStats } from "./components/billing-stats"
 import { BillingActions } from "./components/billing-actions"
-import { Download, Filter, Plus } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import { DateRange } from "react-day-picker"
 import { subDays } from "date-fns"
 import { ProfitabilityProjections } from "./components/profitability-projections"
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dialog"
 
 export default function BillingPage() {
-    // State for date range
+
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
         from: subDays(new Date(), 30),
         to: new Date(),
@@ -41,37 +41,17 @@ export default function BillingPage() {
 
 
     return (
-        <div className="container mx-auto py-6 space-y-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex flex-col">
-                    <h1 className="text-xl font-bold">Billing & Finance</h1>
-                    <p className="text-sm text-neutral-600">
-                        Manage invoices, track payments, and analyze financial performance.
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none">
-                        <Download className="mr-2 h-4 w-4" />
-                        Export
-                    </Button>
-                    <Button onClick={() => setShowNewInvoiceDialog(true)}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        New Invoice
-                    </Button>
-                </div>
-            </div>
-
+        <div className="p-6 space-y-4">
             <BillingStats />
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                     <TabsList className="mb-2 md:mb-0">
                         <TabsTrigger value="invoices">Invoices</TabsTrigger>
-                        <TabsTrigger value="profit-calculator">Profit Calculator</TabsTrigger>
+                        <TabsTrigger value="payroll">Payroll</TabsTrigger>
+                        <TabsTrigger value="expenses">Expenses</TabsTrigger>
                         <TabsTrigger value="shift-review">Shift Review</TabsTrigger>
-                        <TabsTrigger value="projections">Profitability</TabsTrigger>
-                        <TabsTrigger value="reports">Reports</TabsTrigger>
-                        <TabsTrigger value="settings">Settings</TabsTrigger>
+                        <TabsTrigger value="analytics">Analytics</TabsTrigger>
                     </TabsList>
 
                     <div className="flex items-center gap-2">
@@ -82,28 +62,28 @@ export default function BillingPage() {
                     </div>
                 </div>
 
-                <TabsContent value="invoices" className="space-y-6">
+                <TabsContent value="invoices" className="space-y-4">
                     <BillingActions showFilters={showFilters} />
                     <InvoiceTable date={dateRange} />
                 </TabsContent>
 
-                <TabsContent value="profit-calculator" className="space-y-6">
+                <TabsContent value="profit-calculator" className="space-y-4">
                     <ProfitCalculator />
                 </TabsContent>
 
-                <TabsContent value="shift-review" className="space-y-6">
+                <TabsContent value="shift-review" className="space-y-4">
                     <ShiftReview date={dateRange} />
                 </TabsContent>
 
-                <TabsContent value="projections" className="space-y-6">
+                <TabsContent value="projections" className="space-y-4">
                     <ProfitabilityProjections dateRange={dateRange} />
                 </TabsContent>
 
-                <TabsContent value="reports" className="space-y-6">
+                <TabsContent value="reports" className="space-y-4">
                     <BillingReports dateRange={dateRange} />
                 </TabsContent>
 
-                <TabsContent value="settings" className="space-y-6">
+                <TabsContent value="settings" className="space-y-4">
                     <BillingSettings />
                 </TabsContent>
             </Tabs>
