@@ -56,8 +56,13 @@ export default function BillingPage() {
 
                     <div className="flex items-center gap-2">
                         <DatePickerWithRange date={dateRange} setDate={setDateRange} />
-                        <Button variant="outline" size="icon" onClick={() => setShowFilters(!showFilters)}>
-                            <Filter className="h-4 w-4" />
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setShowFilters(!showFilters)}
+                            className="transition-all duration-200 hover:scale-110 hover:bg-primary/10"
+                        >
+                            <Filter className="h-4 w-4 transition-transform duration-200 hover:rotate-12" />
                         </Button>
                     </div>
                 </div>

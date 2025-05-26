@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "../components/ui/
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useTheme } from "next-themes"
 import { useIsMobile } from "../hooks/use-mobile"
-import { LogIn, LogOut, Menu, User, Moon, Sun } from 'lucide-react'
+import { LogIn, LogOut, Menu, User, Moon, Sun, LayoutDashboard } from 'lucide-react'
 import { signOut } from 'aws-amplify/auth';
 import Image from "next/image"
 import { Geist_Mono } from 'next/font/google'
@@ -131,7 +131,7 @@ const Navbar = () => {
           Pricing
         </Link>
       </motion.div>
-      {user && (
+      {/* {user && (
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
           <Link
             href="/dashboard"
@@ -140,7 +140,7 @@ const Navbar = () => {
             Dashboard
           </Link>
         </motion.div>
-      )}
+      )} */}
     </motion.div>
   )
 
@@ -230,9 +230,9 @@ const Navbar = () => {
           {/* Auth Button */}
           <motion.div variants={mobileItemVariants} className="mt-4">
             {user ? (
-              <Button onClick={handleSignOut} className="w-full rounded-xl" variant="default">
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
+              <Button onClick={() => router.push("/dashboard")} className="w-full rounded-xl" variant="default">
+                <LayoutDashboard className="w-4 h-4 mr-2" />
+                Dashboard
               </Button>
             ) : (
               <Button onClick={handleLogin} className="w-full rounded-xl" variant="default">
@@ -268,9 +268,9 @@ const Navbar = () => {
     if (user) {
       return (
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }} className={`${geistMono.className}`}>
-          <Button onClick={handleSignOut} className="rounded-md">
-            <LogOut className="w-4 h-4 mr-1" />
-            <span className="hidden sm:inline text-sm">Logout</span>
+          <Button onClick={() => router.push("/dashboard")} className="rounded-md">
+            <LayoutDashboard className="w-4 h-4 mr-1" />
+            <span className="hidden sm:inline text-sm">Dashboard</span>
           </Button>
         </motion.div>
       )

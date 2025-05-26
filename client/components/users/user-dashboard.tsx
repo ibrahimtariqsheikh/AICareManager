@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Users, UserPlus, Briefcase, Plus, Search } from 'lucide-react'
 import { toast } from "sonner"
 import { useTheme } from "next-themes"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     useGetUserQuery,
     useCreateUserMutation,
@@ -22,6 +23,7 @@ import { v4 as uuidv4 } from "uuid"
 import { useAppSelector } from "@/state/redux"
 import { UserTableUser } from "./user-table-user"
 import { CustomInput } from "@/components/ui/custom-input"
+import { Separator } from "../ui/separator"
 
 
 export function UserDashboard() {
@@ -89,54 +91,46 @@ export function UserDashboard() {
     }
 
     return (
-        <div className="flex-1 px-6 py-2 space-y-6">
-
-
+        <div className="flex-1 px-6 py-2 space-y-2">
             {/* User Type Tabs */}
-            <div className={`flex border-b ${theme === "dark" ? "border-gray-700" : "border-gray-200"} pb-2`}>
-                <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center gap-2">
-                        <button
-                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CLIENT" ? `border-b-2 ${theme === "dark" ? "border-gray-100 text-gray-100" : "border-gray-900 text-gray-900"}` : theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"}`}
-                            onClick={() => dispatch(setActiveUserType("CLIENT"))}
-                        >
-                            <Users className="h-4 w-4" />
-                            Clients ({clients.length})
-                        </button>
-                        <button
-                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "CARE_WORKER" ? `border-b-2 ${theme === "dark" ? "border-gray-100 text-gray-100" : "border-gray-900 text-gray-900"}` : theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"}`}
-                            onClick={() => dispatch(setActiveUserType("CARE_WORKER"))}
-                        >
-                            <UserPlus className="h-4 w-4" />
-                            Care Workers ({careWorkers.length})
-                        </button>
-                        <button
-                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeUserType === "OFFICE_STAFF" ? `border-b-2 ${theme === "dark" ? "border-gray-100 text-gray-100" : "border-gray-900 text-gray-900"}` : theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"}`}
-                            onClick={() => dispatch(setActiveUserType("OFFICE_STAFF"))}
-                        >
-                            <Briefcase className="h-4 w-4" />
-                            Office Staff ({officeStaff.length})
-                        </button>
+            <div className="flex items-center justify-between w-full">
+                <Tabs
+                    defaultValue={activeUserType}
+                    className="w-full"
+                    onValueChange={(value) => dispatch(setActiveUserType(value as "CLIENT" | "CARE_WORKER" | "OFFICE_STAFF"))}
+                >
+                    <div className="flex items-center justify-between w-full">
+                        <TabsList className={`${theme === "dark" ? "bg-zinc-800" : "bg-neutral-100"}`}>
+                            <TabsTrigger value="CLIENT" className="flex items-center gap-2">
+                                <Users className="h-4 w-4" />
+                                Clients ({clients.length})
+                            </TabsTrigger>
+                            <TabsTrigger value="CARE_WORKER" className="flex items-center gap-2">
+                                <UserPlus className="h-4 w-4" />
+                                Care Workers ({careWorkers.length})
+                            </TabsTrigger>
+                            <TabsTrigger value="OFFICE_STAFF" className="flex items-center gap-2">
+                                <Briefcase className="h-4 w-4" />
+                                Office Staff ({officeStaff.length})
+                            </TabsTrigger>
+                        </TabsList>
+                        <div className="flex items-center">
+                            <CustomInput
+                                placeholder={`Search ${activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}...`}
+                                value={searchQuery}
+                                onChange={(value: string) => setSearchQuery(value)}
+                                className={`w-[200px] ${theme === "dark" ? "bg-zinc-800" : "bg-neutral-100/70"}`}
+                                icon={<Search className="h-4 w-4" />}
+                            />
+                        </div>
                     </div>
-                    <div className="flex items-center">
-                        <CustomInput
-                            placeholder={`Search ${activeUserType === "CLIENT" ? "Client" : activeUserType === "OFFICE_STAFF" ? "Staff" : activeUserType === "CARE_WORKER" ? "Care Worker" : "User"}...`}
-                            value={searchQuery}
-                            onChange={(value: string) => setSearchQuery(value)}
-                            className={`w-[200px] ${theme === "dark" ? "bg-zinc-800" : "bg-neutral-100/70"}`}
-                            icon={<Search className="h-4 w-4" />}
-                        />
-                    </div>
-                </div>
+                </Tabs>
             </div>
 
-            {/* User Content */}
-            <div className="space-y-2">
-                <UserTableUser
-                    users={filteredUsers}
-                    isLoading={isLoadingUsers}
-                />
-            </div>
+            <UserTableUser
+                users={filteredUsers}
+                isLoading={isLoadingUsers}
+            />
 
             {/* Floating Action Button */}
             <div className="fixed bottom-6 right-6 z-50">
@@ -156,8 +150,6 @@ export function UserDashboard() {
                 onAddUser={handleAddUser}
                 isCreatingUser={isCreatingUser}
             />
-
-
         </div>
     )
 }

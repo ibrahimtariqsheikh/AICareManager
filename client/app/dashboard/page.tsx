@@ -159,7 +159,7 @@ export default function DashboardPage() {
         <div className="p-6 space-y-4 mt-3">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
                             <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
                             <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
@@ -207,7 +207,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
                             <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
 
-                <Card className={cn("border border-neutral-200 shadow-sm", "dark:border-neutral-800 dark:bg-card")}>
+                <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
                             <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>

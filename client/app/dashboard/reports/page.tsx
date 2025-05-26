@@ -15,8 +15,16 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import { Geist_Mono } from "next/font/google"
+
+const geistMono = Geist_Mono({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
+    variable: '--font-geist-mono',
+})
 
 export default function ReportsPage() {
+
     const { agency } = useAppSelector((state: any) => state.agency)
     const reports = agency?.reports || []
     const [searchTerm, setSearchTerm] = useState("")
@@ -351,12 +359,16 @@ export default function ReportsPage() {
     const renderReportSummaryCard = (title: string, count: number, total: number, icon: React.ReactNode, color: string) => (
         <Card className="h-full">
             <CardContent className="flex flex-col justify-between p-4 h-full">
-                <div className="text-muted-foreground text-sm mb-1">{title}</div>
+                <div className="flex items-start justify-between">
+                    <div className="text-muted-foreground text-sm mb-1">{title}</div>
+                    <div className={`p-1.5 rounded-full bg-${color}-100`}>
+                        {icon}
+                    </div>
+                </div>
                 <div className="flex flex-col">
                     <div className="text-2xl font-semibold mb-0.5">{count}</div>
                     <div className="text-xs text-muted-foreground">{total} total</div>
                 </div>
-                <div className="absolute top-4 right-4">{icon}</div>
             </CardContent>
         </Card>
     )
@@ -519,20 +531,20 @@ export default function ReportsPage() {
 
     return (
         <div className={`relative min-h-screen transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-            <div className="container mx-auto px-6 py-10">
+            <div className="container mx-auto px-6 py-2">
                 <div className="space-y-8">
-                    <Tabs defaultValue="all" className="space-y-8">
+                    <Tabs defaultValue="reports" className="space-y-4">
                         <div className="flex items-center justify-between space-y-0">
                             <TabsList className="justify-start h-auto p-1 bg-muted/50 w-fit">
                                 <TabsTrigger
-                                    value="all"
+                                    value="reports"
                                     className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
                                 >
                                     Reports
                                 </TabsTrigger>
 
                                 <TabsTrigger
-                                    value="completed"
+                                    value="alerts"
                                     className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
                                 >
                                     Alerts
@@ -548,10 +560,10 @@ export default function ReportsPage() {
                             />
                         </div>
 
-                        <TabsContent value="all" className="space-y-4 mt-6">
-                            {/* Reports Dashboard */}
+                        <TabsContent value="reports" >
+
                             <div className="space-y-6">
-                                {/* Report Summary Cards */}
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                     {renderReportSummaryCard(
                                         "All Reports",
@@ -589,21 +601,21 @@ export default function ReportsPage() {
                                         <Button
                                             variant={reportFilter === "all" ? "default" : "outline"}
                                             onClick={() => setReportFilter("all")}
-                                            className="rounded-md"
+                                            className={cn("rounded-md", geistMono.className, reportFilter !== "all" && "bg-gray-100 border-gray-200")}
                                         >
                                             All Reports
                                         </Button>
                                         <Button
                                             variant={reportFilter === "flagged" ? "default" : "outline"}
                                             onClick={() => setReportFilter("flagged")}
-                                            className="rounded-md"
+                                            className={cn("rounded-md", geistMono.className, reportFilter !== "flagged" && "bg-gray-100 border-gray-200")}
                                         >
                                             Flagged
                                         </Button>
                                         <Button
                                             variant={reportFilter === "reviewed" ? "default" : "outline"}
                                             onClick={() => setReportFilter("reviewed")}
-                                            className="rounded-md"
+                                            className={cn("rounded-md", geistMono.className, reportFilter !== "reviewed" && "bg-gray-100 border-gray-200")}
                                         >
                                             Reviewed
                                         </Button>
@@ -826,7 +838,7 @@ export default function ReportsPage() {
                             </div>
                         </TabsContent>
 
-                        <TabsContent value="completed" className="space-y-6 mt-6">
+                        <TabsContent value="alerts" className="space-y-6 mt-6">
                             {/* Alerts Dashboard */}
                             <div className="space-y-6">
 
@@ -908,21 +920,21 @@ export default function ReportsPage() {
                                         <Button
                                             variant={alertFilter === "all" ? "default" : "outline"}
                                             onClick={() => setAlertFilter("all")}
-                                            className="rounded-md"
+                                            className={cn("rounded-md", geistMono.className, alertFilter !== "all" && "bg-gray-100 border-gray-200")}
                                         >
                                             All
                                         </Button>
                                         <Button
                                             variant={alertFilter === "unresolved" ? "default" : "outline"}
                                             onClick={() => setAlertFilter("unresolved")}
-                                            className="rounded-md"
+                                            className={cn("rounded-md", geistMono.className, alertFilter !== "unresolved" && "bg-gray-100 border-gray-200")}
                                         >
                                             Unresolved
                                         </Button>
                                         <Button
                                             variant={alertFilter === "resolved" ? "default" : "outline"}
                                             onClick={() => setAlertFilter("resolved")}
-                                            className="rounded-md"
+                                            className={cn("rounded-md", geistMono.className, alertFilter !== "resolved" && "bg-gray-100 border-gray-200")}
                                         >
                                             Resolved
                                         </Button>

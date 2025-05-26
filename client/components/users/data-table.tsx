@@ -84,13 +84,13 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
         router.push(`/dashboard/users/edit/${userId}`)
     }
 
-    const activeUserType = useAppSelector((state) => state.user.activeUserType)
+
 
     return (
-        <div className="space-y-4 mb-2">
+        <>
             <DataTableToolbar table={table} />
-            <Card className={`${theme === "dark" ? "bg-zinc-900 border-zinc-700" : ""} m-2`}>
-                <div className="rounded-md">
+            <Card className={`${theme === "dark" ? "bg-zinc-900 border-zinc-700" : ""} m-0 p-0`}>
+                <div className="rounded-md m-0 p-0">
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
@@ -144,6 +144,6 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
                 </div>
                 <DataTablePagination table={table} />
             </Card>
-        </div>
+        </>
     )
 }

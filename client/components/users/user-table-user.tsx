@@ -20,5 +20,7 @@ export function UserTableUser({ users, isLoading }: UserTableUserProps) {
         )
     }
 
-    return <DataTable columns={columns} data={users} />
+    return <div className="m-0 p-0">
+        <DataTable columns={columns} data={users} />
+    </div>
 }

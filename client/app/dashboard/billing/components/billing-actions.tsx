@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { CustomInput } from "@/components/ui/custom-input"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -14,13 +15,11 @@ export function BillingActions({ showFilters }: BillingActionsProps) {
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search invoices..."
-                        className="pl-8 h-8"
-                    />
-                </div>
+                <CustomInput
+                    icon={<Search className="h-3.5 w-3.5" />}
+                    placeholder="Search invoices..."
+                    className="w-full h-8"
+                />
                 <Button variant="outline" size="sm" className="h-8">
                     <Download className="mr-2 h-4 w-4" />
                     Export
