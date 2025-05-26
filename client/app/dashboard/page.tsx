@@ -23,9 +23,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { Skeleton } from "../../components/ui/skeleton"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { getRandomPlaceholderImage } from "@/lib/utils"
 import { CustomInput } from "@/components/ui/custom-input"
-import { cn } from "@/lib/utils"
+import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import {
     Select,
     SelectContent,
@@ -162,8 +161,8 @@ export default function DashboardPage() {
                 <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
-                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <Users className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                            <div className={cn("p-1.5 rounded-full bg-blue-100", "dark:bg-blue-900/30")}>
+                                <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                             </div>
                             <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Clients</h3>
                         </div>
@@ -186,8 +185,8 @@ export default function DashboardPage() {
                 <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
-                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <Calendar className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                            <div className={cn("p-1.5 rounded-full bg-purple-100", "dark:bg-purple-900/30")}>
+                                <Calendar className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                             </div>
                             <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Appointment</h3>
                         </div>
@@ -210,8 +209,8 @@ export default function DashboardPage() {
                 <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
-                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <FileText className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                            <div className={cn("p-1.5 rounded-full bg-green-100", "dark:bg-green-900/30")}>
+                                <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />
                             </div>
                             <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
                         </div>
@@ -234,8 +233,8 @@ export default function DashboardPage() {
                 <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
-                            <div className={cn("p-1.5 rounded-md bg-neutral-100", "dark:bg-neutral-800")}>
-                                <ClipboardList className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300" />
+                            <div className={cn("p-1.5 rounded-full bg-amber-100", "dark:bg-amber-900/30")}>
+                                <ClipboardList className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                             </div>
                             <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Treatments</h3>
                         </div>
@@ -260,7 +259,12 @@ export default function DashboardPage() {
             <Card>
                 <CardHeader className="p-4 pb-2">
                     <div className="flex items-center justify-between">
-                        <CardTitle className="text-base">Recent Schedules</CardTitle>
+                        <div className="flex items-center">
+                            <div className={cn("p-1.5 rounded-md bg-indigo-100", "dark:bg-indigo-900/30")}>
+                                <Calendar className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                            </div>
+                            <CardTitle className="text-base ml-2">Upcoming Schedules</CardTitle>
+                        </div>
                         <div className="flex items-center space-x-2">
                             <CustomInput
                                 placeholder="Search schedules..."

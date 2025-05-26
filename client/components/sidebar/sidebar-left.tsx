@@ -86,6 +86,11 @@ const navigation: NavigationSection[] = [
                 href: "/dashboard/users",
             },
             {
+                title: "Messages",
+                icon: MessageCircle,
+                href: "/dashboard/contacts",
+            },
+            {
                 title: "Schedule",
                 icon: Calendar,
                 href: "/dashboard/schedule",
@@ -102,11 +107,7 @@ const navigation: NavigationSection[] = [
                 icon: CreditCard,
                 href: "/dashboard/billing",
             },
-            {
-                title: "Messages",
-                icon: MessageCircle,
-                href: "/dashboard/contacts",
-            },
+
         ],
     },
     {

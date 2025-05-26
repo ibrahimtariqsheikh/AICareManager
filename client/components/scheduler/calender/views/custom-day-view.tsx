@@ -172,21 +172,21 @@ export function CustomDayView({
     const startHour = min.getHours()
     const endHour = max.getHours()
     const slotsPerHour = 60 / minutesPerSlot
-    const slotWidth = 100
+    const slotWidth = 80
 
     const getRowHeight = () => {
         if (typeof calendarHeight === "number") {
-            const availableHeight = calendarHeight - 33
-            return Math.max(60, Math.floor(availableHeight / (displayUsers.length + 2 || 1)))
+            const availableHeight = calendarHeight - 25
+            return Math.max(45, Math.floor(availableHeight / (displayUsers.length + 2 || 1)))
         }
-        return 80
+        return 60
     }
 
     const rowHeight = getRowHeight()
 
     // Calculate total height needed based on number of users
-    const MIN_HEIGHT = 200
-    const EXTRA_PADDING = 30
+    const MIN_HEIGHT = 150
+    const EXTRA_PADDING = 20
     const totalHeight = displayUsers.length > 0 ? (displayUsers.length + 2) * rowHeight + 120 + EXTRA_PADDING : MIN_HEIGHT
 
     useEffect(() => {
@@ -685,9 +685,9 @@ export function CustomDayView({
                 <div className={`flex flex-1 border rounded-xl shadow- ${timelineClass} h-full overflow-hidden`}>
                     {/* User sidebar */}
                     {showSidebar && (
-                        <div className={`w-48 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`} style={{ height: "100%" }}>
+                        <div className={`w-40 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`} style={{ height: "100%" }}>
                             {/* Users */}
-                            <div className="h-8 font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-900">
+                            <div className="h-6 font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-900">
                                 <p>
                                     {activeScheduleUserType === "clients"
                                         ? "CLIENTS"
@@ -698,13 +698,13 @@ export function CustomDayView({
                             </div>
 
                             <div
-                                className=" px-6 font-medium flex items-center text-xs gap-2 border-b text-neutral-600"
+                                className="px-4 font-medium flex items-center text-xs gap-2 border-b text-neutral-600"
                                 style={{ height: `${rowHeight}px` }}
                             >
                                 <div className="flex items-start gap-2 text-neutral-800">
-                                    <BankNotes className="h-3.5 w-3.5" />
+                                    <BankNotes className="h-3 w-3" />
                                     <span>Labor Costs</span>
-                                    <ChevronDown className="h-3.5 w-3.5" />
+                                    <ChevronDown className="h-3 w-3" />
                                 </div>
                             </div>
 
@@ -717,27 +717,27 @@ export function CustomDayView({
                                         height: `${rowHeight}px`,
                                         display: "flex",
                                         alignItems: "center",
-                                        padding: "0 12px",
+                                        padding: "0 8px",
                                     }}
                                 >
                                     <div className="flex items-center justify-between w-full">
-                                        <div className="flex items-center gap-2">
-                                            <Avatar className="h-10 w-10 bg-neutral-100">
+                                        <div className="flex items-center gap-1.5">
+                                            <Avatar className="h-8 w-8 bg-neutral-100">
                                                 <AvatarImage src={getRandomPlaceholderImage()} alt={`${user.fullName}`} />
                                                 <AvatarFallback className="text-xs font-medium bg-neutral-100">
                                                     {user.fullName?.[0]}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <div className="flex mb-[2px] flex-col justify-start items-start  font-medium">
-                                                <span className="text-sm font-medium truncate text-neutral-800">{user.fullName}</span>
-                                                <div className="text-[13px] text-neutral-500 flex items-center gap-1">
+                                            <div className="flex mb-[1px] flex-col justify-start items-start font-medium">
+                                                <span className="text-xs font-medium truncate text-neutral-800">{user.fullName}</span>
+                                                <div className="text-[11px] text-neutral-500 flex items-center gap-1">
                                                     <div className="flex items-center gap-1">
-                                                        {eventsByUser[user.id]?.length || 0} <EventIcon className="h-3.5 w-3.5 block" />
-                                                        <div className="h-3 block">
+                                                        {eventsByUser[user.id]?.length || 0} <EventIcon className="h-3 w-3 block" />
+                                                        <div className="h-2.5 block">
                                                             <Separator orientation="vertical" />
                                                         </div>
-                                                        <div className="flex items-center gap-1 ">
-                                                            {0} <HeartHandshake className="h-3.5 w-3.5 block" />
+                                                        <div className="flex items-center gap-1">
+                                                            {0} <HeartHandshake className="h-3 w-3 block" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -747,7 +747,7 @@ export function CustomDayView({
                                             <Popover>
                                                 <PopoverTrigger asChild>
                                                     <button className="text-neutral-500 hover:text-neutral-700">
-                                                        <MoreVertical className="h-4 w-4" />
+                                                        <MoreVertical className="h-3.5 w-3.5" />
                                                     </button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="z-50">
@@ -852,7 +852,7 @@ export function CustomDayView({
                                             return (
                                                 <div
                                                     key={i}
-                                                    className={`flex-shrink-0 ${timeLabelsClass} ${isHourMark ? "text-xs font-medium" : "text-[10px]"} px-2 py-2 text-center border-r ${gridLineClass}`}
+                                                    className={`flex-shrink-0 ${timeLabelsClass} ${isHourMark ? "text-[10px] font-medium" : "text-[8px]"} px-1 py-1.5 text-center border-r ${gridLineClass}`}
                                                     style={{ width: `${slotWidth * (slotsPerHour / 2)}px` }}
                                                 >
                                                     {moment(time).format("h:mm A")}
@@ -869,7 +869,7 @@ export function CustomDayView({
                         <div
                             ref={containerRef}
                             className="overflow-x-auto overflow-y-auto calendar-scrollbar flex-1"
-                            style={{ height: "calc(100% - 33px)" }}
+                            style={{ height: "calc(100% - 25px)" }}
                             onScroll={() => {
                                 if (headerRef.current && containerRef.current) {
                                     headerRef.current.scrollLeft = containerRef.current.scrollLeft
@@ -888,7 +888,7 @@ export function CustomDayView({
                                             className={`absolute top-0 bottom-0 border-r ${isHourMark ? hourLineClass : isHalfHourMark ? halfHourLineClass : gridLineClass}`}
                                             style={{
                                                 left: `${i * slotWidth}px`,
-                                                borderRightWidth: "1.5px",
+                                                borderRightWidth: isHourMark ? "1px" : "0.5px",
                                                 height: "100%",
                                                 zIndex: 1,
                                             }}
@@ -901,7 +901,7 @@ export function CustomDayView({
                                     className={`absolute w-full border-b ${gridLineClass}`}
                                     style={{
                                         top: `${rowHeight}px`,
-                                        height: "1.5px",
+                                        height: "1px",
                                         zIndex: 2,
                                     }}
                                 />
@@ -911,7 +911,7 @@ export function CustomDayView({
                                     className={`absolute w-full border-b ${gridLineClass}`}
                                     style={{
                                         top: `${2 * rowHeight}px`,
-                                        height: "1.5px",
+                                        height: "1px",
                                         zIndex: 2,
                                     }}
                                 />
@@ -926,9 +926,9 @@ export function CustomDayView({
                                         }}
                                     >
                                         <div
-                                            className={`w-3 h-3 rounded-full ${currentTimeClass} -ml-1.5 shadow-md flex items-center justify-center animate-pulse`}
+                                            className={`w-2 h-2 rounded-full ${currentTimeClass} -ml-1 shadow-md flex items-center justify-center animate-pulse`}
                                         >
-                                            <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                                            <div className="w-1 h-1 bg-white rounded-full"></div>
                                         </div>
                                     </div>
                                 )}
@@ -957,11 +957,9 @@ export function CustomDayView({
                                                     <motion.div
                                                         key={event.id}
                                                         className={cn(
-                                                            "absolute rounded-lg text-xs p-2 cursor-grab bg-blue-50 border-l-[3px] ",
+                                                            "absolute rounded-lg text-xs p-1.5 cursor-grab bg-blue-50 border-l-[3px] ",
                                                             getEventBackground(event).bg,
-
                                                             event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
-
                                                         )}
                                                         style={{
                                                             left: `${pos.left || 0}px`,
@@ -982,17 +980,17 @@ export function CustomDayView({
                                                         onClick={() => handleEventClick(event)}
                                                         whileDrag={{ scale: 1.05 }}
                                                     >
-                                                        <div className={cn("flex items-center gap-1 font-medium truncate mt-1")}>
-                                                            <span className="text-blue-800  rounded-md">
-                                                                {getEventIcon(event) || <HomeModern className="h-3 w-3" />}
+                                                        <div className={cn("flex items-center gap-1 font-medium truncate mt-0.5")}>
+                                                            <span className="text-blue-800 rounded-md">
+                                                                {getEventIcon(event) || <HomeModern className="h-2.5 w-2.5" />}
                                                             </span>
                                                             <span className="text-blue-800">{event.title}</span>
                                                         </div>
-                                                        <div className={cn("text-[10px] mt-1 text-blue-800 flex items-center gap-1")}>
-                                                            <Timer className="h-3 w-3" /> {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                        <div className={cn("text-[9px] mt-0.5 text-blue-800 flex items-center gap-1")}>
+                                                            <Timer className="h-2.5 w-2.5" /> {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </div>
-                                                        <div className="text-xs  text-blue-800 flex flex-row items-center gap-1 justify-start mt-1">
-                                                            <User className="h-3 w-3" />
+                                                        <div className="text-[10px] text-blue-800 flex flex-row items-center gap-1 justify-start mt-0.5">
+                                                            <User className="h-2.5 w-2.5" />
                                                             <div className="text-blue-800">{event.careWorker?.fullName}</div>{" "}
                                                         </div>
                                                     </motion.div>

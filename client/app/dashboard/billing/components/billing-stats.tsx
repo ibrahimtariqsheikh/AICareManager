@@ -1,92 +1,145 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DollarSign, TrendingUp, Users, CreditCard, Sparkles, ChevronDown, ArrowUpRight } from "lucide-react"
+import { useState, useCallback } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { Sparkles, ChevronDown, TrendingUp, DollarSign, CreditCard, Users, ArrowUpRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useChat } from 'ai/react'
 import { cn } from "@/lib/utils"
 
-export function BillingStats() {
-    const [showRecommendations, setShowRecommendations] = useState<string | null>(null)
+export default function BillingStats() {
+    const [showRecommendations, setShowRecommendations] = useState({
+        revenue: false,
+        clients: false,
+        invoices: false,
+        profit: false,
+    })
 
-    const recommendations = {
-        revenue: [
-            "Consider increasing prices by 5% for premium services",
-            "Focus on upselling add-on services to existing clients",
-            "Launch a referral program to boost new client acquisition"
-        ],
-        clients: [
-            "Client retention rate is below industry average",
-            "Implement a client feedback system to improve satisfaction",
-            "Offer loyalty discounts for long-term clients"
-        ],
-        invoices: [
-            "3 invoices are overdue by more than 30 days",
-            "Consider implementing automatic payment reminders",
-            "Offer early payment discounts to improve cash flow"
-        ],
-        profit: [
-            "Reduce operational costs by optimizing staff schedules",
-            "Review supplier contracts for potential savings",
-            "Implement energy-saving measures in office locations"
-        ]
-    }
+    const [recommendations, setRecommendations] = useState({
+        revenue: [],
+        clients: [],
+        invoices: [],
+        profit: [],
+    })
+
+    const { handleSubmit, messages, isLoading } = useChat({
+        api: '/api/chat/billing',
+        onFinish: (message) => {
+            try {
+                const parsedInsights = JSON.parse(message.content)
+                return parsedInsights
+            } catch (error) {
+                console.error('Error parsing insights:', error)
+                return []
+            }
+        }
+    })
+
+    const toggleRecommendations = useCallback(async (section: keyof typeof showRecommendations) => {
+        setShowRecommendations(prev => ({
+            ...prev,
+            [section]: !prev[section]
+        }))
+
+        // Fetch recommendations when toggling
+        if (!recommendations[section].length) {
+            const data = {
+                revenue: {
+                    currentRevenue: 45000,
+                    growthRate: 12,
+                    targetRevenue: 50000,
+                    services: ['Home Care', 'Live-in Care', 'Specialist Care']
+                },
+                clients: {
+                    totalClients: 45,
+                    retentionRate: 85,
+                    satisfactionScore: 4.2,
+                    newClientsThisMonth: 5
+                },
+                invoices: {
+                    totalInvoices: 120,
+                    overdueInvoices: 3,
+                    averagePaymentTime: 15,
+                    outstandingAmount: 8500
+                },
+                profit: {
+                    currentProfit: 28000,
+                    profitMargin: 35,
+                    operationalCosts: 17000,
+                    revenueGrowth: 15
+                }
+            }[section]
+
+            const response = await handleSubmit({
+                section,
+                data
+            } as any)
+
+            // The response will be handled by onFinish callback
+            setRecommendations(prev => ({
+                ...prev,
+                [section]: recommendations[section]
+            }))
+        }
+    }, [handleSubmit, recommendations])
 
     return (
-        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
-                <CardContent className="p-3">
-                    <div className="flex items-center mb-1.5">
-                        <div className={cn("p-1.5 rounded-md bg-blue-100", "dark:bg-blue-900/30")}>
-                            <DollarSign className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
+                    <div>
+                        <div className="flex items-center mb-1.5">
+                            <div className={cn("p-1.5 rounded-full bg-blue-100", "dark:bg-blue-900/30")}>
+                                <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <CardTitle className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Revenue</CardTitle>
                         </div>
-                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
+                        <CardDescription className="text-xs">Monthly revenue overview</CardDescription>
                     </div>
-                    <div className="flex justify-between items-baseline">
-                        <div className="text-xl font-bold text-neutral-800 dark:text-white">$45,231.89</div>
-                        <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
-                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
-                            +20.1%
+                </CardHeader>
+                <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="space-y-1">
+                            <p className="text-2xl font-bold">$45,000</p>
+                        </div>
+                        <div className="flex items-center text-blue-600 text-sm font-medium dark:text-blue-400">
+                            <ArrowUpRight className="h-4 w-4 mr-1" />
+                            +12%
                         </div>
                     </div>
-                    <div className="text-[11px] text-neutral-500 dark:text-neutral-400">From last month</div>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        className="mt-1.5 text-[11px] w-full justify-between h-7"
-                        onClick={() => setShowRecommendations(showRecommendations === 'revenue' ? null : 'revenue')}
+                        onClick={() => toggleRecommendations("revenue")}
+                        className="w-full h-8"
+                        disabled={isLoading}
                     >
-                        <div className="flex items-center">
-                            <Sparkles className="mr-1 h-3 w-3" />
-                            AI Insights
-                        </div>
-                        <motion.div
-                            animate={{ rotate: showRecommendations === 'revenue' ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <ChevronDown className="h-3 w-3" />
+                        <Sparkles className="mr-1 h-3 w-3" />
+                        {isLoading ? "Loading..." : "AI Insights"}
+                        <motion.div animate={{ rotate: showRecommendations.revenue ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                            <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
                     <AnimatePresence>
-                        {showRecommendations === 'revenue' && (
+                        {showRecommendations.revenue && (
                             <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="mt-1.5 space-y-0.5 text-[11px] text-muted-foreground overflow-hidden"
+                                className="mt-4 p-4 bg-muted/50 rounded-md space-y-2 overflow-hidden"
                             >
-                                {recommendations.revenue.map((rec, i) => (
+                                {recommendations.revenue.map((item, i) => (
                                     <motion.div
                                         key={i}
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: i * 0.1 }}
-                                        className="flex items-start gap-1"
+                                        className="flex items-start gap-2 text-sm"
                                     >
-                                        <span>•</span>
-                                        <span>{rec}</span>
+                                        <span className="text-primary">•</span>
+                                        <span>{item}</span>
                                     </motion.div>
                                 ))}
                             </motion.div>
@@ -94,58 +147,61 @@ export function BillingStats() {
                     </AnimatePresence>
                 </CardContent>
             </Card>
+
             <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
-                <CardContent className="p-3">
-                    <div className="flex items-center mb-1.5">
-                        <div className={cn("p-1.5 rounded-md bg-green-100", "dark:bg-green-900/30")}>
-                            <Users className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
+                    <div>
+                        <div className="flex items-center mb-1.5">
+                            <div className={cn("p-1.5 rounded-full bg-green-100", "dark:bg-green-900/30")}>
+                                <Users className="h-4 w-4 text-green-600 dark:text-green-400" />
+                            </div>
+                            <CardTitle className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Clients</CardTitle>
                         </div>
-                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Active Clients</h3>
+                        <CardDescription className="text-xs">Active client overview</CardDescription>
                     </div>
-                    <div className="flex justify-between items-baseline">
-                        <div className="text-xl font-bold text-neutral-800 dark:text-white">235</div>
-                        <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
-                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
-                            +12
+                </CardHeader>
+                <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="space-y-1">
+                            <p className="text-2xl font-bold">45</p>
+                        </div>
+                        <div className="flex items-center text-blue-600 text-sm font-medium dark:text-blue-400">
+                            <ArrowUpRight className="h-4 w-4 mr-1" />
+                            +5 new
                         </div>
                     </div>
-                    <div className="text-[11px] text-neutral-500 dark:text-neutral-400">New clients this month</div>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        className="mt-1.5 text-[11px] w-full justify-between h-7"
-                        onClick={() => setShowRecommendations(showRecommendations === 'clients' ? null : 'clients')}
+                        onClick={() => toggleRecommendations("clients")}
+                        className="w-full h-8"
+                        disabled={isLoading}
                     >
-                        <div className="flex items-center">
-                            <Sparkles className="mr-1 h-3 w-3" />
-                            AI Insights
-                        </div>
-                        <motion.div
-                            animate={{ rotate: showRecommendations === 'clients' ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <ChevronDown className="h-3 w-3" />
+                        <Sparkles className="mr-1 h-3 w-3" />
+                        {isLoading ? "Loading..." : "AI Insights"}
+                        <motion.div animate={{ rotate: showRecommendations.clients ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                            <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
                     <AnimatePresence>
-                        {showRecommendations === 'clients' && (
+                        {showRecommendations.clients && (
                             <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="mt-1.5 space-y-0.5 text-[11px] text-muted-foreground overflow-hidden"
+                                className="mt-4 p-4 bg-muted/50 rounded-md space-y-2 overflow-hidden"
                             >
-                                {recommendations.clients.map((rec, i) => (
+                                {recommendations.clients.map((item, i) => (
                                     <motion.div
                                         key={i}
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: i * 0.1 }}
-                                        className="flex items-start gap-1"
+                                        className="flex items-start gap-2 text-sm"
                                     >
-                                        <span>•</span>
-                                        <span>{rec}</span>
+                                        <span className="text-primary">•</span>
+                                        <span>{item}</span>
                                     </motion.div>
                                 ))}
                             </motion.div>
@@ -153,58 +209,61 @@ export function BillingStats() {
                     </AnimatePresence>
                 </CardContent>
             </Card>
+
             <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
-                <CardContent className="p-3">
-                    <div className="flex items-center mb-1.5">
-                        <div className={cn("p-1.5 rounded-md bg-orange-100", "dark:bg-orange-900/30")}>
-                            <CreditCard className="h-3.5 w-3.5 text-orange-600 dark:text-orange-400" />
+                <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
+                    <div>
+                        <div className="flex items-center mb-1.5">
+                            <div className={cn("p-1.5 rounded-full bg-orange-100", "dark:bg-orange-900/30")}>
+                                <CreditCard className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                            </div>
+                            <CardTitle className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Invoices</CardTitle>
                         </div>
-                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Outstanding Invoices</h3>
+                        <CardDescription className="text-xs">Invoice status overview</CardDescription>
                     </div>
-                    <div className="flex justify-between items-baseline">
-                        <div className="text-xl font-bold text-neutral-800 dark:text-white">$12,234</div>
-                        <div className="flex items-center text-red-600 text-[11px] dark:text-red-400">
-                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
-                            15
+                </CardHeader>
+                <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="space-y-1">
+                            <p className="text-2xl font-bold">120</p>
+                        </div>
+                        <div className="flex items-center text-red-600 text-sm font-medium dark:text-red-400">
+                            <ArrowUpRight className="h-4 w-4 mr-1" />
+                            3 overdue
                         </div>
                     </div>
-                    <div className="text-[11px] text-neutral-500 dark:text-neutral-400">Invoices pending</div>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        className="mt-1.5 text-[11px] w-full justify-between h-7"
-                        onClick={() => setShowRecommendations(showRecommendations === 'invoices' ? null : 'invoices')}
+                        onClick={() => toggleRecommendations("invoices")}
+                        className="w-full h-8"
+                        disabled={isLoading}
                     >
-                        <div className="flex items-center">
-                            <Sparkles className="mr-1 h-3 w-3" />
-                            AI Insights
-                        </div>
-                        <motion.div
-                            animate={{ rotate: showRecommendations === 'invoices' ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <ChevronDown className="h-3 w-3" />
+                        <Sparkles className="mr-1 h-3 w-3" />
+                        {isLoading ? "Loading..." : "AI Insights"}
+                        <motion.div animate={{ rotate: showRecommendations.invoices ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                            <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
                     <AnimatePresence>
-                        {showRecommendations === 'invoices' && (
+                        {showRecommendations.invoices && (
                             <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="mt-1.5 space-y-0.5 text-[11px] text-muted-foreground overflow-hidden"
+                                className="mt-4 p-4 bg-muted/50 rounded-md space-y-2 overflow-hidden"
                             >
-                                {recommendations.invoices.map((rec, i) => (
+                                {recommendations.invoices.map((item, i) => (
                                     <motion.div
                                         key={i}
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: i * 0.1 }}
-                                        className="flex items-start gap-1"
+                                        className="flex items-start gap-2 text-sm"
                                     >
-                                        <span>•</span>
-                                        <span>{rec}</span>
+                                        <span className="text-primary">•</span>
+                                        <span>{item}</span>
                                     </motion.div>
                                 ))}
                             </motion.div>
@@ -212,58 +271,61 @@ export function BillingStats() {
                     </AnimatePresence>
                 </CardContent>
             </Card>
+
             <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
-                <CardContent className="p-3">
-                    <div className="flex items-center mb-1.5">
-                        <div className={cn("p-1.5 rounded-md bg-purple-100", "dark:bg-purple-900/30")}>
-                            <TrendingUp className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
+                    <div>
+                        <div className="flex items-center mb-1.5">
+                            <div className={cn("p-1.5 rounded-full bg-purple-100", "dark:bg-purple-900/30")}>
+                                <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <CardTitle className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Profit</CardTitle>
                         </div>
-                        <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Profit Margin</h3>
+                        <CardDescription className="text-xs">Monthly profit overview</CardDescription>
                     </div>
-                    <div className="flex justify-between items-baseline">
-                        <div className="text-xl font-bold text-neutral-800 dark:text-white">32.5%</div>
-                        <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
-                            <ArrowUpRight className="h-3 w-3 mr-0.5" />
-                            +2.5%
+                </CardHeader>
+                <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="space-y-1">
+                            <p className="text-2xl font-bold">$28,000</p>
+                        </div>
+                        <div className="flex items-center text-blue-600 text-sm font-medium dark:text-blue-400">
+                            <ArrowUpRight className="h-4 w-4 mr-1" />
+                            35% margin
                         </div>
                     </div>
-                    <div className="text-[11px] text-neutral-500 dark:text-neutral-400">From last month</div>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        className="mt-1.5 text-[11px] w-full justify-between h-7"
-                        onClick={() => setShowRecommendations(showRecommendations === 'profit' ? null : 'profit')}
+                        onClick={() => toggleRecommendations("profit")}
+                        className="w-full h-8"
+                        disabled={isLoading}
                     >
-                        <div className="flex items-center">
-                            <Sparkles className="mr-1 h-3 w-3" />
-                            AI Insights
-                        </div>
-                        <motion.div
-                            animate={{ rotate: showRecommendations === 'profit' ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <ChevronDown className="h-3 w-3" />
+                        <Sparkles className="mr-1 h-3 w-3" />
+                        {isLoading ? "Loading..." : "AI Insights"}
+                        <motion.div animate={{ rotate: showRecommendations.profit ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                            <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
                     <AnimatePresence>
-                        {showRecommendations === 'profit' && (
+                        {showRecommendations.profit && (
                             <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="mt-1.5 space-y-0.5 text-[11px] text-muted-foreground overflow-hidden"
+                                className="mt-4 p-4 bg-muted/50 rounded-md space-y-2 overflow-hidden"
                             >
-                                {recommendations.profit.map((rec, i) => (
+                                {recommendations.profit.map((item, i) => (
                                     <motion.div
                                         key={i}
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: i * 0.1 }}
-                                        className="flex items-start gap-1"
+                                        className="flex items-start gap-2 text-sm"
                                     >
-                                        <span>•</span>
-                                        <span>{rec}</span>
+                                        <span className="text-primary">•</span>
+                                        <span>{item}</span>
                                     </motion.div>
                                 ))}
                             </motion.div>

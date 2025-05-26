@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ArrowUpDown, Download, Edit, Eye, MoreHorizontal, Send, Trash } from "lucide-react"
 import { format } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { DateRange } from "react-day-picker"
 
 
@@ -34,6 +34,7 @@ interface Invoice {
     dueDate: string
     status: string
     paymentMethod: string
+    avatar: string | undefined
 }
 
 interface InvoiceTableProps {
@@ -41,10 +42,20 @@ interface InvoiceTableProps {
 }
 
 export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
-    const [selectedInvoices, setSelectedInvoices] = useState<string[]>([])
-    const [sortColumn, setSortColumn] = useState<string | null>(null)
+    const [sortField, setSortField] = useState<string>("id")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
-    const [invoices, setInvoices] = useState<Invoice[]>([])
+    const [invoices, setInvoices] = useState<Invoice[]>([
+        {
+            id: "INV-2024-001",
+            avatar: getRandomPlaceholderImage(),
+            clientId: "client1",
+            amount: 1250.00,
+            description: "Home Care Services - January 2024",
+            dueDate: "2024-02-15",
+            status: "SENT",
+            paymentMethod: "Bank Transfer"
+        }
+    ])
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -73,31 +84,12 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
         fetchInvoices()
     }, [date]) // Add date as a dependency
 
-    // Handle sort
-    const handleSort = (column: string) => {
-        if (sortColumn === column) {
+    const handleSort = (field: string) => {
+        if (field === sortField) {
             setSortDirection(sortDirection === "asc" ? "desc" : "asc")
         } else {
-            setSortColumn(column)
+            setSortField(field)
             setSortDirection("asc")
-        }
-    }
-
-    // Handle select all
-    const handleSelectAll = () => {
-        if (selectedInvoices.length === invoices.length) {
-            setSelectedInvoices([])
-        } else {
-            setSelectedInvoices(invoices.map((invoice) => invoice.id))
-        }
-    }
-
-    // Handle select invoice
-    const handleSelectInvoice = (id: string) => {
-        if (selectedInvoices.includes(id)) {
-            setSelectedInvoices(selectedInvoices.filter((invoiceId) => invoiceId !== id))
-        } else {
-            setSelectedInvoices([...selectedInvoices, id])
         }
     }
 
@@ -144,13 +136,6 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
             <Table>
                 <TableHeader>
                     <TableRow className="border-b border-border bg-muted/50">
-                        <TableHead className="w-12 py-2 px-3">
-                            <Checkbox
-                                checked={selectedInvoices.length === invoices.length && invoices.length > 0}
-                                onCheckedChange={handleSelectAll}
-                                aria-label="Select all invoices"
-                            />
-                        </TableHead>
                         <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("id")}>
                             <div className="flex items-center">
                                 Invoice ID
@@ -194,17 +179,7 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
                     {invoices.map((invoice) => {
                         const client = mockClients.find(c => c.id === invoice.clientId)
                         return (
-                            <TableRow key={invoice.id} className={cn(
-                                "border-b border-border hover:bg-muted/50 transition-colors duration-200",
-                                selectedInvoices.includes(invoice.id) && "bg-muted/50"
-                            )}>
-                                <TableCell className="py-2 px-3">
-                                    <Checkbox
-                                        checked={selectedInvoices.includes(invoice.id)}
-                                        onCheckedChange={() => handleSelectInvoice(invoice.id)}
-                                        aria-label={`Select invoice ${invoice.id}`}
-                                    />
-                                </TableCell>
+                            <TableRow key={invoice.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
                                 <TableCell className="py-2 px-3">
                                     <div className="font-medium">{invoice.id}</div>
                                     <div className="text-sm text-muted-foreground">{invoice.description}</div>
@@ -215,7 +190,7 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-8 w-8">
                                                 <AvatarImage
-                                                    src={client.avatar}
+                                                    src={invoice.avatar}
                                                     alt={client.name}
                                                 />
                                                 <AvatarFallback>{client.name.charAt(0)}</AvatarFallback>

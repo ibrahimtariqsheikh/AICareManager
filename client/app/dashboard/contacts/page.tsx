@@ -99,42 +99,42 @@ export default function ContactsPage() {
     })()
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)] w-full bg-background mt-4">
+        <div className="flex flex-col h-[calc(100vh-4rem)] w-full bg-background mt-2">
             {/* Search Bar */}
-            <div className="px-4 py-2">
+            <div className="px-3 py-1.5">
                 <CustomInput
                     type="text"
                     placeholder="Search contacts..."
                     value={searchQuery}
                     onChange={setSearchQuery}
                     className="w-full"
-                    icon={<Search className="h-4 w-4" />}
+                    icon={<Search className="h-3.5 w-3.5" />}
                 />
             </div>
 
             {/* Role Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <div className="border-b">
-                    <TabsList className="h-12 w-full justify-start rounded-none border-b bg-transparent p-0">
+                <div className="">
+                    <TabsList className="h-10 w-full justify-start rounded-none border-b bg-transparent p-0">
                         <TabsTrigger
                             value="clients"
-                            className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary"
+                            className="flex items-center gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary"
                         >
-                            <Users className="h-4 w-4" />
+                            <Users className="h-3.5 w-3.5" />
                             <span>Clients</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="officeStaff"
-                            className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary"
+                            className="flex items-center gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary"
                         >
-                            <Briefcase className="h-4 w-4" />
+                            <Briefcase className="h-3.5 w-3.5" />
                             <span>Office Staff</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="careWorkers"
-                            className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary"
+                            className="flex items-center gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2 data-[state=active]:border-primary"
                         >
-                            <Users className="h-4 w-4" />
+                            <Users className="h-3.5 w-3.5" />
                             <span>Care Workers</span>
                         </TabsTrigger>
                     </TabsList>
@@ -148,13 +148,13 @@ export default function ContactsPage() {
                                 {filteredContacts.map((contact) => (
                                     <button
                                         key={contact.id}
-                                        className="w-full flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors text-left"
+                                        className="w-full flex items-center gap-3 p-2.5 hover:bg-muted/50 transition-colors text-left"
                                         onClick={() => {
                                             sessionStorage.setItem('currentContact', JSON.stringify(contact));
                                             router.push(`/dashboard/messages?contactId=${contact.id}`);
                                         }}
                                     >
-                                        <Avatar className="h-12 w-12 border">
+                                        <Avatar className="h-10 w-10 border">
                                             <AvatarImage src={contact.avatar} alt={contact.name} />
                                             <AvatarFallback>
                                                 {contact.name
@@ -164,8 +164,8 @@ export default function ContactsPage() {
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="flex flex-col">
-                                            <span className="font-medium text-base">{contact.name}</span>
-                                            <span className="text-sm text-muted-foreground">
+                                            <span className="font-medium text-sm">{contact.name}</span>
+                                            <span className="text-xs text-muted-foreground">
                                                 {contact.subRole ? formatRole(contact.subRole) : formatRole(contact.role)}
                                             </span>
                                         </div>
@@ -173,16 +173,16 @@ export default function ContactsPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center h-[calc(100vh-12rem)] p-8 text-center">
-                                <div className="rounded-full bg-muted p-3 mb-4">
-                                    <Search className="h-6 w-6 text-muted-foreground" />
+                            <div className="flex flex-col items-center justify-center h-[calc(100vh-10rem)] p-6 text-center">
+                                <div className="rounded-full bg-muted p-2.5 mb-3">
+                                    <Search className="h-5 w-5 text-muted-foreground" />
                                 </div>
-                                <h3 className="font-medium text-lg mb-1">
+                                <h3 className="font-medium text-base mb-0.5">
                                     {searchQuery
                                         ? "No Results Found"
                                         : `No ${activeTab === "clients" ? "Clients" : activeTab === "officeStaff" ? "Office Staff" : "Care Workers"} Available`}
                                 </h3>
-                                <p className="text-muted-foreground text-sm max-w-sm">
+                                <p className="text-muted-foreground text-xs max-w-sm">
                                     {searchQuery
                                         ? "Please refine your search or try a different category."
                                         : "Begin by adding new contacts to your directory."}
