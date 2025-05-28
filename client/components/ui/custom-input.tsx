@@ -4,10 +4,10 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-const inputVariants = cva("flex w-full rounded-md bg-background text-foreground transition-colors relative", {
+const inputVariants = cva("flex w-full rounded-md bg-transparent text-foreground transition-colors relative", {
     variants: {
         variant: {
-            default: cn("text-black text-sm bg-neutral-100", "dark:text-white dark:bg-neutral-900"),
+            default: cn("text-black text-sm border border-neutral-200", "dark:text-white dark:bg-neutral-900"),
             ghost: "border-none bg-transparent shadow-none",
             outline: cn("border-input ring-offset-background", "dark:border-neutral-800"),
         },
@@ -352,9 +352,6 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
             }
         }
 
-        const hasContent = isControlled
-            ? Boolean(value && value.trim() !== "")
-            : Boolean(localValue && localValue.trim() !== "")
 
         return (
             <div

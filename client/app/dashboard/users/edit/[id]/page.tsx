@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Calendar, FileText, Pill, UserIcon, Code, Loader2 } from "lucide-react"
+import { Calendar, FileText, Pill, UserIcon, Code, Loader2, Shield } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { User as UserType } from "@/types/prismaTypes"
 import { useGetUserByIdQuery } from "@/state/api"
@@ -10,7 +10,6 @@ import { PatientInformation } from "../components/patient-information"
 import { Reports } from "../components/user-reports"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getRandomPlaceholderImage } from "@/lib/utils"
 import AppointmentHistory from "../components/appointmenthistory"
@@ -18,17 +17,55 @@ import { EMAR } from "../components/emar"
 import { ScheduleTemplate } from "../components/scheduleTemplate"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveEditUserTab } from "@/state/slices/tabsSlice"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+import CarePlan from "../components/care-plan"
+import RiskAssessment from "../components/risk-assessment"
+import DocumentsEdit from "../components/documents-edit"
 
 const EditUserPage = () => {
     const { id } = useParams()
     const userId = id as string
     const router = useRouter()
     const dispatch = useAppDispatch()
-    // Use state to track if tab has been initialized
     const [tabInitialized, setTabInitialized] = useState(false)
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+    const [hoverStyle, setHoverStyle] = useState({})
+    const [activeStyle, setActiveStyle] = useState({ left: "0px", width: "0px" })
+    const tabRefs = useRef<(HTMLDivElement | null)[]>([])
 
-    const activeTab = useAppSelector((state) => state.tabs?.activeEditUserTab) || "patientInformation"
+    const formatRole = (role: string) => {
+        return role
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ')
+    }
+    const formatSubRole = (subRole: string) => {
+        return subRole
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ')
+    }
+
+    // Function to check if tab should be visible based on user role
+    const shouldShowTab = (tabId: string) => {
+        if (!user) return false;
+
+        const roleBasedTabs = {
+            CARE_WORKER: ["information", "appointmentHistory", "reports", "documents"],
+            OFFICE_STAFF: ["information", "documents"],
+            ADMIN: ["information", "appointmentHistory", "reports", "emar", "scheduleTemplate", "carePlan", "riskAssessment", "documents"],
+            // Add more roles and their allowed tabs as needed
+        };
+
+        // If role not defined in rules, show all tabs
+        if (!roleBasedTabs[user.role as keyof typeof roleBasedTabs]) {
+            return true;
+        }
+
+        return roleBasedTabs[user.role as keyof typeof roleBasedTabs].includes(tabId);
+    };
+
+    const activeTab = useAppSelector((state) => state.tabs?.activeEditUserTab) || "information"
 
     const {
         data: userData,
@@ -47,7 +84,7 @@ const EditUserPage = () => {
         if (!tabInitialized) {
             setTimeout(() => {
                 try {
-                    dispatch(setActiveEditUserTab("patientInformation"));
+                    dispatch(setActiveEditUserTab("information"));
                     setTabInitialized(true);
                 } catch (error) {
                     console.error("Failed to initialize tab state:", error);
@@ -55,6 +92,30 @@ const EditUserPage = () => {
             }, 0);
         }
     }, [dispatch, tabInitialized]);
+
+    useEffect(() => {
+        if (hoveredIndex !== null) {
+            const hoveredElement = tabRefs.current[hoveredIndex]
+            if (hoveredElement) {
+                const { offsetLeft, offsetWidth } = hoveredElement
+                setHoverStyle({
+                    left: `${offsetLeft}px`,
+                    width: `${offsetWidth}px`,
+                })
+            }
+        }
+    }, [hoveredIndex])
+
+    useEffect(() => {
+        const activeElement = tabRefs.current[tabs.findIndex(tab => tab.id === activeTab)]
+        if (activeElement) {
+            const { offsetLeft, offsetWidth } = activeElement
+            setActiveStyle({
+                left: `${offsetLeft}px`,
+                width: `${offsetWidth}px`,
+            })
+        }
+    }, [activeTab])
 
     const contentVariants = {
         hidden: {
@@ -70,13 +131,23 @@ const EditUserPage = () => {
             transition: { duration: 0.2 },
         },
     }
-
     const tabs = [
-        { id: "patientInformation", label: "Patient Information", icon: UserIcon },
+        {
+            id: "information",
+            label: user?.role === "CARE_WORKER"
+                ? "Care Worker Information"
+                : user?.role === "CLIENT"
+                    ? "Client Information"
+                    : "User Information",
+            icon: UserIcon
+        },
         { id: "appointmentHistory", label: "Appointment History", icon: Calendar },
         { id: "reports", label: "Reports", icon: FileText },
         { id: "emar", label: "EMAR", icon: Pill },
         { id: "scheduleTemplate", label: "Schedule Template", icon: Calendar },
+        { id: "carePlan", label: "Care Plan", icon: FileText },
+        { id: "riskAssessment", label: "Risk Assessment", icon: Shield },
+        { id: "documents", label: "Documents", icon: FileText },
     ]
 
     // Handle tab change
@@ -163,7 +234,7 @@ const EditUserPage = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 p-6 mx-10">
+        <div className="flex flex-col gap-4 p-6">
             {/* User Header */}
             <div className="flex flex-row gap-4 items-center">
                 <motion.div
@@ -185,55 +256,69 @@ const EditUserPage = () => {
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 items-center">
-                        <p className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-md font-medium border border-primary/30">
-                            {user?.role || "No Role"}
+                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30">
+                            {formatRole(user?.role) || "No Role"}
                         </p>
-                        <p className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md font-medium border border-border">
-                            {user?.subRole || "No Subrole"}
+                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30">
+                            {formatSubRole(user?.subRole) || "No Subrole"}
                         </p>
                     </div>
                 </motion.div>
             </div>
 
             <div className="px-6 py-4">
-                {/* Tabs Navigation using shadcn Tabs */}
-                <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
-                    <TabsList className="grid w-full grid-cols-5">
+                {/* Tabs Navigation */}
+                <div className="relative">
+                    {/* Tabs */}
+                    <div className="relative flex space-x-[6px] items-center">
                         {tabs.map((tab, index) => (
-                            <TabsTrigger
-                                key={tab.id || `tab-${index}`}
-                                value={tab.id}
-                                className="flex items-center gap-2"
-                            >
-                                <tab.icon className="w-4 h-4" />
-                                {tab.label}
-                            </TabsTrigger>
-                        ))}
-                    </TabsList>
-
-                    <div className="w-full h-1 my-4" />
-
-                    {/* Tab Content */}
-                    <AnimatePresence mode="wait">
-                        {tabs.map((tab) => (
-                            <TabsContent key={tab.id} value={tab.id} asChild>
-                                <motion.div
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="exit"
-                                    variants={contentVariants}
-                                    className="min-h-[400px]"
+                            shouldShowTab(tab.id) && (
+                                <div
+                                    key={tab.id}
+                                    ref={(el) => {
+                                        tabRefs.current[index] = el;
+                                    }}
+                                    className={`px-3 py-2 cursor-pointer transition-all duration-300 h-[30px] ${tab.id === activeTab
+                                        ? "bg-primary/10 rounded-md text-primary"
+                                        : "text-[#0e0f1199] dark:text-[#ffffff99] border border-border rounded-md hover:border-primary/50 hover:bg-primary/5 hover:text-primary/80"
+                                        }`}
+                                    onClick={() => handleTabChange(tab.id)}
                                 >
-                                    {tab.id === "patientInformation" && <PatientInformation user={user} />}
-                                    {tab.id === "appointmentHistory" && <AppointmentHistory user={user} />}
-                                    {tab.id === "reports" && <Reports user={user} />}
-                                    {tab.id === "emar" && <EMAR user={user} />}
-                                    {tab.id === "scheduleTemplate" && <ScheduleTemplate user={user} />}
-                                </motion.div>
-                            </TabsContent>
+                                    <div className="text-sm font-[var(--www-mattmannucci-me-geist-regular-font-family)] leading-5 whitespace-nowrap flex items-center justify-center h-full gap-2">
+                                        <tab.icon className={`w-4 h-4 ${tab.id === activeTab ? "text-primary" : ""}`} />
+                                        {tab.label}
+                                    </div>
+                                </div>
+                            )
                         ))}
-                    </AnimatePresence>
-                </Tabs>
+                    </div>
+                </div>
+
+                <div className="w-full h-1 my-2" />
+
+                {/* Tab Content */}
+                <AnimatePresence mode="wait">
+                    {tabs.map((tab) => (
+                        <div key={tab.id} className={tab.id === activeTab ? "block" : "hidden"}>
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                variants={contentVariants}
+                                className="min-h-[400px]"
+                            >
+                                {tab.id === "information" && <PatientInformation user={user} />}
+                                {tab.id === "appointmentHistory" && <AppointmentHistory user={user} />}
+                                {tab.id === "reports" && shouldShowTab("reports") && <Reports user={user} />}
+                                {tab.id === "emar" && <EMAR user={user} />}
+                                {tab.id === "scheduleTemplate" && <ScheduleTemplate user={user} />}
+                                {tab.id === "carePlan" && <CarePlan user={user} />}
+                                {tab.id === "riskAssessment" && <RiskAssessment />}
+                                {tab.id === "documents" && <DocumentsEdit />}
+                            </motion.div>
+                        </div>
+                    ))}
+                </AnimatePresence>
             </div>
 
             {/* Debug Panel */}

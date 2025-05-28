@@ -21,7 +21,10 @@ import {
     deleteAgencyRateSheet,
     updateAgencyGroup,
     deleteAgencyGroup,
-    createAgencyGroup
+    createAgencyGroup,
+    getAgencyInvoices,
+    getAgencyExpenses,
+    getAgencyPayrolls
 } from "../controllers/agencyController";
 
 const router = express.Router();
@@ -64,5 +67,9 @@ router.get("/:id/invoices", getAllInvoicesByAgencyId);
 router.get("/:id/mileage-records", getAllMileageRecordsByAgencyId);
 router.get("/:id/incident-reports", getAllIncidentReportsByAgencyId);
 router.get("/:id/documents", getAllDocumentsByAgencyId);
+router.get("/:id/invoices", getAgencyInvoices);
+router.get("/:id/payrolls", getAgencyPayrolls);
+router.get("/:id/expenses", getAgencyExpenses);
+
 
 export default router;

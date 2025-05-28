@@ -1,91 +1,38 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Sparkles, ChevronDown, TrendingUp, DollarSign, CreditCard, Users, ArrowUpRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useChat } from 'ai/react'
+
 import { cn } from "@/lib/utils"
+import { useGetInvoiceDashboardDataQuery } from "@/state/api"
+import { useAppSelector } from "@/state/redux"
 
 export default function BillingStats() {
-    const [showRecommendations, setShowRecommendations] = useState({
+    const [showRecommendations] = useState({
         revenue: false,
         clients: false,
         invoices: false,
         profit: false,
     })
 
-    const [recommendations, setRecommendations] = useState({
+    const [recommendations] = useState({
         revenue: [],
         clients: [],
         invoices: [],
         profit: [],
     })
+    const agencyId = useAppSelector(state => state.user.user.userInfo?.agencyId)
+    const { data, isLoading } = useGetInvoiceDashboardDataQuery(agencyId || "")
 
-    const { handleSubmit, messages, isLoading } = useChat({
-        api: '/api/chat/billing',
-        onFinish: (message) => {
-            try {
-                const parsedInsights = JSON.parse(message.content)
-                return parsedInsights
-            } catch (error) {
-                console.error('Error parsing insights:', error)
-                return []
-            }
-        }
-    })
+    console.log("DATA", data)
 
-    const toggleRecommendations = useCallback(async (section: keyof typeof showRecommendations) => {
-        setShowRecommendations(prev => ({
-            ...prev,
-            [section]: !prev[section]
-        }))
 
-        // Fetch recommendations when toggling
-        if (!recommendations[section].length) {
-            const data = {
-                revenue: {
-                    currentRevenue: 45000,
-                    growthRate: 12,
-                    targetRevenue: 50000,
-                    services: ['Home Care', 'Live-in Care', 'Specialist Care']
-                },
-                clients: {
-                    totalClients: 45,
-                    retentionRate: 85,
-                    satisfactionScore: 4.2,
-                    newClientsThisMonth: 5
-                },
-                invoices: {
-                    totalInvoices: 120,
-                    overdueInvoices: 3,
-                    averagePaymentTime: 15,
-                    outstandingAmount: 8500
-                },
-                profit: {
-                    currentProfit: 28000,
-                    profitMargin: 35,
-                    operationalCosts: 17000,
-                    revenueGrowth: 15
-                }
-            }[section]
-
-            const response = await handleSubmit({
-                section,
-                data
-            } as any)
-
-            // The response will be handled by onFinish callback
-            setRecommendations(prev => ({
-                ...prev,
-                [section]: recommendations[section]
-            }))
-        }
-    }, [handleSubmit, recommendations])
 
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-fit">
             <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                 <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
                     <div>
@@ -99,19 +46,20 @@ export default function BillingStats() {
                     </div>
                 </CardHeader>
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between">
                         <div className="space-y-1">
-                            <p className="text-2xl font-bold">$45,000</p>
+                            <p className="text-2xl font-bold">${data?.revenue || 0}</p>
                         </div>
-                        <div className="flex items-center text-blue-600 text-sm font-medium dark:text-blue-400">
+                        <div className="flex items-center text-blue-600 text-xs font-medium dark:text-blue-400">
                             <ArrowUpRight className="h-4 w-4 mr-1" />
-                            +12%
+                            Total Revenue
                         </div>
                     </div>
+                    {/* Commenting out AI insights button for now
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toggleRecommendations("revenue")}
+                        onClick={() => { }}
                         className="w-full h-8"
                         disabled={isLoading}
                     >
@@ -121,6 +69,7 @@ export default function BillingStats() {
                             <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
+                    */}
                     <AnimatePresence>
                         {showRecommendations.revenue && (
                             <motion.div
@@ -161,19 +110,20 @@ export default function BillingStats() {
                     </div>
                 </CardHeader>
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between ">
                         <div className="space-y-1">
-                            <p className="text-2xl font-bold">45</p>
+                            <p className="text-2xl font-bold">{data?.numberOfClients || 0}</p>
                         </div>
-                        <div className="flex items-center text-blue-600 text-sm font-medium dark:text-blue-400">
+                        <div className="flex items-center text-blue-600 text-xs font-medium dark:text-blue-400">
                             <ArrowUpRight className="h-4 w-4 mr-1" />
-                            +5 new
+                            Total Clients
                         </div>
                     </div>
+                    {/* Commenting out AI insights button for now
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toggleRecommendations("clients")}
+                        onClick={() => { }}
                         className="w-full h-8"
                         disabled={isLoading}
                     >
@@ -183,6 +133,7 @@ export default function BillingStats() {
                             <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
+                    */}
                     <AnimatePresence>
                         {showRecommendations.clients && (
                             <motion.div
@@ -223,19 +174,20 @@ export default function BillingStats() {
                     </div>
                 </CardHeader>
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between ">
                         <div className="space-y-1">
-                            <p className="text-2xl font-bold">120</p>
+                            <p className="text-2xl font-bold">{data?.numberOfInvoices || 0}</p>
                         </div>
-                        <div className="flex items-center text-red-600 text-sm font-medium dark:text-red-400">
+                        <div className="flex items-center text-blue-600 text-xs font-medium dark:text-blue-400">
                             <ArrowUpRight className="h-4 w-4 mr-1" />
-                            3 overdue
+                            Total Invoices
                         </div>
                     </div>
+                    {/* Commenting out AI insights button for now
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toggleRecommendations("invoices")}
+                        onClick={() => { }}
                         className="w-full h-8"
                         disabled={isLoading}
                     >
@@ -245,6 +197,7 @@ export default function BillingStats() {
                             <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
+                    */}
                     <AnimatePresence>
                         {showRecommendations.invoices && (
                             <motion.div
@@ -279,25 +232,26 @@ export default function BillingStats() {
                             <div className={cn("p-1.5 rounded-full bg-purple-100", "dark:bg-purple-900/30")}>
                                 <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                             </div>
-                            <CardTitle className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Profit</CardTitle>
+                            <CardTitle className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Expenses</CardTitle>
                         </div>
-                        <CardDescription className="text-xs">Monthly profit overview</CardDescription>
+                        <CardDescription className="text-xs">Monthly expenses overview</CardDescription>
                     </div>
                 </CardHeader>
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between ">
                         <div className="space-y-1">
-                            <p className="text-2xl font-bold">$28,000</p>
+                            <p className="text-2xl font-bold">${data?.numberOfExpenses || 0}</p>
                         </div>
                         <div className="flex items-center text-blue-600 text-sm font-medium dark:text-blue-400">
                             <ArrowUpRight className="h-4 w-4 mr-1" />
-                            35% margin
+                            Total Expenses
                         </div>
                     </div>
+                    {/* Commenting out AI insights button for now
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toggleRecommendations("profit")}
+                        onClick={() => { }}
                         className="w-full h-8"
                         disabled={isLoading}
                     >
@@ -307,6 +261,7 @@ export default function BillingStats() {
                             <ChevronDown className="ml-1 h-3 w-3" />
                         </motion.div>
                     </Button>
+                    */}
                     <AnimatePresence>
                         {showRecommendations.profit && (
                             <motion.div

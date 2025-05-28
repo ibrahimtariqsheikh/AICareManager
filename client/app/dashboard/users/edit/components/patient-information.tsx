@@ -6,9 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@/components/ui/select"
-import { DatePicker } from "@/components/ui/date-picker"
+
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -20,7 +18,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Mail, Pencil, Phone, PlusCircle, Trash2, Save, Pill } from "lucide-react"
+import { Mail, Pencil, Phone, PlusCircle, Trash2, Save, Pill, Briefcase, Upload, Award } from "lucide-react"
 import { toast } from "sonner"
 import { type KeyContact, type Task, type VisitType, type User } from "@/types/prismaTypes"
 import {
@@ -36,6 +34,8 @@ import { updateUser as updateUserAction } from "@/state/slices/userSlice"
 import { CustomInput } from "@/components/ui/custom-input"
 import { CustomSelect } from "@/components/ui/custom-select"
 import { setActiveEditUserTab } from "@/state/slices/tabsSlice"
+import { formatSubrole } from "@/utils/format-role"
+import { MyCustomDateRange } from "@/app/dashboard/billing/components/my-custom-date-range"
 
 enum TaskType {
     MEDICATION = "MEDICATION",
@@ -58,8 +58,35 @@ enum TaskType {
     OTHER = "OTHER",
 }
 
+interface SelectOption {
+    label: string;
+    value: string;
+}
 
-// Define the form schema with Zod
+interface ContactMethod {
+    id: string;
+    type: string;
+    label: string;
+    value: string;
+}
+
+interface EmploymentHistory {
+    id: string;
+    employerName: string;
+    role: string;
+    startDate: string;
+    endDate: string;
+    summary: string;
+}
+
+interface Qualification {
+    id: string;
+    title: string;
+    awardedDate: string;
+    expiryDate: string;
+    fileUrl: string;
+}
+
 const formSchema = z.object({
     preferredName: z.string().optional(),
     fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
@@ -71,6 +98,41 @@ const formSchema = z.object({
     postalCode: z.string().optional(),
     role: z.string(),
     subRole: z.string(),
+    // Care Worker specific fields
+    gender: z.string().optional(),
+    nationalInsuranceNumber: z.string().optional(),
+    nationality: z.string().optional(),
+    rightToWorkStatus: z.string().optional(),
+    dbsStatus: z.string().optional(),
+    whatsapp: z.string().optional(),
+    preferredContactMethod: z.string().optional(),
+    timeAtAddress: z.string().optional(),
+    employmentStartDate: z.string().optional(),
+    employmentType: z.string().optional(),
+    previousEmployers: z.string().optional(),
+    reasonsForLeaving: z.string().optional(),
+    references: z.string().optional(),
+    careCertifications: z.string().optional(),
+    trainingCompleted: z.string().optional(),
+    certificationExpiryDates: z.string().optional(),
+    highestQualification: z.string().optional(),
+    institution: z.string().optional(),
+    educationDates: z.string().optional(),
+    rightToWorkDocument: z.string().optional(),
+    proofOfId: z.string().optional(),
+    dbsCertificate: z.string().optional(),
+    insuranceDrivingLicense: z.string().optional(),
+    documentExpiryDates: z.string().optional(),
+    preferredShifts: z.string().optional(),
+    daysAvailable: z.string().optional(),
+    maxWeeklyHours: z.string().optional(),
+    areasWillingToTravel: z.string().optional(),
+    isDriver: z.boolean().optional(),
+    internalComments: z.string().optional(),
+    performanceNotes: z.string().optional(),
+    disciplinaryRecords: z.string().optional(),
+    linkedAlerts: z.string().optional(),
+    // Original fields
     allergies: z.string().optional(),
     interests: z.string().optional(),
     history: z.string().optional(),
@@ -111,7 +173,9 @@ export const PatientInformation = ({ user }: { user: User }) => {
         user?.dateOfBirth ? preserveDateOnly(user.dateOfBirth) : new Date(),
     )
     const [isSaving, setIsSaving] = useState(false)
-
+    const [contactMethods, setContactMethods] = useState<ContactMethod[]>([])
+    const [employmentHistory, setEmploymentHistory] = useState<EmploymentHistory[]>([])
+    const [qualifications, setQualifications] = useState<Qualification[]>([])
 
     // API mutation hooks
     const [addEmergencyContact, { isLoading: isAddingContact }] = useAddEmergencyContactMutation()
@@ -209,7 +273,6 @@ export const PatientInformation = ({ user }: { user: User }) => {
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         setIsSaving(true)
         try {
-            toast.loading("Updating patient information...")
 
             const updatedUser = {
                 ...user,
@@ -374,6 +437,75 @@ export const PatientInformation = ({ user }: { user: User }) => {
         }
     }
 
+    const addContactMethod = () => {
+        setContactMethods([
+            ...contactMethods,
+            {
+                id: crypto.randomUUID(),
+                type: "EMAIL",
+                label: "",
+                value: ""
+            }
+        ])
+    }
+
+    const updateContactMethod = (id: string, field: keyof ContactMethod, value: string) => {
+        setContactMethods(contactMethods.map(contact =>
+            contact.id === id ? { ...contact, [field]: value } : contact
+        ))
+    }
+
+    const removeContactMethod = (id: string) => {
+        setContactMethods(contactMethods.filter(contact => contact.id !== id))
+    }
+
+    const addEmploymentHistory = () => {
+        setEmploymentHistory([
+            ...employmentHistory,
+            {
+                id: crypto.randomUUID(),
+                employerName: "",
+                role: "",
+                startDate: "",
+                endDate: "",
+                summary: ""
+            }
+        ])
+    }
+
+    const updateEmploymentHistory = (id: string, field: keyof EmploymentHistory, value: string) => {
+        setEmploymentHistory(employmentHistory.map(employment =>
+            employment.id === id ? { ...employment, [field]: value } : employment
+        ))
+    }
+
+    const removeEmploymentHistory = (id: string) => {
+        setEmploymentHistory(employmentHistory.filter(employment => employment.id !== id))
+    }
+
+    const addQualification = () => {
+        setQualifications([
+            ...qualifications,
+            {
+                id: crypto.randomUUID(),
+                title: "",
+                awardedDate: "",
+                expiryDate: "",
+                fileUrl: ""
+            }
+        ])
+    }
+
+    const updateQualification = (id: string, field: keyof Qualification, value: string) => {
+        setQualifications(qualifications.map(qualification =>
+            qualification.id === id ? { ...qualification, [field]: value } : qualification
+        ))
+    }
+
+    const removeQualification = (id: string) => {
+        setQualifications(qualifications.filter(qualification => qualification.id !== id))
+    }
+
     const Role = {
         SOFTWARE_OWNER: "SOFTWARE_OWNER",
         ADMIN: "ADMIN",
@@ -412,30 +544,25 @@ export const PatientInformation = ({ user }: { user: User }) => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                <Card className="p-6 border border-neutral-200 duration-300 shadow-sm backdrop-blur-sm">
+                <Card className="p-2 border border-neutral-200 duration-300  backdrop-blur-sm">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-xl font-semibold text-neutral-800">Patient Information</CardTitle>
-                        <Button
-                            type="submit"
-                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition-colors"
-                            disabled={isSaving}
-                        >
-                            <Save className="h-4 w-4" />
-                            {isSaving ? "Saving..." : "Save Changes"}
-                        </Button>
+                        <CardTitle className="text-md font-semibold text-neutral-800">Patient Information</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium text-neutral-600">UserID</Label>
+                                <Label className="text-xs font-normal text-neutral-600">UserID</Label>
                                 <CustomInput value={user?.id || ""} disabled />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium text-neutral-600">Date of Birth</Label>
-                                <DatePicker
-                                    date={dateOfBirth}
-                                    setDate={(newDate: Date) => {
-                                        setDateOfBirth(newDate)
+                                <Label className="text-xs font-normal text-neutral-600">Date of Birth</Label>
+                                <MyCustomDateRange
+                                    oneDate={true}
+                                    initialDateRange={dateOfBirth ? { from: dateOfBirth, to: dateOfBirth } : undefined}
+                                    onRangeChange={(range) => {
+                                        if (range?.from) {
+                                            setDateOfBirth(range.from)
+                                        }
                                     }}
                                 />
                             </div>
@@ -445,7 +572,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="preferredName"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Preferred Name</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Preferred Name</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Preferred Name" />
                                         </FormControl>
@@ -459,7 +586,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="fullName"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Full Name</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Full Name</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Full Name" />
                                         </FormControl>
@@ -473,7 +600,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="phoneNumber"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Contact Number</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Contact Number</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Contact Number" />
                                         </FormControl>
@@ -487,7 +614,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Email Address</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Email Address</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Email Address" />
                                         </FormControl>
@@ -501,7 +628,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="address"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Address</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Address</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Address" />
                                         </FormControl>
@@ -515,7 +642,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="city"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">City</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">City</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="City" />
                                         </FormControl>
@@ -529,7 +656,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="postalCode"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Postal Code</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Postal Code</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Postal Code" />
                                         </FormControl>
@@ -543,7 +670,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="province"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Province</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Province</FormLabel>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="Province" />
                                         </FormControl>
@@ -557,7 +684,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="role"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Role</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Role</FormLabel>
                                         <CustomSelect
                                             value={field.value}
                                             onChange={(value) => {
@@ -580,7 +707,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="subRole"
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
-                                        <FormLabel className="text-sm font-medium text-neutral-600">Sub Role</FormLabel>
+                                        <FormLabel className="text-xs font-normal text-neutral-600">Sub Role</FormLabel>
                                         <CustomSelect
                                             value={field.value}
                                             onChange={field.onChange}
@@ -617,7 +744,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                     return false
                                                 })
                                                 .map(([_, value]) => ({
-                                                    label: value,
+                                                    label: formatSubrole(value),
                                                     value: value,
                                                 }))}
                                             placeholder="Select Sub Role"
@@ -630,9 +757,384 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     </CardContent>
                 </Card>
 
-                <Card className="p-6 mt-8 shadow-sm border border-neutral-100 hover:shadow-md transition-shadow duration-300">
+                {selectedRole === "CARE_WORKER" && (
+                    <>
+                        <Card className="p-2 mt-8 border border-neutral-200 hover: transition-shadow duration-300">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-md font-semibold text-neutral-800">Personal Information</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                    <FormField
+                                        control={form.control}
+                                        name="gender"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-2">
+                                                <FormLabel className="text-xs font-normal text-neutral-600">Gender</FormLabel>
+                                                <FormControl>
+                                                    <CustomSelect
+                                                        value={field.value}
+                                                        onChange={field.onChange}
+                                                        options={[
+                                                            { label: "Male", value: "MALE" },
+                                                            { label: "Female", value: "FEMALE" },
+                                                            { label: "Other", value: "OTHER" },
+                                                            { label: "Prefer not to say", value: "PREFER_NOT_TO_SAY" }
+                                                        ] as SelectOption[]}
+                                                        placeholder="Select gender"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="nationalInsuranceNumber"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-2">
+                                                <FormLabel className="text-xs font-normal text-neutral-600">National Insurance Number</FormLabel>
+                                                <FormControl>
+                                                    <CustomInput {...field} placeholder="e.g. AB123456C" />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="nationality"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-2">
+                                                <FormLabel className="text-xs font-normal text-neutral-600">Nationality</FormLabel>
+                                                <FormControl>
+                                                    <CustomInput {...field} placeholder="e.g. British" />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="rightToWorkStatus"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-2">
+                                                <FormLabel className="text-xs font-normal text-neutral-600">Right to Work Status</FormLabel>
+                                                <FormControl>
+                                                    <CustomSelect
+                                                        value={field.value}
+                                                        onChange={field.onChange}
+                                                        options={[
+                                                            { label: "British Citizen", value: "BRITISH_CITIZEN" },
+                                                            { label: "EU Citizen", value: "EU_CITIZEN" },
+                                                            { label: "Work Visa", value: "WORK_VISA" },
+                                                            { label: "Other", value: "OTHER" }
+                                                        ]}
+                                                        placeholder="Select status"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="dbsStatus"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-2">
+                                                <FormLabel className="text-xs font-normal text-neutral-600">DBS Status</FormLabel>
+                                                <FormControl>
+                                                    <CustomSelect
+                                                        value={field.value}
+                                                        onChange={field.onChange}
+                                                        options={[
+                                                            { label: "Enhanced", value: "ENHANCED" },
+                                                            { label: "Standard", value: "STANDARD" },
+                                                            { label: "Basic", value: "BASIC" },
+                                                            { label: "Not Available", value: "NOT_AVAILABLE" }
+                                                        ]}
+                                                        placeholder="Select DBS status"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="p-2 mt-8 border border-neutral-200 hover: transition-shadow duration-300">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-md font-semibold text-neutral-800">Contact Information</CardTitle>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={addContactMethod}
+                                    className="border border-neutral-200 hover:border-neutral-300 text-neutral-700 hover:text-neutral-800"
+                                >
+                                    <PlusCircle className="h-4 w-4 mr-2" />
+                                    Add Contact Method
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {contactMethods.map((contact) => (
+                                        <div key={contact.id} className="bg-white p-4 rounded-lg border border-neutral-200">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Contact Type</Label>
+                                                        <CustomSelect
+                                                            value={contact.type}
+                                                            onChange={(value) => updateContactMethod(contact.id, "type", value)}
+                                                            options={[
+                                                                { label: "Email", value: "EMAIL" },
+                                                                { label: "Phone", value: "PHONE" },
+                                                                { label: "WhatsApp", value: "WHATSAPP" },
+                                                                { label: "Emergency Contact", value: "EMERGENCY" }
+                                                            ] as SelectOption[]}
+                                                            placeholder="Select contact type"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Label</Label>
+                                                        <CustomInput
+                                                            value={contact.label}
+                                                            onChange={(value) => updateContactMethod(contact.id, "label", value)}
+                                                            placeholder="e.g. Work Email, Mobile Phone"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2 md:col-span-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Value</Label>
+                                                        <CustomInput
+                                                            value={contact.value}
+                                                            onChange={(value) => updateContactMethod(contact.id, "value", value)}
+                                                            placeholder="Enter contact details"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 ml-4"
+                                                    onClick={() => removeContactMethod(contact.id)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                    <span className="sr-only">Remove</span>
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {contactMethods.length === 0 && (
+                                        <div className="text-center py-8">
+                                            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 mb-4">
+                                                <Phone className="h-6 w-6 text-neutral-500" />
+                                            </div>
+                                            <p className="text-neutral-500 text-sm">No contact methods added yet.</p>
+                                            <p className="text-neutral-400 text-xs mt-1">Add contact methods using the button above.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="p-2 mt-8 border border-neutral-200 hover: transition-shadow duration-300">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-md font-semibold text-neutral-800">Employment History</CardTitle>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={addEmploymentHistory}
+                                    className="border border-neutral-200 hover:border-neutral-300 text-neutral-700 hover:text-neutral-800"
+                                >
+                                    <PlusCircle className="h-4 w-4 mr-2" />
+                                    Add Previous Employment
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {employmentHistory.map((employment) => (
+                                        <div key={employment.id} className="bg-white p-4 rounded-lg border border-neutral-200">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Employer Name</Label>
+                                                        <CustomInput
+                                                            value={employment.employerName}
+                                                            onChange={(value) => updateEmploymentHistory(employment.id, "employerName", value)}
+                                                            placeholder="Enter employer name"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Role/Job Title</Label>
+                                                        <CustomInput
+                                                            value={employment.role}
+                                                            onChange={(value) => updateEmploymentHistory(employment.id, "role", value)}
+                                                            placeholder="Enter job title"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Start Date</Label>
+                                                        <MyCustomDateRange
+                                                            oneDate={true}
+                                                            initialDateRange={employment.startDate ? { from: new Date(employment.startDate), to: new Date(employment.startDate) } : undefined}
+                                                            onRangeChange={(range) => {
+                                                                if (range?.from) {
+                                                                    updateEmploymentHistory(employment.id, "startDate", range.from.toISOString())
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">End Date</Label>
+                                                        <MyCustomDateRange
+                                                            oneDate={true}
+                                                            initialDateRange={employment.endDate ? { from: new Date(employment.endDate), to: new Date(employment.endDate) } : undefined}
+                                                            onRangeChange={(range) => {
+                                                                if (range?.from) {
+                                                                    updateEmploymentHistory(employment.id, "endDate", range.from.toISOString())
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2 md:col-span-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Summary</Label>
+                                                        <CustomInput
+                                                            value={employment.summary}
+                                                            onChange={(value) => updateEmploymentHistory(employment.id, "summary", value)}
+                                                            placeholder="Enter employment summary (optional)"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 ml-4"
+                                                    onClick={() => removeEmploymentHistory(employment.id)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                    <span className="sr-only">Remove</span>
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {employmentHistory.length === 0 && (
+                                        <div className="text-center py-8">
+                                            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 mb-4">
+                                                <Briefcase className="h-6 w-6 text-neutral-500" />
+                                            </div>
+                                            <p className="text-neutral-500 text-sm">No employment history added yet.</p>
+                                            <p className="text-neutral-400 text-xs mt-1">Add previous employment using the button above.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="p-2 mt-8 border border-neutral-200 hover: transition-shadow duration-300">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-md font-semibold text-neutral-800">Qualifications & Certifications</CardTitle>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={addQualification}
+                                    className="border border-neutral-200 hover:border-neutral-300 text-neutral-700 hover:text-neutral-800"
+                                >
+                                    <PlusCircle className="h-4 w-4 mr-2" />
+                                    Add Qualification
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {qualifications.map((qualification) => (
+                                        <div key={qualification.id} className="bg-white p-4 rounded-lg border border-neutral-200">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Title</Label>
+                                                        <CustomInput
+                                                            value={qualification.title}
+                                                            onChange={(value) => updateQualification(qualification.id, "title", value)}
+                                                            placeholder="Enter qualification title"
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Awarded Date</Label>
+                                                        <MyCustomDateRange
+                                                            oneDate={true}
+                                                            initialDateRange={qualification.awardedDate ? { from: new Date(qualification.awardedDate), to: new Date(qualification.awardedDate) } : undefined}
+                                                            onRangeChange={(range) => {
+                                                                if (range?.from) {
+                                                                    updateQualification(qualification.id, "awardedDate", range.from.toISOString())
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Expiry Date (Optional)</Label>
+                                                        <MyCustomDateRange
+                                                            oneDate={true}
+                                                            initialDateRange={qualification.expiryDate ? { from: new Date(qualification.expiryDate), to: new Date(qualification.expiryDate) } : undefined}
+                                                            onRangeChange={(range) => {
+                                                                if (range?.from) {
+                                                                    updateQualification(qualification.id, "expiryDate", range.from.toISOString())
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs font-normal text-neutral-600">Certificate File</Label>
+                                                        <div className="flex items-center gap-2">
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="w-full"
+                                                                onClick={() => {
+                                                                    // Handle file upload
+                                                                    console.log("File upload clicked")
+                                                                }}
+                                                            >
+                                                                <Upload className="h-4 w-4 mr-2" />
+                                                                Upload Certificate
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 ml-4"
+                                                    onClick={() => removeQualification(qualification.id)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                    <span className="sr-only">Remove</span>
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {qualifications.length === 0 && (
+                                        <div className="text-center py-8">
+                                            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 mb-4">
+                                                <Award className="h-6 w-6 text-neutral-500" />
+                                            </div>
+                                            <p className="text-neutral-500 text-sm">No qualifications added yet.</p>
+                                            <p className="text-neutral-400 text-xs mt-1">Add qualifications using the button above.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </>
+                )}
+
+                <Card className="p-2 mt-8  border border-neutral-200 hover: transition-shadow duration-300">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-xl font-semibold text-neutral-800">Personal Details</CardTitle>
+                        <CardTitle className="text-md font-semibold text-neutral-800">Personal Details</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-6">
@@ -641,7 +1143,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="allergies"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <h3 className="text-md font-semibold mb-2">Allergies</h3>
+                                        <h3 className="text-xs font-normal text-neutral-600">Allergies</h3>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="No allergies recorded" />
                                         </FormControl>
@@ -655,7 +1157,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="interests"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <h3 className="text-md font-semibold mb-2">Interests</h3>
+                                        <h3 className="text-xs font-normal text-neutral-600">Interests</h3>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="No interests recorded" />
                                         </FormControl>
@@ -669,7 +1171,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 name="history"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <h3 className="text-md font-semibold mb-2">Medical History</h3>
+                                        <h3 className="text-xs font-normal text-neutral-600">Medical History</h3>
                                         <FormControl>
                                             <CustomInput {...field} placeholder="No medical history recorded" />
                                         </FormControl>
@@ -682,17 +1184,17 @@ export const PatientInformation = ({ user }: { user: User }) => {
                 </Card>
 
                 {/* Two-column grid for Emergency Contacts and Additional Information */}
-                <div className="grid grid-cols-1 gap-6 mt-6">
+                <div className="grid grid-cols-1 gap-2 mt-6">
                     {/* Emergency Contacts Card */}
-                    <Card className="p-6 shadow-sm border border-neutral-100 hover:shadow-md transition-shadow duration-300">
+                    <Card className="p-2  border border-neutral-200 hover: transition-shadow duration-300">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-xl font-semibold text-neutral-800">Emergency Contacts</CardTitle>
+                            <CardTitle className="text-md font-semibold text-neutral-800">Emergency Contacts</CardTitle>
                             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button
-                                        variant="default"
+                                        variant="outline"
                                         size="sm"
-                                        className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 transition-colors"
+                                        className="border border-neutral-200 hover:border-neutral-300 text-neutral-700 hover:text-neutral-800"
                                     >
                                         <PlusCircle className="h-4 w-4" />
                                         <span>Add Contact</span>
@@ -707,51 +1209,48 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     </DialogHeader>
                                     <div className="grid gap-4 py-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="name">Name</Label>
-                                            <Input
+                                            <Label htmlFor="name" className="text-xs font-normal text-neutral-600">Name</Label>
+                                            <CustomInput
                                                 id="name"
                                                 placeholder="Full name"
                                                 value={newContact.name}
-                                                onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+                                                onChange={(value) => setNewContact({ ...newContact, name: value })}
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="relation">Relationship</Label>
-                                            <Select
+                                            <Label htmlFor="relation" className="text-xs font-normal text-neutral-600">Relationship</Label>
+                                            <CustomSelect
                                                 value={newContact.relation}
-                                                onValueChange={(value) => setNewContact({ ...newContact, relation: value })}
-                                            >
-                                                <SelectTrigger id="relation">
-                                                    <SelectValue placeholder="Select relationship" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Spouse">Spouse</SelectItem>
-                                                    <SelectItem value="Parent">Parent</SelectItem>
-                                                    <SelectItem value="Child">Child</SelectItem>
-                                                    <SelectItem value="Sibling">Sibling</SelectItem>
-                                                    <SelectItem value="Friend">Friend</SelectItem>
-                                                    <SelectItem value="Caregiver">Caregiver</SelectItem>
-                                                    <SelectItem value="Other">Other</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                                onChange={(value) => setNewContact({ ...newContact, relation: value })}
+                                                options={[
+                                                    { label: "Spouse", value: "Spouse" },
+                                                    { label: "Parent", value: "Parent" },
+                                                    { label: "Child", value: "Child" },
+                                                    { label: "Sibling", value: "Sibling" },
+                                                    { label: "Friend", value: "Friend" },
+                                                    { label: "Caregiver", value: "Caregiver" },
+                                                    { label: "Other", value: "Other" }
+                                                ]}
+                                                placeholder="Select relationship"
+                                            />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="phone">Phone Number</Label>
-                                            <Input
+                                            <Label htmlFor="phone" className="text-xs font-normal text-neutral-600">Phone Number</Label>
+                                            <CustomInput
                                                 id="phone"
                                                 placeholder="(555) 123-4567"
                                                 value={newContact.phone}
-                                                onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+                                                onChange={(value) => setNewContact({ ...newContact, phone: value })}
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="email">Email Address</Label>
-                                            <Input
+                                            <Label htmlFor="email" className="text-xs font-normal text-neutral-600">Email Address</Label>
+                                            <CustomInput
                                                 id="email"
                                                 type="email"
                                                 placeholder="contact@example.com"
                                                 value={newContact.email}
-                                                onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                                                onChange={(value) => setNewContact({ ...newContact, email: value })}
                                             />
                                         </div>
                                     </div>
@@ -775,7 +1274,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     {keyContacts.map((contact: KeyContact) => (
                                         <div
                                             key={contact.id}
-                                            className="bg-white p-4 rounded-lg border border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-200"
+                                            className="bg-white p-4 rounded-lg border border-neutral-200  hover: transition-all duration-300 hover:border-blue-200"
                                         >
                                             <div className="flex justify-between items-start">
                                                 <div className="flex items-center gap-3">
@@ -855,15 +1354,15 @@ export const PatientInformation = ({ user }: { user: User }) => {
                 </div>
 
                 {/* Visit Types Card */}
-                <Card className="p-6 mt-8 shadow-sm border border-neutral-100 hover:shadow-md transition-shadow duration-300">
+                <Card className="p-2 mt-8  border border-neutral-200 hover: transition-shadow duration-300">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-xl font-semibold text-neutral-800">Visit Types</CardTitle>
+                        <CardTitle className="text-md font-semibold text-neutral-800">Visit Types</CardTitle>
                         <Dialog open={visitDialogOpen} onOpenChange={setVisitDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button
-                                    variant="default"
+                                    variant="outline"
                                     size="sm"
-                                    className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 transition-colors"
+                                    className="border border-neutral-200 hover:border-neutral-300 text-neutral-700 hover:text-neutral-800"
                                 >
                                     <PlusCircle className="h-4 w-4" />
                                     <span>Add Visit Type</span>
@@ -876,21 +1375,21 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 </DialogHeader>
                                 <div className="grid gap-4 py-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="visit-name">Visit Name</Label>
-                                        <Input
+                                        <Label htmlFor="visit-name" className="text-xs font-normal text-neutral-600">Visit Name</Label>
+                                        <CustomInput
                                             id="visit-name"
                                             placeholder="e.g. Morning Visit, Medication Check"
                                             value={newVisitType.name}
-                                            onChange={(e) => setNewVisitType({ ...newVisitType, name: e.target.value })}
+                                            onChange={(value) => setNewVisitType({ ...newVisitType, name: value })}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="visit-description">Description</Label>
-                                        <Input
+                                        <Label htmlFor="visit-description" className="text-xs font-normal text-neutral-600">Description</Label>
+                                        <CustomInput
                                             id="visit-description"
                                             placeholder="Describe the purpose of this visit"
                                             value={newVisitType.description}
-                                            onChange={(e) => setNewVisitType({ ...newVisitType, description: e.target.value })}
+                                            onChange={(value) => setNewVisitType({ ...newVisitType, description: value })}
                                         />
                                     </div>
                                 </div>
@@ -907,11 +1406,11 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     </CardHeader>
                     <CardContent>
                         {visitTypes && visitTypes.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-6">
+                            <div className="grid grid-cols-1 gap-2">
                                 {visitTypes.map((visitType) => (
                                     <div
                                         key={visitType.id}
-                                        className="bg-neutral-50 p-5 rounded-lg border border-neutral-200 hover:shadow-sm transition-all duration-300"
+                                        className="bg-neutral-50 p-5 rounded-lg border border-neutral-200 hover: transition-all duration-300"
                                     >
                                         <div className="flex justify-between items-start mb-3">
                                             <div>
@@ -943,7 +1442,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                     </DialogHeader>
                                                     <div className="grid gap-4 py-4">
                                                         <div className="space-y-2">
-                                                            <Label htmlFor="task-type">Task Type</Label>
+                                                            <Label htmlFor="task-type" className="text-xs font-normal text-neutral-600">Task Type</Label>
                                                             <CustomSelect
                                                                 value={newTask.type}
                                                                 onChange={(value) => setNewTask({ ...newTask, type: value })}
@@ -987,7 +1486,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                             className="bg-white p-3 rounded-md border border-neutral-200 hover:border-blue-200 transition-colors duration-300"
                                                         >
                                                             <div className="flex items-center gap-2 mb-1">
-                                                                <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-medium shadow-sm">
+                                                                <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-medium ">
                                                                     {task.type}
                                                                 </span>
                                                             </div>
@@ -1038,56 +1537,53 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="space-y-2">
-                            <Label htmlFor="edit-name">Name</Label>
-                            <Input
+                            <Label htmlFor="edit-name" className="text-xs font-normal text-neutral-600">Name</Label>
+                            <CustomInput
                                 id="edit-name"
                                 placeholder="Full name"
                                 value={editingContact?.name || ""}
-                                onChange={(e) => setEditingContact(editingContact ? { ...editingContact, name: e.target.value } : null)}
+                                onChange={(value) => setEditingContact(editingContact ? { ...editingContact, name: value } : null)}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-relation">Relationship</Label>
-                            <Select
+                            <Label htmlFor="edit-relation" className="text-xs font-normal text-neutral-600">Relationship</Label>
+                            <CustomSelect
                                 value={editingContact?.relation || ""}
-                                onValueChange={(value) =>
+                                onChange={(value) =>
                                     setEditingContact(editingContact ? { ...editingContact, relation: value } : null)
                                 }
-                            >
-                                <SelectTrigger id="edit-relation">
-                                    <SelectValue placeholder="Select relationship" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Spouse">Spouse</SelectItem>
-                                    <SelectItem value="Parent">Parent</SelectItem>
-                                    <SelectItem value="Child">Child</SelectItem>
-                                    <SelectItem value="Sibling">Sibling</SelectItem>
-                                    <SelectItem value="Friend">Friend</SelectItem>
-                                    <SelectItem value="Caregiver">Caregiver</SelectItem>
-                                    <SelectItem value="Other">Other</SelectItem>
-                                </SelectContent>
-                            </Select>
+                                options={[
+                                    { label: "Spouse", value: "Spouse" },
+                                    { label: "Parent", value: "Parent" },
+                                    { label: "Child", value: "Child" },
+                                    { label: "Sibling", value: "Sibling" },
+                                    { label: "Friend", value: "Friend" },
+                                    { label: "Caregiver", value: "Caregiver" },
+                                    { label: "Other", value: "Other" }
+                                ]}
+                                placeholder="Select relationship"
+                            />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-phone">Phone Number</Label>
-                            <Input
+                            <Label htmlFor="edit-phone" className="text-xs font-normal text-neutral-600">Phone Number</Label>
+                            <CustomInput
                                 id="edit-phone"
                                 placeholder="(555) 123-4567"
                                 value={editingContact?.phone || ""}
-                                onChange={(e) =>
-                                    setEditingContact(editingContact ? { ...editingContact, phone: e.target.value } : null)
+                                onChange={(value) =>
+                                    setEditingContact(editingContact ? { ...editingContact, phone: value } : null)
                                 }
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-email">Email Address</Label>
-                            <Input
+                            <Label htmlFor="edit-email" className="text-xs font-normal text-neutral-600">Email Address</Label>
+                            <CustomInput
                                 id="edit-email"
                                 type="email"
                                 placeholder="contact@example.com"
                                 value={editingContact?.email || ""}
-                                onChange={(e) =>
-                                    setEditingContact(editingContact ? { ...editingContact, email: e.target.value } : null)
+                                onChange={(value) =>
+                                    setEditingContact(editingContact ? { ...editingContact, email: value } : null)
                                 }
                             />
                         </div>
@@ -1105,6 +1601,16 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            <div className="flex justify-end mt-4">
+                <Button
+                    type="submit"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition-colors"
+                    disabled={isSaving}
+                >
+                    <Save className="h-4 w-4" />
+                    {isSaving ? "Saving..." : "Save Changes"}
+                </Button>
+            </div>
         </Form>
     )
 }

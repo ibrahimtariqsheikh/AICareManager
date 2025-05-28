@@ -305,6 +305,20 @@ export const getAgencyById = async (req: Request, res: Response): Promise<void> 
                incidentReports: true,
                documents: true,
                users: true,
+               alerts: {
+                include: {
+                    client: {
+                        select: {
+                            fullName: true,
+                        }
+                    },
+                    careworker: {
+                        select: {
+                            fullName: true,
+                        }
+                    },
+                }
+               },
                
             }
         });
@@ -702,4 +716,49 @@ export const deleteAgencyGroup = async (req: Request, res: Response): Promise<vo
     }
 };
 
+export const getAgencyInvoices = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const invoices = await prisma.invoice.findMany({
+            where: { agencyId: id },
+            include: {
+                client: true,
+           
+            }
+        });
+        res.json(invoices);     
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching invoices", error: error });
+    }
+};
+
+export const getAgencyPayrolls = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const payrolls = await prisma.payroll.findMany({
+            where: { agencyId: id ,},
+            include: {
+                user: true,
+            }
+        });
+        res.json(payrolls);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching payrolls", error: error });
+    }
+};
+
+export const getAgencyExpenses = async (req: Request, res: Response): Promise<void> => {
+    try {   
+        const { id } = req.params;
+        const expenses = await prisma.expenses.findMany({
+            where: { agencyId: id, },
+            include: {
+                user: true,
+            }
+        });
+        res.json(expenses);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching expenses", error: error });
+    }
+};
 

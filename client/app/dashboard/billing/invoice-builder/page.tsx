@@ -10,20 +10,27 @@ import { InvoiceLineItems } from "./components/invoice-line-items"
 import { InvoiceSummary } from "./components/invoice-summary"
 import { toast } from "sonner"
 import { ArrowLeft, Download, Plus } from "lucide-react"
+import { DateRange } from "react-day-picker"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
-import type { InvoiceItem } from "./types"
+import type { InvoiceItem, InvoiceData } from "./types"
 
 import { generatePDF } from "./components/utils/pdf-generator"
 import { PDFPreview } from "./components/pdf-preview"
 import { useAppDispatch, useAppSelector } from "@/state/redux"
-import { CustomDateRangeSelector } from "./components/custom-date-range"
-import { setInvoiceData, setInvoices } from "@/state/slices/invoiceSlice"
+import { setInvoiceData, setInvoices, setSelectedDateRange } from "@/state/slices/invoiceSlice"
 import { InvoiceSettings } from "./components/invoice-settings"
+import { MyCustomDateRange } from "@/app/dashboard/billing/components/my-custom-date-range"
 
 
 
 export default function InvoiceBuilderPage() {
     const router = useRouter()
+    const [showAddItemPopover, setShowAddItemPopover] = useState(false)
 
     const selectedClient = useAppSelector((state) => state.invoice.selectedClient)
     const dispatch = useAppDispatch()
@@ -33,7 +40,41 @@ export default function InvoiceBuilderPage() {
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
     const [isLoading, _] = useState(false)
 
-    const handleAddItem = () => {
+    const handleAddPredefinedItems = () => {
+        console.log("Current invoiceData:", invoiceData)
+        if (invoiceData?.predefinedItems?.length) {
+            console.log("Adding predefined items:", invoiceData.predefinedItems)
+            // Create new items with unique IDs
+            const newItems = invoiceData.predefinedItems.map((item: InvoiceItem) => {
+                console.log("Processing item:", {
+                    type: item.serviceType,
+                    description: item.description,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                    amount: item.amount
+                })
+                return {
+                    ...item,
+                    id: `${item.serviceType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    amount: item.quantity * item.rate,
+                    rate: item.serviceType === "SCHEDULE_HOURS" ? Math.floor(item.rate) : item.rate
+                }
+            })
+
+            console.log("New items to add:", newItems)
+            setInvoiceItems(prevItems => {
+                console.log("Previous items:", prevItems)
+                const updatedItems = [...prevItems, ...newItems]
+                console.log("Updated items:", updatedItems)
+                return updatedItems
+            })
+            setShowAddItemPopover(false)
+        } else {
+            console.log("No predefined items to add")
+        }
+    }
+
+    const handleAddManualItem = () => {
         const newItem: InvoiceItem = {
             id: `manual-${Date.now()}`,
             description: "",
@@ -43,7 +84,16 @@ export default function InvoiceBuilderPage() {
             serviceType: "CUSTOM",
             careWorkerId: "",
         }
-        setInvoiceItems([...invoiceItems, newItem])
+        setInvoiceItems(prevItems => [...prevItems, newItem])
+        setShowAddItemPopover(false)
+    }
+
+    const handleAddItem = () => {
+        if (invoiceData?.predefinedItems?.length) {
+            setShowAddItemPopover(true)
+        } else {
+            handleAddManualItem()
+        }
     }
 
     const handleUpdateItem = (updatedItem: InvoiceItem) => {
@@ -100,9 +150,9 @@ export default function InvoiceBuilderPage() {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" onClick={() => router.back()}>
-                        <ArrowLeft className="h-5 w-5" />
+                        <ArrowLeft className="h-4 w-4" />
                     </Button>
-                    <h1 className="text-2xl font-bold">Create New Invoice</h1>
+                    <h1 className="text-md font-bold">Create New Invoice</h1>
                 </div>
                 <div className="flex items-center gap-2">
 
@@ -120,11 +170,7 @@ export default function InvoiceBuilderPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-6">
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Client & Date Range</CardTitle>
-                            <CardDescription>Select the client and service period for this invoice</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="p-6 space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="client">Client</Label>
@@ -132,60 +178,84 @@ export default function InvoiceBuilderPage() {
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="dateRange">Date Range</Label>
-                                    <CustomDateRangeSelector />
+                                    <MyCustomDateRange
+                                        initialDateRange={useAppSelector((state) => {
+                                            const range = state.invoice.selectedDateRange
+                                            if (!range) return undefined
+                                            return {
+                                                from: range.from || new Date(),
+                                                to: range.to || new Date()
+                                            }
+                                        })}
+                                        onRangeChange={(range) => {
+                                            if (range) {
+                                                dispatch(setSelectedDateRange({
+                                                    from: range.from,
+                                                    to: range.to
+                                                }))
+                                            } else {
+                                                dispatch(setSelectedDateRange(null))
+                                            }
+                                        }}
+                                    />
                                 </div>
-
                             </div>
 
-                        </CardContent>
-                    </Card>
+                            <InvoiceSettings />
 
-                    <InvoiceSettings
-
-                    />
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle>Services</CardTitle>
-                                <CardDescription>Services provided during the selected period</CardDescription>
+                            <div className="space-y-4">
+                                <div className="flex justify-end">
+                                    <Popover open={showAddItemPopover} onOpenChange={setShowAddItemPopover}>
+                                        <PopoverTrigger asChild>
+                                            <Button variant="outline" size="sm" onClick={handleAddItem}>
+                                                <Plus className="mr-2 h-4 w-4" />
+                                                Add Item
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-80">
+                                            <div className="space-y-4">
+                                                <h4 className="font-medium leading-none">Add Items</h4>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Would you like to add the predefined items (expenses and schedule hours) or add a manual item?
+                                                </p>
+                                                <div className="flex gap-2">
+                                                    <Button variant="outline" size="sm" onClick={handleAddPredefinedItems}>
+                                                        Add Predefined Items
+                                                    </Button>
+                                                    <Button variant="outline" size="sm" onClick={handleAddManualItem}>
+                                                        Add Manual Item
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                                <InvoiceLineItems
+                                    items={invoiceItems}
+                                    onUpdateItem={handleUpdateItem}
+                                    onRemoveItem={handleRemoveItem}
+                                    isLoading={isLoading}
+                                />
+                                <div className="flex justify-end border-t pt-4">
+                                    <InvoiceSummary
+                                        subtotal={calculateSubtotal()}
+                                        tax={calculateTax()}
+                                        total={calculateTotal()}
+                                        taxEnabled={invoiceData?.taxEnabled ?? false}
+                                        taxRate={invoiceData?.taxRate ?? 0}
+                                    />
+                                </div>
                             </div>
-                            <Button variant="outline" size="sm" onClick={handleAddItem}>
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add Item
-                            </Button>
-                        </CardHeader>
-                        <CardContent>
-                            <InvoiceLineItems
-                                items={invoiceItems}
-                                onUpdateItem={handleUpdateItem}
-                                onRemoveItem={handleRemoveItem}
-                                isLoading={isLoading}
-                            />
-                        </CardContent>
-                        <CardFooter className="flex justify-end border-t pt-4">
-                            <InvoiceSummary
-                                subtotal={calculateSubtotal()}
-                                tax={calculateTax()}
-                                total={calculateTotal()}
-                                taxEnabled={invoiceData?.taxEnabled ?? false}
-                                taxRate={invoiceData?.taxRate ?? 0}
-                            />
-                        </CardFooter>
-                    </Card>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Notes</CardTitle>
-                            <CardDescription>Add any additional notes to the invoice</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <textarea
-                                className="w-full min-h-[100px] p-3 border rounded-md"
-                                placeholder="Enter any additional notes or payment instructions..."
-                                value={invoiceData?.notes ?? ""}
-                                onChange={(e) => dispatch(setInvoiceData({ ...invoiceData, notes: e.target.value }))}
-                            />
+                            <div className="space-y-2">
+                                <Label>Notes</Label>
+                                <textarea
+                                    className="w-full min-h-[100px] p-3 border rounded-md"
+                                    placeholder="Enter any additional notes or payment instructions..."
+                                    value={invoiceData?.notes ?? ""}
+                                    onChange={(e) => dispatch(setInvoiceData({ ...invoiceData, notes: e.target.value }))}
+                                />
+                            </div>
                         </CardContent>
                     </Card>
                 </div>

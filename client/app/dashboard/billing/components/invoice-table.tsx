@@ -18,24 +18,10 @@ import { ArrowUpDown, Download, Edit, Eye, MoreHorizontal, Send, Trash } from "l
 import { format } from "date-fns"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { DateRange } from "react-day-picker"
+import { useGetAgencyInvoicesQuery } from "@/state/api"
+import { useAppSelector } from "@/state/redux"
+import { Invoice, InvoicePaymentMethod, InvoiceStatus } from "@/types/prismaTypes"
 
-
-const mockClients = [
-    { id: "client1", name: "John Doe", avatar: "/placeholder.svg" },
-    { id: "client2", name: "Jane Smith", avatar: "/placeholder.svg" },
-    { id: "client3", name: "Bob Johnson", avatar: "/placeholder.svg" },
-]
-
-interface Invoice {
-    id: string
-    clientId: string
-    amount: number
-    description: string
-    dueDate: string
-    status: string
-    paymentMethod: string
-    avatar: string | undefined
-}
 
 interface InvoiceTableProps {
     date: DateRange | undefined
@@ -44,45 +30,49 @@ interface InvoiceTableProps {
 export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
     const [sortField, setSortField] = useState<string>("id")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
-    const [invoices, setInvoices] = useState<Invoice[]>([
-        {
-            id: "INV-2024-001",
-            avatar: getRandomPlaceholderImage(),
-            clientId: "client1",
-            amount: 1250.00,
-            description: "Home Care Services - January 2024",
-            dueDate: "2024-02-15",
-            status: "SENT",
-            paymentMethod: "Bank Transfer"
+
+    const agencyId = useAppSelector(state => state.user.user.userInfo?.agencyId)
+
+    const { data: invoices } = useGetAgencyInvoicesQuery(agencyId || "")
+
+    const clients = useAppSelector(state => state.user.clients)
+
+    const getClientNameFromId = (clientId: string) => {
+        const client = clients.find(c => c.id === clientId)
+        return client?.fullName
+    }
+
+    console.log("INVOICES", invoices)
+
+    const getStatusColor = (status: InvoiceStatus) => {
+        switch (status) {
+            case "PENDING":
+                return "bg-yellow-50 text-yellow-700 border-yellow-200"
+            case "PAID":
+                return "bg-green-50 text-green-700 border-green-200"
+            case "OVERDUE":
+                return "bg-red-50 text-red-700 border-red-200"
+            case "CANCELLED":
+                return "bg-gray-50 text-gray-700 border-gray-200"
         }
-    ])
+    }
 
-    useEffect(() => {
-        const fetchInvoices = async () => {
-            try {
-                const response = await fetch("/api/invoices")
-                if (!response.ok) {
-                    throw new Error("Failed to fetch invoices")
-                }
-                const data = await response.json()
 
-                // Filter invoices based on date range if provided
-                let filteredData = data
-                if (date?.from && date?.to) {
-                    filteredData = data.filter((invoice: Invoice) => {
-                        const invoiceDate = new Date(invoice.dueDate)
-                        return invoiceDate >= date.from! && invoiceDate <= date.to!
-                    })
-                }
-
-                setInvoices(filteredData)
-            } catch (error) {
-                console.error("Error fetching invoices:", error)
-            }
+    const formatPaymentMethod = (paymentMethod: InvoicePaymentMethod) => {
+        switch (paymentMethod) {
+            case "CASH":
+                return "Cash"
+            case "CHEQUE":
+                return "Cheque"
+            case "CARD":
+                return "Card"
+            case "BANK_TRANSFER":
+                return "Bank Transfer"
+            case "OTHER":
+                return "Other"
         }
+    }
 
-        fetchInvoices()
-    }, [date]) // Add date as a dependency
 
     const handleSort = (field: string) => {
         if (field === sortField) {
@@ -94,41 +84,12 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
     }
 
     // Get status badge
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "OPEN":
-                return (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                        Open
-                    </Badge>
-                )
-            case "SENT":
-                return (
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-                        Sent
-                    </Badge>
-                )
-            case "PARTIALLY_PAID":
-                return (
-                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
-                        Partially Paid
-                    </Badge>
-                )
-            case "PAID":
-                return (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        Paid
-                    </Badge>
-                )
-            case "OVERDUE":
-                return (
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                        Overdue
-                    </Badge>
-                )
-            default:
-                return <Badge variant="outline">{status}</Badge>
-        }
+    const getStatusBadge = (status: InvoiceStatus) => {
+        return (
+            <Badge variant="outline" className={getStatusColor(status)}>
+                {status}
+            </Badge>
+        )
     }
 
     return (
@@ -139,12 +100,6 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
                         <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("id")}>
                             <div className="flex items-center">
                                 Invoice ID
-                                <ArrowUpDown className="ml-2 h-4 w-4" />
-                            </div>
-                        </TableHead>
-                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("status")}>
-                            <div className="flex items-center">
-                                Status
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
@@ -172,36 +127,42 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
                                 <ArrowUpDown className="ml-2 h-4 w-4" />
                             </div>
                         </TableHead>
+                        <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("status")}>
+                            <div className="flex items-center">
+                                Status
+                                <ArrowUpDown className="ml-2 h-4 w-4" />
+                            </div>
+                        </TableHead>
                         <TableHead className="w-12 py-2 px-3"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {invoices.map((invoice) => {
-                        const client = mockClients.find(c => c.id === invoice.clientId)
+                    {invoices?.map((invoice: Invoice) => {
+
                         return (
                             <TableRow key={invoice.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
                                 <TableCell className="py-2 px-3">
-                                    <div className="font-medium">{invoice.id}</div>
+                                    <div className="font-medium">INV-{invoice.invoiceNumber}</div>
                                     <div className="text-sm text-muted-foreground">{invoice.description}</div>
                                 </TableCell>
-                                <TableCell className="py-2 px-3">{getStatusBadge(invoice.status)}</TableCell>
                                 <TableCell className="py-2 px-3">
-                                    {client && (
+                                    {invoice.clientId && (
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-8 w-8">
                                                 <AvatarImage
-                                                    src={invoice.avatar}
-                                                    alt={client.name}
+                                                    src={getRandomPlaceholderImage()}
+                                                    alt={getClientNameFromId(invoice.clientId) || ""}
                                                 />
-                                                <AvatarFallback>{client.name.charAt(0)}</AvatarFallback>
+                                                <AvatarFallback>{getClientNameFromId(invoice.clientId).charAt(0)}</AvatarFallback>
                                             </Avatar>
-                                            <span>{client.name}</span>
+                                            <span>{getClientNameFromId(invoice.clientId)}</span>
                                         </div>
                                     )}
                                 </TableCell>
                                 <TableCell className="py-2 px-3 font-medium">${invoice.amount.toFixed(2)}</TableCell>
                                 <TableCell className="py-2 px-3">{format(new Date(invoice.dueDate), "MMM d, yyyy")}</TableCell>
-                                <TableCell className="py-2 px-3">{invoice.paymentMethod}</TableCell>
+                                <TableCell className="py-2 px-3">{formatPaymentMethod(invoice.paymentMethod)}</TableCell>
+                                <TableCell className="py-2 px-3">{getStatusBadge(invoice.status)}</TableCell>
                                 <TableCell className="py-2 px-3">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>

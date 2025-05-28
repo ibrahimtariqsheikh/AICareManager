@@ -344,6 +344,16 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                 documents: true,
                 clientSchedules: true,
                 careWorkerSchedules: true,
+                clientReports: {include:{
+                    caregiver:true,
+                    client:true,
+              
+                }},
+                careReports: {include:{
+                    caregiver:true, 
+                    client:true,
+                  
+                }},
 medications:{
   include:{
     logs:true

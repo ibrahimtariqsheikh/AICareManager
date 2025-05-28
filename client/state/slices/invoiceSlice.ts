@@ -2,14 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { DateRange } from "react-day-picker";
 import { User } from "@/types/prismaTypes";
 import { Invoice } from "@/types/prismaTypes";
+import { InvoiceItem } from "@/app/dashboard/billing/invoice-builder/types";
 
 interface InvoiceData {
-invoiceNumber: string;
-issueDate: string;
-dueDate: string;
-notes: string;
-taxRate: number;
-taxEnabled: boolean;
+    invoiceNumber: string;
+    issueDate: string;
+    dueDate: string;
+    notes: string;
+    taxRate: number;
+    taxEnabled: boolean;
+    predefinedItems?: InvoiceItem[];
 }
 
 
@@ -35,6 +37,7 @@ invoiceData: {
     notes: "",
     taxRate: 0,
     taxEnabled: false,
+    predefinedItems: [],
 },
 };
 

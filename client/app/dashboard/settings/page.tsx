@@ -4,8 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { CustomInput } from "@/components/ui/custom-input"
+import { CustomSelect } from "@/components/ui/custom-select"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import {
@@ -45,6 +45,8 @@ export default function SettingsPage() {
     const dispatch = useAppDispatch()
 
     const router = useRouter()
+
+    const [updateAgency] = useUpdateAgencyMutation()
 
     const handleLogout = () => {
         signOut()
@@ -112,14 +114,14 @@ export default function SettingsPage() {
     }
 
     const saveSettings = async () => {
-        toast.loading("Saving settings...")
-        const result = await useUpdateAgencyMutation({
-            agency: agency,
+        await updateAgency({
             agencyId: agency?.id,
+            agency: {
+                ...agency,
+                updatedAt: new Date().toISOString()
+            }
         })
-
         toast.success("Settings saved")
-
     }
 
 
@@ -253,12 +255,12 @@ export default function SettingsPage() {
                                             When is a visit considered late?
                                         </Label>
                                         <div className="flex items-center">
-                                            <Input
+                                            <CustomInput
                                                 id="late-visit-threshold"
                                                 type="number"
                                                 value={agency?.lateVisitThreshold}
-                                                onChange={(e) => {
-                                                    setLateVisitThreshold(e.target.value)
+                                                onChange={(value) => {
+                                                    setLateVisitThreshold(value)
                                                 }}
                                                 className="w-20 mr-2"
                                             />
@@ -283,12 +285,12 @@ export default function SettingsPage() {
                                         </div>
                                         {agency?.enableDistanceAlerts && (
                                             <div className="flex items-center mt-2">
-                                                <Input
+                                                <CustomInput
                                                     id="distance-threshold"
                                                     type="number"
                                                     value={agency?.distanceThreshold}
-                                                    onChange={(e) => {
-                                                        setDistanceThreshold(e.target.value)
+                                                    onChange={(value) => {
+                                                        setDistanceThreshold(value)
                                                     }}
                                                     className="w-20 mr-2"
                                                 />
@@ -488,39 +490,37 @@ export default function SettingsPage() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="notification-method">Preferred notification method</Label>
-                                <Select defaultValue={agency?.preferredNotificationMethod} onValueChange={
-                                    (value) => {
+                                <CustomSelect
+                                    id="notification-method"
+                                    value={agency?.preferredNotificationMethod}
+                                    onChange={(value) => {
                                         setPreferredNotificationMethod(value as PreferredNotificationMethod)
-                                    }
-                                }>
-                                    <SelectTrigger id="notification-method">
-                                        <SelectValue placeholder="Select notification method" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="EMAIL">Email</SelectItem>
-                                        <SelectItem value="SMS">SMS</SelectItem>
-                                        <SelectItem value="PHONE">Phone Call</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                    }}
+                                    options={[
+                                        { value: "EMAIL", label: "Email" },
+                                        { value: "SMS", label: "SMS" },
+                                        { value: "PHONE", label: "Phone Call" }
+                                    ]}
+                                    placeholder="Select notification method"
+                                />
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="notification-frequency">Notification frequency</Label>
-                                <Select defaultValue={agency?.notificationFrequency} onValueChange={
-                                    (value) => {
+                                <CustomSelect
+                                    id="notification-frequency"
+                                    value={agency?.notificationFrequency}
+                                    onChange={(value) => {
                                         setNotificationFrequency(value as NotificationFrequency)
-                                    }
-                                }>
-                                    <SelectTrigger id="notification-frequency">
-                                        <SelectValue placeholder="Select frequency" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="DAILY">Daily</SelectItem>
-                                        <SelectItem value="WEEKLY">Weekly</SelectItem>
-                                        <SelectItem value="MONTHLY">Monthly</SelectItem>
-                                        <SelectItem value="YEARLY">Yearly</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                    }}
+                                    options={[
+                                        { value: "DAILY", label: "Daily" },
+                                        { value: "WEEKLY", label: "Weekly" },
+                                        { value: "MONTHLY", label: "Monthly" },
+                                        { value: "YEARLY", label: "Yearly" }
+                                    ]}
+                                    placeholder="Select frequency"
+                                />
                             </div>
                         </CardContent>
                     </Card>
@@ -536,15 +536,15 @@ export default function SettingsPage() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="current-password">Current Password</Label>
-                                <Input id="current-password" type="password" />
+                                <CustomInput id="current-password" type="password" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="new-password">New Password</Label>
-                                <Input id="new-password" type="password" />
+                                <CustomInput id="new-password" type="password" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="confirm-password">Confirm New Password</Label>
-                                <Input id="confirm-password" type="password" />
+                                <CustomInput id="confirm-password" type="password" />
                             </div>
                             <Button>
                                 <Key className="mr-2 h-4 w-4" />

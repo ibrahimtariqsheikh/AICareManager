@@ -1,15 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Checkbox } from "@/components/ui/checkbox"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
     DropdownMenu,
@@ -19,56 +18,27 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Plus, Edit, Trash2, Receipt, MoreHorizontal, Download, Send, Eye, ArrowUpDown } from 'lucide-react'
+import { Edit, Trash2, Receipt, MoreHorizontal, Download, Eye, ArrowUpDown } from 'lucide-react'
 import { DateRange } from "react-day-picker"
-import { cn, getRandomPlaceholderImage } from "@/lib/utils"
-
-const mockExpenseEntries = [
-    {
-        id: "EXP-001",
-        employee: "Sarah Wilson",
-        category: "Travel",
-        description: "Client visit - Mileage",
-        amount: 45.50,
-        date: "2024-01-15",
-        status: "Approved",
-        receipt: "/placeholder.svg",
-        avatar: getRandomPlaceholderImage()
-    },
-    {
-        id: "EXP-002",
-        employee: "Mike Johnson",
-        category: "Office Supplies",
-        description: "Stationery and printer ink",
-        amount: 125.75,
-        date: "2024-01-14",
-        status: "Pending",
-        receipt: "/placeholder.svg",
-        avatar: getRandomPlaceholderImage()
-    },
-    {
-        id: "EXP-003",
-        employee: "Lisa Chen",
-        category: "Training",
-        description: "Professional development course",
-        amount: 299.99,
-        date: "2024-01-13",
-        status: "Approved",
-        receipt: "/placeholder.svg",
-        avatar: getRandomPlaceholderImage()
-    }
-]
+import { getRandomPlaceholderImage } from "@/lib/utils"
+import { useAppSelector } from "@/state/redux"
+import { useGetAgencyExpensesQuery } from "@/state/api"
 
 interface ExpenseEntry {
     id: string
-    employee: string
+    expenseNumber: number
+    amount: number
     category: string
     description: string
-    amount: number
     date: string
-    status: string
-    receipt: string
-    avatar?: string
+    type: string
+    associatedEntity: string
+    user: {
+        id: string
+        fullName: string
+        email: string
+        phoneNumber: string
+    }
 }
 
 interface ExpensesTableProps {
@@ -79,7 +49,9 @@ export function ExpensesTable({ date }: ExpensesTableProps) {
     const [showNewExpenseDialog, setShowNewExpenseDialog] = useState(false)
     const [sortField, setSortField] = useState<string>("id")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
-    const [expenseEntries, setExpenseEntries] = useState<ExpenseEntry[]>(mockExpenseEntries)
+
+    const agencyId = useAppSelector(state => state.user.user.userInfo?.agencyId)
+    const { data: expenses, isLoading: isExpensesLoading } = useGetAgencyExpensesQuery(agencyId || "")
 
     const handleSort = (field: string) => {
         if (field === sortField) {
@@ -90,17 +62,19 @@ export function ExpensesTable({ date }: ExpensesTableProps) {
         }
     }
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "Approved":
+    const getStatusColor = (type: string) => {
+        switch (type) {
+            case "COMPANY":
                 return "bg-green-50 text-green-700 border-green-200"
-            case "Pending":
+            case "PERSONAL":
                 return "bg-yellow-50 text-yellow-700 border-yellow-200"
-            case "Rejected":
-                return "bg-red-50 text-red-700 border-red-200"
             default:
                 return "bg-gray-50 text-gray-700 border-gray-200"
         }
+    }
+
+    if (isExpensesLoading) {
+        return <div>Loading expenses...</div>
     }
 
     return (
@@ -109,13 +83,13 @@ export function ExpensesTable({ date }: ExpensesTableProps) {
                 <Table>
                     <TableHeader>
                         <TableRow className="border-b border-border bg-muted/50">
-                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("id")}>
+                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("expenseNumber")}>
                                 <div className="flex items-center">
                                     ID
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("employee")}>
+                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("user.fullName")}>
                                 <div className="flex items-center">
                                     Employee
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -139,9 +113,9 @@ export function ExpensesTable({ date }: ExpensesTableProps) {
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("status")}>
+                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort("type")}>
                                 <div className="flex items-center">
-                                    Status
+                                    Type
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                 </div>
                             </TableHead>
@@ -149,29 +123,26 @@ export function ExpensesTable({ date }: ExpensesTableProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {expenseEntries.map((entry: ExpenseEntry) => (
+                        {expenses?.map((entry: ExpenseEntry) => (
                             <TableRow key={entry.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
                                 <TableCell className="py-2 px-3">
-                                    <div className="font-medium">{entry.id}</div>
+                                    <div className="font-medium">EXP-{entry.expenseNumber}</div>
                                 </TableCell>
                                 <TableCell className="py-2 px-3">
                                     <div className="flex items-center gap-2">
                                         <Avatar className="h-8 w-8">
-                                            <AvatarImage
-                                                src={entry.avatar}
-                                                alt={entry.employee}
-                                            />
-                                            <AvatarFallback>{entry.employee.charAt(0)}</AvatarFallback>
+                                            <AvatarImage src={getRandomPlaceholderImage()} alt={entry.user.fullName} />
+                                            <AvatarFallback>{entry.user.fullName.charAt(0)}</AvatarFallback>
                                         </Avatar>
-                                        <span>{entry.employee}</span>
+                                        <span>{entry.user.fullName}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="py-2 px-3">{entry.category}</TableCell>
                                 <TableCell className="py-2 px-3 font-medium">${entry.amount.toFixed(2)}</TableCell>
-                                <TableCell className="py-2 px-3">{entry.date}</TableCell>
+                                <TableCell className="py-2 px-3">{new Date(entry.date).toLocaleDateString()}</TableCell>
                                 <TableCell className="py-2 px-3">
-                                    <Badge variant="outline" className={getStatusColor(entry.status)}>
-                                        {entry.status}
+                                    <Badge variant="outline" className={getStatusColor(entry.type)}>
+                                        {entry.type}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="py-2 px-3">

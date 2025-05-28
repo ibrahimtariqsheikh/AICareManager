@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -23,7 +23,7 @@ import {
     Flag,
     CheckCircle2,
 } from "lucide-react"
-import type { Report, ReportAlert, ReportTask, BodyMapObservation, MedicationAdministration } from "@/types/prismaTypes"
+import type { Report, ReportTask, BodyMapObservation, MedicationAdministration, ReportAlert } from "@/types/prismaTypes"
 import { updateReportStatus } from "@/state/slices/reportSlice"
 import type { AppDispatch, RootState } from "@/state/redux"
 

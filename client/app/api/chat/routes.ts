@@ -1,6 +1,6 @@
 import { CoreMessage, streamText } from 'ai'
 import { anthropic } from '@ai-sdk/anthropic'
-import { tools } from '@/app/dashboard/chatbot/lib/tools'
+import { tools } from '@/app/dashboard/aimassist/lib/tools'
 
 // Base system prompt for all chat routes
 const baseSystemPrompt = `You are AIM Assist, the intelligent assistant built into AI Manager (AIM) — a care management platform for home care and supported living providers.

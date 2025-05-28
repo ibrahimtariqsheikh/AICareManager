@@ -107,7 +107,7 @@ export function InvoicePreview({ items, subtotal, tax, total, dateRange }: Invoi
               <span>${tax.toFixed(2)}</span>
             </div>
           )}
-          <div className="flex justify-between py-2 font-bold text-lg">
+          <div className="flex justify-between py-2 font-bold text-md">
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </div>

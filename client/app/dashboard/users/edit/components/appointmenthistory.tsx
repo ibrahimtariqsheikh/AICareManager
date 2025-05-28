@@ -196,21 +196,21 @@ const AppointmentHistory = ({ user }: { user: User }) => {
     )
 
     return (
-        <Card className="p-6 shadow-none">
-            <CardHeader>
-                <div className="flex justify-between items-center mb-4">
-                    <CardTitle>Appointment History</CardTitle>
-                    <div className="relative w-64">
-                        <CustomInput
-                            placeholder="Search appointments..."
-                            className="pl-8"
-                            value={searchQuery}
-                            onChange={(value: string) => setSearchQuery(value)}
-                            icon={<Search className="h-4 w-4" />}
-                        />
-                    </div>
+        <Card className="p-4 shadow-none">
+
+            {/* <div className="flex justify-between items-center mb-4">
+
+                <div className="relative w-64">
+                    <CustomInput
+                        placeholder="Search appointments..."
+                        className="pl-8"
+                        value={searchQuery}
+                        onChange={(value: string) => setSearchQuery(value)}
+                        icon={<Search className="h-4 w-4" />}
+                    />
                 </div>
-            </CardHeader>
+            </div> */}
+
             <CardContent className="px-0 pb-0">
                 <Tabs defaultValue="upcoming" className="w-full">
                     <TabsList className="w-full grid grid-cols-2 mb-6">

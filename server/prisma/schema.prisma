@@ -34,6 +34,37 @@ enum PreferredNotificationMethod {
   PHONE
 }
 
+enum AlertType {
+  INCIDENT
+  ACCIDENT
+  MEDICATION
+  LATE_VISIT
+  LOCATION
+  HEALTH_CONCERN
+  SAFEGUARDING_CONCERN
+  CHALLENGING_BEHAVIOUR
+  OTHER
+}
+
+model Alert {
+  id           String    @id @default(cuid())
+  type         AlertType
+  description  String
+  reportId     String?
+  clientId     String?
+  client       User?     @relation("AlertClient", fields: [clientId], references: [id])
+  careworkerId String?
+  careworker   User?     @relation("AlertCareworker", fields: [careworkerId], references: [id])
+  report       Report?   @relation(fields: [reportId], references: [id])
+  agencyId     String
+  agency       Agency    @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  resolvedById String?
+  resolvedBy   User?     @relation("AlertResolvedBy", fields: [resolvedById], references: [id])
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
 model Agency {
   id                           String                      @id @default(cuid())
   name                         String
@@ -87,6 +118,7 @@ model Agency {
   groups                       Group[]
   incidentReports              IncidentReport[]
   invoices                     Invoice[]
+  alerts                       Alert[]
 
   mileageRecords    MileageRecord[]
   operatingHours    OperatingHours[]
@@ -101,6 +133,8 @@ model Agency {
   scheduleTemplates ScheduleTemplate[]
   messages          Message[]          @relation("MessageAgency")
   leaveEvents       LeaveEvent[] // Added relation field for LeaveEvent
+  payrolls          Payroll[]
+  Expenses          Expenses[]
 }
 
 model Announcement {
@@ -203,8 +237,9 @@ model RateSheet {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   agencyId       String?
-  agency         Agency?         @relation(fields: [agencyId], references: [id]) // Renamed from Agency to agency
-  templateVisits TemplateVisit[] // Renamed from TemplateVisit to templateVisits
+  agency         Agency?         @relation(fields: [agencyId], references: [id])
+  templateVisits TemplateVisit[]
+  schedules      Schedule[]
 }
 
 model CustomTask {
@@ -317,6 +352,9 @@ model User {
   interests      String?
   history        String?
 
+  clientAlerts              Alert[]                   @relation("AlertClient")
+  careworkerAlerts          Alert[]                   @relation("AlertCareworker")
+  resolvedAlerts            Alert[]                   @relation("AlertResolvedBy")
   createdAnnouncements      Announcement[]            @relation("AnnouncementCreator")
   announcements             Announcement[]
   auditLogs                 AuditLog[]
@@ -358,6 +396,8 @@ model User {
   medications               Medication[]
   medicationLogs            MedicationLog[]
   leaveEvents               LeaveEvent[] // Added relation field for LeaveEvent
+  Payroll                   Payroll[]
+  expenses                  Expenses[] // Added relation field for Expenses
 }
 
 enum TemplateVisitDay {
@@ -386,7 +426,8 @@ model Schedule {
   status      String       @default("PENDING")
   type        ScheduleType @default(APPOINTMENT)
   notes       String?
-  chargeRate  Float?
+  rateSheetId String?
+  rateSheet   RateSheet?   @relation(fields: [rateSheetId], references: [id])
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   visitTypeId String?
@@ -526,15 +567,16 @@ model Report {
   lastEditReason      String?
   bodyMapObservations BodyMapObservation[]
 
+  alerts             Alert[]
   agency             Agency               @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   client             User                 @relation("ReportClient", fields: [clientId], references: [id], onDelete: Cascade)
   caregiver          User                 @relation("ReportCaregiver", fields: [userId], references: [id], onDelete: Cascade)
   visitType          VisitType?           @relation(fields: [visitTypeId], references: [id])
   visitSnapshot      VisitSnapshot?
   medicationSnapshot MedicationSnapshot[]
-  alerts             ReportAlert[]
-  editHistory        ReportEdit[]
-  tasksCompleted     ReportTask[]
+
+  editHistory    ReportEdit[]
+  tasksCompleted ReportTask[]
 }
 
 model MedicationSnapshot {
@@ -584,19 +626,6 @@ model ReportTask {
   @@index([taskId])
 }
 
-model ReportAlert {
-  id         String        @id @default(cuid())
-  reportId   String
-  type       AlertType
-  message    String
-  severity   AlertSeverity
-  createdAt  DateTime      @default(now())
-  resolved   Boolean       @default(false)
-  resolvedAt DateTime?
-  resolvedBy String?
-  report     Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
-}
-
 model BodyMapObservation {
   id        String   @id @default(cuid())
   reportId  String
@@ -618,18 +647,90 @@ model ReportEdit {
   report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
 }
 
+enum ExpenseType {
+  COMPANY
+  CLIENT
+  CARE_WORKER
+  OFFICE_STAFF
+}
+
+enum ExpenseAssociatedEntity {
+  CLIENT
+  CARE_WORKER
+  OFFICE_STAFF
+}
+
+enum ExpenseCategory {
+  TRAVEL
+  MEALS
+  LODGING
+  OTHER
+}
+
+model Expenses {
+  id               String                  @id @default(cuid())
+  expenseNumber    Int                     @default(autoincrement())
+  type             ExpenseType
+  associatedEntity ExpenseAssociatedEntity
+  category         ExpenseCategory
+  description      String
+  amount           Float
+  date             DateTime
+  agencyId         String
+  userId           String
+  user             User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agency           Agency                  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+}
+
+model Payroll {
+  id                      String   @id @default(cuid())
+  payrollNumber           Int      @default(autoincrement())
+  userId                  String
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agencyId                String
+  agency                  Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  expensesFromDate        DateTime
+  expensesToDate          DateTime
+  scheduleFromDate        DateTime
+  scheduleToDate          DateTime
+  calculatedScheduleHours Float
+  calculatedExpenses      Float
+  totalEarnings           Float
+  totalDeductions         Float
+  netPay                  Float
+  taxRate                 Float
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum InvoicePaymentMethod {
+  CASH
+  CHEQUE
+  CARD
+  BANK_TRANSFER
+  OTHER
+}
+
 model Invoice {
-  id            String        @id @default(cuid())
-  invoiceNumber Int           @default(autoincrement())
+  id            String                @id @default(cuid())
+  invoiceNumber Int                   @default(autoincrement())
   agencyId      String
   clientId      String?
   amount        Float
   description   String
-  issuedAt      DateTime      @default(now())
+  status        InvoiceStatus         @default(PENDING)
+  issuedAt      DateTime              @default(now())
   dueDate       DateTime
-  status        InvoiceStatus
-  agency        Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  client        User?         @relation(fields: [clientId], references: [id])
+  paymentMethod InvoicePaymentMethod?
+  agency        Agency                @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client        User?                 @relation(fields: [clientId], references: [id])
 }
 
 model MileageRecord {
@@ -965,12 +1066,6 @@ enum ScheduleType {
   OTHER
 }
 
-enum InvoiceStatus {
-  PENDING
-  PAID
-  OVERDUE
-}
-
 enum SeverityLevel {
   LOW
   MEDIUM
@@ -1007,20 +1102,4 @@ enum ReportStatus {
   EDITED
   FLAGGED
   REVIEWED
-}
-
-enum AlertType {
-  MEDICATION
-  INCIDENT
-  HEALTH_CHANGE
-  BEHAVIOR
-  MISSED_TASK
-  OTHER
-}
-
-enum AlertSeverity {
-  LOW
-  MEDIUM
-  HIGH
-  CRITICAL
 }

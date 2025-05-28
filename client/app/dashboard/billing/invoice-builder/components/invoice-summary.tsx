@@ -23,7 +23,7 @@ export function InvoiceSummary({ subtotal, tax, total, taxEnabled, taxRate }: In
         </div>
       )}
 
-      <div className="flex justify-between font-bold text-lg pt-2 border-t">
+      <div className="flex justify-between font-bold text-md pt-2 border-t">
         <span>Total</span>
         <span>${total.toFixed(2)}</span>
       </div>

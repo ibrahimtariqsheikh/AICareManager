@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Sparkles, ChevronDown, TrendingUp, DollarSign, CreditCard, Users } from "lucide-react"
+import { Sparkles, ChevronDown } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
     ChartContainer,
@@ -25,10 +25,10 @@ const revenueData = [
 ]
 
 const paymentMethodData = [
-    { name: "Credit Card", value: 45, fill: "hsl(var(--chart-1))" },
-    { name: "Bank Transfer", value: 30, fill: "hsl(var(--chart-2))" },
-    { name: "Cash", value: 15, fill: "hsl(var(--chart-3))" },
-    { name: "Other", value: 10, fill: "hsl(var(--chart-4))" },
+    { name: "Credit Card", value: 45, fill: "hsl(210, 100%, 50%)" },
+    { name: "Bank Transfer", value: 30, fill: "hsl(210, 100%, 60%)" },
+    { name: "Cash", value: 15, fill: "hsl(210, 100%, 70%)" },
+    { name: "Other", value: 10, fill: "hsl(210, 100%, 80%)" },
 ]
 
 const clientRetentionData = [
@@ -43,37 +43,37 @@ const clientRetentionData = [
 const revenueChartConfig = {
     revenue: {
         label: "Revenue",
-        color: "hsl(var(--chart-1))",
+        color: "hsl(210, 100%, 50%)",
     },
     expenses: {
         label: "Expenses",
-        color: "hsl(var(--chart-2))",
+        color: "hsl(210, 100%, 70%)",
     },
 }
 
 const paymentChartConfig = {
     "Credit Card": {
         label: "Credit Card",
-        color: "hsl(var(--chart-1))",
+        color: "hsl(210, 100%, 50%)",
     },
     "Bank Transfer": {
         label: "Bank Transfer",
-        color: "hsl(var(--chart-2))",
+        color: "hsl(210, 100%, 60%)",
     },
     Cash: {
         label: "Cash",
-        color: "hsl(var(--chart-3))",
+        color: "hsl(210, 100%, 70%)",
     },
     Other: {
         label: "Other",
-        color: "hsl(var(--chart-4))",
+        color: "hsl(210, 100%, 80%)",
     },
 }
 
 const retentionChartConfig = {
     retention: {
         label: "Retention Rate (%)",
-        color: "hsl(var(--chart-1))",
+        color: "hsl(210, 100%, 50%)",
     },
 }
 

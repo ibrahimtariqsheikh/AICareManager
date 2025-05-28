@@ -3,7 +3,7 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { Message } from "@/state/slices/chatSlice"
 
-import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog, LeaveEvent } from "../types/prismaTypes"
+import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog, LeaveEvent, Invoice, Expenses, Payroll } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
 import { EmergencyContact } from "@/types/profileTypes"
 
@@ -268,7 +268,9 @@ export const api = createApi({
     "MedicationLogs",
     "Conversations",
     "Messages",
-    "LeaveEvents"
+    "LeaveEvents",
+    "Payrolls",
+    "Expenses"
   ],
   endpoints: (build) => ({
     // Get user
@@ -340,7 +342,7 @@ export const api = createApi({
       providesTags: ["Reports"],
     }),
 
-    getCurrentInvoiceNumber: build.query<number, void>({
+    getCurrentInvoiceNumber: build.query<{invoiceNumber: number}, void>({
       query: () => `/invoices/current-invoice-number`,
       providesTags: ["Invoices"],
     }),
@@ -817,7 +819,18 @@ addVisitTypeTask: build.mutation<Task, { userId: string; visitTypeId: string; ta
       query: (agencyId) => `/agencies/${agencyId}/groups`,
       providesTags: ["Groups"],
     }),
-
+getAgencyInvoices: build.query<Invoice[], string>({
+  query: (agencyId) => `/agencies/${agencyId}/invoices`,
+}),
+getAgencyPayrolls: build.query<Payroll[], string>({
+  query: (agencyId) => `/agencies/${agencyId}/payrolls`,
+}),
+getAgencyExpenses: build.query<Expenses[], string>({
+  query: (agencyId) => `/agencies/${agencyId}/expenses`,
+  providesTags: (result, error, agencyId) => [
+    { type: 'Expenses', id: agencyId }
+  ],
+}),
 
 
     // Group endpoints
@@ -992,9 +1005,45 @@ addVisitTypeTask: build.mutation<Task, { userId: string; visitTypeId: string; ta
       invalidatesTags: ["Conversations"],
     }),
 
-
- 
-
+    getInvoiceDashboardData: build.query<{ 
+      numberOfInvoices: number; 
+      revenue: number;
+      numberOfClients: number;
+      numberOfExpenses: number;
+    }, string>({
+      query: (agencyId) => `/invoices/dashboard-data/${agencyId}`,
+    }),
+getExpensesByDateRange: build.query<{ totalAmount: number }, { startDate: string; endDate: string }>({
+  query: ({ startDate, endDate }) => `/invoices/expenses/date-range?startDate=${startDate}&endDate=${endDate}`,
+}),
+getScheduleHoursByDateRange: build.query<{ totalHours: number; payRate: number }, { startDate: string; endDate: string }>({
+  query: ({ startDate, endDate }) => `/invoices/schedule-hours/date-range?startDate=${startDate}&endDate=${endDate}`,
+}),
+  createPayroll: build.mutation<Payroll, Payroll>({
+    query: (payroll) => ({
+      url: '/invoices/payroll',
+      method: 'POST',
+      body: payroll,
+    }),
+    invalidatesTags: ["Payrolls"],
+  }),
+  createExpense: build.mutation<Expenses, Expenses>({
+    query: (expense) => ({
+      url: '/invoices/expense',
+      method: 'POST',
+      body: expense,
+    }),
+    invalidatesTags: (result, error, arg) => [
+      { type: 'Expenses', id: arg.agencyId }
+    ],
+  }),
+  createInvoice: build.mutation<Invoice, Invoice>({
+    query: (invoice ) => ({
+      url: '/invoices/invoice',
+      method: 'POST',
+      body: invoice,
+    }),
+  }),
 
   }),
 })
@@ -1070,5 +1119,14 @@ export const {
   useGetMessagesByAgencyQuery,
   useDeleteMessageMutation,
   useCreateConversationMutation,
-  useSendMessageInConversationMutation
+  useSendMessageInConversationMutation,
+  useGetAgencyInvoicesQuery,
+  useGetAgencyPayrollsQuery,
+  useGetAgencyExpensesQuery,
+  useGetInvoiceDashboardDataQuery,
+  useGetExpensesByDateRangeQuery,
+  useGetScheduleHoursByDateRangeQuery,
+  useCreatePayrollMutation,
+  useCreateExpenseMutation,
+  useCreateInvoiceMutation,
 } = api

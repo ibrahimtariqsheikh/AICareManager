@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -22,58 +22,18 @@ import {
 import { Plus, Edit, Trash2, Calculator, Paperclip, MoreHorizontal, Download, Send, Eye, ArrowUpDown } from 'lucide-react'
 import { DateRange } from "react-day-picker"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
+import { useAppSelector } from "@/state/redux"
+import { useGetAgencyPayrollsQuery } from "@/state/api"
+import { Payroll } from "@/types/billing"
 
 interface PayrollTableProps {
     date: DateRange | undefined
 }
 
-const mockPayrollEntries = [
-    {
-        id: "PAY-001",
-        employee: "Sarah Wilson",
-        type: "Careworker",
-        hoursWorked: 40,
-        hourlyRate: 25.00,
-        grossPay: 1000.00,
-        taxDeductions: 200.00,
-        netPay: 800.00,
-        expenses: 50.00,
-        status: "Processed",
-        payPeriod: "Jan 1-15, 2024",
-        avatar: getRandomPlaceholderImage()
-    },
-    {
-        id: "PAY-002",
-        employee: "Mike Johnson",
-        type: "Office Staff",
-        hoursWorked: 0,
-        hourlyRate: 0,
-        grossPay: 3000.00,
-        taxDeductions: 600.00,
-        netPay: 2400.00,
-        expenses: 0,
-        status: "Pending",
-        payPeriod: "Jan 1-15, 2024",
-        avatar: getRandomPlaceholderImage()
-    },
-    {
-        id: "PAY-003",
-        employee: "Lisa Chen",
-        type: "Careworker",
-        hoursWorked: 35,
-        hourlyRate: 28.00,
-        grossPay: 980.00,
-        taxDeductions: 196.00,
-        netPay: 784.00,
-        expenses: 75.00,
-        status: "Processed",
-        payPeriod: "Jan 1-15, 2024",
-        avatar: getRandomPlaceholderImage()
-    }
-]
 
 interface PayrollEntry {
     id: string
+    payrollNumber: string
     employee: string
     type: string
     hoursWorked: number
@@ -91,7 +51,58 @@ export function PayrollTable({ date }: PayrollTableProps) {
     const [showNewPayrollDialog, setShowNewPayrollDialog] = useState(false)
     const [sortField, setSortField] = useState<string>("id")
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
-    const [payrollEntries, setPayrollEntries] = useState<PayrollEntry[]>(mockPayrollEntries)
+    const [payrollEntries, setPayrollEntries] = useState<PayrollEntry[]>([])
+
+    const agencyId = useAppSelector(state => state.user.user.userInfo?.agencyId)
+    const { data: payrolls, isLoading: isPayrollsLoading } = useGetAgencyPayrollsQuery(agencyId || "")
+    const reduxPayrolls = useAppSelector(state => state.payroll.payrolls)
+
+    useEffect(() => {
+        try {
+            // Combine API data with Redux store data, ensuring we have valid arrays
+            const apiPayrolls = Array.isArray(payrolls) ? payrolls : []
+            const reduxPayrollsArray = Array.isArray(reduxPayrolls) ? reduxPayrolls : []
+            const allPayrolls = [...apiPayrolls, ...reduxPayrollsArray]
+
+            if (allPayrolls.length > 0) {
+                const transformedEntries: PayrollEntry[] = allPayrolls.map(payroll => {
+                    // Safely access user properties with optional chaining
+                    const fullName = payroll.user?.fullName || "Unknown"
+                    const role = payroll.user?.role || "Careworker"
+
+                    const entry: PayrollEntry = {
+                        id: payroll.id,
+                        payrollNumber: payroll.payrollNumber,
+                        employee: fullName,
+                        type: role,
+                        hoursWorked: payroll.calculatedScheduleHours || 0,
+                        hourlyRate: payroll.calculatedScheduleHours > 0
+                            ? (payroll.totalEarnings || 0) / payroll.calculatedScheduleHours
+                            : 0,
+                        grossPay: payroll.totalEarnings || 0,
+                        taxDeductions: payroll.totalDeductions || 0,
+                        netPay: payroll.netPay || 0,
+                        expenses: payroll.calculatedExpenses || 0,
+                        status: "Processed",
+                        payPeriod: `${new Date(payroll.scheduleFromDate).toLocaleDateString()} - ${new Date(payroll.scheduleToDate).toLocaleDateString()}`
+                    }
+                    const avatar = getRandomPlaceholderImage()
+                    if (avatar) {
+                        entry.avatar = avatar
+                    }
+                    return entry
+                })
+                setPayrollEntries(transformedEntries)
+            } else {
+                setPayrollEntries([])
+            }
+        } catch (error) {
+            console.error('Error transforming payroll data:', error)
+            setPayrollEntries([])
+        }
+    }, [payrolls, reduxPayrolls])
+
+    console.log("PAYROLLS", payrolls)
 
     const handleSort = (field: string) => {
         if (field === sortField) {
@@ -164,7 +175,7 @@ export function PayrollTable({ date }: PayrollTableProps) {
                         {payrollEntries.map((entry: PayrollEntry) => (
                             <TableRow key={entry.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
                                 <TableCell className="py-2 px-3">
-                                    <div className="font-medium">{entry.id}</div>
+                                    <div className="font-medium">PAY-{entry.payrollNumber}</div>
                                     <div className="text-sm text-muted-foreground">{entry.payPeriod}</div>
                                 </TableCell>
                                 <TableCell className="py-2 px-3">

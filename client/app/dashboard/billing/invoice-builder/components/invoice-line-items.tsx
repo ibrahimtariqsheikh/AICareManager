@@ -1,9 +1,11 @@
 "use client"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { InvoiceItem } from "../types"
+import { CustomInput } from "@/components/ui/custom-input"
+import { cn } from "@/lib/utils"
+
 
 interface InvoiceLineItemsProps {
   items: InvoiceItem[]
@@ -21,10 +23,11 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
 
     if (field === "quantity" || field === "rate") {
       const numValue = Number.parseFloat(value) || 0
+      const roundedValue = Math.round(numValue * 100) / 100
       updatedItem = {
         ...item,
-        [field]: numValue,
-        amount: field === "quantity" ? numValue * item.rate : item.quantity * numValue,
+        [field]: roundedValue,
+        amount: field === "quantity" ? roundedValue * item.rate : item.quantity * roundedValue,
       }
     } else {
       updatedItem = { ...item, [field]: value }
@@ -70,31 +73,41 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
       {items.map((item) => (
         <div key={item.id} className="grid grid-cols-12 gap-2 items-center">
           <div className="col-span-6">
-            <Input
+            <CustomInput
               value={item.description}
-              onChange={(e) => handleItemChange(item.id, "description", e.target.value)}
+              onChange={(value) => handleItemChange(item.id, "description", value)}
               placeholder="Enter description"
+              variant="default"
+              inputSize="default"
             />
           </div>
           <div className="col-span-2">
-            <Input
+            <CustomInput
               type="number"
               min="0"
               step="0.5"
-              value={item.quantity}
-              onChange={(e) => handleItemChange(item.id, "quantity", e.target.value)}
+              value={item.quantity.toString()}
+              onChange={(value) => handleItemChange(item.id, "quantity", value)}
+              variant="default"
+              inputSize="default"
             />
           </div>
           <div className="col-span-2">
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-              <Input
+              <CustomInput
                 type="number"
                 min="0"
-                step="0.01"
-                value={item.rate}
-                onChange={(e) => handleItemChange(item.id, "rate", e.target.value)}
+                step="1"
+                value={Math.floor(item.rate).toString()}
+                onChange={(value) => {
+                  // Ensure only whole numbers for rate
+                  const numValue = Math.floor(Number.parseFloat(value) || 0)
+                  handleItemChange(item.id, "rate", numValue.toString())
+                }}
                 className="pl-7"
+                variant="default"
+                inputSize="default"
               />
             </div>
           </div>

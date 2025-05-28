@@ -8,7 +8,7 @@ import { ChevronDown } from "lucide-react"
 const selectVariants = cva("flex w-full rounded-md border bg-background text-foreground transition-colors relative", {
     variants: {
         variant: {
-            default: cn("border text-black border-neutral-200 text-sm bg-neutral-100/50", "dark:text-white dark:border-neutral-800 dark:bg-neutral-900/50"),
+            default: cn("border text-black border-neutral-200 text-sm border-neutral-200", "dark:text-white dark:border-neutral-800 dark:bg-neutral-900/50"),
             ghost: "border-none bg-transparent shadow-none",
             outline: cn("border-input ring-offset-background", "dark:border-neutral-800"),
         },
@@ -338,7 +338,7 @@ const CustomSelect = React.forwardRef<HTMLDivElement, CustomSelectProps>(
             selectVariants({ variant, selectSize, state: computedState, className }),
             "transition-all duration-200 ease-out",
             !disabled && cn(
-                "hover:bg-black/[0.02] hover:border-black/[0.15]",
+                "hover:bg-black/[0.01] hover:border-black/[0.15]",
                 "dark:hover:bg-white/[0.02] dark:hover:border-white/[0.15]"
             ),
             (isFocused || isOpen) && cn(

@@ -383,13 +383,13 @@ export const MedicationLog = () => {
                     </div>
                 </>
             ) : (
-                <div className="flex flex-col items-center justify-center py-12">
+                <div className="flex flex-col items-center justify-center py-4">
                     <div className="text-center space-y-4">
                         <div className="bg-neutral-100 p-6 rounded-full inline-block">
                             <Calendar className="w-8 h-8 text-neutral-600" />
                         </div>
-                        <h3 className="text-xl font-semibold text-neutral-800">No Prescriped Medications</h3>
-                        <p className="text-neutral-600 max-w-md">
+                        <h3 className="text-md font-semibold text-neutral-800">No Prescriped Medications</h3>
+                        <p className="text-neutral-600 max-w-md text-sm">
                             Start by adding medications to track their schedule and status.
                         </p>
                         <Button

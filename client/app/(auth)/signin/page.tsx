@@ -108,7 +108,7 @@ const SigninPage = () => {
                     </div>
                 </div>
             ),
-            title: "Care AI",
+            title: "Aim Assist",
             description: "Smart support for care management",
             index: 0,
         },

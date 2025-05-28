@@ -1,4 +1,4 @@
-import { MedicationAdministration, BodyMapObservation, ReportAlert, ReportStatus, ReportEdit } from "@/types/prismaTypes";
+import { MedicationAdministration, BodyMapObservation, ReportAlert, ReportStatus, ReportEdit, User } from "@/types/prismaTypes";
 
 import { ReportTask } from "@/types/prismaTypes";
 

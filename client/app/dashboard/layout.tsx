@@ -31,11 +31,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const { user } = useAppSelector((state) => state.user)
     const { data: userInformation } = useGetUserQuery()
     const { data: agencyUsers } = useGetAgencyUsersQuery(userInformation?.userInfo?.agencyId || "")
-
-    const isSchedulePage = pathname === "/dashboard/schedule"
     const { data: agency } = useGetAgencyByIdQuery(userInformation?.userInfo?.agencyId || "")
     const [isLoading, setIsLoading] = useState(true)
     const { theme } = useTheme()
+    const clients = useAppSelector((state) => state.user.clients)
+    const careWorkers = useAppSelector((state) => state.user.careWorkers)
+    const officeStaff = useAppSelector((state) => state.user.officeStaff)
+    const combinedUsers = [...clients, ...careWorkers, ...officeStaff]
+
+    const isSchedulePage = pathname === "/dashboard/schedule"
 
     useEffect(() => {
         if (userInformation) {
@@ -114,10 +118,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
     const currentPath = pathname.split("/").filter(Boolean)
     const currentPathTitle = currentPath[currentPath.length - 1]
-    const currentPathTitleCapitalized =
-        currentPathTitle
-            ? `${currentPathTitle.charAt(0).toUpperCase()}${currentPathTitle.slice(1)}`
-            : "Dashboard"
+
+    const handleIdBasedPath = (id: string) => {
+        const user = combinedUsers.find((user: any) => user.id === id)
+        return user?.fullName || "Details"
+    }
+
+    const currentPathTitleCapitalized = currentPathTitle
+        ? currentPathTitle.match(/^[A-Za-z0-9]{20,}$/)
+            ? handleIdBasedPath(currentPathTitle)
+            : `${currentPathTitle.charAt(0).toUpperCase()}${currentPathTitle.slice(1)}`
+        : "Dashboard"
 
 
     return (

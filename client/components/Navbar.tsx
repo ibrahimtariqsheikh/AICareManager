@@ -235,7 +235,7 @@ const Navbar = () => {
                 Dashboard
               </Button>
             ) : (
-              <Button onClick={handleLogin} className="w-full rounded-xl" variant="default">
+              <Button onClick={handleLogin} className="w-full rounded-md" variant="default">
                 <LogIn className="w-4 h-4 mr-2" />
                 Login
               </Button>
@@ -278,7 +278,7 @@ const Navbar = () => {
 
     return (
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-        <Button onClick={() => router.push("/signin")} className="rounded-xl">
+        <Button onClick={() => router.push("/signin")} className="rounded-md">
           <LogIn className="w-4 h-4 mr-2" />
           <span className="hidden sm:inline text-sm">Login</span>
         </Button>
@@ -287,7 +287,7 @@ const Navbar = () => {
   }
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 lg:mx-24 mx-3 mt-4 px-3 rounded-lg py-2 bg-white/80 flex justify-between items-center backdrop-blur-md z-50 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)] border border-muted-foreground/20"
+      className="fixed top-0 left-0 right-0 lg:mx-24 mx-3 mt-4 px-5 rounded-lg bg-white/80 flex justify-between items-center backdrop-blur-md z-50 dark:shadow-[0_8px_30px_rgba(147,51,234,0.07)] border border-muted-foreground/20"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -298,8 +298,8 @@ const Navbar = () => {
         transition={{ duration: 0.2 }}
       >
         <Link href="/" className="flex items-center font-bold gap-1">
-          <Image src="/logos/logo.svg" alt="AI Manager" width={35} height={35} />
-          <span className={`text-lg font-bold ml-1 ${geistMono.className}`}>AIM</span>
+          <Image src="/assets/aimlogo.png" alt="AI Manager" width={50} height={50} />
+
         </Link>
       </motion.div>
 

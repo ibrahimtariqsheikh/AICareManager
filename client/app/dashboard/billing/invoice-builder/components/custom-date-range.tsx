@@ -46,7 +46,7 @@ const isDateInRange = (date: Date, startDate: Date, endDate: Date) => {
 interface DateRangeSelectorProps {
     className?: string
     onRangeChange?: (range: { from: Date; to: Date } | undefined) => void
-    initialDateRange?: { from: Date; to: Date }
+    initialDateRange?: { from: Date; to: Date } | undefined
     placeholder?: string
     disabled?: boolean
 }

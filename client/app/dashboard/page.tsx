@@ -2,7 +2,7 @@
 
 
 import { useAppSelector } from "../../state/redux"
-import { useGetDashboardDataQuery } from "../../state/api"
+import { useGetAgencyByIdQuery, useGetDashboardDataQuery } from "../../state/api"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card"
 import {
     Users,
@@ -15,6 +15,9 @@ import {
     Filter,
 
     Search,
+    Timer,
+    Bell,
+    Info,
 } from "lucide-react"
 import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
@@ -33,6 +36,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { ErrorDisplay } from "@/components/ui/error-display"
+import { Alert, Report } from "@/types/prismaTypes"
+
 
 
 export default function DashboardPage() {
@@ -42,6 +47,18 @@ export default function DashboardPage() {
     const [showFilters, setShowFilters] = useState(false)
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
     const [selectedType, setSelectedType] = useState<string | null>(null)
+    const careWorkers = useAppSelector((state) => state.user.careWorkers)
+    const { data: agencyData } = useGetAgencyByIdQuery(user?.userInfo?.agencyId || "")
+    const reports: Report[] = agencyData?.reports || []
+    const alerts: Alert[] = agencyData?.alerts || []
+    console.log(alerts)
+
+    const getStatusColor = (status: string) => {
+        if (status === "CONFIRMED") return "bg-green-100 text-green-800 border-green-200"
+        if (status === "PENDING") return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        if (status === "CANCELLED") return "bg-red-100 text-red-800 border-red-200"
+        return "bg-gray-100 text-gray-800 border-gray-200"
+    }
 
     useEffect(() => {
         if (user?.userInfo?.id) {
@@ -147,8 +164,8 @@ export default function DashboardPage() {
         .filter(schedule => {
             const matchesSearch = schedule.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 schedule.careWorkerName.toLowerCase().includes(searchQuery.toLowerCase())
-            const matchesStatus = !selectedStatus || schedule.status === selectedStatus
-            const matchesType = !selectedType || schedule.type === selectedType
+            const matchesStatus = !selectedStatus || selectedStatus === "all" || schedule.status === selectedStatus
+            const matchesType = !selectedType || selectedType === "all" || schedule.type === selectedType
             return matchesSearch && matchesStatus && matchesType
         })
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -157,25 +174,51 @@ export default function DashboardPage() {
     return (
         <div className="p-6 space-y-4 mt-3">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                 <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
                             <div className={cn("p-1.5 rounded-full bg-blue-100", "dark:bg-blue-900/30")}>
                                 <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Clients</h3>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Active Clients</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-0.5">
                             <div className="text-2xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalClients}</div>
-                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
+                                <ArrowUpRight className="h-2.5 w-2.5 mr-0.5" />
                                 +12%
                             </div>
                         </div>
-                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Patient increase in 7 days.</div>
-                        <div className="flex justify-end mt-1" onClick={() => router.push("/dashboard/users")}>
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
+
+                        <div className="flex justify-start mt-1" onClick={() => router.push("/dashboard/users")}>
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]">
+                                <Info className="h-2.5 w-2.5 " />
+                                See details
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
+                    <CardContent className="p-4">
+                        <div className="flex items-center mb-2">
+                            <div className={cn("p-1.5 rounded-full", getStatusColor("active"))}>
+                                <Users className="h-4 w-4 text-green-600 dark:text-green-400" />
+                            </div>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Active Care Workers</h3>
+                        </div>
+                        <div className="flex justify-between items-baseline mb-0.5">
+                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">{careWorkers.length}</div>
+                            <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
+                                <ArrowUpRight className="h-2.5 w-2.5 mr-0.5" />
+                                +8%
+                            </div>
+                        </div>
+
+                        <div className="flex justify-start mt-1" onClick={() => router.push("/dashboard/care-workers")}>
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]">
+                                <Info className="h-2.5 w-2.5" />
                                 See details
                             </Button>
                         </div>
@@ -186,20 +229,21 @@ export default function DashboardPage() {
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
                             <div className={cn("p-1.5 rounded-full bg-purple-100", "dark:bg-purple-900/30")}>
-                                <Calendar className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                                <Timer className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                             </div>
-                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Appointment</h3>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Hours</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-0.5">
                             <div className="text-2xl font-bold text-neutral-800 dark:text-white">{dashboardData?.stats.totalSchedules}</div>
-                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
+                                <ArrowUpRight className="h-2.5 w-2.5 mr-0.5" />
                                 +10%
                             </div>
                         </div>
-                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Appointment increase in 7 days.</div>
-                        <div className="flex justify-end mt-1" onClick={() => router.push("/dashboard/schedule")}>
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
+
+                        <div className="flex justify-start mt-1" onClick={() => router.push("/dashboard/schedule")}>
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]">
+                                <Info className="h-2.5 w-2.5 " />
                                 See details
                             </Button>
                         </div>
@@ -216,14 +260,15 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex justify-between items-baseline mb-0.5">
                             <div className="text-2xl font-bold text-neutral-800 dark:text-white">$7,209.29</div>
-                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
+                                <ArrowUpRight className="h-2.5 w-2.5 mr-0.5" />
                                 +24%
                             </div>
                         </div>
-                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Treatments increase in 7 days.</div>
-                        <div className="flex justify-end mt-1">
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
+
+                        <div className="flex justify-start mt-1">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]">
+                                <Info className="h-2.5 w-2.5 " />
                                 See details
                             </Button>
                         </div>
@@ -234,33 +279,38 @@ export default function DashboardPage() {
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
                             <div className={cn("p-1.5 rounded-full bg-amber-100", "dark:bg-amber-900/30")}>
-                                <ClipboardList className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                                <Bell className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                             </div>
-                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Treatments</h3>
+                            <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Unresolved Alerts</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-0.5">
                             <div className="text-2xl font-bold text-neutral-800 dark:text-white">234</div>
-                            <div className="flex items-center text-blue-600 text-xs dark:text-blue-400">
-                                <ArrowUpRight className="h-3 w-3 mr-0.5" />
+                            <div className="flex items-center text-blue-600 text-[11px] dark:text-blue-400">
+                                <ArrowUpRight className="h-2.5 w-2.5 mr-0.5" />
                                 +11%
                             </div>
                         </div>
-                        <div className="text-xs text-neutral-500 dark:text-neutral-400">Treatments increase in 7 days.</div>
-                        <div className="flex justify-end mt-1">
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-xs">
+
+                        <div className="flex justify-start mt-1">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]">
+                                <Info className="h-2.5 w-2.5" />
                                 See details
                             </Button>
                         </div>
                     </CardContent>
                 </Card>
+
+
             </div>
+
+
 
             {/* Recent Schedules */}
             <Card>
                 <CardHeader className="p-4 pb-2">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                            <div className={cn("p-1.5 rounded-md bg-indigo-100", "dark:bg-indigo-900/30")}>
+                            <div className={cn("p-1.5 rounded-full bg-indigo-100", "dark:bg-indigo-900/30")}>
                                 <Calendar className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
                             </div>
                             <CardTitle className="text-base ml-2">Upcoming Schedules</CardTitle>
@@ -279,7 +329,7 @@ export default function DashboardPage() {
                                 onClick={() => setShowFilters(!showFilters)}
                                 className="h-8"
                             >
-                                <Filter className="h-3.5 w-3.5 mr-1.5" />
+                                <Filter className="h-3.5 w-3.5 .5" />
                                 {showFilters ? "Hide Filters" : "Show Filters"}
                             </Button>
                         </div>
@@ -289,24 +339,24 @@ export default function DashboardPage() {
                 {showFilters && (
                     <CardContent className="p-4 pt-0">
                         <div className="flex items-center space-x-3">
-                            <Select value={selectedStatus || ""} onValueChange={setSelectedStatus}>
+                            <Select value={selectedStatus || "all"} onValueChange={setSelectedStatus}>
                                 <SelectTrigger className="w-[150px] h-8 text-sm">
                                     <SelectValue placeholder="Status" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All Status</SelectItem>
+                                    <SelectItem value="all">All Status</SelectItem>
                                     <SelectItem value="completed">Completed</SelectItem>
                                     <SelectItem value="pending">Pending</SelectItem>
                                     <SelectItem value="cancelled">Cancelled</SelectItem>
                                 </SelectContent>
                             </Select>
 
-                            <Select value={selectedType || ""} onValueChange={setSelectedType}>
+                            <Select value={selectedType || "all"} onValueChange={setSelectedType}>
                                 <SelectTrigger className="w-[150px] h-8 text-sm">
                                     <SelectValue placeholder="Type" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All Types</SelectItem>
+                                    <SelectItem value="all">All Types</SelectItem>
                                     <SelectItem value="visit">Visit</SelectItem>
                                     <SelectItem value="appointment">Appointment</SelectItem>
                                     <SelectItem value="task">Task</SelectItem>
@@ -322,11 +372,11 @@ export default function DashboardPage() {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-border bg-muted/50">
-                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Client</th>
-                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Care Worker</th>
-                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
-                                        <th className="py-2 px-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                                        <th className="py-2 px-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider"></th>
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Client</th>
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Care Worker</th>
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                                        <th className="py-2 px-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -349,19 +399,17 @@ export default function DashboardPage() {
                                                 <Badge
                                                     variant="outline"
                                                     className={cn(
-                                                        "text-xs",
-                                                        schedule.status === "completed" && "bg-green-100 text-green-800 border-green-200",
-                                                        schedule.status === "pending" && "bg-yellow-100 text-yellow-800 border-yellow-200",
-                                                        schedule.status === "cancelled" && "bg-red-100 text-red-800 border-red-200"
+                                                        "text-[11px]",
+                                                        getStatusColor(schedule.status.toUpperCase())
                                                     )}
                                                 >
                                                     {schedule.status}
                                                 </Badge>
                                             </td>
                                             <td className="py-2 px-3 text-right">
-                                                <Button variant="outline" size="sm" className="h-7">
+                                                <Button variant="outline" size="sm" className="h-7" onClick={() => router.push(`/dashboard/schedule`)}>
                                                     <span className="flex items-center">
-                                                        <Calendar className="h-3.5 w-3.5 mr-1" />
+                                                        <Calendar className="h-3 w-3 mr-2" />
                                                         View
                                                     </span>
                                                 </Button>
@@ -388,6 +436,127 @@ export default function DashboardPage() {
                     </div>
                 </CardContent>
             </Card>
+            {/* Alerts and Reports Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Unresolved Alerts Card */}
+                <Card>
+                    <CardHeader className="p-4 pb-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                <div className={cn("p-1.5 rounded-full bg-red-100", "dark:bg-red-900/30")}>
+                                    <AlertCircle className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />
+                                </div>
+                                <CardTitle className="text-base ml-2">Unresolved Alerts</CardTitle>
+                            </div>
+                            <Badge variant="outline" className="text-[11px] bg-red-50 text-red-600 border-red-200">
+                                {alerts?.length || 0} Alerts
+                            </Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-border bg-muted/50">
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Alert</th>
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                                        <th className="py-2 px-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {alerts?.map((alert) => (
+                                        <tr key={alert.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200 h-[72px]">
+                                            <td className="py-2 px-3">
+                                                <div className="flex items-start space-x-2">
+                                                    <div>
+                                                        <p className="text-sm font-medium">{alert.type}</p>
+                                                        <p className="text-xs text-muted-foreground mt-1">
+                                                            Client: {alert.client?.fullName || 'Unknown'} • Care Worker: {alert.careworker?.fullName || 'Unknown'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="py-2 px-3 text-sm text-muted-foreground">
+                                                {new Date(alert.createdAt).toLocaleDateString()}
+                                            </td>
+                                            <td className="py-2 px-3 text-right">
+                                                <Button variant="outline" size="sm" className="h-7">
+                                                    <span className="flex items-center">
+                                                        <AlertCircle className="h-3 w-3 mr-2" />
+                                                        View
+                                                    </span>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Flagged Reports Card */}
+                <Card>
+                    <CardHeader className="p-4 pb-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                <div className={cn("p-1.5 rounded-full bg-amber-100", "dark:bg-amber-900/30")}>
+                                    <FileText className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                                </div>
+                                <CardTitle className="text-base ml-2">Flagged Reports</CardTitle>
+                            </div>
+                            <Badge variant="outline" className="text-[11px] bg-amber-50 text-amber-600 border-amber-200">
+                                {reports?.filter(report => report.status === "FLAGGED").length || 0} Pending
+                            </Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-border bg-muted/50">
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Report</th>
+                                        <th className="py-2 px-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Date</th>
+                                        <th className="py-2 px-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {reports?.filter(report => report.status === "FLAGGED").map((report: Report) => (
+                                        <tr key={report.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200 h-[72px]">
+                                            <td className="py-2 px-3">
+                                                <div className="flex items-start space-x-2">
+                                                    <div>
+                                                        <p className="text-sm font-medium">{report.title || "Untitled Report"}</p>
+                                                        <p className="text-xs text-muted-foreground mt-1">
+                                                            Client: {report.client?.fullName || 'Unknown'} • Care Worker: {report.caregiver?.fullName || 'Unknown'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="py-2 px-3 text-sm text-muted-foreground">
+                                                {new Date(report.createdAt).toLocaleDateString()}
+                                            </td>
+                                            <td className="py-2 px-3 text-right">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-7"
+                                                    onClick={() => router.push(`/dashboard/reports/${report.id}`)}
+                                                >
+                                                    <span className="flex items-center">
+                                                        <FileText className="h-3 w-3 mr-2" />
+                                                        View
+                                                    </span>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }

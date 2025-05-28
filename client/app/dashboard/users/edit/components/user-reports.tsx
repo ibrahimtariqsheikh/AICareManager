@@ -1,34 +1,110 @@
 "use client"
 
-
+import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Filter, Calendar, FileText, AlertTriangle, Eye } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { DataTable } from "@/components/ui/data-table"
 import { ReportDetails } from "./report-details"
 import { setFilter, setSelectedReport } from "@/state/slices/reportSlice"
 import type { AppDispatch, RootState } from "@/state/redux"
 import type { User } from "@/types/prismaTypes"
+import { CustomInput } from "@/components/ui/custom-input"
+import { CustomSelect } from "@/components/ui/custom-select"
+
+interface Report {
+    id: string;
+    clientId: string;
+    agencyId: string;
+    userId: string;
+    visitTypeId: string;
+    title: string;
+    condition: string;
+    summary: string;
+    checkInTime: string;
+    checkOutTime: string | null;
+    createdAt: string;
+    checkInDistance: number | null;
+    checkOutDistance: number | null;
+    checkInLocation: string | null;
+    checkOutLocation: string | null;
+    signatureImageUrl: string | null;
+    status: string;
+    lastEditedAt: string | null;
+    lastEditedBy: string | null;
+    lastEditReason: string | null;
+}
 
 export const Reports = ({ user }: { user: User }) => {
     const dispatch = useDispatch<AppDispatch>()
-    const { reports = [], isLoading = false, error = null, filter = {}, selectedReport = null } = useSelector((state: RootState) => state.report)
+    const { isLoading = false, error = null, filter = {}, selectedReport = null } = useSelector((state: RootState) => state.report)
+    const userReports = user.clientReports || [];
 
     const handleFilterChange = (key: string, value: string) => {
         dispatch(setFilter({ ...filter, [key]: value }))
     }
 
     const handleReportSelect = (reportId: string) => {
-        const report = reports.find((r) => r.id === reportId)
+        const report = userReports.find((r: Report) => r.id === reportId)
         if (report) {
             dispatch(setSelectedReport(report))
         }
     }
+
+    const getFilteredReports = () => {
+        let filtered = [...userReports];
+
+        // Filter by search term
+        if (filter.search) {
+            const searchTerm = filter.search.toLowerCase();
+            filtered = filtered.filter(report =>
+                report.title?.toLowerCase().includes(searchTerm) ||
+                report.condition?.toLowerCase().includes(searchTerm) ||
+                report.summary?.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Filter by status
+        if (filter.status && filter.status !== 'all') {
+            filtered = filtered.filter(report => report.status === filter.status);
+        }
+
+        // Filter by date range
+        if (filter.dateRange && filter.dateRange !== 'all') {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            filtered = filtered.filter(report => {
+                const reportDate = new Date(report.checkInTime);
+
+                switch (filter.dateRange) {
+                    case 'today':
+                        return reportDate >= today;
+                    case 'week':
+                        const weekAgo = new Date(today);
+                        weekAgo.setDate(weekAgo.getDate() - 7);
+                        return reportDate >= weekAgo;
+                    case 'month':
+                        const monthAgo = new Date(today);
+                        monthAgo.setMonth(monthAgo.getMonth() - 1);
+                        return reportDate >= monthAgo;
+                    case 'quarter':
+                        const quarterAgo = new Date(today);
+                        quarterAgo.setMonth(quarterAgo.getMonth() - 3);
+                        return reportDate >= quarterAgo;
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        return filtered;
+    }
+
+    const filteredReports = getFilteredReports();
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -106,106 +182,70 @@ export const Reports = ({ user }: { user: User }) => {
 
     return (
         <Card className="w-full">
-            <CardHeader>
-                <CardTitle className="text-2xl font-bold">Reports</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Tabs defaultValue="all" className="w-full">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                        <TabsList>
-                            <TabsTrigger value="all">All Reports</TabsTrigger>
-                            <TabsTrigger value="completed">Completed</TabsTrigger>
-                            <TabsTrigger value="flagged">Flagged</TabsTrigger>
-                            <TabsTrigger value="draft">Drafts</TabsTrigger>
-                        </TabsList>
-
-                        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                            <div className="relative w-full sm:w-64">
-                                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    placeholder="Search reports..."
-                                    className="pl-8"
-                                    value={filter?.search || ""}
-                                    onChange={(e) => handleFilterChange("search", e.target.value)}
-                                />
-                            </div>
-
-                            <Select value={filter?.status || "all"} onValueChange={(value) => handleFilterChange("status", value)}>
-                                <SelectTrigger className="w-full sm:w-40">
-                                    <div className="flex items-center">
-                                        <Filter className="mr-2 h-4 w-4" />
-                                        <SelectValue placeholder="Status" />
-                                    </div>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Statuses</SelectItem>
-                                    <SelectItem value="COMPLETED">Completed</SelectItem>
-                                    <SelectItem value="DRAFT">Draft</SelectItem>
-                                    <SelectItem value="EDITED">Edited</SelectItem>
-                                    <SelectItem value="FLAGGED">Flagged</SelectItem>
-                                    <SelectItem value="REVIEWED">Reviewed</SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                            <Select value={filter?.dateRange || "all"} onValueChange={(value) => handleFilterChange("dateRange", value)}>
-                                <SelectTrigger className="w-full sm:w-40">
-                                    <div className="flex items-center">
-                                        <Calendar className="mr-2 h-4 w-4" />
-                                        <SelectValue placeholder="Date Range" />
-                                    </div>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Time</SelectItem>
-                                    <SelectItem value="today">Today</SelectItem>
-                                    <SelectItem value="week">This Week</SelectItem>
-                                    <SelectItem value="month">This Month</SelectItem>
-                                    <SelectItem value="quarter">This Quarter</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
+            <CardContent className="mt-6">
+                <div className="flex flex-col sm:flex-row gap-2 w-full mb-6">
+                    <div className="relative w-full sm:w-64">
+                        <CustomInput
+                            icon={<Search className="h-4 w-4" />}
+                            placeholder="Search reports..."
+                            value={filter?.search || ""}
+                            onChange={(value) => handleFilterChange("search", value)}
+                            variant="default"
+                        />
                     </div>
 
-                    <TabsContent value="all" className="mt-0">
-                        {isLoading ? (
-                            <div className="flex justify-center items-center h-64">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                            </div>
-                        ) : error ? (
-                            <div className="flex justify-center items-center h-64 text-red-500">
-                                <AlertTriangle className="h-5 w-5 mr-2" />
-                                {error}
-                            </div>
-                        ) : reports.length === 0 ? (
-                            <div className="flex flex-col justify-center items-center h-64 text-muted-foreground">
-                                <FileText className="h-12 w-12 mb-4" />
-                                <p className="text-lg font-medium">No reports found</p>
-                                <p className="text-sm">Try adjusting your filters or create a new report</p>
-                            </div>
-                        ) : selectedReport ? (
-                            <ReportDetails report={selectedReport} onBack={() => dispatch(setSelectedReport(null))} />
-                        ) : (
-                            <DataTable columns={columns} data={reports} />
-                        )}
-                    </TabsContent>
+                    <CustomSelect
+                        options={[
+                            { value: "all", label: "All Statuses" },
+                            { value: "COMPLETED", label: "Completed" },
+                            { value: "DRAFT", label: "Draft" },
+                            { value: "EDITED", label: "Edited" },
+                            { value: "FLAGGED", label: "Flagged" },
+                            { value: "REVIEWED", label: "Reviewed" }
+                        ]}
+                        value={filter?.status || "all"}
+                        onChange={(value) => handleFilterChange("status", value)}
+                        placeholder="Status"
+                        variant="default"
+                        className="w-full sm:w-40"
+                    />
 
-                    <TabsContent value="completed" className="mt-0">
-                        {!isLoading && !error && !selectedReport && (
-                            <DataTable columns={columns} data={reports.filter((r) => r.status === "COMPLETED")} />
-                        )}
-                    </TabsContent>
+                    <CustomSelect
+                        options={[
+                            { value: "all", label: "All Time" },
+                            { value: "today", label: "Today" },
+                            { value: "week", label: "This Week" },
+                            { value: "month", label: "This Month" },
+                            { value: "quarter", label: "This Quarter" }
+                        ]}
+                        value={filter?.dateRange || "all"}
+                        onChange={(value) => handleFilterChange("dateRange", value)}
+                        placeholder="Date Range"
+                        variant="default"
+                        className="w-full sm:w-40"
+                    />
+                </div>
 
-                    <TabsContent value="flagged" className="mt-0">
-                        {!isLoading && !error && !selectedReport && (
-                            <DataTable columns={columns} data={reports.filter((r) => r.status === "FLAGGED")} />
-                        )}
-                    </TabsContent>
-
-                    <TabsContent value="draft" className="mt-0">
-                        {!isLoading && !error && !selectedReport && (
-                            <DataTable columns={columns} data={reports.filter((r) => r.status === "DRAFT")} />
-                        )}
-                    </TabsContent>
-                </Tabs>
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                    </div>
+                ) : error ? (
+                    <div className="flex justify-center items-center h-64 text-red-500">
+                        <AlertTriangle className="h-5 w-5 mr-2" />
+                        {error}
+                    </div>
+                ) : filteredReports.length === 0 ? (
+                    <div className="flex flex-col justify-center items-center h-64 text-muted-foreground">
+                        <FileText className="h-12 w-12 mb-4" />
+                        <p className="text-lg font-medium">No reports found</p>
+                        <p className="text-sm">Try adjusting your filters or create a new report</p>
+                    </div>
+                ) : selectedReport ? (
+                    <ReportDetails report={selectedReport} onBack={() => dispatch(setSelectedReport(null))} />
+                ) : (
+                    <DataTable columns={columns} data={filteredReports} />
+                )}
             </CardContent>
         </Card>
     )

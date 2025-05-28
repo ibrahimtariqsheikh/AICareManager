@@ -403,7 +403,6 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
           status: validStatus as ScheduleStatus,
           type: mapFormTypeToDbType(type),
           notes: notes || undefined,
-          chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
         },
         include: {
           client: true,
@@ -587,7 +586,6 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
           status: validStatus as ScheduleStatus,
           type: type ? mapFormTypeToDbType(type) : undefined,
           notes: notes || undefined,
-          chargeRate: chargeRate ? Number.parseFloat(chargeRate) : undefined,
         },
         include: {
           client: true,

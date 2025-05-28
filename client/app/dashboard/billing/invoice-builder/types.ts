@@ -40,4 +40,5 @@ export interface InvoiceData {
   notes: string
   taxRate: number
   taxEnabled: boolean
+  predefinedItems?: InvoiceItem[]
 }

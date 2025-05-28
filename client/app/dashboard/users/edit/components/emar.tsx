@@ -29,9 +29,9 @@ export const EMAR = ({ user }: EMARProps) => {
     }, [dispatch, user?.id, medicationsFromUser, logsFromUser])
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-3">
             <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-2">
                     <MedicationLog />
                 </CardContent>
             </Card>

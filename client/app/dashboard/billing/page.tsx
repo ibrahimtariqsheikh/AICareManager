@@ -21,6 +21,9 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import { useAppDispatch } from "@/state/redux"
+import { setSelectedDateRange as setPayrollDateRange } from "@/state/slices/payrollSlice"
+import { setSelectedDateRange as setExpensesDateRange } from "@/state/slices/expensesSlice"
 
 import BillingAnalytics from "./components/billing-analytics"
 import { PayrollTable } from "./components/payroll-table"
@@ -33,6 +36,7 @@ import { ExpensesActions } from "./components/expenses-actions"
 
 export default function BillingPage() {
     const router = useRouter()
+    const dispatch = useAppDispatch()
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
         from: subDays(new Date(), 30),
         to: new Date(),
@@ -44,12 +48,27 @@ export default function BillingPage() {
     // State for filter visibility
     const [showFilters, setShowFilters] = useState(false)
 
-
     // State for new payroll dialog
     const [showNewPayrollDialog, setShowNewPayrollDialog] = useState(false)
 
     // State for new expense dialog
     const [showNewExpenseDialog, setShowNewExpenseDialog] = useState(false)
+
+    // Update date range in Redux when it changes
+    const handleDateRangeChange = (value: DateRange | undefined | ((prevState: DateRange | undefined) => DateRange | undefined)) => {
+        if (typeof value === 'function') {
+            setDateRange(value)
+        } else {
+            setDateRange(value)
+            if (value) {
+                if (activeTab === "payroll") {
+                    dispatch(setPayrollDateRange(value))
+                } else if (activeTab === "expenses") {
+                    dispatch(setExpensesDateRange(value))
+                }
+            }
+        }
+    }
 
     return (
         <div className="p-6 space-y-4">
@@ -66,7 +85,7 @@ export default function BillingPage() {
                     </TabsList>
 
                     <div className="flex items-center gap-2">
-                        <DatePickerWithRange date={dateRange} setDate={setDateRange} />
+                        <DatePickerWithRange date={dateRange} setDate={handleDateRangeChange} />
                         <Button
                             variant="outline"
                             size="icon"
