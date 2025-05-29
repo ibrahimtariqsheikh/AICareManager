@@ -14,23 +14,20 @@ interface CustomWeekViewProps {
     staffMembers: any[]
     getEventDurationInMinutes: (event: any) => number
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
-    spaceTheme?: boolean
 }
 
 export function CustomWeekView(props: CustomWeekViewProps) {
     const {
         date,
         onSelectEvent,
-        getEventDurationInMinutes,
-        spaceTheme = false
+
     } = props
 
     // Get current date from Redux store
     useAppSelector((state) => state.calendar)
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
-    const reduxClients = useAppSelector((state) => state.user.clients || [])
-    const careworkers = useAppSelector((state) => state.user.careWorkers || [])
-    const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
+
+    const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
     const events = useAppSelector((state) => state.schedule.events || [])
 
     // ====================== CONSTANTS ======================
@@ -59,21 +56,27 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     })
     const [, setHoveredEvent] = useState<string | null>(null)
 
-    // Filter events based on activeScheduleUserType
+    // Get the appropriate users based on activeScheduleUserType and filtered users
+
+    // If no users are filtered, show all users
+
+    // Update the staffMembers prop to use finalDisplayUsers
+
+    // Filter events based on activeScheduleUserType and filtered users
     const filteredEvents = useMemo(() => {
         return events.filter(event => {
             switch (activeScheduleUserType) {
                 case "clients":
-                    return reduxClients.some(client => client.id === event.clientId)
+                    return event.clientId && filteredUsers.clients.includes(event.clientId)
                 case "careWorker":
-                    return careworkers.some(worker => worker.id === event.resourceId)
+                    return event.resourceId && filteredUsers.careWorkers.includes(event.resourceId)
                 case "officeStaff":
-                    return officeStaff.some(staff => staff.id === event.resourceId)
+                    return event.resourceId && filteredUsers.officeStaff.includes(event.resourceId)
                 default:
                     return true
             }
         })
-    }, [events, activeScheduleUserType, reduxClients, careworkers, officeStaff])
+    }, [events, activeScheduleUserType, filteredUsers])
 
     // ====================== DRAG AND DROP ======================
     interface DraggedEventState {
@@ -296,73 +299,16 @@ export function CustomWeekView(props: CustomWeekViewProps) {
         }
     }
 
-    // Get event type label
-    const getEventTypeLabel = (type: string) => {
-        switch (type) {
-            case "HOME_VISIT":
-                return "Home Visit"
-            case "VIDEO_CALL":
-                return "Video Call"
-            case "HOSPITAL":
-                return "Hospital"
-            case "IN_PERSON":
-                return "In-Person"
-            case "AUDIO_CALL":
-                return "Audio Call"
-            default:
-                return type
-        }
-    }
-
-    const getEventDuration = (event: AppointmentEvent) => {
-        const duration = getEventDurationInMinutes(event)
-        if (duration < 60) {
-            return `${duration} min`
-        }
-        const hours = Math.floor(duration / 60)
-        const minutes = duration % 60
-        return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
-    }
 
     // Auto-scroll to current time on initial load
     useEffect(() => {
         if (!calendarContainerRef.current) return
 
-        const now = new Date()
-        const currentHour = now.getHours()
 
-        if (currentHour >= HOURS.START && currentHour <= HOURS.END) {
-            const minutesFromStart = (currentHour - HOURS.START) * 60 + now.getMinutes()
-            const scrollPosition = (minutesFromStart / 30) * CELL_HEIGHT - 100 // Show 100px above current time
-            calendarContainerRef.current.scrollTop = Math.max(0, scrollPosition)
-        }
+
     }, [timeIntervals])
 
     // Define event type styles
-    const eventTypeStyles: Record<string, { bg: string; text: string }> = {
-        home_visit: {
-            bg: 'bg-green-50',
-            text: 'text-green-700'
-        },
-        video_call: {
-            bg: 'bg-blue-50',
-            text: 'text-blue-700'
-        },
-        hospital: {
-            bg: 'bg-red-50',
-            text: 'text-red-700'
-        },
-        phone_call: {
-            bg: 'bg-purple-50',
-            text: 'text-purple-700'
-        },
-        meeting: {
-            bg: 'bg-amber-50',
-            text: 'text-amber-700'
-        }
-    }
-
-
 
     // Get event background color based on type
     const getEventBackground = (event: AppointmentEvent) => {
@@ -421,7 +367,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
             }
         }
 
-        const type = event.type.toLowerCase()
         const defaultStyle = {
             bg: 'bg-blue-50',
             text: 'text-blue-700'
@@ -436,38 +381,36 @@ export function CustomWeekView(props: CustomWeekViewProps) {
     // ====================== RENDERING ======================
     return (
         <div className="h-full flex flex-col p-4">
-            <div className="flex flex-col flex-1 h-full overflow-hidden">
+            <div className="flex flex-col flex-1 h-full overflow-hidden border border-gray-200 rounded-lg">
                 {/* Calendar grid */}
                 <div className="h-full flex flex-col">
                     {/* ===== HEADER ROW WITH DAY NAMES ===== */}
-                    <div className={cn("flex border-b", spaceTheme && "border-zinc-800")}>
+                    <div className="flex border-b border-gray-200">
                         {/* Empty cell above time column */}
-                        <div className={cn("w-[60px] flex-shrink-0", spaceTheme && "text-zinc-400")} />
+                        <div className="w-[60px] flex-shrink-0 border-r border-gray-200 bg-gray-50" />
 
                         {/* Day header cells */}
-                        <div className="flex-1 grid grid-cols-7">
+                        <div className="flex-1 grid grid-cols-7 bg-gray-50">
                             {daysOfWeek.map((day, index) => {
                                 const isToday = moment(day).isSame(moment(), "day")
+                                const isWeekend = index === 0 || index === 6
                                 return (
                                     <div
                                         key={index}
                                         className={cn(
-                                            "p-2 text-center border-r",
-                                            isToday && (spaceTheme ? "bg-zinc-900" : "bg-blue-50"),
-                                            spaceTheme && "border-zinc-800 text-white"
+                                            "p-2 text-center border-r border-gray-200",
+                                            isWeekend && "text-gray-400"
                                         )}
                                     >
                                         {/* Day abbreviation */}
-                                        <div className={cn("text-xs", spaceTheme ? "text-zinc-400" : "text-gray-500")}>
+                                        <div className="text-sm font-medium text-gray-500">
                                             {moment(day).format("ddd").toUpperCase()}
                                         </div>
 
                                         {/* Day number */}
                                         <div className={cn(
                                             "text-sm font-medium mt-1",
-                                            isToday
-                                                ? (spaceTheme ? "text-green-400" : "text-blue-500")
-                                                : spaceTheme ? "text-white" : ""
+                                            isToday ? "text-blue-500" : "text-gray-700"
                                         )}>
                                             {moment(day).format("D")}
                                         </div>
@@ -480,24 +423,17 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                     {/* ===== SCROLLABLE TIME GRID ===== */}
                     <div
                         ref={calendarContainerRef}
-                        className={cn(
-                            "flex-1 overflow-y-auto",
-                            spaceTheme ? "scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900" : "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-                        )}
+                        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
                     >
-                        <div className={cn(
-                            "flex relative min-h-full",
-                            spaceTheme ? "bg-zinc-900" : "bg-white"
-                        )}>
+                        <div className="flex relative min-h-full bg-white">
                             {/* Left time labels column */}
-                            <div className={cn("w-[60px] flex-shrink-0 border-r", spaceTheme ? "border-zinc-800" : "border-gray-200")}>
+                            <div className="w-[60px] flex-shrink-0 border-r border-gray-200 bg-gray-50">
                                 {timeIntervals.map((timeSlot, index) => (
                                     <div
                                         key={index}
                                         className={cn(
-                                            "h-[40px] text-xs text-right pr-2 relative",
-                                            spaceTheme ? "text-zinc-400" : "text-gray-500",
-                                            index % 2 === 0 ? "text-[12px]" : "text-[10px]" // Make hour labels bolder, half-hours smaller
+                                            "h-[40px] text-xs text-right pr-2 relative text-gray-500",
+                                            index % 2 === 0 ? "text-sm font-medium" : "text-xs"
                                         )}
                                     >
                                         {/* Show only hour labels centered on the line */}
@@ -514,7 +450,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                             <div className="flex-1 grid grid-cols-7 relative" ref={gridContainerRef}>
                                 {/* Grid cells background */}
                                 {daysOfWeek.map((_day, dayIndex) => (
-                                    <div key={dayIndex} className={cn("border-r", spaceTheme ? "border-zinc-800" : "border-gray-200")}>
+                                    <div key={dayIndex} className="border-r border-gray-200">
                                         {timeIntervals.map((_, slotIndex) => {
                                             const isHourLine = slotIndex % 2 === 0
 
@@ -524,7 +460,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                                     className={cn(
                                                         "h-[40px] border-b",
                                                         isHourLine && "border-b",
-                                                        spaceTheme ? "border-zinc-800" : "border-gray-200"
+                                                        "border-gray-200"
                                                     )}
                                                 />
                                             )
@@ -535,10 +471,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                 {/* Current time indicator */}
                                 {daysOfWeek.some(day => moment(day).isSame(moment(), "day")) && (
                                     <div
-                                        className={cn(
-                                            "absolute left-0 right-0 border-t-2 z-10",
-                                            spaceTheme ? "border-green-500" : "border-red-500"
-                                        )}
+                                        className="absolute left-0 right-0 border-t-2 z-10 border-red-500"
                                         style={{
                                             top: (() => {
                                                 const now = new Date()
@@ -552,10 +485,7 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                             })()
                                         }}
                                     >
-                                        <div className={cn(
-                                            "w-2 h-2 rounded-full -mt-1 -ml-1",
-                                            spaceTheme ? "bg-green-500" : "bg-red-500"
-                                        )} />
+                                        <div className="w-2 h-2 rounded-full -mt-1 -ml-1 bg-red-500" />
                                     </div>
                                 )}
 
@@ -574,7 +504,6 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                             }}
                                             className={cn(
                                                 "absolute rounded-lg text-xs p-2 cursor-grab border-l-[3px]",
-
                                                 event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
                                                 getEventBackground(event).text,
                                                 getEventBackground(event).bg,
@@ -586,8 +515,8 @@ export function CustomWeekView(props: CustomWeekViewProps) {
                                                 width: `${position.width}px`,
                                                 zIndex: isDragging ? 30 : 10,
                                                 boxShadow: isDragging
-                                                    ? (spaceTheme ? "0 4px 12px rgba(0,0,0,0.5)" : "0 4px 12px rgba(0,0,0,0.2)")
-                                                    : (spaceTheme ? "0 2px 6px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.1)"),
+                                                    ? "0 4px 12px rgba(0,0,0,0.2)"
+                                                    : "0 1px 3px rgba(0,0,0,0.1)",
                                                 transform: isDragging ? "scale(1.02)" : "scale(1)",
                                                 opacity: isDragging ? 0.9 : 1,
                                                 transition: "box-shadow 0.2s, transform 0.2s, opacity 0.2s"

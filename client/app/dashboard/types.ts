@@ -1,4 +1,4 @@
-import { MedicationAdministration, BodyMapObservation, ReportAlert, ReportStatus, ReportEdit, User } from "@/types/prismaTypes";
+import {BodyMapObservation, ReportStatus, ReportEdit, User, Alert } from "@/types/prismaTypes";
 
 import { ReportTask } from "@/types/prismaTypes";
 
@@ -48,9 +48,8 @@ export interface Schedule {
     lastEditedBy?: string;
     lastEditReason?: string;
     tasksCompleted: ReportTask[];
-    alerts: ReportAlert[];
+    alerts: Alert[];
     bodyMapObservations: BodyMapObservation[];
-    medicationAdministrations: MedicationAdministration[];
     editHistory: ReportEdit[];
     client: User;
     caregiver: User;

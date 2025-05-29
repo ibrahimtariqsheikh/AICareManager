@@ -12,7 +12,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useTheme } from "next-themes"
 import { useIsMobile } from "../hooks/use-mobile"
 import { LogIn, Menu, User, Moon, Sun, LayoutDashboard } from 'lucide-react'
-import { signOut } from 'aws-amplify/auth';
+// import { signOut } from 'aws-amplify/auth';
 import Image from "next/image"
 import { Geist_Mono } from 'next/font/google'
 
@@ -32,14 +32,14 @@ const Navbar = () => {
     setMounted(true)
   }, [])
 
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      setIsOpen(false)
-    } catch (error) {
-      console.error("Error signing out:", error)
-    }
-  }
+  // const handleSignOut = async () => {
+  //   try {
+  //     await signOut()
+  //     setIsOpen(false)
+  //   } catch (error) {
+  //     console.error("Error signing out:", error)
+  //   }
+  // }
 
   const handleLogin = () => {
     router.push("/signin")
@@ -246,23 +246,23 @@ const Navbar = () => {
     </Sheet>
   )
 
-  const ThemeToggle = () => {
-    if (!mounted) return null;
+  // const ThemeToggle = () => {
+  //   if (!mounted) return null;
 
-    return (
-      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={toggleTheme}
-          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          className="rounded-md"
-        >
-          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </Button>
-      </motion.div>
-    );
-  };
+  //   return (
+  //     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.2 }}>
+  //       <Button
+  //         variant="outline"
+  //         size="icon"
+  //         onClick={toggleTheme}
+  //         aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+  //         className="rounded-md"
+  //       >
+  //         {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+  //       </Button>
+  //     </motion.div>
+  //   );
+  // };
 
   const AuthButton = () => {
     if (user) {

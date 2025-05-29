@@ -100,12 +100,9 @@ type CarePlanFormData = z.infer<typeof carePlanSchema>
 type CustomQuestion = z.infer<typeof customQuestionSchema>
 
 export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'] }) {
-    const [progress, setProgress] = useState(30)
-    const [showCustomQuestions, setShowCustomQuestions] = useState(false)
-    const [showDocumentUpload, setShowDocumentUpload] = useState(false)
-    const [showPdfPreview, setShowPdfPreview] = useState(false)
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-    const [selectedSection, setSelectedSection] = useState<string>('')
+
+
+    const [_, setSelectedSection] = useState<string>('')
     const [isEditing, setIsEditing] = useState<string | null>(null)
 
     // Initialize form with React Hook Form
@@ -171,16 +168,16 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
         form.setValue(`signatures.${type}`, hasSignature)
     }
 
-    const savePlan = async (data: CarePlanFormData) => {
-        try {
-            // Here you would typically make an API call to save the care plan
-            console.log("Saving care plan:", data)
-            alert("Care plan saved successfully!")
-        } catch (error) {
-            console.error("Error saving care plan:", error)
-            alert("Failed to save care plan. Please try again.")
-        }
-    }
+    // const savePlan = async (data: CarePlanFormData) => {
+    //     try {
+    //         // Here you would typically make an API call to save the care plan
+    //         console.log("Saving care plan:", data)
+    //         alert("Care plan saved successfully!")
+    //     } catch (error) {
+    //         console.error("Error saving care plan:", error)
+    //         alert("Failed to save care plan. Please try again.")
+    //     }
+    // }
 
     const addCustomQuestion = (sectionId: string) => {
         const newQuestion: CustomQuestion = {
@@ -213,31 +210,6 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
         return form.getValues("customQuestions").filter(q => q.section === sectionId)
     }
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(event.target.files || [])
-        setUploadedFiles([...uploadedFiles, ...files])
-    }
-
-    const removeFile = (index: number) => {
-        setUploadedFiles(uploadedFiles.filter((_, i) => i !== index))
-    }
-
-    const handleAddOnToggle = (type: 'customQuestions' | 'documentUpload' | 'pdfPreview') => {
-        switch (type) {
-            case 'customQuestions':
-                setShowCustomQuestions(!showCustomQuestions)
-                if (!showCustomQuestions && form.getValues("customQuestions").length === 0) {
-                    addCustomQuestion('client-info')
-                }
-                break
-            case 'documentUpload':
-                setShowDocumentUpload(!showDocumentUpload)
-                break
-            case 'pdfPreview':
-                setShowPdfPreview(!showPdfPreview)
-                break
-        }
-    }
 
     const saveQuestion = (questionId: string) => {
         const question = form.getValues("customQuestions").find(q => q.id === questionId)

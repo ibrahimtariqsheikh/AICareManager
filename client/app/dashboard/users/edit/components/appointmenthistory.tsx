@@ -41,7 +41,7 @@ interface ProcessedSchedule {
 
 const AppointmentHistory = ({ user }: { user: User }) => {
     const schedules = user.clientSchedules || [] as ClientSchedule[]
-    const [searchQuery, setSearchQuery] = useState("")
+    const [searchQuery] = useState("")
 
     // Convert schedules to a consistent format
     const processedSchedules = schedules.map((schedule: ClientSchedule): ProcessedSchedule => ({
@@ -156,7 +156,7 @@ const AppointmentHistory = ({ user }: { user: User }) => {
     }
 
     // Render a date group
-    const renderDateGroup = (dateKey: string, schedules: ProcessedSchedule[], isPast: boolean) => {
+    const renderDateGroup = (dateKey: string, schedules: ProcessedSchedule[]) => {
         if (!schedules) return null
         const date = moment(dateKey)
         const isToday = date.isSame(moment(), "day")
@@ -222,7 +222,7 @@ const AppointmentHistory = ({ user }: { user: User }) => {
                         ) : (
                             <div className="space-y-2 pl-2">
                                 {Object.keys(upcomingSchedulesByDate).map((dateKey) =>
-                                    renderDateGroup(dateKey, upcomingSchedulesByDate[dateKey] || [], false),
+                                    renderDateGroup(dateKey, upcomingSchedulesByDate[dateKey] || []),
                                 )}
                             </div>
                         )}
@@ -234,7 +234,7 @@ const AppointmentHistory = ({ user }: { user: User }) => {
                         ) : (
                             <div className="space-y-2 pl-2">
                                 {Object.keys(pastSchedulesByDate).map((dateKey) =>
-                                    renderDateGroup(dateKey, pastSchedulesByDate[dateKey] || [], true),
+                                    renderDateGroup(dateKey, pastSchedulesByDate[dateKey] || []),
                                 )}
                             </div>
                         )}

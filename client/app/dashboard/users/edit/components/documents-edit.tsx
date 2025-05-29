@@ -226,10 +226,6 @@ export const DocumentFilters = ({ documents, onFilteredDocuments }: DocumentFilt
     );
 };
 
-interface DocumentHeaderProps {
-    onUploadClick: () => void;
-}
-
 
 interface DocumentTableProps {
     documents: Document[];

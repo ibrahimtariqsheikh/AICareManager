@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import moment from "moment"
 import { motion } from "framer-motion"
 import { ChevronDown, Calendar, Clock, User, Home, Video, Building2, Phone, Heart, Flag, DollarSign, Baby, AlertTriangle, Stethoscope } from "lucide-react"
-import type { AppointmentEvent } from "../types"
+import type { AppointmentEvent, StaffMember, Client } from "../types"
 import { cn } from "../../../../lib/utils"
 import { toast } from "sonner"
 import { useAppSelector } from "@/state/redux"
@@ -34,25 +34,11 @@ interface CustomMonthViewProps {
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
 }
 
-interface RootState {
-    calendar: {
-        currentDate: string
-    }
-    schedule: {
-        activeScheduleUserType: "clients" | "careWorker" | "officeStaff"
-    }
-    user: {
-        clients: any[]
-        careWorkers: any[]
-        officeStaff: any[]
-    }
-}
 
 export function CustomMonthView({
     date,
     onSelectEvent,
     onDateSelect,
-    staffMembers,
     getEventDurationInMinutes,
     getEventTypeLabel,
     spaceTheme = false,
@@ -80,13 +66,36 @@ export function CustomMonthView({
 
 
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
-    const reduxClients = useAppSelector((state) => state.user.clients || [])
+    const clients = useAppSelector((state) => state.user.clients || [])
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
+    const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
 
     const events = useAppSelector((state) => state.schedule.events || [])
 
+    // Get the appropriate users based on activeScheduleUserType and filtered users
+    const displayUsers = (() => {
+        let users: (Client | StaffMember)[] = []
+        if (activeScheduleUserType === "clients") {
+            users = clients.filter(client => filteredUsers.clients.includes(client.id))
+        } else if (activeScheduleUserType === "careWorker") {
+            users = careworkers.filter(worker => filteredUsers.careWorkers.includes(worker.id))
+        } else if (activeScheduleUserType === "officeStaff") {
+            users = officeStaff.filter(staff => filteredUsers.officeStaff.includes(staff.id))
+        }
+        return users
+    })()
 
+    // If no users are filtered, show all users
+    const finalDisplayUsers = displayUsers.length > 0 ? displayUsers : (() => {
+        if (activeScheduleUserType === "clients") return clients
+        if (activeScheduleUserType === "careWorker") return careworkers
+        if (activeScheduleUserType === "officeStaff") return officeStaff
+        return [] as (Client | StaffMember)[]
+    })()
+
+    // Use finalDisplayUsers instead of staffMembers prop
+    const displayStaffMembers = finalDisplayUsers
 
     // Generate calendar days for the month
     useEffect(() => {
@@ -119,7 +128,7 @@ export function CustomMonthView({
             const shouldInclude = (() => {
                 switch (activeScheduleUserType) {
                     case "clients":
-                        return event.clientId && reduxClients.some(client => client.id === event.clientId)
+                        return event.clientId && clients.some(client => client.id === event.clientId)
                     case "careWorker":
                         return event.resourceId && careworkers.some(worker => worker.id === event.resourceId)
                     case "officeStaff":
@@ -134,7 +143,7 @@ export function CustomMonthView({
             }
         })
         setDisplayEvents(eventMap)
-    }, [events, activeScheduleUserType, reduxClients, careworkers, officeStaff])
+    }, [events, activeScheduleUserType, clients, careworkers, officeStaff])
 
     // Cleanup function for drag operations
     const cleanupDragState = useCallback(() => {
@@ -202,22 +211,22 @@ export function CustomMonthView({
                 return false
             }
 
-            // Filter events based on activeScheduleUserType
+            // Filter events based on activeScheduleUserType and filtered users
             const isSameDay = moment(event.start).isSame(day, "day")
             if (!isSameDay) return false
 
             switch (activeScheduleUserType) {
                 case "clients":
-                    return event.clientId && reduxClients.some(client => client.id === event.clientId)
+                    return event.clientId && filteredUsers.clients.includes(event.clientId)
                 case "careWorker":
-                    return event.resourceId && careworkers.some(worker => worker.id === event.resourceId)
+                    return event.resourceId && filteredUsers.careWorkers.includes(event.resourceId)
                 case "officeStaff":
-                    return event.resourceId && officeStaff.some(staff => staff.id === event.resourceId)
+                    return event.resourceId && filteredUsers.officeStaff.includes(event.resourceId)
                 default:
-                    return false // Return false for unknown types
+                    return false
             }
         })
-    }, [events, isDragging, activeEvent, ghostEvent, activeScheduleUserType, reduxClients, careworkers, officeStaff])
+    }, [events, isDragging, activeEvent, ghostEvent, activeScheduleUserType, filteredUsers])
 
     // Toggle expanded day view
     const toggleDayExpand = useCallback((dateStr: string, e: React.MouseEvent) => {
@@ -400,10 +409,10 @@ export function CustomMonthView({
 
     // Get staff color and name
     const getStaffInfo = useCallback((event: AppointmentEvent) => {
-        const staffMember = staffMembers.find((s) => s.id === event.resourceId)
+        const staffMember = displayStaffMembers.find((s) => s.id === event.resourceId)
         const staffName = staffMember ? `${staffMember.fullName}` : "Staff"
         return { staffName }
-    }, [staffMembers])
+    }, [displayStaffMembers])
 
     // Find day cell under pointer with grid-aligned snapping
     const findDayUnderPointer = useCallback((clientX: number, clientY: number): { dateStr: string; element: HTMLElement } | null => {
@@ -588,7 +597,7 @@ export function CustomMonthView({
         const shouldUpdate = (() => {
             switch (activeScheduleUserType) {
                 case "clients":
-                    return updatedEvent.clientId && reduxClients.some(client => client.id === updatedEvent.clientId)
+                    return updatedEvent.clientId && clients.some(client => client.id === updatedEvent.clientId)
                 case "careWorker":
                     return updatedEvent.resourceId && careworkers.some(worker => worker.id === updatedEvent.resourceId)
                 case "officeStaff":
@@ -617,7 +626,7 @@ export function CustomMonthView({
 
         // Clean up drag state
         cleanupDragState()
-    }, [isDragging, activeEvent, displayEvents, eventBeingDragged, findDayUnderPointer, cancelDrag, cleanupDragState, onEventUpdate, activeScheduleUserType, reduxClients, careworkers, officeStaff])
+    }, [isDragging, activeEvent, displayEvents, eventBeingDragged, findDayUnderPointer, cancelDrag, cleanupDragState, onEventUpdate, activeScheduleUserType, clients, careworkers, officeStaff])
 
     // Handle click on a day cell
     const handleDayClick = useCallback((day: Date) => {
@@ -795,11 +804,9 @@ export function CustomMonthView({
 
     return (
         <div className="h-[calc(100vh-100px)] flex flex-col p-4">
-
-
             <div className="flex flex-col flex-1 h-full">
                 {/* Calendar grid */}
-                <div className="h-full flex flex-col" ref={calendarRef}>
+                <div className="h-full flex flex-col border rounded-lg" ref={calendarRef}>
                     {/* Day headers */}
                     <div
                         className={`grid grid-cols-7 ${spaceTheme ? "bg-zinc-900 border-zinc-800" : "bg-gray-50 border-gray-200"} border-b rounded-t-lg`}

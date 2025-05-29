@@ -10,7 +10,7 @@ export interface TextSignatureProps {
 }
 
 const TextSignature = React.forwardRef<HTMLDivElement, TextSignatureProps>(
-    ({ id, onSignatureChange, className, placeholder = "Type your signature here..." }, ref) => {
+    ({ onSignatureChange, className, placeholder = "Type your signature here..." }, ref) => {
         const [signature, setSignature] = React.useState("")
         const [hasSignature, setHasSignature] = React.useState(false)
 

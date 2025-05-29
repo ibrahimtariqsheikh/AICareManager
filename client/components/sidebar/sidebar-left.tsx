@@ -16,7 +16,6 @@ import {
     CreditCard,
     MessageCircle,
 } from "lucide-react"
-import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn, getRandomPlaceholderImage } from "../../lib/utils"
 import { useState } from "react"
@@ -171,7 +170,6 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     const { setOpenMobile } = useSidebar()
 
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-    let agencyList = user?.userInfo?.agenciesOwned || []
 
 
     const handleLogout = async () => {
@@ -192,7 +190,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     }
 
     return (
-        <Sidebar className={cn("border-r-0 w-[230px]", theme === "dark" ? "bg-[#171717]" : "bg-[#f6f7f9]")} {...props}>
+        <Sidebar className={cn("border-r-0 w-[250px]", theme === "dark" ? "bg-[#171717]" : "bg-[#f6f7f9]")} {...props}>
             <SidebarHeader className="m-0 p-0 flex items-center justify-center ">
                 <div className="flex flex-col items-center flex-1">
                     <Image src="/assets/aimlogo.png" alt="AI Manager" width={55} height={55} />

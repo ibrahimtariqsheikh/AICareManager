@@ -28,9 +28,9 @@ const EditUserPage = () => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const [tabInitialized, setTabInitialized] = useState(false)
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-    const [hoverStyle, setHoverStyle] = useState({})
-    const [activeStyle, setActiveStyle] = useState({ left: "0px", width: "0px" })
+    const [hoveredIndex] = useState<number | null>(null)
+    const [, setHoverStyle] = useState({})
+    const [, setActiveStyle] = useState({ left: "0px", width: "0px" })
     const tabRefs = useRef<(HTMLDivElement | null)[]>([])
 
     const formatRole = (role: string) => {

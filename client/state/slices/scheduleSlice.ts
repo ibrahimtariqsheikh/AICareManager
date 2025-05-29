@@ -25,9 +25,9 @@ function serializeEvent(event: AppointmentEvent): any {
   }
 
   // Safely serialize dates
-  serializedEvent.start = toISOString(event.start)
-  serializedEvent.end = toISOString(event.end)
-  serializedEvent.date = toISOString(event.date)
+  serializedEvent.start = new Date(toISOString(event.start))
+  serializedEvent.end = new Date(toISOString(event.end))
+  serializedEvent.date = new Date(toISOString(event.date))
 
   return serializedEvent
 }
@@ -70,6 +70,12 @@ interface ScheduleState {
     templateId: string | null
     date: string | null
   }
+  // Add filtered users state
+  filteredUsers: {
+    clients: string[]
+    careWorkers: string[]
+    officeStaff: string[]
+  }
   // Add dialog state management
   dialog: {
     isOpen: boolean
@@ -91,6 +97,12 @@ const initialState: ScheduleState = {
   lastAppliedTemplate: {
     templateId: null,
     date: null,
+  },
+  // Initialize filtered users with all users selected
+  filteredUsers: {
+    clients: [], // Will be populated with all client IDs
+    careWorkers: [], // Will be populated with all care worker IDs
+    officeStaff: [] // Will be populated with all office staff IDs
   },
   // Initialize dialog state
   dialog: {
@@ -180,6 +192,27 @@ const scheduleSlice = createSlice({
         selectedEventId: null,
         selectedEvent: null
       }
+    },
+    // Add new reducers for filtered users
+    setFilteredClients: (state, action: PayloadAction<string[]>) => {
+      state.filteredUsers.clients = action.payload
+      updateFilteredEvents(state)
+    },
+    setFilteredCareWorkers: (state, action: PayloadAction<string[]>) => {
+      state.filteredUsers.careWorkers = action.payload
+      updateFilteredEvents(state)
+    },
+    setFilteredOfficeStaff: (state, action: PayloadAction<string[]>) => {
+      state.filteredUsers.officeStaff = action.payload
+      updateFilteredEvents(state)
+    },
+    clearFilteredUsers: (state) => {
+      state.filteredUsers = {
+        clients: [],
+        careWorkers: [],
+        officeStaff: []
+      }
+      updateFilteredEvents(state)
     }
   },
 
@@ -232,7 +265,7 @@ const scheduleSlice = createSlice({
           client: schedule.client,
         }))
         console.log("Events:", events)
-        state.events = events as AppointmentEvent[]
+        state.events = events as unknown as AppointmentEvent[]
         updateFilteredEvents(state)
       })
       .addMatcher(api.endpoints.getSchedules.matchRejected, (state, { error }) => {
@@ -253,16 +286,13 @@ function updateFilteredEvents(state: ScheduleState) {
   // Deserialize events for processing
   const deserializedEvents = state.events.map(deserializeEvent)
 
-  // No event types anymore, so we'll pass an empty array
-  const eventTypes: any[] = []
-
-  // Filter events based on current selections
+  // Filter events based on current selections and filtered users
   const filtered = filterEvents(
     deserializedEvents,
-    [], 
-    [], 
-    [], 
-    eventTypes,
+    state.filteredUsers.clients,
+    state.filteredUsers.careWorkers,
+    state.filteredUsers.officeStaff,
+    [], // event types
     state.sidebarMode,
   )
 
@@ -305,7 +335,12 @@ export const {
   toggleRightSidebar,
   setActiveScheduleUserType,
   clearEventsForDate,
-  // Export new dialog actions
+  // Export new filtered users actions
+  setFilteredClients,
+  setFilteredCareWorkers,
+  setFilteredOfficeStaff,
+  clearFilteredUsers,
+  // Export dialog actions
   openCreateDialog,
   openEditDialog,
   closeDialog

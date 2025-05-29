@@ -140,7 +140,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
 
                 <main className="flex-1 overflow-y-auto">
-                    <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background z-50">
+                    <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background z-50 px-8">
                         <div className="flex flex-1 items-center gap-2 ">
                             <SidebarTrigger className={cn("bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 shadow-none", theme === "dark" ? "bg-neutral-800 hover:bg-neutral-700 text-neutral-100 border-neutral-700" : "")} />
                             <Separator orientation="vertical" className={cn(" h-4", theme === "dark" ? "bg-neutral-800" : "bg-neutral-200")} />

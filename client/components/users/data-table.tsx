@@ -24,10 +24,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { CustomInput } from "../ui/custom-input"
-import { useAppSelector } from "@/hooks/useAppSelector"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 

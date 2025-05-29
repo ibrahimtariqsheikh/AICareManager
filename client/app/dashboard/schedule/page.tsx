@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Calendar } from "../../../components/scheduler/calender/calender"
 import { Button } from "../../../components/ui/button"
-import { AppointmentForm } from "@/components/scheduler/appointment-form"
+import { CreateAppointmentForm, EditAppointmentForm } from "@/components/scheduler/appointment-form"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Heart, Plus } from "lucide-react"
@@ -21,31 +21,46 @@ export default function SchedulerPage() {
     })
 
     const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
+    const [isEditFormOpen, setIsEditFormOpen] = useState(false)
     const [isEventFormOpen, setIsEventFormOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<any>(null)
-
 
     const { loading } = useAppSelector((state) => state.schedule)
     const { user } = useAppSelector((state) => state.user)
 
     const handleEventSelect = (event: any) => {
-        setEditingEvent(event)
-        setIsAppointmentFormOpen(true)
+        if (event) {
+            setEditingEvent(event)
+            setIsEditFormOpen(true)
+            setIsAppointmentFormOpen(false)
+            setIsEventFormOpen(false)
+        }
     }
 
     const handleFormClose = () => {
         setIsAppointmentFormOpen(false)
+        setIsEditFormOpen(false)
         setEditingEvent(null)
+        setIsEventFormOpen(false)
+    }
+
+    const handleNewAppointment = () => {
+        setEditingEvent(null)
+        setIsAppointmentFormOpen(true)
+        setIsEditFormOpen(false)
+        setIsEventFormOpen(false)
     }
 
     const handleEventFormClose = () => {
         setIsEventFormOpen(false)
         setEditingEvent(null)
+        setIsAppointmentFormOpen(false)
+        setIsEditFormOpen(false)
     }
 
     if (loading) {
         return (
-            <div className="relative container mx-auto px-6 py-2 min-h-screen min-w-full">
+            <div className="relative container mx-auto py-2 min-h-screen min-w-full">
                 <div className="flex flex-col space-y-4">
                     {/* Calendar Header Skeleton */}
                     <div className="flex items-center justify-between mb-4">
@@ -84,64 +99,71 @@ export default function SchedulerPage() {
     }
 
     return (
-        <div className="relative">
-            <div
-                className={cn(
-                    "relative container mx-auto px-6 py-2 min-h-screen w-full overflow-x-auto transition-opacity duration-500",
+
+        <div
+            className={cn(
+                "relative container mx-auto py-2 min-h-screen w-full overflow-x-auto transition-opacity duration-500",
+            )}
+        >
+            <div className="flex flex-col space-y-4">
+                <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
+
+                {/* Create Appointment Form */}
+                {isAppointmentFormOpen && (
+                    <CreateAppointmentForm
+                        isOpen={isAppointmentFormOpen}
+                        onClose={handleFormClose}
+                    />
                 )}
-            >
-                <div className="flex flex-col space-y-4">
-                    <Calendar view={view} onEventSelect={handleEventSelect} dateRange={dateRange} />
 
-                    <Dialog open={isAppointmentFormOpen} onOpenChange={setIsAppointmentFormOpen}>
-                        <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-auto">
-                            <VisuallyHidden>
-                                <DialogTitle>{editingEvent?.id ? "Edit Appointment" : "New Appointment"}</DialogTitle>
-                            </VisuallyHidden>
-                            <AppointmentForm isOpen={true} onClose={handleFormClose} event={editingEvent} isNew={!editingEvent?.id} />
-                        </DialogContent>
-                    </Dialog>
+                {/* Edit Appointment Form */}
+                {isEditFormOpen && editingEvent && (
+                    <EditAppointmentForm
+                        isOpen={isEditFormOpen}
+                        onClose={handleFormClose}
+                        event={editingEvent}
+                    />
+                )}
 
-                    <Dialog open={isEventFormOpen} onOpenChange={setIsEventFormOpen}>
-                        <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-auto">
-                            <VisuallyHidden>
-                                <DialogTitle>New Event</DialogTitle>
-                            </VisuallyHidden>
-                            <EventForm
-                                isOpen={true}
-                                onClose={handleEventFormClose}
-                                event={editingEvent}
-                                isNew={!editingEvent?.id}
-                                userId={user?.userInfo?.id || ""}
-                                agencyId={user?.userInfo?.agencyId || ""}
-                            />
-                        </DialogContent>
-                    </Dialog>
+                <Dialog open={isEventFormOpen} onOpenChange={setIsEventFormOpen}>
+                    <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-auto">
+                        <VisuallyHidden>
+                            <DialogTitle>New Event</DialogTitle>
+                        </VisuallyHidden>
+                        <EventForm
+                            isOpen={true}
+                            onClose={handleEventFormClose}
+                            event={editingEvent}
+                            userId={user?.userInfo?.id || ""}
+                            agencyId={user?.userInfo?.agencyId || ""}
+                        />
+                    </DialogContent>
+                </Dialog>
 
-                    <div className="fixed bottom-6 right-6 z-50">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
-                                    <Plus className="h-7 w-7" />
+                <div className="fixed bottom-6 right-6 z-50">
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
+                                <Plus className="h-7 w-7" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64" align="end">
+                            <div className="flex flex-col text-xs">
+                                <Button onClick={handleNewAppointment} className="w-full text-xs" variant="ghost">
+                                    <EventIcon className="h-3 w-3" />
+                                    New Appointment
                                 </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-64" align="end">
-                                <div className="flex flex-col text-xs">
-                                    <Button onClick={() => setIsAppointmentFormOpen(true)} className="w-full text-xs" variant="ghost">
-                                        <EventIcon className="h-3 w-3" />
-                                        New Appointment
-                                    </Button>
-                                    <Separator className="my-1" />
-                                    <Button onClick={() => setIsEventFormOpen(true)} className="w-full text-xs" variant="ghost">
-                                        <Heart className="h-3 w-3" />
-                                        New Event
-                                    </Button>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
+                                <Separator className="my-1" />
+                                <Button onClick={() => setIsEventFormOpen(true)} className="w-full text-xs" variant="ghost">
+                                    <Heart className="h-3 w-3" />
+                                    New Event
+                                </Button>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
         </div>
+
     )
 }

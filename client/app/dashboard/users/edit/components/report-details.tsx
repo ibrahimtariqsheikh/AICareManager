@@ -23,7 +23,7 @@ import {
     Flag,
     CheckCircle2,
 } from "lucide-react"
-import type { Report, ReportTask, BodyMapObservation, MedicationAdministration, ReportAlert } from "@/types/prismaTypes"
+import type { Report, ReportTask, BodyMapObservation, Alert } from "@/types/prismaTypes"
 import { updateReportStatus } from "@/state/slices/reportSlice"
 import type { AppDispatch, RootState } from "@/state/redux"
 
@@ -334,7 +334,7 @@ export const ReportDetails = ({ report, onBack }: ReportDetailsProps) => {
                                     <div>
                                         <h3 className="text-lg font-medium mb-2">Alerts</h3>
                                         <div className="space-y-2">
-                                            {report.alerts.map((alert: ReportAlert) => (
+                                            {report.alerts.map((alert: Alert) => (
                                                 <div key={alert.id} className="bg-red-50 border border-red-200 rounded-md p-4">
                                                     <div className="flex items-start">
                                                         <AlertTriangle className="h-5 w-5 mr-2 text-red-600" />
@@ -394,7 +394,7 @@ export const ReportDetails = ({ report, onBack }: ReportDetailsProps) => {
                         <TabsContent value="medications" className="space-y-4">
                             {report.medicationAdministrations && report.medicationAdministrations.length > 0 ? (
                                 <div className="space-y-4">
-                                    {report.medicationAdministrations.map((med: MedicationAdministration) => (
+                                    {report.medicationAdministrations.map((med: any) => (
                                         <div key={med.id} className="flex items-start border-b pb-4">
                                             <div
                                                 className={`h-6 w-6 rounded-full flex items-center justify-center mr-3 ${med.doseTaken ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"

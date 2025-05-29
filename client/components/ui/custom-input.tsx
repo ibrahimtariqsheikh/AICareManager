@@ -101,7 +101,7 @@ const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
         const mergedRef = useMergedRef(ref, inputRef)
 
         const [localValue, setLocalValue] = React.useState(defaultValue)
-        const [isFocused, setIsFocused] = React.useState(false)
+        const [, setIsFocused] = React.useState(false)
         const isControlled = value !== undefined
 
         // Determine state based on props

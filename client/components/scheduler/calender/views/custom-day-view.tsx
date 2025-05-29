@@ -5,32 +5,23 @@ import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
 import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2, HeartHandshake, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { cn, getRandomPlaceholderImage } from "@/lib/utils"
-import { useAppSelector, useAppDispatch } from "@/state/redux"
-import BankNotes from "@/components/icons/bank-notes"
-import EventIcon from "@/components/icons/eventicon"
-import HomeModern from "@/components/icons/home-modern"
-import type { AppointmentEvent } from "../types"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import type { ScheduleTemplate } from "@/types/prismaTypes"
+import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { useApplyScheduleTemplateMutation, useGetScheduleTemplatesQuery, useGetAgencySchedulesQuery } from "@/state/api"
 import { setUserTemplates, setLoadingTemplates, setTemplateError } from "@/state/slices/templateSlice"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
-
-export interface Client {
-    id: string
-    fullName: string
-    profile?: {
-        avatarUrl?: string
-    }
-}
+import { cn, getRandomPlaceholderImage } from "@/lib/utils"
+import BankNotes from "@/components/icons/bank-notes"
+import EventIcon from "@/components/icons/eventicon"
+import type { AppointmentEvent, StaffMember, Client } from "../types"
+import type { ScheduleTemplate } from "@/types/prismaTypes"
 
 interface CustomDayViewProps {
     date: Date
-    onSelectEvent: (event: AppointmentEvent) => void
+    onSelectEvent: (event: AppointmentEvent | null) => void
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
     min?: Date
     max?: Date
@@ -63,20 +54,34 @@ export function CustomDayView({
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
     const events = useAppSelector((state) => state.schedule.events || [])
+    const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
     const { userTemplates, isLoadingTemplates } = useAppSelector((state) => state.template)
     const agencyId = useAppSelector((state) => state.user.user?.userInfo?.agencyId)
     const router = useRouter()
 
-    // Get the appropriate users based on activeScheduleUserType
+    // Get the appropriate users based on activeScheduleUserType and filtered users
     const displayUsers = (() => {
+        let users: (Client | StaffMember)[] = []
+        if (activeScheduleUserType === "clients") {
+            users = clients.filter(client => filteredUsers.clients.includes(client.id))
+        } else if (activeScheduleUserType === "careWorker") {
+            users = careworkers.filter(worker => filteredUsers.careWorkers.includes(worker.id))
+        } else if (activeScheduleUserType === "officeStaff") {
+            users = officeStaff.filter(staff => filteredUsers.officeStaff.includes(staff.id))
+        }
+        return users
+    })()
+
+    // If no users are filtered, show all users
+    const finalDisplayUsers = displayUsers.length > 0 ? displayUsers : (() => {
         if (activeScheduleUserType === "clients") return clients
         if (activeScheduleUserType === "careWorker") return careworkers
         if (activeScheduleUserType === "officeStaff") return officeStaff
-        return []
+        return [] as (Client | StaffMember)[]
     })()
 
     // State management
-    const [activeDialogEventId, setActiveDialogEventId] = useState<string | null>(null)
+    const [, setActiveDialogEventId] = useState<string | null>(null)
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
     const [isApplyTemplateSelected, setIsApplyTemplateSelected] = useState<boolean>(false)
     const [eventPositions, setEventPositions] = useState<Record<string, any>>({})
@@ -93,8 +98,8 @@ export function CustomDayView({
     const endHour = max.getHours()
     const slotsPerHour = 60 / minutesPerSlot
     const slotWidth = 80
-    const ROW_HEIGHT = 80
-    const HEADER_HEIGHT = 50
+    const ROW_HEIGHT = 60
+    const HEADER_HEIGHT = 30
 
     // API hooks
     const {
@@ -120,13 +125,12 @@ export function CustomDayView({
     })
 
     const totalTimelineWidth = timeSlots.length * slotWidth
-    const totalCalendarHeight = (displayUsers.length + 1) * ROW_HEIGHT + HEADER_HEIGHT
 
     // Group events by user
     const eventsByUser = (() => {
         const userEvents: Record<string, AppointmentEvent[]> = {}
 
-        displayUsers.forEach((user) => {
+        finalDisplayUsers.forEach((user) => {
             userEvents[user.id] = []
         })
 
@@ -245,10 +249,9 @@ export function CustomDayView({
 
     // Event handlers
     const handleEventClick = (event: AppointmentEvent) => {
-        if (activeDialogEventId !== event.id) {
-            setActiveDialogEventId(event.id)
-            onSelectEvent(event)
-        }
+        // Always set the active dialog and trigger the event selection
+        setActiveDialogEventId(event.id)
+        onSelectEvent(event)
     }
 
     const handleOpenTemplateMenu = (userId: string) => {
@@ -269,11 +272,24 @@ export function CustomDayView({
             toast.success("Template applied successfully")
             setIsApplyTemplateSelected(false)
             setSelectedUserId(null)
+            setActiveDialogEventId(null)
         } catch (error) {
             toast.error("Failed to apply template")
             console.error("Error applying template:", error)
         }
     }
+
+    // Effect to handle event selection state
+    useEffect(() => {
+        // Reset active dialog when event is null
+        if (!onSelectEvent) {
+            setActiveDialogEventId(null)
+        }
+        return () => {
+            // Cleanup function
+            setActiveDialogEventId(null)
+        }
+    }, [onSelectEvent])
 
     // Drag handlers
     const handleDragStart = (eventId: string) => {
@@ -346,6 +362,7 @@ export function CustomDayView({
 
         setDragTooltip(null)
         setActiveEvent(null)
+        setActiveDialogEventId(null)
     }
 
     // Helper functions
@@ -357,31 +374,34 @@ export function CustomDayView({
         return `${displayHours}:${minutes.toString().padStart(2, "0")} ${amPm}`
     }
 
-    const getEventBackground = (event: AppointmentEvent) => {
-        if (event.isLeaveEvent) {
-            const leaveTypeStyles = {
-                ANNUAL_LEAVE: { bg: 'bg-green-50', text: 'text-green-700' },
-                SICK_LEAVE: { bg: 'bg-red-50', text: 'text-red-700' },
-                PUBLIC_HOLIDAY: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                UNPAID_LEAVE: { bg: 'bg-gray-50', text: 'text-gray-700' },
-                MATERNITY_LEAVE: { bg: 'bg-pink-50', text: 'text-pink-700' },
-                PATERNITY_LEAVE: { bg: 'bg-purple-50', text: 'text-purple-700' },
-                BEREAVEMENT_LEAVE: { bg: 'bg-gray-50', text: 'text-gray-700' },
-                EMERGENCY_LEAVE: { bg: 'bg-orange-50', text: 'text-orange-700' },
-                MEDICAL_APPOINTMENT: { bg: 'bg-cyan-50', text: 'text-cyan-700' },
-                TOIL: { bg: 'bg-amber-50', text: 'text-amber-700' },
-            }
-            return leaveTypeStyles[event.leaveType as keyof typeof leaveTypeStyles] || { bg: 'bg-blue-50', text: 'text-blue-700' }
+    const getEventBackground = (status: string) => {
+        const colors = {
+            PENDING: "bg-blue-50",
+            CONFIRMED: "bg-green-50",
+            COMPLETED: "bg-green-50",
+            CANCELED: "bg-red-50",
         }
+        return colors[status as keyof typeof colors] || "bg-blue-50"
+    }
 
-        const eventTypeStyles = {
-            HOME_VISIT: { bg: 'bg-blue-50', text: 'text-blue-700' },
-            VIDEO_CALL: { bg: 'bg-purple-50', text: 'text-purple-700' },
-            HOSPITAL: { bg: 'bg-red-50', text: 'text-red-700' },
-            AUDIO_CALL: { bg: 'bg-green-50', text: 'text-green-700' },
-            IN_PERSON: { bg: 'bg-yellow-50', text: 'text-yellow-700' },
+    const getEventTextColor = (status: string) => {
+        const colors = {
+            PENDING: "text-blue-700",
+            CONFIRMED: "text-green-700",
+            COMPLETED: "text-green-700",
+            CANCELED: "text-red-700",
         }
-        return eventTypeStyles[event.type as keyof typeof eventTypeStyles] || { bg: 'bg-gray-50', text: 'text-gray-700' }
+        return colors[status as keyof typeof colors] || "text-blue-700"
+    }
+
+    const getEventBorderColor = (status: string) => {
+        const colors = {
+            PENDING: "border-blue-500",
+            CONFIRMED: "border-green-500",
+            COMPLETED: "border-green-500",
+            CANCELED: "border-red-500",
+        }
+        return colors[status as keyof typeof colors] || "border-blue-500"
     }
 
     const getEventIcon = (event: AppointmentEvent) => {
@@ -413,25 +433,25 @@ export function CustomDayView({
 
     return (
         <div className="w-full h-full px-6 pb-6">
-            <div className="flex rounded-lg border shadow-none bg-white border-gray-200">
+            <div className="flex rounded-lg border shadow-none bg-white border-gray-200 overflow-hidden">
                 {/* Sidebar */}
                 {showSidebar && (
-                    <div className="w-48 shrink-0 border-r bg-gray-50 border-gray-200">
+                    <div className="w-48 shrink-0 bg-gray-50 border-gray-200">
                         {/* Header */}
-                        <div className="h-12 flex items-center justify-center border-b text-xs font-medium text-gray-600 border-gray-200">
+                        <div className="h-[31px] flex items-center justify-center border-b  text-xs font-medium text-gray-600 border-gray-200">
                             {activeScheduleUserType === "clients" ? "CLIENTS" :
                                 activeScheduleUserType === "careWorker" ? "CARE WORKERS" : "OFFICE STAFF"}
                         </div>
 
                         {/* Labor Costs Row */}
-                        <div className="border-b px-3 flex items-center gap-2 text-gray-600 border-gray-200" style={{ height: ROW_HEIGHT }}>
+                        {/* <div className="border-b px-3 flex items-center gap-2 text-gray-600 border-gray-200" style={{ height: ROW_HEIGHT }}>
                             <BankNotes className="h-4 w-4" />
                             <span className="text-sm font-medium">Labor Costs</span>
                             <ChevronDown className="h-3 w-3 ml-auto" />
-                        </div>
+                        </div> */}
 
                         {/* User Rows */}
-                        {displayUsers.map((user) => (
+                        {finalDisplayUsers.map((user) => (
                             <div key={user.id} className="border-b px-3 flex items-center justify-between border-gray-200" style={{ height: ROW_HEIGHT }}>
                                 <div className="flex items-center gap-3">
                                     <Avatar className="h-8 w-8">
@@ -540,7 +560,7 @@ export function CustomDayView({
                     {/* Scrollable Container */}
                     <div
                         ref={containerRef}
-                        className="flex-1 overflow-auto timeline-container pb-4"
+                        className="flex-1 overflow-auto timeline-container"
                         style={{
                             scrollbarWidth: 'auto',
                             scrollbarColor: '#cbd5e1 #f1f5f9'
@@ -549,25 +569,52 @@ export function CustomDayView({
                         <div style={{ width: totalTimelineWidth, minWidth: totalTimelineWidth, position: 'relative' }}>
                             {/* Time Header */}
                             <div
-                                className="border-b bg-white border-gray-200"
+                                className="bg-gray-50"
                                 style={{
                                     height: HEADER_HEIGHT,
-                                    position: 'sticky',
                                     top: 0,
                                     zIndex: 20,
-                                    backgroundColor: '#ffffff',
-                                    width: '100%'
+                                    width: '100%',
+                                    position: 'relative',
+                                    borderTop: 'none'
                                 }}
                             >
-                                <div className="flex">
+                                <div
+                                    className="absolute inset-0 pointer-events-none"
+                                    style={{
+                                        backgroundImage: `
+                                            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                                            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)                                        `,
+                                        backgroundSize: `${slotWidth * slotsPerHour}px ${HEADER_HEIGHT}px`,
+                                        width: '100%',
+                                        height: '100%',
+                                        backgroundPosition: '0 0',
+                                        backgroundRepeat: 'repeat',
+                                        zIndex: 1
+                                    }}
+                                />
+                                <div className="flex relative z-10">
                                     {timeSlots.map((time, i) => {
                                         const isHourMark = i % slotsPerHour === 0
                                         return (
                                             <div
                                                 key={i}
-                                                className="flex items-center justify-center text-xs border-r flex-shrink-0 border-gray-200 text-gray-600"
-                                                style={{ width: slotWidth, height: HEADER_HEIGHT }}
+                                                className={cn(
+                                                    "flex items-end",
+                                                    isHourMark ? "text-xs font-medium text-neutral-700" : "text-xs text-neutral-800"
+                                                )}
+                                                style={{
+                                                    width: slotWidth,
+                                                    height: HEADER_HEIGHT,
+                                                    minWidth: slotWidth,
+                                                    maxWidth: slotWidth,
+                                                    paddingLeft: '4px',
+                                                    paddingBottom: '4px'
+                                                }}
                                             >
+                                                {isHourMark && (
+                                                    <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gray-200" />
+                                                )}
                                                 {isHourMark && moment(time).format("h:mm A")}
                                             </div>
                                         )
@@ -579,7 +626,7 @@ export function CustomDayView({
                             <div
                                 className="relative"
                                 style={{
-                                    height: (displayUsers.length + 1) * ROW_HEIGHT,
+                                    height: (finalDisplayUsers.length + 1) * ROW_HEIGHT,
                                     width: '100%'
                                 }}
                             >
@@ -596,7 +643,8 @@ export function CustomDayView({
                                         height: '100%',
                                         backgroundPosition: '0 0',
                                         backgroundRepeat: 'repeat',
-                                        zIndex: 1
+                                        zIndex: 1,
+                                        boxSizing: 'border-box'
                                     }}
                                 />
 
@@ -616,7 +664,7 @@ export function CustomDayView({
                                             className="absolute top-0 w-0.5 z-20 bg-red-500"
                                             style={{
                                                 left,
-                                                height: (displayUsers.length + 1) * ROW_HEIGHT,
+                                                height: (finalDisplayUsers.length + 1) * ROW_HEIGHT,
                                                 pointerEvents: 'none'
                                             }}
                                         >
@@ -627,31 +675,28 @@ export function CustomDayView({
 
                                 {/* Events Container */}
                                 <div className="absolute inset-0 z-10">
-                                    {displayUsers.map((user, userIndex) => {
+                                    {finalDisplayUsers.map((user, userIndex: number) => {
                                         const userEvents = eventsByUser[user.id] || []
-                                        return userEvents.map((event) => {
+                                        return userEvents.map((event: AppointmentEvent) => {
                                             const pos = eventPositions[event.id]
                                             if (!pos) return null
 
                                             const isActive = activeEvent === event.id
-                                            const eventStyle = getEventBackground(event)
 
                                             return (
                                                 <motion.div
                                                     key={event.id}
                                                     className={cn(
-                                                        "absolute rounded-lg border-l-4 p-2 cursor-grab select-none shadow-none hover:shadow-none transition-shadow",
-                                                        eventStyle.bg,
-                                                        eventStyle.text,
+                                                        "absolute rounded-lg border-l-4 p-2  cursor-grab select-none transition-shadow", getEventBackground(event.status), getEventBorderColor(event.status),
                                                         isActive && "ring-2 ring-blue-500 ring-opacity-50"
                                                     )}
                                                     style={{
                                                         left: pos.left,
                                                         width: pos.width,
-                                                        top: ROW_HEIGHT * (userIndex + 1) + 4,
+                                                        top: ROW_HEIGHT * (userIndex) + 4,
                                                         height: ROW_HEIGHT - 8,
                                                         zIndex: isActive ? 30 : 10,
-                                                        borderLeftColor: event.isLeaveEvent ? (event.color || "#3b82f6") : "#3b82f6",
+
                                                     }}
                                                     drag="x"
                                                     dragConstraints={{ left: 0, right: totalTimelineWidth - pos.width }}
@@ -663,22 +708,17 @@ export function CustomDayView({
                                                     whileDrag={{ scale: 1.02, zIndex: 50 }}
                                                     whileHover={{ scale: 1.01 }}
                                                 >
-                                                    <div className="flex items-center gap-2 mb-1">
+                                                    <div className={cn("flex items-center gap-2 mb-1 ", getEventTextColor(event.status))}>
                                                         {getEventIcon(event)}
                                                         <span className="font-medium text-sm truncate">{event.title}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1 text-xs opacity-75 mb-1">
+                                                    <div className={cn("flex items-center gap-1 text-xs opacity-75 mb-1 ", getEventTextColor(event.status))}>
                                                         <Timer className="h-3 w-3" />
                                                         <span>
                                                             {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </span>
                                                     </div>
-                                                    {event.careWorker?.fullName && (
-                                                        <div className="flex items-center gap-1 text-xs opacity-75">
-                                                            <User className="h-3 w-3" />
-                                                            <span className="truncate">{event.careWorker.fullName}</span>
-                                                        </div>
-                                                    )}
+
                                                 </motion.div>
                                             )
                                         })
@@ -713,7 +753,7 @@ export function CustomDayView({
                 .timeline-container::-webkit-scrollbar-thumb {
                     background: #cbd5e1;
                     border-radius: 6px;
-                    border: 2px solid #f1f5f9;
+                    border: 1px solid #f1f5f9;
                 }
                 
                 .timeline-container::-webkit-scrollbar-thumb:hover {

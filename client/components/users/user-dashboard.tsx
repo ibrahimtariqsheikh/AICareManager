@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Users, UserPlus, Briefcase, Plus, Search } from 'lucide-react'
 import { toast } from "sonner"
@@ -23,7 +22,6 @@ import { v4 as uuidv4 } from "uuid"
 import { useAppSelector } from "@/state/redux"
 import { UserTableUser } from "./user-table-user"
 import { CustomInput } from "@/components/ui/custom-input"
-import { Separator } from "../ui/separator"
 
 
 export function UserDashboard() {

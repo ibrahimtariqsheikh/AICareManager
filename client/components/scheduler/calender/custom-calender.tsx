@@ -8,7 +8,7 @@ import { Skeleton } from "../../ui/skeleton"
 
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveView } from "@/state/slices/calendarSlice"
-import { CalendarIcon, ChevronDown, ChevronLeft, ChevronRight, Clipboard, PlusCircle } from "lucide-react"
+import { CalendarIcon, ChevronDown, ChevronLeft, ChevronRight, DollarSign, Search, Timer, User2, Users } from "lucide-react"
 import { CalendarRange } from "lucide-react"
 import { CalendarDays } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -19,13 +19,14 @@ import { Calendar as CalendarDropdown } from "@/components/ui/calender"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { setActiveScheduleUserType } from "@/state/slices/scheduleSlice"
+import { setActiveScheduleUserType, setFilteredClients, setFilteredCareWorkers, setFilteredOfficeStaff } from "@/state/slices/scheduleSlice"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Checkbox } from "@/components/ui/checkbox"
 import { setSelectedCareWorkers, setSelectedOfficeStaff } from "@/state/slices/userSlice"
 import { setSelectedClients } from "@/state/slices/userSlice"
-import { Button } from "@/components/ui/button"
-import EventIcon from "@/components/icons/eventicon"
+
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { CustomInput } from "@/components/ui/custom-input"
 
 // Add month picker styles
 const monthPickerStyles = `
@@ -85,7 +86,7 @@ export function CustomCalendar({
     sidebarMode,
     getEventTypeLabel,
 }: CustomCalendarProps) {
-    // Add styles to document
+
     useEffect(() => {
         const style = document.createElement('style')
         style.textContent = monthPickerStyles
@@ -95,7 +96,6 @@ export function CustomCalendar({
         }
     }, [])
 
-    const [isAppointmentFormOpen, setIsAppointmentFormOpen] = useState(false)
 
 
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
@@ -119,15 +119,66 @@ export function CustomCalendar({
     const careWorkers = useAppSelector((state) => state.user.careWorkers)
     const officeStaff = useAppSelector((state) => state.user.officeStaff)
 
-    const selectedClients = useAppSelector((state) => state.user.selectedClients)
-    const selectedCareWorkers = useAppSelector((state) => state.user.selectedCareWorkers)
-    const selectedOfficeStaff = useAppSelector((state) => state.user.selectedOfficeStaff)
+
+    const [searchQuery, setSearchQuery] = useState("")
+    const [searchQueryCareWorker, setSearchQueryCareWorker] = useState("")
+    const [searchQueryOfficeStaff, setSearchQueryOfficeStaff] = useState("")
+
+    const filteredClients = clients.filter(client =>
+        client.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    const filteredCareWorkers = careWorkers.filter(careWorker =>
+        careWorker.fullName.toLowerCase().includes(searchQueryCareWorker.toLowerCase())
+    )
+
+    const filteredOfficeStaff = officeStaff.filter(staff =>
+        staff.fullName.toLowerCase().includes(searchQueryOfficeStaff.toLowerCase())
+    )
+
+    const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
+
+    const handleClientSelection = (client: Client) => {
+        if (filteredUsers.clients.includes(client.id)) {
+            dispatch(setFilteredClients(filteredUsers.clients.filter(id => id !== client.id)))
+        } else {
+            dispatch(setFilteredClients([...filteredUsers.clients, client.id]))
+        }
+    }
+
+    const handleCareWorkerSelection = (careWorker: StaffMember) => {
+        if (filteredUsers.careWorkers.includes(careWorker.id)) {
+            dispatch(setFilteredCareWorkers(filteredUsers.careWorkers.filter(id => id !== careWorker.id)))
+        } else {
+            dispatch(setFilteredCareWorkers([...filteredUsers.careWorkers, careWorker.id]))
+        }
+    }
+
+    const handleOfficeStaffSelection = (staff: StaffMember) => {
+        if (filteredUsers.officeStaff.includes(staff.id)) {
+            dispatch(setFilteredOfficeStaff(filteredUsers.officeStaff.filter(id => id !== staff.id)))
+        } else {
+            dispatch(setFilteredOfficeStaff([...filteredUsers.officeStaff, staff.id]))
+        }
+    }
+
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
+        // Select all users by default
+        const allClientIds = clients.map(client => client.id)
+        const allCareWorkerIds = careWorkers.map(worker => worker.id)
+        const allOfficeStaffIds = officeStaff.map(staff => staff.id)
+
+        dispatch(setFilteredClients(allClientIds))
+        dispatch(setFilteredCareWorkers(allCareWorkerIds))
+        dispatch(setFilteredOfficeStaff(allOfficeStaffIds))
+
+        // Also update the selected users in user slice
         dispatch(setSelectedClients(clients))
         dispatch(setSelectedCareWorkers(careWorkers))
         dispatch(setSelectedOfficeStaff(officeStaff))
-    }, [])
+    }, [clients, careWorkers, officeStaff, dispatch])
 
 
 
@@ -168,9 +219,6 @@ export function CustomCalendar({
     }
 
 
-    const dispatch = useAppDispatch()
-
-
 
 
     if (isLoading) {
@@ -183,8 +231,8 @@ export function CustomCalendar({
 
     // Render the appropriate view based on activeView
     return (
-        <div className="h-full w-full calendar-scrollbar">
-            <div className="grid grid-cols-3 p-2 gap-2 items-center justify-between h-20 ">
+        <div className="h-full w-full ">
+            <div className="flex items-center justify-between h-20 px-4">
                 <div className="flex justify-start items-center">
 
                     {/* Controls and info row */}
@@ -272,34 +320,84 @@ export function CustomCalendar({
                                     )}
                                 </motion.div>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent>
+                            <DropdownMenuContent className="w-[300px]">
                                 <DropdownMenuLabel className="text-neutral-900 text-xs font-semibold">{activeScheduleUserType === "clients" ? "Select Client(s)" : activeScheduleUserType === "officeStaff" ? "Select Office Staff(s)" : activeScheduleUserType === "careWorker" ? "Select Care Worker(s)" : "Select Staff(s)"}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 
-                                {activeScheduleUserType === "clients" && <div className="flex flex-col gap-2 mt-2">
-                                    {clients.map((client) => (
-                                        <div className="flex items-center gap-2 text-xs font-medium cursor-pointer">
-                                            <Checkbox checked={selectedClients.includes(client)} onCheckedChange={() => { dispatch(setSelectedClients([...selectedClients, client])) }} />
-                                            {client.fullName}
-                                        </div>
-                                    ))}
-                                </div>}
-                                {activeScheduleUserType === "careWorker" && <div className="flex flex-col gap-1">
-                                    {careWorkers.map((careWorker) => (
-                                        <div className="flex items-center gap-2 text-xs font-medium cursor-pointer">
-                                            <Checkbox checked={careWorker.selected} onCheckedChange={() => { dispatch(setSelectedCareWorkers([...selectedCareWorkers, careWorker])) }} />
-                                            {careWorker.fullName}
-                                        </div>
-                                    ))}
-                                </div>}
-                                {activeScheduleUserType === "officeStaff" && <div className="flex flex-col gap-1">
-                                    {officeStaff.map((officeStaff) => (
-                                        <div className="flex items-center gap-2 text-xs font-medium cursor-pointer">
-                                            <Checkbox checked={officeStaff.selected} onCheckedChange={() => { dispatch(setSelectedOfficeStaff([...selectedOfficeStaff, officeStaff])) }} />
-                                            {officeStaff.fullName}
-                                        </div>
-                                    ))}
-                                </div>}
+                                {activeScheduleUserType === "clients" && (
+                                    <div className="flex flex-col gap-2 p-2">
+                                        <CustomInput
+                                            placeholder="Search clients..."
+                                            value={searchQuery}
+                                            onChange={setSearchQuery}
+                                            className="h-8 text-xs"
+                                            icon={<Search className="h-3 w-3" />}
+                                        />
+                                        <ScrollArea className="h-[200px]">
+                                            <div className="flex flex-col gap-2">
+                                                {filteredClients.map((client) => (
+                                                    <div key={client.id} className="flex items-center gap-2 text-xs font-medium cursor-pointer p-1 hover:bg-gray-100 rounded-md">
+                                                        <Checkbox
+                                                            checked={filteredUsers.clients.includes(client.id)}
+                                                            onCheckedChange={() => handleClientSelection(client)}
+                                                        />
+                                                        {client.fullName}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </ScrollArea>
+                                    </div>
+                                )}
+
+                                {activeScheduleUserType === "careWorker" && (
+                                    <div className="flex flex-col gap-2 p-2">
+                                        <CustomInput
+                                            placeholder="Search care workers..."
+                                            value={searchQueryCareWorker}
+                                            onChange={setSearchQueryCareWorker}
+                                            className="h-8 text-xs"
+                                            icon={<Search className="h-3 w-3" />}
+                                        />
+                                        <ScrollArea className="h-[200px]">
+                                            <div className="flex flex-col gap-2">
+                                                {filteredCareWorkers.map((careWorker) => (
+                                                    <div key={careWorker.id} className="flex items-center gap-2 text-xs font-medium cursor-pointer p-1 hover:bg-gray-100 rounded-md">
+                                                        <Checkbox
+                                                            checked={filteredUsers.careWorkers.includes(careWorker.id)}
+                                                            onCheckedChange={() => handleCareWorkerSelection(careWorker)}
+                                                        />
+                                                        {careWorker.fullName}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </ScrollArea>
+                                    </div>
+                                )}
+
+                                {activeScheduleUserType === "officeStaff" && (
+                                    <div className="flex flex-col gap-2 p-2">
+                                        <CustomInput
+                                            placeholder="Search office staff..."
+                                            value={searchQueryOfficeStaff}
+                                            onChange={setSearchQueryOfficeStaff}
+                                            className="h-8 text-xs"
+                                            icon={<Search className="h-3 w-3" />}
+                                        />
+                                        <ScrollArea className="h-[200px]">
+                                            <div className="flex flex-col gap-2">
+                                                {filteredOfficeStaff.map((staff) => (
+                                                    <div key={staff.id} className="flex items-center gap-2 text-xs font-medium cursor-pointer p-1 hover:bg-gray-100 rounded-md">
+                                                        <Checkbox
+                                                            checked={filteredUsers.officeStaff.includes(staff.id)}
+                                                            onCheckedChange={() => handleOfficeStaffSelection(staff)}
+                                                        />
+                                                        {staff.fullName}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </ScrollArea>
+                                    </div>
+                                )}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -424,6 +522,26 @@ export function CustomCalendar({
                 </div>
 
             </div>
+            <div className=" w-full bg-neutral-100/50 h-10 px-8 py-2 flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-blue-500/20 rounded-full p-2 text-blue-500">
+                        <Users className="h-3 w-3" />
+                    </div>
+                    <p className="text-[11px] font-medium text-neutral-600">2 Clients Scheduled</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-green-500/20 rounded-full p-2 text-green-500">
+                        <Timer className="h-3 w-3" />
+                    </div>
+                    <p className="text-[11px] font-medium text-neutral-600">10.5 total hours</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-yellow-500/20 rounded-full p-2 text-yellow-500">
+                        <DollarSign className="h-3 w-3" />
+                    </div>
+                    <p className="text-[11px] font-medium text-neutral-600">$100 total cost</p>
+                </div>
+            </div>
 
             {/* <div className="flex justify-end items-center">
                 <Popover>
@@ -492,3 +610,4 @@ export function CustomCalendar({
 }
 
 export default CustomCalendar
+

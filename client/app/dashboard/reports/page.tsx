@@ -46,8 +46,8 @@ export default function ReportsPage() {
     const [reportToDate, setReportToDate] = useState("")
     const [selectedClient, setSelectedClient] = useState("all")
     const [selectedCareWorker, setSelectedCareWorker] = useState("all")
-    const [selectedGroup, setSelectedGroup] = useState("all")
-    const [selectedTask, setSelectedTask] = useState("all")
+    const [selectedGroup] = useState("all")
+    const [selectedTask] = useState("all")
 
     // Dummy data for filters
     const clients = [
@@ -60,18 +60,6 @@ export default function ReportsPage() {
         { id: "1", name: "Sarah Smith" },
         { id: "2", name: "Mike Johnson" },
         { id: "3", name: "Emma Wilson" }
-    ]
-
-    const groups = [
-        { id: "1", name: "Morning Shift" },
-        { id: "2", name: "Evening Shift" },
-        { id: "3", name: "Night Shift" }
-    ]
-
-    const tasks = [
-        { id: "1", name: "Medication" },
-        { id: "2", name: "Personal Care" },
-        { id: "3", name: "Meal Preparation" }
     ]
 
     // Reports summary data
