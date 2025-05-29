@@ -35,7 +35,6 @@ interface CustomDayViewProps {
     min?: Date
     max?: Date
     clients?: Client[]
-    spaceTheme?: boolean
     showSidebar?: boolean
     slotHeight?: number
     minutesPerSlot?: number
@@ -55,11 +54,8 @@ export function CustomDayView({
     onEventUpdate,
     min = new Date(new Date().setHours(7, 0, 0)),
     max = new Date(new Date().setHours(19, 0, 0)),
-    spaceTheme = false,
     showSidebar = true,
     minutesPerSlot = 30,
-    initialHeight = "600px",
-    initialWidth = "100%",
 }: CustomDayViewProps) {
     const dispatch = useAppDispatch()
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
@@ -68,8 +64,8 @@ export function CustomDayView({
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
     const events = useAppSelector((state) => state.schedule.events || [])
     const { userTemplates, isLoadingTemplates } = useAppSelector((state) => state.template)
-
-    console.log(events)
+    const agencyId = useAppSelector((state) => state.user.user?.userInfo?.agencyId)
+    const router = useRouter()
 
     // Get the appropriate users based on activeScheduleUserType
     const displayUsers = (() => {
@@ -79,12 +75,28 @@ export function CustomDayView({
         return []
     })()
 
+    // State management
     const [activeDialogEventId, setActiveDialogEventId] = useState<string | null>(null)
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
     const [isApplyTemplateSelected, setIsApplyTemplateSelected] = useState<boolean>(false)
-    const agencyId = useAppSelector((state) => state.user.user?.userInfo?.agencyId)
+    const [eventPositions, setEventPositions] = useState<Record<string, any>>({})
+    const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
+    const [activeEvent, setActiveEvent] = useState<string | null>(null)
+    const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
 
-    // Use the API hooks properly inside the component
+    // Refs
+    const containerRef = useRef<HTMLDivElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+
+    // Constants
+    const startHour = min.getHours()
+    const endHour = max.getHours()
+    const slotsPerHour = 60 / minutesPerSlot
+    const slotWidth = 80
+    const ROW_HEIGHT = 80
+    const HEADER_HEIGHT = 50
+
+    // API hooks
     const {
         data: templatesData,
         isLoading: isTemplatesLoading,
@@ -98,102 +110,7 @@ export function CustomDayView({
         skip: !agencyId
     })
 
-    // Update Redux state when templates data changes
-    useEffect(() => {
-        if (templatesData) {
-            dispatch(setUserTemplates(templatesData))
-        }
-        if (templatesError) {
-            dispatch(setTemplateError("Failed to load templates"))
-        }
-    }, [templatesData, templatesError, dispatch])
-
-    // Update loading state
-    useEffect(() => {
-        dispatch(setLoadingTemplates(isTemplatesLoading))
-    }, [isTemplatesLoading, dispatch])
-
-    const handleEventClick = (event: AppointmentEvent) => {
-        if (activeDialogEventId !== event.id) {
-            setActiveDialogEventId(event.id)
-            onSelectEvent(event)
-        }
-    }
-
     const [applyScheduleTemplate] = useApplyScheduleTemplateMutation()
-
-    const handleOpenTemplateMenu = (userId: string) => {
-        setSelectedUserId(userId)
-        setIsApplyTemplateSelected(true)
-        // Don't clear templates here, so they persist between opens
-    }
-
-    const handleApplyTemplate = async (templateId: string) => {
-        try {
-            if (!selectedUserId) return
-
-            if (!templateId) {
-                toast.error("Missing template or user information")
-                return
-            }
-
-            const params = `${templateId}`
-            const result = await applyScheduleTemplate(params)
-            console.log("result", result)
-
-            // Refresh schedules after successful template application
-            await refetchAgencySchedules()
-
-            toast.success("Template applied successfully")
-            setIsApplyTemplateSelected(false)
-            setSelectedUserId(null)
-        } catch (error) {
-            toast.error("Failed to apply template")
-            console.error("Error applying template:", error)
-        }
-    }
-
-    // Refs
-    const containerRef = useRef<HTMLDivElement>(null)
-    const timelineRef = useRef<HTMLDivElement>(null)
-    const headerRef = useRef<HTMLDivElement>(null)
-    const calendarContainerRef = useRef<HTMLDivElement>(null)
-
-    // State
-    const [eventPositions, setEventPositions] = useState<Record<string, any>>({})
-    const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
-    const [activeEvent, setActiveEvent] = useState<string | null>(null)
-    const [, setHoveredEvent] = useState<string | null>(null)
-    const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
-    const [calendarHeight, setCalendarHeight] = useState<string | number>(initialHeight)
-    const [calendarWidth, setCalendarWidth] = useState<string | number>(initialWidth)
-
-    // Constants
-    const startHour = min.getHours()
-    const endHour = max.getHours()
-    const slotsPerHour = 60 / minutesPerSlot
-    const slotWidth = 80
-
-    const getRowHeight = () => {
-        if (typeof calendarHeight === "number") {
-            const availableHeight = calendarHeight - 25
-            return Math.max(45, Math.floor(availableHeight / (displayUsers.length + 2 || 1)))
-        }
-        return 60
-    }
-
-    const rowHeight = getRowHeight()
-
-    // Calculate total height needed based on number of users
-    const MIN_HEIGHT = 150
-    const EXTRA_PADDING = 20
-    const totalHeight = displayUsers.length > 0 ? (displayUsers.length + 2) * rowHeight + 120 + EXTRA_PADDING : MIN_HEIGHT
-
-    useEffect(() => {
-        if (typeof initialHeight === "string" && initialHeight === "100%") {
-            setCalendarHeight(totalHeight)
-        }
-    }, [displayUsers.length, rowHeight, initialHeight, totalHeight])
 
     // Generate time slots
     const timeSlots = Array.from({ length: (endHour - startHour) * slotsPerHour + 1 }, (_, i) => {
@@ -202,12 +119,12 @@ export function CustomDayView({
         return new Date(new Date(date).setHours(hour, minutes, 0, 0))
     })
 
-    const totalWidth = timeSlots.length * slotWidth
+    const totalTimelineWidth = timeSlots.length * slotWidth
+    const totalCalendarHeight = (displayUsers.length + 1) * ROW_HEIGHT + HEADER_HEIGHT
 
+    // Group events by user
     const eventsByUser = (() => {
-        const userEvents: Record<string, AppointmentEvent[]> = {
-            unallocated: [],
-        }
+        const userEvents: Record<string, AppointmentEvent[]> = {}
 
         displayUsers.forEach((user) => {
             userEvents[user.id] = []
@@ -218,33 +135,41 @@ export function CustomDayView({
             .forEach((event) => {
                 if (event.clientId && userEvents[event.clientId]) {
                     userEvents[event.clientId]?.push(event)
-                } else {
-                    userEvents["unallocated"]?.push(event)
                 }
             })
 
         return userEvents
     })()
 
+    // Update Redux state when templates data changes
+    useEffect(() => {
+        if (templatesData) {
+            dispatch(setUserTemplates(templatesData))
+        }
+        if (templatesError) {
+            dispatch(setTemplateError("Failed to load templates"))
+        }
+        dispatch(setLoadingTemplates(isTemplatesLoading))
+    }, [templatesData, templatesError, isTemplatesLoading, dispatch])
+
+    // Process events for display
     useEffect(() => {
         const eventMap: Record<string, AppointmentEvent> = {}
         events
             .filter((event) => moment(event.start).isSame(date, "day"))
             .forEach((event) => {
-                const processedEvent = {
+                eventMap[event.id] = {
                     ...event,
                     start: new Date(event.start),
                     end: new Date(event.end),
                     date: event.date ? new Date(event.date) : new Date(event.start),
                 }
-                eventMap[event.id] = processedEvent
             })
         setDisplayEvents(eventMap)
     }, [events, date])
 
+    // Calculate event positions
     useEffect(() => {
-        if (!timelineRef.current) return
-
         const positions: Record<string, any> = {}
 
         Object.values(displayEvents).forEach((event) => {
@@ -257,170 +182,101 @@ export function CustomDayView({
             const left = (startMinutes / minutesPerSlot) * slotWidth
             const width = ((endMinutes - startMinutes) / minutesPerSlot) * slotWidth
 
-            // Store position data
             positions[event.id] = {
                 left,
-                width: Math.max(width, 50), // Minimum width for visibility
-                originalEvent: { ...event },
+                width: Math.max(width, 60),
                 startMinutes,
                 durationMinutes: endMinutes - startMinutes,
+                originalEvent: { ...event },
             }
         })
 
         setEventPositions(positions)
     }, [displayEvents, startHour, minutesPerSlot, slotWidth])
 
-    // Watch for changes in initialHeight and initialWidth props
-    useEffect(() => {
-        setCalendarHeight(initialHeight)
-        setCalendarWidth(initialWidth)
-    }, [initialHeight, initialWidth])
-
-    // Sync header with content scroll
+    // Sync header scroll with timeline - force synchronization
     useEffect(() => {
         const handleScroll = () => {
             if (containerRef.current && headerRef.current) {
-                headerRef.current.scrollLeft = containerRef.current.scrollLeft
+                const scrollLeft = containerRef.current.scrollLeft
+                headerRef.current.scrollLeft = scrollLeft
             }
         }
 
         const container = containerRef.current
         if (container) {
             container.addEventListener("scroll", handleScroll)
-            return () => container.removeEventListener("scroll", handleScroll)
+            // Also trigger on any scroll event
+            container.addEventListener("wheel", handleScroll)
+            return () => {
+                container.removeEventListener("scroll", handleScroll)
+                container.removeEventListener("wheel", handleScroll)
+            }
         }
-
-        return () => { } // Ensure a return function exists on all paths
     }, [])
 
-    // Auto-scroll to current time on initial load
+    // Auto-scroll to current time or first event
     useEffect(() => {
-        const now = new Date()
-        if (moment(now).isSame(date, "day") && containerRef.current) {
-            const currentHour = now.getHours()
-            const currentMinute = now.getMinutes()
-            const minutesSinceStart = (currentHour - startHour) * 60 + currentMinute
-            const scrollPos = (minutesSinceStart / minutesPerSlot) * slotWidth - 200
-            containerRef.current.scrollLeft = Math.max(0, scrollPos)
-        }
-    }, [date, startHour, slotWidth, minutesPerSlot])
+        if (!containerRef.current) return
 
-    // Smart scroll based on events
-    useEffect(() => {
-        if (!containerRef.current || !events.length) return
-
-        // Get all events for the current day
         const dayEvents = events.filter((event) => moment(event.start).isSame(date, "day"))
 
-        if (dayEvents.length === 0) return
+        const scrollToPosition = (scrollPos: number) => {
+            if (containerRef.current) {
+                containerRef.current.scrollLeft = Math.max(0, scrollPos)
+            }
+        }
 
-        // If there are 3 or fewer events, scroll to the first event
-        if (dayEvents.length <= 3) {
+        if (moment(new Date()).isSame(date, "day")) {
+            const now = new Date()
+            const currentMinutes = (now.getHours() - startHour) * 60 + now.getMinutes()
+            const scrollPos = (currentMinutes / minutesPerSlot) * slotWidth - 200
+            scrollToPosition(scrollPos)
+        } else if (dayEvents.length > 0 && dayEvents.length <= 3) {
             const firstEvent = dayEvents.reduce((earliest, current) =>
-                moment(current.start).isBefore(moment(earliest.start)) ? current : earliest,
+                moment(current.start).isBefore(moment(earliest.start)) ? current : earliest
             )
             const eventStart = moment(firstEvent.start)
             const minutesSinceStart = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
             const scrollPos = (minutesSinceStart / minutesPerSlot) * slotWidth - 200
-            containerRef.current.scrollLeft = Math.max(0, scrollPos)
-        } else {
-            // For more events, scroll to 7:00 AM
-            const scrollPos = (0 / minutesPerSlot) * slotWidth
-            containerRef.current.scrollLeft = Math.max(0, scrollPos)
+            scrollToPosition(scrollPos)
         }
     }, [date, events, startHour, slotWidth, minutesPerSlot])
 
-    useEffect(() => {
-        return () => {
-            setActiveDialogEventId(null)
+    // Event handlers
+    const handleEventClick = (event: AppointmentEvent) => {
+        if (activeDialogEventId !== event.id) {
+            setActiveDialogEventId(event.id)
+            onSelectEvent(event)
         }
-    }, [])
+    }
 
-    // Add custom scrollbar style
-    useEffect(() => {
-        const styleId = "calendar-scrollbar-style"
-        if (!document.getElementById(styleId)) {
-            const style = document.createElement("style")
-            style.id = styleId
-            style.textContent = `
-        .calendar-scrollbar::-webkit-scrollbar {
-          height: 8px;
-        }
-        .calendar-scrollbar::-webkit-scrollbar-track {
-          background: ${spaceTheme ? "#1e293b" : "#f1f5f9"};
-          border-radius: 4px;
-        }
-        .calendar-scrollbar::-webkit-scrollbar-thumb {
-          background: ${spaceTheme ? "#475569" : "#cbd5e1"};
-          border-radius: 4px;
-        }
-        .calendar-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: ${spaceTheme ? "#64748b" : "#94a3b8"};
-        }
-        
-        /* Add resize styles */
-        .resize-handle {
-          position: absolute;
-          z-index: 30;
-          cursor: nwse-resize;
-        }
-        .resize-handle:hover::before,
-        .resize-handle:active::before {
-          opacity: 1;
-        }
-        .resize-handle::before {
-          content: '';
-          position: absolute;
-          right: 3px;
-          bottom: 3px;
-          width: 10px;
-          height: 10px;
-          border-right: 2px solid ${spaceTheme ? "#64748b" : "#94a3b8"};
-          border-bottom: 2px solid ${spaceTheme ? "#64748b" : "#94a3b8"};
-          opacity: 0.6;
-          transition: opacity 0.2s;
-        }
-        
-        /* Add client row separator */
-        .client-row {
-          border-bottom: 2px solid ${spaceTheme ? "#1e293b" : "#e2e8f0"};
-          position: relative;
-          overflow: visible;
-        }
-        
-        /* Add client row hover effect */
-        .client-row:hover {
-          background-color: ${spaceTheme ? "rgba(30, 41, 59, 0.3)" : "rgba(241, 245, 249, 0.5)"};
-        }
-        
-        /* Add client name label */
-        .client-name-label {
-          position: absolute;
-          left: 8px;
-          top: 8px;
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: ${spaceTheme ? "#94a3b8" : "#64748b"};
-          z-index: 5;
-          pointer-events: none;
-        }
-      `
-            document.head.appendChild(style)
-        }
+    const handleOpenTemplateMenu = (userId: string) => {
+        setSelectedUserId(userId)
+        setIsApplyTemplateSelected(true)
+    }
 
-        return () => {
-            const styleElement = document.getElementById(styleId)
-            if (styleElement) {
-                document.head.removeChild(styleElement)
+    const handleApplyTemplate = async (templateId: string) => {
+        try {
+            if (!selectedUserId || !templateId) {
+                toast.error("Missing template or user information")
+                return
             }
+
+            await applyScheduleTemplate(templateId)
+            await refetchAgencySchedules()
+
+            toast.success("Template applied successfully")
+            setIsApplyTemplateSelected(false)
+            setSelectedUserId(null)
+        } catch (error) {
+            toast.error("Failed to apply template")
+            console.error("Error applying template:", error)
         }
-    }, [spaceTheme])
+    }
 
-    const router = useRouter()
-
-
-    // Drag event handlers
-    const handleDragStart = (eventId: string, _clientId: string) => {
+    // Drag handlers
+    const handleDragStart = (eventId: string) => {
         setActiveEvent(eventId)
         document.body.style.cursor = "grabbing"
 
@@ -435,7 +291,6 @@ export function CustomDayView({
         const position = eventPositions[eventId]
         if (!position) return
 
-        // Calculate new time based on drag position
         const newLeft = position.left + info.offset.x
         const minutesFromStart = Math.round((newLeft / slotWidth) * minutesPerSlot)
         const timeText = formatTimeFromMinutes(minutesFromStart)
@@ -443,44 +298,36 @@ export function CustomDayView({
         setDragTooltip({ eventId, time: timeText })
     }
 
-    const handleDragEnd = (eventId: string, info: any, _clientId: string) => {
+    const handleDragEnd = (eventId: string, info: any) => {
         const position = eventPositions[eventId]
         if (!position) return
 
         document.body.style.cursor = ""
 
-        // Calculate new time based on final position
         const newLeft = position.left + info.offset.x
         const minutesFromStart = Math.round((newLeft / slotWidth) * minutesPerSlot)
-
-        // Ensure time is within bounds
         const clampedMinutes = Math.max(
             0,
-            Math.min(minutesFromStart, (endHour - startHour) * 60 - position.durationMinutes),
+            Math.min(minutesFromStart, (endHour - startHour) * 60 - position.durationMinutes)
         )
 
         const hours = Math.floor(clampedMinutes / 60) + startHour
         const minutes = clampedMinutes % 60
 
-        // Create new dates
         const newStartDate = moment(date).hour(hours).minute(minutes).second(0).millisecond(0)
-        const durationInMinutes = position.durationMinutes
-        const newEndDate = moment(newStartDate).add(durationInMinutes, "minutes")
+        const newEndDate = moment(newStartDate).add(position.durationMinutes, "minutes")
 
-        // Create updated event
         const updatedEvent = {
             ...position.originalEvent,
             start: newStartDate.toDate(),
             end: newEndDate.toDate(),
         }
 
-        // Update display events
         setDisplayEvents((prev) => ({
             ...prev,
             [eventId]: updatedEvent,
         }))
 
-        // Update position
         const updatedLeft = (clampedMinutes / minutesPerSlot) * slotWidth
         setEventPositions((prev) => ({
             ...prev,
@@ -489,177 +336,19 @@ export function CustomDayView({
                 left: updatedLeft,
                 startMinutes: clampedMinutes,
                 originalEvent: updatedEvent,
-                // Maintain the track and other positioning properties
-                track: prev[eventId].track,
-                height: prev[eventId].height,
-                top: prev[eventId].top,
-                totalTracks: prev[eventId].totalTracks,
             },
         }))
 
-        // Call update handler
         if (onEventUpdate) {
             onEventUpdate(updatedEvent)
             toast.success(`${updatedEvent.title} updated to ${newStartDate.format("h:mm A")}`)
         }
 
-        // Clean up
         setDragTooltip(null)
         setActiveEvent(null)
     }
 
-    // Event type styles
-    const eventTypeStyles: Record<string, string> = {
-        home_visit: 'bg-blue-50',
-        video_call: 'bg-purple-50',
-        hospital: 'bg-red-50',
-        audio_call: 'bg-green-50',
-        in_person: 'bg-yellow-50',
-        meeting: 'bg-gray-50'
-    }
-
-    // Leave type styles
-    const leaveTypeStyles: Record<string, string> = {
-        annual_leave: 'bg-green-50',
-        sick_leave: 'bg-red-50',
-        public_holiday: 'bg-blue-50',
-        unpaid_leave: 'bg-gray-50',
-        maternity_leave: 'bg-pink-50',
-        paternity_leave: 'bg-purple-50',
-        bereavement_leave: 'bg-brown-50',
-        emergency_leave: 'bg-orange-50',
-        medical_appointment: 'bg-cyan-50',
-        toil: 'bg-amber-50',
-        default: 'bg-gray-50'
-    }
-
-    // Get event background color based on type
-    const getEventBackground = (event: AppointmentEvent) => {
-        if (event.isLeaveEvent) {
-            const leaveType = (event.leaveType?.toLowerCase() || 'default') as keyof typeof styles
-            const styles = {
-                annual_leave: {
-                    bg: 'bg-green-50',
-                    text: 'text-green-700'
-                },
-                sick_leave: {
-                    bg: 'bg-red-50',
-                    text: 'text-red-700'
-                },
-                public_holiday: {
-                    bg: 'bg-blue-50',
-                    text: 'text-blue-700'
-                },
-                unpaid_leave: {
-                    bg: 'bg-gray-50',
-                    text: 'text-gray-700'
-                },
-                maternity_leave: {
-                    bg: 'bg-pink-50',
-                    text: 'text-pink-700'
-                },
-                paternity_leave: {
-                    bg: 'bg-purple-50',
-                    text: 'text-purple-700'
-                },
-                bereavement_leave: {
-                    bg: 'bg-brown-50',
-                    text: 'text-brown-700'
-                },
-                emergency_leave: {
-                    bg: 'bg-orange-50',
-                    text: 'text-orange-700'
-                },
-                medical_appointment: {
-                    bg: 'bg-cyan-50',
-                    text: 'text-cyan-700'
-                },
-                toil: {
-                    bg: 'bg-amber-50',
-                    text: 'text-amber-700'
-                },
-                default: {
-                    bg: 'bg-blue-100',
-                    text: 'text-blue-700'
-                }
-            }
-            const style = styles[leaveType] || styles.default
-            return {
-                bg: style.bg,
-                text: style.text
-            }
-        }
-
-        const type = event.type.toLowerCase()
-        const defaultStyle = {
-            bg: 'bg-gray-50',
-            text: 'text-gray-700'
-        }
-        const style = (eventTypeStyles[type] || eventTypeStyles.meeting || defaultStyle) as { bg: string; text: string }
-        return {
-            bg: style.bg,
-            text: style.text
-        }
-    }
-
-    // Get event icon based on type
-    const getEventIcon = (event: AppointmentEvent) => {
-        if (event.isLeaveEvent) {
-            switch (event.leaveType) {
-                case "ANNUAL_LEAVE":
-                    return <Calendar className="h-3  w-3" />
-                case "SICK_LEAVE":
-                    return <Heart className="h-3 w-3" />
-                case "PUBLIC_HOLIDAY":
-                    return <Flag className="h-3 w-3" />
-                case "UNPAID_LEAVE":
-                    return <DollarSign className="h-3 w-3" />
-                case "MATERNITY_LEAVE":
-                    return <Baby className="h-3 w-3" />
-                case "PATERNITY_LEAVE":
-                    return <User className="h-3 w-3" />
-                case "BEREAVEMENT_LEAVE":
-                    return <Heart className="h-3 w-3" />
-                case "EMERGENCY_LEAVE":
-                    return <AlertTriangle className="h-3 w-3" />
-                case "MEDICAL_APPOINTMENT":
-                    return <Stethoscope className="h-3 w-3" />
-                case "TOIL":
-                    return <Clock className="h-3 w-3" />
-                default:
-                    return <Calendar className="h-3 w-3" />
-            }
-        }
-
-        switch (event.type) {
-            case "HOME_VISIT":
-                return <Home className="h-3 w-3" />
-            case "VIDEO_CALL":
-                return <Video className="h-3 w-3" />
-            case "HOSPITAL":
-                return <Building2 className="h-3 w-3" />
-            case "AUDIO_CALL":
-                return <Phone className="h-3 w-3" />
-            case "IN_PERSON":
-                return <User className="h-3 w-3" />
-            default:
-                return <Calendar className="h-3 w-3" />
-        }
-    }
-
-    // Theme-based style classes
-    const timelineClass = spaceTheme ? "bg-slate-900" : "bg-white"
-    const timeLabelsClass = spaceTheme ? "text-slate-400" : "text-gray-500"
-    const currentTimeClass = spaceTheme ? "bg-green-500" : "bg-red-500"
-    const gridLineClass = spaceTheme ? "border-slate-800" : "border-gray-200"
-    const hourLineClass = spaceTheme ? "border-slate-700" : "border-gray-200"
-    const halfHourLineClass = spaceTheme ? "border-slate-800" : "border-gray-100"
-    const tooltipClass = spaceTheme
-        ? "bg-slate-800 text-white border border-slate-700"
-        : "bg-white text-black border border-gray-200"
-    const clientSidebarClass = spaceTheme ? "bg-neutral-900 border-neutral-700" : "bg-white border-gray-200"
-
-    // Time formatting helpers
+    // Helper functions
     const formatTimeFromMinutes = (minutesFromStart: number) => {
         const hours = Math.floor(minutesFromStart / 60) + startHour
         const minutes = minutesFromStart % 60
@@ -668,336 +357,332 @@ export function CustomDayView({
         return `${displayHours}:${minutes.toString().padStart(2, "0")} ${amPm}`
     }
 
+    const getEventBackground = (event: AppointmentEvent) => {
+        if (event.isLeaveEvent) {
+            const leaveTypeStyles = {
+                ANNUAL_LEAVE: { bg: 'bg-green-50', text: 'text-green-700' },
+                SICK_LEAVE: { bg: 'bg-red-50', text: 'text-red-700' },
+                PUBLIC_HOLIDAY: { bg: 'bg-blue-50', text: 'text-blue-700' },
+                UNPAID_LEAVE: { bg: 'bg-gray-50', text: 'text-gray-700' },
+                MATERNITY_LEAVE: { bg: 'bg-pink-50', text: 'text-pink-700' },
+                PATERNITY_LEAVE: { bg: 'bg-purple-50', text: 'text-purple-700' },
+                BEREAVEMENT_LEAVE: { bg: 'bg-gray-50', text: 'text-gray-700' },
+                EMERGENCY_LEAVE: { bg: 'bg-orange-50', text: 'text-orange-700' },
+                MEDICAL_APPOINTMENT: { bg: 'bg-cyan-50', text: 'text-cyan-700' },
+                TOIL: { bg: 'bg-amber-50', text: 'text-amber-700' },
+            }
+            return leaveTypeStyles[event.leaveType as keyof typeof leaveTypeStyles] || { bg: 'bg-blue-50', text: 'text-blue-700' }
+        }
+
+        const eventTypeStyles = {
+            HOME_VISIT: { bg: 'bg-blue-50', text: 'text-blue-700' },
+            VIDEO_CALL: { bg: 'bg-purple-50', text: 'text-purple-700' },
+            HOSPITAL: { bg: 'bg-red-50', text: 'text-red-700' },
+            AUDIO_CALL: { bg: 'bg-green-50', text: 'text-green-700' },
+            IN_PERSON: { bg: 'bg-yellow-50', text: 'text-yellow-700' },
+        }
+        return eventTypeStyles[event.type as keyof typeof eventTypeStyles] || { bg: 'bg-gray-50', text: 'text-gray-700' }
+    }
+
+    const getEventIcon = (event: AppointmentEvent) => {
+        if (event.isLeaveEvent) {
+            const leaveIcons = {
+                ANNUAL_LEAVE: <Calendar className="h-3 w-3" />,
+                SICK_LEAVE: <Heart className="h-3 w-3" />,
+                PUBLIC_HOLIDAY: <Flag className="h-3 w-3" />,
+                UNPAID_LEAVE: <DollarSign className="h-3 w-3" />,
+                MATERNITY_LEAVE: <Baby className="h-3 w-3" />,
+                PATERNITY_LEAVE: <User className="h-3 w-3" />,
+                BEREAVEMENT_LEAVE: <Heart className="h-3 w-3" />,
+                EMERGENCY_LEAVE: <AlertTriangle className="h-3 w-3" />,
+                MEDICAL_APPOINTMENT: <Stethoscope className="h-3 w-3" />,
+                TOIL: <Clock className="h-3 w-3" />,
+            }
+            return leaveIcons[event.leaveType as keyof typeof leaveIcons] || <Calendar className="h-3 w-3" />
+        }
+
+        const eventIcons = {
+            HOME_VISIT: <Home className="h-3 w-3" />,
+            VIDEO_CALL: <Video className="h-3 w-3" />,
+            HOSPITAL: <Building2 className="h-3 w-3" />,
+            AUDIO_CALL: <Phone className="h-3 w-3" />,
+            IN_PERSON: <User className="h-3 w-3" />,
+        }
+        return eventIcons[event.type as keyof typeof eventIcons] || <Calendar className="h-3 w-3" />
+    }
+
     return (
-        <div
-            ref={calendarContainerRef}
-            className="relative p-4"
-            style={{
-                width: calendarWidth,
-                height: totalHeight + 50,
-                maxWidth: "100%",
-                position: "relative",
-                overflow: "hidden",
-            }}
-        >
-            <div className="flex flex-col flex-1" style={{ height: `calc(${totalHeight}px - 60px)` }}>
-                {/* Main timeline container */}
-                <div className={`flex flex-1 border rounded-xl shadow- ${timelineClass} h-full overflow-hidden`}>
-                    {/* User sidebar */}
-                    {showSidebar && (
-                        <div className={`w-40 shrink-0 border-r ${clientSidebarClass} overflow-y-auto`} style={{ height: "100%" }}>
-                            {/* Users */}
-                            <div className="h-6 font-medium flex items-center justify-center text-xs gap-2 border-b text-neutral-900">
-                                <p>
-                                    {activeScheduleUserType === "clients"
-                                        ? "CLIENTS"
-                                        : activeScheduleUserType === "careWorker"
-                                            ? "CARE WORKERS"
-                                            : "OFFICE STAFF"}
-                                </p>
-                            </div>
+        <div className="w-full h-full px-6 pb-6">
+            <div className="flex rounded-lg border shadow-none bg-white border-gray-200">
+                {/* Sidebar */}
+                {showSidebar && (
+                    <div className="w-48 shrink-0 border-r bg-gray-50 border-gray-200">
+                        {/* Header */}
+                        <div className="h-12 flex items-center justify-center border-b text-xs font-medium text-gray-600 border-gray-200">
+                            {activeScheduleUserType === "clients" ? "CLIENTS" :
+                                activeScheduleUserType === "careWorker" ? "CARE WORKERS" : "OFFICE STAFF"}
+                        </div>
 
-                            <div
-                                className="px-4 font-medium flex items-center text-xs gap-2 border-b text-neutral-600"
-                                style={{ height: `${rowHeight}px` }}
-                            >
-                                <div className="flex items-start gap-2 text-neutral-800">
-                                    <BankNotes className="h-3 w-3" />
-                                    <span>Labor Costs</span>
-                                    <ChevronDown className="h-3 w-3" />
-                                </div>
-                            </div>
+                        {/* Labor Costs Row */}
+                        <div className="border-b px-3 flex items-center gap-2 text-gray-600 border-gray-200" style={{ height: ROW_HEIGHT }}>
+                            <BankNotes className="h-4 w-4" />
+                            <span className="text-sm font-medium">Labor Costs</span>
+                            <ChevronDown className="h-3 w-3 ml-auto" />
+                        </div>
 
-                            {/* User list */}
-                            {displayUsers.map((user) => (
-                                <div
-                                    key={user.id}
-                                    className={`border-b ${clientSidebarClass} hover:bg-opacity-80`}
-                                    style={{
-                                        height: `${rowHeight}px`,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        padding: "0 8px",
-                                    }}
-                                >
-                                    <div className="flex items-center justify-between w-full">
-                                        <div className="flex items-center gap-1.5">
-                                            <Avatar className="h-8 w-8 bg-neutral-100">
-                                                <AvatarImage src={getRandomPlaceholderImage()} alt={`${user.fullName}`} />
-                                                <AvatarFallback className="text-xs font-medium bg-neutral-100">
-                                                    {user.fullName?.[0]}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex mb-[1px] flex-col justify-start items-start font-medium">
-                                                <span className="text-xs font-medium truncate text-neutral-800">{user.fullName}</span>
-                                                <div className="text-[11px] text-neutral-500 flex items-center gap-1">
-                                                    <div className="flex items-center gap-1">
-                                                        {eventsByUser[user.id]?.length || 0} <EventIcon className="h-3 w-3 block" />
-                                                        <div className="h-2.5 block">
-                                                            <Separator orientation="vertical" />
-                                                        </div>
-                                                        <div className="flex items-center gap-1">
-                                                            {0} <HeartHandshake className="h-3 w-3 block" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <button className="text-neutral-500 hover:text-neutral-700">
-                                                        <MoreVertical className="h-3.5 w-3.5" />
-                                                    </button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="z-50">
-                                                    {!isApplyTemplateSelected && (
-                                                        <div className="flex flex-col gap-1 items-start justify-start">
-                                                            <Button
-                                                                variant="ghost"
-                                                                className="flex justify-start items-center gap-2 text-xs w-full border-b border-border"
-                                                                onClick={() => handleOpenTemplateMenu(user.id)}
-                                                            >
-                                                                <Plus className="h-4 w-4" />
-                                                                Apply Schedule Template
-                                                            </Button>
-                                                            <div className="border-b border-border" />
-                                                            <Button
-                                                                variant="ghost"
-                                                                className="flex justify-start items-center gap-2 text-xs w-full border-b border-border"
-                                                                onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
-                                                            >
-                                                                <Edit className="h-4 w-4" />
-                                                                Edit Schedule Template
-                                                            </Button>
-                                                            <div className="border-b border-border" />
-                                                            <Button
-                                                                variant="ghost"
-                                                                className="flex justify-start items-center gap-2 text-xs w-full"
-                                                                onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
-                                                            >
-                                                                <Edit className="h-4 w-4" />
-                                                                Edit User
-                                                            </Button>
-                                                            <div className="border-b border-border" />
-                                                        </div>
-                                                    )}
-                                                    {isApplyTemplateSelected && (
-                                                        <div>
-                                                            <div className="flex justify-between items-center mb-2">
-                                                                <h4 className="text-sm font-medium">Select Template</h4>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    onClick={() => {
-                                                                        setIsApplyTemplateSelected(false)
-
-                                                                    }}
-                                                                    className="h-6 w-6 p-0"
-                                                                >
-                                                                    <X className="h-4 w-4" />
-                                                                </Button>
-                                                            </div>
-
-                                                            {isLoadingTemplates ? (
-                                                                <div className="flex items-center justify-center h-full">
-                                                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                                                </div>
-                                                            ) : userTemplates.length === 0 ? (
-                                                                <div className="py-2 text-center text-xs text-neutral-500">No templates available</div>
-                                                            ) : (
-                                                                userTemplates.map((template: ScheduleTemplate) => (
-                                                                    <Button
-                                                                        key={template.id}
-                                                                        variant="ghost"
-                                                                        className="flex px-4 justify-between items-center gap-2 text-xs w-full border border-border"
-                                                                        onClick={() => handleApplyTemplate(template.id)}
-                                                                    >
-                                                                        <span className="truncate font-medium">{template.name}</span>
-                                                                        <div className="text-xs text-blue-500 bg-blue-500/10 px-2 py-1 rounded-md whitespace-nowrap">
-                                                                            Apply Template
-                                                                        </div>
-                                                                    </Button>
-                                                                ))
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </PopoverContent>
-                                            </Popover>
+                        {/* User Rows */}
+                        {displayUsers.map((user) => (
+                            <div key={user.id} className="border-b px-3 flex items-center justify-between border-gray-200" style={{ height: ROW_HEIGHT }}>
+                                <div className="flex items-center gap-3">
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarImage src={getRandomPlaceholderImage()} alt={user.fullName} />
+                                        <AvatarFallback className="text-xs">{user.fullName?.[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-medium text-gray-900">{user.fullName}</span>
+                                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                                            <span className="flex items-center gap-1">
+                                                {eventsByUser[user.id]?.length || 0} <EventIcon className="h-3 w-3" />
+                                            </span>
+                                            <Separator orientation="vertical" className="h-3" />
+                                            <span className="flex items-center gap-1">
+                                                0 <HeartHandshake className="h-3 w-3" />
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    )}
 
-                    {/* Timeline section */}
-                    <div className="flex-1 relative overflow-hidden flex flex-col" style={{ height: "100%" }}>
-                        {/* Fixed time header - separate scrollable container */}
-                        <div
-                            ref={headerRef}
-                            className="calendar-scrollbar overflow-x-hidden"
-                            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-                        >
+                                {/* Menu */}
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                            <MoreVertical className="h-4 w-4" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-56" align="end">
+                                        {!isApplyTemplateSelected ? (
+                                            <div className="space-y-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full justify-start gap-2 text-sm"
+                                                    onClick={() => handleOpenTemplateMenu(user.id)}
+                                                >
+                                                    <Plus className="h-4 w-4" />
+                                                    Apply Schedule Template
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full justify-start gap-2 text-sm"
+                                                    onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                    Edit Schedule Template
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full justify-start gap-2 text-sm"
+                                                    onClick={() => router.push(`/dashboard/users/edit/${user.id}`)}
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                    Edit User
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium">Select Template</h4>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-6 w-6 p-0"
+                                                        onClick={() => setIsApplyTemplateSelected(false)}
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+
+                                                {isLoadingTemplates ? (
+                                                    <div className="flex items-center justify-center py-4">
+                                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                                    </div>
+                                                ) : userTemplates.length === 0 ? (
+                                                    <div className="py-4 text-center text-sm text-gray-500">
+                                                        No templates available
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-1">
+                                                        {userTemplates.map((template: ScheduleTemplate) => (
+                                                            <Button
+                                                                key={template.id}
+                                                                variant="ghost"
+                                                                className="w-full justify-between text-sm"
+                                                                onClick={() => handleApplyTemplate(template.id)}
+                                                            >
+                                                                <span>{template.name}</span>
+                                                                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                                                                    Apply
+                                                                </span>
+                                                            </Button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Timeline */}
+                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                    {/* Scrollable Container */}
+                    <div
+                        ref={containerRef}
+                        className="flex-1 overflow-auto timeline-container pb-4"
+                        style={{
+                            scrollbarWidth: 'auto',
+                            scrollbarColor: '#cbd5e1 #f1f5f9'
+                        }}
+                    >
+                        <div style={{ width: totalTimelineWidth, minWidth: totalTimelineWidth, position: 'relative' }}>
+                            {/* Time Header */}
                             <div
-                                className={`sticky top-0 z-10 border-b ${spaceTheme ? "border-slate-800 bg-slate-900/95" : "border-gray-200 bg-white/95"
-                                    } backdrop-blur-sm`}
+                                className="border-b bg-white border-gray-200"
+                                style={{
+                                    height: HEADER_HEIGHT,
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 20,
+                                    backgroundColor: '#ffffff',
+                                    width: '100%'
+                                }}
                             >
                                 <div className="flex">
                                     {timeSlots.map((time, i) => {
                                         const isHourMark = i % slotsPerHour === 0
-                                        const isHalfHourMark = i % (slotsPerHour / 2) === 0 && !isHourMark
-
-                                        if (isHourMark || isHalfHourMark) {
-                                            return (
-                                                <div
-                                                    key={i}
-                                                    className={`flex-shrink-0 ${timeLabelsClass} ${isHourMark ? "text-[10px] font-medium" : "text-[8px]"} px-1 py-1.5 text-center border-r ${gridLineClass}`}
-                                                    style={{ width: `${slotWidth * (slotsPerHour / 2)}px` }}
-                                                >
-                                                    {moment(time).format("h:mm A")}
-                                                </div>
-                                            )
-                                        }
-                                        return null
+                                        return (
+                                            <div
+                                                key={i}
+                                                className="flex items-center justify-center text-xs border-r flex-shrink-0 border-gray-200 text-gray-600"
+                                                style={{ width: slotWidth, height: HEADER_HEIGHT }}
+                                            >
+                                                {isHourMark && moment(time).format("h:mm A")}
+                                            </div>
+                                        )
                                     })}
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Scrollable timeline content */}
-                        <div
-                            ref={containerRef}
-                            className="overflow-x-auto overflow-y-auto calendar-scrollbar flex-1"
-                            style={{ height: "calc(100% - 25px)" }}
-                            onScroll={() => {
-                                if (headerRef.current && containerRef.current) {
-                                    headerRef.current.scrollLeft = containerRef.current.scrollLeft
-                                }
-                            }}
-                        >
-                            <div ref={timelineRef} className="relative" style={{ width: `${totalWidth}px`, minHeight: "100%" }}>
-                                {/* Vertical grid lines */}
-                                {timeSlots.map((_time, i) => {
-                                    const isHourMark = i % slotsPerHour === 0
-                                    const isHalfHourMark = i % (slotsPerHour / 2) === 0 && !isHourMark
+                            {/* Grid Content */}
+                            <div
+                                className="relative"
+                                style={{
+                                    height: (displayUsers.length + 1) * ROW_HEIGHT,
+                                    width: '100%'
+                                }}
+                            >
+                                {/* Fixed Grid Background */}
+                                <div
+                                    className="absolute inset-0 pointer-events-none"
+                                    style={{
+                                        backgroundImage: `
+                                            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                                            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+                                        `,
+                                        backgroundSize: `${slotWidth}px ${ROW_HEIGHT}px`,
+                                        width: '100%',
+                                        height: '100%',
+                                        backgroundPosition: '0 0',
+                                        backgroundRepeat: 'repeat',
+                                        zIndex: 1
+                                    }}
+                                />
 
+                                {/* Current Time Line */}
+                                {(() => {
+                                    const isToday = moment(new Date()).isSame(date, "day");
+                                    if (!isToday) return null;
+                                    const now = new Date();
+                                    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+                                    const minMinutes = min.getHours() * 60 + min.getMinutes();
+                                    const maxMinutes = max.getHours() * 60 + max.getMinutes();
+                                    if (nowMinutes < minMinutes || nowMinutes > maxMinutes) return null;
+                                    const clampedMinutes = Math.max(minMinutes, Math.min(nowMinutes, maxMinutes));
+                                    const left = ((clampedMinutes - (min.getHours() * 60 + min.getMinutes())) / minutesPerSlot) * slotWidth;
                                     return (
                                         <div
-                                            key={i}
-                                            className={`absolute top-0 bottom-0 border-r ${isHourMark ? hourLineClass : isHalfHourMark ? halfHourLineClass : gridLineClass}`}
+                                            className="absolute top-0 w-0.5 z-20 bg-red-500"
                                             style={{
-                                                left: `${i * slotWidth}px`,
-                                                borderRightWidth: isHourMark ? "1px" : "0.5px",
-                                                height: "100%",
-                                                zIndex: 1,
-                                            }}
-                                        />
-                                    )
-                                })}
-
-                                {/* Labor Costs row grid line */}
-                                <div
-                                    className={`absolute w-full border-b ${gridLineClass}`}
-                                    style={{
-                                        top: `${rowHeight}px`,
-                                        height: "1px",
-                                        zIndex: 2,
-                                    }}
-                                />
-
-                                {/* Daily Notes row grid line */}
-                                <div
-                                    className={`absolute w-full border-b ${gridLineClass}`}
-                                    style={{
-                                        top: `${2 * rowHeight}px`,
-                                        height: "1px",
-                                        zIndex: 2,
-                                    }}
-                                />
-
-                                {/* Current time indicator */}
-                                {moment(new Date()).isSame(date, "day") && (
-                                    <div
-                                        className={`absolute top-0 bottom-0 w-0.5 z-20 ${currentTimeClass}`}
-                                        style={{
-                                            left: `${(((new Date().getHours() - startHour) * 60 + new Date().getMinutes()) / minutesPerSlot) * slotWidth}px`,
-                                            height: "100%",
-                                        }}
-                                    >
-                                        <div
-                                            className={`w-2 h-2 rounded-full ${currentTimeClass} -ml-1 shadow-md flex items-center justify-center animate-pulse`}
-                                        >
-                                            <div className="w-1 h-1 bg-white rounded-full"></div>
-                                        </div>
-                                    </div>
-                                )}
-                                <div className="absolute w-full border-b" style={{ top: `${rowHeight}px`, height: "1px", zIndex: 2 }} />
-
-                                {/* Client rows with clear boundaries */}
-                                <div className="relative" style={{ height: `${(displayUsers.length + 2) * rowHeight}px` }}>
-                                    {/* Client rows */}
-                                    {displayUsers.map((user, _) => (
-                                        <div
-                                            key={user.id}
-                                            className="client-row absolute w-full border-b-2"
-                                            style={{
-                                                top: `${(0 + 1) * rowHeight}px`,
-                                                height: `${rowHeight}px`,
-                                                borderColor: spaceTheme ? "#1e293b" : "#e2e8f0",
+                                                left,
+                                                height: (displayUsers.length + 1) * ROW_HEIGHT,
+                                                pointerEvents: 'none'
                                             }}
                                         >
-                                            {eventsByUser[user.id]?.map((event) => {
-                                                const pos = eventPositions[event.id]
-                                                if (!pos) return null
-
-                                                const isActive = activeEvent === event.id
-
-                                                return (
-                                                    <motion.div
-                                                        key={event.id}
-                                                        className={cn(
-                                                            "absolute rounded-lg text-xs p-1.5 cursor-grab bg-blue-50 border-l-[3px] ",
-                                                            getEventBackground(event).bg,
-                                                            event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
-                                                        )}
-                                                        style={{
-                                                            left: `${pos.left || 0}px`,
-                                                            width: `${pos.width || 50}px`,
-                                                            top: 0,
-                                                            height: `${rowHeight - 0}px`,
-                                                            zIndex: isActive ? 50 : 10,
-                                                            overflow: "hidden",
-                                                        }}
-                                                        drag="x"
-                                                        dragConstraints={timelineRef}
-                                                        dragMomentum={false}
-                                                        onDragStart={() => handleDragStart(event.id, user.id)}
-                                                        onDrag={(_e, info) => handleDrag(event.id, info)}
-                                                        onDragEnd={(_e, info) => handleDragEnd(event.id, info, user.id)}
-                                                        onMouseEnter={() => setHoveredEvent(event.id)}
-                                                        onMouseLeave={() => setHoveredEvent(null)}
-                                                        onClick={() => handleEventClick(event)}
-                                                        whileDrag={{ scale: 1.05 }}
-                                                    >
-                                                        <div className={cn("flex items-center gap-1 font-medium truncate mt-0.5")}>
-                                                            <span className="text-blue-800 rounded-md">
-                                                                {getEventIcon(event) || <HomeModern className="h-2.5 w-2.5" />}
-                                                            </span>
-                                                            <span className="text-blue-800">{event.title}</span>
-                                                        </div>
-                                                        <div className={cn("text-[9px] mt-0.5 text-blue-800 flex items-center gap-1")}>
-                                                            <Timer className="h-2.5 w-2.5" /> {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
-                                                        </div>
-                                                        <div className="text-[10px] text-blue-800 flex flex-row items-center gap-1 justify-start mt-0.5">
-                                                            <User className="h-2.5 w-2.5" />
-                                                            <div className="text-blue-800">{event.careWorker?.fullName}</div>{" "}
-                                                        </div>
-                                                    </motion.div>
-                                                )
-                                            })}
+                                            <div className="w-3 h-3 rounded-full bg-red-500 -ml-1 animate-pulse" />
                                         </div>
-                                    ))}
+                                    );
+                                })()}
+
+                                {/* Events Container */}
+                                <div className="absolute inset-0 z-10">
+                                    {displayUsers.map((user, userIndex) => {
+                                        const userEvents = eventsByUser[user.id] || []
+                                        return userEvents.map((event) => {
+                                            const pos = eventPositions[event.id]
+                                            if (!pos) return null
+
+                                            const isActive = activeEvent === event.id
+                                            const eventStyle = getEventBackground(event)
+
+                                            return (
+                                                <motion.div
+                                                    key={event.id}
+                                                    className={cn(
+                                                        "absolute rounded-lg border-l-4 p-2 cursor-grab select-none shadow-none hover:shadow-none transition-shadow",
+                                                        eventStyle.bg,
+                                                        eventStyle.text,
+                                                        isActive && "ring-2 ring-blue-500 ring-opacity-50"
+                                                    )}
+                                                    style={{
+                                                        left: pos.left,
+                                                        width: pos.width,
+                                                        top: ROW_HEIGHT * (userIndex + 1) + 4,
+                                                        height: ROW_HEIGHT - 8,
+                                                        zIndex: isActive ? 30 : 10,
+                                                        borderLeftColor: event.isLeaveEvent ? (event.color || "#3b82f6") : "#3b82f6",
+                                                    }}
+                                                    drag="x"
+                                                    dragConstraints={{ left: 0, right: totalTimelineWidth - pos.width }}
+                                                    dragMomentum={false}
+                                                    onDragStart={() => handleDragStart(event.id)}
+                                                    onDrag={(_, info) => handleDrag(event.id, info)}
+                                                    onDragEnd={(_, info) => handleDragEnd(event.id, info)}
+                                                    onClick={() => handleEventClick(event)}
+                                                    whileDrag={{ scale: 1.02, zIndex: 50 }}
+                                                    whileHover={{ scale: 1.01 }}
+                                                >
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        {getEventIcon(event)}
+                                                        <span className="font-medium text-sm truncate">{event.title}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-xs opacity-75 mb-1">
+                                                        <Timer className="h-3 w-3" />
+                                                        <span>
+                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                        </span>
+                                                    </div>
+                                                    {event.careWorker?.fullName && (
+                                                        <div className="flex items-center gap-1 text-xs opacity-75">
+                                                            <User className="h-3 w-3" />
+                                                            <span className="truncate">{event.careWorker.fullName}</span>
+                                                        </div>
+                                                    )}
+                                                </motion.div>
+                                            )
+                                        })
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -1005,14 +690,45 @@ export function CustomDayView({
                 </div>
             </div>
 
-            {/* Tooltip */}
+            {/* Drag Tooltip */}
             {dragTooltip && (
-                <div
-                    className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-3 py-1.5 rounded-md text-xs shadow-sm ${tooltipClass}`}
-                >
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-none z-50">
                     {dragTooltip.time}
                 </div>
             )}
+
+            {/* Custom Scrollbar Styles */}
+            <style jsx>{`
+                .timeline-container::-webkit-scrollbar {
+                    height: 12px;
+                    width: 12px;
+                    display: block;
+                }
+                
+                .timeline-container::-webkit-scrollbar-track {
+                    background: #f1f5f9;
+                    border-radius: 6px;
+                }
+                
+                .timeline-container::-webkit-scrollbar-thumb {
+                    background: #cbd5e1;
+                    border-radius: 6px;
+                    border: 2px solid #f1f5f9;
+                }
+                
+                .timeline-container::-webkit-scrollbar-thumb:hover {
+                    background: #94a3b8;
+                }
+                
+                .timeline-container::-webkit-scrollbar-corner {
+                    background: #f1f5f9;
+                }
+
+                /* Always show scrollbar */
+                .timeline-container {
+                    scrollbar-gutter: stable;
+                }
+            `}</style>
         </div>
     )
 }

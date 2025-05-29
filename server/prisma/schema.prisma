@@ -135,6 +135,9 @@ model Agency {
   leaveEvents       LeaveEvent[] // Added relation field for LeaveEvent
   payrolls          Payroll[]
   Expenses          Expenses[]
+  carePlans         CarePlan[]
+  riskAssessments   RiskAssessment[]
+  riskTemplates     RiskTemplate[]
 }
 
 model Announcement {
@@ -382,7 +385,8 @@ model User {
   clientReports             Report[]                  @relation("ReportClient")
   careReports               Report[]                  @relation("ReportCaregiver")
   reportEdits               ReportEdit[]
-  riskAssessments           RiskAssessment[]
+  riskAssessmentsAsClient   RiskAssessment[]          @relation("RiskAssessmentClient")
+  riskAssessmentsAsAssessor RiskAssessment[]          @relation("RiskAssessmentAssessor")
   clientSchedules           Schedule[]                @relation("ClientSchedules")
   careWorkerSchedules       Schedule[]                @relation("CareWorkerSchedules")
   agency                    Agency?                   @relation(fields: [agencyId], references: [id])
@@ -398,6 +402,8 @@ model User {
   leaveEvents               LeaveEvent[] // Added relation field for LeaveEvent
   Payroll                   Payroll[]
   expenses                  Expenses[] // Added relation field for Expenses
+  carePlansAsClient         CarePlan[]                @relation("CarePlanClient")
+  carePlansCreated          CarePlan[]                @relation("CarePlanCreator")
 }
 
 enum TemplateVisitDay {
@@ -866,52 +872,238 @@ model RiskCategory {
   agencyId        String
   name            String
   description     String?
+  category        RiskCategoryType
+  isActive        Boolean          @default(true)
   createdAt       DateTime         @default(now())
   riskAssessments RiskAssessment[]
   agency          Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  Risk            Risk[]
+
+  @@index([agencyId])
+  @@index([category])
 }
 
 model RiskAssessment {
-  id                 String       @id @default(cuid())
-  clientId           String
-  riskCategoryId     String
-  description        String
-  affectedParties    String
-  mitigationStrategy String
-  likelihood         Int
-  severity           Int
-  riskScore          Int
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
-  client             User         @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  riskCategory       RiskCategory @relation(fields: [riskCategoryId], references: [id], onDelete: Cascade)
-}
+  id String @id @default(cuid())
 
-model Reminder {
-  id        String   @id @default(cuid())
-  clientId  String
-  title     String
-  message   String?
-  dueDate   DateTime
-  completed Boolean  @default(false)
+  // Relationships
+  clientId     String
+  client       User    @relation("RiskAssessmentClient", fields: [clientId], references: [id], onDelete: Cascade)
+  agencyId     String
+  agency       Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  assessedById String?
+  assessedBy   User?   @relation("RiskAssessmentAssessor", fields: [assessedById], references: [id])
+
+  // Basic Information
+  clientName       String
+  dateOfAssessment DateTime
+  assessorName     String
+  serviceType      RiskAssessmentServiceType
+  location         String
+  nextReviewDate   DateTime
+
+  // Assessment Status
+  status      RiskAssessmentStatus @default(DRAFT)
+  version     Int                  @default(1)
+  isActive    Boolean              @default(true)
+  completedAt DateTime?
+
+  // Summary Statistics (calculated fields)
+  totalRisks       Int @default(0)
+  lowRiskCount     Int @default(0)
+  mediumRiskCount  Int @default(0)
+  highRiskCount    Int @default(0)
+  highestRiskScore Int @default(0)
+
+  // Timestamps
   createdAt DateTime @default(now())
-  agencyId  String?
-  agency    Agency?  @relation(fields: [agencyId], references: [id])
-  client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt
+
+  // Related Models
+  risks          Risk[]
+  reviews        RiskAssessmentReview[]
+  RiskCategory   RiskCategory?          @relation(fields: [riskCategoryId], references: [id])
+  riskCategoryId String?
+
+  @@index([clientId])
+  @@index([agencyId])
+  @@index([status])
+  @@index([dateOfAssessment])
 }
 
-model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  title     String
-  message   String
-  type      NotificationType
-  read      Boolean          @default(false)
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Risk {
+  id               String         @id @default(cuid())
+  riskAssessmentId String
+  riskAssessment   RiskAssessment @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
+  // Risk Details
+  riskType    RiskCategory @relation(fields: [riskCategoryId], references: [id])
+  title       String
+  customTitle String?
+  description String       @db.Text
+
+  // Risk Scoring
+  likelihood Int // 1-5 scale
+  severity   Int // 1-5 scale
+  riskScore  Int // likelihood * severity (calculated, range 1-25)
+
+  // Control Measures
+  existingControls  String?   @db.Text
+  additionalActions String?   @db.Text
+  responsiblePerson String?
+  actionDeadline    DateTime?
+
+  // Goals and Outcomes
+  idealOutcome    String  @db.Text
+  measurableGoals String? @db.Text
+  reviewNotes     String? @db.Text
+
+  // Status Tracking
+  isActive   Boolean   @default(true)
+  isResolved Boolean   @default(false)
+  resolvedAt DateTime?
+  resolvedBy String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Related Models
+  personsAtRisk  RiskPersonAtRisk[]
+  riskCategoryId String
+
+  @@index([riskAssessmentId])
+  @@index([riskScore])
+}
+
+model RiskPersonAtRisk {
+  id     String @id @default(cuid())
+  riskId String
+  risk   Risk   @relation(fields: [riskId], references: [id], onDelete: Cascade)
+
+  personType PersonAtRiskType
+
+  createdAt DateTime @default(now())
+
+  @@unique([riskId, personType])
+  @@index([riskId])
+}
+
+model RiskAssessmentReview {
+  id               String         @id @default(cuid())
+  riskAssessmentId String
+  riskAssessment   RiskAssessment @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
+
+  // Review Details
+  reviewDate   DateTime
+  reviewedBy   String
+  reviewerRole String?
+
+  // Review Content
+  changesRequired   Boolean @default(false)
+  reviewNotes       String? @db.Text
+  outcomeAssessment String? @db.Text
+  recommendations   String? @db.Text
+
+  // Manager Sign-off
+  managerSignOff String?
+  managerName    String?
+  signOffDate    DateTime?
+
+  // Review Status
+  status ReviewStatus @default(PENDING)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([riskAssessmentId])
+  @@index([reviewDate])
+  @@index([status])
+}
+
+model RiskTemplate {
+  id          String           @id @default(cuid())
+  agencyId    String?
+  agency      Agency?          @relation(fields: [agencyId], references: [id])
+  category    RiskCategoryType
+  title       String
+  description String           @db.Text
+
+  commonLikelihood Int?
+  commonSeverity   Int?
+
+  // Suggested Control Measures
+  suggestedControls String? @db.Text
+  suggestedActions  String? @db.Text
+
+  // Template Status
+  isActive  Boolean @default(true)
+  isDefault Boolean @default(false) // System-wide templates vs agency-specific
+
+  // Usage Statistics
+  usageCount Int @default(0)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([agencyId])
+  @@index([isActive])
+}
+
+enum RiskAssessmentServiceType {
+  DOMICILIARY_CARE
+  SUPPORTED_LIVING
+  HOME_HEALTH
+  RESPITE_CARE
+  LIVE_IN_CARE
+  PERSONAL_CARE
+  OTHER
+}
+
+enum RiskAssessmentStatus {
+  DRAFT
+  IN_PROGRESS
+  PENDING_REVIEW
+  COMPLETED
+  APPROVED
+  EXPIRED
+  ARCHIVED
+}
+
+enum RiskCategoryType {
+  PHYSICAL_HEALTH
+  MENTAL_HEALTH
+  MEDICATION
+  ENVIRONMENTAL
+  BEHAVIOURAL
+  SAFEGUARDING
+  SOCIAL
+}
+
+enum RiskLevel {
+  LOW // Score 1-4
+  MEDIUM // Score 5-9
+  HIGH // Score 10-25
+}
+
+enum PersonAtRiskType {
+  CLIENT
+  STAFF
+  VISITORS
+  FAMILY_MEMBERS
+  OTHER_RESIDENTS
+  GENERAL_PUBLIC
+}
+
+enum ReviewStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  APPROVED
+  REQUIRES_ACTION
 }
 
 enum AnnouncementPriority {
@@ -1102,4 +1294,374 @@ enum ReportStatus {
   EDITED
   FLAGGED
   REVIEWED
+}
+
+model CarePlan {
+  id String @id @default(cuid())
+
+  // Relationships
+  clientId    String
+  client      User    @relation("CarePlanClient", fields: [clientId], references: [id], onDelete: Cascade)
+  agencyId    String
+  agency      Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?   @relation("CarePlanCreator", fields: [createdById], references: [id])
+
+  // Basic Information
+  fullName           String
+  dateOfBirth        DateTime
+  gender             Gender
+  nhsNumber          String?
+  contactNumber      String?
+  keySafeCode        String?
+  address            String?
+  accessInstructions String?  @db.Text
+  nextOfKin          String?
+  emergencyContact   String?
+  gpDetails          String?  @db.Text
+  socialWorker       String?
+
+  // Consent & Legal Capacity
+  hasMentalCapacity Boolean @default(false)
+  hasGivenConsent   Boolean @default(false)
+  hasLpaConsent     Boolean @default(false)
+  consentNotes      String? @db.Text
+
+  // Consent Signature Information
+  consentSignatureName         String?
+  consentSignatureRelationship String?
+  consentSignatureDate         DateTime?
+  consentSignatureWitness      String?
+
+  // Health & Medical Information
+  otherMedicalConditions      String?
+  otherMentalHealthConditions String?
+  otherAllergies              String?
+  hasInfectionRisk            Boolean @default(false)
+  infectionRiskDetails        String?
+  healthDescription           String? @db.Text
+
+  // Emergency Plans
+  emergencyPlanMissedVisit Boolean @default(false)
+  emergencyPlanNoAnswer    Boolean @default(false)
+  emergencyPlanEmergency   Boolean @default(false)
+
+  // Final Details
+  otherNotes String? @db.Text
+  summary    String? @db.Text
+
+  // Signature Status (track completion)
+  hasConsentSignature     Boolean @default(false)
+  hasClientSignature      Boolean @default(false)
+  hasStaffSignature       Boolean @default(false)
+  hasCoordinatorSignature Boolean @default(false)
+
+  // Staff Signature Details
+  staffSignatureName String?
+  staffSignatureDate DateTime?
+
+  // Coordinator Signature Details
+  coordinatorSignatureName String?
+  coordinatorSignatureDate DateTime?
+
+  // Status and Metadata
+  status      CarePlanStatus @default(DRAFT)
+  version     Int            @default(1)
+  isActive    Boolean        @default(true)
+  completedAt DateTime?
+  reviewDate  DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Related Models
+  consentItems           CarePlanConsent[]
+  medicalConditions      CarePlanMedicalCondition[]
+  mentalHealthConditions CarePlanMentalHealthCondition[]
+  allergies              CarePlanAllergy[]
+  customQuestions        CarePlanCustomQuestion[]
+  documents              CarePlanDocument[]
+  revisions              CarePlanRevision[]
+
+  @@index([clientId])
+  @@index([agencyId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model CarePlanConsent {
+  id         String   @id @default(cuid())
+  carePlanId String
+  carePlan   CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  consentType ConsentType
+  granted     Boolean     @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([carePlanId, consentType])
+  @@index([carePlanId])
+}
+
+model CarePlanMedicalCondition {
+  id         String   @id @default(cuid())
+  carePlanId String
+  carePlan   CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  condition MedicalConditionType
+  notes     String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([carePlanId, condition])
+  @@index([carePlanId])
+}
+
+model CarePlanMentalHealthCondition {
+  id         String   @id @default(cuid())
+  carePlanId String
+  carePlan   CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  condition MentalHealthConditionType
+  notes     String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([carePlanId, condition])
+  @@index([carePlanId])
+}
+
+model CarePlanAllergy {
+  id         String   @id @default(cuid())
+  carePlanId String
+  carePlan   CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  allergyType AllergyType
+  description String?
+  severity    AllergySeverity @default(MILD)
+
+  createdAt DateTime @default(now())
+
+  @@unique([carePlanId, allergyType])
+  @@index([carePlanId])
+}
+
+model CarePlanCustomQuestion {
+  id         String   @id @default(cuid())
+  carePlanId String
+  carePlan   CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  // Question Details
+  question String
+  type     CustomQuestionType
+  section  String // e.g., 'client-info', 'consent', 'health', 'final'
+  required Boolean            @default(false)
+
+  // Answer Storage
+  textAnswer    String?
+  booleanAnswer Boolean?
+  dateAnswer    DateTime?
+  numberAnswer  Float?
+
+  // Metadata
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  options CarePlanQuestionOption[]
+  answers CarePlanQuestionAnswer[]
+
+  @@index([carePlanId])
+  @@index([section])
+}
+
+model CarePlanQuestionOption {
+  id         String                 @id @default(cuid())
+  questionId String
+  question   CarePlanCustomQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  optionText String
+  value      String
+  order      Int    @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([questionId])
+}
+
+model CarePlanQuestionAnswer {
+  id         String                 @id @default(cuid())
+  questionId String
+  question   CarePlanCustomQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  selectedValue String // For radio/select answers or individual checkbox selections
+
+  createdAt DateTime @default(now())
+
+  @@index([questionId])
+}
+
+model CarePlanDocument {
+  id         String   @id @default(cuid())
+  carePlanId String
+  carePlan   CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  // Document Details
+  title    String
+  fileUrl  String
+  fileType String?
+  fileSize Int?
+  category DocumentCategory @default(OTHER)
+
+  // Metadata
+  uploadedAt DateTime @default(now())
+  uploadedBy String?
+
+  @@index([carePlanId])
+}
+
+model CarePlanRevision {
+  id         String   @id @default(cuid())
+  carePlanId String
+  carePlan   CarePlan @relation(fields: [carePlanId], references: [id], onDelete: Cascade)
+
+  // Revision Details
+  version      Int
+  changeType   RevisionType
+  fieldChanged String?
+  oldValue     String?      @db.Text
+  newValue     String?      @db.Text
+  reason       String?
+
+  // Revision Metadata
+  revisedBy String
+  revisedAt DateTime @default(now())
+
+  @@index([carePlanId])
+  @@index([version])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum CarePlanStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  ACTIVE
+  EXPIRED
+  ARCHIVED
+}
+
+enum CustomQuestionType {
+  TEXT
+  RADIO
+  CHECKBOX
+  SELECT
+  TEXTAREA
+  DATE
+  NUMBER
+  BOOLEAN
+}
+
+enum ConsentType {
+  PERSONAL_CARE
+  MEDICATION_ASSISTANCE
+  SHARING_INFORMATION
+  EMERGENCY_RESPONSE
+  DIGITAL_RECORDS
+  PHOTOS_MEDIA_USE
+}
+
+enum MedicalConditionType {
+  DEMENTIA
+  STROKE
+  DIABETES
+  PARKINSONS
+  ARTHRITIS
+  COPD_ASTHMA
+  CANCER
+  HIGH_LOW_BLOOD_PRESSURE
+  HEART_CONDITION
+  EPILEPSY
+  LEARNING_DISABILITY
+  OTHER
+}
+
+enum MentalHealthConditionType {
+  DEPRESSION
+  ANXIETY
+  BIPOLAR
+  SCHIZOPHRENIA
+  PTSD
+  NONE
+  OTHER
+}
+
+enum AllergyType {
+  NONE
+  MEDICATION
+  FOOD
+  MATERIALS
+  OTHER
+}
+
+enum AllergySeverity {
+  MILD
+  MODERATE
+  SEVERE
+  LIFE_THREATENING
+}
+
+enum DocumentCategory {
+  ID
+  LPA
+  DOLS
+  MEDICAL
+  LEGAL
+  OTHER
+}
+
+enum RevisionType {
+  CREATE
+  UPDATE
+  DELETE
+  STATUS_CHANGE
+  SIGNATURE_ADDED
+}
+
+// Restore Reminder model
+model Reminder {
+  id        String   @id @default(cuid())
+  clientId  String
+  title     String
+  message   String?
+  dueDate   DateTime
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  agencyId  String?
+  agency    Agency?  @relation(fields: [agencyId], references: [id])
+  client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+// Restore Notification model
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

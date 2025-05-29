@@ -1,15 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import type { User } from "@/types/prismaTypes"
 import moment from "moment"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
-import { CustomInput } from "@/components/ui/custom-input"
+
 
 // Define interfaces for the schedule data
 interface ClientSchedule {

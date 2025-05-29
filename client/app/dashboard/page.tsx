@@ -8,7 +8,7 @@ import {
     Users,
     Calendar,
     FileText,
-    ClipboardList,
+
     ArrowUpRight,
 
     AlertCircle,
@@ -28,17 +28,9 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { CustomInput } from "@/components/ui/custom-input"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { CustomSelect } from "@/components/ui/custom-select"
 import { ErrorDisplay } from "@/components/ui/error-display"
 import { Alert, Report } from "@/types/prismaTypes"
-
-
 
 export default function DashboardPage() {
     const { user } = useAppSelector((state) => state.user)
@@ -174,7 +166,7 @@ export default function DashboardPage() {
     return (
         <div className="p-6 space-y-4 mt-3">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
                 <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>
                     <CardContent className="p-4">
                         <div className="flex items-center mb-2">
@@ -306,28 +298,28 @@ export default function DashboardPage() {
 
 
             {/* Recent Schedules */}
-            <Card>
+            <Card className="w-full overflow-hidden">
                 <CardHeader className="p-4 pb-2">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                         <div className="flex items-center">
                             <div className={cn("p-1.5 rounded-full bg-indigo-100", "dark:bg-indigo-900/30")}>
                                 <Calendar className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
                             </div>
                             <CardTitle className="text-base ml-2">Upcoming Schedules</CardTitle>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                             <CustomInput
                                 placeholder="Search schedules..."
                                 value={searchQuery}
                                 onChange={(value: string) => setSearchQuery(value)}
                                 icon={<Search className="h-3.5 w-3.5" />}
-                                className="w-[200px] h-8"
+                                className="w-full sm:w-[200px] h-8"
                             />
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setShowFilters(!showFilters)}
-                                className="h-8"
+                                className="h-8 w-full sm:w-auto"
                             >
                                 <Filter className="h-3.5 w-3.5 .5" />
                                 {showFilters ? "Hide Filters" : "Show Filters"}
@@ -338,30 +330,32 @@ export default function DashboardPage() {
 
                 {showFilters && (
                     <CardContent className="p-4 pt-0">
-                        <div className="flex items-center space-x-3">
-                            <Select value={selectedStatus || "all"} onValueChange={setSelectedStatus}>
-                                <SelectTrigger className="w-[150px] h-8 text-sm">
-                                    <SelectValue placeholder="Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Status</SelectItem>
-                                    <SelectItem value="completed">Completed</SelectItem>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                            <CustomSelect
+                                value={selectedStatus || "all"}
+                                onChange={setSelectedStatus}
+                                options={[
+                                    { value: "all", label: "All Status" },
+                                    { value: "completed", label: "Completed" },
+                                    { value: "pending", label: "Pending" },
+                                    { value: "cancelled", label: "Cancelled" }
+                                ]}
+                                placeholder="Select Status"
+                                selectSize="sm"
+                            />
 
-                            <Select value={selectedType || "all"} onValueChange={setSelectedType}>
-                                <SelectTrigger className="w-[150px] h-8 text-sm">
-                                    <SelectValue placeholder="Type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Types</SelectItem>
-                                    <SelectItem value="visit">Visit</SelectItem>
-                                    <SelectItem value="appointment">Appointment</SelectItem>
-                                    <SelectItem value="task">Task</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <CustomSelect
+                                value={selectedType || "all"}
+                                onChange={setSelectedType}
+                                options={[
+                                    { value: "all", label: "All Types" },
+                                    { value: "visit", label: "Visit" },
+                                    { value: "appointment", label: "Appointment" },
+                                    { value: "task", label: "Task" }
+                                ]}
+                                placeholder="Select Type"
+                                selectSize="sm"
+                            />
                         </div>
                     </CardContent>
                 )}
@@ -437,11 +431,11 @@ export default function DashboardPage() {
                 </CardContent>
             </Card>
             {/* Alerts and Reports Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Unresolved Alerts Card */}
-                <Card>
+                <Card className="w-full overflow-hidden">
                     <CardHeader className="p-4 pb-2">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                             <div className="flex items-center">
                                 <div className={cn("p-1.5 rounded-full bg-red-100", "dark:bg-red-900/30")}>
                                     <AlertCircle className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />
@@ -496,9 +490,9 @@ export default function DashboardPage() {
                 </Card>
 
                 {/* Flagged Reports Card */}
-                <Card>
+                <Card className="w-full overflow-hidden">
                     <CardHeader className="p-4 pb-2">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                             <div className="flex items-center">
                                 <div className={cn("p-1.5 rounded-full bg-amber-100", "dark:bg-amber-900/30")}>
                                     <FileText className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />

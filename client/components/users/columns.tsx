@@ -144,20 +144,19 @@ export const columns: ColumnDef<User>[] = [
 
             return (
                 <div className="flex items-center gap-2">
-                    <Avatar className="h-7 w-7">
-                        <AvatarImage src={getRandomPlaceholderImage()} alt={fullName} />
-                        <AvatarFallback className={`text-xs ${theme === "dark" ? "bg-zinc-800 text-gray-200" : ""}`}>{getInitials(fullName)}</AvatarFallback>
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src={row.original.profile?.avatarUrl || getRandomPlaceholderImage()} />
+                        <AvatarFallback className={`${theme === "dark" ? "bg-zinc-800" : "bg-neutral-100"}`}>
+                            {getInitials(fullName)}
+                        </AvatarFallback>
                     </Avatar>
-                    <div className="space-y-0.5">
-                        <div className={`text-sm font-medium ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}>{fullName}</div>
-                        {row.original.role === "CLIENT" && row.original.clientId && (
-                            <div className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>ID: {row.original.clientId.substring(0, 8)}</div>
-                        )}
-                        {row.original.email && (
-                            <div className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
-                                {row.original.email}
-                            </div>
-                        )}
+                    <div className="flex flex-col">
+                        <span className={`font-medium ${theme === "dark" ? "text-gray-200" : "text-gray-900"}`}>
+                            {fullName || "Unknown"}
+                        </span>
+                        <span className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
+                            {row.original.email}
+                        </span>
                     </div>
                 </div>
             )

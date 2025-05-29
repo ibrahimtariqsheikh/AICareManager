@@ -827,7 +827,7 @@ getAgencyPayrolls: build.query<Payroll[], string>({
 }),
 getAgencyExpenses: build.query<Expenses[], string>({
   query: (agencyId) => `/agencies/${agencyId}/expenses`,
-  providesTags: (result, error, agencyId) => [
+  providesTags: (_result, _error, agencyId) => [
     { type: 'Expenses', id: agencyId }
   ],
 }),
@@ -1033,7 +1033,7 @@ getScheduleHoursByDateRange: build.query<{ totalHours: number; payRate: number }
       method: 'POST',
       body: expense,
     }),
-    invalidatesTags: (result, error, arg) => [
+    invalidatesTags: (_result, _error, arg) => [
       { type: 'Expenses', id: arg.agencyId }
     ],
   }),

@@ -87,7 +87,7 @@ export default function SchedulerPage() {
         <div className="relative">
             <div
                 className={cn(
-                    "relative container mx-auto px-6 py-2 min-h-screen min-w-full transition-opacity duration-500",
+                    "relative container mx-auto px-6 py-2 min-h-screen w-full overflow-x-auto transition-opacity duration-500",
                 )}
             >
                 <div className="flex flex-col space-y-4">

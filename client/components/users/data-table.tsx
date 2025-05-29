@@ -84,20 +84,22 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
         router.push(`/dashboard/users/edit/${userId}`)
     }
 
-
-
     return (
         <>
             <DataTableToolbar table={table} />
             <Card className={`${theme === "dark" ? "bg-zinc-900 border-zinc-700" : ""} m-0 p-0`}>
-                <div className="rounded-md m-0 p-0">
+                <div className="rounded-md m-0 p-0 overflow-x-auto">
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id} className="hover:bg-transparent">
                                     {headerGroup.headers.map((header) => {
                                         return (
-                                            <TableHead key={header.id} colSpan={header.colSpan} className="py-2">
+                                            <TableHead
+                                                key={header.id}
+                                                colSpan={header.colSpan}
+                                                className="py-2 whitespace-nowrap"
+                                            >
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
@@ -122,7 +124,7 @@ export function DataTable<TData extends { id: string }, TValue>({ columns, data 
                                         {row.getVisibleCells().map((cell) => (
                                             <TableCell
                                                 key={cell.id}
-                                                className={`py-1.5 ${cell.column.id === 'actions' ? 'cursor-default' : ''} ${theme === "dark" ? "text-gray-200" : "text-gray-900"}`}
+                                                className={`py-1.5 ${cell.column.id === 'actions' ? 'cursor-default' : ''} ${theme === "dark" ? "text-gray-200" : "text-gray-900"} whitespace-nowrap`}
                                             >
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </TableCell>

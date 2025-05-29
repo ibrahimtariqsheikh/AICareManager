@@ -87,8 +87,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
     const agency = useAppSelector((state) => state.agency.agency)
     const rateSheets = agency?.rateSheets
     const visitTypes = user?.visitTypes
-    const selectedCareWorkerName = careWorkers.find((worker) => worker.id === selectedCareWorker)?.fullName
-    const selectedCareWorker2Name = careWorkers.find((worker) => worker.id === selectedCareWorker2)?.fullName
+
 
     const { data: scheduleTemplates } = useGetScheduleTemplatesQuery(
         { userId: user.id, agencyId: agency?.id },
@@ -347,13 +346,11 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
     const toggleActiveTemplate = async (template: ScheduleTemplateType) => {
         try {
             if (!template.isActive) {
-                // If template is not active, activate it
-                const response = await activateScheduleTemplate({ id: template.id, userId: user.id }).unwrap()
+                await activateScheduleTemplate({ id: template.id, userId: user.id }).unwrap()
                 dispatch(activateTemplate(template.id))
                 toast.success(`Template "${template.name}" activated`)
             } else {
-                // If template is already active, deactivate it
-                const response = await deactivateScheduleTemplate({ id: template.id }).unwrap()
+                await deactivateScheduleTemplate({ id: template.id }).unwrap()
                 dispatch(deactivateTemplate(template.id))
                 toast.success(`Template "${template.name}" deactivated`)
             }

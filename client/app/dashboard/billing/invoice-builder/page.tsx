@@ -3,21 +3,21 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { ClientSelector } from "./components/client-selector"
 import { InvoiceLineItems } from "./components/invoice-line-items"
 import { InvoiceSummary } from "./components/invoice-summary"
 import { toast } from "sonner"
 import { ArrowLeft, Download, Plus } from "lucide-react"
-import { DateRange } from "react-day-picker"
+
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-import type { InvoiceItem, InvoiceData } from "./types"
+import type { InvoiceItem } from "./types"
 
 import { generatePDF } from "./components/utils/pdf-generator"
 import { PDFPreview } from "./components/pdf-preview"

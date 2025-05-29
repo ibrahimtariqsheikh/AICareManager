@@ -10,11 +10,9 @@ import {
     LogOut,
     Moon,
     Sun,
-    Building2,
-    File,
-    Plus,
 
-    ChevronDown,
+    File,
+
     CreditCard,
     MessageCircle,
 } from "lucide-react"
@@ -32,15 +30,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { useTheme } from "next-themes"
-import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from "../../components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, useSidebar } from "../ui/sidebar"
 import { useAppSelector, useAppDispatch } from "../../state/redux"
 import { signOut } from "aws-amplify/auth"
 import { logout } from "../../state/slices/authSlice"
 
 import Image from "next/image"
 import ChatbotModern from "../icons/chatbot-modern"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { motion } from "framer-motion"
 import { User } from "@/types/prismaTypes"
 
 
@@ -172,6 +168,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     const { theme, setTheme } = useTheme()
     const pathname = usePathname()
     const router = useRouter()
+    const { setOpenMobile } = useSidebar()
 
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
     let agencyList = user?.userInfo?.agenciesOwned || []
@@ -189,11 +186,16 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
         }
     }
 
+    const handleNavigation = (href: string) => {
+        setOpenMobile(false)
+        router.push(href)
+    }
+
     return (
-        <Sidebar className={cn("border-r-0 w-[250px]", theme === "dark" ? "bg-[#171717]" : "bg-[#f6f7f9]")} {...props}>
-            <SidebarHeader className="px-4 mt-2 p-0">
+        <Sidebar className={cn("border-r-0 w-[230px]", theme === "dark" ? "bg-[#171717]" : "bg-[#f6f7f9]")} {...props}>
+            <SidebarHeader className="m-0 p-0 flex items-center justify-center ">
                 <div className="flex flex-col items-center flex-1">
-                    <Image src="/assets/aimlogo.png" alt="AI Manager" width={50} height={50} />
+                    <Image src="/assets/aimlogo.png" alt="AI Manager" width={55} height={55} />
                 </div>
 
             </SidebarHeader>
@@ -203,26 +205,26 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
 
                 {navigation.map((section) => (
                     <div key={section.title} className="space-y-2 mb-6">
-                        <h3 className={cn("px-2 text-xs font-semibold", theme === "dark" ? "text-neutral-400" : "text-neutral-600")}>
+                        <h3 className={cn("px-2 text-[11px] font-semibold", theme === "dark" ? "text-neutral-400" : "text-neutral-500/80")}>
                             {section.title.toUpperCase()}
                         </h3>
                         <div className="space-y-1">
                             {section.items.map((item) => {
                                 const isActive = pathname === item.href
                                 return (
-                                    <Link
+                                    <button
                                         key={item.href}
-                                        href={item.href}
+                                        onClick={() => handleNavigation(item.href)}
                                         className={cn(
-                                            "flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors",
+                                            "flex items-center gap-3 rounded-md px-3 py-2 text-xs transition-colors w-full",
                                             isActive ? cn("bg-neutral-800/70 text-black font-medium", theme === "dark" ? "bg-neutral-800/70 text-neutral-100" : "bg-neutral-200/70 text-black") : cn("hover:bg-neutral-200/70 hover:text-black", theme === "dark" ? "hover:bg-neutral-800/70 hover:text-neutral-100" : "hover:bg-neutral-200/70 hover:text-black")
                                         )}
                                     >
                                         <item.icon className={cn("h-4 w-4", theme === "dark" ? "text-neutral-300" : "text-neutral-800")} />
-                                        <span className={cn("flex items-center gap-2 text-sm justify-between w-full", theme === "dark" ? "text-neutral-300" : "text-neutral-800")}>
+                                        <span className={cn("flex items-center gap-2 text-[13px] justify-between w-full", theme === "dark" ? "text-neutral-300" : "text-neutral-800")}>
                                             {item.title}
                                         </span>
-                                    </Link>
+                                    </button>
                                 )
                             })}
                         </div>

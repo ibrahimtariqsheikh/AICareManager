@@ -11,36 +11,96 @@ import { Plus, Trash2, Pencil, FileText } from "lucide-react"
 import { CustomInput } from "@/components/ui/custom-input"
 import { CustomSelect } from "@/components/ui/custom-select"
 import { MyCustomDateRange } from "@/app/dashboard/billing/components/my-custom-date-range"
-
 import { CustomTextarea } from "@/components/ui/custom-textarea"
 import { TextSignature } from "@/components/ui/text-signature"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import type { UserAllDetailsResponse } from "@/state/api"
 
-interface CustomQuestion {
-    id: string
-    question: string
-    type: 'text' | 'radio' | 'checkbox' | 'select'
-    required: boolean
-    options: string[]
-    section: string
-    answer?: string | string[]
-}
+// Schema for custom questions
+const customQuestionSchema = z.object({
+    id: z.string(),
+    question: z.string().min(1, "Question is required"),
+    type: z.enum(["text", "radio", "checkbox", "select"]),
+    required: z.boolean(),
+    options: z.array(z.string()),
+    section: z.string(),
+    answer: z.union([z.string(), z.array(z.string())]).optional(),
+})
 
-const SECTIONS = [
-    { id: 'client-info', title: 'Client Information' },
-    { id: 'consent', title: 'Consent & Legal Capacity' },
-    { id: 'health', title: 'Health & Medical Overview' },
-    { id: 'final', title: 'Contingency & Sign-Off' }
-]
+// Schema for signatures
+const signaturesSchema = z.object({
+    consent: z.boolean(),
+    client: z.boolean(),
+    staff: z.boolean(),
+    coordinator: z.boolean(),
+})
 
-export default function CarePlan({ user }: { user: User }) {
+// Main care plan schema
+const carePlanSchema = z.object({
+    // Client Information
+    fullName: z.string().min(1, "Full name is required"),
+    dateOfBirth: z.date(),
+    gender: z.enum(["male", "female", "other"]),
+    nhsNumber: z.string().optional(),
+    contactNumber: z.string().optional(),
+    keySafeCode: z.string().optional(),
+    address: z.string().optional(),
+    accessInstructions: z.string().max(300).optional(),
+    nextOfKin: z.string().optional(),
+    emergencyContact: z.string().optional(),
+    gpDetails: z.string().optional(),
+    socialWorker: z.string().optional(),
+
+    // Consent & Legal Capacity
+    hasMentalCapacity: z.boolean(),
+    hasGivenConsent: z.boolean(),
+    hasLpaConsent: z.boolean(),
+    consentFor: z.object({
+        personalCare: z.boolean(),
+        medicationAssistance: z.boolean(),
+        sharingInformation: z.boolean(),
+        emergencyResponse: z.boolean(),
+        digitalRecords: z.boolean(),
+        photosMediaUse: z.boolean(),
+    }),
+    consentNotes: z.string().max(300).optional(),
+    consentSignature: z.object({
+        name: z.string(),
+        relationship: z.string(),
+        date: z.date(),
+        witness: z.string().optional(),
+    }),
+
+    // Health & Medical Overview
+    medicalConditions: z.array(z.string()),
+    otherMedicalConditions: z.string().optional(),
+    mentalHealthConditions: z.array(z.string()),
+    otherMentalHealthConditions: z.string().optional(),
+    allergies: z.array(z.string()),
+    otherAllergies: z.string().optional(),
+    hasInfectionRisk: z.boolean(),
+    healthDescription: z.string().max(400).optional(),
+
+    // Final Signatures
+    emergencyPlans: z.object({
+        missedVisit: z.boolean(),
+        noAnswer: z.boolean(),
+        emergency: z.boolean(),
+    }),
+    otherNotes: z.string().max(400).optional(),
+    summary: z.string().max(400).optional(),
+    signatures: signaturesSchema,
+    customQuestions: z.array(customQuestionSchema),
+})
+
+type CarePlanFormData = z.infer<typeof carePlanSchema>
+
+type CustomQuestion = z.infer<typeof customQuestionSchema>
+
+export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'] }) {
     const [progress, setProgress] = useState(30)
-    const [signatures, setSignatures] = useState({
-        consent: false,
-        client: false,
-        staff: false,
-        coordinator: false,
-    })
-    const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([])
     const [showCustomQuestions, setShowCustomQuestions] = useState(false)
     const [showDocumentUpload, setShowDocumentUpload] = useState(false)
     const [showPdfPreview, setShowPdfPreview] = useState(false)
@@ -48,12 +108,78 @@ export default function CarePlan({ user }: { user: User }) {
     const [selectedSection, setSelectedSection] = useState<string>('')
     const [isEditing, setIsEditing] = useState<string | null>(null)
 
-    const handleSignatureChange = (type: keyof typeof signatures, hasSignature: boolean) => {
-        setSignatures((prev) => ({ ...prev, [type]: hasSignature }))
+    // Initialize form with React Hook Form
+    const form = useForm<CarePlanFormData>({
+        resolver: zodResolver(carePlanSchema),
+        defaultValues: {
+            fullName: user?.fullName || "",
+            dateOfBirth: new Date(), // Default to current date since dateOfBirth is not in the User type
+            gender: "other",
+            nhsNumber: user?.nhsNumber || "",
+            contactNumber: user?.phoneNumber || "",
+            keySafeCode: "",
+            address: user?.addressLine1 ? `${user.addressLine1}${user.addressLine2 ? `, ${user.addressLine2}` : ""}, ${user.townOrCity}, ${user.county}, ${user.postalCode}` : "",
+            accessInstructions: "",
+            nextOfKin: "",
+            emergencyContact: "",
+            gpDetails: "",
+            socialWorker: "",
+            hasMentalCapacity: false,
+            hasGivenConsent: false,
+            hasLpaConsent: false,
+            consentFor: {
+                personalCare: false,
+                medicationAssistance: false,
+                sharingInformation: false,
+                emergencyResponse: false,
+                digitalRecords: false,
+                photosMediaUse: false
+            },
+            consentNotes: "",
+            consentSignature: {
+                name: "",
+                relationship: "",
+                date: new Date(),
+                witness: ""
+            },
+            medicalConditions: [],
+            otherMedicalConditions: "",
+            mentalHealthConditions: [],
+            otherMentalHealthConditions: "",
+            allergies: [],
+            otherAllergies: "",
+            hasInfectionRisk: false,
+            healthDescription: "",
+            emergencyPlans: {
+                missedVisit: false,
+                noAnswer: false,
+                emergency: false
+            },
+            otherNotes: "",
+            summary: "",
+            signatures: {
+                consent: false,
+                client: false,
+                staff: false,
+                coordinator: false
+            },
+            customQuestions: []
+        }
+    })
+
+    const handleSignatureChange = (type: keyof CarePlanFormData['signatures'], hasSignature: boolean) => {
+        form.setValue(`signatures.${type}`, hasSignature)
     }
 
-    const savePlan = () => {
-        alert("Care plan saved successfully!")
+    const savePlan = async (data: CarePlanFormData) => {
+        try {
+            // Here you would typically make an API call to save the care plan
+            console.log("Saving care plan:", data)
+            alert("Care plan saved successfully!")
+        } catch (error) {
+            console.error("Error saving care plan:", error)
+            alert("Failed to save care plan. Please try again.")
+        }
     }
 
     const addCustomQuestion = (sectionId: string) => {
@@ -63,24 +189,28 @@ export default function CarePlan({ user }: { user: User }) {
             type: 'text',
             required: false,
             options: [],
-            section: sectionId
+            section: sectionId,
+            answer: undefined
         }
-        setCustomQuestions([...customQuestions, newQuestion])
+        const currentQuestions = form.getValues("customQuestions")
+        form.setValue("customQuestions", [...currentQuestions, newQuestion])
         setIsEditing(newQuestion.id)
     }
 
     const removeCustomQuestion = (id: string) => {
-        setCustomQuestions(customQuestions.filter(q => q.id !== id))
+        const currentQuestions = form.getValues("customQuestions")
+        form.setValue("customQuestions", currentQuestions.filter(q => q.id !== id))
     }
 
     const updateCustomQuestion = (id: string, updates: Partial<CustomQuestion>) => {
-        setCustomQuestions(customQuestions.map(q =>
+        const currentQuestions = form.getValues("customQuestions")
+        form.setValue("customQuestions", currentQuestions.map(q =>
             q.id === id ? { ...q, ...updates } : q
         ))
     }
 
-    const getQuestionsForSection = (sectionId: string) => {
-        return customQuestions.filter(q => q.section === sectionId)
+    const getQuestionsForSection = (sectionId: string): CustomQuestion[] => {
+        return form.getValues("customQuestions").filter(q => q.section === sectionId)
     }
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,8 +226,7 @@ export default function CarePlan({ user }: { user: User }) {
         switch (type) {
             case 'customQuestions':
                 setShowCustomQuestions(!showCustomQuestions)
-                if (!showCustomQuestions && customQuestions.length === 0) {
-                    // Add a default question when first enabling
+                if (!showCustomQuestions && form.getValues("customQuestions").length === 0) {
                     addCustomQuestion('client-info')
                 }
                 break
@@ -111,9 +240,8 @@ export default function CarePlan({ user }: { user: User }) {
     }
 
     const saveQuestion = (questionId: string) => {
-        const question = customQuestions.find(q => q.id === questionId)
+        const question = form.getValues("customQuestions").find(q => q.id === questionId)
         if (!question || !question.question.trim()) {
-            // If question is empty, remove it
             removeCustomQuestion(questionId)
             return
         }

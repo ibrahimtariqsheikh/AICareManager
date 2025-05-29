@@ -162,10 +162,10 @@ const EditUserPage = () => {
     // Skeleton loading state
     if (isLoading) {
         return (
-            <div className="flex flex-col gap-4 p-6 mx-10">
+            <div className="flex flex-col gap-4 p-4 sm:p-6 mx-4 sm:mx-10">
                 {/* Skeleton for user header */}
-                <div className="flex flex-row gap-4 items-center">
-                    <div className="w-full flex flex-row gap-2 items-center justify-between mx-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                    <div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-2 items-start sm:items-center justify-between mx-0 sm:mx-4">
                         <div className="flex flex-row gap-2 items-center justify-between">
                             <Skeleton className="w-10 h-10 rounded-lg" />
                             <div>
@@ -179,19 +179,19 @@ const EditUserPage = () => {
                     </div>
                 </div>
 
-                <div className="px-6 py-4">
+                <div className="px-2 sm:px-6 py-4">
                     {/* Skeleton for tabs */}
-                    <div className="flex flex-row gap-3 mb-6">
+                    <div className="flex flex-wrap gap-2 sm:gap-3 mb-6">
                         {[1, 2, 3, 4].map((i) => (
-                            <Skeleton key={i} className="h-9 w-36 rounded-md" />
+                            <Skeleton key={i} className="h-9 w-24 sm:w-36 rounded-md" />
                         ))}
                     </div>
-                    <div className="border-b border-border w-full h-1 my-8" />
+                    <div className="border-b border-border w-full h-1 my-4 sm:my-8" />
 
                     {/* Skeleton for content */}
                     <div className="min-h-[400px] space-y-4">
-                        <Skeleton className="h-10 w-1/4" />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Skeleton className="h-10 w-1/2 sm:w-1/4" />
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div key={i} className="space-y-2">
                                     <Skeleton className="h-4 w-24" />
@@ -202,9 +202,9 @@ const EditUserPage = () => {
                     </div>
 
                     {/* Skeleton for action buttons */}
-                    <div className="flex flex-row gap-4 mt-8 justify-end">
-                        <Skeleton className="h-10 w-24" />
-                        <Skeleton className="h-10 w-36" />
+                    <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-start sm:justify-end">
+                        <Skeleton className="h-10 w-full sm:w-24" />
+                        <Skeleton className="h-10 w-full sm:w-36" />
                     </div>
                 </div>
             </div>
@@ -214,10 +214,10 @@ const EditUserPage = () => {
     // Error state
     if (error) {
         return (
-            <div className="flex flex-col items-center justify-center h-[60vh]">
-                <div className="text-destructive text-xl font-semibold mb-2">Error loading user data</div>
-                <p className="text-muted-foreground mb-4">There was a problem fetching the user information.</p>
-                <Button onClick={() => router.back()}>Go Back</Button>
+            <div className="flex flex-col items-center justify-center h-[60vh] px-4">
+                <div className="text-destructive text-lg sm:text-xl font-semibold mb-2 text-center">Error loading user data</div>
+                <p className="text-muted-foreground mb-4 text-center text-sm sm:text-base">There was a problem fetching the user information.</p>
+                <Button onClick={() => router.back()} className="w-full sm:w-auto">Go Back</Button>
             </div>
         )
     }
@@ -225,52 +225,52 @@ const EditUserPage = () => {
     // No user data found
     if (!user) {
         return (
-            <div className="flex flex-col items-center justify-center h-[60vh]">
-                <div className="text-foreground text-xl font-semibold mb-2">User not found</div>
-                <p className="text-muted-foreground mb-4">The requested user could not be found.</p>
-                <Button onClick={() => router.back()}>Go Back</Button>
+            <div className="flex flex-col items-center justify-center h-[60vh] px-4">
+                <div className="text-foreground text-lg sm:text-xl font-semibold mb-2 text-center">User not found</div>
+                <p className="text-muted-foreground mb-4 text-center text-sm sm:text-base">The requested user could not be found.</p>
+                <Button onClick={() => router.back()} className="w-full sm:w-auto">Go Back</Button>
             </div>
         )
     }
 
     return (
-        <div className="flex flex-col gap-4 p-6">
+        <div className="flex flex-col gap-4 p-4 sm:p-6">
             {/* User Header */}
-            <div className="flex flex-row gap-4 items-center">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="w-full flex flex-row gap-2 items-center justify-between mx-4"
+                    className="w-full flex flex-col sm:flex-row gap-4 sm:gap-2 items-start sm:items-center justify-between mx-0 sm:mx-4"
                 >
-                    <div className="flex flex-row gap-4 items-center justify-between">
-                        <Avatar className="w-16 h-16 bg-muted flex items-center justify-center text-foreground font-semibold text-sm">
+                    <div className="flex flex-row gap-4 items-center justify-between w-full sm:w-auto">
+                        <Avatar className="w-12 h-12 sm:w-16 sm:h-16 bg-muted flex items-center justify-center text-foreground font-semibold text-sm flex-shrink-0">
                             <AvatarImage src={getRandomPlaceholderImage()} />
                             <AvatarFallback>
                                 <Loader2 className="w-4 h-4 animate-spin" />
                             </AvatarFallback>
                         </Avatar>
-                        <div>
-                            <h1 className="text-2xl font-bold">{user?.fullName || "Unknown User"}</h1>
-                            <h1 className="text-sm text-neutral-500">{user?.email || "Unknown Email"}</h1>
+                        <div className="flex-1 min-w-0">
+                            <h1 className="text-lg sm:text-2xl font-bold truncate">{user?.fullName || "Unknown User"}</h1>
+                            <h1 className="text-xs sm:text-sm text-neutral-500 truncate">{user?.email || "Unknown Email"}</h1>
                         </div>
                     </div>
-                    <div className="flex flex-row gap-2 items-center">
-                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30">
+                    <div className="flex flex-row gap-2 items-center w-full sm:w-auto justify-start sm:justify-end">
+                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30 whitespace-nowrap">
                             {formatRole(user?.role) || "No Role"}
                         </p>
-                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30">
+                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30 whitespace-nowrap">
                             {formatSubRole(user?.subRole) || "No Subrole"}
                         </p>
                     </div>
                 </motion.div>
             </div>
 
-            <div className="px-6 py-4">
+            <div className="px-2 sm:px-6 py-4">
                 {/* Tabs Navigation */}
                 <div className="relative">
                     {/* Tabs */}
-                    <div className="relative flex space-x-[6px] items-center">
+                    <div className="relative flex flex-wrap gap-2 sm:gap-[6px] items-center">
                         {tabs.map((tab, index) => (
                             shouldShowTab(tab.id) && (
                                 <div
@@ -278,15 +278,18 @@ const EditUserPage = () => {
                                     ref={(el) => {
                                         tabRefs.current[index] = el;
                                     }}
-                                    className={`px-3 py-2 cursor-pointer transition-all duration-300 h-[30px] ${tab.id === activeTab
+                                    className={`px-2 sm:px-3 py-2 cursor-pointer transition-all duration-300 h-[30px] text-xs sm:text-sm ${tab.id === activeTab
                                         ? "bg-primary/10 rounded-md text-primary"
                                         : "text-[#0e0f1199] dark:text-[#ffffff99] border border-border rounded-md hover:border-primary/50 hover:bg-primary/5 hover:text-primary/80"
                                         }`}
                                     onClick={() => handleTabChange(tab.id)}
                                 >
-                                    <div className="text-sm font-[var(--www-mattmannucci-me-geist-regular-font-family)] leading-5 whitespace-nowrap flex items-center justify-center h-full gap-2">
-                                        <tab.icon className={`w-4 h-4 ${tab.id === activeTab ? "text-primary" : ""}`} />
-                                        {tab.label}
+                                    <div className="font-[var(--www-mattmannucci-me-geist-regular-font-family)] leading-5 whitespace-nowrap flex items-center justify-center h-full gap-1 sm:gap-2">
+                                        <tab.icon className={`w-3 h-3 sm:w-4 sm:h-4 ${tab.id === activeTab ? "text-primary" : ""}`} />
+                                        <span className="hidden sm:inline">{tab.label}</span>
+                                        <span className="sm:hidden">
+                                            {tab.label.split(' ')[0]}
+                                        </span>
                                     </div>
                                 </div>
                             )
@@ -327,13 +330,14 @@ const EditUserPage = () => {
                     <CollapsibleTrigger className="flex w-full items-center justify-between p-4 text-sm font-medium">
                         <div className="flex items-center">
                             <Code className="mr-2 h-4 w-4" />
-                            Debug: User Data
+                            <span className="hidden sm:inline">Debug: User Data</span>
+                            <span className="sm:hidden">Debug</span>
                         </div>
-                        <span className="text-xs text-muted-foreground">Click to expand</span>
+                        <span className="text-xs text-muted-foreground hidden sm:inline">Click to expand</span>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <div className="p-4 bg-muted/50 rounded-b-md overflow-auto max-h-[500px]">
-                            <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(user, null, 2)}</pre>
+                        <div className="p-4 bg-muted/50 rounded-b-md overflow-auto max-h-[300px] sm:max-h-[500px]">
+                            <pre className="text-xs whitespace-pre-wrap break-all">{JSON.stringify(user, null, 2)}</pre>
                         </div>
                     </CollapsibleContent>
                 </Collapsible>

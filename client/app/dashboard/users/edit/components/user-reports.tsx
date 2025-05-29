@@ -2,10 +2,10 @@
 
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent } from "@/components/ui/card"
+
 import { Button } from "@/components/ui/button"
-import { Search, Filter, Calendar, FileText, AlertTriangle, Eye } from "lucide-react"
+import { Search, Calendar, FileText, AlertTriangle, Eye } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { DataTable } from "@/components/ui/data-table"
 import { ReportDetails } from "./report-details"

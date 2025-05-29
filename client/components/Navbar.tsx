@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "../components/ui/
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useTheme } from "next-themes"
 import { useIsMobile } from "../hooks/use-mobile"
-import { LogIn, LogOut, Menu, User, Moon, Sun, LayoutDashboard } from 'lucide-react'
+import { LogIn, Menu, User, Moon, Sun, LayoutDashboard } from 'lucide-react'
 import { signOut } from 'aws-amplify/auth';
 import Image from "next/image"
 import { Geist_Mono } from 'next/font/google'

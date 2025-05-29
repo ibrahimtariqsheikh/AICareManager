@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Dancing_Script } from "next/font/google"
+import { Dancing_Script } from "next/font/google"
 import "./globals.css"
 import Providers from "./providers"
 import { Toaster } from "../components/ui/sonner"
@@ -8,7 +8,7 @@ import { MessageProvider } from './context/MessageContext'
 import { cn } from "@/lib/utils"
 
 
-const font = Inter({ subsets: ["latin"] })
+
 const dancingScript = Dancing_Script({
   subsets: ['latin'],
   variable: '--font-dancing-script',

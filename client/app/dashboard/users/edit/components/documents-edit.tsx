@@ -9,21 +9,40 @@ import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { z } from "zod";
 
 import { Card } from "@/components/ui/card";
 import { Upload, X } from "lucide-react";
 
 import { format } from "date-fns";
 
-export interface Document {
-    id: string;
-    name: string;
-    type: string;
-    category: 'identity' | 'care' | 'medical' | 'legal' | 'financial' | 'incident';
-    uploadDate: string;
-    uploadedBy: string;
-    expiryDate?: string;
-}
+// Document category enum
+const DocumentCategory = z.enum(['identity', 'care', 'medical', 'legal', 'financial', 'incident']);
+type DocumentCategory = z.infer<typeof DocumentCategory>;
+
+// Document schema
+export const DocumentSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    type: z.string(),
+    category: DocumentCategory,
+    uploadDate: z.string(),
+    uploadedBy: z.string(),
+    expiryDate: z.string().optional(),
+});
+
+// Form data schema
+export const DocumentFormSchema = z.object({
+    name: z.string().min(1, "Document name is required"),
+    type: z.string().min(1, "Document type is required"),
+    category: DocumentCategory,
+    expiryDate: z.string().optional(),
+    reviewDate: z.string().optional(),
+    shareWith: z.array(z.string()).default([]),
+});
+
+export type Document = z.infer<typeof DocumentSchema>;
+export type DocumentFormData = z.infer<typeof DocumentFormSchema>;
 
 const sampleDocuments: Document[] = [
     {
@@ -384,21 +403,15 @@ interface UploadModalProps {
 }
 
 export const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
-    const [formData, setFormData] = useState<{
-        name: string;
-        type: string;
-        category: string;
-        expiryDate: string;
-        reviewDate: string;
-        shareWith: string[];
-    }>({
+    const [formData, setFormData] = useState<DocumentFormData>({
         name: '',
         type: '',
-        category: '',
+        category: 'identity',
         expiryDate: '',
         reviewDate: '',
         shareWith: []
     });
+    const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isDragOver, setIsDragOver] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -498,37 +511,48 @@ export const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => 
             return;
         }
 
-        if (!formData.name || !formData.type || !formData.category) {
-            alert('Please fill in all required fields');
-            return;
+        try {
+            // Validate form data
+            const validatedData = DocumentFormSchema.parse(formData);
+
+            const selectedOption = documentTypes
+                .flatMap(group => group.options)
+                .find(option => option.value === validatedData.type);
+
+            const newDocument: Omit<Document, 'id'> = {
+                name: validatedData.name,
+                type: selectedOption?.label || validatedData.type,
+                category: validatedData.category,
+                uploadDate: new Date().toISOString().split('T')[0] || '',
+                uploadedBy: 'Current User',
+                expiryDate: validatedData.expiryDate || ''
+            };
+
+            onUpload(newDocument);
+            handleClose();
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const errors: Record<string, string> = {};
+                error.errors.forEach((err) => {
+                    if (err.path[0]) {
+                        errors[err.path[0].toString()] = err.message;
+                    }
+                });
+                setFormErrors(errors);
+            }
         }
-
-        const selectedOption = documentTypes
-            .flatMap(group => group.options)
-            .find(option => option.value === formData.type);
-
-        const newDocument: Omit<Document, 'id'> = {
-            name: formData.name,
-            type: selectedOption?.label || formData.type,
-            category: formData.category as Document['category'],
-            uploadDate: new Date().toISOString().split('T')[0] || '',
-            uploadedBy: 'Current User',
-            expiryDate: formData.expiryDate || ''
-        };
-
-        onUpload(newDocument);
-        handleClose();
     };
 
     const handleClose = () => {
         setFormData({
             name: '',
             type: '',
-            category: '',
+            category: 'identity',
             expiryDate: '',
             reviewDate: '',
             shareWith: []
         });
+        setFormErrors({});
         setSelectedFile(null);
         onClose();
     };
@@ -541,16 +565,6 @@ export const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => 
         }));
     };
 
-    const getFileIcon = (fileType: string) => {
-        switch (fileType) {
-            case 'application/pdf': return '📄';
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-            case 'application/msword': return '📄';
-            case 'image/jpeg':
-            case 'image/png': return '📄';
-            default: return '📄';
-        }
-    };
 
     const shareOptions = [
         { value: 'care_team', label: 'Care Team' },
@@ -634,10 +648,19 @@ export const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => 
                             <CustomInput
                                 id="documentName"
                                 value={formData.name}
-                                onChange={(value) => setFormData(prev => ({ ...prev, name: value }))}
+                                onChange={(value) => {
+                                    setFormData(prev => ({ ...prev, name: value }));
+                                    setFormErrors(prev => {
+                                        const { name, ...rest } = prev;
+                                        return rest;
+                                    });
+                                }}
                                 placeholder="Enter document name"
                                 required
                             />
+                            {formErrors.name && (
+                                <p className="text-sm text-red-600 mt-1">{formErrors.name}</p>
+                            )}
                         </div>
 
                         {/* Document Type */}
@@ -658,16 +681,23 @@ export const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => 
                                     if (selectedOption) {
                                         const category = documentTypes.find(group =>
                                             group.options.some(option => option.value === value)
-                                        )?.category;
+                                        )?.category as DocumentCategory;
                                         setFormData(prev => ({
                                             ...prev,
                                             type: value,
-                                            category: category || ''
+                                            category: category || 'identity'
                                         }));
+                                        setFormErrors(prev => {
+                                            const { type, ...rest } = prev;
+                                            return rest;
+                                        });
                                     }
                                 }}
                                 placeholder="Select document type"
                             />
+                            {formErrors.type && (
+                                <p className="text-sm text-red-600 mt-1">{formErrors.type}</p>
+                            )}
                         </div>
                     </div>
 

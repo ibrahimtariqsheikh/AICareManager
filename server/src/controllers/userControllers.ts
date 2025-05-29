@@ -305,7 +305,8 @@ export const getUserAllDetails = async (req: Request, res: Response): Promise<vo
                 incidentReports: true,
                 keyContacts: true,
                 careOutcomes: true,
-                riskAssessments: true,
+                riskAssessmentsAsClient: true,
+                riskAssessmentsAsAssessor: true,
                 familyAccess: true,
                 communicationLogs: true,
              
@@ -338,7 +339,8 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                 keyContacts: true,
                 careOutcomes: true,
                 incidentReports: true,
-                riskAssessments: true,
+                riskAssessmentsAsClient: true,
+                riskAssessmentsAsAssessor: true,
                 familyAccess: true,
                 communicationLogs: true,
                 documents: true,
@@ -352,7 +354,12 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
                 careReports: {include:{
                     caregiver:true, 
                     client:true,
-                  
+                      visitType:true,
+                      alerts:true,
+                      agency:true,
+                      medicationSnapshot:true,
+                      visitSnapshot:true,
+                      tasksCompleted:true,
                 }},
 medications:{
   include:{
@@ -431,7 +438,8 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
                 keyContacts: true,
                 careOutcomes: true,
                 incidentReports: true,
-                riskAssessments: true,
+                riskAssessmentsAsClient: true,
+                riskAssessmentsAsAssessor: true,
                 familyAccess: true,
                 communicationLogs: true,
                 documents: true,

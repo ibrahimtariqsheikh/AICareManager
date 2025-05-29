@@ -38,7 +38,7 @@ export default function ReportsPage() {
     const [resolutionText, setResolutionText] = useState("")
     const [selectedAlert, setSelectedAlert] = useState<any>(null)
     const [reportFilter, setReportFilter] = useState("all")
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
+
 
     // Report filters
     const [showReportFilters, setShowReportFilters] = useState(false)
