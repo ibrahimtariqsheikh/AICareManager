@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { CustomDayView } from "./views/custom-day-view"
 import { CustomWeekView } from "./views/custom-week-view"
 import { CustomMonthView } from "./views/custom-month-view"
@@ -8,7 +8,8 @@ import { Skeleton } from "../../ui/skeleton"
 
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { setActiveView } from "@/state/slices/calendarSlice"
-import { CalendarIcon, ChevronDown, ChevronLeft, ChevronRight, DollarSign, Search, Timer, User2, Users } from "lucide-react"
+import { setEvents } from "@/state/slices/scheduleSlice"
+import { CalendarIcon, ChevronDown, ChevronLeft, ChevronRight, DollarSign, Search, Timer, Users, AlertCircle } from "lucide-react"
 import { CalendarRange } from "lucide-react"
 import { CalendarDays } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -27,6 +28,8 @@ import { setSelectedClients } from "@/state/slices/userSlice"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { CustomInput } from "@/components/ui/custom-input"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 // Add month picker styles
 const monthPickerStyles = `
@@ -86,6 +89,92 @@ export function CustomCalendar({
     sidebarMode,
     getEventTypeLabel,
 }: CustomCalendarProps) {
+    const dispatch = useAppDispatch()
+    const events = useAppSelector((state) => state.schedule.events || [])
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    // Add state for unallocated visits
+    const [showUnallocated, setShowUnallocated] = useState(false)
+    const [unallocatedVisits, setUnallocatedVisits] = useState([
+        {
+            id: 'unalloc-1',
+            clientName: 'Sarah Johnson',
+            clientId: '3',
+            visitType: 'Personal Care',
+            duration: 90, // 1 hour and 30 minutes
+            priority: 'high',
+            notes: 'Prefers morning visits',
+            cost: 80.00
+        },
+        {
+            id: 'unalloc-2',
+            clientName: 'Michael Brown',
+            clientId: '4',
+            visitType: 'Medication',
+            duration: 45, // 45 minutes
+            priority: 'urgent',
+            notes: 'Medication reminder',
+            cost: 40.00
+        }
+    ])
+
+    const handleUnallocatedVisitDrop = (visit: any, clientId: string, timeSlot: string) => {
+        // Store current scroll position
+        const scrollLeft = containerRef.current?.scrollLeft || 0
+
+        // Calculate end time based on duration in minutes
+        const startTime = moment(timeSlot, 'HH:mm')
+        const endTime = moment(startTime).add(visit.duration, 'minutes')
+
+        // Create new scheduled appointment
+        const newAppointment = {
+            id: `sched-${Date.now()}`,
+            clientId: clientId,
+            time: timeSlot,
+            duration: visit.duration,
+            visitType: visit.visitType,
+            clientName: visit.clientName,
+            cost: visit.cost
+        }
+
+        // Add to events
+        const newEvent: AppointmentEvent = {
+            id: newAppointment.id,
+            title: visit.visitType,
+            start: new Date(`${currentDate.toISOString().split('T')[0]}T${timeSlot}`),
+            end: new Date(`${currentDate.toISOString().split('T')[0]}T${endTime.format('HH:mm')}`),
+            date: currentDate,
+            startTime: timeSlot,
+            endTime: endTime.format('HH:mm'),
+            resourceId: clientId,
+            clientId: clientId,
+            type: visit.visitType.toUpperCase().replace(' ', '_'),
+            status: 'PENDING',
+            notes: visit.notes,
+            client: {
+                fullName: visit.clientName
+            },
+            color: '#4CAF50',
+            careWorker: {
+                fullName: 'Unassigned'
+            }
+        }
+
+        // Update events
+        const updatedEvents = [...events, newEvent]
+        dispatch(setEvents(updatedEvents))
+
+        // Remove from unallocated
+        setUnallocatedVisits(unallocatedVisits.filter(v => v.id !== visit.id))
+        toast.success(`Scheduled ${visit.visitType} for ${visit.clientName}`)
+
+        // Restore scroll position after state updates
+        requestAnimationFrame(() => {
+            if (containerRef.current) {
+                containerRef.current.scrollLeft = scrollLeft
+            }
+        })
+    }
 
     useEffect(() => {
         const style = document.createElement('style')
@@ -95,8 +184,6 @@ export function CustomCalendar({
             document.head.removeChild(style)
         }
     }, [])
-
-
 
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
 
@@ -118,7 +205,6 @@ export function CustomCalendar({
     const clients = useAppSelector((state) => state.user.clients)
     const careWorkers = useAppSelector((state) => state.user.careWorkers)
     const officeStaff = useAppSelector((state) => state.user.officeStaff)
-
 
     const [searchQuery, setSearchQuery] = useState("")
     const [searchQueryCareWorker, setSearchQueryCareWorker] = useState("")
@@ -162,8 +248,6 @@ export function CustomCalendar({
         }
     }
 
-    const dispatch = useAppDispatch()
-
     useEffect(() => {
         // Select all users by default
         const allClientIds = clients.map(client => client.id)
@@ -179,9 +263,6 @@ export function CustomCalendar({
         dispatch(setSelectedCareWorkers(careWorkers))
         dispatch(setSelectedOfficeStaff(officeStaff))
     }, [clients, careWorkers, officeStaff, dispatch])
-
-
-
 
     useEffect(() => {
         if (activeView === "week") {
@@ -211,15 +292,11 @@ export function CustomCalendar({
         }
     }
 
-
     const getEventDurationInMinutes = (event: AppointmentEvent) => {
         const start = new Date(event.start)
         const end = new Date(event.end)
         return Math.round((end.getTime() - start.getTime()) / (1000 * 60))
     }
-
-
-
 
     if (isLoading) {
         return (
@@ -231,17 +308,15 @@ export function CustomCalendar({
 
     // Render the appropriate view based on activeView
     return (
-        <div className="h-full w-full ">
-            <div className="flex items-center justify-between h-20 px-4">
-                <div className="flex justify-start items-center">
-
+        <div className="h-full w-full">
+            <div className="flex flex-col md:flex-row items-center justify-between h-auto md:h-20 px-3 md:px-4 py-3 md:py-0 gap-4 md:gap-0">
+                <div className="flex justify-start items-center w-full md:w-auto">
                     {/* Controls and info row */}
-                    <div className="flex justify-end items-center gap-2 px-4">
-
+                    <div className="flex flex-wrap justify-start md:justify-end items-center gap-3 md:gap-2 px-1 md:px-4">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <motion.div
-                                    className="h-8 flex items-center gap-2 bg-gray-100 text-gray-600 rounded-md px-2 py-1 text-xs  cursor-pointer"
+                                    className="h-9 md:h-8 flex items-center gap-2 bg-gray-100 text-gray-600 rounded-md px-3 md:px-2 py-2 md:py-1 text-sm md:text-xs cursor-pointer"
                                     whileHover={{ scale: 1.04, borderColor: "rgb(156 163 175)" }}
                                     whileTap={{ scale: 0.96 }}
                                     transition={{ duration: 0.1 }}
@@ -249,22 +324,22 @@ export function CustomCalendar({
                                     {activeScheduleUserType === "clients" ? (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Clients</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     ) : activeScheduleUserType === "officeStaff" ? (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Office Staff</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     ) : activeScheduleUserType === "careWorker" ? (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Care Worker</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Staff</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     )}
                                 </motion.div>
@@ -272,27 +347,28 @@ export function CustomCalendar({
                             <DropdownMenuContent>
                                 <DropdownMenuLabel className="text-neutral-900 text-xs font-semibold">User Type</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <motion.div >
+                                <motion.div>
                                     <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("clients"))}
                                         className="cursor-pointer text-xs font-medium text-neutral-900"
                                     >Clients</DropdownMenuItem>
                                 </motion.div>
-                                <motion.div >
+                                <motion.div>
                                     <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("officeStaff"))}
                                         className="cursor-pointer text-xs font-medium text-neutral-900"
                                     >Office Staff</DropdownMenuItem>
                                 </motion.div>
-                                <motion.div >
+                                <motion.div>
                                     <DropdownMenuItem onClick={() => dispatch(setActiveScheduleUserType("careWorker"))}
                                         className="cursor-pointer text-xs font-medium text-neutral-900"
                                     >Care Worker</DropdownMenuItem>
                                 </motion.div>
                             </DropdownMenuContent>
                         </DropdownMenu>
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <motion.div
-                                    className="h-8 flex items-center gap-2 bg-gray-100 text-gray-600 rounded-md px-2 py-1 text-xs  cursor-pointer"
+                                    className="h-9 md:h-8 flex items-center gap-2 bg-gray-100 text-gray-600 rounded-md px-3 md:px-2 py-2 md:py-1 text-sm md:text-xs cursor-pointer"
                                     whileHover={{ scale: 1.04, borderColor: "rgb(156 163 175)" }}
                                     whileTap={{ scale: 0.96 }}
                                     transition={{ duration: 0.1 }}
@@ -300,28 +376,33 @@ export function CustomCalendar({
                                     {activeScheduleUserType === "clients" ? (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Select Client(s)</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     ) : activeScheduleUserType === "officeStaff" ? (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Select Office Staff(s)</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     ) : activeScheduleUserType === "careWorker" ? (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Select Care Worker(s)</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-2 text-neutral-900">
                                             <p>Select Staff(s)</p>
-                                            <ChevronDown className="h-3 w-3" />
+                                            <ChevronDown className="h-4 w-4 md:h-3 md:w-3" />
                                         </div>
                                     )}
                                 </motion.div>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-[300px]">
-                                <DropdownMenuLabel className="text-neutral-900 text-xs font-semibold">{activeScheduleUserType === "clients" ? "Select Client(s)" : activeScheduleUserType === "officeStaff" ? "Select Office Staff(s)" : activeScheduleUserType === "careWorker" ? "Select Care Worker(s)" : "Select Staff(s)"}</DropdownMenuLabel>
+                                <DropdownMenuLabel className="text-neutral-900 text-xs font-semibold">
+                                    {activeScheduleUserType === "clients" ? "Select Client(s)" :
+                                        activeScheduleUserType === "officeStaff" ? "Select Office Staff(s)" :
+                                            activeScheduleUserType === "careWorker" ? "Select Care Worker(s)" :
+                                                "Select Staff(s)"}
+                                </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
 
                                 {activeScheduleUserType === "clients" && (
@@ -400,146 +481,163 @@ export function CustomCalendar({
                                 )}
                             </DropdownMenuContent>
                         </DropdownMenu>
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={{ duration: 0.15 }}
+                            onClick={() => setShowUnallocated(!showUnallocated)}
+                            className={`h-9 md:h-8 px-4 md:px-3 py-2 md:py-2 rounded-lg text-sm md:text-xs font-medium transition-all flex items-center gap-2 ${showUnallocated
+                                ? 'bg-red-100 text-red-700 '
+                                : 'bg-gray-100 text-gray-700 '
+                                }`}
+                        >
+                            <AlertCircle className="h-4 w-4 md:h-3 md:w-3" />
+                            <span className="hidden sm:inline">Unallocated</span> ({unallocatedVisits.length})
+                        </motion.button>
                     </div>
                 </div>
 
-                {/* Date header - centered in the middle column */}
-                <div className="flex justify-center items-center">
-                    {activeView === "day" ? (
-                        <div className="flex items-center gap-4">
+                <div className="flex justify-center md:justify-end items-center w-full md:w-auto mt-3 md:mt-0">
+
+                    <div className="flex justify-center items-center w-full md:w-auto mt-2 md:mt-0">
+                        {activeView === "day" ? (
+                            <div className="flex items-center gap-3 md:gap-4">
+                                <motion.div
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => onNavigate(moment(currentDate).subtract(1, 'day').toDate())}
+                                    className="cursor-pointer rounded-md hover:bg-gray-100 p-2"
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                </motion.div>
+                                <motion.div
+                                    className={`relative inline-block text-lg md:text-lg font-semibold text-center px-3 md:px-3 py-2 md:py-1.5 rounded-md cursor-pointer hover:bg-opacity-10 hover:bg-gray-500`}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    transition={{ duration: 0.15 }}
+                                    layout
+                                    layoutId="date-header"
+                                >
+                                    <Dialog>
+                                        <DialogTrigger className="flex items-center gap-2">
+                                            <span className="hidden sm:inline text-sm">{moment(currentDate).format("dddd, MMMM D, YYYY")}</span>
+                                            <span className="sm:hidden text-sm">{moment(currentDate).format("MMM D, YYYY")}</span>
+                                        </DialogTrigger>
+                                        <DialogContent className="w-fit">
+                                            <DialogHeader>
+                                                <div className="flex items-center gap-4 flex-col">
+                                                    <DialogTitle>Calendar</DialogTitle>
+                                                    <CalendarDropdown
+                                                        mode="single"
+                                                        selected={currentDate ?? new Date()}
+                                                        onSelect={handleDateSelect}
+                                                        className={cn(
+                                                            "rounded-md border w-fit",
+                                                            "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900"
+                                                        )}
+                                                    />
+                                                </div>
+                                            </DialogHeader>
+                                        </DialogContent>
+                                    </Dialog>
+                                </motion.div>
+                                <motion.div
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => onNavigate(moment(currentDate).add(1, 'day').toDate())}
+                                    className="cursor-pointer rounded-md mr-2 hover:bg-gray-100 p-2"
+                                >
+                                    <ChevronRight className="h-4 w-4" />
+                                </motion.div>
+                            </div>
+                        ) : (
                             <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => onNavigate(moment(currentDate).subtract(1, 'day').toDate())}
-                                className="cursor-pointer p-2 rounded-md hover:bg-gray-100"
-                            >
-                                <ChevronLeft className="h-5 w-5" />
-                            </motion.div>
-                            <motion.div
-                                className={`relative inline-block text-lg font-semibold text-center px-3 py-1.5 rounded-md cursor-pointer hover:bg-opacity-10 hover:bg-gray-500`}
+                                className={`relative inline-block text-lg md:text-lg font-semibold text-center px-3 md:px-3 py-2 md:py-1.5 rounded-md cursor-pointer hover:bg-opacity-10 hover:bg-gray-500 mr-2`}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 transition={{ duration: 0.15 }}
                                 layout
                                 layoutId="date-header"
                             >
-                                <Dialog>
-                                    <DialogTrigger className="flex items-center gap-2">
-                                        {moment(currentDate).format("dddd, MMMM D, YYYY")}
-
-                                    </DialogTrigger>
-                                    <DialogContent className="w-fit">
-                                        <DialogHeader>
+                                <div className="flex items-center gap-2">
+                                    {activeView === "week" && (
+                                        <>
+                                            <span className="hidden sm:inline text-sm">{`${moment(currentDate).startOf('week').format("MMM D")} - ${moment(currentDate).endOf('week').format("MMM D, YYYY")}`}</span>
+                                            <span className="sm:hidden text-sm">{`${moment(currentDate).startOf('week').format("MMM D")} - ${moment(currentDate).endOf('week').format("MMM D")}`}</span>
+                                        </>
+                                    )}
+                                    {activeView === "month" && (
+                                        <div className="flex items-center mr-2">
+                                            <span className="hidden sm:inline text-sm">{moment(currentDate).format("MMMM YYYY")}</span>
+                                            <span className="sm:hidden text-sm">{moment(currentDate).format("MMM YYYY")}</span>
+                                        </div>
+                                    )}
+                                    <Popover>
+                                        <PopoverTrigger className="flex items-center gap-2">
+                                            <ChevronDown className="h-5 w-5 md:h-4 md:w-4" />
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-fit">
                                             <div className="flex items-center gap-4 flex-col">
-                                                <DialogTitle>Calendar</DialogTitle>
                                                 <CalendarDropdown
-                                                    mode="single"
-                                                    selected={currentDate ?? new Date()}
+                                                    mode={activeView === "week" || activeView === "month" ? "range" : "single"}
+                                                    selected={activeView === "week" || activeView === "month" ? (selectedRange ?? { from: new Date(), to: new Date() }) : (currentDate ?? new Date())}
                                                     onSelect={handleDateSelect}
                                                     className={cn(
                                                         "rounded-md border w-fit",
-                                                        "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900"
+                                                        activeView === "month" && "month-picker",
+                                                        "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900",
+                                                        "[&_.rdp-day_range_middle]:bg-blue-50 [&_.rdp-day_range_middle]:text-blue-900",
+                                                        "[&_.rdp-day_range_start]:bg-blue-100 [&_.rdp-day_range_start]:text-blue-900",
+                                                        "[&_.rdp-day_range_end]:bg-blue-100 [&_.rdp-day_range_end]:text-blue-900"
                                                     )}
+                                                    numberOfMonths={activeView === "week" ? 2 : 1}
                                                 />
                                             </div>
-                                        </DialogHeader>
-                                    </DialogContent>
-                                </Dialog>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
                             </motion.div>
-                            <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => onNavigate(moment(currentDate).add(1, 'day').toDate())}
-                                className="cursor-pointer p-2 rounded-md hover:bg-gray-100"
-                            >
-                                <ChevronRight className="h-5 w-5" />
-                            </motion.div>
-                        </div>
-                    ) : (
-                        <motion.div
-                            className={`relative inline-block text-lg font-semibold text-center px-3 py-1.5 rounded-md cursor-pointer hover:bg-opacity-10 hover:bg-gray-500`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{ duration: 0.15 }}
-                            layout
-                            layoutId="date-header"
-                        >
-                            <div className="flex items-center gap-2">
-                                {activeView === "week" && `${moment(currentDate).startOf('week').format("MMM D")} - ${moment(currentDate).endOf('week').format("MMM D, YYYY")}`}
-                                {activeView === "month" && moment(currentDate).format("MMMM YYYY")}
-                                <Popover>
-                                    <PopoverTrigger className="flex items-center gap-2">
-                                        <ChevronDown className="h-4 w-4" />
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-fit">
-
-                                        <div className="flex items-center gap-4 flex-col">
-
-                                            <CalendarDropdown
-                                                mode={activeView === "week" || activeView === "month" ? "range" : "single"}
-                                                selected={activeView === "week" || activeView === "month" ? (selectedRange ?? { from: new Date(), to: new Date() }) : (currentDate ?? new Date())}
-                                                onSelect={handleDateSelect}
-                                                className={cn(
-                                                    "rounded-md border w-fit",
-                                                    activeView === "month" && "month-picker",
-                                                    "[&_.rdp-day_selected]:bg-blue-100 [&_.rdp-day_selected]:text-blue-900",
-                                                    "[&_.rdp-day_range_middle]:bg-blue-50 [&_.rdp-day_range_middle]:text-blue-900",
-                                                    "[&_.rdp-day_range_start]:bg-blue-100 [&_.rdp-day_range_start]:text-blue-900",
-                                                    "[&_.rdp-day_range_end]:bg-blue-100 [&_.rdp-day_range_end]:text-blue-900"
-                                                )}
-                                                numberOfMonths={activeView === "week" ? 2 : 1}
-                                            />
-                                        </div>
-
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </motion.div>
-                    )}
-                </div>
-
-                {/* Empty div for the third column to maintain balance */}
-                <div className="flex justify-end items-center">
+                        )}
+                    </div>
                     <Tabs
                         value={activeView}
                         onValueChange={(value) => dispatch(setActiveView(value as "day" | "week" | "month"))}
                     >
-                        <TabsList className="bg-neutral-100">
-                            <TabsTrigger value="day" className="text-xs text-neutral-900">
-                                <CalendarDays className="h-3 w-3 mr-1" />
-                                Day
+                        <TabsList className="bg-neutral-100 p-1 md:p-0">
+                            <TabsTrigger value="day" className="text-sm md:text-xs text-neutral-900 px-4 md:px-2 py-2 md:py-1">
+                                <CalendarDays className="h-4 w-4 md:h-3 md:w-3 mr-1" />
+                                <span className="hidden sm:inline">Day</span>
                             </TabsTrigger>
-                            <TabsTrigger value="week" className="text-xs text-neutral-900">
-                                <CalendarRange className="h-3 w-3 mr-1" />
-                                Week
+                            <TabsTrigger value="week" className="text-sm md:text-xs text-neutral-900 px-4 md:px-2 py-2 md:py-1">
+                                <CalendarRange className="h-4 w-4 md:h-3 md:w-3 mr-1" />
+                                <span className="hidden sm:inline">Week</span>
                             </TabsTrigger>
-                            <TabsTrigger value="month" className="text-xs text-neutral-900">
-                                <CalendarIcon className="h-3 w-3 mr-1" />
-                                Month
+                            <TabsTrigger value="month" className="text-sm md:text-xs text-neutral-900 px-4 md:px-2 py-2 md:py-1">
+                                <CalendarIcon className="h-4 w-4 md:h-3 md:w-3 mr-1" />
+                                <span className="hidden sm:inline">Month</span>
                             </TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>
-
             </div>
-            <div className=" w-full bg-neutral-100/50 h-10 px-8 py-2 flex items-center gap-4 mb-4">
+            <div className="w-full bg-neutral-100/50 h-auto md:h-10 px-4 md:px-8 py-3 md:py-2 flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-4 mb-4">
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 bg-blue-500/20 rounded-full p-2 text-blue-500">
-                        <Users className="h-3 w-3" />
+                    <div className="flex items-center gap-2 bg-blue-500/20 rounded-full p-2.5 md:p-2 text-blue-500">
+                        <Users className="h-4 w-4 md:h-3 md:w-3" />
                     </div>
-                    <p className="text-[11px] font-medium text-neutral-600">2 Clients Scheduled</p>
+                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">2 Clients Scheduled</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 bg-green-500/20 rounded-full p-2 text-green-500">
-                        <Timer className="h-3 w-3" />
+                    <div className="flex items-center gap-2 bg-green-500/20 rounded-full p-2.5 md:p-2 text-green-500">
+                        <Timer className="h-4 w-4 md:h-3 md:w-3" />
                     </div>
-                    <p className="text-[11px] font-medium text-neutral-600">10.5 total hours</p>
+                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">10.5 total hours</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 bg-yellow-500/20 rounded-full p-2 text-yellow-500">
-                        <DollarSign className="h-3 w-3" />
+                    <div className="flex items-center gap-2 bg-yellow-500/20 rounded-full p-2.5 md:p-2 text-yellow-500">
+                        <DollarSign className="h-4 w-4 md:h-3 md:w-3" />
                     </div>
-                    <p className="text-[11px] font-medium text-neutral-600">$100 total cost</p>
+                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">$100 total cost</p>
                 </div>
             </div>
 
@@ -571,37 +669,33 @@ export function CustomCalendar({
                     currentDate={currentDate}
                     onDateChange={onNavigate}
                     date={currentDate}
-
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
-
-
+                    showUnallocated={showUnallocated}
+                    onToggleUnallocated={() => setShowUnallocated(!showUnallocated)}
+                    unallocatedVisits={unallocatedVisits}
+                    onUnallocatedVisitDrop={handleUnallocatedVisitDrop}
                 />
             )}
 
             {activeView === "week" && (
                 <CustomWeekView
                     date={currentDate}
-
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
                     staffMembers={staffMembers}
                     getEventDurationInMinutes={getEventDurationInMinutes}
-
                 />
             )}
 
             {activeView === "month" && (
                 <CustomMonthView
                     date={currentDate}
-
                     onSelectEvent={onSelectEvent}
                     onDateSelect={onNavigate}
                     staffMembers={staffMembers}
                     getEventDurationInMinutes={getEventDurationInMinutes}
                     getEventTypeLabel={getEventTypeLabel}
-
-
                     sidebarMode={sidebarMode}
                 />
             )}

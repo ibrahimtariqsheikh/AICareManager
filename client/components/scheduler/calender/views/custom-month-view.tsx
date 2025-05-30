@@ -63,7 +63,8 @@ export function CustomMonthView({
     } | null>(null)
     const dragEventTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
-
+    const [cellHeights, setCellHeights] = useState<Record<string, number>>({})
+    const cellRefs = useRef<Record<string, HTMLElement>>({})
 
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
     const clients = useAppSelector((state) => state.user.clients || [])
@@ -672,7 +673,7 @@ export function CustomMonthView({
                     if (el) eventRefs.current[event.id] = el
                 }}
                 className={cn(
-                    "absolute rounded-lg text-xs p-2 cursor-grab",
+                    "absolute rounded-lg text-xs p-2 cursor-grab max-w-full",
                     getEventBackground(event, isActive, isHovered).bg,
                     event.isLeaveEvent ? "border-l-4" : "border-l-2",
                     event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
@@ -690,6 +691,8 @@ export function CustomMonthView({
                     transform: isActive ? "scale(1.02)" : "scale(1)",
                     zIndex: isActive ? 50 : isHovered ? 20 : 10,
                     position: "relative",
+                    width: "calc(100% - 4px)", // Subtract padding
+                    margin: "2px",
                 }}
                 onMouseEnter={() => setHoveredEvent(event.id)}
                 onMouseLeave={() => setHoveredEvent(null)}
@@ -734,19 +737,7 @@ export function CustomMonthView({
                         {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
                     </div>
 
-                    {/* Staff info */}
-                    <div className="flex items-center gap-1 mt-1">
-                        <div className={cn(
-                            "w-2 h-2 rounded-full flex-shrink-0",
-                            event.isLeaveEvent ? "bg-" + event.color : "bg-blue-600"
-                        )} />
-                        <span className={cn(
-                            "text-[10px] truncate font-medium",
-                            event.isLeaveEvent ? "text-" + event.color : "text-blue-600"
-                        )}>
-                            {staffName}
-                        </span>
-                    </div>
+
                 </div>
             </div>
         )
@@ -802,6 +793,40 @@ export function CustomMonthView({
         )
     }, [isDragging, ghostEvent, activeEvent, eventBeingDragged, getEventBackground, spaceTheme, getStaffInfo, formatEventTime])
 
+    // Update the calculateVisibleEvents function
+    const calculateVisibleEvents = useCallback((dayEvents: AppointmentEvent[]) => {
+        const MAX_EVENTS = 4
+        const hasMore = dayEvents.length > MAX_EVENTS
+        const visibleEvents = dayEvents.slice(0, MAX_EVENTS)
+        const remainingCount = dayEvents.length - MAX_EVENTS
+
+        return {
+            visibleEvents,
+            hasMore,
+            remainingCount
+        }
+    }, [])
+
+    // Add effect to measure cell heights
+    useEffect(() => {
+        const updateCellHeights = () => {
+            const heights: Record<string, number> = {}
+            Object.entries(cellRefs.current).forEach(([dateStr, element]) => {
+                if (element) {
+                    heights[dateStr] = element.getBoundingClientRect().height
+                }
+            })
+            setCellHeights(heights)
+        }
+
+        // Initial measurement
+        updateCellHeights()
+
+        // Update on window resize
+        window.addEventListener('resize', updateCellHeights)
+        return () => window.removeEventListener('resize', updateCellHeights)
+    }, [calendar])
+
     return (
         <div className="h-[calc(100vh-100px)] flex flex-col p-4">
             <div className="flex flex-col flex-1 h-full">
@@ -825,8 +850,7 @@ export function CustomMonthView({
                     {/* Calendar grid */}
                     <div className="flex-1 overflow-y-auto h-full">
                         <div
-                            className={`grid grid-cols-7 auto-rows-fr h-full ${spaceTheme ? "bg-black" : "bg-white"
-                                } rounded-b-lg shadow-sm`}
+                            className={`grid grid-cols-7 ${spaceTheme ? "bg-black" : "bg-white"} rounded-b-lg shadow-sm`}
                             ref={gridRef}
                         >
                             {calendar.flat().map((day, i) => {
@@ -839,15 +863,23 @@ export function CustomMonthView({
                                 const isExpanded = expandedDays[dateStr]
                                 const isHighlighted = highlightedDay === dateStr && isDragging
 
-                                // Determine how many events to show before "more" button
-                                const eventsToShow = isExpanded ? dayEvents : dayEvents.slice(0, 2)
-                                const hasMore = dayEvents.length > 2 && !isExpanded
+                                // Calculate visible events
+                                const { visibleEvents, hasMore, remainingCount } = isExpanded
+                                    ? {
+                                        visibleEvents: dayEvents,
+                                        hasMore: false,
+                                        remainingCount: 0
+                                    }
+                                    : calculateVisibleEvents(dayEvents)
 
                                 return (
                                     <div
                                         key={i}
                                         ref={(el) => {
-                                            if (el) dayRefs.current[dateStr] = el
+                                            if (el) {
+                                                cellRefs.current[dateStr] = el
+                                                dayRefs.current[dateStr] = el
+                                            }
                                         }}
                                         data-date={dateStr}
                                         className={cn(
@@ -868,7 +900,7 @@ export function CustomMonthView({
                                                     ? "ring-2 ring-inset ring-green-600/30"
                                                     : "ring-2 ring-inset ring-blue-500/30"
                                                 : "",
-                                            hasEvents ? "min-h-[100px]" : "min-h-[60px]",
+                                            hasEvents ? "min-h-[200px]" : "min-h-[60px]",
                                             isHighlighted ? (spaceTheme ? "bg-zinc-800/40" : "bg-blue-100/60") : "",
                                             spaceTheme ? "border-zinc-800 text-white" : "border-gray-200",
                                             "hover:bg-opacity-90 transition-all",
@@ -910,22 +942,25 @@ export function CustomMonthView({
                                         </div>
 
                                         {/* Events */}
-                                        <div className="mt-1 space-y-1.5">
-                                            {eventsToShow.map((event) => renderEvent(event, isExpanded ?? false))}
+                                        <div className="mt-1 space-y-1.5 overflow-hidden">
+                                            {visibleEvents.map((event) => renderEvent(event, isExpanded ?? false))}
 
                                             {/* Ghost event placeholder during drag */}
                                             {renderGhostEvent(dateStr)}
+
                                             {/* Show "more" button if not expanded */}
                                             {hasMore && (
                                                 <button
                                                     className={cn(
-                                                        "text-[10px] flex items-center gap-1 text-left underline underline-offset-2",
-                                                        spaceTheme ? "text-zinc-400 hover:text-zinc-200" : "text-gray-500 hover:text-gray-800"
+                                                        "w-full text-[9px] flex items-center justify-center gap-1.5 px-2 py-[2px] rounded-full font-medium transition-colors",
+                                                        spaceTheme
+                                                            ? "bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700/80 hover:text-zinc-100"
+                                                            : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
                                                     )}
                                                     onClick={(e) => toggleDayExpand(dateStr, e)}
                                                 >
                                                     <ChevronDown className="h-3 w-3" />
-                                                    Show {dayEvents.length - 2} more
+                                                    View {remainingCount} more events
                                                 </button>
                                             )}
                                         </div>

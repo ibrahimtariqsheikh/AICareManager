@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, ChevronDown, Edit, Plus, X, Loader2, HeartHandshake, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, Edit, Plus, X, Loader2, HeartHandshake, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer, GripVertical, AlertCircle, Menu, List } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { useApplyScheduleTemplateMutation, useGetScheduleTemplatesQuery, useGetAgencySchedulesQuery } from "@/state/api"
@@ -14,10 +14,10 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
-import BankNotes from "@/components/icons/bank-notes"
 import EventIcon from "@/components/icons/eventicon"
 import type { AppointmentEvent, StaffMember, Client } from "../types"
 import type { ScheduleTemplate } from "@/types/prismaTypes"
+import { setEvents } from "@/state/slices/scheduleSlice"
 
 interface CustomDayViewProps {
     date: Date
@@ -37,6 +37,10 @@ interface CustomDayViewProps {
     currentDate?: Date
     onDateChange?: (date: Date) => void
     onViewChange?: (view: "day" | "week" | "month") => void
+    showUnallocated?: boolean
+    onToggleUnallocated?: () => void
+    unallocatedVisits?: any[]
+    onUnallocatedVisitDrop?: (visit: any, clientId: string, timeSlot: string) => void
 }
 
 export function CustomDayView({
@@ -47,6 +51,10 @@ export function CustomDayView({
     max = new Date(new Date().setHours(19, 0, 0)),
     showSidebar = true,
     minutesPerSlot = 30,
+    showUnallocated = false,
+    onToggleUnallocated,
+    unallocatedVisits = [],
+    onUnallocatedVisitDrop,
 }: CustomDayViewProps) {
     const dispatch = useAppDispatch()
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
@@ -58,6 +66,67 @@ export function CustomDayView({
     const { userTemplates, isLoadingTemplates } = useAppSelector((state) => state.template)
     const agencyId = useAppSelector((state) => state.user.user?.userInfo?.agencyId)
     const router = useRouter()
+
+    // State management
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+    const [isMobileUnallocatedOpen, setIsMobileUnallocatedOpen] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
+    const [, setActiveDialogEventId] = useState<string | null>(null)
+    const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+    const [isApplyTemplateSelected, setIsApplyTemplateSelected] = useState<boolean>(false)
+    const [eventPositions, setEventPositions] = useState<Record<string, any>>({})
+    const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
+    const [activeEvent, setActiveEvent] = useState<string | null>(null)
+    const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
+    const [draggedEvent, setDraggedEvent] = useState<AppointmentEvent | null>(null)
+    const [draggedVisit, setDraggedVisit] = useState<any>(null)
+    const [hoverTimeSlot, setHoverTimeSlot] = useState<{ time: string, clientId: string } | null>(null)
+
+    // Handle window resize
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+
+        // Initial check
+        handleResize()
+
+        // Add event listener
+        window.addEventListener('resize', handleResize)
+
+        // Cleanup
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    // Close mobile sidebars when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (isMobile) {
+                const target = event.target as HTMLElement
+                if (!target.closest('.mobile-sidebar') && !target.closest('.mobile-header')) {
+                    setIsMobileSidebarOpen(false)
+                    setIsMobileUnallocatedOpen(false)
+                }
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [isMobile])
+
+    // Constants
+    const startHour = min.getHours()
+    const endHour = max.getHours()
+    const slotsPerHour = 60 / minutesPerSlot
+    const MOBILE_SLOT_WIDTH = 70
+    const DESKTOP_SLOT_WIDTH = 80
+    const slotWidth = isMobile ? MOBILE_SLOT_WIDTH : DESKTOP_SLOT_WIDTH
+    const MOBILE_ROW_HEIGHT = 80
+    const DESKTOP_ROW_HEIGHT = 60
+    const ROW_HEIGHT = isMobile ? MOBILE_ROW_HEIGHT : DESKTOP_ROW_HEIGHT
+    const MOBILE_HEADER_HEIGHT = 40
+    const DESKTOP_HEADER_HEIGHT = 30
+    const HEADER_HEIGHT = isMobile ? MOBILE_HEADER_HEIGHT : DESKTOP_HEADER_HEIGHT
 
     // Get the appropriate users based on activeScheduleUserType and filtered users
     const displayUsers = (() => {
@@ -79,27 +148,6 @@ export function CustomDayView({
         if (activeScheduleUserType === "officeStaff") return officeStaff
         return [] as (Client | StaffMember)[]
     })()
-
-    // State management
-    const [, setActiveDialogEventId] = useState<string | null>(null)
-    const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
-    const [isApplyTemplateSelected, setIsApplyTemplateSelected] = useState<boolean>(false)
-    const [eventPositions, setEventPositions] = useState<Record<string, any>>({})
-    const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
-    const [activeEvent, setActiveEvent] = useState<string | null>(null)
-    const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
-
-    // Refs
-    const containerRef = useRef<HTMLDivElement>(null)
-    const headerRef = useRef<HTMLDivElement>(null)
-
-    // Constants
-    const startHour = min.getHours()
-    const endHour = max.getHours()
-    const slotsPerHour = 60 / minutesPerSlot
-    const slotWidth = 80
-    const ROW_HEIGHT = 60
-    const HEADER_HEIGHT = 30
 
     // API hooks
     const {
@@ -124,7 +172,7 @@ export function CustomDayView({
         return new Date(new Date(date).setHours(hour, minutes, 0, 0))
     })
 
-    const totalTimelineWidth = timeSlots.length * slotWidth
+    const totalTimelineWidth = timeSlots.length * 80
 
     // Group events by user
     const eventsByUser = (() => {
@@ -183,8 +231,8 @@ export function CustomDayView({
             const startMinutes = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
             const endMinutes = (eventEnd.hours() - startHour) * 60 + eventEnd.minutes()
 
-            const left = (startMinutes / minutesPerSlot) * slotWidth
-            const width = ((endMinutes - startMinutes) / minutesPerSlot) * slotWidth
+            const left = (startMinutes / minutesPerSlot) * 80
+            const width = ((endMinutes - startMinutes) / minutesPerSlot) * 80
 
             positions[event.id] = {
                 left,
@@ -196,7 +244,7 @@ export function CustomDayView({
         })
 
         setEventPositions(positions)
-    }, [displayEvents, startHour, minutesPerSlot, slotWidth])
+    }, [displayEvents, startHour, minutesPerSlot, 80])
 
     // Sync header scroll with timeline - force synchronization
     useEffect(() => {
@@ -234,7 +282,7 @@ export function CustomDayView({
         if (moment(new Date()).isSame(date, "day")) {
             const now = new Date()
             const currentMinutes = (now.getHours() - startHour) * 60 + now.getMinutes()
-            const scrollPos = (currentMinutes / minutesPerSlot) * slotWidth - 200
+            const scrollPos = (currentMinutes / minutesPerSlot) * 80 - 200
             scrollToPosition(scrollPos)
         } else if (dayEvents.length > 0 && dayEvents.length <= 3) {
             const firstEvent = dayEvents.reduce((earliest, current) =>
@@ -242,10 +290,10 @@ export function CustomDayView({
             )
             const eventStart = moment(firstEvent.start)
             const minutesSinceStart = (eventStart.hours() - startHour) * 60 + eventStart.minutes()
-            const scrollPos = (minutesSinceStart / minutesPerSlot) * slotWidth - 200
+            const scrollPos = (minutesSinceStart / minutesPerSlot) * 80 - 200
             scrollToPosition(scrollPos)
         }
-    }, [date, events, startHour, slotWidth, minutesPerSlot])
+    }, [date, events, startHour, 80, minutesPerSlot])
 
     // Event handlers
     const handleEventClick = (event: AppointmentEvent) => {
@@ -292,77 +340,46 @@ export function CustomDayView({
     }, [onSelectEvent])
 
     // Drag handlers
-    const handleDragStart = (eventId: string) => {
-        setActiveEvent(eventId)
-        document.body.style.cursor = "grabbing"
-
-        const position = eventPositions[eventId]
-        if (position) {
-            const time = formatTimeFromMinutes(position.startMinutes)
-            setDragTooltip({ eventId, time })
+    const handleDragStart = (e: React.DragEvent, visit: any) => {
+        if (containerRef.current) {
+            scrollPositionRef.current = {
+                left: containerRef.current.scrollLeft,
+                top: containerRef.current.scrollTop
+            }
         }
+        setDraggedVisit(visit)
+        e.dataTransfer.effectAllowed = 'move'
     }
 
-    const handleDrag = (eventId: string, info: any) => {
-        const position = eventPositions[eventId]
-        if (!position) return
+    // Remove the validDropZone state since we're not using it anymore
+    const [validDropZone, setValidDropZone] = useState<{ time: string, clientId: string } | null>(null)
 
-        const newLeft = position.left + info.offset.x
-        const minutesFromStart = Math.round((newLeft / slotWidth) * minutesPerSlot)
-        const timeText = formatTimeFromMinutes(minutesFromStart)
-
-        setDragTooltip({ eventId, time: timeText })
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>, time: string, clientId: string) => {
+        e.preventDefault()
+        e.dataTransfer.dropEffect = 'move'
+        setHoverTimeSlot({ time, clientId })
     }
 
-    const handleDragEnd = (eventId: string, info: any) => {
-        const position = eventPositions[eventId]
-        if (!position) return
+    const handleDragLeave = () => {
+        setHoverTimeSlot(null)
+    }
 
-        document.body.style.cursor = ""
+    const handleDrop = (e: React.DragEvent, clientId: string, timeSlot: string) => {
+        e.preventDefault()
+        setHoverTimeSlot(null)
 
-        const newLeft = position.left + info.offset.x
-        const minutesFromStart = Math.round((newLeft / slotWidth) * minutesPerSlot)
-        const clampedMinutes = Math.max(
-            0,
-            Math.min(minutesFromStart, (endHour - startHour) * 60 - position.durationMinutes)
-        )
+        if (draggedVisit && onUnallocatedVisitDrop) {
+            onUnallocatedVisitDrop(draggedVisit, clientId, timeSlot)
+            setDraggedVisit(null)
 
-        const hours = Math.floor(clampedMinutes / 60) + startHour
-        const minutes = clampedMinutes % 60
-
-        const newStartDate = moment(date).hour(hours).minute(minutes).second(0).millisecond(0)
-        const newEndDate = moment(newStartDate).add(position.durationMinutes, "minutes")
-
-        const updatedEvent = {
-            ...position.originalEvent,
-            start: newStartDate.toDate(),
-            end: newEndDate.toDate(),
+            // Restore scroll position after a short delay to ensure the DOM has updated
+            setTimeout(() => {
+                if (containerRef.current) {
+                    containerRef.current.scrollLeft = scrollPositionRef.current.left
+                    containerRef.current.scrollTop = scrollPositionRef.current.top
+                }
+            }, 0)
         }
-
-        setDisplayEvents((prev) => ({
-            ...prev,
-            [eventId]: updatedEvent,
-        }))
-
-        const updatedLeft = (clampedMinutes / minutesPerSlot) * slotWidth
-        setEventPositions((prev) => ({
-            ...prev,
-            [eventId]: {
-                ...prev[eventId],
-                left: updatedLeft,
-                startMinutes: clampedMinutes,
-                originalEvent: updatedEvent,
-            },
-        }))
-
-        if (onEventUpdate) {
-            onEventUpdate(updatedEvent)
-            toast.success(`${updatedEvent.title} updated to ${newStartDate.format("h:mm A")}`)
-        }
-
-        setDragTooltip(null)
-        setActiveEvent(null)
-        setActiveDialogEventId(null)
     }
 
     // Helper functions
@@ -431,12 +448,160 @@ export function CustomDayView({
         return eventIcons[event.type as keyof typeof eventIcons] || <Calendar className="h-3 w-3" />
     }
 
+    const getPriorityColor = (priority: string) => {
+        switch (priority) {
+            case 'urgent': return 'bg-red-100 border-red-300 text-red-800'
+            case 'high': return 'bg-orange-100 border-orange-300 text-orange-800'
+            case 'medium': return 'bg-yellow-100 border-yellow-300 text-yellow-800'
+            default: return 'bg-gray-100 border-gray-300 text-gray-800'
+        }
+    }
+
+    const formatDuration = (minutes: number) => {
+        const hours = Math.floor(minutes / 60)
+        const mins = minutes % 60
+        if (hours === 0) {
+            return `${mins} min${mins !== 1 ? 's' : ''}`
+        }
+        if (mins === 0) {
+            return `${hours} hour${hours !== 1 ? 's' : ''}`
+        }
+        return `${hours} hour${hours !== 1 ? 's' : ''} ${mins} min${mins !== 1 ? 's' : ''}`
+    }
+
+    const UnallocatedVisitCard = ({ visit }: { visit: any }) => (
+        <div
+            draggable
+            onDragStart={(e) => handleDragStart(e, visit)}
+            className={`p-2 rounded-lg border border-dashed cursor-move hover:shadow-md transition-all ${getPriorityColor(visit.priority)} group`}
+        >
+            <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-medium text-[13px] truncate">{visit.clientName}</h4>
+
+                    </div>
+                    <div className="text-[10px] text-gray-600 mb-2 mt-2">
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className={cn('p-1 rounded-full  text-[10px] font-medium', visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
+                                visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
+                                    'bg-yellow-500/30 text-yellow-500')}>{visit.visitType}</span>
+                            <span className={cn('p-1 rounded-full  text-[10px] font-medium', visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
+                                visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
+                                    'bg-yellow-500/80 text-yellow-50')}>{formatDuration(visit.duration)}</span>
+                            <span className={cn('p-1 rounded-full  text-[10px] font-medium', visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
+                                visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
+                                    'bg-yellow-500/80 text-yellow-50')}>£{visit.cost}</span>
+                        </div>
+                    </div>
+                    {visit.notes && (
+                        <div className="text-xs text-gray-500 italic">"{visit.notes}"</div>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
+
+    const handleCreateVisit = (time: string, clientId: string) => {
+        console.log("CLIENT ID", clientId)
+        const tempEvent: AppointmentEvent = {
+            id: `temp-${Date.now()}`,
+            title: 'New Visit',
+            start: new Date(`${date.toISOString().split('T')[0]}T${time}`),
+            end: new Date(`${date.toISOString().split('T')[0]}T${time}`),
+            date: date,
+            startTime: time,
+            endTime: time,
+            resourceId: '',
+            clientId: clientId,
+            type: 'HOME_VISIT',
+            status: 'PENDING',
+            notes: '',
+            color: '#4CAF50',
+            careWorker: {
+                fullName: 'Unassigned'
+            },
+            client: {
+                fullName: finalDisplayUsers.find(user => user.id === clientId)?.fullName || ''
+            }
+        }
+
+        // Open the event dialog with the temporary event
+        setActiveDialogEventId(tempEvent.id)
+        onSelectEvent(tempEvent)
+    }
+
+    // Refs
+    const containerRef = useRef<HTMLDivElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const scrollPositionRef = useRef<{ left: number, top: number }>({ left: 0, top: 0 })
+
     return (
-        <div className="w-full h-full px-6 pb-6">
-            <div className="flex rounded-lg border shadow-none bg-white border-gray-200 overflow-hidden">
+        <div className="w-full h-full px-1 sm:px-6 pb-6">
+            <div className="flex flex-col sm:flex-row rounded-lg border shadow-none bg-white border-gray-200 overflow-hidden">
+                {/* Mobile Header */}
+                {isMobile && (
+                    <div className="flex items-center justify-between p-3 border-b mobile-header bg-gray-50">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+                            className="flex items-center gap-2 px-3"
+                        >
+                            <Menu className="h-5 w-5" />
+                            <span className="text-sm font-medium">Menu</span>
+                        </Button>
+                        {showUnallocated && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setIsMobileUnallocatedOpen(!isMobileUnallocatedOpen)}
+                                className="flex items-center gap-2 px-3"
+                            >
+                                <List className="h-5 w-5" />
+                                <span className="text-sm font-medium">Unallocated</span>
+                            </Button>
+                        )}
+                    </div>
+                )}
+
+                {/* Unallocated Visits Sidebar */}
+                {showUnallocated && (
+                    <div className={cn(
+                        "w-full sm:w-64 bg-white border-r shadow-sm overflow-y-auto max-h-screen mobile-sidebar",
+                        isMobile && !isMobileUnallocatedOpen && "hidden",
+                        isMobile && "absolute top-[45px] left-0 z-50 h-[calc(100vh-45px)]"
+                    )}>
+                        <div className="px-4 h-[31px] flex items-center justify-center border-b bg-gray-50">
+                            <div className="flex items-center justify-between">
+                                <h2 className="font-medium text-neutral-900 flex items-center gap-2 text-xs">
+                                    Unallocated Visits
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div className="p-4 space-y-3">
+                            {unallocatedVisits.map((visit) => (
+                                <UnallocatedVisitCard key={visit.id} visit={visit} />
+                            ))}
+
+                            {unallocatedVisits.length === 0 && (
+                                <div className="text-center py-8 text-gray-500">
+                                    <AlertCircle className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                                    <p className="text-sm">All visits allocated!</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 {/* Sidebar */}
                 {showSidebar && (
-                    <div className="w-48 shrink-0 bg-gray-50 border-gray-200">
+                    <div className={cn(
+                        "w-full sm:w-48 shrink-0 bg-gray-50 border-gray-200 mobile-sidebar",
+                        isMobile && !isMobileSidebarOpen && "hidden",
+                        isMobile && "absolute top-[45px] left-0 z-50 h-[calc(100vh-45px)]"
+                    )}>
                         {/* Header */}
                         <div className="h-[31px] flex items-center justify-center border-b  text-xs font-medium text-gray-600 border-gray-200">
                             {activeScheduleUserType === "clients" ? "CLIENTS" :
@@ -608,8 +773,8 @@ export function CustomDayView({
                                                     height: HEADER_HEIGHT,
                                                     minWidth: slotWidth,
                                                     maxWidth: slotWidth,
-                                                    paddingLeft: '4px',
-                                                    paddingBottom: '4px'
+                                                    paddingLeft: isMobile ? '8px' : '4px',
+                                                    paddingBottom: isMobile ? '8px' : '4px'
                                                 }}
                                             >
                                                 {isHourMark && (
@@ -687,42 +852,95 @@ export function CustomDayView({
                                                 <motion.div
                                                     key={event.id}
                                                     className={cn(
-                                                        "absolute rounded-lg border-l-4 p-2  cursor-grab select-none transition-shadow", getEventBackground(event.status), getEventBorderColor(event.status),
+                                                        "absolute rounded-lg border-l-4 p-2 cursor-pointer select-none transition-shadow event-card",
+                                                        getEventBackground(event.status),
+                                                        getEventBorderColor(event.status),
                                                         isActive && "ring-2 ring-blue-500 ring-opacity-50"
                                                     )}
                                                     style={{
                                                         left: pos.left,
                                                         width: pos.width,
-                                                        top: ROW_HEIGHT * (userIndex) + 4,
-                                                        height: ROW_HEIGHT - 8,
+                                                        top: ROW_HEIGHT * (userIndex) + (isMobile ? 8 : 4),
+                                                        height: ROW_HEIGHT - (isMobile ? 16 : 8),
                                                         zIndex: isActive ? 30 : 10,
-
                                                     }}
-                                                    drag="x"
-                                                    dragConstraints={{ left: 0, right: totalTimelineWidth - pos.width }}
-                                                    dragMomentum={false}
-                                                    onDragStart={() => handleDragStart(event.id)}
-                                                    onDrag={(_, info) => handleDrag(event.id, info)}
-                                                    onDragEnd={(_, info) => handleDragEnd(event.id, info)}
                                                     onClick={() => handleEventClick(event)}
-                                                    whileDrag={{ scale: 1.02, zIndex: 50 }}
                                                     whileHover={{ scale: 1.01 }}
                                                 >
-                                                    <div className={cn("flex items-center gap-2 mb-1 ", getEventTextColor(event.status))}>
+                                                    <div className={cn("flex items-center gap-2 mb-1 event-title", getEventTextColor(event.status))}>
                                                         {getEventIcon(event)}
                                                         <span className="font-medium text-sm truncate">{event.title}</span>
                                                     </div>
-                                                    <div className={cn("flex items-center gap-1 text-xs opacity-75 mb-1 ", getEventTextColor(event.status))}>
+                                                    <div className={cn("flex items-center gap-1 text-xs opacity-75 mb-1 event-time", getEventTextColor(event.status))}>
                                                         <Timer className="h-3 w-3" />
                                                         <span>
                                                             {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                         </span>
                                                     </div>
-
                                                 </motion.div>
                                             )
                                         })
                                     })}
+
+                                    {/* Add drop zones for each time slot */}
+                                    {finalDisplayUsers.map((user, userIndex: number) => (
+                                        timeSlots.map((time, timeIndex) => {
+                                            const timeStr = moment(time).format('HH:mm')
+                                            const isHovered = hoverTimeSlot?.time === timeStr && hoverTimeSlot?.clientId === user.id
+
+                                            return (
+                                                <div
+                                                    key={`${user.id}-${timeIndex}`}
+                                                    className="absolute group"
+                                                    style={{
+                                                        left: timeIndex * slotWidth,
+                                                        top: ROW_HEIGHT * userIndex,
+                                                        width: slotWidth,
+                                                        height: ROW_HEIGHT,
+                                                    }}
+                                                    onDragOver={showUnallocated ? (e) => handleDragOver(e, timeStr, user.id) : undefined}
+                                                    onDragLeave={showUnallocated ? handleDragLeave : undefined}
+                                                    onDrop={showUnallocated ? (e) => handleDrop(e, user.id, timeStr) : undefined}
+                                                >
+                                                    <div
+                                                        className={`absolute inset-1 border-2 border-dashed rounded-lg transition-all ${showUnallocated && draggedVisit
+                                                            ? isHovered
+                                                                ? 'border-blue-400 bg-blue-50/50 opacity-100'
+                                                                : 'border-blue-300 opacity-0'
+                                                            : 'border-blue-300 opacity-0 group-hover:opacity-100 bg-blue-50/20'
+                                                            } flex items-center justify-center cursor-pointer`}
+                                                        onClick={() => {
+                                                            if (!draggedVisit) {
+                                                                handleCreateVisit(timeStr, user.id)
+                                                            }
+                                                        }}
+                                                    >
+                                                        {showUnallocated && draggedVisit && isHovered ? (
+                                                            <div className="flex flex-col items-center gap-1">
+                                                                <span className="text-xs text-blue-600 font-medium">
+                                                                    Drop here
+                                                                </span>
+                                                                <span className="text-[10px] text-gray-500">
+                                                                    {moment(time).format('h:mm A')}
+                                                                </span>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex flex-col items-center gap-1 w-full h-full justify-center">
+                                                                <div className="flex items-center gap-1">
+                                                                    <span className="text-[11px] font-medium text-blue-600">
+                                                                        {moment(time).format('h:mm A')}
+                                                                    </span>
+                                                                </div>
+                                                                <span className="text-[10px] text-gray-500 text-center">
+                                                                    {user.fullName}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -737,36 +955,40 @@ export function CustomDayView({
                 </div>
             )}
 
-            {/* Custom Scrollbar Styles */}
+            {/* Mobile Event Card Styles */}
             <style jsx>{`
-                .timeline-container::-webkit-scrollbar {
-                    height: 12px;
-                    width: 12px;
-                    display: block;
-                }
-                
-                .timeline-container::-webkit-scrollbar-track {
-                    background: #f1f5f9;
-                    border-radius: 6px;
-                }
-                
-                .timeline-container::-webkit-scrollbar-thumb {
-                    background: #cbd5e1;
-                    border-radius: 6px;
-                    border: 1px solid #f1f5f9;
-                }
-                
-                .timeline-container::-webkit-scrollbar-thumb:hover {
-                    background: #94a3b8;
-                }
-                
-                .timeline-container::-webkit-scrollbar-corner {
-                    background: #f1f5f9;
+                @media (max-width: 768px) {
+                    .event-card {
+                        padding: 8px !important;
+                        min-width: 90px !important;
+                    }
+                    .event-card .event-title {
+                        font-size: 12px !important;
+                        margin-bottom: 4px !important;
+                    }
+                    .event-card .event-time {
+                        font-size: 10px !important;
+                        margin-bottom: 0 !important;
+                    }
+                    .event-card .event-title svg {
+                        width: 12px !important;
+                        height: 12px !important;
+                    }
+                    .event-card .event-time svg {
+                        width: 10px !important;
+                        height: 10px !important;
+                    }
                 }
 
-                /* Always show scrollbar */
-                .timeline-container {
-                    scrollbar-gutter: stable;
+                /* Improve touch scrolling on mobile */
+                @media (max-width: 768px) {
+                    .timeline-container {
+                        -webkit-overflow-scrolling: touch;
+                        scroll-snap-type: x mandatory;
+                    }
+                    .timeline-container > div {
+                        scroll-snap-align: start;
+                    }
                 }
             `}</style>
         </div>

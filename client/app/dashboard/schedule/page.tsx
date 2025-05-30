@@ -30,9 +30,16 @@ export default function SchedulerPage() {
 
     const handleEventSelect = (event: any) => {
         if (event) {
+            console.log("EVENT IN PAGE", event)
             setEditingEvent(event)
-            setIsEditFormOpen(true)
-            setIsAppointmentFormOpen(false)
+            if (event.id.startsWith('temp-')) {
+
+                setIsAppointmentFormOpen(true)
+                setIsEditFormOpen(false)
+            } else {
+                setIsEditFormOpen(true)
+                setIsAppointmentFormOpen(false)
+            }
             setIsEventFormOpen(false)
         }
     }
@@ -113,6 +120,7 @@ export default function SchedulerPage() {
                     <CreateAppointmentForm
                         isOpen={isAppointmentFormOpen}
                         onClose={handleFormClose}
+                        initialEvent={editingEvent}
                     />
                 )}
 

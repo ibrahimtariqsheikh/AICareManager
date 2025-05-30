@@ -188,6 +188,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
     }
 
     const handleEventSelect = (event: any) => {
+        console.log("EVENT", event)
         if (!event) {
             setEditingEvent(null)
             setIsFormOpen(false)
@@ -196,6 +197,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
 
         const formattedEvent = {
             ...event,
+            clientId: event.clientId || event.userId,
             start: new Date(event.start),
             end: new Date(event.end),
             date: new Date(event.date),

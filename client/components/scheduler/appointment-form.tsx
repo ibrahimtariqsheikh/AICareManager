@@ -66,6 +66,7 @@ interface AppointmentFormProps {
     isOpen: boolean
     onClose: () => void
     spaceTheme?: boolean
+    initialEvent?: any
 }
 
 interface EditAppointmentFormProps extends AppointmentFormProps {
@@ -87,7 +88,7 @@ const generateTimeOptions = () => {
     return options
 }
 
-export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false }: AppointmentFormProps) {
+export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, initialEvent }: AppointmentFormProps) {
     const [availableStaff, setAvailableStaff] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -105,19 +106,23 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false }: A
     const { careWorkers = [], clients = [], officeStaff = [] } = useAppSelector((state: any) => state.user)
     const agency = useAppSelector((state: any) => state.agency.agency)
 
+    console.log("INITIAL EVENT", initialEvent)
+
+    console.log("CLIENT ID", initialEvent?.clientId)
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             agencyId: user?.userInfo?.agencyId || "",
-            clientId: "",
-            userId: "",
-            date: new Date(),
-            startTime: "09:00",
-            endTime: "10:00",
-            type: "APPOINTMENT",
-            status: "PENDING",
-            notes: "",
-            rateSheetId: "",
+            clientId: initialEvent?.clientId || "",
+            userId: initialEvent?.userId || "",
+            date: initialEvent?.date || new Date(),
+            startTime: initialEvent?.startTime || "09:00",
+            endTime: initialEvent?.endTime || "10:00",
+            type: initialEvent?.type || "APPOINTMENT",
+            status: initialEvent?.status || "PENDING",
+            notes: initialEvent?.notes || "",
+            rateSheetId: initialEvent?.rateSheetId || "",
         },
     })
 
@@ -330,6 +335,7 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false }: A
                                                 label: client.fullName,
                                             }))}
                                             onChange={(value: string) => field.onChange(value)}
+                                            value={field.value || initialEvent?.clientId}
                                         />
                                         <FormMessage />
                                     </FormItem>
@@ -349,6 +355,7 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false }: A
                                                 label: staffMember.fullName,
                                             }))}
                                             onChange={(value: string) => field.onChange(value)}
+                                            value={field.value || initialEvent?.userId}
                                         />
                                         <FormMessage />
                                     </FormItem>
