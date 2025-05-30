@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { useChat } from "@ai-sdk/react"
 import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
@@ -23,6 +23,155 @@ import { RevenueReportTool } from "./tools/revenue-report-tool"
 import { OnboardingInviteTool } from "./tools/onboarding-invite-tool"
 import { AlertsTool } from "./tools/alerts-tool"
 
+// Memoized tool component to prevent unnecessary re-renders
+const ToolComponent = React.memo(({ part, messageId, index }: { part: any; messageId: string; index: number }) => {
+    // Create a stable key that includes the tool invocation ID if available
+    const toolKey = part.toolInvocation?.toolCallId || `${messageId}-tool-${index}`
+
+    switch (part.toolInvocation.toolName) {
+        case "createClientProfile":
+            return <CreateClientTool key={toolKey} {...part.toolInvocation} />
+        case "createSchedule":
+            return <CreateScheduleTool key={toolKey} {...part.toolInvocation} />
+        case "displayScheduleAppointment":
+            return <AppointmentTool key={toolKey} toolInvocation={part.toolInvocation} />
+        case "sendMessage":
+            return <SendMessageTool key={toolKey} {...part.toolInvocation} />
+        case "holidayRequest":
+            return <HolidayRequestTool key={toolKey} {...part.toolInvocation} />
+        case "generateRevenueReport":
+            return <RevenueReportTool key={toolKey} {...part.toolInvocation} />
+        case "sendOnboardingInvite":
+            return <OnboardingInviteTool key={toolKey} {...part.toolInvocation} />
+        case "viewAlerts":
+            return <AlertsTool key={toolKey} {...part.toolInvocation} />
+        default:
+            return null
+    }
+})
+
+ToolComponent.displayName = "ToolComponent"
+
+// Memoized text content component
+const TextContent = React.memo(({ part, messageRole }: { part: any; messageRole: string }) => {
+    return (
+        <div
+            className={cn(
+                "px-4 py-2 rounded-md prose prose-sm max-w-none dark:prose-invert",
+                messageRole === "user" ? "bg-blue-500 text-white" : "bg-muted",
+            )}
+        >
+            <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                    code({ node, inline, className, children, ...props }: any) {
+                        const match = /language-(\w+)/.exec(className || "")
+                        return !inline && match ? (
+                            <SyntaxHighlighter
+                                style={vscDarkPlus as any}
+                                language={match[1]}
+                                PreTag="div"
+                                {...props}
+                            >
+                                {String(children).replace(/\n$/, "")}
+                            </SyntaxHighlighter>
+                        ) : (
+                            <code className={className} {...props}>
+                                {children}
+                            </code>
+                        )
+                    },
+                }}
+            >
+                {part.text}
+            </ReactMarkdown>
+        </div>
+    )
+})
+
+TextContent.displayName = "TextContent"
+
+// Memoized message component
+const MessageComponent = React.memo(({ message }: { message: any }) => {
+    // Check if this message has any tool invocations
+    const messageHasTools = useMemo(() =>
+        message.parts?.some((p: any) => p.type === "tool-invocation"),
+        [message.parts]
+    )
+
+    return (
+        <motion.div
+            key={message.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="message"
+        >
+            <div
+                className={cn(
+                    "flex items-start gap-2 mb-4",
+                    message.role === "user" ? "justify-end" : "justify-start",
+                )}
+            >
+                {message.role === "assistant" && (
+                    <Avatar className="h-8 w-8 shrink-0 mt-1">
+                        <AvatarImage src="/logos/logo.svg" alt="Assistant" />
+                        <AvatarFallback>A</AvatarFallback>
+                    </Avatar>
+                )}
+                <div className={cn("max-w-[75%]", message.role === "user" ? "order-1" : "order-1")}>
+                    {message.parts?.map((part: any, index: number) => {
+                        if (part.type === "text") {
+                            // Skip rendering text if this message also contains tools
+                            if (messageHasTools) {
+                                return null
+                            }
+                            return (
+                                <TextContent
+                                    key={`${message.id}-text-${index}`}
+                                    part={part}
+                                    messageRole={message.role}
+                                />
+                            )
+                        } else if (part.type === "tool-invocation") {
+                            return (
+                                <ToolComponent
+                                    key={part.toolInvocation?.toolCallId || `${message.id}-tool-${index}`}
+                                    part={part}
+                                    messageId={message.id}
+                                    index={index}
+                                />
+                            )
+                        }
+                        return null
+                    })}
+                    <div
+                        className={cn(
+                            "flex text-xs mt-1 text-muted-foreground",
+                            message.role === "user" ? "justify-end" : "justify-start",
+                        )}
+                    >
+                        <span>
+                            {new Date(message.createdAt || Date.now()).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })}
+                        </span>
+                    </div>
+                </div>
+                {message.role === "user" && (
+                    <Avatar className="h-8 w-8 shrink-0 mt-1 order-2">
+                        <AvatarImage src={getRandomPlaceholderImage() || "/placeholder.svg"} alt="You" />
+                        <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                )}
+            </div>
+        </motion.div>
+    )
+})
+
+MessageComponent.displayName = "MessageComponent"
+
 export default function ChatUI() {
     // Configure useChat with proper options to prevent duplicate calls
     const chat = useChat({
@@ -30,6 +179,8 @@ export default function ChatUI() {
         onError: (error) => {
             console.error("Chat error:", error)
         },
+        // Add these options to help prevent re-renders
+        keepLastMessageOnError: true,
     })
 
     const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -38,6 +189,9 @@ export default function ChatUI() {
 
     // Memoize hasMessages to prevent unnecessary re-renders
     const hasMessages = useMemo(() => chat.messages.length > 0, [chat.messages.length])
+
+    // Memoize messages to prevent unnecessary re-renders when reference changes but content is same
+    const memoizedMessages = useMemo(() => chat.messages, [chat.messages])
 
     // Memoize the submit handler to prevent re-creation on every render
     const onSubmit = useCallback(
@@ -56,7 +210,7 @@ export default function ChatUI() {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
         }
-    }, [chat.messages])
+    }, [memoizedMessages.length]) // Only depend on length, not entire messages array
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -153,130 +307,8 @@ export default function ChatUI() {
                     ) : (
                         <div className="max-w-5xl mx-auto py-6 px-4 space-y-6 w-full pb-32">
                             <AnimatePresence>
-                                {chat.messages.map((message) => (
-                                    <motion.div
-                                        key={message.id}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="message"
-                                    >
-                                        <div
-                                            className={cn(
-                                                "flex items-start gap-2 mb-4",
-                                                message.role === "user" ? "justify-end" : "justify-start",
-                                            )}
-                                        >
-                                            {message.role === "assistant" && (
-                                                <Avatar className="h-8 w-8 shrink-0 mt-1">
-                                                    <AvatarImage src="/logos/logo.svg" alt="Assistant" />
-                                                    <AvatarFallback>A</AvatarFallback>
-                                                </Avatar>
-                                            )}
-                                            <div className={cn("max-w-[75%]", message.role === "user" ? "order-1" : "order-1")}>
-                                                {message.parts?.map((part, index) => {
-                                                    // Check if this message has any tool invocations
-                                                    const messageHasTools = message.parts?.some((p: any) => p.type === "tool-invocation")
-
-                                                    if (part.type === "text") {
-                                                        // Skip rendering text if this message also contains tools
-                                                        if (messageHasTools) {
-                                                            return null
-                                                        }
-
-                                                        return (
-                                                            <div
-                                                                key={`${message.id}-text-${index}`}
-                                                                className={cn(
-                                                                    "px-4 py-2 rounded-md prose prose-sm max-w-none dark:prose-invert",
-                                                                    message.role === "user" ? "bg-blue-500 text-white" : "bg-muted",
-                                                                )}
-                                                            >
-                                                                <ReactMarkdown
-                                                                    remarkPlugins={[remarkGfm]}
-                                                                    components={{
-                                                                        code({ node, inline, className, children, ...props }: any) {
-                                                                            const match = /language-(\w+)/.exec(className || "")
-                                                                            return !inline && match ? (
-                                                                                <SyntaxHighlighter
-                                                                                    style={vscDarkPlus as any}
-                                                                                    language={match[1]}
-                                                                                    PreTag="div"
-                                                                                    {...props}
-                                                                                >
-                                                                                    {String(children).replace(/\n$/, "")}
-                                                                                </SyntaxHighlighter>
-                                                                            ) : (
-                                                                                <code className={className} {...props}>
-                                                                                    {children}
-                                                                                </code>
-                                                                            )
-                                                                        },
-                                                                    }}
-                                                                >
-                                                                    {part.text}
-                                                                </ReactMarkdown>
-                                                            </div>
-                                                        )
-                                                    } else if (part.type === "tool-invocation") {
-                                                        switch (part.toolInvocation.toolName) {
-                                                            case "createClientProfile":
-                                                                return <CreateClientTool key={`${message.id}-tool-${index}`} {...part.toolInvocation} />
-                                                            case "createSchedule":
-                                                                return (
-                                                                    <CreateScheduleTool key={`${message.id}-tool-${index}`} {...part.toolInvocation} />
-                                                                )
-                                                            case "displayScheduleAppointment":
-                                                                return (
-                                                                    <AppointmentTool
-                                                                        key={`${message.id}-tool-${index}`}
-                                                                        toolInvocation={part.toolInvocation}
-                                                                    />
-                                                                )
-                                                            case "sendMessage":
-                                                                return <SendMessageTool key={`${message.id}-tool-${index}`} {...part.toolInvocation} />
-                                                            case "holidayRequest":
-                                                                return (
-                                                                    <HolidayRequestTool key={`${message.id}-tool-${index}`} {...part.toolInvocation} />
-                                                                )
-                                                            case "generateRevenueReport":
-                                                                return (
-                                                                    <RevenueReportTool key={`${message.id}-tool-${index}`} {...part.toolInvocation} />
-                                                                )
-                                                            case "sendOnboardingInvite":
-                                                                return (
-                                                                    <OnboardingInviteTool key={`${message.id}-tool-${index}`} {...part.toolInvocation} />
-                                                                )
-                                                            case "viewAlerts":
-                                                                return <AlertsTool key={`${message.id}-tool-${index}`} {...part.toolInvocation} />
-                                                            default:
-                                                                return null
-                                                        }
-                                                    }
-                                                    return null
-                                                })}
-                                                <div
-                                                    className={cn(
-                                                        "flex text-xs mt-1 text-muted-foreground",
-                                                        message.role === "user" ? "justify-end" : "justify-start",
-                                                    )}
-                                                >
-                                                    <span>
-                                                        {new Date(message.createdAt || Date.now()).toLocaleTimeString([], {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                        })}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            {message.role === "user" && (
-                                                <Avatar className="h-8 w-8 shrink-0 mt-1 order-2">
-                                                    <AvatarImage src={getRandomPlaceholderImage() || "/placeholder.svg"} alt="You" />
-                                                    <AvatarFallback>U</AvatarFallback>
-                                                </Avatar>
-                                            )}
-                                        </div>
-                                    </motion.div>
+                                {memoizedMessages.map((message) => (
+                                    <MessageComponent key={message.id} message={message} />
                                 ))}
                             </AnimatePresence>
                             <div ref={messagesEndRef} />

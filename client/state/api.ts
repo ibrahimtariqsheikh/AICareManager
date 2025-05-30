@@ -197,6 +197,20 @@ export interface GroupsResponse {
   }
 }
 
+export interface Alert {
+  id: string;
+  type: string;
+  description: string;
+  reportId?: string;
+  clientId?: string;
+  careworkerId?: string;
+  agencyId: string;
+  resolvedById?: string;
+  resolvedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001',
@@ -270,7 +284,8 @@ export const api = createApi({
     "Messages",
     "LeaveEvents",
     "Payrolls",
-    "Expenses"
+    "Expenses",
+    "Alerts"
   ],
   endpoints: (build) => ({
     // Get user
@@ -735,6 +750,10 @@ export const api = createApi({
       query: (agencyId) => `/documents/agency/${agencyId}`,
     }),
 
+    getAgencyUnresolvedAlerts: build.query<Alert[], string>({
+      query: (agencyId) => `/agencies/${agencyId}/unresolved-alerts`,
+    }),
+
     updateDocument: build.mutation<Document, { id: string; title: string }>({
       query: ({ id, title }) => ({
         url: `/documents/${id}`,
@@ -1045,6 +1064,11 @@ getScheduleHoursByDateRange: build.query<{ totalHours: number; payRate: number }
     }),
   }),
 
+    getAgencyAlerts: build.query<Alert[], string>({
+      query: (agencyId) => `/agencies/${agencyId}/alerts`,
+      providesTags: ["Alerts"],
+    }),
+
   }),
 })
 
@@ -1129,4 +1153,5 @@ export const {
   useCreatePayrollMutation,
   useCreateExpenseMutation,
   useCreateInvoiceMutation,
+  useGetAgencyAlertsQuery,
 } = api

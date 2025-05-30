@@ -254,114 +254,152 @@ export function CustomMonthView({
     // Get event background color based on type
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
         if (event.isLeaveEvent) {
-            const leaveType = (event.leaveType?.toLowerCase() || 'default') as keyof typeof styles
-            const styles = {
-                annual_leave: {
+            const leaveIcons = {
+                ANNUAL_LEAVE: {
                     bg: 'bg-green-50',
                     hoverBg: 'bg-green-100',
                     activeBg: 'bg-green-200',
-                    text: 'text-green-700'
+                    text: 'text-green-700',
+                    border: 'border-green-500'
                 },
-                sick_leave: {
+                SICK_LEAVE: {
                     bg: 'bg-red-50',
                     hoverBg: 'bg-red-100',
                     activeBg: 'bg-red-200',
-                    text: 'text-red-700'
+                    text: 'text-red-700',
+                    border: 'border-red-500'
                 },
-                public_holiday: {
+                PUBLIC_HOLIDAY: {
                     bg: 'bg-blue-50',
                     hoverBg: 'bg-blue-100',
                     activeBg: 'bg-blue-200',
-                    text: 'text-blue-700'
+                    text: 'text-blue-700',
+                    border: 'border-blue-500'
                 },
-                unpaid_leave: {
+                UNPAID_LEAVE: {
                     bg: 'bg-gray-50',
                     hoverBg: 'bg-gray-100',
                     activeBg: 'bg-gray-200',
-                    text: 'text-gray-700'
+                    text: 'text-gray-700',
+                    border: 'border-gray-500'
                 },
-                maternity_leave: {
+                MATERNITY_LEAVE: {
                     bg: 'bg-pink-50',
                     hoverBg: 'bg-pink-100',
                     activeBg: 'bg-pink-200',
-                    text: 'text-pink-700'
+                    text: 'text-pink-700',
+                    border: 'border-pink-500'
                 },
-                paternity_leave: {
+                PATERNITY_LEAVE: {
                     bg: 'bg-purple-50',
                     hoverBg: 'bg-purple-100',
                     activeBg: 'bg-purple-200',
-                    text: 'text-purple-700'
+                    text: 'text-purple-700',
+                    border: 'border-purple-500'
                 },
-                bereavement_leave: {
+                BEREAVEMENT_LEAVE: {
                     bg: 'bg-brown-50',
                     hoverBg: 'bg-brown-100',
                     activeBg: 'bg-brown-200',
-                    text: 'text-brown-700'
+                    text: 'text-brown-700',
+                    border: 'border-brown-500'
                 },
-                emergency_leave: {
+                EMERGENCY_LEAVE: {
                     bg: 'bg-orange-50',
                     hoverBg: 'bg-orange-100',
                     activeBg: 'bg-orange-200',
-                    text: 'text-orange-700'
+                    text: 'text-orange-700',
+                    border: 'border-orange-500'
                 },
-                medical_appointment: {
+                MEDICAL_APPOINTMENT: {
                     bg: 'bg-cyan-50',
                     hoverBg: 'bg-cyan-100',
                     activeBg: 'bg-cyan-200',
-                    text: 'text-cyan-700'
+                    text: 'text-cyan-700',
+                    border: 'border-cyan-500'
                 },
-                toil: {
+                TOIL: {
                     bg: 'bg-amber-50',
                     hoverBg: 'bg-amber-100',
                     activeBg: 'bg-amber-200',
-                    text: 'text-amber-700'
-                },
-                default: {
-                    bg: 'bg-gray-50',
-                    hoverBg: 'bg-gray-100',
-                    activeBg: 'bg-gray-200',
-                    text: 'text-gray-700'
+                    text: 'text-amber-700',
+                    border: 'border-amber-500'
                 }
             }
-            const style = styles[leaveType] || styles.default
+            const style = leaveIcons[event.leaveType as keyof typeof leaveIcons] || {
+                bg: 'bg-gray-50',
+                hoverBg: 'bg-gray-100',
+                activeBg: 'bg-gray-200',
+                text: 'text-gray-700',
+                border: 'border-gray-500'
+            }
+
             if (spaceTheme) {
                 const bgColor = style.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
                 const hoverColor = style.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
                 const activeColor = style.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
                 return {
                     bg: isActive ? activeColor : isHovered ? hoverColor : bgColor,
-                    text: style.text.replace('text-', 'text-').replace('-700', '-300')
+                    text: style.text.replace('text-', 'text-').replace('-700', '-300'),
+                    border: style.border.replace('border-', 'border-').replace('-500', '-900/50')
                 }
             }
             return {
                 bg: isActive ? style.activeBg : isHovered ? style.hoverBg : style.bg,
-                text: style.text
+                text: style.text,
+                border: style.border
             }
         }
 
-        const type = event.type.toLowerCase()
-        const styles = eventTypeStyles[type] || eventTypeStyles.meeting || {
-            bg: 'bg-gray-50',
-            hoverBg: 'bg-gray-100',
-            activeBg: 'bg-gray-200',
-            text: 'text-gray-700'
+        const statusColors = {
+            PENDING: {
+                bg: 'bg-blue-50',
+                hoverBg: 'bg-blue-100',
+                activeBg: 'bg-blue-200',
+                text: 'text-blue-700',
+                border: 'border-blue-500'
+            },
+            CONFIRMED: {
+                bg: 'bg-green-50',
+                hoverBg: 'bg-green-100',
+                activeBg: 'bg-green-200',
+                text: 'text-green-700',
+                border: 'border-green-500'
+            },
+            COMPLETED: {
+                bg: 'bg-green-50',
+                hoverBg: 'bg-green-100',
+                activeBg: 'bg-green-200',
+                text: 'text-green-700',
+                border: 'border-green-500'
+            },
+            CANCELED: {
+                bg: 'bg-red-50',
+                hoverBg: 'bg-red-100',
+                activeBg: 'bg-red-200',
+                text: 'text-red-700',
+                border: 'border-red-500'
+            }
         }
+
+        const style = statusColors[event.status as keyof typeof statusColors] || statusColors.PENDING
+
         if (spaceTheme) {
-            const bgColor = styles.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
-            const hoverColor = styles.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
-            const activeColor = styles.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
+            const bgColor = style.bg.replace('bg-', 'bg-').replace('-50', '-900/30')
+            const hoverColor = style.hoverBg.replace('bg-', 'bg-').replace('-100', '-900/40')
+            const activeColor = style.activeBg.replace('bg-', 'bg-').replace('-200', '-900/60')
             return {
                 bg: isActive ? activeColor : isHovered ? hoverColor : bgColor,
-                text: 'text-white'
+                text: style.text.replace('text-', 'text-').replace('-700', '-300'),
+                border: style.border.replace('border-', 'border-').replace('-500', '-900/50')
             }
         }
         return {
-            bg: isActive ? styles.activeBg : isHovered ? styles.hoverBg : styles.bg,
-            text: 'text-blue-800'
+            bg: isActive ? style.activeBg : isHovered ? style.hoverBg : style.bg,
+            text: style.text,
+            border: style.border
         }
     }
-
-
 
     // Get event icon based on type
     const getEventIcon = useCallback((event: AppointmentEvent) => {
@@ -665,6 +703,7 @@ export function CustomMonthView({
         const displayEvent = displayEvents[event.id] || event
         const { staffName } = getStaffInfo(displayEvent)
         const eventIcon = getEventIcon(displayEvent)
+        const { bg, text, border } = getEventBackground(event, isActive, isHovered)
 
         return (
             <div
@@ -674,9 +713,10 @@ export function CustomMonthView({
                 }}
                 className={cn(
                     "absolute rounded-lg text-xs p-2 cursor-grab max-w-full",
-                    getEventBackground(event, isActive, isHovered).bg,
+                    bg,
+                    text,
+                    border,
                     event.isLeaveEvent ? "border-l-4" : "border-l-2",
-                    event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
                     "min-w-0",
                 )}
                 style={{
@@ -724,7 +764,7 @@ export function CustomMonthView({
                 <div className="flex flex-col relative z-0">
                     <div className={cn(
                         "flex items-center gap-1 mb-1",
-                        event.isLeaveEvent ? "text-" + event.color : "text-blue-800"
+                        text
                     )}>
                         {eventIcon}
                         <span className="font-medium truncate">{displayEvent.title}</span>
@@ -732,12 +772,10 @@ export function CustomMonthView({
 
                     <div className={cn(
                         "text-[10px]",
-                        event.isLeaveEvent ? "text-" + event.color : "text-blue-800"
+                        text
                     )}>
                         {moment(displayEvent.start).format("h:mm A")} - {moment(displayEvent.end).format("h:mm A")}
                     </div>
-
-
                 </div>
             </div>
         )
@@ -942,13 +980,13 @@ export function CustomMonthView({
                                         </div>
 
                                         {/* Events */}
-                                        <div className="mt-1 space-y-1.5 overflow-hidden">
+                                        <div className="mt-1 space-y-2.5 overflow-hidden">
                                             {visibleEvents.map((event) => renderEvent(event, isExpanded ?? false))}
 
-                                            {/* Ghost event placeholder during drag */}
+
                                             {renderGhostEvent(dateStr)}
 
-                                            {/* Show "more" button if not expanded */}
+
                                             {hasMore && (
                                                 <button
                                                     className={cn(

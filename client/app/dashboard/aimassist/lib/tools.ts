@@ -2,15 +2,15 @@ import { tool as createTool } from 'ai';
 import { z } from 'zod';
 
 export const displayScheduleAppointmentTool = createTool({
-  description: 'Display the schedule for a care worker',
+  description: 'Show me the schedule',
   parameters: z.object({
-    client_name: z.string().describe('The name of the client'),
+    name: z.string().describe('The name'),
   }),
-  execute: async function ({ client_name }) {
-    if (!client_name) {
+  execute: async function ({ name }) {
+    if (!name) {
       throw new Error('Please provide a client name to get the schedule for');
     }
-    return { client_name };
+    return { name };
   },
 });
 
@@ -42,15 +42,10 @@ export const generatePayrollTool = createTool({
 });
 
 export const viewAlertsTool = createTool({
-  description: 'View unresolved alerts for the current month',
-  parameters: z.object({
-    month: z.string().describe('The month to check alerts for'),
-    year: z.string().describe('The year to check alerts for'),
-    severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).describe('The severity level of alerts to view'),
-    type: z.enum(['MEDICATION', 'INCIDENT', 'HEALTH_CHANGE', 'BEHAVIOR', 'MISSED_TASK', 'OTHER']).describe('The type of alerts to view'),
-  }),
-  execute: async function ({ month, year, severity, type }) {
-    return { month, year, severity, type, status: 'pending' };
+  description: 'View unresolved alerts',
+  parameters: z.object({}),
+  execute: async function () {
+    return { status: 'success', message: 'Retrieved unresolved alerts' };
   },
 });
 

@@ -30,7 +30,7 @@ export function AppointmentTool({ toolInvocation }: AppointmentToolProps) {
 
     // Find all appointments for the client (case insensitive)
     const clientAppointments = events.filter(event =>
-        event.client?.fullName?.toLowerCase() === toolInvocation.args.client_name?.toLowerCase()
+        event.client?.fullName?.toLowerCase() === toolInvocation.args.name?.toLowerCase()
     )
 
     // Sort appointments by date (most recent first)
@@ -75,7 +75,7 @@ export function AppointmentTool({ toolInvocation }: AppointmentToolProps) {
                 <div className="flex-1 pb-4">
                     <div className="border-l-4 border-l-yellow-500 rounded-r-md p-2 bg-yellow-50">
                         <div className="text-sm text-gray-500">
-                            <div className="font-medium">No appointments found for {toolInvocation.args.client_name}</div>
+                            <div className="font-medium">No appointments found for {toolInvocation.args.name}</div>
                         </div>
                     </div>
                 </div>
@@ -84,46 +84,30 @@ export function AppointmentTool({ toolInvocation }: AppointmentToolProps) {
     }
 
     return (
-        <div className="flex flex-col gap-4 my-4 w-full max-w-full xl:w-[800px]">
+        <div className="flex flex-col gap-4 my-4 w-full max-w-full xl:w-[550px]">
             {sortedAppointments.map((appointment, index) => (
-                <div key={index} className="flex-1 pb-4 w-full">
+                console.log(appointment),
+                <div key={index} className="flex-1  w-full">
                     <div className={`border-l-4 rounded-r-md p-4 w-full ${appointment.status.toLowerCase() === 'confirmed'
-                        ? 'border-l-blue-500 bg-blue-50'
+                        ? 'border-l-green-500 bg-green-50'
                         : 'border-l-yellow-500 bg-yellow-50'
                         }`}>
                         <div className="text-sm text-gray-500">
                             <div className="flex justify-between items-start">
-                                <div className="font-medium text-black">Appointment {index + 1}</div>
+                                <div className="font-medium text-black">{formatDate(appointment.date)} <span className="ml-2 text-neutral-500 text-sm">{formatTime(appointment.startTime)} - {formatTime(appointment.endTime)}</span></div>
                                 <Badge className={`uppercase text-xs font-semibold shadow-none ${appointment.status.toLowerCase() === 'confirmed'
-                                    ? 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 hover:text-blue-800'
+                                    ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200 hover:text-green-800'
                                     : 'bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-200 hover:text-yellow-800'
                                     }`}>
                                     {appointment.status}
                                 </Badge>
                             </div>
-                            <div className="mt-2 space-y-1">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Client:</span>
-                                    <span className="font-medium text-neutral-700">{appointment.client?.fullName}</span>
+                            <div className="mt-1 space-y-1">
+                                <div className="flex text-sm">
+                                    <span className="font-medium text-neutral-500">Care worker:</span>
+                                    <span className="text-neutral-500 ml-1">{appointment.user?.fullName}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Date:</span>
-                                    <span className="font-medium text-neutral-700">{formatDate(appointment.date)}</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Time:</span>
-                                    <span className="font-medium text-neutral-700">{`${formatTime(appointment.startTime)} - ${formatTime(appointment.endTime)}`}</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Care Worker:</span>
-                                    <span className="font-medium text-neutral-700">{appointment.careWorker?.fullName || "Not assigned"}</span>
-                                </div>
-                                {appointment.notes && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Notes:</span>
-                                        <span className="font-medium text-neutral-700">{appointment.notes}</span>
-                                    </div>
-                                )}
+
                             </div>
                         </div>
                     </div>

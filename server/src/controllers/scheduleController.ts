@@ -634,11 +634,15 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
 
 export const deleteSchedule = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params
+    const  id  = req.params.id
+    console.log("deleting appointment", id)
 
-    const existingSchedule = await prisma.schedule.findUnique({
-      where: { id },
-    })
+
+   const existingSchedule = await prisma.schedule.findFirst({
+    where: { id },
+   })
+   console.log("existingSchedule", existingSchedule)
+
 
     if (!existingSchedule) {
       res.status(404).json({ message: "Schedule not found" })
@@ -649,7 +653,7 @@ export const deleteSchedule = async (req: Request, res: Response): Promise<void>
       where: { id },
     })
 
-    res.status(204).send()
+    res.status(200).json({ message: "Schedule Deleted Successfully" })
   } catch (error) {
     console.error("Error deleting schedule:", error)
     res.status(500).json({ message: "Error deleting schedule", error })

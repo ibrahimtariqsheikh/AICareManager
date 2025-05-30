@@ -1,644 +1,488 @@
-"use client"
+import React, { useState, useEffect } from 'react';
+import { Calendar, Users, Clock, AlertCircle, CheckCircle, Heart, Flag, DollarSign, Baby, User, AlertTriangle, Home, Video, Building2, Phone, Stethoscope } from 'lucide-react';
+import { useAppSelector } from "@/state/redux";
+import moment from 'moment';
+import { cn } from "@/lib/utils";
+import type { AppointmentEvent } from "../types";
 
-import React, { useState, useEffect, useRef, useMemo } from "react"
-import moment from "moment"
-import { motion, AnimatePresence } from "framer-motion"
-import type { AppointmentEvent } from "../types"
-import { cn } from "../../../../lib/utils"
-import { Home, Video, Building2, Phone, User, Calendar, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer, ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react"
-import { useAppSelector } from "@/state/redux"
+const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getEventDurationInMinutes }: any) => {
+    const [expandedSlot, setExpandedSlot] = useState(null);
+    const events = useAppSelector((state) => state.schedule.events || []);
+    const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType);
+    const clients = useAppSelector((state) => state.user.clients || []);
+    const careworkers = useAppSelector((state) => state.user.careWorkers || []);
+    const officeStaff = useAppSelector((state) => state.user.officeStaff || []);
+    const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers);
 
-interface CustomWeekViewProps {
-    date: Date
-    onSelectEvent: (event: AppointmentEvent) => void
-    staffMembers: any[]
-    getEventDurationInMinutes: (event: any) => number
-    onEventUpdate?: (updatedEvent: AppointmentEvent) => void
-}
+    console.log("eventsFromWeekView", events)
 
-interface TimeSlotConflicts {
-    [key: string]: { // key format: "dayIndex-timeSlot"
-        events: AppointmentEvent[]
-        isExpanded: boolean
-        maxVisible: number
-    }
-}
+    // Debug logs
+    useEffect(() => {
+        console.log('Events:', events);
+        console.log('Active Schedule User Type:', activeScheduleUserType);
+        console.log('Filtered Users:', filteredUsers);
+    }, [events, activeScheduleUserType, filteredUsers]);
 
-export function CustomWeekView(props: CustomWeekViewProps) {
-    const {
-        date,
-        onSelectEvent,
-    } = props
+    // Get the appropriate users based on activeScheduleUserType and filtered users
+    const displayUsers = (() => {
+        let users: any[] = [];
+        if (activeScheduleUserType === "clients") {
+            users = clients.filter(client => filteredUsers.clients.includes(client.id));
+        } else if (activeScheduleUserType === "careWorker") {
+            users = careworkers.filter(worker => filteredUsers.careWorkers.includes(worker.id));
+        } else if (activeScheduleUserType === "officeStaff") {
+            users = officeStaff.filter(staff => filteredUsers.officeStaff.includes(staff.id));
+        }
+        return users;
+    })();
 
+    // If no users are filtered, show all users
+    const finalDisplayUsers = displayUsers.length > 0 ? displayUsers : (() => {
+        if (activeScheduleUserType === "clients") return clients;
+        if (activeScheduleUserType === "careWorker") return careworkers;
+        if (activeScheduleUserType === "officeStaff") return officeStaff;
+        return [];
+    })();
 
-    useAppSelector((state) => state.calendar)
-    const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
-    const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
-    const events = useAppSelector((state) => state.schedule.events || [])
+    // Group events by day and time slot
+    const getEventsForDayAndTime = (day: string, timeSlot: string) => {
+        const weekStart = moment(date).startOf('week');
+        const weekEnd = moment(date).endOf('week');
 
+        // Debug log for week range
+        console.log('Week range:', {
+            start: weekStart.format('YYYY-MM-DD'),
+            end: weekEnd.format('YYYY-MM-DD'),
+            currentDay: day,
+            currentTimeSlot: timeSlot
+        });
 
-    const HOURS = {
-        START: 7,
-        END: 19
-    }
-
-    const CELL_HEIGHT = 40
-    const TIME_COLUMN_WIDTH = 1
-    const MIN_EVENT_HEIGHT = 32
-    const COMPACT_EVENT_HEIGHT = 24
-    const MAX_EVENTS_BEFORE_COLLAPSE = 3
-
-    const calendarContainerRef = useRef<HTMLDivElement>(null)
-    const gridContainerRef = useRef<HTMLDivElement>(null)
-    const isCurrentlyDragging = useRef(false)
-    const eventElementsRef = useRef<Record<string, HTMLElement>>({})
-    const resizeObserverRef = useRef<ResizeObserver | null>(null)
-
-    const [daysOfWeek, setDaysOfWeek] = useState<Date[]>([])
-    const [timeIntervals, setTimeIntervals] = useState<string[]>([])
-    const [eventLayoutData, setEventLayoutData] = useState<Record<string, any>>({})
-    const [calendarDimensions, setCalendarDimensions] = useState({
-        dayColumnWidth: 0,
-        totalGridWidth: 0,
-        totalGridHeight: 0
-    })
-    const [, setHoveredEvent] = useState<string | null>(null)
-    const [timeSlotConflicts, setTimeSlotConflicts] = useState<TimeSlotConflicts>({})
-
-    // Filter events based on activeScheduleUserType and filtered users
-    const filteredEvents = useMemo(() => {
         return events.filter(event => {
-            switch (activeScheduleUserType) {
-                case "clients":
-                    return event.clientId && filteredUsers.clients.includes(event.clientId)
-                case "careWorker":
-                    return event.resourceId && filteredUsers.careWorkers.includes(event.resourceId)
-                case "officeStaff":
-                    return event.resourceId && filteredUsers.officeStaff.includes(event.resourceId)
-                default:
-                    return true
-            }
-        })
-    }, [events, activeScheduleUserType, filteredUsers])
+            const eventDate = moment(event.start);
+            const eventTime = moment(event.start).format('h:mm A');
 
-    // ====================== DRAG AND DROP ======================
-    interface DraggedEventState {
-        event: AppointmentEvent | null
-        originalPosition: any | null
-        currentDayIndex: number | null
-        currentMinutes: number | null
-    }
+            // Debug log for each event being checked
+            console.log('Checking event:', {
+                eventId: event.id,
+                eventDate: eventDate.format('YYYY-MM-DD'),
+                eventTime: eventTime,
+                eventDay: eventDate.format('ddd'),
+                eventStatus: event.status,
+                eventType: event.type,
+                clientId: event.clientId,
+                resourceId: event.resourceId
+            });
 
-    const [draggedEvent, setDraggedEvent] = useState<DraggedEventState>({
-        event: null,
-        originalPosition: null,
-        currentDayIndex: null,
-        currentMinutes: null
-    })
+            // Check if event is within the current week
+            const isInCurrentWeek = eventDate.isBetween(weekStart, weekEnd, 'day', '[]');
 
-    // ====================== CONFLICT DETECTION ======================
-    const detectTimeSlotConflicts = (events: AppointmentEvent[]) => {
-        const conflicts: TimeSlotConflicts = {}
-        const weekStart = moment(daysOfWeek[0]).startOf('day')
-        const weekEnd = moment(daysOfWeek[6]).endOf('day')
+            // Check if event matches the day and time
+            const matchesDayAndTime = eventDate.format('ddd').toLowerCase() === day.toLowerCase() &&
+                eventTime === timeSlot;
 
-        // Group events by day and time slots
-        const eventsByDayAndTime: Record<string, AppointmentEvent[]> = {}
-
-        events.forEach(event => {
-            const eventStart = moment(event.start)
-            const eventEnd = moment(event.end)
-
-            if (!eventStart.isValid() || !eventEnd.isValid() ||
-                eventEnd.isBefore(weekStart) || eventStart.isAfter(weekEnd)) {
-                return
-            }
-
-            const dayIndex = eventStart.day()
-            const startHour = eventStart.hours()
-            const startMinute = eventStart.minutes()
-            const endHour = eventEnd.hours()
-            const endMinute = eventEnd.minutes()
-
-            // Generate 30-minute time slots this event spans
-            let currentTime = moment(eventStart).startOf('hour')
-            if (startMinute >= 30) {
-                currentTime.add(30, 'minutes')
-            }
-
-            const eventEndTime = moment(eventEnd)
-
-            while (currentTime.isBefore(eventEndTime)) {
-                const timeSlotKey = `${dayIndex}-${currentTime.hours()}-${Math.floor(currentTime.minutes() / 30) * 30}`
-
-                if (!eventsByDayAndTime[timeSlotKey]) {
-                    eventsByDayAndTime[timeSlotKey] = []
+            // Filter based on activeScheduleUserType
+            const matchesUserType = (() => {
+                switch (activeScheduleUserType) {
+                    case "clients":
+                        return event.clientId && filteredUsers.clients.includes(event.clientId);
+                    case "careWorker":
+                        return event.resourceId && filteredUsers.careWorkers.includes(event.resourceId);
+                    case "officeStaff":
+                        return event.resourceId && filteredUsers.officeStaff.includes(event.resourceId);
+                    default:
+                        return true; // Show all events if no specific type is selected
                 }
-                eventsByDayAndTime[timeSlotKey].push(event)
+            })();
 
-                currentTime.add(30, 'minutes')
-            }
-        })
+            // Debug log for filtering results
+            console.log('Filter results:', {
+                eventId: event.id,
+                isInCurrentWeek,
+                matchesDayAndTime,
+                matchesUserType,
+                activeScheduleUserType,
+                filteredUsers
+            });
 
-        // Identify conflicts (more than 1 event in same time slot)
-        Object.entries(eventsByDayAndTime).forEach(([timeSlotKey, eventsInSlot]) => {
-            if (eventsInSlot.length > 1) {
-                conflicts[timeSlotKey] = {
-                    events: eventsInSlot,
-                    isExpanded: false,
-                    maxVisible: MAX_EVENTS_BEFORE_COLLAPSE
-                }
-            }
-        })
+            return isInCurrentWeek && matchesDayAndTime && matchesUserType;
+        });
+    };
 
-        return conflicts
-    }
+    const getPriorityIcon = (priority: string) => {
+        if (priority === 'high') return <AlertCircle className="w-3 h-3 text-red-500" />;
+        if (priority === 'medium') return <Clock className="w-3 h-3 text-orange-500" />;
+        return <CheckCircle className="w-3 h-3 text-green-500" />;
+    };
 
-    // ====================== SETUP CALENDAR GRID ======================
+    const getEndTime = (startTime: string, duration: string) => {
+        const start = new Date(`2025-05-18 ${startTime}`);
+        const durationMinutes = duration.includes('hr') ?
+            parseInt(duration) * 60 + (duration.includes('.5') ? 30 : 0) :
+            parseInt(duration);
+        const end = new Date(start.getTime() + durationMinutes * 60000);
+        return end.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    };
+
+    // Update time slots to cover the full day with more granular times
+    const timeSlots = [
+        '7:00 AM', '7:30 AM', '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM',
+        '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM',
+        '6:00 PM', '6:30 PM', '7:00 PM'
+    ];
+
+    const days = [
+        { day: 'SUN', date: moment(date).startOf('week').format('D'), key: 'sun' },
+        { day: 'MON', date: moment(date).startOf('week').add(1, 'day').format('D'), key: 'mon' },
+        { day: 'TUE', date: moment(date).startOf('week').add(2, 'day').format('D'), key: 'tue' },
+        { day: 'WED', date: moment(date).startOf('week').add(3, 'day').format('D'), key: 'wed' },
+        { day: 'THU', date: moment(date).startOf('week').add(4, 'day').format('D'), key: 'thu' },
+        { day: 'FRI', date: moment(date).startOf('week').add(5, 'day').format('D'), key: 'fri' },
+        { day: 'SAT', date: moment(date).startOf('week').add(6, 'day').format('D'), key: 'sat' }
+    ];
+
+    // Debug log for current week dates
     useEffect(() => {
-        const firstDayOfWeek = moment(date).startOf("week")
-        const days = Array.from({ length: 7 }, (_, i) =>
-            firstDayOfWeek.clone().add(i, "days").toDate()
-        )
-        setDaysOfWeek(days)
+        console.log('Current week:', {
+            start: moment(date).startOf('week').format('YYYY-MM-DD'),
+            end: moment(date).endOf('week').format('YYYY-MM-DD'),
+            days: days.map(d => `${d.day}: ${d.date}`)
+        });
+    }, [date, days]);
 
-        const intervals = []
-        for (let hour = HOURS.START; hour <= HOURS.END; hour++) {
-            intervals.push(`${hour}:00`)
-            intervals.push(`${hour}:30`)
-        }
-        setTimeIntervals(intervals)
-    }, [date])
-
+    // Debug log for active schedule user type and filtered users
     useEffect(() => {
-        if (!gridContainerRef.current) return
+        console.log('Schedule state:', {
+            activeScheduleUserType,
+            filteredUsers,
+            eventsCount: events.length
+        });
+    }, [activeScheduleUserType, filteredUsers, events]);
 
-        resizeObserverRef.current = new ResizeObserver(() => {
-            if (!gridContainerRef.current || daysOfWeek.length === 0) return
-
-            const gridWidth = gridContainerRef.current.offsetWidth
-            const dayColumnWidth = (gridWidth - TIME_COLUMN_WIDTH) / 7
-            const totalGridHeight = timeIntervals.length * CELL_HEIGHT
-
-            setCalendarDimensions({
-                dayColumnWidth,
-                totalGridWidth: gridWidth,
-                totalGridHeight
-            })
-        })
-
-        resizeObserverRef.current.observe(gridContainerRef.current)
-
-        return () => {
-            if (resizeObserverRef.current) {
-                resizeObserverRef.current.disconnect()
+    const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
+        if (event.isLeaveEvent) {
+            const leaveIcons = {
+                ANNUAL_LEAVE: {
+                    bg: 'bg-green-50',
+                    hoverBg: 'bg-green-100',
+                    activeBg: 'bg-green-200',
+                    text: 'text-green-700',
+                    border: 'border-green-500'
+                },
+                SICK_LEAVE: {
+                    bg: 'bg-red-50',
+                    hoverBg: 'bg-red-100',
+                    activeBg: 'bg-red-200',
+                    text: 'text-red-700',
+                    border: 'border-red-500'
+                },
+                PUBLIC_HOLIDAY: {
+                    bg: 'bg-blue-50',
+                    hoverBg: 'bg-blue-100',
+                    activeBg: 'bg-blue-200',
+                    text: 'text-blue-700',
+                    border: 'border-blue-500'
+                },
+                UNPAID_LEAVE: {
+                    bg: 'bg-gray-50',
+                    hoverBg: 'bg-gray-100',
+                    activeBg: 'bg-gray-200',
+                    text: 'text-gray-700',
+                    border: 'border-gray-500'
+                },
+                MATERNITY_LEAVE: {
+                    bg: 'bg-pink-50',
+                    hoverBg: 'bg-pink-100',
+                    activeBg: 'bg-pink-200',
+                    text: 'text-pink-700',
+                    border: 'border-pink-500'
+                },
+                PATERNITY_LEAVE: {
+                    bg: 'bg-purple-50',
+                    hoverBg: 'bg-purple-100',
+                    activeBg: 'bg-purple-200',
+                    text: 'text-purple-700',
+                    border: 'border-purple-500'
+                },
+                BEREAVEMENT_LEAVE: {
+                    bg: 'bg-brown-50',
+                    hoverBg: 'bg-brown-100',
+                    activeBg: 'bg-brown-200',
+                    text: 'text-brown-700',
+                    border: 'border-brown-500'
+                },
+                EMERGENCY_LEAVE: {
+                    bg: 'bg-orange-50',
+                    hoverBg: 'bg-orange-100',
+                    activeBg: 'bg-orange-200',
+                    text: 'text-orange-700',
+                    border: 'border-orange-500'
+                },
+                MEDICAL_APPOINTMENT: {
+                    bg: 'bg-cyan-50',
+                    hoverBg: 'bg-cyan-100',
+                    activeBg: 'bg-cyan-200',
+                    text: 'text-cyan-700',
+                    border: 'border-cyan-500'
+                },
+                TOIL: {
+                    bg: 'bg-amber-50',
+                    hoverBg: 'bg-amber-100',
+                    activeBg: 'bg-amber-200',
+                    text: 'text-amber-700',
+                    border: 'border-amber-500'
+                }
             }
-        }
-    }, [daysOfWeek, timeIntervals])
-
-    // Update conflicts when events change
-    useEffect(() => {
-        if (daysOfWeek.length > 0) {
-            const conflicts = detectTimeSlotConflicts(filteredEvents)
-            setTimeSlotConflicts(conflicts)
-        }
-    }, [filteredEvents, daysOfWeek])
-
-    // Enhanced event positioning with conflict resolution
-    useEffect(() => {
-        if (!gridContainerRef.current || daysOfWeek.length === 0) return
-
-        const { dayColumnWidth } = calendarDimensions
-        const positions: Record<string, any> = {}
-        const weekStart = moment(daysOfWeek[0]).startOf('day')
-        const weekEnd = moment(daysOfWeek[6]).endOf('day')
-
-        const exactDayColumnWidth = dayColumnWidth ||
-            ((gridContainerRef.current.offsetWidth - TIME_COLUMN_WIDTH) / 7)
-
-        filteredEvents.forEach((event, eventIndex) => {
-            try {
-                const eventStart = moment(event.start)
-                const eventEnd = moment(event.end)
-
-                if (!eventStart.isValid() || !eventEnd.isValid() ||
-                    eventEnd.isBefore(weekStart) || eventStart.isAfter(weekEnd)) {
-                    return
-                }
-
-                const dayIndex = eventStart.day()
-                const startTime = {
-                    hour: eventStart.hours(),
-                    minute: eventStart.minutes()
-                }
-                const endTime = {
-                    hour: eventEnd.hours(),
-                    minute: eventEnd.minutes()
-                }
-
-                const startDecimal = startTime.hour + startTime.minute / 60
-                const endDecimal = endTime.hour + endTime.minute / 60
-                if (endDecimal <= HOURS.START || startDecimal >= HOURS.END) {
-                    return
-                }
-
-                const visibleStart = Math.max(startDecimal, HOURS.START)
-                const visibleEnd = Math.min(endDecimal, HOURS.END)
-
-                const startMinutes = (visibleStart - HOURS.START) * 60
-                const endMinutes = (visibleEnd - HOURS.START) * 60
-                const durationMinutes = endMinutes - startMinutes
-
-                // Check for conflicts in the primary time slot
-                const primaryTimeSlotKey = `${dayIndex}-${startTime.hour}-${Math.floor(startTime.minute / 30) * 30}`
-                const conflictInfo = timeSlotConflicts[primaryTimeSlotKey]
-
-                let eventHeight = Math.max((durationMinutes / 30) * CELL_HEIGHT, MIN_EVENT_HEIGHT)
-                let eventWidth = exactDayColumnWidth - 8 // Default width with padding
-                let leftOffset = 0
-                let isHidden = false
-
-                if (conflictInfo) {
-                    const eventPositionInConflict = conflictInfo.events.findIndex(e => e.id === event.id)
-                    const totalConflictEvents = conflictInfo.events.length
-
-                    if (!conflictInfo.isExpanded && eventPositionInConflict >= conflictInfo.maxVisible) {
-                        // Hide events beyond the maximum visible limit
-                        isHidden = true
-                    } else {
-                        // Adjust layout for visible events
-                        if (totalConflictEvents > 1) {
-                            // Use compact height when multiple events
-                            eventHeight = Math.max(COMPACT_EVENT_HEIGHT, (durationMinutes / 30) * CELL_HEIGHT / 2)
-
-                            if (conflictInfo.isExpanded) {
-                                // Stack events vertically when expanded
-                                const stackOffset = eventPositionInConflict * (eventHeight + 2)
-                                positions[event.id] = {
-                                    ...positions[event.id],
-                                    stackOffset
-                                }
-                            } else {
-                                // Side-by-side layout for non-expanded conflicts
-                                const visibleEvents = Math.min(totalConflictEvents, conflictInfo.maxVisible)
-                                eventWidth = (exactDayColumnWidth - 12) / visibleEvents // Distribute width
-                                leftOffset = eventPositionInConflict * eventWidth
-                            }
-                        }
-                    }
-                }
-
-                const top = (startMinutes / 30) * CELL_HEIGHT
-                const horizontalPadding = 4
-                const left = TIME_COLUMN_WIDTH + (dayIndex * exactDayColumnWidth) + horizontalPadding + leftOffset
-
-                if (!isHidden) {
-                    positions[event.id] = {
-                        top,
-                        left,
-                        height: eventHeight,
-                        width: eventWidth,
-                        dayIndex,
-                        startMinutes,
-                        durationMinutes,
-                        eventData: { ...event },
-                        isInConflict: !!conflictInfo,
-                        conflictKey: primaryTimeSlotKey,
-                        isHidden: false,
-                        originalTimes: {
-                            startHour: startTime.hour,
-                            startMinute: startTime.minute,
-                            endHour: endTime.hour,
-                            endMinute: endTime.minute
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error(`Error positioning event ${event.id}:`, error)
+            const style = leaveIcons[event.leaveType as keyof typeof leaveIcons] || {
+                bg: 'bg-gray-50',
+                hoverBg: 'bg-gray-100',
+                activeBg: 'bg-gray-200',
+                text: 'text-gray-700',
+                border: 'border-gray-500'
             }
-        })
-
-        setEventLayoutData(positions)
-    }, [filteredEvents, daysOfWeek, calendarDimensions, timeSlotConflicts])
-
-    // ====================== CONFLICT HANDLERS ======================
-    const toggleTimeSlotExpansion = (timeSlotKey: string) => {
-        setTimeSlotConflicts(prev => {
-            const currentSlot = prev[timeSlotKey]
-            if (!currentSlot) return prev
-
             return {
-                ...prev,
-                [timeSlotKey]: {
-                    ...currentSlot,
-                    isExpanded: !currentSlot.isExpanded
-                }
+                bg: isActive ? style.activeBg : isHovered ? style.hoverBg : style.bg,
+                text: style.text,
+                border: style.border
             }
-        })
-    }
+        }
 
-    const renderConflictIndicator = (timeSlotKey: string, dayIndex: number, timeSlot: string) => {
-        const conflictInfo = timeSlotConflicts[timeSlotKey]
-        if (!conflictInfo || conflictInfo.events.length <= conflictInfo.maxVisible) return null
+        const statusColors = {
+            PENDING: {
+                bg: 'bg-blue-50',
+                hoverBg: 'bg-blue-100',
+                activeBg: 'bg-blue-200',
+                text: 'text-blue-700',
+                border: 'border-blue-500'
+            },
+            CONFIRMED: {
+                bg: 'bg-green-50',
+                hoverBg: 'bg-green-100',
+                activeBg: 'bg-green-200',
+                text: 'text-green-700',
+                border: 'border-green-500'
+            },
+            COMPLETED: {
+                bg: 'bg-green-50',
+                hoverBg: 'bg-green-100',
+                activeBg: 'bg-green-200',
+                text: 'text-green-700',
+                border: 'border-green-500'
+            },
+            CANCELED: {
+                bg: 'bg-red-50',
+                hoverBg: 'bg-red-100',
+                activeBg: 'bg-red-200',
+                text: 'text-red-700',
+                border: 'border-red-500'
+            }
+        }
 
-        const hiddenCount = conflictInfo.events.length - conflictInfo.maxVisible
-        const [hourStr, minuteStr] = timeSlot.split(':')
-        const hour = hourStr ? parseInt(hourStr, 10) : 0
-        const minute = minuteStr ? parseInt(minuteStr, 10) : 0
-        const slotMinutes = (hour - HOURS.START) * 60 + minute
-        const top = (slotMinutes / 30) * CELL_HEIGHT
-
-        const { dayColumnWidth } = calendarDimensions
-        const exactDayColumnWidth = dayColumnWidth ||
-            ((gridContainerRef.current?.offsetWidth || 0 - TIME_COLUMN_WIDTH) / 7)
-
-        return (
-            <div
-                className="absolute z-20 flex items-center justify-center"
-                style={{
-                    top: `${top + CELL_HEIGHT - 20}px`,
-                    left: `${TIME_COLUMN_WIDTH + (dayIndex * exactDayColumnWidth) + 4}px`,
-                    width: `${exactDayColumnWidth - 8}px`,
-                    height: '16px'
-                }}
-            >
-                <motion.button
-                    onClick={() => toggleTimeSlotExpansion(timeSlotKey)}
-                    className="flex items-center gap-1 px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs rounded-full border border-blue-300 transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <MoreHorizontal className="h-3 w-3" />
-                    <span>{conflictInfo.isExpanded ? 'Show Less' : `+${hiddenCount} more`}</span>
-                    {conflictInfo.isExpanded ?
-                        <ChevronUp className="h-3 w-3" /> :
-                        <ChevronDown className="h-3 w-3" />
-                    }
-                </motion.button>
-            </div>
-        )
-    }
-
-    // ====================== DRAG AND DROP ======================
-    const handleDragStart = (event: AppointmentEvent, position: any) => {
-        isCurrentlyDragging.current = true
-        setDraggedEvent({
-            event,
-            originalPosition: position,
-            currentDayIndex: position.dayIndex,
-            currentMinutes: position.startMinutes
-        })
-    }
-
-    // ====================== UTILITIES ======================
-    const formatTimeLabel = (timeSlot: string): string => {
-        const [hourStr, minuteStr] = timeSlot.split(":")
-        const hour = parseInt(hourStr || "0", 10)
-        return `${hour % 12 || 12}${minuteStr === "00" ? "" : ":30"} ${hour >= 12 ? "PM" : "AM"}`
+        const style = statusColors[event.status as keyof typeof statusColors] || statusColors.PENDING
+        return {
+            bg: isActive ? style.activeBg : isHovered ? style.hoverBg : style.bg,
+            text: style.text,
+            border: style.border
+        }
     }
 
     const getEventIcon = (event: AppointmentEvent) => {
         if (event.isLeaveEvent) {
             switch (event.leaveType) {
-                case "ANNUAL_LEAVE": return <Calendar className="h-3 w-3" />
-                case "SICK_LEAVE": return <Heart className="h-3 w-3" />
-                case "PUBLIC_HOLIDAY": return <Flag className="h-3 w-3" />
-                case "UNPAID_LEAVE": return <DollarSign className="h-3 w-3" />
-                case "MATERNITY_LEAVE": return <Baby className="h-3 w-3" />
-                case "PATERNITY_LEAVE": return <User className="h-3 w-3" />
-                case "BEREAVEMENT_LEAVE": return <Heart className="h-3 w-3" />
-                case "EMERGENCY_LEAVE": return <AlertTriangle className="h-3 w-3" />
-                case "MEDICAL_APPOINTMENT": return <Stethoscope className="h-3 w-3" />
-                case "TOIL": return <Clock className="h-3 w-3" />
-                default: return <Calendar className="h-3 w-3" />
+                case "ANNUAL_LEAVE":
+                    return <Calendar className="h-3.5 w-3.5" />
+                case "SICK_LEAVE":
+                    return <Heart className="h-3.5 w-3.5" />
+                case "PUBLIC_HOLIDAY":
+                    return <Flag className="h-3.5 w-3.5" />
+                case "UNPAID_LEAVE":
+                    return <DollarSign className="h-3.5 w-3.5" />
+                case "MATERNITY_LEAVE":
+                    return <Baby className="h-3.5 w-3.5" />
+                case "PATERNITY_LEAVE":
+                    return <User className="h-3.5 w-3.5" />
+                case "BEREAVEMENT_LEAVE":
+                    return <Heart className="h-3.5 w-3.5" />
+                case "EMERGENCY_LEAVE":
+                    return <AlertTriangle className="h-3.5 w-3.5" />
+                case "MEDICAL_APPOINTMENT":
+                    return <Stethoscope className="h-3.5 w-3.5" />
+                case "TOIL":
+                    return <Clock className="h-3.5 w-3.5" />
+                default:
+                    return <Calendar className="h-3.5 w-3.5" />
             }
         }
 
         switch (event.type) {
-            case "HOME_VISIT": return <Home className="h-3 w-3" />
-            case "VIDEO_CALL": return <Video className="h-3 w-3" />
-            case "HOSPITAL": return <Building2 className="h-3 w-3" />
-            case "AUDIO_CALL": return <Phone className="h-3 w-3" />
-            case "IN_PERSON": return <User className="h-3 w-3" />
-            default: return <Calendar className="h-3 w-3" />
+            case "HOME_VISIT":
+                return <Home className="h-3.5 w-3.5" />
+            case "VIDEO_CALL":
+                return <Video className="h-3.5 w-3.5" />
+            case "HOSPITAL":
+                return <Building2 className="h-3.5 w-3.5" />
+            case "AUDIO_CALL":
+                return <Phone className="h-3.5 w-3.5" />
+            case "IN_PERSON":
+                return <User className="h-3.5 w-3.5" />
+            default:
+                return <Calendar className="h-3.5 w-3.5" />
         }
     }
 
-    const getEventBackground = (event: AppointmentEvent) => {
-        if (event.isLeaveEvent) {
-            const leaveType = (event.leaveType?.toLowerCase() || 'default') as keyof typeof styles
-            const styles = {
-                annual_leave: { bg: 'bg-green-50', text: 'text-green-700' },
-                sick_leave: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                public_holiday: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                unpaid_leave: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                maternity_leave: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                paternity_leave: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                bereavement_leave: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                emergency_leave: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                medical_appointment: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                toil: { bg: 'bg-blue-50', text: 'text-blue-700' },
-                default: { bg: 'bg-blue-50', text: 'text-blue-700' }
-            }
-            const style = styles[leaveType] || styles.default
-            return { bg: style.bg, text: style.text }
-        }
-
-        return { bg: 'bg-blue-50', text: 'text-blue-700' }
-    }
-
-    // ====================== RENDERING ======================
     return (
-        <div className="h-full flex flex-col p-4">
-            <div className="flex flex-col flex-1 h-full overflow-hidden border border-gray-200 rounded-lg">
-                <div className="h-full flex flex-col">
-                    {/* ===== HEADER ROW WITH DAY NAMES ===== */}
-                    <div className="flex border-b border-gray-200">
-                        <div className="w-[60px] flex-shrink-0 border-r border-gray-200 bg-gray-50" />
-                        <div className="flex-1 grid grid-cols-7 bg-gray-50">
-                            {daysOfWeek.map((day, index) => {
-                                const isToday = moment(day).isSame(moment(), "day")
-                                const isWeekend = index === 0 || index === 6
-                                return (
-                                    <div
-                                        key={index}
-                                        className={cn(
-                                            "p-2 text-center border-r border-gray-200",
-                                            isWeekend && "text-gray-400"
-                                        )}
-                                    >
-                                        <div className="text-sm font-medium text-gray-500">
-                                            {moment(day).format("ddd").toUpperCase()}
-                                        </div>
-                                        <div className={cn(
-                                            "text-sm font-medium mt-1",
-                                            isToday ? "text-blue-500" : "text-gray-700"
-                                        )}>
-                                            {moment(day).format("D")}
-                                        </div>
-                                    </div>
-                                )
-                            })}
+        <div className="px-6 min-h-screen pb-6">
+            <div className="bg-white rounded-lg shadow-sm border">
+                <div className="grid grid-cols-8 border-b bg-gray-50">
+                    <div className="p-3 text-xs text-gray-500 font-medium">Time</div>
+                    {days.map((day) => (
+                        <div key={day.day} className="p-3 text-center border-l">
+                            <div className="text-xs text-gray-500 font-medium">{day.day}</div>
+                            <div className="text-lg font-semibold mt-1">{day.date}</div>
                         </div>
-                    </div>
+                    ))}
+                </div>
 
-                    {/* ===== SCROLLABLE TIME GRID ===== */}
-                    <div
-                        ref={calendarContainerRef}
-                        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-                    >
-                        <div className="flex relative min-h-full bg-white">
-                            {/* Left time labels column */}
-                            <div className="w-[60px] flex-shrink-0 border-r border-gray-200 bg-gray-50">
-                                {timeIntervals.map((timeSlot, index) => (
-                                    <div
-                                        key={index}
-                                        className={cn(
-                                            "h-[40px] text-xs text-right pr-2 relative text-gray-500",
-                                            index % 2 === 0 ? "text-sm font-medium" : "text-xs"
-                                        )}
-                                    >
-                                        {index % 2 === 0 && (
-                                            <div className="absolute right-2 -top-[1px]">
-                                                {formatTimeLabel(timeSlot)}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
+                <div className="divide-y">
+                    {timeSlots.map((time, timeIndex) => {
+                        const hasExpandedSlotInThisRow = days.some(day => {
+                            const slotKey = `${day.key}-${timeIndex + 7}`;
+                            return expandedSlot === slotKey;
+                        });
 
-                            {/* Calendar grid */}
-                            <div className="flex-1 grid grid-cols-7 relative" ref={gridContainerRef}>
-                                {/* Grid cells background */}
-                                {daysOfWeek.map((_day, dayIndex) => (
-                                    <div key={dayIndex} className="border-r border-gray-200">
-                                        {timeIntervals.map((timeSlot, slotIndex) => {
-                                            const isHourLine = slotIndex % 2 === 0
-                                            const [hour, minute] = timeSlot.split(':').map(Number)
-                                            const timeSlotKey = `${dayIndex}-${hour}-${minute}`
+                        const hasEventsInThisRow = days.some(day => {
+                            const visits = getEventsForDayAndTime(day.day, time);
+                            return visits.length > 0;
+                        });
 
-                                            return (
-                                                <div key={slotIndex} className="relative">
-                                                    <div
-                                                        className={cn(
-                                                            "h-[40px] border-b",
-                                                            isHourLine && "border-b",
-                                                            "border-gray-200"
-                                                        )}
-                                                    />
-                                                    {/* Render conflict indicators */}
-                                                    {renderConflictIndicator(timeSlotKey, dayIndex, timeSlot)}
+                        return (
+                            <div key={time} className={`grid grid-cols-8 ${hasExpandedSlotInThisRow ? 'min-h-[200px]' : hasEventsInThisRow ? 'min-h-[70px]' : 'min-h-[25px]'}`}>
+                                <div className={`text-xs text-gray-500 font-medium border-r bg-gray-50 ${hasEventsInThisRow ? 'p-3' : 'py-1 px-2'}`}>
+                                    {time}
+                                </div>
+                                {days.map((day, dayIndex) => {
+                                    const slotKey = `${day.key}-${timeIndex + 7}`;
+                                    const visits = getEventsForDayAndTime(day.day, time);
+                                    const isExpanded = expandedSlot === slotKey;
+
+                                    // Debug log for visits in this slot
+                                    if (visits.length > 0) {
+                                        console.log(`Visits for ${day.day} ${time}:`, visits);
+                                    }
+
+                                    return (
+                                        <div key={`${day.day}-${time}`} className={`border-l relative ${hasEventsInThisRow ? 'p-1' : 'py-0.5 px-0.5'}`}>
+                                            {visits.length > 0 && (
+                                                <div className="h-full">
+                                                    {!isExpanded && visits.length <= 3 ? (
+                                                        // Show full details for 3 or fewer visits
+                                                        <div className="space-y-1">
+                                                            {visits.map((visit) => {
+                                                                const { bg, text, border } = getEventBackground(visit);
+                                                                const eventIcon = getEventIcon(visit);
+                                                                return (
+                                                                    <div
+                                                                        key={visit.id}
+                                                                        className={`p-2 rounded-lg border text-xs ${bg} ${text} ${border} ${visit.isLeaveEvent ? 'border-l-4' : 'border-l-2'} transition-all hover:shadow-sm`}
+                                                                        style={{
+                                                                            borderLeftWidth: visit.isLeaveEvent ? "4px" : "2px",
+                                                                            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                                                                        }}
+                                                                    >
+                                                                        <div className="flex items-center gap-1 mb-1">
+                                                                            {eventIcon}
+                                                                            <span className="font-medium truncate">{visit.title}</span>
+                                                                        </div>
+                                                                        <div className={`text-[10px] flex items-center ${text}`}>
+                                                                            <Clock className="h-3 w-3 inline mr-1" />
+                                                                            {moment(visit.start).format('h:mm A')} - {moment(visit.end).format('h:mm A')}
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    ) : !isExpanded ? (
+                                                        // Show compact view for more than 3 visits
+                                                        <div className="space-y-1">
+                                                            {visits.slice(0, 3).map((visit) => {
+                                                                const { bg, text, border } = getEventBackground(visit);
+                                                                const eventIcon = getEventIcon(visit);
+                                                                return (
+                                                                    <div
+                                                                        key={visit.id}
+                                                                        className={`p-1.5 rounded-lg text-xs border-l-2 cursor-pointer transition-all hover:shadow-sm ${bg} ${text} ${border}`}
+                                                                        style={{
+                                                                            borderLeftWidth: visit.isLeaveEvent ? "4px" : "2px",
+                                                                        }}
+                                                                    >
+                                                                        <div className="flex items-center gap-1">
+                                                                            {eventIcon}
+                                                                            <span className="font-medium truncate text-xs">{visit.title}</span>
+                                                                        </div>
+                                                                        <div className={`text-[10px] truncate flex items-center ${text}`}>
+                                                                            <Clock className="h-3 w-3 inline mr-1" />
+                                                                            {moment(visit.start).format('h:mm A')}
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                            <button
+                                                                onClick={() => setExpandedSlot(slotKey as any)}
+                                                                className="w-full text-xs text-blue-600 hover:text-blue-800 text-center py-1 bg-blue-50 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
+                                                            >
+                                                                +{visits.length - 3} more
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        // Expanded view
+                                                        <div className="h-full flex flex-col">
+                                                            <div className="flex items-center justify-between mb-2">
+                                                                <span className="text-xs font-medium text-gray-700">{visits.length} Visits</span>
+                                                                <button
+                                                                    onClick={() => setExpandedSlot(null)}
+                                                                    className="text-xs text-gray-400 hover:text-gray-600 px-2 py-1 rounded hover:bg-gray-100"
+                                                                >
+                                                                    ×
+                                                                </button>
+                                                            </div>
+                                                            <div className="flex-1 space-y-1 overflow-y-auto">
+                                                                {visits.map((visit) => {
+                                                                    const { bg, text, border } = getEventBackground(visit);
+                                                                    const eventIcon = getEventIcon(visit);
+                                                                    return (
+                                                                        <div
+                                                                            key={visit.id}
+                                                                            className={`p-2 rounded-lg border text-xs ${bg} ${text} ${border} ${visit.isLeaveEvent ? 'border-l-4' : 'border-l-2'} transition-all hover:shadow-sm`}
+                                                                            style={{
+                                                                                borderLeftWidth: visit.isLeaveEvent ? "4px" : "2px",
+                                                                                boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                                                                            }}
+                                                                        >
+                                                                            <div className="flex items-center gap-1 mb-1">
+                                                                                {eventIcon}
+                                                                                <span className="font-medium truncate">{visit.title}</span>
+                                                                            </div>
+                                                                            <div className={`text-[10px] flex items-center ${text}`}>
+                                                                                <Clock className="h-3 w-3 inline mr-1" />
+                                                                                {moment(visit.start).format('h:mm A')} - {moment(visit.end).format('h:mm A')}
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            )
-                                        })}
-                                    </div>
-                                ))}
-
-                                {/* Current time indicator */}
-                                {daysOfWeek.some(day => moment(day).isSame(moment(), "day")) && (
-                                    <div
-                                        className="absolute left-0 right-0 border-t-2 z-30 border-red-500"
-                                        style={{
-                                            top: (() => {
-                                                const now = new Date()
-                                                const hour = now.getHours()
-                                                const minute = now.getMinutes()
-                                                if (hour < HOURS.START || hour > HOURS.END) return 0
-                                                const minutesFromStart = (hour - HOURS.START) * 60 + minute
-                                                return (minutesFromStart / 30) * CELL_HEIGHT
-                                            })()
-                                        }}
-                                    >
-                                        <div className="w-2 h-2 rounded-full -mt-1 -ml-1 bg-red-500" />
-                                    </div>
-                                )}
-
-                                {/* Event cards */}
-                                <AnimatePresence>
-                                    {filteredEvents.map(event => {
-                                        const position = eventLayoutData[event.id]
-                                        if (!position || position.isHidden) return null
-
-                                        const isDragging = draggedEvent.event?.id === event.id
-                                        const isCompact = position.height <= COMPACT_EVENT_HEIGHT
-
-                                        return (
-                                            <motion.div
-                                                key={event.id}
-                                                ref={element => {
-                                                    if (element) eventElementsRef.current[event.id] = element
-                                                }}
-                                                initial={{ opacity: 0, scale: 0.9 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.9 }}
-                                                transition={{ duration: 0.2 }}
-                                                className={cn(
-                                                    "absolute rounded-lg text-xs p-1.5 cursor-grab border-l-[3px] shadow-sm hover:shadow-md transition-shadow",
-                                                    event.isLeaveEvent ? "border-l-" + event.color : "border-l-blue-600",
-                                                    getEventBackground(event).text,
-                                                    getEventBackground(event).bg,
-                                                    position.isInConflict && "ring-1 ring-blue-200",
-                                                    isCompact && "p-1"
-                                                )}
-                                                style={{
-                                                    top: `${position.top + (position.stackOffset || 0)}px`,
-                                                    left: `${position.left}px`,
-                                                    height: `${position.height}px`,
-                                                    width: `${position.width}px`,
-                                                    zIndex: isDragging ? 30 : (position.isInConflict ? 15 : 10),
-                                                    boxShadow: isDragging
-                                                        ? "0 4px 12px rgba(0,0,0,0.2)"
-                                                        : position.isInConflict
-                                                            ? "0 2px 6px rgba(59, 130, 246, 0.15)"
-                                                            : "0 1px 3px rgba(0,0,0,0.1)",
-                                                    transform: isDragging ? "scale(1.02)" : "scale(1)",
-                                                    opacity: isDragging ? 0.9 : 1,
-                                                    transition: "all 0.2s ease"
-                                                }}
-                                                onMouseDown={(e) => {
-                                                    if (e.button !== 0) return
-                                                    handleDragStart(event, position)
-                                                }}
-                                                onMouseEnter={() => setHoveredEvent(event.id)}
-                                                onMouseLeave={() => setHoveredEvent(null)}
-                                                onClick={e => {
-                                                    if (!isCurrentlyDragging.current) {
-                                                        e.stopPropagation()
-                                                        onSelectEvent(event)
-                                                    }
-                                                }}
-                                            >
-                                                {!isCompact ? (
-                                                    <>
-                                                        <div className={cn("flex items-start gap-1 mb-1", "text-blue-800")}>
-                                                            <div className="flex-shrink-0 mt-0.5">{getEventIcon(event)}</div>
-                                                            <div className="font-medium break-words line-clamp-2 text-[11px]">{event.title}</div>
-                                                        </div>
-                                                        <div className={cn("text-[10px]", "text-blue-600 flex items-center gap-1")}>
-                                                            <Timer className="h-3 w-3" />
-                                                            <div>{moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}</div>
-                                                        </div>
-                                                        <div className={cn("text-[10px]", "text-blue-600 flex items-center gap-1")}>
-                                                            <User className="h-3 w-3" />
-                                                            <div className="truncate">{event.careWorker?.fullName}</div>
-                                                        </div>
-                                                    </>
-                                                ) : (
-                                                    <div className="flex items-center gap-1">
-                                                        <div className="flex-shrink-0">{getEventIcon(event)}</div>
-                                                        <div className="font-medium text-[10px] truncate flex-1">{event.title}</div>
-                                                        <div className="text-[9px] text-blue-600">{moment(event.start).format("h:mm")}</div>
-                                                    </div>
-                                                )}
-                                            </motion.div>
-                                        )
-                                    })}
-                                </AnimatePresence>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        </div>
-                    </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
+
+export default CustomWeekView;

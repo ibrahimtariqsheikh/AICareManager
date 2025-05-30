@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import EventIcon from "@/components/icons/eventicon"
 import type { AppointmentEvent, StaffMember, Client } from "../types"
@@ -62,6 +63,7 @@ export function CustomDayView({
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
     const events = useAppSelector((state) => state.schedule.events || [])
+    console.log("events", events)
     const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
     const { userTemplates, isLoadingTemplates } = useAppSelector((state) => state.template)
     const agencyId = useAppSelector((state) => state.user.user?.userInfo?.agencyId)
@@ -867,16 +869,38 @@ export function CustomDayView({
                                                     onClick={() => handleEventClick(event)}
                                                     whileHover={{ scale: 1.01 }}
                                                 >
-                                                    <div className={cn("flex items-center gap-2 mb-1 event-title", getEventTextColor(event.status))}>
-                                                        {getEventIcon(event)}
-                                                        <span className="font-medium text-sm truncate">{event.title}</span>
-                                                    </div>
-                                                    <div className={cn("flex items-center gap-1 text-xs opacity-75 mb-1 event-time", getEventTextColor(event.status))}>
-                                                        <Timer className="h-3 w-3" />
-                                                        <span>
-                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
-                                                        </span>
-                                                    </div>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <div className="w-full">
+                                                                    <div className={cn("flex items-center gap-2 mb-1 event-title", getEventTextColor(event.status))}>
+                                                                        {getEventIcon(event)}
+                                                                        <span className="font-medium text-sm truncate">{event.title}</span>
+                                                                    </div>
+                                                                    <div className={cn("flex items-center gap-1 text-xs opacity-75 mb-1 event-time", getEventTextColor(event.status))}>
+                                                                        <Timer className="h-3 w-3 flex-shrink-0" />
+                                                                        <span className="truncate">
+                                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent className="bg-gray-900">
+                                                                <div className="space-y-2">
+                                                                    <p className="font-medium text-white">{event.title}</p>
+                                                                    <p className="text-sm text-white">
+                                                                        {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                                    </p>
+                                                                    <p className="text-xs text-white">
+                                                                        Duration: {formatDuration(moment(event.end).diff(moment(event.start), 'minutes'))}
+                                                                    </p>
+                                                                    {event.notes && (
+                                                                        <p className="text-xs text-white mt-1">{event.notes}</p>
+                                                                    )}
+                                                                </div>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
                                                 </motion.div>
                                             )
                                         })
@@ -961,22 +985,34 @@ export function CustomDayView({
                     .event-card {
                         padding: 8px !important;
                         min-width: 90px !important;
+                        max-width: 100% !important;
+                        overflow: hidden !important;
                     }
                     .event-card .event-title {
                         font-size: 12px !important;
                         margin-bottom: 4px !important;
+                        max-width: 100% !important;
                     }
                     .event-card .event-time {
                         font-size: 10px !important;
                         margin-bottom: 0 !important;
+                        max-width: 100% !important;
                     }
                     .event-card .event-title svg {
                         width: 12px !important;
                         height: 12px !important;
+                        flex-shrink: 0 !important;
                     }
                     .event-card .event-time svg {
                         width: 10px !important;
                         height: 10px !important;
+                        flex-shrink: 0 !important;
+                    }
+                    .event-card .event-title span,
+                    .event-card .event-time span {
+                        overflow: hidden !important;
+                        text-overflow: ellipsis !important;
+                        white-space: nowrap !important;
                     }
                 }
 
@@ -989,6 +1025,22 @@ export function CustomDayView({
                     .timeline-container > div {
                         scroll-snap-align: start;
                     }
+                }
+
+                /* Desktop styles */
+                .event-card {
+                    max-width: 100% !important;
+                    overflow: hidden !important;
+                }
+                .event-card .event-title,
+                .event-card .event-time {
+                    max-width: 100% !important;
+                }
+                .event-card .event-title span,
+                .event-card .event-time span {
+                    overflow: hidden !important;
+                    text-overflow: ellipsis !important;
+                    white-space: nowrap !important;
                 }
             `}</style>
         </div>

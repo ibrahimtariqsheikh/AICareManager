@@ -701,6 +701,8 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
     const { careWorkers = [], clients = [], officeStaff = [] } = useAppSelector((state: any) => state.user)
     const agency = useAppSelector((state: any) => state.agency.agency)
 
+    console.log("EDITING EVENT", event)
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -882,6 +884,7 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
         if (!event?.id) return
 
         try {
+            console.log("deleting appointment", event.id)
             await deleteSchedule(event.id).unwrap()
             dispatch(deleteEvent(event.id))
             toast.success("Appointment deleted successfully")
@@ -915,6 +918,8 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                                 label: client.fullName,
                                             }))}
                                             onChange={(value: string) => field.onChange(value)}
+                                            value={field.value}
+                                            defaultValue={field.value || ""}
                                         />
                                         <FormMessage />
                                     </FormItem>
@@ -934,6 +939,8 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                                 label: staffMember.fullName,
                                             }))}
                                             onChange={(value: string) => field.onChange(value)}
+                                            value={field.value}
+                                            defaultValue={field.value || ""}
                                         />
                                         <FormMessage />
                                     </FormItem>

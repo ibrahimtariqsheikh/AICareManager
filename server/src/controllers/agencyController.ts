@@ -716,6 +716,41 @@ export const deleteAgencyGroup = async (req: Request, res: Response): Promise<vo
     }
 };
 
+export const getAgencyAlerts = async (req: Request, res: Response): Promise<void> => {
+     console.log("getAgencyAlerts", req.params)
+    try {
+   
+        const { id } = req.params;
+        const alerts = await prisma.alert.findMany({
+            where: { agencyId: id, resolvedById: null },
+            include: {
+                client: {
+                    select: {
+                        fullName: true,
+                    }
+                },
+                careworker: {
+                    select: {
+                        fullName: true,
+                    }
+                },
+                report: {
+                    select: {
+                        title: true,
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+        console.log("alerts", alerts)
+        res.json(alerts);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching unresolved alerts", error: error });
+    }
+};
+
 export const getAgencyInvoices = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;

@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
 import { CustomDayView } from "./views/custom-day-view"
-import { CustomWeekView } from "./views/custom-week-view"
 import { CustomMonthView } from "./views/custom-month-view"
 import type { AppointmentEvent, StaffMember, Client, SidebarMode, ProcessedCalendarEvent } from "./types"
 import { Skeleton } from "../../ui/skeleton"
@@ -30,6 +29,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { CustomInput } from "@/components/ui/custom-input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import CustomWeekView from "./views/custom-week-view"
 
 // Add month picker styles
 const monthPickerStyles = `
