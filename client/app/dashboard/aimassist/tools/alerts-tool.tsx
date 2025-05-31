@@ -109,12 +109,52 @@ export function AlertsTool(toolInvocation: ExtendedToolInvocation) {
         }
     }
 
-    // Smooth spring-based animations
+
     const spring = {
         type: "spring",
         damping: 25,
         stiffness: 300,
         restDelta: 0.001
+    }
+
+
+    const alertTypeColors = {
+        INCIDENT: {
+            border: "rgb(239, 68, 68)", // red-500
+            bg: "rgba(254, 226, 226, 0.15)" // red-50/15
+        },
+        ACCIDENT: {
+            border: "rgb(220, 38, 38)", // red-600
+            bg: "rgba(254, 226, 226, 0.15)" // red-50/15
+        },
+        MEDICATION: {
+            border: "rgb(220, 38, 38)", // red-600
+            bg: "rgba(254, 226, 226, 0.15)" // red-50/15
+        },
+        LATE_VISIT: {
+            border: "rgb(234, 179, 8)", // yellow-500
+            bg: "rgba(254, 249, 195, 0.15)" // yellow-50/15
+        },
+        LOCATION: {
+            border: "rgb(234, 179, 8)", // yellow-500
+            bg: "rgba(254, 249, 195, 0.15)" // yellow-50/15
+        },
+        HEALTH_CONCERN: {
+            border: "rgb(239, 68, 68)", // red-500
+            bg: "rgba(254, 226, 226, 0.15)" // red-50/15
+        },
+        SAFEGUARDING_CONCERN: {
+            border: "rgb(234, 179, 8)", // yellow-500
+            bg: "rgba(254, 249, 195, 0.15)" // yellow-50/15
+        },
+        CHALLENGING_BEHAVIOUR: {
+            border: "rgb(245, 158, 11)", // orange-500
+            bg: "rgba(255, 237, 213, 0.15)" // orange-50/15
+        },
+        OTHER: {
+            border: "rgb(245, 158, 11)", // orange-500
+            bg: "rgba(255, 237, 213, 0.15)" // orange-50/15
+        }
     }
 
     const cardVariants = {
@@ -145,11 +185,11 @@ export function AlertsTool(toolInvocation: ExtendedToolInvocation) {
     }
 
     const borderVariants = {
-        active: {
-            borderColor: "rgb(239, 68, 68)", // red-500
-            backgroundColor: "rgba(254, 226, 226, 0.15)", // red-50/15
+        active: (type: string) => ({
+            borderColor: alertTypeColors[type as keyof typeof alertTypeColors]?.border || alertTypeColors.OTHER.border,
+            backgroundColor: alertTypeColors[type as keyof typeof alertTypeColors]?.bg || alertTypeColors.OTHER.bg,
             transition: spring
-        },
+        }),
         resolved: {
             borderColor: "rgb(34, 197, 94)", // green-500
             backgroundColor: "rgba(220, 252, 231, 0.15)", // green-50/15
@@ -195,6 +235,14 @@ export function AlertsTool(toolInvocation: ExtendedToolInvocation) {
             rotate: 0,
             transition: spring
         }
+    }
+
+    const formatAlertType = (type: string) => {
+        return type
+            .replace(/_/g, ' ')
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
     }
 
     const isAlertResolved = (alert: Alert) => {
@@ -293,7 +341,7 @@ export function AlertsTool(toolInvocation: ExtendedToolInvocation) {
                     </motion.div>
 
                     {/* No alerts message */}
-                    {(!alerts || alerts.length === 0) && (
+                    {(!alerts || alerts.length === 0) && !isFetchingAlerts && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -325,11 +373,12 @@ export function AlertsTool(toolInvocation: ExtendedToolInvocation) {
                                     <motion.div
                                         variants={borderVariants}
                                         animate={isAlertResolved(alert) ? "resolved" : "active"}
+                                        custom={alert.type}
                                         className="border-l-4 rounded-lg relative overflow-hidden"
                                         layout="position"
                                     >
                                         <Card
-                                            className="p-3 cursor-pointer transition-colors hover:bg-muted/30 relative overflow-hidden"
+                                            className="p-3 cursor-pointer transition-colors hover:bg-muted/30 relative overflow-hidden border-0 rounded-l-none"
                                             onClick={() => setExpandedAlert(expandedAlert === alert.id ? null : alert.id)}
                                         >
                                             {/* Main content - fixed layout */}
@@ -338,16 +387,9 @@ export function AlertsTool(toolInvocation: ExtendedToolInvocation) {
                                                     <div className="flex items-center gap-2">
                                                         <div className="flex items-center gap-1.5">
                                                             <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
-                                                            <span className="font-medium text-sm">{alert.type}</span>
+                                                            <span className="font-medium text-sm">{formatAlertType(alert.type)}</span>
                                                         </div>
-                                                        <Badge
-                                                            className={`text-xs font-medium px-1.5 py-0.5 flex-shrink-0 ${isAlertResolved(alert)
-                                                                ? 'bg-green-100 text-green-800 border-green-200'
-                                                                : 'bg-red-100 text-red-800 border-red-200'
-                                                                }`}
-                                                        >
-                                                            {isAlertResolved(alert) ? 'Resolved' : 'Active'}
-                                                        </Badge>
+
                                                     </div>
                                                     <motion.div
                                                         variants={chevronVariants}
@@ -382,8 +424,8 @@ export function AlertsTool(toolInvocation: ExtendedToolInvocation) {
 
                                             {/* Expandable content - using CSS for smooth height transitions */}
                                             <div className={`overflow-hidden transition-all duration-300 ease-out ${expandedAlert === alert.id
-                                                    ? 'max-h-96 mt-2 pt-4 pb-2'
-                                                    : 'max-h-0 mt-0 pt-0 pb-0'
+                                                ? 'max-h-96 mt-2 pt-4 pb-2'
+                                                : 'max-h-0 mt-0 pt-0 pb-0'
                                                 }`}>
                                                 <div className="border-t border-gray-200">
                                                     <AnimatePresence mode="wait">

@@ -19,11 +19,20 @@ export const SUGGESTIONS = [
     prompt: "I want to check an existing schedule.",
   },
   {
-    text: "View alerts",
+    text: "View Unresolved Alerts",
     icon: AlertTriangle,
     prompt: "Show me unresolved alerts",
   },
-
+  {
+    text: "Create schedule",
+    icon: CalendarClock,
+    prompt: "I want to create a new schedule. Can you tell me whats required to create a schedule?",
+  },
+  {
+    text: "Create client",
+    icon: UserPlus,
+    prompt: "I want to create a new client.",
+  },
   {
     text: "Send message",
     icon: MessageSquare,
@@ -37,17 +46,7 @@ export const SUGGESTIONS = [
   {
     text: "Request holiday",
     icon: CalendarX,
-    prompt: "I want to request a holiday.",
-  },
-  {
-    text: "Create schedule",
-    icon: CalendarClock,
-    prompt: "I want to create a new schedule. Can you tell me whats required to create a schedule?",
-  },
-  {
-    text: "Create client",
-    icon: UserPlus,
-    prompt: "I want to create a new client.",
+    prompt: "I want to assign a holiday.",
   },
   {
     text: "Send onboarding invite",
