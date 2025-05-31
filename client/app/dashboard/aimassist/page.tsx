@@ -5,7 +5,7 @@ import { useChat } from "@ai-sdk/react"
 import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Lightbulb, ImageIcon, ArrowUp } from "lucide-react"
+import { Lightbulb, ArrowUp, Mic } from "lucide-react"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { AnimatePresence, motion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
@@ -22,6 +22,62 @@ import { HolidayRequestTool } from "./tools/holiday-request-tool"
 import { RevenueReportTool } from "./tools/revenue-report-tool"
 import { OnboardingInviteTool } from "./tools/onboarding-invite-tool"
 import { AlertsTool } from "./tools/alerts-tool"
+
+// Add type declarations at the top of the file
+interface SpeechRecognitionEvent extends Event {
+    results: {
+        [index: number]: {
+            [index: number]: {
+                transcript: string;
+            };
+        };
+    };
+}
+
+interface SpeechRecognitionError extends Event {
+    error: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    onstart: () => void;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onerror: (event: SpeechRecognitionError) => void;
+    onend: () => void;
+    start: () => void;
+    stop: () => void;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: new () => SpeechRecognition;
+        webkitSpeechRecognition: new () => SpeechRecognition;
+    }
+}
+
+// Function to process speech transcript and handle special cases like emails
+const processSpeechTranscript = (transcript: string): string => {
+    let processed = transcript;
+
+    // Handle email addresses - replace common speech patterns
+    processed = processed.replace(/at gmail dot com/gi, '@gmail.com');
+    processed = processed.replace(/at yahoo dot com/gi, '@yahoo.com');
+    processed = processed.replace(/at hotmail dot com/gi, '@hotmail.com');
+    processed = processed.replace(/at outlook dot com/gi, '@outlook.com');
+    processed = processed.replace(/at icloud dot com/gi, '@icloud.com');
+
+    // More generic email pattern replacements
+    processed = processed.replace(/(\w+)\s+at\s+(\w+)\s+dot\s+com/gi, '$1@$2.com');
+    processed = processed.replace(/(\w+)\s+at\s+(\w+)\s+dot\s+(\w+)/gi, '$1@$2.$3');
+
+    // Handle common punctuation spoken aloud
+    processed = processed.replace(/\bdot\b/gi, '.');
+    processed = processed.replace(/\bat\b(?=\s*\w+\s*\.)/gi, '@');
+
+    return processed;
+};
 
 // Memoized tool component to prevent unnecessary re-renders
 const ToolComponent = React.memo(({ part, messageId, index }: { part: any; messageId: string; index: number }) => {
@@ -186,6 +242,13 @@ export default function ChatUI() {
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const messagesContainerRef = useRef<HTMLDivElement>(null)
     const [showSuggestions, setShowSuggestions] = useState(false)
+    const [isListening, setIsListening] = useState(false)
+    const [isConnecting, setIsConnecting] = useState(false)
+    const [recognition, setRecognition] = useState<any>(null)
+    const [interimTranscript, setInterimTranscript] = useState("")
+    const [finalTranscript, setFinalTranscript] = useState("")
+    const [silenceTimer, setSilenceTimer] = useState<NodeJS.Timeout | null>(null)
+    const [shouldRestart, setShouldRestart] = useState(false)
 
     // Memoize hasMessages to prevent unnecessary re-renders
     const hasMessages = useMemo(() => chat.messages.length > 0, [chat.messages.length])
@@ -214,12 +277,12 @@ export default function ChatUI() {
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.key === "Enter" && !e.shiftKey && !chat.isLoading) {
+            if (e.key === "Enter" && !e.shiftKey && !chat.isLoading && !isListening) {
                 e.preventDefault()
                 onSubmit(e as unknown as React.FormEvent<HTMLFormElement>)
             }
         },
-        [onSubmit, chat.isLoading],
+        [onSubmit, chat.isLoading, isListening],
     )
 
     // Memoize suggestion handler to prevent re-creation
@@ -248,11 +311,198 @@ export default function ChatUI() {
         [onSubmit, chat.input, chat.isLoading],
     )
 
+    // Function to restart recognition after silence
+    const restartRecognition = useCallback(() => {
+        if (recognition && isListening && !chat.isLoading) {
+            try {
+                recognition.stop()
+                setShouldRestart(true)
+            } catch (error) {
+                console.log('Recognition already stopped')
+            }
+        }
+    }, [recognition, isListening, chat.isLoading])
+
+    // Initialize speech recognition with improved continuous listening
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition()
+                recognition.continuous = true
+                recognition.interimResults = true
+                recognition.lang = 'en-US'
+
+                recognition.onstart = () => {
+                    console.log('Speech recognition started')
+                    setIsConnecting(false)
+                    setIsListening(true)
+                    setShouldRestart(false)
+                }
+
+                recognition.onresult = (event: any) => {
+                    let interimTranscript = ''
+                    let finalTranscript = ''
+
+                    // Process all results
+                    for (let i = 0; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript
+                        if (event.results[i].isFinal) {
+                            finalTranscript += processSpeechTranscript(transcript)
+                        } else {
+                            interimTranscript += transcript
+                        }
+                    }
+
+                    // Update states
+                    setInterimTranscript(interimTranscript)
+
+                    if (finalTranscript) {
+                        console.log('Final transcript:', finalTranscript)
+                        setFinalTranscript(prev => prev + finalTranscript)
+
+                        // Update the input field with processed transcript
+                        const currentText = chat.input
+                        const newText = currentText ? `${currentText} ${finalTranscript}`.trim() : finalTranscript
+                        chat.setInput(newText)
+
+                        // Clear any existing silence timer
+                        if (silenceTimer) {
+                            clearTimeout(silenceTimer)
+                        }
+
+                        // Set a new silence timer to restart recognition after 2 seconds of silence
+                        const timer = setTimeout(() => {
+                            restartRecognition()
+                        }, 2000)
+                        setSilenceTimer(timer)
+                    }
+                }
+
+                recognition.onerror = (event: any) => {
+                    console.error('Speech recognition error:', event.error)
+
+                    // Don't stop on network errors or no-speech errors if we want to continue
+                    if (event.error === 'network' || event.error === 'no-speech') {
+                        setShouldRestart(true)
+                    } else {
+                        setIsListening(false)
+                        setIsConnecting(false)
+                        setInterimTranscript("")
+                        if (silenceTimer) {
+                            clearTimeout(silenceTimer)
+                            setSilenceTimer(null)
+                        }
+                    }
+                }
+
+                recognition.onend = () => {
+                    console.log('Speech recognition ended')
+
+                    // Clear silence timer
+                    if (silenceTimer) {
+                        clearTimeout(silenceTimer)
+                        setSilenceTimer(null)
+                    }
+
+                    // Restart if we should continue listening
+                    if (shouldRestart && isListening && !chat.isLoading) {
+                        console.log('Restarting recognition...')
+                        setTimeout(() => {
+                            try {
+                                recognition.start()
+                            } catch (error) {
+                                console.error('Error restarting recognition:', error)
+                                setIsListening(false)
+                                setIsConnecting(false)
+                            }
+                        }, 100)
+                    } else {
+                        setIsListening(false)
+                        setIsConnecting(false)
+                        setInterimTranscript("")
+                        setFinalTranscript("")
+                    }
+                }
+
+                setRecognition(recognition)
+            }
+        }
+    }, [chat.setInput, silenceTimer, shouldRestart, isListening, chat.isLoading])
+
+    const toggleListening = useCallback(() => {
+        if (!recognition) return
+
+        if (isListening) {
+            console.log('Stopping speech recognition')
+            setShouldRestart(false)
+            setIsListening(false)
+            recognition.stop()
+            if (silenceTimer) {
+                clearTimeout(silenceTimer)
+                setSilenceTimer(null)
+            }
+            setInterimTranscript("")
+            setFinalTranscript("")
+        } else {
+            console.log('Starting speech recognition')
+            setIsConnecting(true)
+            setFinalTranscript("")
+            setShouldRestart(true)
+            recognition.start()
+        }
+    }, [recognition, isListening, silenceTimer])
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (silenceTimer) {
+                clearTimeout(silenceTimer)
+            }
+            if (recognition && isListening) {
+                recognition.stop()
+            }
+        }
+    }, [])
+
+    // Add global keyboard event listener
+    useEffect(() => {
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            // Don't trigger if:
+            // 1. User is typing in an input/textarea
+            // 2. User is holding shift (for new lines)
+            // 3. Chat is loading
+            // 4. Voice recording is active
+            // 5. No input text
+            if (
+                e.key === "Enter" &&
+                !e.shiftKey &&
+                !chat.isLoading &&
+                !isListening &&
+                chat.input.trim() &&
+                !(e.target instanceof HTMLInputElement) &&
+                !(e.target instanceof HTMLTextAreaElement)
+            ) {
+                e.preventDefault()
+                onSubmit(new Event('submit') as any)
+            }
+        }
+
+        window.addEventListener('keydown', handleGlobalKeyDown)
+        return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+    }, [onSubmit, chat.isLoading, isListening, chat.input])
+
+    // Display transcript (interim or input)
+    const displayTranscript = useMemo(() => {
+        if (isListening && interimTranscript) {
+            return chat.input + ' ' + interimTranscript
+        }
+        return chat.input
+    }, [isListening, interimTranscript, chat.input])
+
     return (
         <div className="flex flex-col h-[calc(100vh-4rem)] text-foreground">
-            {/* Main content area */}
             <main className="flex-1 overflow-hidden flex flex-col">
-                {/* Messages area */}
                 <div ref={messagesContainerRef} className="flex-1 overflow-y-auto">
                     {!hasMessages ? (
                         <div className="flex flex-col items-center justify-center w-full h-full px-4">
@@ -267,39 +517,65 @@ export default function ChatUI() {
                                 </div>
                                 <div className="w-full relative">
                                     <textarea
-                                        placeholder="Ask Anything..."
-                                        className="lg:w-[900px] md:w-[500px] sm:w-[400px] xs:w-[300px] p-4 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl border-0 focus:ring-0 shadow-sm"
+                                        placeholder={isListening ? "Listening..." : "Ask Anything..."}
+                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl border-0 focus:ring-0 shadow-sm resize-none lg:w-[900px] md:w-[500px] sm:w-[400px] xs:w-[300px]"
                                         rows={5}
-                                        value={chat.input}
+                                        value={displayTranscript}
                                         onChange={chat.handleInputChange}
                                         onKeyDown={handleKeyDown}
-                                        disabled={chat.isLoading}
+                                        disabled={chat.isLoading || isListening}
                                     />
-                                    <div className="absolute bottom-0 left-0 right-0 -translate-y-1/2">
-                                        <div className="flex items-center justify-between px-4 w-full">
+                                    {isListening && !interimTranscript && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-xl">
                                             <div className="flex items-center gap-2">
-                                                <Button
-                                                    className="rounded-lg"
-                                                    size="icon"
-                                                    variant="outline"
-                                                    onClick={() => setShowSuggestions(true)}
-                                                    disabled={chat.isLoading}
-                                                >
-                                                    <Lightbulb className="h-4 w-4" />
-                                                </Button>
-                                                <Button className="rounded-lg" size="icon" variant="outline" disabled={chat.isLoading}>
-                                                    <ImageIcon className="h-4 w-4" />
-                                                </Button>
+                                                <div className="flex items-center gap-1">
+                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-100" />
+                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-200" />
+                                                </div>
+                                                <span className="text-sm text-foreground/70">Listening for speech...</span>
                                             </div>
-                                            <Button
-                                                className="rounded-lg bg-primary hover:bg-primary/80"
-                                                size="icon"
-                                                onClick={handleSendClick}
-                                                disabled={!chat.input.trim() || chat.isLoading}
-                                            >
-                                                <ArrowUp className="h-4 w-4" />
-                                            </Button>
                                         </div>
+                                    )}
+                                    <div className="absolute bottom-2 right-2 flex items-center gap-2">
+                                        <Button
+                                            className="rounded-lg"
+                                            size="icon"
+                                            variant="outline"
+                                            onClick={() => setShowSuggestions(true)}
+                                            disabled={chat.isLoading}
+                                        >
+                                            <Lightbulb className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            className={cn(
+                                                "rounded-lg",
+                                                isListening && "bg-red-500 hover:bg-red-600 text-white",
+                                                isConnecting && "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                            )}
+                                            size="icon"
+                                            variant={isListening ? "default" : "outline"}
+                                            onClick={toggleListening}
+                                            disabled={chat.isLoading || !recognition}
+                                        >
+                                            {isConnecting ? (
+                                                <div className="flex items-center gap-1">
+                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-100" />
+                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-200" />
+                                                </div>
+                                            ) : (
+                                                <Mic className={cn("h-4 w-4", isListening && "animate-pulse")} />
+                                            )}
+                                        </Button>
+                                        <Button
+                                            className="rounded-lg bg-blue-500 hover:bg-blue-600"
+                                            size="icon"
+                                            onClick={handleSendClick}
+                                            disabled={!chat.input.trim() || chat.isLoading}
+                                        >
+                                            <ArrowUp className="h-4 w-4" />
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -323,14 +599,26 @@ export default function ChatUI() {
                             <div className="w-full flex flex-col gap-2">
                                 <div className="relative">
                                     <textarea
-                                        placeholder="Ask Anything..."
-                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl border-0 focus:ring-0 shadow-sm"
+                                        placeholder={isListening ? "Listening..." : "Ask Anything..."}
+                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl border-0 focus:ring-0 shadow-sm resize-none"
                                         rows={3}
-                                        value={chat.input}
+                                        value={displayTranscript}
                                         onChange={chat.handleInputChange}
                                         onKeyDown={handleKeyDown}
-                                        disabled={chat.isLoading}
+                                        disabled={chat.isLoading || isListening}
                                     />
+                                    {isListening && !interimTranscript && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-xl">
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-1">
+                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-100" />
+                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-200" />
+                                                </div>
+                                                <span className="text-sm text-foreground/70">Listening for speech...</span>
+                                            </div>
+                                        </div>
+                                    )}
                                     <div className="absolute bottom-2 right-2 flex items-center gap-2">
                                         <Button
                                             className="rounded-lg"
@@ -341,11 +629,29 @@ export default function ChatUI() {
                                         >
                                             <Lightbulb className="h-4 w-4" />
                                         </Button>
-                                        <Button className="rounded-lg" size="icon" variant="outline" disabled={chat.isLoading}>
-                                            <ImageIcon className="h-4 w-4" />
+                                        <Button
+                                            className={cn(
+                                                "rounded-lg",
+                                                isListening && "bg-red-500 hover:bg-red-600 text-white",
+                                                isConnecting && "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                            )}
+                                            size="icon"
+                                            variant={isListening ? "default" : "outline"}
+                                            onClick={toggleListening}
+                                            disabled={chat.isLoading || !recognition}
+                                        >
+                                            {isConnecting ? (
+                                                <div className="flex items-center gap-1">
+                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-100" />
+                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-200" />
+                                                </div>
+                                            ) : (
+                                                <Mic className={cn("h-4 w-4", isListening && "animate-pulse")} />
+                                            )}
                                         </Button>
                                         <Button
-                                            className="rounded-lg bg-black hover:bg-black/80"
+                                            className="rounded-lg bg-blue-500 hover:bg-blue-600"
                                             size="icon"
                                             onClick={handleSendClick}
                                             disabled={!chat.input.trim() || chat.isLoading}
