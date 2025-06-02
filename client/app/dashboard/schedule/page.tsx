@@ -30,10 +30,10 @@ export default function SchedulerPage() {
 
     const handleEventSelect = (event: any) => {
         if (event) {
-            ("EVENT IN PAGE", event)
+            console.log('Event selected:', event)
             setEditingEvent(event)
             if (event.id.startsWith('temp-')) {
-
+                console.log('Temp event detected')
                 setIsAppointmentFormOpen(true)
                 setIsEditFormOpen(false)
             } else {

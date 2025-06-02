@@ -106,9 +106,9 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
     const { careWorkers = [], clients = [], officeStaff = [] } = useAppSelector((state: any) => state.user)
     const agency = useAppSelector((state: any) => state.agency.agency)
 
-        ("INITIAL EVENT", initialEvent)
+    console.log("INITIAL EVENT", initialEvent)
 
-        ("CLIENT ID", initialEvent?.clientId)
+    console.log("CLIENT ID", initialEvent?.clientId)
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -692,7 +692,7 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
     const { careWorkers = [], clients = [], officeStaff = [] } = useAppSelector((state: any) => state.user)
     const agency = useAppSelector((state: any) => state.agency.agency)
 
-        ("EDITING EVENT", event)
+    console.log("EDITING EVENT", event)
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -852,11 +852,11 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                 dispatch(updateEvent(eventData as any))
                 onClose()
             } catch (error: any) {
-
+                console.log("ERROR", error)
                 toast.error("An unexpected error occurred")
             }
         } catch (error) {
-
+            console.log("ERROR", error)
             toast.error("An unexpected error occurred")
         } finally {
             setIsLoading(false)
@@ -867,7 +867,7 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
         if (!event?.id) return
 
         try {
-
+            console.log("deleting appointment", event.id)
             await deleteSchedule(event.id).unwrap()
             dispatch(deleteEvent(event.id))
             toast.success("Appointment deleted successfully")

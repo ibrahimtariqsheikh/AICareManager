@@ -90,7 +90,7 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
     // Log form state changes
     useEffect(() => {
         const subscription = form.watch((value) => {
-            ("Form values changed:", value);
+            console.log('Form values changed:', value);
         });
         return () => subscription.unsubscribe();
     }, [form]);
@@ -98,7 +98,7 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
     // Set form values when editing an existing event
     useEffect(() => {
         if (event && !isNew) {
-            ("Setting form values from event:", event);
+            console.log('Setting form values for event:', event)
             const startDate = new Date(event.start);
             const endDate = new Date(event.end);
             form.reset({
@@ -115,7 +115,6 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
     const onSubmit = async (data: FormValues) => {
         try {
             setIsLoading(true)
-                ("Form data before submission:", data);
 
             const eventData = {
                 id: event?.id || Date.now().toString(),
@@ -130,10 +129,7 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
                 color: getLeaveTypeColor(data.leaveType),
             }
 
-                ("Event data being dispatched:", eventData);
 
-
-            ("agencyId", agencyId)
 
             if (isNew) {
                 // Create leave event through API
@@ -218,7 +214,7 @@ export function EventForm({ isOpen, onClose, event, isNew = false, spaceTheme = 
     const handleDateSelect = (e: React.MouseEvent, newDate: Date, field: any, isStartDate: boolean) => {
         e.stopPropagation()
         e.preventDefault()
-            ("Date selected:", newDate, isStartDate ? "start" : "end")
+
         field.onChange(newDate)
         if (isStartDate) {
             setStartCalendarOpen(false)
