@@ -55,8 +55,7 @@ export function NewPayrollForm({ onClose }: NewPayrollFormProps) {
         }
     }, [scheduleHours])
 
-        ("EXPENSESFROMSERVER", expenses)
-        ("SCHEDULEHOURSFROMSERVER", scheduleHours)
+
 
     const clients = useAppSelector(state => state.user.clients)
     const careworkers = useAppSelector(state => state.user.careWorkers)
@@ -102,7 +101,7 @@ export function NewPayrollForm({ onClose }: NewPayrollFormProps) {
             }
 
             const response = await createPayroll(payrollData).unwrap()
-                ("API Response:", response)
+
 
             // Extract the payroll data from the nested response
             const payroll = response.payroll

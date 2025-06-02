@@ -23,7 +23,7 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
 
     if (field === "quantity" || field === "rate") {
       const numValue = Number.parseFloat(value) || 0
-      const roundedValue = Math.round(numValue * 100) / 100
+      const roundedValue = Math.round(numValue)
       updatedItem = {
         ...item,
         [field]: roundedValue,
@@ -38,13 +38,13 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-2">
         {[1, 2, 3].map((i) => (
           <div key={i} className="grid grid-cols-12 gap-2 items-center">
-            <Skeleton className="h-10 col-span-6" />
-            <Skeleton className="h-10 col-span-2" />
-            <Skeleton className="h-10 col-span-2" />
-            <Skeleton className="h-10 col-span-2" />
+            <Skeleton className="h-8 col-span-6" />
+            <Skeleton className="h-8 col-span-2" />
+            <Skeleton className="h-8 col-span-2" />
+            <Skeleton className="h-8 col-span-2" />
           </div>
         ))}
       </div>
@@ -53,8 +53,8 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-8 border rounded-md">
-        <p className="text-muted-foreground">
+      <div className="text-center py-4 border rounded-md">
+        <p className="text-sm text-muted-foreground">
           No items yet. Select a client and date range to generate line items, or add items manually.
         </p>
       </div>
@@ -62,8 +62,8 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
   }
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-12 gap-2 font-medium text-sm text-muted-foreground">
+    <div className="space-y-2">
+      <div className="grid grid-cols-12 gap-2 text-xs font-medium text-muted-foreground">
         <div className="col-span-6">Description</div>
         <div className="col-span-2">Quantity</div>
         <div className="col-span-2">Rate</div>
@@ -78,40 +78,39 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
               onChange={(value) => handleItemChange(item.id, "description", value)}
               placeholder="Enter description"
               variant="default"
-              inputSize="default"
+              inputSize="sm"
             />
           </div>
           <div className="col-span-2">
             <CustomInput
               type="number"
               min="0"
-              step="0.5"
-              value={item.quantity.toString()}
+              step="1"
+              value={Math.round(item.quantity).toString()}
               onChange={(value) => handleItemChange(item.id, "quantity", value)}
               variant="default"
-              inputSize="default"
+              inputSize="sm"
             />
           </div>
           <div className="col-span-2">
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">$</span>
               <CustomInput
                 type="number"
                 min="0"
                 step="1"
-                value={Math.floor(item.rate).toString()}
+                value={Math.round(item.rate).toString()}
                 onChange={(value) => {
-                  // Ensure only whole numbers for rate
-                  const numValue = Math.floor(Number.parseFloat(value) || 0)
+                  const numValue = Math.round(Number.parseFloat(value) || 0)
                   handleItemChange(item.id, "rate", numValue.toString())
                 }}
-                className="pl-7"
+                className="pl-6 text-sm"
                 variant="default"
-                inputSize="default"
+                inputSize="sm"
               />
             </div>
           </div>
-          <div className="col-span-1 font-medium">${item.amount.toFixed(2)}</div>
+          <div className="col-span-1 text-sm font-medium">${Math.round(item.amount)}</div>
           <div className="col-span-1 text-right">
             <Button
               variant="ghost"

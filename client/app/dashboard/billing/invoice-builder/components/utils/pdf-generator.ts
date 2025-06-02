@@ -1,195 +1,194 @@
 import { jsPDF } from "jspdf"
 import { format } from "date-fns"
-import type {  InvoiceItem } from "../../types"
-import { User } from "@/types/prismaTypes"
-import { RootState, useAppSelector } from "@/state/redux"
+import type { User } from "@/types/prismaTypes"
+import type { InvoiceItem, InvoiceData } from "../../types"
 
 export function generatePDF(
   client: User,
-
   items: InvoiceItem[],
   subtotal: number,
   tax: number,
   total: number,
-
+  invoiceData: InvoiceData
 ): jsPDF {
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  })
+  const pageWidth = doc.internal.pageSize.getWidth()
+  const margin = 20
+  const contentWidth = pageWidth - (margin * 2)
+  const textColor = "#1f2937"
+  const secondaryTextColor = "#6b7280"
+  const primaryColor = "#2563eb"
 
-const invoiceData = useAppSelector((state: RootState) => state.invoice.invoiceData)
-const dateRange = useAppSelector((state: RootState) => state.invoice.selectedDateRange)
-  try {
-    // Create a new PDF document
-    const doc = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    })
+  // Set default font
+  doc.setFont('helvetica', 'normal')
 
-    // Define colors to match the preview
-    const textColor = "#1f2937" // Dark gray for main text
-    const secondaryTextColor = "#6b7280" // Medium gray for secondary text
+  // Header with logo
+  doc.setFillColor(primaryColor)
+  doc.rect(170, 20, 16, 16, "F")
+  doc.setTextColor(255, 255, 255)
+  doc.setFontSize(12)
+  doc.setFont('helvetica', 'bold')
+  doc.text("ACM", 178, 28, { align: "center" })
 
-    // Add company logo/name
-    doc.setFontSize(24)
-    doc.setTextColor(textColor)
-    doc.text("INVOICE", 20, 20)
+  // Invoice title
+  doc.setFontSize(24)
+  doc.setTextColor(textColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text("INVOICE", margin, 28)
+  doc.setFont('helvetica', 'normal')
 
-    // Add company info
-    doc.setFontSize(10)
-    doc.setTextColor(secondaryTextColor)
-    doc.text("AI Manager", 20, 30)
-    doc.text("123 Care Street", 20, 35)
-    doc.text("Toronto, ON M5V 2K4", 20, 40)
-    doc.text("Canada", 20, 45)
-    doc.text("contact@aimanager.com", 20, 50)
-    doc.text("+1 (416) 555-1234", 20, 55)
+  // Company Info
+  doc.setFontSize(12)
+  doc.setTextColor(textColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text("AI Manager", margin, 38)
+  doc.setFont('helvetica', 'normal')
+  doc.text(client.addressLine1 || "", margin, 43)
+  doc.text(client.addressLine2 || "", margin, 48)
+  doc.text(client.townOrCity || "", margin, 53)
+  doc.text(client.postalCode || "", margin, 58)
+  doc.text("Canada", margin, 63)
+  doc.text("contact@aimanager.com", margin, 68)
+  doc.text("+1 (416) 555-1234", margin, 73)
 
-    // Add company logo box
-    doc.setFillColor(79, 70, 229) // #4f46e5 primary color
-    doc.rect(170, 20, 16, 16, "F")
-    doc.setTextColor(255, 255, 255) // White text
-    doc.setFontSize(12)
-    doc.text("ACM", 178, 30, { align: "center" })
+  // Invoice Details
+  doc.setFontSize(12)
+  doc.setTextColor(secondaryTextColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text(`Invoice #${invoiceData.invoiceNumber}`, pageWidth - margin, 45, { align: "right" })
+  doc.setFont('helvetica', 'normal')
+  doc.text(`Issue Date: ${format(new Date(invoiceData.issueDate), "MMM d, yyyy")}`, pageWidth - margin, 50, { align: "right" })
+  doc.text(`Due Date: ${format(new Date(invoiceData.dueDate), "MMM d, yyyy")}`, pageWidth - margin, 55, { align: "right" })
 
-    // Add invoice details
-    doc.setFontSize(10)
-    doc.setTextColor(secondaryTextColor)
-    doc.text(`Invoice #${invoiceData?.invoiceNumber ?? ""}`, 170, 45, { align: "right" })
-    doc.text(`Issue Date: ${invoiceData?.issueDate ? format(new Date(invoiceData.issueDate), "MMM d, yyyy") : "-"}`, 170, 50, { align: "right" })
-    doc.text(`Due Date: ${invoiceData?.dueDate ? format(new Date(invoiceData.dueDate), "MMM d, yyyy") : "-"}`, 170, 55, { align: "right" })
+  // Client Info
+  doc.setFontSize(14)
+  doc.setTextColor(textColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text("Bill To:", margin, 90)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(12)
+  doc.setTextColor(secondaryTextColor)
+  doc.text(client.fullName, margin, 100)
+  doc.text(client.email || "", margin, 105)
 
-    // Add client info
-    doc.setFontSize(12)
-    doc.setTextColor(textColor)
-    doc.text("Bill To:", 20, 70)
+  // Service Period
+  doc.setFontSize(14)
+  doc.setTextColor(textColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text("Service Period:", margin, 120)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(12)
+  doc.setTextColor(secondaryTextColor)
+  doc.text(
+    `${format(new Date(invoiceData.issueDate), "MMM d, yyyy")} - ${format(new Date(invoiceData.dueDate), "MMM d, yyyy")}`,
+    margin,
+    130
+  )
 
-    doc.setFontSize(10)
-    doc.setTextColor(secondaryTextColor)
-    doc.text(client.fullName, 20, 82)
-  
+  // Table
+  const tableTop = 150
+  const tableLeft = margin
+  const colWidths: [number, number, number, number] = [80, 30, 30, 30]
+  let yPos = tableTop
 
-    // Add service period
-    doc.setFontSize(12)
-    doc.setTextColor(textColor)
-    doc.text("Service Period:", 20, 115)
+  // Table Header
+  doc.setFillColor(243, 244, 246)
+  doc.rect(tableLeft, yPos - 10, contentWidth, 10, "F")
+  doc.setFontSize(10)
+  doc.setTextColor(textColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text("Description", tableLeft + 5, yPos - 3)
+  doc.text("Quantity", tableLeft + colWidths[0] + 5, yPos - 3, { align: "right" })
+  doc.text("Rate", tableLeft + colWidths[0] + colWidths[1] + 5, yPos - 3, { align: "right" })
+  doc.text("Amount", tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos - 3, { align: "right" })
+  doc.setFont('helvetica', 'normal')
 
-    doc.setFontSize(10)
-    doc.setTextColor(secondaryTextColor)
-    if (dateRange?.from && dateRange?.to) {
-      doc.text(`${format(dateRange.from, "MMM d, yyyy")} - ${format(dateRange.to, "MMM d, yyyy")}`, 20, 122)
+  // Table Content
+  doc.setFontSize(10)
+  doc.setTextColor(secondaryTextColor)
+  items.forEach((item, index) => {
+    // Add a new page if we're about to overflow
+    if (yPos > 270) {
+      doc.addPage()
+      yPos = 20
     }
 
-    // Add table headers
-    const tableTop = 130
-    const tableLeft = 20
-    const colWidths: [number, number, number, number] = [80, 30, 30, 30]
-
-    doc.setFillColor(245, 245, 245)
-    doc.rect(
-      tableLeft,
-      tableTop,
-      colWidths.reduce((a, b) => a + b, 0),
-      10,
-      "F",
-    )
-
-    doc.setFontSize(10)
-    doc.setTextColor(textColor)
-    doc.text("Description", tableLeft + 5, tableTop + 6)
-    doc.text("Quantity", tableLeft + colWidths[0] + 5, tableTop + 6)
-    doc.text("Rate", tableLeft + colWidths[0] + colWidths[1] + 5, tableTop + 6)
-    doc.text("Amount", tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, tableTop + 6)
-
-    // Add table rows
-    let yPos = tableTop + 10
-    doc.setTextColor(secondaryTextColor)
-
-    items.forEach((item, index) => {
-      // Add a new page if we're about to overflow
-      if (yPos > 270) {
-        doc.addPage()
-        yPos = 20
-      }
-
-      doc.text(item.description || "", tableLeft + 5, yPos + 6)
-      doc.text(item.quantity.toString(), tableLeft + colWidths[0] + 5, yPos + 6, { align: "right" })
-      doc.text(`$${item.rate.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + 5, yPos + 6, { align: "right" })
-      doc.text(`$${item.amount.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
-        align: "right",
-      })
-
-      // Add a light gray line
-      if (index < items.length - 1) {
-        doc.setDrawColor(220, 220, 220)
-        doc.line(tableLeft, yPos + 10, tableLeft + colWidths.reduce((a, b) => a + b, 0), yPos + 10)
-      }
-
-      yPos += 10
-    })
-
-    // Add totals
-    yPos += 5
-    const totalsX = tableLeft + colWidths[0] + colWidths[1] + 5
-
-    doc.text("Subtotal:", totalsX, yPos + 6)
-    doc.text(`$${subtotal.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
+    doc.text(item.description || "", tableLeft + 5, yPos + 6)
+    doc.text(item.quantity.toString(), tableLeft + colWidths[0] + 5, yPos + 6, { align: "right" })
+    doc.text(`$${item.rate.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + 5, yPos + 6, { align: "right" })
+    doc.text(`$${item.amount.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
       align: "right",
     })
+
+    // Add a light gray line
+    if (index < items.length - 1) {
+      doc.setDrawColor(220, 220, 220)
+      doc.line(tableLeft, yPos + 10, tableLeft + colWidths.reduce((a, b) => a + b, 0), yPos + 10)
+    }
 
     yPos += 10
+  })
 
-    if (invoiceData?.taxEnabled && invoiceData.taxRate != null) {
-      doc.text(`Tax (${invoiceData.taxRate}%):`, totalsX, yPos + 6)
-      doc.text(`$${tax.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
-        align: "right",
-      })
-      yPos += 10
-    }
+  // Add totals
+  yPos += 5
+  const totalsX = tableLeft + colWidths[0] + colWidths[1] + 5
 
-    doc.setFontSize(12)
-    doc.setTextColor(textColor)
-    doc.text("Total:", totalsX, yPos + 6)
-    doc.text(`$${total.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
+  doc.setTextColor(textColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text("Subtotal:", totalsX, yPos + 6)
+  doc.setFont('helvetica', 'normal')
+  doc.text(`$${subtotal.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
+    align: "right",
+  })
+
+  yPos += 10
+
+  if (invoiceData.taxEnabled && invoiceData.taxRate != null) {
+    doc.setFont('helvetica', 'bold')
+    doc.text(`Tax (${invoiceData.taxRate}%):`, totalsX, yPos + 6)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`$${tax.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
       align: "right",
     })
-
-    // Add notes if any
-    if (invoiceData?.notes != null && invoiceData?.notes !== "") {
-      yPos += 20
-
-      // Check if we need a new page
-      if (yPos > 250) {
-        doc.addPage()
-        yPos = 20
-      }
-
-      doc.setFontSize(12)
-      doc.setTextColor(textColor)
-      doc.text("Notes:", tableLeft, yPos)
-
-      doc.setFontSize(10)
-      doc.setTextColor(secondaryTextColor)
-
-      // Split notes into lines to avoid overflow
-      const splitNotes = doc.splitTextToSize(invoiceData?.notes ?? "", 170)
-      doc.text(splitNotes, tableLeft, yPos + 10)
-    }
-
-    // Add footer
-    doc.setFontSize(10)
-    doc.setTextColor(secondaryTextColor)
-
-    doc.text(
-        invoiceData?.dueDate
-        ? `Payment is due by ${format(new Date(invoiceData.dueDate), "MMM d, yyyy")}`
-        : "Payment is due upon receipt",
-      105,
-      285,
-      { align: "center" },
-    )
-
-    return doc
-  } catch (error) {
-    console.error("PDF generation error:", error)
-    throw new Error(`Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`)
+    yPos += 10
   }
+
+  doc.setFontSize(12)
+  doc.setFont('helvetica', 'bold')
+  doc.text("Total:", totalsX, yPos + 6)
+  doc.setFont('helvetica', 'normal')
+  doc.text(`$${total.toFixed(2)}`, tableLeft + colWidths[0] + colWidths[1] + colWidths[2] + 5, yPos + 6, {
+    align: "right",
+  })
+
+  // Add notes if any
+  if (invoiceData.notes) {
+    yPos += 20
+    doc.setFontSize(14)
+    doc.setTextColor(textColor)
+    doc.setFont('helvetica', 'bold')
+    doc.text("Notes:", margin, yPos)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(12)
+    doc.setTextColor(secondaryTextColor)
+    const splitNotes = doc.splitTextToSize(invoiceData.notes, contentWidth)
+    doc.text(splitNotes, margin, yPos + 10)
+  }
+
+  // Add footer
+  doc.setFontSize(10)
+  doc.setTextColor(secondaryTextColor)
+  doc.setFont('helvetica', 'bold')
+  doc.text(
+    `Payment is due by ${format(new Date(invoiceData.dueDate), "MMM d, yyyy")}`,
+    pageWidth / 2,
+    285,
+    { align: "center" }
+  )
+
+  return doc
 }

@@ -10,6 +10,7 @@ import { InvoiceLineItems } from "./components/invoice-line-items"
 import { InvoiceSummary } from "./components/invoice-summary"
 import { toast } from "sonner"
 import { ArrowLeft, Download, Plus } from "lucide-react"
+import { InvoicePaymentMethod } from "@/types/prismaTypes"
 
 import {
     Popover,
@@ -25,8 +26,8 @@ import { useAppDispatch, useAppSelector } from "@/state/redux"
 import { setInvoiceData, setInvoices, setSelectedDateRange } from "@/state/slices/invoiceSlice"
 import { InvoiceSettings } from "./components/invoice-settings"
 import { MyCustomDateRange } from "@/app/dashboard/billing/components/my-custom-date-range"
-
-
+import { useCreateInvoiceMutation } from "@/state/api"
+import { format } from "date-fns"
 
 export default function InvoiceBuilderPage() {
     const router = useRouter()
@@ -36,17 +37,21 @@ export default function InvoiceBuilderPage() {
     const dispatch = useAppDispatch()
     const invoices = useAppSelector((state) => state.invoice.invoices)
     const invoiceData = useAppSelector((state) => state.invoice.invoiceData)
+    const selectedDateRange = useAppSelector((state) => state.invoice.selectedDateRange)
+    const items = useAppSelector((state) => state.invoice.invoiceData?.predefinedItems || [])
+    const agencyId = useAppSelector((state) => state.user.user.userInfo?.agencyId)
 
     const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([])
     const [isLoading, _] = useState(false)
+    const [createInvoice, { isLoading: isCreatingInvoice }] = useCreateInvoiceMutation()
 
     const handleAddPredefinedItems = () => {
-        ("Current invoiceData:", invoiceData)
+        console.log("Current invoiceData:", invoiceData)
         if (invoiceData?.predefinedItems?.length) {
-            ("Adding predefined items:", invoiceData.predefinedItems)
+            console.log("Adding predefined items:", invoiceData.predefinedItems)
             // Create new items with unique IDs
             const newItems = invoiceData.predefinedItems.map((item: InvoiceItem) => {
-                ("Processing item:", {
+                console.log("Processing item:", {
                     type: item.serviceType,
                     description: item.description,
                     quantity: item.quantity,
@@ -61,16 +66,16 @@ export default function InvoiceBuilderPage() {
                 }
             })
 
-                ("New items to add:", newItems)
+            console.log("New items to add:", newItems)
             setInvoiceItems(prevItems => {
-                ("Previous items:", prevItems)
+                console.log("Previous items:", prevItems)
                 const updatedItems = [...prevItems, ...newItems]
-                    ("Updated items:", updatedItems)
+                console.log("Updated items:", updatedItems)
                 return updatedItems
             })
             setShowAddItemPopover(false)
         } else {
-            ("No predefined items to add")
+            console.log("No predefined items to add")
         }
     }
 
@@ -104,13 +109,60 @@ export default function InvoiceBuilderPage() {
         setInvoiceItems(invoiceItems.filter((item) => item.id !== itemId))
     }
 
-    const handleSendInvoice = () => {
-        dispatch(setInvoices([...(invoices || []), invoiceData]))
+    const handleCreateInvoice = async () => {
+        if (!selectedClient || !selectedDateRange?.from || !selectedDateRange?.to || !invoiceData || !agencyId) {
+            toast.error("Please fill in all required fields before creating an invoice.")
+            return
+        }
+
+        if (invoiceItems.length === 0) {
+            toast.error("Please add at least one item to the invoice.")
+            return
+        }
+
+        try {
+            const subtotal = invoiceItems.reduce((sum, item) => sum + item.amount, 0)
+            const tax = invoiceData.taxEnabled ? (subtotal * invoiceData.taxRate) / 100 : 0
+            const total = subtotal + tax
+
+            const newInvoice = {
+                agencyId,
+                clientId: selectedClient.id,
+                description: `Invoice for services from ${format(new Date(selectedDateRange.from), "MMM d, yyyy")} to ${format(new Date(selectedDateRange.to), "MMM d, yyyy")}`,
+                issueDate: invoiceData.issueDate || new Date().toISOString(),
+                dueDate: invoiceData.dueDate || new Date().toISOString(),
+                paymentMethod: (invoiceData.paymentMethod || "BANK_TRANSFER") as InvoicePaymentMethod,
+                invoiceItems: invoiceItems.map(item => ({
+                    description: item.description,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                    amount: item.amount
+                })),
+                taxRate: invoiceData.taxEnabled ? invoiceData.taxRate || 0 : 0,
+                totalAmount: total,
+                notes: invoiceData.notes || "",
+                fromHoursDate: new Date(selectedDateRange.from).toISOString(),
+                toHoursDate: new Date(selectedDateRange.to).toISOString()
+            }
+
+            console.log("Creating invoice with data:", newInvoice)
+            await createInvoice(newInvoice).unwrap()
+            toast.success("Invoice created successfully")
+            router.push("/dashboard/billing")
+        } catch (error) {
+            console.error("Error creating invoice:", error)
+            toast.error("Failed to create invoice")
+        }
     }
 
     const handleDownloadPDF = async () => {
         if (!selectedClient) {
             toast.error("Please select a client first")
+            return
+        }
+
+        if (!invoiceData) {
+            toast.error("Invoice data is not available")
             return
         }
 
@@ -122,10 +174,11 @@ export default function InvoiceBuilderPage() {
                 calculateSubtotal(),
                 calculateTax(),
                 calculateTotal(),
+                invoiceData
             )
 
             // Download the PDF
-            doc.save(`Invoice-${invoiceData?.invoiceNumber}.pdf`)
+            doc.save(`Invoice-${invoiceData.invoiceNumber}.pdf`)
             toast.success("PDF downloaded successfully")
         } catch (error) {
             console.error("Error generating PDF:", error)
@@ -160,9 +213,11 @@ export default function InvoiceBuilderPage() {
                         <Download className="mr-2 h-4 w-4" />
                         Download PDF
                     </Button>
-                    <Button onClick={handleSendInvoice}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Create Invoice
+                    <Button
+                        onClick={handleCreateInvoice}
+                        disabled={isCreatingInvoice}
+                    >
+                        {isCreatingInvoice ? "Creating..." : "Create Invoice"}
                     </Button>
                 </div>
             </div>
@@ -183,15 +238,15 @@ export default function InvoiceBuilderPage() {
                                             const range = state.invoice.selectedDateRange
                                             if (!range) return undefined
                                             return {
-                                                from: range.from || new Date(),
-                                                to: range.to || new Date()
+                                                from: range.from ? new Date(range.from) : new Date(),
+                                                to: range.to ? new Date(range.to) : new Date()
                                             }
                                         })}
                                         onRangeChange={(range) => {
                                             if (range) {
                                                 dispatch(setSelectedDateRange({
-                                                    from: range.from,
-                                                    to: range.to
+                                                    from: range.from.toISOString(),
+                                                    to: range.to.toISOString()
                                                 }))
                                             } else {
                                                 dispatch(setSelectedDateRange(null))
@@ -279,6 +334,21 @@ export default function InvoiceBuilderPage() {
                         </CardContent>
                     </Card>
                 </div>
+            </div>
+
+            <div className="flex justify-end space-x-4">
+                <Button
+                    variant="outline"
+                    onClick={() => router.push("/dashboard/billing")}
+                >
+                    Cancel
+                </Button>
+                <Button
+                    onClick={handleCreateInvoice}
+                    disabled={isCreatingInvoice}
+                >
+                    {isCreatingInvoice ? "Creating..." : "Create Invoice"}
+                </Button>
             </div>
         </div>
     )

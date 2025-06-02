@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { format } from "date-fns"
@@ -10,8 +10,20 @@ import { setInvoiceData, setInvoiceNumber } from "@/state/slices/invoiceSlice"
 import { useGetCurrentInvoiceNumberQuery, useGetExpensesByDateRangeQuery, useGetScheduleHoursByDateRangeQuery } from "@/state/api"
 import { MyCustomDateRange } from "../../components/my-custom-date-range"
 import { CustomInput } from "@/components/ui/custom-input"
+import { CustomSelect } from "@/components/ui/custom-select"
 import { skipToken } from "@reduxjs/toolkit/query"
 import type { InvoiceItem } from "../types"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { AlertCircle } from "lucide-react"
+
+// Define payment methods enum
+enum InvoicePaymentMethod {
+  CASH = "CASH",
+  CHEQUE = "CHEQUE",
+  CARD = "CARD",
+  BANK_TRANSFER = "BANK_TRANSFER",
+  OTHER = "OTHER"
+}
 
 export function InvoiceSettings() {
   const invoiceData = useAppSelector((state) => state.invoice.invoiceData)
@@ -19,116 +31,201 @@ export function InvoiceSettings() {
   const { data: invoiceNumberData } = useGetCurrentInvoiceNumberQuery()
   const dispatch = useAppDispatch()
 
-  const { data: expenses, isLoading: isExpensesLoading } = useGetExpensesByDateRangeQuery(
-    selectedDateRange?.from && selectedDateRange?.to
-      ? {
-        startDate: selectedDateRange.from.toISOString(),
-        endDate: selectedDateRange.to.toISOString()
-      }
-      : skipToken
-  )
+  const [expensesTimeout, setExpensesTimeout] = useState(false)
+  const [scheduleHoursTimeout, setScheduleHoursTimeout] = useState(false)
+  const [isUpdatingItems, setIsUpdatingItems] = useState(false)
 
-  const { data: scheduleHours, isLoading: isScheduleHoursLoading } = useGetScheduleHoursByDateRangeQuery(
-    selectedDateRange?.from && selectedDateRange?.to
-      ? {
-        startDate: selectedDateRange.from.toISOString(),
-        endDate: selectedDateRange.to.toISOString()
-      }
-      : skipToken
-  )
+  // Local state for tax settings
+  const [localTaxEnabled, setLocalTaxEnabled] = useState(invoiceData?.taxEnabled ?? false)
+  const [localTaxRate, setLocalTaxRate] = useState(invoiceData?.taxRate ?? 0)
 
-    ("scheduleHours", scheduleHours)
+  // Ref to track if we've initialized predefined items to prevent loops
+  const predefinedItemsInitialized = useRef(false)
 
-  const getFormattedInvoiceNumber = () => {
+  // Sync local state with Redux
+  useEffect(() => {
+    setLocalTaxEnabled(invoiceData?.taxEnabled ?? false)
+    setLocalTaxRate(invoiceData?.taxRate ?? 0)
+  }, [invoiceData?.taxEnabled, invoiceData?.taxRate])
+
+  // Memoize the formatted invoice number
+  const formattedInvoiceNumber = useMemo(() => {
     if (invoiceNumberData) {
       const invoiceNumberString = (invoiceNumberData.invoiceNumber + 1).toString()
-      const formattedInvoiceNumber = "ACM-" + invoiceNumberString + "-" + format(new Date(), "yyyy")
-        ("formattedInvoiceNumber", { formattedInvoiceNumber })
-      dispatch(setInvoiceNumber(formattedInvoiceNumber))
-      return formattedInvoiceNumber
+      return "ACM-" + invoiceNumberString + "-" + format(new Date(), "yyyy")
     }
     return ""
-  }
+  }, [invoiceNumberData])
+
+  // Handle tax settings changes with useCallback to prevent recreating the function
+  const handleTaxEnabledChange = useCallback((checked: boolean) => {
+    setLocalTaxEnabled(checked)
+    const newTaxRate = checked ? localTaxRate : 0
+    setLocalTaxRate(newTaxRate)
+
+    dispatch(setInvoiceData({
+      ...invoiceData,
+      taxEnabled: checked,
+      taxRate: newTaxRate
+    }))
+  }, [dispatch, invoiceData, localTaxRate])
+
+  const handleTaxRateChange = useCallback((value: string) => {
+    const rate = Number.parseFloat(value) || 0
+    setLocalTaxRate(rate)
+    dispatch(setInvoiceData({
+      ...invoiceData,
+      taxRate: rate
+    }))
+  }, [dispatch, invoiceData])
+
+  // Convert ISO string dates to Date objects for the debounced range
+  const [debouncedDateRange, setDebouncedDateRange] = useState<{ from: Date; to: Date } | null>(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (selectedDateRange?.from && selectedDateRange?.to) {
+        setDebouncedDateRange({
+          from: new Date(selectedDateRange.from),
+          to: new Date(selectedDateRange.to)
+        })
+      } else {
+        setDebouncedDateRange(null)
+      }
+    }, 500) // 500ms debounce
+    return () => clearTimeout(timer)
+  }, [selectedDateRange])
+
+  // Get expenses and schedule hours data from API
+  const { data: expensesData, isLoading: isLoadingExpenses } = useGetExpensesByDateRangeQuery(
+    debouncedDateRange ? {
+      startDate: debouncedDateRange.from.toISOString(),
+      endDate: debouncedDateRange.to.toISOString()
+    } : skipToken
+  )
+
+  const { data: scheduleHoursData, isLoading: isLoadingScheduleHours } = useGetScheduleHoursByDateRangeQuery(
+    debouncedDateRange ? {
+      startDate: debouncedDateRange.from.toISOString(),
+      endDate: debouncedDateRange.to.toISOString()
+    } : skipToken
+  )
+
+  // Set timeout states
+  useEffect(() => {
+    if (isLoadingExpenses) {
+      const timer = setTimeout(() => setExpensesTimeout(true), 10000)
+      return () => clearTimeout(timer)
+    }
+    setExpensesTimeout(false)
+  }, [isLoadingExpenses])
+
+  useEffect(() => {
+    if (isLoadingScheduleHours) {
+      const timer = setTimeout(() => setScheduleHoursTimeout(true), 10000)
+      return () => clearTimeout(timer)
+    }
+    setScheduleHoursTimeout(false)
+  }, [isLoadingScheduleHours])
+
+  // Memoize the date range string to prevent unnecessary recalculations
+  const dateRangeString = useMemo(() => {
+    if (!debouncedDateRange?.from || !debouncedDateRange?.to) return ""
+    return `${format(debouncedDateRange.from, "MMM d")} - ${format(debouncedDateRange.to, "MMM d")}`
+  }, [debouncedDateRange])
 
   // Add expenses and schedule hours as predefined items
   useEffect(() => {
-    ("Full scheduleHours response:", scheduleHours)
-    // Create new predefined items array
-    const predefinedItems: InvoiceItem[] = []
+    if (isUpdatingItems || !dateRangeString) return
 
-    // Add expenses if available
-    if (expenses && expenses.totalAmount > 0) {
-      predefinedItems.push({
-        id: `expenses-${Date.now()}`,
-        description: `Expenses (${format(selectedDateRange?.from || new Date(), "MMM d")} - ${format(selectedDateRange?.to || new Date(), "MMM d")})`,
-        quantity: 1,
-        rate: expenses.totalAmount,
-        amount: expenses.totalAmount,
-        serviceType: "EXPENSES",
-        careWorkerId: "",
-      })
+    // Only update if we haven't initialized yet
+    if (predefinedItemsInitialized.current) return
+
+    const updatePredefinedItems = async () => {
+      setIsUpdatingItems(true)
+      try {
+        const predefinedItems: InvoiceItem[] = []
+
+        // Add expenses if available
+        if (expensesData?.totalAmount && expensesData.totalAmount > 0) {
+          predefinedItems.push({
+            id: `expenses-${Date.now()}`,
+            description: `Expenses (${dateRangeString})`,
+            quantity: 1,
+            rate: expensesData.totalAmount,
+            amount: expensesData.totalAmount,
+            serviceType: "EXPENSES",
+            careWorkerId: "",
+          })
+        }
+
+        // Add schedule hours if available
+        if (scheduleHoursData?.totalHours && scheduleHoursData.totalHours > 0) {
+          const hours = scheduleHoursData.totalHours
+          const rate = Math.floor(scheduleHoursData.payRate || 0)
+          const amount = hours * rate
+
+          predefinedItems.push({
+            id: `hours-${Date.now()}`,
+            description: `Schedule Hours (${dateRangeString})`,
+            quantity: hours,
+            rate: rate,
+            amount: amount,
+            serviceType: "SCHEDULE_HOURS",
+            careWorkerId: "",
+          })
+        }
+
+        if (predefinedItems.length > 0) {
+          const updatedInvoiceData = {
+            ...invoiceData,
+            predefinedItems,
+            issueDate: invoiceData?.issueDate || new Date().toISOString(),
+            dueDate: invoiceData?.dueDate || new Date().toISOString()
+          }
+          dispatch(setInvoiceData(updatedInvoiceData))
+          predefinedItemsInitialized.current = true
+        }
+      } finally {
+        setIsUpdatingItems(false)
+      }
     }
 
-    // Add schedule hours if available
-    ("Schedule Hours Data:", scheduleHours)
-    if (scheduleHours && typeof scheduleHours.totalHours === 'number') {
-      const hours = scheduleHours.totalHours
-      const rate = Math.floor(scheduleHours.payRate || 0)
-      const amount = hours * rate
+    updatePredefinedItems()
+  }, [dateRangeString, dispatch, expensesData, scheduleHoursData, isUpdatingItems, invoiceData])
 
-        ("Creating Schedule Hours Item:", {
-          hours,
-          rate,
-          amount,
-          rawData: scheduleHours
-        })
+  // Add payment method handler
+  const handlePaymentMethodChange = (value: string) => {
+    dispatch(setInvoiceData({
+      ...invoiceData,
+      paymentMethod: value as InvoicePaymentMethod
+    }))
+  }
 
-      predefinedItems.push({
-        id: `hours-${Date.now()}`,
-        description: `Schedule Hours (${format(selectedDateRange?.from || new Date(), "MMM d")} - ${format(selectedDateRange?.to || new Date(), "MMM d")})`,
-        quantity: hours,
-        rate: rate,
-        amount: amount,
-        serviceType: "SCHEDULE_HOURS",
-        careWorkerId: "",
-      })
-    } else {
-      ("Schedule Hours not added because:", {
-        hasScheduleHours: !!scheduleHours,
-        totalHours: scheduleHours?.totalHours,
-        typeOfTotalHours: typeof scheduleHours?.totalHours
-      })
-    }
-
-    ("Final Predefined Items:", predefinedItems)
-    // Update Redux state with predefined items
-    if (predefinedItems.length > 0) {
-      dispatch(setInvoiceData({
-        ...invoiceData,
-        predefinedItems,
-        // Convert dates to ISO strings
-        issueDate: invoiceData?.issueDate ? new Date(invoiceData.issueDate).toISOString() : new Date().toISOString(),
-        dueDate: invoiceData?.dueDate ? new Date(invoiceData.dueDate).toISOString() : new Date().toISOString()
-      }))
-    }
-  }, [expenses, scheduleHours, selectedDateRange, dispatch, invoiceData])
+  const paymentMethodOptions = [
+    { value: InvoicePaymentMethod.CASH, label: "Cash" },
+    { value: InvoicePaymentMethod.CHEQUE, label: "Cheque" },
+    { value: InvoicePaymentMethod.CARD, label: "Card" },
+    { value: InvoicePaymentMethod.BANK_TRANSFER, label: "Bank Transfer" },
+    { value: InvoicePaymentMethod.OTHER, label: "Other" }
+  ]
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="invoiceNumber">Invoice Number</Label>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="space-y-1">
+          <Label htmlFor="invoiceNumber" className="text-sm">Invoice Number</Label>
           <CustomInput
             id="invoiceNumber"
-            value={getFormattedInvoiceNumber()}
+            value={formattedInvoiceNumber}
             disabled
             variant="default"
             inputSize="default"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="issueDate">Issue Date</Label>
+        <div className="space-y-1">
+          <Label htmlFor="issueDate" className="text-sm">Issue Date</Label>
           <MyCustomDateRange
             oneDate={true}
             initialDateRange={invoiceData?.issueDate ? { from: new Date(invoiceData.issueDate), to: new Date(invoiceData.issueDate) } : undefined}
@@ -140,8 +237,8 @@ export function InvoiceSettings() {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="dueDate">Due Date</Label>
+        <div className="space-y-1">
+          <Label htmlFor="dueDate" className="text-sm">Due Date</Label>
           <MyCustomDateRange
             oneDate={true}
             initialDateRange={invoiceData?.dueDate ? { from: new Date(invoiceData.dueDate), to: new Date(invoiceData.dueDate) } : undefined}
@@ -154,34 +251,42 @@ export function InvoiceSettings() {
         </div>
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-4 space-y-3">
+        <div className="space-y-1">
+          <Label htmlFor="paymentMethod" className="text-sm">Payment Method</Label>
+          <CustomSelect
+            value={invoiceData?.paymentMethod || InvoicePaymentMethod.BANK_TRANSFER}
+            onChange={handlePaymentMethodChange}
+            options={paymentMethodOptions}
+            placeholder="Select payment method"
+            variant="default"
+            selectSize="default"
+          />
+        </div>
+
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Switch
               id="taxEnabled"
-              checked={invoiceData?.taxEnabled ?? false}
-              onCheckedChange={(checked: boolean) =>
-                dispatch(setInvoiceData({ ...invoiceData, taxEnabled: checked }))
-              }
+              checked={localTaxEnabled}
+              onCheckedChange={handleTaxEnabledChange}
             />
-            <Label htmlFor="taxEnabled">Enable Tax</Label>
+            <Label htmlFor="taxEnabled" className="text-sm">Enable Tax</Label>
           </div>
         </div>
 
-        {invoiceData?.taxEnabled && (
-          <div className="space-y-4 border rounded-md p-4 bg-muted/10">
-            <div className="space-y-2">
-              <Label htmlFor="taxRate">Tax Rate (%)</Label>
+        {localTaxEnabled && (
+          <div className="space-y-2 border rounded-md p-3 bg-muted/10">
+            <div className="space-y-1">
+              <Label htmlFor="taxRate" className="text-sm">Tax Rate (%)</Label>
               <CustomInput
                 id="taxRate"
                 type="number"
                 min="0"
                 step="0.01"
                 placeholder="e.g. 20"
-                value={invoiceData?.taxRate?.toString()}
-                onChange={(value) =>
-                  dispatch(setInvoiceData({ ...invoiceData, taxRate: Number.parseFloat(value) || 0 }))
-                }
+                value={localTaxRate.toString()}
+                onChange={handleTaxRateChange}
                 variant="default"
                 inputSize="default"
               />
@@ -189,33 +294,49 @@ export function InvoiceSettings() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="expenses" className="mb-2 block">Expenses</Label>
-            {isExpensesLoading ? (
-              <div className="mt-2 text-xs text-muted-foreground">Loading expenses...</div>
-            ) : expenses ? (
-              <div className="mt-2">
-                <div className="text-xs text-muted-foreground">Total Expenses: ${expenses.totalAmount.toFixed(2)}</div>
-              </div>
-            ) : (
-              <div className="mt-2 text-xs text-muted-foreground">No expenses found for selected period</div>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="hours-import" className="mb-2 block">Schedule Hours</Label>
-            <div className="space-y-2">
-              {isScheduleHoursLoading ? (
-                <div className="mt-2 text-xs text-muted-foreground">Loading schedule hours...</div>
-              ) : scheduleHours ? (
-                <div className="mt-2">
-                  <div className="text-xs text-muted-foreground">Total Hours: {scheduleHours.totalHours.toFixed(1)}</div>
-                  <div className="text-xs text-muted-foreground">AVG Hourly Rate: ${scheduleHours.payRate.toFixed(2)}</div>
+        <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="expenses" className="text-sm mb-1 block">Expenses</Label>
+              {expensesTimeout ? (
+                <Alert variant="destructive" className="mt-1 py-2">
+                  <AlertCircle className="h-3 w-3" />
+                  <AlertDescription className="text-xs">
+                    Loading expenses is taking longer than expected. Please try again.
+                  </AlertDescription>
+                </Alert>
+              ) : isLoadingExpenses ? (
+                <div className="mt-1 text-xs text-muted-foreground">Loading expenses...</div>
+              ) : expensesData ? (
+                <div className="mt-1">
+                  <div className="text-xs text-muted-foreground">Total Expenses: ${expensesData.totalAmount.toFixed(2)}</div>
                 </div>
               ) : (
-                <div className="mt-2 text-xs text-muted-foreground">No schedule hours found for selected period</div>
+                <div className="mt-1 text-xs text-muted-foreground">No expenses found for selected period</div>
               )}
+            </div>
+
+            <div>
+              <Label htmlFor="hours-import" className="text-sm mb-1 block">Schedule Hours</Label>
+              <div className="space-y-1">
+                {scheduleHoursTimeout ? (
+                  <Alert variant="destructive" className="mt-1 py-2">
+                    <AlertCircle className="h-3 w-3" />
+                    <AlertDescription className="text-xs">
+                      Loading schedule hours is taking longer than expected. Please try again.
+                    </AlertDescription>
+                  </Alert>
+                ) : isLoadingScheduleHours ? (
+                  <div className="mt-1 text-xs text-muted-foreground">Loading schedule hours...</div>
+                ) : scheduleHoursData ? (
+                  <div className="mt-1">
+                    <div className="text-xs text-muted-foreground">Total Hours: {scheduleHoursData.totalHours.toFixed(1)}</div>
+                    <div className="text-xs text-muted-foreground">AVG Hourly Rate: ${scheduleHoursData.payRate.toFixed(2)}</div>
+                  </div>
+                ) : (
+                  <div className="mt-1 text-xs text-muted-foreground">No schedule hours found for selected period</div>
+                )}
+              </div>
             </div>
           </div>
         </div>

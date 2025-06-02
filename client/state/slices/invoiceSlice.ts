@@ -11,6 +11,7 @@ interface InvoiceData {
     notes: string;
     taxRate: number;
     taxEnabled: boolean;
+    paymentMethod: string;
     predefinedItems?: InvoiceItem[];
 }
 
@@ -37,6 +38,7 @@ invoiceData: {
     notes: "",
     taxRate: 0,
     taxEnabled: false,
+    paymentMethod: "",
     predefinedItems: [],
 },
 };

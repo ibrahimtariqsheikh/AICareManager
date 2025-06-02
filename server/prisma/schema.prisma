@@ -730,17 +730,34 @@ enum InvoicePaymentMethod {
   OTHER
 }
 
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Float
+  rate        Float
+  amount      Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Invoice {
   id            String                @id @default(cuid())
   invoiceNumber Int                   @default(autoincrement())
   agencyId      String
   clientId      String?
-  amount        Float
   description   String
   status        InvoiceStatus         @default(PENDING)
-  issuedAt      DateTime              @default(now())
+  issueDate     DateTime              @default(now())
   dueDate       DateTime
   paymentMethod InvoicePaymentMethod?
+  fromHoursDate DateTime?
+  toHoursDate   DateTime?
+  invoiceItems  InvoiceItem[]
+  taxRate       Float                 @default(0)
+  totalAmount   Float                 @default(0)
+  notes         String?
   agency        Agency                @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   client        User?                 @relation(fields: [clientId], references: [id])
 }

@@ -2,8 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { toast } from "sonner";
 import * as crypto from 'crypto';
-
-
+import { format } from 'date-fns';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -129,4 +128,19 @@ export function decrypt(text: string): string {
 
 export const getRandomPlaceholderImage = () => {
   return placeholderImages[Math.floor(Math.random() * placeholderImages.length)]
+}
+
+export function formatDatePreserveDay(dateString: string | Date): string {
+    const date = new Date(dateString);
+    
+    // For dates with time 00:00:00, we want to preserve the date as is
+    // by adding a day to compensate for timezone conversion
+    if (date.getUTCHours() === 0 && 
+        date.getUTCMinutes() === 0 && 
+        date.getUTCSeconds() === 0) {
+        // Add one day to compensate for timezone conversion
+        date.setDate(date.getDate() + 1);
+    }
+    
+    return format(date, "MMM d, yyyy");
 }

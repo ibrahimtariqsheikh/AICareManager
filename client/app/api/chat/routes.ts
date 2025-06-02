@@ -1,5 +1,6 @@
 import { CoreMessage, streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
+import { anthropic } from '@ai-sdk/anthropic'
 import { tools } from '@/app/dashboard/aimassist/lib/tools'
 
 const baseSystemPrompt = `!!!ABSOLUTELY CRITICAL FORMATTING RULE - THIS OVERRIDES EVERYTHING ELSE!!!
@@ -248,7 +249,7 @@ export async function handleChat(req: Request) {
     }
 
     const result = streamText({
-      model: openai('gpt-4.1'),
+      model: anthropic('claude-sonnet-4-20250514'),
       system: baseSystemPrompt,
       messages,
       maxSteps: 5,

@@ -77,23 +77,71 @@ export const createExpense = async (req: Request, res: Response): Promise<void> 
 
 export const createInvoice = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { agencyId, clientId, amount, description, dueDate, paymentMethod } = req.body;
+        const { 
+            agencyId, 
+            clientId, 
+            description, 
+            issueDate,
+            dueDate, 
+            paymentMethod,
+            invoiceItems,
+            taxRate,
+            totalAmount,
+            notes,
+            fromHoursDate,
+            toHoursDate
+        } = req.body;
         
+        // Validate required fields
+        if (!agencyId || !clientId || !description || !issueDate || !dueDate || !paymentMethod) {
+            res.status(400).json({ 
+                message: "Missing required fields", 
+                required: ["agencyId", "clientId", "description", "issueDate", "dueDate", "paymentMethod"] 
+            });
+            return;
+        }
+
+        // Validate invoice items
+        if (!invoiceItems || !Array.isArray(invoiceItems) || invoiceItems.length === 0) {
+            res.status(400).json({ message: "Invoice must have at least one item" });
+            return;
+        }
+
         const invoice = await prisma.invoice.create({
             data: {
                 agencyId,
                 clientId,
-                amount,
                 description,
+                issueDate: new Date(issueDate),
                 dueDate: new Date(dueDate),
                 paymentMethod,
-                status: 'PENDING'
+                status: 'PENDING',
+                taxRate: taxRate || 0,
+                totalAmount,
+                notes,
+                fromHoursDate: fromHoursDate ? new Date(fromHoursDate) : null,
+                toHoursDate: toHoursDate ? new Date(toHoursDate) : null,
+                invoiceItems: {
+                    create: invoiceItems.map((item: any) => ({
+                        description: item.description,
+                        quantity: item.quantity,
+                        rate: item.rate,
+                        amount: item.amount
+                    }))
+                }
+            },
+            include: {
+                invoiceItems: true
             }
         });
 
         res.status(201).json({ invoice });
     } catch (error) {
-        res.status(500).json({ message: "Error creating invoice", error });
+        console.error("Error creating invoice:", error);
+        res.status(500).json({ 
+            message: "Error creating invoice", 
+            error: error instanceof Error ? error.message : "Unknown error occurred" 
+        });
     }
 }
 
@@ -105,7 +153,7 @@ export const getInvoiceDashboardData = async (req: Request, res: Response): Prom
                 where: { agencyId: agencyId },
             })
 
-            const revenue = invoices.reduce((acc, invoice) => acc + invoice.amount, 0)
+            const revenue = invoices.reduce((acc, invoice) => acc + invoice.totalAmount, 0)
             const numberOfClients = await prisma.user.count({
                 where: { agencyId: agencyId },
             })
@@ -168,5 +216,31 @@ export const getScheduleHoursByDateRange = async (req: Request, res: Response): 
         res.status(200).json({ totalHours, payRate })
     } catch (error) {
         res.status(500).json({ message: "Error getting schedule hours by date range", error })
+    }
+}
+
+export const deleteInvoice = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        
+        // First check if the invoice exists
+        const invoice = await prisma.invoice.findUnique({
+            where: { id }
+        });
+
+        if (!invoice) {
+            res.status(404).json({ message: "Invoice not found" });
+            return;
+        }
+
+        // Delete the invoice
+        await prisma.invoice.delete({
+            where: { id }
+        });
+
+        res.status(200).json({ message: "Invoice deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting invoice:", error);
+        res.status(500).json({ message: "Error deleting invoice", error });
     }
 }

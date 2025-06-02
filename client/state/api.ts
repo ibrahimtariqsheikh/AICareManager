@@ -3,7 +3,7 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { Message } from "@/state/slices/chatSlice"
 
-import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog, LeaveEvent, Invoice, Expenses, Payroll } from "../types/prismaTypes"
+import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog, LeaveEvent, Invoice, Expenses, Payroll, InvoicePaymentMethod } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
 import { EmergencyContact } from "@/types/profileTypes"
 
@@ -1065,13 +1065,32 @@ getScheduleHoursByDateRange: build.query<{ totalHours: number; payRate: number }
       { type: 'Expenses', id: arg.agencyId }
     ],
   }),
-  createInvoice: build.mutation<Invoice, Invoice>({
-    query: (invoice ) => ({
-      url: '/invoices/invoice',
-      method: 'POST',
-      body: invoice,
+  createInvoice: build.mutation<Invoice, {
+    agencyId: string;
+    clientId: string;
+    description: string;
+    issueDate: string;
+    dueDate: string;
+    paymentMethod: InvoicePaymentMethod;
+    invoiceItems: {
+        description: string;
+        quantity: number;
+        rate: number;
+        amount: number;
+    }[];
+    taxRate: number;
+    totalAmount: number;
+    notes?: string;
+    fromHoursDate?: string;
+    toHoursDate?: string;
+}>({
+    query: (invoice) => ({
+        url: '/invoices/invoice',
+        method: 'POST',
+        body: invoice,
     }),
-  }),
+    invalidatesTags: ["Invoices"],
+}),
   resolveReportAlert: build.mutation<Alert, { alertId: string; description: string; resolvedById: string }>({
     query: ({ alertId, description, resolvedById }) => ({
       url: `/reports/resolve/${alertId}`,
@@ -1085,6 +1104,16 @@ getScheduleHoursByDateRange: build.query<{ totalHours: number; payRate: number }
       providesTags: ["Alerts"],
     }),
 
+    deleteInvoice: build.mutation<void, string>({
+      query: (invoiceId) => ({
+        url: `/invoices/invoice/${invoiceId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, invoiceId) => [
+        { type: "Invoices", id: "LIST" },
+        { type: "Invoices", id: invoiceId }
+      ],
+    }),
 
   }),
 })
@@ -1173,4 +1202,5 @@ export const {
   useGetAgencyAlertsQuery,
   useGetAllAgencyAlertsQuery,
   useResolveReportAlertMutation,
+  useDeleteInvoiceMutation,
 } = api

@@ -44,7 +44,7 @@ export default function BillingStats() {
                 <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
-                            <p className="text-2xl font-bold">${data?.revenue || 0}</p>
+                            <p className="text-2xl font-bold">${Math.round(data?.revenue || 0)}</p>
                         </div>
                         <div className="flex items-center text-blue-600 text-xs font-medium dark:text-blue-400">
                             <ArrowUpRight className="h-4 w-4 mr-1" />

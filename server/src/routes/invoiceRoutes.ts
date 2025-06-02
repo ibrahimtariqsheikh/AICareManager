@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { getCurrentInvoiceNumber, getInvoiceDashboardData, getExpensesByDateRange, getScheduleHoursByDateRange, createPayroll, createInvoice, createExpense } from "../controllers/invoiceController";
+import { getCurrentInvoiceNumber, getInvoiceDashboardData, getExpensesByDateRange, getScheduleHoursByDateRange, createPayroll, createInvoice, createExpense, deleteInvoice } from "../controllers/invoiceController";
 
 const router = express.Router();
 
@@ -10,6 +10,6 @@ router.get("/schedule-hours/date-range", getScheduleHoursByDateRange);
 router.post("/payroll", createPayroll);
 router.post("/expense", createExpense);
 router.post("/invoice", createInvoice);
-
+router.delete("/invoice/:id", deleteInvoice);
 
 export default router;
