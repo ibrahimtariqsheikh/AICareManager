@@ -852,11 +852,11 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                 dispatch(updateEvent(eventData as any))
                 onClose()
             } catch (error: any) {
-                ("ERROR", error)
+
                 toast.error("An unexpected error occurred")
             }
         } catch (error) {
-            ("ERROR", error)
+
             toast.error("An unexpected error occurred")
         } finally {
             setIsLoading(false)
@@ -867,7 +867,7 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
         if (!event?.id) return
 
         try {
-            ("deleting appointment", event.id)
+
             await deleteSchedule(event.id).unwrap()
             dispatch(deleteEvent(event.id))
             toast.success("Appointment deleted successfully")
