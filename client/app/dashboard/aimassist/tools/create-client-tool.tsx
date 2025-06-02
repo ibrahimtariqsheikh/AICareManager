@@ -28,7 +28,7 @@ type ExtendedToolInvocation = ToolInvocation & {
 const processedToolCalls = new Set<string>()
 
 export function CreateClientTool(toolInvocation: ExtendedToolInvocation) {
-    console.log("toolInvocation", toolInvocation)
+    ("toolInvocation", toolInvocation)
     const [error, setError] = useState<string | null>(null)
     const [isCreating, setIsCreating] = useState(false)
     const [hasCreated, setHasCreated] = useState(false)

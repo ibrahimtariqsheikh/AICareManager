@@ -96,7 +96,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
 
     useEffect(() => {
         if (scheduleTemplates && Array.isArray(scheduleTemplates)) {
-            console.log("Raw schedule templates from API:", scheduleTemplates)
+
             const serializedTemplates = scheduleTemplates.map((template) => ({
                 ...template,
                 lastUpdated: template.lastUpdated instanceof Date ? template.lastUpdated.toISOString() : template.lastUpdated,
@@ -109,7 +109,6 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                         updatedAt: visit.updatedAt instanceof Date ? visit.updatedAt.toISOString() : visit.updatedAt,
                     })) || [],
             }))
-            console.log("Serialized templates for Redux:", serializedTemplates)
             dispatch(setTemplatesFromApi(serializedTemplates))
         }
     }, [scheduleTemplates, dispatch])
@@ -138,7 +137,6 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
             updatedAt: new Date().toISOString(),
         }))
 
-        console.log("New visits:", newVisits)
 
         dispatch(addVisitInTemplate(newVisits))
         setIsAddVisitOpen(false)
@@ -192,9 +190,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                 }
             })
 
-            console.log("Saving template:", updatedTemplate)
-            const response = await updateScheduleTemplate(updatedTemplate).unwrap()
-            console.log("Update response:", response)
+            await updateScheduleTemplate(updatedTemplate).unwrap()
 
             dispatch(updateTemplate(updatedTemplate))
             setIsEditTemplateOpen(false)
@@ -233,9 +229,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                 }
             })
 
-            console.log("Creating new template:", newTemplate)
             const response = await createScheduleTemplate(newTemplate).unwrap()
-            console.log("Create response:", response)
 
             dispatch(addTemplate(response))
             setIsEditTemplateOpen(false)
@@ -366,11 +360,6 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
         toast.info("Cancelled editing template")
     }
 
-    useEffect(() => {
-        if (currentTemplate) {
-            console.log("Current template:", currentTemplate)
-        }
-    }, [currentTemplate])
 
     const findCareWorkerName = (workerId: string | null | undefined) => {
         if (!workerId) return null
@@ -389,8 +378,6 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
         const visitType = visitTypes.find((type: VisitType) => type.id === clientVisitTypeId)
         return visitType ? visitType.name : null
     }
-
-    console.log("Templates:", templates)
 
     return (
         <div className="space-y-6">
@@ -731,7 +718,7 @@ export const ScheduleTemplate = ({ user }: ScheduleTemplateProps) => {
                                     <div className="space-y-2">
                                         <>
                                             {uniqueVisits.map((slot: TemplateVisit) => {
-                                                console.log("Slot:", slot)
+
                                                 return (
                                                     <div
                                                         key={slot.id}

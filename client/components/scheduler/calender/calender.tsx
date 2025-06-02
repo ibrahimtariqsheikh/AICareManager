@@ -46,7 +46,6 @@ export function Calendar({ onEventSelect }: CalendarProps) {
     const { data: leaveEvents } = useGetAgencyLeaveEventsQuery(user?.userInfo?.agencyId || "")
 
     const schedules = useAppSelector((state) => state.schedule.agencySchedules)
-    console.log("schedules", schedules)
 
     const processedEvents = useMemo(() => {
         const scheduleEvents = schedules.map(schedule => {
@@ -223,7 +222,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
     }
 
     const handleEventSelect = (event: any) => {
-        console.log("EVENT", event)
+
         if (!event) {
             setEditingEvent(null)
             setIsFormOpen(false)
@@ -247,7 +246,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
     }
 
     const handleEventUpdate = (updatedEvent: any) => {
-        console.log("Event updated:", updatedEvent)
+
     }
 
 

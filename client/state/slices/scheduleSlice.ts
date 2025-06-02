@@ -131,7 +131,7 @@ const scheduleSlice = createSlice({
     addEvent: (state, action: PayloadAction<AppointmentEvent>) => {
       const serializedEvent = serializeEvent(action.payload)
       state.events.push(serializedEvent)
-      console.log("Added event to Redux store:", serializedEvent)
+
       updateFilteredEvents(state)
     },
     updateEvent: (state, action: PayloadAction<AppointmentEvent>) => {
@@ -264,7 +264,7 @@ const scheduleSlice = createSlice({
           careWorker: schedule.user,
           client: schedule.client,
         }))
-        console.log("Events:", events)
+   
         state.events = events as unknown as AppointmentEvent[]
         updateFilteredEvents(state)
       })
@@ -286,14 +286,35 @@ function updateFilteredEvents(state: ScheduleState) {
   // Deserialize events for processing
   const deserializedEvents = state.events.map(deserializeEvent)
 
+  // Convert filtered user IDs to the format expected by filterEvents
+  const careWorkerMembers = state.filteredUsers.careWorkers.map(id => ({
+    id,
+    fullName: "", // These will be populated by the filterEvents function
+    role: "CARE_WORKER",
+    color: "#000000",
+    selected: true
+  }))
+  const officeStaffMembers = state.filteredUsers.officeStaff.map(id => ({
+    id,
+    fullName: "", // These will be populated by the filterEvents function
+    role: "OFFICE_STAFF",
+    color: "#000000",
+    selected: true
+  }))
+  const clientMembers = state.filteredUsers.clients.map(id => ({
+    id,
+    fullName: "", // These will be populated by the filterEvents function
+    color: "#000000",
+    selected: true
+  }))
+
   // Filter events based on current selections and filtered users
   const filtered = filterEvents(
     deserializedEvents,
-    state.filteredUsers.clients,
-    state.filteredUsers.careWorkers,
-    state.filteredUsers.officeStaff,
-    [], // event types
-    state.sidebarMode,
+    careWorkerMembers,
+    officeStaffMembers,
+    clientMembers,
+    state.sidebarMode
   )
 
   // Serialize filtered events before storing in state
@@ -301,7 +322,9 @@ function updateFilteredEvents(state: ScheduleState) {
 
   // Log for debugging
   console.log("Updated filtered events:", state.filteredEvents.length)
-  console.log("Sample filtered event:", state.filteredEvents[0])
+  if (state.filteredEvents.length > 0) {
+    console.log("Sample filtered event:", state.filteredEvents[0])
+  }
 }
 
 // Helper function to get event color based on type

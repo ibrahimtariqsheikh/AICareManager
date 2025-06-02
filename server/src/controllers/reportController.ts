@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Medication, PrismaClient } from '@prisma/client';
+import { Medication, PrismaClient, AlertStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -289,5 +289,32 @@ export const deleteReport = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error deleting report:', error);
     res.status(500).json({ error: 'Failed to delete report' });
+  }
+};
+
+
+export const resolveReportAlert = async (req: Request, res: Response) => {
+  try {
+    const alertId = req.params.alertId;
+    const { description, resolvedById } = req.body;
+    
+    const alert = await prisma.alert.update({
+      where: { id: alertId },
+      data: {
+        description,
+        resolvedAt: new Date(),
+        status: AlertStatus.RESOLVED,
+        resolvedBy: {
+          connect: {
+            id: resolvedById
+          }
+        }
+      }
+    });
+    
+    res.json(alert);
+  } catch (error: any) {
+    console.error('Error resolving report:', error);
+    res.status(500).json({ error: 'Failed to resolve report' });
   }
 };

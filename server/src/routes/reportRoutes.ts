@@ -1,5 +1,5 @@
 import express, { Request, Response, Router } from 'express';
-import { getAgencyReports, getReportById, createReport, updateReport, deleteReport, getCareworkerReports } from '../controllers/reportController';
+import { getAgencyReports, getReportById, createReport, updateReport, deleteReport, getCareworkerReports, resolveReportAlert } from '../controllers/reportController';
 
 const router: Router = express.Router();
 
@@ -15,6 +15,10 @@ router.put('/:id', updateReport);
 router.delete('/:id', deleteReport);
 
 router.get('/user/:userId', getCareworkerReports);
+
+//update report resolve
+router.put('/resolve/:alertId', resolveReportAlert);
+
 
 
 

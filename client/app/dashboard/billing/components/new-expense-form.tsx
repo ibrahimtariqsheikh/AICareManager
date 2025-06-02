@@ -77,7 +77,7 @@ export function NewExpenseForm({ onClose }: NewExpenseFormProps) {
         e.preventDefault()
 
         if (!category || !type || !amount || !description || !dateRange?.from) {
-            console.log('Missing required fields:', { category, type, amount, description, dateRange })
+            ('Missing required fields:', { category, type, amount, description, dateRange })
             return
         }
 
@@ -93,15 +93,15 @@ export function NewExpenseForm({ onClose }: NewExpenseFormProps) {
                 userId: selectedEntity || agencyId
             }
 
-            console.log('Submitting expense data:', expenseData)
+                ('Submitting expense data:', expenseData)
             const response = await createExpense(expenseData).unwrap()
-            console.log("Raw API Response:", response)
+                ("Raw API Response:", response)
 
             // Handle both possible response formats
             const expense = response.expense || response
 
             if (expense && expense.id) {
-                console.log('Dispatching expense to Redux:', expense)
+                ('Dispatching expense to Redux:', expense)
                 // Ensure the expense has all required fields
                 const expenseToDispatch = {
                     ...expense,
@@ -114,7 +114,7 @@ export function NewExpenseForm({ onClose }: NewExpenseFormProps) {
                     agencyId: expense.agencyId || expenseData.agencyId,
                     userId: expense.userId || expenseData.userId
                 }
-                console.log("EXPENSE TO DISPATCH", expenseToDispatch)
+                    ("EXPENSE TO DISPATCH", expenseToDispatch)
                 dispatch(addExpense(expenseToDispatch))
                 onClose()
             } else {

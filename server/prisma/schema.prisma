@@ -46,23 +46,29 @@ enum AlertType {
   OTHER
 }
 
+enum AlertStatus {
+  UNRESOLVED
+  RESOLVED
+}
+
 model Alert {
-  id           String    @id @default(cuid())
+  id           String      @id @default(cuid())
   type         AlertType
   description  String
   reportId     String?
   clientId     String?
-  client       User?     @relation("AlertClient", fields: [clientId], references: [id])
+  client       User?       @relation("AlertClient", fields: [clientId], references: [id])
   careworkerId String?
-  careworker   User?     @relation("AlertCareworker", fields: [careworkerId], references: [id])
-  report       Report?   @relation(fields: [reportId], references: [id])
+  careworker   User?       @relation("AlertCareworker", fields: [careworkerId], references: [id])
+  report       Report?     @relation(fields: [reportId], references: [id])
   agencyId     String
-  agency       Agency    @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  agency       Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  status       AlertStatus @default(UNRESOLVED)
   resolvedById String?
-  resolvedBy   User?     @relation("AlertResolvedBy", fields: [resolvedById], references: [id])
+  resolvedBy   User?       @relation("AlertResolvedBy", fields: [resolvedById], references: [id])
   resolvedAt   DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Agency {
@@ -567,7 +573,7 @@ model Report {
   checkInLocation     String?
   checkOutLocation    String?
   signatureImageUrl   String?
-  status              ReportStatus         @default(COMPLETED)
+  status              ReportStatus         @default(UNRESOLVED)
   lastEditedAt        DateTime?
   lastEditedBy        String?
   lastEditReason      String?
@@ -1294,6 +1300,8 @@ enum ReportStatus {
   EDITED
   FLAGGED
   REVIEWED
+  UNRESOLVED
+  RESOLVED
 }
 
 model CarePlan {

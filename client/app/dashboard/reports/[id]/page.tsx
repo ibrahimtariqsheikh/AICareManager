@@ -10,6 +10,10 @@ import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { useGetReportByIdQuery, useResolveReportAlertMutation } from '@/state/api';
+import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface BodyMapObservation {
     id: string
@@ -35,22 +39,107 @@ interface Task {
 interface Alert {
     id: string
     type: string
+    description: string
+    status: string
     severity: 'high' | 'medium' | 'low'
     time: string
-    description: string
     actionTaken: string
     icon: any
 }
 
+interface Location {
+    latitude: number
+    longitude: number
+}
+
+interface VisitType {
+    id: string;
+    name: string;
+    description: string | null;
+    visitTypeName?: string; // Adding this for backward compatibility
+}
+
+interface MedicationSnapshot {
+    id: string;
+    name: string;
+    taken: boolean;
+    scheduledTime: string;
+    dosage?: string;
+    notes?: string;
+}
+
+interface Report {
+    id: string
+    clientId: string
+    agencyId: string
+    userId: string
+    visitTypeId: string | null
+    title: string | null
+    condition: string
+    summary: string
+    checkInTime: string
+    checkOutTime: string | null
+    createdAt: string
+    checkInDistance: number | null
+    checkOutDistance: number | null
+    checkInLocation: string | null
+    checkOutLocation: string | null
+    signatureImageUrl: string | null
+    status: string
+    lastEditedAt: string | null
+    lastEditedBy: string | null
+    lastEditReason: string | null
+    client: any
+    caregiver: any
+    agency: any
+    visitType: VisitType | null
+    tasksCompleted: any[]
+    alerts: any[]
+    bodyMapObservations: any[]
+    editHistory: any[]
+    visitSnapshot: any | null
+    medicationSnapshot: MedicationSnapshot[]
+}
+
+const parseLocation = (locationString: string | undefined | null): Location | null => {
+    if (!locationString) return null;
+    try {
+        const parts = locationString.split(',');
+        if (parts.length !== 2) return null;
+
+        const lat = Number(parts[0]);
+        const lng = Number(parts[1]);
+
+        if (isNaN(lat) || isNaN(lng)) return null;
+        return { latitude: lat, longitude: lng };
+    } catch (error) {
+        console.error('Error parsing location:', error);
+        return null;
+    }
+};
+
 const VisitReportPage = () => {
     const { agency } = useAppSelector((state: any) => state.agency)
     const [isLoaded, setIsLoaded] = useState(false)
-    const [report, setReport] = useState<any>(null)
-    const [isLoading, setIsLoading] = useState(true)
     const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null)
     const [resolutionDialogOpen, setResolutionDialogOpen] = useState(false)
     const [newResolution, setNewResolution] = useState("")
     const [map, setMap] = useState<google.maps.Map | null>(null);
+    const params = useParams();
+    const reportId = params.id as string;
+    const user = useAppSelector((state: any) => state.user.user.userInfo)
+
+    const [resolveReportAlert, { isLoading: isResolvingAlert }] = useResolveReportAlertMutation()
+
+    console.log("Component rendered with reportId:", reportId);
+
+    const { data: reportFromApi, isLoading: isReportLoading, isError: isReportError } = useGetReportByIdQuery(reportId) as {
+        data: Report | undefined,
+        isLoading: boolean,
+        isError: boolean
+    };
+
+    console.log("Query state:", { reportFromApi, isReportLoading, isReportError });
 
     const { isLoaded: isMapLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
@@ -73,45 +162,49 @@ const VisitReportPage = () => {
     };
 
     const center = {
-        lat: report?.checkInLocation?.latitude || 51.507351,
-        lng: report?.checkInLocation?.longitude || -0.127758
+        lat: parseLocation(reportFromApi?.checkInLocation)?.latitude || 51.507351,
+        lng: parseLocation(reportFromApi?.checkInLocation)?.longitude || -0.127758
     };
 
     const onLoad = useCallback(function callback(map: google.maps.Map) {
         try {
             setMap(map);
             const bounds = new window.google.maps.LatLngBounds();
-            if (report?.checkInLocation) {
+            const checkInLoc = parseLocation(reportFromApi?.checkInLocation);
+            const checkOutLoc = parseLocation(reportFromApi?.checkOutLocation);
+
+            if (checkInLoc) {
                 bounds.extend({
-                    lat: report.checkInLocation.latitude,
-                    lng: report.checkInLocation.longitude
+                    lat: checkInLoc.latitude,
+                    lng: checkInLoc.longitude
                 });
             }
-            if (report?.checkOutLocation) {
+            if (checkOutLoc) {
                 bounds.extend({
-                    lat: report.checkOutLocation.latitude,
-                    lng: report.checkOutLocation.longitude
+                    lat: checkOutLoc.latitude,
+                    lng: checkOutLoc.longitude
                 });
             }
             map.fitBounds(bounds);
         } catch (error) {
             console.error('Error setting map bounds:', error);
         }
-    }, [report]);
+    }, [reportFromApi]);
 
     const onUnmount = useCallback(function callback() {
         // Cleanup if needed
     }, []);
 
     const centerOnHome = useCallback(() => {
-        if (map && report?.checkInLocation) {
+        const checkInLoc = parseLocation(reportFromApi?.checkInLocation);
+        if (map && checkInLoc) {
             map.panTo({
-                lat: report.checkInLocation.latitude,
-                lng: report.checkInLocation.longitude
+                lat: checkInLoc.latitude,
+                lng: checkInLoc.longitude
             });
             map.setZoom(15);
         }
-    }, [map, report]);
+    }, [map, reportFromApi]);
 
     const zoomIn = useCallback(() => {
         if (map) {
@@ -125,9 +218,16 @@ const VisitReportPage = () => {
         }
     }, [map]);
 
-    // Format date helper function
-    const formatDate = (date: Date, format: string) => {
-        const d = new Date(date);
+    // Update formatDate to handle Date objects
+    const formatDate = (dateString: string | Date | null | undefined, format: string) => {
+        if (!dateString) return 'Not available';
+
+        const d = new Date(dateString);
+
+        // Check for invalid dates (like the 1970 timestamp in your data)
+        if (d.getFullYear() === 1970 || isNaN(d.getTime())) {
+            return 'Not available';
+        }
 
         if (format === "EEEE, d MMM yyyy") {
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -136,38 +236,67 @@ const VisitReportPage = () => {
         }
 
         if (format === "HH:mm") {
-            return d.getHours().toString().padStart(2, '0') + ':' +
-                d.getMinutes().toString().padStart(2, '0');
+            const hours = d.getHours();
+            const minutes = d.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+            return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        }
+
+        if (format === "d MMM yyyy") {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
         }
 
         return d.toLocaleString();
     };
 
-    useEffect(() => {
-        // Get the report ID from the URL
-        const reportId = window.location.pathname.split('/').pop()
-
-        // Find the report in the agency data
-        const foundReport = agency?.reports?.find((r: any) => r.id === reportId)
-
-        if (foundReport) {
-            setReport(foundReport)
+    // Calculate visit duration
+    const calculateDuration = () => {
+        if (!reportFromApi?.checkInTime || !reportFromApi?.checkOutTime) {
+            return 'Not available';
         }
 
-        setIsLoading(false)
-        setIsLoaded(true)
-    }, [agency])
+        const checkIn = new Date(reportFromApi.checkInTime);
+        const checkOut = new Date(reportFromApi.checkOutTime);
 
-    const handleAddResolution = () => {
-        if (selectedAlert && newResolution.trim()) {
-            // Here you would typically update the alert in your backend
-            const updatedAlert = {
-                ...selectedAlert,
-                actionTaken: newResolution
-            };
-            setSelectedAlert(updatedAlert);
-            setNewResolution("");
-            setResolutionDialogOpen(false);
+        if (checkIn.getFullYear() === 1970 || checkOut.getFullYear() === 1970) {
+            return 'Not available';
+        }
+
+        const diffMs = checkOut.getTime() - checkIn.getTime();
+        const diffMins = Math.round(diffMs / (1000 * 60));
+
+        if (diffMins < 60) {
+            return `${diffMins}m`;
+        } else {
+            const hours = Math.floor(diffMins / 60);
+            const minutes = diffMins % 60;
+            return `${hours}h ${minutes}m`;
+        }
+    };
+
+    useEffect(() => {
+        setIsLoaded(true)
+    }, [])
+
+    const handleAddResolution = async () => {
+        if (selectedAlert && newResolution.trim() && user?.id) {
+            try {
+                await resolveReportAlert({
+                    alertId: selectedAlert.id,
+                    description: newResolution,
+                    resolvedById: user.id
+                }).unwrap();
+
+                setNewResolution("");
+                setSelectedAlert(null);
+                setResolutionDialogOpen(false);
+                toast.success("Resolution added successfully");
+            } catch (error) {
+                console.error("Error adding resolution:", error);
+                toast.error("Error adding resolution");
+            }
         }
     };
 
@@ -183,45 +312,37 @@ const VisitReportPage = () => {
         setResolutionDialogOpen(true);
     };
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-        )
-    }
-
-    if (!report) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <h2 className="text-xl font-semibold mb-2">Report not found</h2>
-                    <p className="text-gray-600 mb-4">The report you're looking for doesn't exist or has been removed.</p>
-                    <Link href="/dashboard/reports">
-                        <Button variant="outline" className="flex items-center gap-2">
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Reports
-                        </Button>
-                    </Link>
-                </div>
-            </div>
-        )
-    }
-
-    // Mock medication data
-    const medications = [
-        { id: "med1", name: "Lisinopril", dosage: "10mg", time: "14:54", taken: true },
-        { id: "med2", name: "Ramipril", dosage: "5mg", time: "14:54", taken: true },
-        { id: "med3", name: "Zoloft", dosage: "100mg", time: "14:54", taken: false }
-    ];
-
-    // Mock task details
-    const taskDetails = {
-        "FOOD": "Give him a tuna sandwich",
-        "DRINKS": "Done",
-        "COMPANIONSHIP": "Done",
-        "INCIDENT_RESPONSE": "He fell off the stairs"
+    // Map API alert types to display names and icons
+    const getAlertInfo = (type: string) => {
+        switch (type) {
+            case 'MEDICATION':
+                return { displayName: 'Medication Alert', icon: Heart, severity: 'high' as const };
+            case 'LOCATION':
+                return { displayName: 'Location Alert', icon: MapPin, severity: 'medium' as const };
+            case 'LATE_VISIT':
+                return { displayName: 'Late Visit', icon: Clock, severity: 'medium' as const };
+            default:
+                return { displayName: type, icon: AlertTriangle, severity: 'low' as const };
+        }
     };
+
+    // Transform API alerts to component format
+    const transformedAlerts: Alert[] = reportFromApi?.alerts?.map((alert: any) => {
+        const alertInfo = getAlertInfo(alert.type);
+        const alertTime = alert.resolvedAt ? new Date(alert.resolvedAt) : new Date(alert.createdAt);
+
+        return {
+            id: alert.id,
+            type: alertInfo.displayName,
+            description: alert.description,
+            status: alert.status,
+            severity: alertInfo.severity,
+            time: alertTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            actionTaken: alert.status === 'RESOLVED' ? `Resolved by admin on ${formatDate(alert.resolvedAt, "d MMM yyyy")}` : '',
+            resolvedAt: alert.resolvedAt,
+            icon: alertInfo.icon
+        };
+    }) || [];
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -257,69 +378,157 @@ const VisitReportPage = () => {
         }
     };
 
-    // Mock data for tasks
-    const mockTasks: Task[] = [
-        { id: "1", taskName: "Food preparation", completed: true, taskType: "FOOD", notes: "Prepared tuna sandwich as requested", completedAt: "2024-01-01T14:30:00Z" },
-        { id: "2", taskName: "Drinks", completed: true, taskType: "DRINKS", notes: "Provided water and tea", completedAt: "2024-01-01T14:35:00Z" },
-        { id: "3", taskName: "Companionship", completed: true, taskType: "COMPANIONSHIP", notes: "Engaged in conversation about family", completedAt: "2024-01-01T14:40:00Z" },
-        { id: "4", taskName: "Personal care", completed: true, taskType: "PERSONALCARE", notes: "Assisted with hygiene needs", completedAt: "2024-01-01T14:45:00Z" }
-    ];
+    if (isReportLoading) {
+        return (
+            <div className="p-6 space-y-4 mt-3">
+                {/* Header Skeleton */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <Skeleton className="h-9 w-9 rounded-md" />
+                        <Skeleton className="h-6 w-48" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Skeleton className="h-9 w-24" />
+                        <Skeleton className="h-6 w-24" />
+                    </div>
+                </div>
 
-    // Mock data for alerts
-    const mockAlerts: Alert[] = [
-        {
-            id: "1",
-            type: "Fall Incident",
-            severity: "high",
-            time: "14:30",
-            description: "Client experienced a minor fall in the bathroom. No injuries sustained. Assessed and documented.",
-            actionTaken: "Helped client to safety, checked for injuries, reported to family",
-            icon: AlertTriangle
-        },
-        {
-            id: "2",
-            type: "Blood Pressure",
-            severity: "medium",
-            time: "14:45",
-            description: "Blood pressure reading slightly elevated (150/90)",
-            actionTaken: "",
-            icon: Heart
-        },
-        {
-            id: "3",
-            type: "Distance Alert",
-            severity: "low",
-            time: "14:00",
-            description: "Check-in location 8 meters from designated area",
-            actionTaken: "Verified correct location with client",
-            icon: MapPin
-        }
-    ];
+                {/* Main Content Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Visit Details Card */}
+                    <Card className="overflow-hidden">
+                        <CardHeader className="p-4 pb-2">
+                            <div className="flex items-center mb-3">
+                                <Skeleton className="h-5 w-5 mr-2" />
+                                <Skeleton className="h-4 w-32" />
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                            <div className="space-y-3">
+                                {[...Array(4)].map((_, i) => (
+                                    <div key={i} className="space-y-1.5">
+                                        <Skeleton className="h-3 w-20" />
+                                        <Skeleton className="h-4 w-40" />
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
 
-    const bodyMapObservations: BodyMapObservation[] = [
-        {
-            id: "1",
-            bodyPart: "front-left-hand",
-            condition: "Bruising",
-            position: {
-                top: "20%",
-                left: "10%",
-                width: "30px",
-                height: "100px"
-            }
-        },
-        {
-            id: "2",
-            bodyPart: "back",
-            condition: "Rash",
-            position: {
-                top: "16%",
-                left: "32%",
-                width: "50px",
-                height: "100px"
-            }
-        }
-    ]
+                    {/* Map Card */}
+                    <Card className="overflow-hidden">
+                        <CardHeader className="p-4 pb-2">
+                            <div className="flex items-center">
+                                <Skeleton className="h-5 w-5 mr-2" />
+                                <Skeleton className="h-4 w-40" />
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Skeleton className="h-56 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Alerts Section */}
+                <Card className="overflow-hidden">
+                    <CardHeader className="p-4 pb-2">
+                        <div className="flex items-center">
+                            <Skeleton className="h-5 w-5 mr-2" />
+                            <Skeleton className="h-4 w-32" />
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-4">
+                        <div className="space-y-3">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="p-3 rounded-lg border">
+                                    <div className="flex items-start gap-3">
+                                        <Skeleton className="h-8 w-8 rounded-full" />
+                                        <div className="flex-1 space-y-2">
+                                            <Skeleton className="h-4 w-48" />
+                                            <Skeleton className="h-3 w-full" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Tasks and Summary Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Tasks Card */}
+                    <Card className="overflow-hidden">
+                        <CardHeader className="p-4 pb-2">
+                            <div className="flex items-center">
+                                <Skeleton className="h-5 w-5 mr-2" />
+                                <Skeleton className="h-4 w-32" />
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                            <div className="space-y-3">
+                                {[...Array(3)].map((_, i) => (
+                                    <div key={i} className="flex items-start gap-3">
+                                        <Skeleton className="h-5 w-5 mt-0.5" />
+                                        <div className="flex-1 space-y-1.5">
+                                            <Skeleton className="h-4 w-48" />
+                                            <Skeleton className="h-3 w-full" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Summary Card */}
+                    <Card className="overflow-hidden">
+                        <CardHeader className="p-4 pb-2">
+                            <div className="flex items-center">
+                                <Skeleton className="h-5 w-5 mr-2" />
+                                <Skeleton className="h-4 w-32" />
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                            <div className="space-y-3">
+                                <div className="space-y-1.5">
+                                    <Skeleton className="h-3 w-20" />
+                                    <Skeleton className="h-4 w-full" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Skeleton className="h-3 w-20" />
+                                    <Skeleton className="h-4 w-full" />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        )
+    }
+
+    if (isReportError || !reportFromApi) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-xl font-semibold mb-2">Report not found</h2>
+                    <p className="text-gray-600 mb-4">The report you're looking for doesn't exist or has been removed.</p>
+                    <Link href="/dashboard/reports">
+                        <Button variant="outline" className="flex items-center gap-2">
+                            <ArrowLeft className="h-4 w-4" />
+                            Back to Reports
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        )
+    }
+
+    // Body map observations from API data
+    const bodyMapObservations: BodyMapObservation[] = reportFromApi?.bodyMapObservations?.map((obs: any) => ({
+        id: obs.id,
+        bodyPart: obs.bodyPart,
+        condition: obs.condition,
+        position: obs.position
+    })) || [];
 
     return (
         <div className={`relative min-h-screen transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
@@ -337,7 +546,9 @@ const VisitReportPage = () => {
                                     <span className="sr-only">Back to reports</span>
                                 </Button>
                             </Link>
-                            <h1 className="text-lg font-semibold text-gray-900">{report.client?.fullName}</h1>
+                            <h1 className="text-lg font-semibold text-gray-900">
+                                {reportFromApi.client?.fullName || 'Unknown Client'}
+                            </h1>
                         </div>
                         <div className="flex items-center gap-3">
                             <Button
@@ -348,9 +559,9 @@ const VisitReportPage = () => {
                                 <Download className="h-4 w-4" />
                                 Export
                             </Button>
-                            <div className={`flex items-center text-xs ${getStatusColor(report.status)} rounded-md px-2 py-1 font-medium`}>
-                                {getStatusIcon(report.status)}
-                                <div className="text-xs">{report.status}</div>
+                            <div className={`flex items-center text-xs ${getStatusColor(reportFromApi.status)} rounded-md px-2 py-1 font-medium`}>
+                                {getStatusIcon(reportFromApi.status)}
+                                <div className="text-xs">{reportFromApi.status}</div>
                             </div>
                         </div>
                     </div>
@@ -367,33 +578,32 @@ const VisitReportPage = () => {
                             <div className="space-y-3">
                                 <div>
                                     <p className="text-xs text-gray-600">Visit type</p>
-                                    <p className="text-sm font-medium">{report.visitType?.name || 'Standard Visit'}</p>
+                                    <p className="text-sm font-medium">{reportFromApi.visitType?.visitTypeName || 'Not specified'}</p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-600">Client</p>
-                                    <p className="text-sm font-medium">{report.client?.fullName}</p>
+                                    <p className="text-sm font-medium">{reportFromApi.client?.fullName || 'Not available'}</p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-600">Care worker</p>
-                                    <p className="text-sm font-medium">{report.caregiver?.fullName}</p>
+                                    <p className="text-sm font-medium">{reportFromApi.caregiver?.fullName || 'Not available'}</p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-600">Duration</p>
-                                    <p className="text-sm font-medium">2m</p>
+                                    <p className="text-sm font-medium">{calculateDuration()}</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                                     <div>
-                                        <p className="text-xs text-gray-600">Check in date:</p>
-                                        <p className="text-sm font-medium">{formatDate(report.checkInTime, "HH:mm")}</p>
-                                        <p className="text-xs text-gray-500">{formatDate(report.checkInTime, "d MMM yyyy")}</p>
+                                        <p className="text-xs text-gray-600">Check in:</p>
+                                        <p className="text-sm font-medium">{formatDate(reportFromApi.checkInTime, "HH:mm")}</p>
+                                        <p className="text-xs text-gray-500">{formatDate(reportFromApi.checkInTime, "d MMM yyyy")}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-gray-600">Check out date:</p>
-                                        <p className="text-sm font-medium">{formatDate(report.checkOutTime, "HH:mm")}</p>
-                                        <p className="text-xs text-gray-500">{formatDate(report.checkOutTime, "d MMM yyyy")}</p>
+                                        <p className="text-xs text-gray-600">Check out:</p>
+                                        <p className="text-sm font-medium">{formatDate(reportFromApi.checkOutTime, "HH:mm")}</p>
+                                        <p className="text-xs text-gray-500">{formatDate(reportFromApi.checkOutTime, "d MMM yyyy")}</p>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 
@@ -410,7 +620,14 @@ const VisitReportPage = () => {
                             </CardHeader>
                             <CardContent className="p-0">
                                 <div className="relative w-full h-56 bg-gray-100 rounded-b-lg overflow-hidden">
-                                    {loadError ? (
+                                    {(!reportFromApi.checkInLocation && !reportFromApi.checkOutLocation) ? (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <div className="text-center">
+                                                <MapPin className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                                                <p className="text-sm text-gray-600">No location data available</p>
+                                            </div>
+                                        </div>
+                                    ) : loadError ? (
                                         <div className="w-full h-full flex items-center justify-center">
                                             <div className="text-center">
                                                 <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
@@ -418,7 +635,7 @@ const VisitReportPage = () => {
                                             </div>
                                         </div>
                                     ) : isMapLoaded ? (
-                                        <div className="w-full h-full p-2 rounnded-lg">
+                                        <div className="w-full h-full p-2 rounded-lg">
                                             <GoogleMap
                                                 mapContainerStyle={mapContainerStyle}
                                                 center={center}
@@ -437,11 +654,11 @@ const VisitReportPage = () => {
                                                     zoomControl: false
                                                 }}
                                             >
-                                                {report?.checkInLocation && (
+                                                {reportFromApi?.checkInLocation && (
                                                     <Marker
                                                         position={{
-                                                            lat: report.checkInLocation.latitude,
-                                                            lng: report.checkInLocation.longitude
+                                                            lat: parseLocation(reportFromApi.checkInLocation)?.latitude || 0,
+                                                            lng: parseLocation(reportFromApi.checkInLocation)?.longitude || 0
                                                         }}
                                                         icon={{
                                                             path: google.maps.SymbolPath.CIRCLE,
@@ -453,11 +670,11 @@ const VisitReportPage = () => {
                                                         }}
                                                     />
                                                 )}
-                                                {report?.checkOutLocation && (
+                                                {reportFromApi?.checkOutLocation && (
                                                     <Marker
                                                         position={{
-                                                            lat: report.checkOutLocation.latitude,
-                                                            lng: report.checkOutLocation.longitude
+                                                            lat: parseLocation(reportFromApi.checkOutLocation)?.latitude || 0,
+                                                            lng: parseLocation(reportFromApi.checkOutLocation)?.longitude || 0
                                                         }}
                                                         icon={{
                                                             path: google.maps.SymbolPath.CIRCLE,
@@ -479,32 +696,34 @@ const VisitReportPage = () => {
                                             </div>
                                         </div>
                                     )}
-                                    <div className="absolute bottom-4 left-4 flex flex-col gap-2">
-                                        <button
-                                            onClick={centerOnHome}
-                                            className="bg-white rounded-full p-2 hover:bg-gray-50 transition-colors"
-                                        >
-                                            <Home className="h-4 w-4 text-blue-600" />
-                                        </button>
-                                        <div className="flex flex-col gap-1">
+                                    {(reportFromApi.checkInLocation || reportFromApi.checkOutLocation) && (
+                                        <div className="absolute bottom-4 left-4 flex flex-col gap-2">
                                             <button
-                                                onClick={zoomIn}
+                                                onClick={centerOnHome}
                                                 className="bg-white rounded-full p-2 hover:bg-gray-50 transition-colors"
                                             >
-                                                <svg viewBox="0 0 24 24" className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2">
-                                                    <path d="M12 5v14M5 12h14" />
-                                                </svg>
+                                                <Home className="h-4 w-4 text-blue-600" />
                                             </button>
-                                            <button
-                                                onClick={zoomOut}
-                                                className="bg-white rounded-full p-2 hover:bg-gray-50 transition-colors"
-                                            >
-                                                <svg viewBox="0 0 24 24" className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2">
-                                                    <path d="M5 12h14" />
-                                                </svg>
-                                            </button>
+                                            <div className="flex flex-col gap-1">
+                                                <button
+                                                    onClick={zoomIn}
+                                                    className="bg-white rounded-full p-2 hover:bg-gray-50 transition-colors"
+                                                >
+                                                    <svg viewBox="0 0 24 24" className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <path d="M12 5v14M5 12h14" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    onClick={zoomOut}
+                                                    className="bg-white rounded-full p-2 hover:bg-gray-50 transition-colors"
+                                                >
+                                                    <svg viewBox="0 0 24 24" className="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <path d="M5 12h14" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                                 <div className="p-4 space-y-3">
                                     <div className="grid grid-cols-2 gap-4">
@@ -515,8 +734,10 @@ const VisitReportPage = () => {
                                             </div>
                                             <div className="pl-5 space-y-1">
                                                 <p className="text-xs text-gray-600">Time:</p>
-                                                <p className="text-sm font-medium">{formatDate(report.checkInTime, "HH:mm")}</p>
-                                                <p className="text-xs text-gray-500">{report.checkInDistance} meters from client's home</p>
+                                                <p className="text-sm font-medium">{formatDate(reportFromApi.checkInTime, "HH:mm")}</p>
+                                                <p className="text-xs text-gray-500">
+                                                    {reportFromApi.checkInDistance ? `${reportFromApi.checkInDistance} meters from client's home` : 'Distance not recorded'}
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
@@ -526,8 +747,10 @@ const VisitReportPage = () => {
                                             </div>
                                             <div className="pl-5 space-y-1">
                                                 <p className="text-xs text-gray-600">Time:</p>
-                                                <p className="text-sm font-medium">{formatDate(report.checkOutTime, "HH:mm")}</p>
-                                                <p className="text-xs text-gray-500">{report.checkOutDistance} meters from client's home</p>
+                                                <p className="text-sm font-medium">{formatDate(reportFromApi.checkOutTime, "HH:mm")}</p>
+                                                <p className="text-xs text-gray-500">
+                                                    {reportFromApi.checkOutDistance ? `${reportFromApi.checkOutDistance} meters from client's home` : 'Distance not recorded'}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -536,17 +759,18 @@ const VisitReportPage = () => {
                         </Card>
                     </div>
 
-                    {mockAlerts.length > 0 && (
+                    {/* Alerts Section */}
+                    {transformedAlerts.length > 0 && (
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <AlertTriangle className="h-5 w-5 text-red-500" />
-                                    Alerts
+                                    Alerts ({transformedAlerts.length})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="grid grid-cols-1 gap-3">
-                                    {mockAlerts
+                                    {transformedAlerts
                                         .sort((a, b) => {
                                             // Sort by resolution status first (unresolved first)
                                             if (!a.actionTaken && b.actionTaken) return -1;
@@ -572,7 +796,12 @@ const VisitReportPage = () => {
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center justify-between mb-1">
                                                             <h4 className="font-medium text-sm truncate">{alert.type}</h4>
-                                                            <span className="text-xs text-gray-600 whitespace-nowrap ml-2">{alert.time}</span>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-xs text-gray-600 whitespace-nowrap">{alert.time}</span>
+                                                                <Badge variant={alert.status === 'RESOLVED' ? 'default' : 'destructive'} className="text-xs">
+                                                                    {alert.status}
+                                                                </Badge>
+                                                            </div>
                                                         </div>
                                                         <p className="text-xs text-gray-700 mb-2 line-clamp-2">{alert.description}</p>
                                                         <div className="bg-white/50 rounded px-2 py-1 border border-white/60">
@@ -611,6 +840,7 @@ const VisitReportPage = () => {
                     )}
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {/* Medication Section */}
                         <Card>
                             <CardHeader>
                                 <div className="flex items-center mb-1">
@@ -619,34 +849,45 @@ const VisitReportPage = () => {
                                     </svg>
                                     <CardTitle className="text-sm">Medication</CardTitle>
                                 </div>
-                                <CardDescription className="text-xs">Lunchtime medications</CardDescription>
+                                <CardDescription className="text-xs">
+                                    {reportFromApi?.medicationSnapshot?.length ? 'Medication administration record' : 'No medications administered'}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-3">
-                                    {medications.map(med => (
-                                        <div key={med.id} className="flex items-start">
-                                            {med.taken ? (
-                                                <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
-                                            ) : (
-                                                <div className="h-5 w-5 rounded-full border-2 border-red-500 flex items-center justify-center mr-3 mt-0.5">
-                                                    <span className="text-red-500 font-bold text-xs">✕</span>
+                                {reportFromApi?.medicationSnapshot?.length ? (
+                                    <div className="space-y-3">
+                                        {reportFromApi.medicationSnapshot.map((med) => (
+                                            <div key={med.id} className="flex items-start">
+                                                {med.taken ? (
+                                                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5" />
+                                                ) : (
+                                                    <div className="h-5 w-5 rounded-full border-2 border-red-500 flex items-center justify-center mr-3 mt-0.5">
+                                                        <span className="text-red-500 font-bold text-xs">✕</span>
+                                                    </div>
+                                                )}
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between">
+                                                        <p className="text-xs font-medium">{med.name || 'Medication'} - {formatDate(med.scheduledTime, "HH:mm")}</p>
+                                                        <span className={med.taken ? "text-green-600 text-xs" : "text-red-600 text-xs"}>
+                                                            {med.taken ? "Taken" : "Not taken"}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-600">{med.dosage || 'Dosage not specified'}</p>
+                                                    {med.notes && <p className="text-xs text-gray-500 mt-1">{med.notes}</p>}
                                                 </div>
-                                            )}
-                                            <div className="flex-1">
-                                                <div className="flex justify-between">
-                                                    <p className="text-xs font-medium">{med.name} - {med.time}</p>
-                                                    <span className={med.taken ? "text-green-600 text-xs" : "text-red-600 text-xs"}>
-                                                        {med.taken ? "Taken" : "Not taken"}
-                                                    </span>
-                                                </div>
-                                                <p className="text-xs text-gray-600">1 x {med.dosage} tablet</p>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-4">
+                                        <Heart className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+                                        <p className="text-sm text-gray-500">No medications recorded for this visit</p>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
 
+                        {/* Body Map Section */}
                         <Card>
                             <CardHeader>
                                 <div className="flex items-center">
@@ -660,154 +901,121 @@ const VisitReportPage = () => {
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex justify-center space-x-8">
-                                    <div className="text-center relative">
-                                        <div className="mb-4 relative">
-                                            <Image
-                                                src="/assets/body_map_front.svg"
-                                                alt="Front view of human body"
-                                                width={140}
-                                                height={300}
-                                                className="mx-auto"
-                                            />
-                                            {bodyMapObservations.filter((obs: BodyMapObservation) => obs.bodyPart.includes('front')).map((observation: BodyMapObservation) => (
-                                                <div
-                                                    key={observation.id}
-                                                    className="absolute bg-blue-500/30 border-2 border-blue-500/50 rounded-md transition-all duration-200 hover:bg-blue-500/40"
-                                                    style={{
-                                                        top: observation.position.top,
-                                                        left: observation.position.left,
-                                                        width: observation.position.width,
-                                                        height: observation.position.height
-                                                    }}
-                                                />
-                                            ))}
-                                            <p className="text-xs font-medium mt-2">Front view</p>
-                                        </div>
-                                    </div>
+                                {bodyMapObservations.length > 0 ? (
+                                    <>
+                                        <div className="flex justify-center space-x-8">
+                                            <div className="text-center relative">
+                                                <div className="mb-4 relative">
+                                                    <Image
+                                                        src="/assets/body_map_front.svg"
+                                                        alt="Front view of human body"
+                                                        width={140}
+                                                        height={300}
+                                                        className="mx-auto"
+                                                    />
+                                                    {bodyMapObservations.filter((obs: BodyMapObservation) => obs.bodyPart.includes('front')).map((observation: BodyMapObservation) => (
+                                                        <div
+                                                            key={observation.id}
+                                                            className="absolute bg-blue-500/30 border-2 border-blue-500/50 rounded-md transition-all duration-200 hover:bg-blue-500/40"
+                                                            style={{
+                                                                top: observation.position.top,
+                                                                left: observation.position.left,
+                                                                width: observation.position.width,
+                                                                height: observation.position.height
+                                                            }}
+                                                        />
+                                                    ))}
+                                                    <p className="text-xs font-medium mt-2">Front view</p>
+                                                </div>
+                                            </div>
 
-                                    <div className="text-center relative">
-                                        <div className="mb-4 relative">
-                                            <Image
-                                                src="/assets/body_map_back.svg"
-                                                alt="Back view of human body"
-                                                width={140}
-                                                height={300}
-                                                className="mx-auto"
-                                            />
-                                            {bodyMapObservations.filter((obs: BodyMapObservation) => obs.bodyPart.includes('back')).map((observation: BodyMapObservation) => (
-                                                <div
-                                                    key={observation.id}
-                                                    className="absolute bg-blue-500/30 border-2 border-blue-500/50 rounded-md transition-all duration-200 hover:bg-blue-500/40"
-                                                    style={{
-                                                        top: observation.position.top,
-                                                        left: observation.position.left,
-                                                        width: observation.position.width,
-                                                        height: observation.position.height
-                                                    }}
-                                                />
-                                            ))}
-                                            <p className="text-xs font-medium mt-2">Back view</p>
+                                            <div className="text-center relative">
+                                                <div className="mb-4 relative">
+                                                    <Image
+                                                        src="/assets/body_map_back.svg"
+                                                        alt="Back view of human body"
+                                                        width={140}
+                                                        height={300}
+                                                        className="mx-auto"
+                                                    />
+                                                    {bodyMapObservations.filter((obs: BodyMapObservation) => obs.bodyPart.includes('back')).map((observation: BodyMapObservation) => (
+                                                        <div
+                                                            key={observation.id}
+                                                            className="absolute bg-blue-500/30 border-2 border-blue-500/50 rounded-md transition-all duration-200 hover:bg-blue-500/40"
+                                                            style={{
+                                                                top: observation.position.top,
+                                                                left: observation.position.left,
+                                                                width: observation.position.width,
+                                                                height: observation.position.height
+                                                            }}
+                                                        />
+                                                    ))}
+                                                    <p className="text-xs font-medium mt-2">Back view</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
 
-                                <div className="mt-4 space-y-2">
-                                    {bodyMapObservations.map((observation: BodyMapObservation) => (
-                                        <div key={observation.id} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                            <p className="text-xs text-blue-800">
-                                                <span className="font-medium">{observation.bodyPart.split('-').map(word =>
-                                                    word.charAt(0).toUpperCase() + word.slice(1)
-                                                ).join(' ')}:</span> {observation.condition}
-                                            </p>
+                                        <div className="mt-4 space-y-2">
+                                            {bodyMapObservations.map((observation: BodyMapObservation) => (
+                                                <div key={observation.id} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                                    <p className="text-xs text-blue-800">
+                                                        <span className="font-medium">{observation.bodyPart.split('-').map(word =>
+                                                            word.charAt(0).toUpperCase() + word.slice(1)
+                                                        ).join(' ')}:</span> {observation.condition}
+                                                    </p>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                    <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                                        <p className="text-xs text-gray-700">
-                                            <span className="font-medium">General note:</span> Looking good overall
-                                        </p>
+                                    </>
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <svg viewBox="0 0 24 24" className="h-12 w-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" strokeWidth="1">
+                                            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
+                                            <path d="M12 6v6l4 2" />
+                                        </svg>
+                                        <p className="text-sm text-gray-500">No body map observations recorded</p>
                                     </div>
-                                </div>
+                                )}
                             </CardContent>
                         </Card>
                     </div>
-
-
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {/* Completed Tasks Card */}
-                        <div className="space-y-3">
-                            {report.tasksCompleted?.filter((task: Task) => task.taskType === "FOOD" || task.taskType === "DRINKS")
-                                .map((task: Task) => (
-                                    <Card key={task.id}>
-                                        <CardHeader className="pb-3">
-                                            <div className="flex items-center">
-                                                {task.taskType === "FOOD" ? (
-                                                    <svg className="h-5 w-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                        <path d="M16 2H8v7h8V2Z" />
-                                                        <path d="M12 17v4" />
-                                                        <path d="M2 9h20v3a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V9Z" />
-                                                    </svg>
-                                                ) : (
-                                                    <svg className="h-5 w-5 mr-2 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                        <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-                                                        <path d="M12 8v1" />
-                                                        <path d="M12 15v1" />
-                                                        <path d="M16 12h-1" />
-                                                        <path d="M9 12H8" />
-                                                        <path d="M14.9 9.2l-.7.7" />
-                                                        <path d="M9.8 14.9l-.7.7" />
-                                                        <path d="M14.9 14.9l-.7-.7" />
-                                                        <path d="M9.8 9.2l-.7-.7" />
-                                                        <path d="M20 4v5l-1.5.5" />
-                                                        <path d="M4 5v4l1.5.5" />
-                                                        <path d="M19 12.5V19l-7 3-7-3v-6.5" />
-                                                    </svg>
-                                                )}
-                                                <CardTitle className="text-sm">{task.taskName}</CardTitle>
-                                            </div>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <p className="text-xs text-gray-700">{taskDetails[task.taskType as keyof typeof taskDetails]}</p>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-
-
-                        </div>
-
-
-                    </div>
-
-
 
                     {/* Tasks Section */}
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <CheckCircle className="h-5 w-5 text-green-500" />
-                                Tasks Completed
+                                Tasks Completed ({reportFromApi.tasksCompleted?.length || 0})
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {mockTasks.map(task => (
-                                    <div key={task.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <h4 className="text-sm font-medium truncate">{task.taskName}</h4>
-                                                {task.completedAt && (
-                                                    <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
-                                                        {new Date(task.completedAt).toLocaleTimeString()}
-                                                    </span>
+                            {reportFromApi.tasksCompleted?.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {reportFromApi.tasksCompleted.map((task: any) => (
+                                        <div key={task.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                            <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <h4 className="text-sm font-medium truncate">{task.taskName || task.taskType}</h4>
+                                                    {task.completedAt && (
+                                                        <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
+                                                            {formatDate(task.completedAt, "HH:mm")}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {task.notes && (
+                                                    <p className="text-xs text-gray-600 line-clamp-2">{task.notes}</p>
                                                 )}
                                             </div>
-                                            <p className="text-xs text-gray-600 line-clamp-2">{task.notes}</p>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-8">
+                                    <CheckCircle className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                                    <p className="text-sm text-gray-500">No tasks recorded for this visit</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -820,16 +1028,21 @@ const VisitReportPage = () => {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0">
-                            <p className="text-sm text-gray-700 leading-relaxed">
-                                Visit completed successfully with one medication alert requiring follow-up. Client was in good spirits
-                                and cooperative throughout the visit. All scheduled tasks were completed satisfactorily. Location
-                                check-in was slightly outside designated area but verified as correct with client. Overall visit was
-                                positive with good client engagement.
-                            </p>
+                            <div className="space-y-3">
+                                <div>
+                                    <p className="text-xs text-gray-600 font-medium mb-1">Condition:</p>
+                                    <p className="text-sm text-gray-700">{reportFromApi.condition || 'Not specified'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-600 font-medium mb-1">Summary:</p>
+                                    <p className="text-sm text-gray-700 leading-relaxed">
+                                        {reportFromApi.summary || 'No summary provided for this visit.'}
+                                    </p>
+                                </div>
+
+                            </div>
                         </CardContent>
                     </Card>
-
-
                 </div>
             </div>
 
@@ -889,6 +1102,15 @@ const VisitReportPage = () => {
                                 <div>
                                     <p className="text-sm font-medium">Action Taken:</p>
                                     <p className="text-sm text-gray-600">{selectedAlert.actionTaken}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium">Status:</p>
+                                    <Badge className={
+                                        selectedAlert.status === 'RESOLVED' ? 'bg-green-100 text-green-800 border-green-200' :
+                                            'bg-red-100 text-red-800 border-red-200'
+                                    }>
+                                        {selectedAlert.status}
+                                    </Badge>
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">Severity:</p>

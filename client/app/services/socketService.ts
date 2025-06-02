@@ -23,7 +23,7 @@ class SocketService {
   async connect(_userId: string) {
     if (!this.socket) {
       const serverUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
-      console.log("Connecting to socket server:", serverUrl);
+      ("Connecting to socket server:", serverUrl);
       
       try {
         const session = await fetchAuthSession();
@@ -44,7 +44,7 @@ class SocketService {
           });
 
           this.socket.on("connect", () => {
-            console.log("Connected to WebSocket server with ID:", this.socket?.id);
+            ("Connected to WebSocket server with ID:", this.socket?.id);
             resolve(this.socket);
           });
 
@@ -54,7 +54,7 @@ class SocketService {
           });
 
           this.socket.on("disconnect", () => {
-            console.log("Disconnected from WebSocket server");
+            ("Disconnected from WebSocket server");
           });
         });
       } catch (error) {
@@ -72,7 +72,7 @@ class SocketService {
   sendMessage(data: MessageData) {
     if (this.socket) {
       const { conversationId, content, senderId } = data;
-      console.log('Socket service - Sending message:', {
+      ('Socket service - Sending message:', {
         conversationId,
         content,
         senderId
@@ -85,7 +85,7 @@ class SocketService {
         updatedAt: new Date().toISOString(),
         isRead: false,
       })
-      console.log('Socket service - Message emitted');
+      ('Socket service - Message emitted');
     } else {
       console.error("Socket not connected. Cannot send message.")
     }
@@ -103,10 +103,10 @@ class SocketService {
 
   onMessageReceived(callback: (message: any) => void) {
     if (this.socket) {
-      console.log('Setting up message listener...');
+      ('Setting up message listener...');
       this.socket.on("receive_message", (message) => {
-        console.log('Socket event received:', 'receive_message');
-        console.log('Raw message data:', message);
+        ('Socket event received:', 'receive_message');
+        ('Raw message data:', message);
         
         // Map the server's message format to our expected structure
         const formattedMessage = {
@@ -124,15 +124,15 @@ class SocketService {
           }
         };
         
-        console.log('Formatted message:', formattedMessage);
+        ('Formatted message:', formattedMessage);
         callback(formattedMessage);
       });
       return () => {
-        console.log('Cleaning up message listener...');
+        ('Cleaning up message listener...');
         this.socket?.off("receive_message", callback);
       };
     }
-    console.log('Socket not connected, cannot set up message listener');
+    ('Socket not connected, cannot set up message listener');
     return () => {};
   }
 

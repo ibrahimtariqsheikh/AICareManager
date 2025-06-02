@@ -27,10 +27,6 @@ export default function BillingStats() {
     const agencyId = useAppSelector(state => state.user.user.userInfo?.agencyId)
     const { data, isLoading } = useGetInvoiceDashboardDataQuery(agencyId || "")
 
-    console.log("DATA", data)
-
-
-
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 h-fit">
             <Card className={cn("border border-neutral-200 shadow-none", "dark:border-neutral-800 dark:bg-card")}>

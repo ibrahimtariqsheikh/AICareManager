@@ -16,22 +16,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Geist_Mono } from "next/font/google"
-import { useGetAgencyAlertsQuery, useGetAllAgencyAlertsQuery } from "@/state/api"
+import { useGetAgencyAlertsQuery, useGetAllAgencyAlertsQuery, useResolveReportAlertMutation } from "@/state/api"
 import { RootState } from "@/state/redux"
 import { CustomSelect } from "@/components/ui/custom-select"
 import { CustomDateRangeSelector } from "@/app/dashboard/billing/invoice-builder/components/custom-date-range"
 import React from "react"
+import { CustomTextarea } from "@/components/ui/custom-textarea"
+import { toast } from "sonner"
 
-const geistMono = Geist_Mono({
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-    variable: '--font-geist-mono',
-})
 
 export default function ReportsPage() {
 
-
-    const agencyId = useAppSelector((state: RootState) => state.user.user.userInfo?.agencyId)
+    const user = useAppSelector((state: RootState) => state.user.user.userInfo)
+    const agencyId = user?.agencyId
+    const userId = user?.id
     const agency = useAppSelector((state: RootState) => state.agency.agency)
 
     const reports = agency?.reports || []
@@ -84,8 +82,7 @@ export default function ReportsPage() {
         return Array.from(workerMap.values())
     }, [reports])
 
-    console.log("UNIQUE CLIENTS", uniqueClients)
-    console.log("UNIQUE CARE WORKERS", uniqueCareWorkers)
+
 
     // Reports summary data
     const reportsSummary = {
@@ -120,7 +117,9 @@ export default function ReportsPage() {
         skip: !agencyId
     })
 
-    console.log("ALERTS", alerts)
+    const [resolveReportAlert, { isLoading: isResolvingAlert }] = useResolveReportAlertMutation()
+
+
 
 
     const enhancedAlerts = alerts || []
@@ -316,11 +315,23 @@ export default function ReportsPage() {
         return filtered
     }
 
-    const handleAddResolution = () => {
-        // Here you would typically make an API call to save the resolution
-        console.log("Adding resolution:", resolutionText, "for alert:", selectedAlert)
-        setResolutionText("")
-        setSelectedAlert(null)
+    const handleAddResolution = async () => {
+        if (!selectedAlert || !userId) return
+        try {
+            const result = await resolveReportAlert({
+                alertId: selectedAlert.id,
+                description: resolutionText,
+                resolvedById: userId
+            })
+
+            setResolutionText("")
+            setSelectedAlert(null)
+            toast.success("Resolution added successfully")
+        } catch (error) {
+            console.error("Error adding resolution:", error)
+            toast.error("Error adding resolution")
+        }
+
     }
 
     const renderReportItem = (report: any) => (
@@ -409,61 +420,60 @@ export default function ReportsPage() {
             <td className="py-1.5 px-2 text-sm text-primary">{alert.client?.fullName}</td>
             <td className="py-1.5 px-2 text-sm text-muted-foreground">{alert.description}</td>
             <td className="py-1.5 px-2 text-right">
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-6"
-                            onClick={() => setSelectedAlert(alert)}
-                        >
-                            <span className="flex items-center">
-                                <AlertCircle className="h-3 w-3 mr-1" />
-                                Add resolution
-                            </span>
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add Resolution</DialogTitle>
-                            <DialogDescription>
-                                Add a resolution for the alert regarding {alert.client?.fullName}
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="space-y-2">
-                                <label htmlFor="resolution" className="text-sm font-medium">
-                                    Resolution Details
-                                </label>
-                                <Textarea
-                                    id="resolution"
-                                    placeholder="Enter resolution details..."
-                                    value={resolutionText}
-                                    onChange={(e) => setResolutionText(e.target.value)}
-                                    className="min-h-[100px]"
-                                />
+                {!alert.resolvedAt ? (
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-6"
+                                onClick={() => setSelectedAlert(alert)}
+                            >
+                                <span className="flex items-center">
+                                    <AlertCircle className="h-3 w-3 mr-1" />
+                                    Add resolution
+                                </span>
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add Resolution</DialogTitle>
+                                <DialogDescription className="text-xs">
+                                    Add a resolution for the alert regarding {alert.client?.fullName}
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4">
+                                <div className="space-y-2">
+                                    <CustomTextarea
+                                        id="resolution"
+                                        placeholder="Enter resolution details..."
+                                        value={resolutionText}
+                                        onChange={(value) => setResolutionText(value)}
+                                        className="min-h-[100px] w-full"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <DialogFooter>
-                            <DialogClose asChild>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => {
-                                        setSelectedAlert(null)
-                                        setResolutionText("")
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-                            <DialogClose asChild>
-                                <Button onClick={handleAddResolution}>
-                                    Save Resolution
-                                </Button>
-                            </DialogClose>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            setSelectedAlert(null)
+                                            setResolutionText("")
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                    <Button onClick={handleAddResolution} disabled={isResolvingAlert}>
+                                        Save Resolution
+                                    </Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                ) : null}
             </td>
         </tr>
     )
@@ -509,8 +519,14 @@ export default function ReportsPage() {
         filtered.forEach((alert: any) => {
             // Count by type
             const type = alert.type?.toLowerCase()
-            if (type && summary.categories[type as keyof typeof summary.categories]) {
-                summary.categories[type as keyof typeof summary.categories].count++
+            if (type === 'medication') {
+                summary.categories.medication.count++
+            } else if (type === 'late_visit') {
+                summary.categories.lateVisit.count++
+            } else if (type === 'location') {
+                summary.categories.distance.count++
+            } else if (type === 'incident') {
+                summary.categories.incident.count++
             } else {
                 summary.categories.other.count++
             }
@@ -520,7 +536,7 @@ export default function ReportsPage() {
                 summary.resolved.count++
             }
 
-            // Count overdue (you can add your overdue logic here)
+            // Count overdue
             if (alert.isOverdue) {
                 summary.overdue.count++
             }

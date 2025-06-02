@@ -159,7 +159,7 @@ export const signupUser = createAsyncThunk(
   "auth/signup",
   async (userData: SignUpInput, { rejectWithValue }) => {
     try {
-      console.log("userData", userData);
+      ("userData", userData);
       const { isSignUpComplete,userId } = await signUp({
         username: userData.username,
         password: userData.password,
@@ -169,7 +169,7 @@ export const signupUser = createAsyncThunk(
           },
         },
       });
-      console.log("isSignUpComplete", isSignUpComplete);
+      ("isSignUpComplete", isSignUpComplete);
       return { 
         isSignUpComplete,
         user: {
@@ -208,12 +208,12 @@ export const resendVerificationCode = createAsyncThunk(
   "auth/resendVerificationCode",
   async (username: string, { rejectWithValue }) => {
     try {
-      console.log("resending verification code for username", username);
+      ("resending verification code for username", username);
       await resendSignUpCode({ username });
-      console.log("verification code resent");
+      ("verification code resent");
       return { success: true };
     } catch (error: any) {
-      console.log("error resending verification code", error);
+      ("error resending verification code", error);
       return rejectWithValue(error.toString());
     }
   }

@@ -43,13 +43,21 @@ export default function DashboardPage() {
     const { data: agencyData } = useGetAgencyByIdQuery(user?.userInfo?.agencyId || "")
     const reports: Report[] = agencyData?.reports || []
     const alerts: Alert[] = agencyData?.alerts || []
-    console.log(alerts)
+
 
     const getStatusColor = (status: string) => {
         if (status === "CONFIRMED") return "bg-green-100 text-green-800 border-green-200"
         if (status === "PENDING") return "bg-yellow-100 text-yellow-800 border-yellow-200"
         if (status === "CANCELLED") return "bg-red-100 text-red-800 border-red-200"
+        if (status === "COMPLETED") return "bg-green-200 text-green-900 border-green-300"
         return "bg-gray-100 text-gray-800 border-gray-200"
+    }
+
+    const formatAlertType = (type: string) => {
+        return type
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ')
     }
 
     useEffect(() => {
@@ -387,7 +395,11 @@ export default function DashboardPage() {
                                             </td>
                                             <td className="py-2 px-3 text-sm text-muted-foreground">{schedule.careWorkerName}</td>
                                             <td className="py-2 px-3 text-sm text-muted-foreground">
-                                                {new Date(schedule.date).toLocaleDateString()}
+                                                {new Date(schedule.date).toLocaleDateString('en-GB', {
+                                                    day: 'numeric',
+                                                    month: 'long',
+                                                    year: 'numeric'
+                                                })}
                                             </td>
                                             <td className="py-2 px-3">
                                                 <Badge
@@ -463,7 +475,7 @@ export default function DashboardPage() {
                                             <td className="py-2 px-3">
                                                 <div className="flex items-start space-x-2">
                                                     <div>
-                                                        <p className="text-sm font-medium">{alert.type}</p>
+                                                        <p className="text-sm font-medium">{formatAlertType(alert.type)}</p>
                                                         <p className="text-xs text-muted-foreground mt-1">
                                                             Client: {alert.client?.fullName || 'Unknown'} • Care Worker: {alert.careworker?.fullName || 'Unknown'}
                                                         </p>
@@ -471,7 +483,11 @@ export default function DashboardPage() {
                                                 </div>
                                             </td>
                                             <td className="py-2 px-3 text-sm text-muted-foreground">
-                                                {new Date(alert.createdAt).toLocaleDateString()}
+                                                {new Date(alert.createdAt).toLocaleDateString('en-GB', {
+                                                    day: 'numeric',
+                                                    month: 'long',
+                                                    year: 'numeric'
+                                                })}
                                             </td>
                                             <td className="py-2 px-3 text-right">
                                                 <Button variant="outline" size="sm" className="h-7">
@@ -528,7 +544,11 @@ export default function DashboardPage() {
                                                 </div>
                                             </td>
                                             <td className="py-2 px-3 text-sm text-muted-foreground">
-                                                {new Date(report.createdAt).toLocaleDateString()}
+                                                {new Date(report.createdAt).toLocaleDateString('en-GB', {
+                                                    day: 'numeric',
+                                                    month: 'long',
+                                                    year: 'numeric'
+                                                })}
                                             </td>
                                             <td className="py-2 px-3 text-right">
                                                 <Button

@@ -102,7 +102,7 @@ export function PayrollTable({ date }: PayrollTableProps) {
         }
     }, [payrolls, reduxPayrolls])
 
-    console.log("PAYROLLS", payrolls)
+
 
     const handleSort = (field: string) => {
         if (field === sortField) {

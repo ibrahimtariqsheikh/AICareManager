@@ -13,10 +13,9 @@ export const setSocketIO = (socketIO: Server) => {
 export const getMessages = async (req: Request, res: Response) => {
     try {
         const { conversationId } = req.params;
-        console.log('Fetching messages for conversation:', conversationId);
         
         // First check if conversation exists
-        console.log('Checking if conversation exists...');
+        ('Checking if conversation exists...');
         const conversation = await prisma.conversation.findUnique({
             where: { id: conversationId },
             include: {
@@ -25,15 +24,10 @@ export const getMessages = async (req: Request, res: Response) => {
         });
 
         if (!conversation) {
-            console.log('Conversation not found:', conversationId);
             return res.status(404).json({ error: 'Conversation not found' });
         }
 
-        console.log('Found conversation:', {
-            id: conversation.id,
-            participantCount: conversation.participants.length,
-            participants: conversation.participants.map(p => p.userId)
-        });
+    
         
         const messages = await prisma.message.findMany({
             where: {
@@ -59,7 +53,7 @@ export const getMessages = async (req: Request, res: Response) => {
             },
         });
         
-        console.log(`Found ${messages.length} messages for conversation ${conversationId}`);
+        (`Found ${messages.length} messages for conversation ${conversationId}`);
         res.status(200).json(messages);
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -71,7 +65,6 @@ export const getMessages = async (req: Request, res: Response) => {
 export const getUserConversations = async (req: Request, res: Response) => {
     try {
         const { userId } = req.params;
-        console.log('Fetching conversations for user:', userId);
 
         // First get all conversations where the user is a participant
         const conversations = await prisma.conversation.findMany({
@@ -138,7 +131,7 @@ export const getUserConversations = async (req: Request, res: Response) => {
             return new Date(b.lastMessage.sentAt).getTime() - new Date(a.lastMessage.sentAt).getTime();
         });
 
-        console.log(`Found ${uniqueConversations.length} conversations for user ${userId}`);
+        (`Found ${uniqueConversations.length} conversations for user ${userId}`);
         res.status(200).json(uniqueConversations);
     } catch (error) {
         console.error('Error fetching conversations:', error);
@@ -150,7 +143,7 @@ export const getUserConversations = async (req: Request, res: Response) => {
 export const createMessage = async (req: Request, res: Response) => {
     try {
         const { content, conversationId, senderId } = req.body;
-        console.log('Creating message in database...');
+        ('Creating message in database...');
 
         const message = await prisma.message.create({
             data: {
@@ -169,9 +162,7 @@ export const createMessage = async (req: Request, res: Response) => {
             }
         });
 
-        console.log('Message created successfully:', message.id);
-        console.log('Message:', message);
-
+        
         // Emit the message through Socket.IO
         try {
             if (!io) {
@@ -187,7 +178,7 @@ export const createMessage = async (req: Request, res: Response) => {
                 sender: message.sender
 
             });
-            console.log('Message emitted through Socket.IO');
+            ('Message emitted through Socket.IO');
         } catch (error) {
             console.error('Error emitting message through Socket.IO:', error);
         }
@@ -298,7 +289,7 @@ export const deleteMessage = async (req: Request, res: Response) => {
 // Create a new conversation
 export const createConversation = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log('conversation...');
+        ('conversation...');
         const { senderId, receiverId } = req.body;
 
         if (!senderId || !receiverId) {
@@ -327,12 +318,10 @@ export const createConversation = async (req: Request, res: Response): Promise<v
             }
         });
 
-        console.log('Existing conversation:', existingConversation);
 
         if (existingConversation) {
-            console.log('Conversation already exists:', existingConversation);
             res.status(200).json(existingConversation);
-            console.log('Conversation already exists:', existingConversation);
+        
             return;
         }
 

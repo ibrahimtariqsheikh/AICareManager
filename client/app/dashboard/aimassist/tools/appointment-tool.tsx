@@ -17,7 +17,7 @@ export function AppointmentTool({ toolInvocation }: AppointmentToolProps) {
         skip: !agencyId
     })
 
-    console.log(events)
+        (events)
     const [_, setLoading] = useState(true)
 
     useEffect(() => {
@@ -86,7 +86,7 @@ export function AppointmentTool({ toolInvocation }: AppointmentToolProps) {
     return (
         <div className="flex flex-col gap-4 my-4 w-full max-w-full xl:w-[550px]">
             {sortedAppointments.map((appointment, index) => (
-                console.log(appointment),
+                (appointment),
                 <div key={index} className="flex-1  w-full">
                     <div className={`border-l-4 rounded-r-md p-4 w-full ${appointment.status.toLowerCase() === 'confirmed'
                         ? 'border-l-green-500 bg-green-50'

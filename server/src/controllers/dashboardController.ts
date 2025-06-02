@@ -6,8 +6,7 @@ const prisma = new PrismaClient();
 export const getDashboardData = async (req: Request, res: Response): Promise<void> => {
     try {
         const { userId } = req.params;
-        console.log("Fetching dashboard data for user:", userId);
-
+     
         // Get user with agency data
         const user = await prisma.user.findUnique({
             where: { id: userId },
@@ -16,7 +15,6 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
             },
         });
 
-        console.log("Found user:", user);
 
         if (!user) {
             console.log("User not found");
@@ -25,12 +23,10 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
         }
 
         if (!user.agencyId) {
-            console.log("User has no agency ID");
+            ("User has no agency ID");
             res.status(400).json({ message: "User is not associated with any agency" });
             return;
         }
-
-        console.log("User's agency ID:", user.agencyId);
 
         // Get all users for the agency
         const users = await prisma.user.findMany({
@@ -41,7 +37,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 profile: true,
             },
         });
-        console.log("Found users:", users.length);
+
 
         // Get all schedules for the agency
         const schedules = await prisma.schedule.findMany({
@@ -53,7 +49,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 user: true,
             },
         });
-        console.log("Found schedules:", schedules.length);
+   
 
         // Get all clients for the agency
         const clients = await prisma.user.findMany({
@@ -65,7 +61,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 profile: true,
             },
         });
-        console.log("Found clients:", clients.length);
+ 
 
         // Get all care workers for the agency
         const careWorkers = await prisma.user.findMany({
@@ -77,7 +73,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 profile: true,
             },
         });
-        console.log("Found care workers:", careWorkers.length);
+
 
         // Get all office staff for the agency
         const officeStaff = await prisma.user.findMany({
@@ -89,7 +85,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 profile: true,
             },
         });
-        console.log("Found office staff:", officeStaff.length);
+    
 
         // Get all reports for the agency
         const reports = await prisma.report.findMany({
@@ -103,7 +99,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 caregiver: true,
             },
         });
-        console.log("Found reports:", reports.length);
+
 
         // Get all documents for the agency
         const documents = await prisma.document.findMany({
@@ -111,7 +107,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 agencyId: user.agencyId,
             },
         });
-        console.log("Found documents:", documents.length);
+
 
         // Get all mileage records for the agency
         const mileageRecords = await prisma.mileageRecord.findMany({
@@ -123,7 +119,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 user: true,
             },
         });
-        console.log("Found mileage records:", mileageRecords.length);
+          
 
         // Get unread notifications for the user
         const notifications = await prisma.notification.findMany({
@@ -175,7 +171,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
             unreadNotifications: notifications.length,
         };
 
-        console.log("Calculated stats:", stats);
+
 
         // Get upcoming schedules
         const upcomingSchedules = await prisma.schedule.findMany({

@@ -31,7 +31,7 @@ export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUse
     const { user } = useAppSelector((state) => state.user)
 
     const activeUserType = useAppSelector((state) => state.user.activeUserType)
-    console.log("Active User Type", activeUserType)
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

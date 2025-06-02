@@ -678,7 +678,7 @@ export default function AgencyPage() {
                             <Button
                                 type="submit"
                                 disabled={isUpdating}
-                                onClick={() => console.log("Save button clicked")}
+                                onClick={() => ("Save button clicked")}
                             >
                                 {isUpdating ? "Saving..." : "Save Changes"}
                             </Button>

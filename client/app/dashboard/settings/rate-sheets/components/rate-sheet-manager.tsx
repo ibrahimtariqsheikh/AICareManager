@@ -115,7 +115,7 @@ export function RateSheetManager({ staffType }: RateSheetManagerProps) {
 
             if (currentRateSheet) {
                 // Update existing rate sheet
-                console.log('Updating rate sheet with data:', {
+                ('Updating rate sheet with data:', {
                     agencyId: agencyId ?? "",
                     rateSheetId: currentRateSheet.id,
                     name: values.name,
@@ -139,7 +139,7 @@ export function RateSheetManager({ staffType }: RateSheetManagerProps) {
                 }
             } else {
                 // Create new rate sheet
-                console.log('Creating rate sheet with data:', {
+                ('Creating rate sheet with data:', {
                     agencyId: agencyId ?? "",
                     name: values.name,
                     hourlyRate: rateValue,

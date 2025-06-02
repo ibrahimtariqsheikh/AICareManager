@@ -22,14 +22,6 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
     const officeStaff = useAppSelector((state) => state.user.officeStaff || []);
     const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers);
 
-    console.log("eventsFromWeekView", events)
-
-    // Debug logs
-    useEffect(() => {
-        console.log('Events:', events);
-        console.log('Active Schedule User Type:', activeScheduleUserType);
-        console.log('Filtered Users:', filteredUsers);
-    }, [events, activeScheduleUserType, filteredUsers]);
 
     // Get the appropriate users based on activeScheduleUserType and filtered users
     const displayUsers = (() => {
@@ -57,29 +49,11 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
         const weekStart = moment(date).startOf('week');
         const weekEnd = moment(date).endOf('week');
 
-        // Debug log for week range
-        console.log('Week range:', {
-            start: weekStart.format('YYYY-MM-DD'),
-            end: weekEnd.format('YYYY-MM-DD'),
-            currentDay: day,
-            currentTimeSlot: timeSlot
-        });
 
         return events.filter(event => {
             const eventDate = moment(event.start);
             const eventTime = moment(event.start).format('h:mm A');
 
-            // Debug log for each event being checked
-            console.log('Checking event:', {
-                eventId: event.id,
-                eventDate: eventDate.format('YYYY-MM-DD'),
-                eventTime: eventTime,
-                eventDay: eventDate.format('ddd'),
-                eventStatus: event.status,
-                eventType: event.type,
-                clientId: event.clientId,
-                resourceId: event.resourceId
-            });
 
             // Check if event is within the current week
             const isInCurrentWeek = eventDate.isBetween(weekStart, weekEnd, 'day', '[]');
@@ -102,15 +76,6 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
                 }
             })();
 
-            // Debug log for filtering results
-            console.log('Filter results:', {
-                eventId: event.id,
-                isInCurrentWeek,
-                matchesDayAndTime,
-                matchesUserType,
-                activeScheduleUserType,
-                filteredUsers
-            });
 
             return isInCurrentWeek && matchesDayAndTime && matchesUserType;
         });
@@ -121,20 +86,7 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
         return activeScheduleUserType === "careWorker" ? event.client?.fullName : event.title;
     };
 
-    const getPriorityIcon = (priority: string) => {
-        if (priority === 'high') return <AlertCircle className="w-3 h-3 text-red-500" />;
-        if (priority === 'medium') return <Clock className="w-3 h-3 text-orange-500" />;
-        return <CheckCircle className="w-3 h-3 text-green-500" />;
-    };
 
-    const getEndTime = (startTime: string, duration: string) => {
-        const start = new Date(`2025-05-18 ${startTime}`);
-        const durationMinutes = duration.includes('hr') ?
-            parseInt(duration) * 60 + (duration.includes('.5') ? 30 : 0) :
-            parseInt(duration);
-        const end = new Date(start.getTime() + durationMinutes * 60000);
-        return end.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    };
 
     // Update time slots to cover the full day with more granular times
     const timeSlots = [
@@ -153,23 +105,7 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
         { day: 'SAT', date: moment(date).startOf('week').add(6, 'day').format('D'), key: 'sat' }
     ];
 
-    // Debug log for current week dates
-    useEffect(() => {
-        console.log('Current week:', {
-            start: moment(date).startOf('week').format('YYYY-MM-DD'),
-            end: moment(date).endOf('week').format('YYYY-MM-DD'),
-            days: days.map(d => `${d.day}: ${d.date}`)
-        });
-    }, [date, days]);
 
-    // Debug log for active schedule user type and filtered users
-    useEffect(() => {
-        console.log('Schedule state:', {
-            activeScheduleUserType,
-            filteredUsers,
-            eventsCount: events.length
-        });
-    }, [activeScheduleUserType, filteredUsers, events]);
 
     const getEventBackground = (event: AppointmentEvent, isActive = false, isHovered = false) => {
         if (event.isLeaveEvent) {

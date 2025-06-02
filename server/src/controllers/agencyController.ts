@@ -37,12 +37,6 @@ export const createAgency = async (req: Request, res: Response): Promise<void> =
             maxCareWorkers
         } = req.body;
 
-        console.log("Creating agency with data:", {
-            name,
-            email,
-            description
-        });
-
         // Validate required fields
         if (!name) {
             console.error("Create Agency Error: Name is missing");
@@ -83,12 +77,7 @@ export const createAgency = async (req: Request, res: Response): Promise<void> =
             }
         });
 
-        console.log("Agency created successfully:", {
-            agencyId: agency.id,
-            name: agency.name,
-            email: agency.email,
-            createdAt: agency.createdAt
-        });
+
 
         res.status(201).json(agency);
     } catch (error: any) {
@@ -143,8 +132,6 @@ export const updateAgency = async (req: Request, res: Response): Promise<void> =
             maxCareWorkers
         } = req.body;
 
-        console.log("Update Agency Request - ID:", id, "Data:", req.body);
-
         // Check if agency exists
         const existingAgency = await prisma.agency.findUnique({
             where: { id }
@@ -187,11 +174,7 @@ export const updateAgency = async (req: Request, res: Response): Promise<void> =
             }
         });
 
-        console.log("Agency updated successfully:", {
-            agencyId: updatedAgency.id,
-            name: updatedAgency.name,
-            updatedAt: updatedAgency.updatedAt
-        });
+
 
         res.json(updatedAgency);
     } catch (error: any) {
@@ -219,7 +202,7 @@ export const updateAgency = async (req: Request, res: Response): Promise<void> =
 export const deleteAgency = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        console.log("Delete Agency Request - ID:", id);
+
 
         // Check if agency exists
         const existingAgency = await prisma.agency.findUnique({
@@ -237,7 +220,7 @@ export const deleteAgency = async (req: Request, res: Response): Promise<void> =
             where: { id }
         });
 
-        console.log("Agency deleted successfully:", { id });
+
         res.json({ message: "Agency deleted successfully" });
     } catch (error: any) {
         console.error("Error deleting agency:", {
@@ -517,7 +500,7 @@ export const updateAgencyRateSheet = async (req: Request, res: Response): Promis
 // create rate sheet for agency
 export const createAgencyRateSheet = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log("createAgencyRateSheet", req.body)
+
         const { id } = req.params;
         const { name, hourlyRate, staffType } = req.body;
         const rateSheet = await prisma.rateSheet.create({
@@ -540,11 +523,6 @@ export const updateAgencyGroup = async (req: Request, res: Response): Promise<vo
         const { id: agencyId, groupId } = req.params;
         const { name, clientIds } = req.body;
 
-        console.log("Update Group Request - Full Request:", {
-            params: req.params,
-            body: req.body,
-            headers: req.headers
-        });
 
         // Validate required fields
         if (!name) {
@@ -559,13 +537,6 @@ export const updateAgencyGroup = async (req: Request, res: Response): Promise<vo
             return;
         }
 
-        console.log("Updating group with data:", {
-            groupId,
-            name,
-            agencyId,
-            clientIds,
-            clientCount: clientIds.length
-        });
 
         // First, disconnect all existing clients
         await prisma.group.update({
@@ -597,13 +568,6 @@ export const updateAgencyGroup = async (req: Request, res: Response): Promise<vo
             }
         });
 
-        console.log("Group updated successfully:", {
-            groupId: updatedGroup.id,
-            name: updatedGroup.name,
-            clientCount: updatedGroup.clients.length,
-            createdAt: updatedGroup.createdAt,
-            updatedAt: updatedGroup.updatedAt
-        });
 
         res.json(updatedGroup);
     } catch (error: any) {
@@ -631,11 +595,6 @@ export const createAgencyGroup = async (req: Request, res: Response): Promise<vo
         const { id } = req.params;
         const { name, clientIds } = req.body;
 
-        console.log("Create Group Request - Full Request:", {
-            params: req.params,
-            body: req.body,
-            headers: req.headers
-        });
 
         // Validate required fields
         if (!name) {
@@ -650,13 +609,7 @@ export const createAgencyGroup = async (req: Request, res: Response): Promise<vo
             return;
         }
 
-        console.log("Creating group with data:", {
-            name,
-            agencyId: id,
-            clientIds,
-            clientCount: clientIds.length
-        });
-
+    
         const group = await prisma.group.create({
             data: {
                 name,
@@ -675,14 +628,7 @@ export const createAgencyGroup = async (req: Request, res: Response): Promise<vo
             }
         });
 
-        console.log("Group created successfully:", {
-            groupId: group.id,
-            name: group.name,
-            clientCount: group.clients.length,
-            createdAt: group.createdAt,
-            updatedAt: group.updatedAt
-        });
-
+      
         res.status(201).json(group);
     } catch (error: any) {
         console.error("Error creating group:", {
@@ -717,7 +663,7 @@ export const deleteAgencyGroup = async (req: Request, res: Response): Promise<vo
 };
 
 export const getAgencyAlerts = async (req: Request, res: Response): Promise<void> => {
-     console.log("getAgencyAlerts", req.params)
+
     try {
    
         const { id } = req.params;
@@ -744,7 +690,7 @@ export const getAgencyAlerts = async (req: Request, res: Response): Promise<void
                 createdAt: 'asc'
             }
         });
-        console.log("alerts", alerts)
+
         res.json(alerts);
     } catch (error) {
         res.status(500).json({ message: "Error fetching unresolved alerts", error: error });

@@ -37,18 +37,18 @@ export function NewMileageForm({ onClose }: NewMileageFormProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        // TODO: Implement form submission
-        console.log({
-            date,
-            employee,
-            client,
-            fromAddress,
-            toAddress,
-            distance,
-            travelTime,
-            appointmentType,
-            notes
-        })
+            // TODO: Implement form submission
+            ({
+                date,
+                employee,
+                client,
+                fromAddress,
+                toAddress,
+                distance,
+                travelTime,
+                appointmentType,
+                notes
+            })
         onClose()
     }
 

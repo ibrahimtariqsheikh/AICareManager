@@ -8,10 +8,10 @@ dotenv.config();
 
 const prisma = new PrismaClient();
 
-console.log(process.env.EMAIL_HOST);
-console.log(process.env.EMAIL_PORT);
-console.log(process.env.EMAIL_USER);
-console.log(process.env.EMAIL_PASSWORD);
+(process.env.EMAIL_HOST);
+(process.env.EMAIL_PORT);
+(process.env.EMAIL_USER);
+(process.env.EMAIL_PASSWORD);
 
 // Configure email transporter
 const transporter = nodemailer.createTransport({
@@ -42,7 +42,7 @@ transporter.verify(function(error, success) {
     if (error) {
         console.error("SMTP server connection error:", error);
     } else {
-        console.log("SMTP server connection successful");
+        ("SMTP server connection successful");
     }
 });
 
@@ -127,7 +127,7 @@ export const createInvitation = async (req: Request, res: Response): Promise<voi
         };
 
         const info = await transporter.sendMail(mailOptions);
-        console.log(`Email sent successfully to ${email}. Message ID: ${info.messageId}`);
+        (`Email sent successfully to ${email}. Message ID: ${info.messageId}`);
     } catch (error) {
         console.error('Error sending email:', error);
         res.status(500).json({ error: "Failed to send invitation email", details: error });

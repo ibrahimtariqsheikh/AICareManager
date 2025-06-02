@@ -23,7 +23,7 @@ type ExtendedToolInvocation = ToolInvocation & {
 }
 
 export default function CreateCareWorkerTool(toolInvocation: ExtendedToolInvocation) {
-    console.log("toolInvocation", toolInvocation)
+    ("toolInvocation", toolInvocation)
     const [error, setError] = useState<string | null>(null)
     const [isCreating, setIsCreating] = useState(false)
     const [hasCreated, setHasCreated] = useState(false)

@@ -41,12 +41,12 @@ export default function InvoiceBuilderPage() {
     const [isLoading, _] = useState(false)
 
     const handleAddPredefinedItems = () => {
-        console.log("Current invoiceData:", invoiceData)
+        ("Current invoiceData:", invoiceData)
         if (invoiceData?.predefinedItems?.length) {
-            console.log("Adding predefined items:", invoiceData.predefinedItems)
+            ("Adding predefined items:", invoiceData.predefinedItems)
             // Create new items with unique IDs
             const newItems = invoiceData.predefinedItems.map((item: InvoiceItem) => {
-                console.log("Processing item:", {
+                ("Processing item:", {
                     type: item.serviceType,
                     description: item.description,
                     quantity: item.quantity,
@@ -61,16 +61,16 @@ export default function InvoiceBuilderPage() {
                 }
             })
 
-            console.log("New items to add:", newItems)
+                ("New items to add:", newItems)
             setInvoiceItems(prevItems => {
-                console.log("Previous items:", prevItems)
+                ("Previous items:", prevItems)
                 const updatedItems = [...prevItems, ...newItems]
-                console.log("Updated items:", updatedItems)
+                    ("Updated items:", updatedItems)
                 return updatedItems
             })
             setShowAddItemPopover(false)
         } else {
-            console.log("No predefined items to add")
+            ("No predefined items to add")
         }
     }
 

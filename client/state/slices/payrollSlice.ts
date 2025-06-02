@@ -22,7 +22,7 @@ const payrollSlice = createSlice({
       state.payrolls = action.payload;
     },
     addPayroll: (state, action: PayloadAction<Payroll>) => {
-      console.log('Adding payroll to Redux:', action.payload)
+      ('Adding payroll to Redux:', action.payload)
       if (state.payrolls === null) {
         state.payrolls = [action.payload];
       } else {

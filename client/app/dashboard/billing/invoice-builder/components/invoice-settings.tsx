@@ -37,13 +37,13 @@ export function InvoiceSettings() {
       : skipToken
   )
 
-  console.log("scheduleHours", scheduleHours)
+    ("scheduleHours", scheduleHours)
 
   const getFormattedInvoiceNumber = () => {
     if (invoiceNumberData) {
       const invoiceNumberString = (invoiceNumberData.invoiceNumber + 1).toString()
       const formattedInvoiceNumber = "ACM-" + invoiceNumberString + "-" + format(new Date(), "yyyy")
-      console.log("formattedInvoiceNumber", { formattedInvoiceNumber })
+        ("formattedInvoiceNumber", { formattedInvoiceNumber })
       dispatch(setInvoiceNumber(formattedInvoiceNumber))
       return formattedInvoiceNumber
     }
@@ -52,7 +52,7 @@ export function InvoiceSettings() {
 
   // Add expenses and schedule hours as predefined items
   useEffect(() => {
-    console.log("Full scheduleHours response:", scheduleHours)
+    ("Full scheduleHours response:", scheduleHours)
     // Create new predefined items array
     const predefinedItems: InvoiceItem[] = []
 
@@ -70,18 +70,18 @@ export function InvoiceSettings() {
     }
 
     // Add schedule hours if available
-    console.log("Schedule Hours Data:", scheduleHours)
+    ("Schedule Hours Data:", scheduleHours)
     if (scheduleHours && typeof scheduleHours.totalHours === 'number') {
       const hours = scheduleHours.totalHours
       const rate = Math.floor(scheduleHours.payRate || 0)
       const amount = hours * rate
 
-      console.log("Creating Schedule Hours Item:", {
-        hours,
-        rate,
-        amount,
-        rawData: scheduleHours
-      })
+        ("Creating Schedule Hours Item:", {
+          hours,
+          rate,
+          amount,
+          rawData: scheduleHours
+        })
 
       predefinedItems.push({
         id: `hours-${Date.now()}`,
@@ -93,14 +93,14 @@ export function InvoiceSettings() {
         careWorkerId: "",
       })
     } else {
-      console.log("Schedule Hours not added because:", {
+      ("Schedule Hours not added because:", {
         hasScheduleHours: !!scheduleHours,
         totalHours: scheduleHours?.totalHours,
         typeOfTotalHours: typeof scheduleHours?.totalHours
       })
     }
 
-    console.log("Final Predefined Items:", predefinedItems)
+    ("Final Predefined Items:", predefinedItems)
     // Update Redux state with predefined items
     if (predefinedItems.length > 0) {
       dispatch(setInvoiceData({

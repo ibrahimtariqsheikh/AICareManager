@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ArrowUpDown, Download, Edit, Eye, MoreHorizontal, Send, Trash } from "lucide-react"
 import { format } from "date-fns"
-import { cn, getRandomPlaceholderImage } from "@/lib/utils"
+import { getRandomPlaceholderImage } from "@/lib/utils"
 import { DateRange } from "react-day-picker"
 import { useGetAgencyInvoicesQuery } from "@/state/api"
 import { useAppSelector } from "@/state/redux"
@@ -42,7 +42,7 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
         return client?.fullName
     }
 
-    console.log("INVOICES", invoices)
+
 
     const getStatusColor = (status: InvoiceStatus) => {
         switch (status) {
@@ -137,64 +137,72 @@ export function InvoiceTable({ date }: InvoiceTableProps): React.JSX.Element {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {invoices?.map((invoice: Invoice) => {
+                    {!invoices || invoices.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                                No invoices found
+                            </TableCell>
+                        </TableRow>
+                    ) : (
+                        invoices?.map((invoice: Invoice) => {
 
-                        return (
-                            <TableRow key={invoice.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
-                                <TableCell className="py-2 px-3">
-                                    <div className="font-medium">INV-{invoice.invoiceNumber}</div>
-                                    <div className="text-sm text-muted-foreground">{invoice.description}</div>
-                                </TableCell>
-                                <TableCell className="py-2 px-3">
-                                    {invoice.clientId && (
-                                        <div className="flex items-center gap-2">
-                                            <Avatar className="h-8 w-8">
-                                                <AvatarImage
-                                                    src={getRandomPlaceholderImage()}
-                                                    alt={getClientNameFromId(invoice.clientId) || ""}
-                                                />
-                                                <AvatarFallback>{getClientNameFromId(invoice.clientId).charAt(0)}</AvatarFallback>
-                                            </Avatar>
-                                            <span>{getClientNameFromId(invoice.clientId)}</span>
-                                        </div>
-                                    )}
-                                </TableCell>
-                                <TableCell className="py-2 px-3 font-medium">${invoice.amount.toFixed(2)}</TableCell>
-                                <TableCell className="py-2 px-3">{format(new Date(invoice.dueDate), "MMM d, yyyy")}</TableCell>
-                                <TableCell className="py-2 px-3">{formatPaymentMethod(invoice.paymentMethod)}</TableCell>
-                                <TableCell className="py-2 px-3">{getStatusBadge(invoice.status)}</TableCell>
-                                <TableCell className="py-2 px-3">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon">
-                                                <MoreHorizontal className="h-4 w-4" />
-                                                <span className="sr-only">Open menu</span>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem className="flex items-center gap-2">
-                                                <Eye className="h-4 w-4" /> View Details
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem className="flex items-center gap-2">
-                                                <Edit className="h-4 w-4" /> Edit Invoice
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem className="flex items-center gap-2">
-                                                <Send className="h-4 w-4" /> Send Invoice
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem className="flex items-center gap-2">
-                                                <Download className="h-4 w-4" /> Download PDF
-                                            </DropdownMenuItem>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuItem className="flex items-center gap-2 text-red-600">
-                                                <Trash className="h-4 w-4" /> Delete Invoice
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
+                            return (
+                                <TableRow key={invoice.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
+                                    <TableCell className="py-2 px-3">
+                                        <div className="font-medium">INV-{invoice.invoiceNumber}</div>
+                                        <div className="text-sm text-muted-foreground">{invoice.description}</div>
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        {invoice.clientId && (
+                                            <div className="flex items-center gap-2">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarImage
+                                                        src={getRandomPlaceholderImage()}
+                                                        alt={getClientNameFromId(invoice.clientId) || ""}
+                                                    />
+                                                    <AvatarFallback>{getClientNameFromId(invoice.clientId).charAt(0)}</AvatarFallback>
+                                                </Avatar>
+                                                <span>{getClientNameFromId(invoice.clientId)}</span>
+                                            </div>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3 font-medium">${invoice.amount.toFixed(2)}</TableCell>
+                                    <TableCell className="py-2 px-3">{format(new Date(invoice.dueDate), "MMM d, yyyy")}</TableCell>
+                                    <TableCell className="py-2 px-3">{formatPaymentMethod(invoice.paymentMethod)}</TableCell>
+                                    <TableCell className="py-2 px-3">{getStatusBadge(invoice.status)}</TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon">
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                    <span className="sr-only">Open menu</span>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem className="flex items-center gap-2">
+                                                    <Eye className="h-4 w-4" /> View Details
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="flex items-center gap-2">
+                                                    <Edit className="h-4 w-4" /> Edit Invoice
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="flex items-center gap-2">
+                                                    <Send className="h-4 w-4" /> Send Invoice
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="flex items-center gap-2">
+                                                    <Download className="h-4 w-4" /> Download PDF
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem className="flex items-center gap-2 text-red-600">
+                                                    <Trash className="h-4 w-4" /> Delete Invoice
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })
+                    )}
                 </TableBody>
             </Table>
         </div>

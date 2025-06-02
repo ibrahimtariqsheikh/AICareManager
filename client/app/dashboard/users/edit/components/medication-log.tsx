@@ -185,12 +185,12 @@ export const MedicationLog = () => {
     const handleDeleteMedication = async (medicationId: string) => {
         try {
             const response = await deleteMedication(medicationId)
-            console.log("Response:", response)
+                ("Response:", response)
             dispatch(deleteMedicationRedux(medicationId))
             toast.success("Medication deleted successfully")
         } catch (error) {
             toast.error("Error deleting medication")
-            console.log("Error deleting medication:", error)
+                ("Error deleting medication:", error)
         }
     }
 

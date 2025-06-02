@@ -1096,7 +1096,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                                 className="w-full"
                                                                 onClick={() => {
                                                                     // Handle file upload
-                                                                    console.log("File upload clicked")
+                                                                    ("File upload clicked")
                                                                 }}
                                                             >
                                                                 <Upload className="h-4 w-4 mr-2" />

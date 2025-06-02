@@ -171,7 +171,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
     // const savePlan = async (data: CarePlanFormData) => {
     //     try {
     //         // Here you would typically make an API call to save the care plan
-    //         console.log("Saving care plan:", data)
+    //         ("Saving care plan:", data)
     //         alert("Care plan saved successfully!")
     //     } catch (error) {
     //         console.error("Error saving care plan:", error)

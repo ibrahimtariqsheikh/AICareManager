@@ -273,7 +273,7 @@ export default function RiskAssessment() {
         }
 
         // If all validations pass, proceed with submission
-        console.log("Form submitted:", { basicInfo: data, risks, reviews })
+        ("Form submitted:", { basicInfo: data, risks, reviews })
         toast.success("Risk assessment submitted successfully")
     }
 

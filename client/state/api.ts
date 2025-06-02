@@ -245,7 +245,7 @@ export const api = createApi({
         headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
 
       } catch (error) {
-        console.log('No auth session found, proceeding without authentication')
+        ('No auth session found, proceeding without authentication')
       }
       return headers
     },
@@ -308,13 +308,10 @@ export const api = createApi({
     getUser: build.query<any, void>({
       queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
         try {
-          console.log("fetching auth user")
           const session = await fetchAuthSession()
-          console.log("session", session)
           const { idToken } = session.tokens ?? {}
-          console.log("idToken", idToken)
           const user = await getCurrentUser()
-          console.log("user", user)
+console.log("user", user)
 
           let userDetailsResponse = await fetchWithBQ(`/users/${user.userId}`)
 
@@ -353,7 +350,7 @@ export const api = createApi({
     // Get users with filtering
     getUsers: build.query<UsersResponse, UserQueryParams>({
       query: (params) => {
-        console.log("params", params)
+
         return `/users?role=${params.role}&agencyId=${params.agencyId}`
       },
       providesTags: ["Users"],
@@ -440,7 +437,7 @@ export const api = createApi({
     //create user
     createUser: build.mutation<User, CreateUserInput>({
       query: (user) => {
-        console.log("Trying to create user", user)
+     
         return {
         url: "/users",
         method: "POST",
@@ -448,29 +445,21 @@ export const api = createApi({
       }
     },
     }),
-    // Update the getUserInvitations endpoint to add more debugging and error handling
-    // Get user invitations
+
     getUserInvitations: build.query<Invitation[], string>({
       queryFn: async (inviterId, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          console.log("Fetching invitations for user ID:", inviterId)
-
-          // Make the API request
+    
           const response = await fetchWithBQ(`/invitations/user/${inviterId}`)
 
-          // Log the response for debugging
-          console.log("Invitations API response:", response)
 
           if (response.error) {
             console.error("Error fetching invitations:", response.error)
 
-            // Check if it's a Prisma error
             const errorData = response.error.data
             if (errorData && typeof errorData === "object" && "message" in errorData && "name" in errorData) {
               if (typeof errorData.message === "string" && errorData.message.includes("prisma.invitation.findMany()")) {
                 console.error("Prisma query error detected. This is likely a server-side database issue.")
-
-                // Return a more specific error for Prisma issues
                 return {
                   error: {
                     status: "CUSTOM_ERROR",
@@ -1083,11 +1072,19 @@ getScheduleHoursByDateRange: build.query<{ totalHours: number; payRate: number }
       body: invoice,
     }),
   }),
-
+  resolveReportAlert: build.mutation<Alert, { alertId: string; description: string; resolvedById: string }>({
+    query: ({ alertId, description, resolvedById }) => ({
+      url: `/reports/resolve/${alertId}`,
+      method: 'PUT',
+      body: { description, resolvedById },
+    }),
+    invalidatesTags: ["Alerts"],
+  }),
     getAgencyAlerts: build.query<Alert[], string>({
       query: (agencyId) => `/agencies/${agencyId}/alerts`,
       providesTags: ["Alerts"],
     }),
+
 
   }),
 })
@@ -1175,4 +1172,5 @@ export const {
   useCreateInvoiceMutation,
   useGetAgencyAlertsQuery,
   useGetAllAgencyAlertsQuery,
+  useResolveReportAlertMutation,
 } = api

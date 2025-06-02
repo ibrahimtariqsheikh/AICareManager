@@ -30,7 +30,7 @@ export default function SchedulerPage() {
 
     const handleEventSelect = (event: any) => {
         if (event) {
-            console.log("EVENT IN PAGE", event)
+            ("EVENT IN PAGE", event)
             setEditingEvent(event)
             if (event.id.startsWith('temp-')) {
 

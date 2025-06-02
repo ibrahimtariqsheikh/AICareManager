@@ -27,7 +27,6 @@ import { setSelectedClients } from "@/state/slices/userSlice"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { CustomInput } from "@/components/ui/custom-input"
-import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import CustomWeekView from "./views/custom-week-view"
 
@@ -107,11 +106,7 @@ export function CustomCalendar({
     }, [events])
 
     const handleUnallocatedVisitDrop = (visit: any, clientId: string, timeSlot: string) => {
-        console.log("Dropping visit:", visit);
-        console.log("Client ID:", clientId);
-        console.log("Time slot:", timeSlot);
 
-        // Create a new scheduled appointment
         const newEvent: ProcessedCalendarEvent = {
             ...visit,
             start: new Date(`${currentDate.toISOString().split('T')[0]}T${timeSlot}`),
@@ -128,7 +123,7 @@ export function CustomCalendar({
             client: visit.client
         };
 
-        console.log("New event created:", newEvent);
+
 
         // Update events by adding the new event and removing the unallocated one
         const updatedEvents = [
@@ -136,24 +131,19 @@ export function CustomCalendar({
             newEvent
         ];
 
-        console.log("Updated events array:", updatedEvents);
 
         // Update Redux store
         dispatch(setEvents(updatedEvents));
-        console.log("Dispatched setEvents to Redux");
+
 
         // Call the onEventUpdate callback if provided
         onEventUpdate?.(newEvent);
-        console.log("Called onEventUpdate callback");
+
 
         // Show success message
         toast.success(`Visit scheduled for ${moment(newEvent.start).format('h:mm A')}`);
     };
 
-    // Add effect to log events changes
-    useEffect(() => {
-        console.log("Events in Redux store:", events);
-    }, [events]);
 
     useEffect(() => {
         const style = document.createElement('style')

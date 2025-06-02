@@ -110,12 +110,12 @@ function MessagesContent() {
     useEffect(() => {
         const setupConversation = async () => {
             if (!contactId || !user?.id) {
-                console.log("Missing contactId or user.id:", { contactId, userId: user?.id })
+                ("Missing contactId or user.id:", { contactId, userId: user?.id })
                 return
             }
 
-            console.log("Will message with contactId:", contactId)
-            console.log("Logged in user ID:", user?.id)
+            ("Will message with contactId:", contactId)
+                ("Logged in user ID:", user?.id)
 
             // Add a flag to prevent multiple calls
             let isMounted = true
@@ -126,7 +126,7 @@ function MessagesContent() {
                     receiverId: contactId,
                 }).unwrap()
 
-                console.log("Conversation result:", result)
+                    ("Conversation result:", result)
 
                 // Only update state if component is still mounted
                 if (isMounted && result.id) {
@@ -241,8 +241,8 @@ function MessagesContent() {
         }
 
         try {
-            console.log("Starting to send message...");
-            console.log("Message data:", {
+            ("Starting to send message...");
+            ("Message data:", {
                 content: newMessage,
                 conversationId: currentConversationId,
                 senderId: user?.id,
@@ -253,10 +253,10 @@ function MessagesContent() {
             setMessages(prev => [...prev, tempMessage])
             setNewMessage("")
 
-            // Emit message through socket
-            console.log("Emitting socket message...");
-            console.log("Socket connection status:", socketService.isConnected());
-            console.log("Socket message data:", {
+                // Emit message through socket
+                ("Emitting socket message...");
+            ("Socket connection status:", socketService.isConnected());
+            ("Socket message data:", {
                 conversationId: currentConversationId,
                 content: newMessage,
                 senderId: user?.id || '',
@@ -267,7 +267,7 @@ function MessagesContent() {
                 senderId: user?.id || '',
             })
 
-            console.log("Making API call to save message...");
+                ("Making API call to save message...");
             const result = await sendMessageInConversation({
                 content: newMessage,
                 conversationId: currentConversationId,
@@ -275,7 +275,7 @@ function MessagesContent() {
                 agencyId: user?.agency?.id || ""
             }).unwrap()
 
-            console.log("Message sent successfully:", result)
+                ("Message sent successfully:", result)
         } catch (error: any) {
             console.error("Error sending message:", error)
             // Log the full error object

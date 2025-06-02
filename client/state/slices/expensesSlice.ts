@@ -19,11 +19,11 @@ const expensesSlice = createSlice({
   initialState,
   reducers: {
     setExpenses: (state, action: PayloadAction<Expense[]>) => {
-      console.log('Setting expenses in Redux:', action.payload)
+      ('Setting expenses in Redux:', action.payload)
       state.expenses = action.payload;
     },
     addExpense: (state, action: PayloadAction<Expense>) => {
-      console.log('Adding expense to Redux:', action.payload)
+      ('Adding expense to Redux:', action.payload)
       if (state.expenses === null) {
         state.expenses = [action.payload];
       } else {
@@ -38,10 +38,10 @@ const expensesSlice = createSlice({
           )
         }
       }
-      console.log('Updated expenses state:', state.expenses)
+      ('Updated expenses state:', state.expenses)
     },
     updateExpense: (state, action: PayloadAction<Expense>) => {
-      console.log('Updating expense in Redux:', action.payload)
+      ('Updating expense in Redux:', action.payload)
       if (state.expenses) {
         const index = state.expenses.findIndex(e => e.id === action.payload.id);
         if (index !== -1) {
@@ -50,7 +50,7 @@ const expensesSlice = createSlice({
       }
     },
     deleteExpense: (state, action: PayloadAction<string>) => {
-      console.log('Deleting expense from Redux:', action.payload)
+      ('Deleting expense from Redux:', action.payload)
       if (state.expenses) {
         state.expenses = state.expenses.filter(e => e.id !== action.payload);
       }

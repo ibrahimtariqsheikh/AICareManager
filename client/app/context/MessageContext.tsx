@@ -58,7 +58,7 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children, user
     // Initialize socket connection when user is available
     useEffect(() => {
         if (currentUserId) {
-            console.log("Initializing socket connection for user:", currentUserId);
+
             let isMounted = true;
 
             const initializeSocket = async () => {

@@ -113,7 +113,7 @@
 //             end_time: data.end_time,
 //             date: data.date,
 //         }
-//         console.log("Creating schedule:", toolData)
+//         ("Creating schedule:", toolData)
 
 //         // Update the tool invocation state
 //         toolInvocation.state = "loading"
@@ -122,7 +122,7 @@
 //         toolInvocation.toolName = "createSchedule"
 //         toolInvocation.toolCallId = `schedule-${Date.now()}`
 
-//         console.log("Tool invocation updated:", toolInvocation)
+//         ("Tool invocation updated:", toolInvocation)
 
 //         const event = new Event("submit") as any
 //         event.preventDefault = () => { }
@@ -258,7 +258,7 @@
 //             case "displayScheduleAppointment":
 //                 return <AppointmentTool {...toolResult} />
 //             case "createClientProfile":
-//                 console.log("toolResult", toolResult)
+//                 ("toolResult", toolResult)
 //                 if (toolResult.success) {
 //                     return <CreateClientTool {...toolResult} />
 //                 }

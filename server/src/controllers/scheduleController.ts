@@ -443,14 +443,6 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
         },
       }) as ScheduleWithRelations
 
-      console.log("[CreateSchedule] Successfully created schedule:", { 
-        id: schedule.id,
-        clientId: schedule.clientId,
-        userId: schedule.userId,
-        date: schedule.date,
-        startTime: schedule.startTime,
-        endTime: schedule.endTime
-      })
 
       // Format response to match frontend expectations
       const formattedSchedule: ScheduleResponse = {

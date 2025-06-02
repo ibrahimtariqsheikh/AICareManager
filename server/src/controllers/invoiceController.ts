@@ -11,7 +11,6 @@ export const getCurrentInvoiceNumber = async (req: Request, res: Response): Prom
                 id: 'desc'
             },
         })
-        console.log("invoiceNumber", invoiceNumber)
         res.status(200).json({ invoiceNumber: invoiceNumber?.invoiceNumber || 0 })
     } catch (error) {
         console.error("Error getting current invoice number:", error)
@@ -21,7 +20,6 @@ export const getCurrentInvoiceNumber = async (req: Request, res: Response): Prom
 
 export const createPayroll = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log("req.body", req.body)
         const { userId, agencyId, expensesFromDate, expensesToDate, scheduleFromDate, scheduleToDate, calculatedScheduleHours, calculatedExpenses, totalEarnings, totalDeductions, netPay, taxRate } = req.body;
         
         const payroll = await prisma.payroll.create({
@@ -52,7 +50,6 @@ export const createPayroll = async (req: Request, res: Response): Promise<void> 
 
 export const createExpense = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log("req.body", req.body)
         const { type, associatedEntity, category, description, amount, date, agencyId, userId } = req.body;
         
         // Convert associatedEntity to proper enum format

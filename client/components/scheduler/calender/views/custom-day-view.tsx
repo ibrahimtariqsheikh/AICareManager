@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import moment from "moment"
 import { toast } from "sonner"
-import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, Edit, Plus, X, Loader2, HeartHandshake, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer, GripVertical, AlertCircle, Menu, List } from "lucide-react"
+import { Home, Video, Building2, Phone, User, Calendar, MoreVertical, Edit, Plus, X, Loader2, HeartHandshake, Heart, Flag, DollarSign, Baby, AlertTriangle, Clock, Stethoscope, Timer, AlertCircle, Menu, List } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { useApplyScheduleTemplateMutation, useGetScheduleTemplatesQuery, useGetAgencySchedulesQuery } from "@/state/api"
@@ -18,7 +18,6 @@ import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import EventIcon from "@/components/icons/eventicon"
 import type { AppointmentEvent, StaffMember, Client, ProcessedCalendarEvent } from "../types"
 import type { ScheduleTemplate } from "@/types/prismaTypes"
-import { setEvents } from "@/state/slices/scheduleSlice"
 
 interface CustomDayViewProps {
     date: Date
@@ -80,7 +79,6 @@ export function CustomDayView({
     const [displayEvents, setDisplayEvents] = useState<Record<string, AppointmentEvent>>({})
     const [activeEvent, setActiveEvent] = useState<string | null>(null)
     const [dragTooltip, setDragTooltip] = useState<{ eventId: string; time: string } | null>(null)
-    const [draggedEvent, setDraggedEvent] = useState<AppointmentEvent | null>(null)
     const [draggedVisit, setDraggedVisit] = useState<any>(null)
     const [hoverTimeSlot, setHoverTimeSlot] = useState<{ time: string, clientId: string } | null>(null)
 
@@ -214,7 +212,7 @@ export function CustomDayView({
 
     // Process events for display
     useEffect(() => {
-        console.log("Processing events for display:", events);
+
         const eventMap: Record<string, AppointmentEvent> = {}
         events
             .filter((event) => {
@@ -231,7 +229,7 @@ export function CustomDayView({
                     date: typeof event.date === 'string' ? new Date(event.date) : event.date,
                 }
             })
-        console.log("Processed event map:", eventMap);
+
         setDisplayEvents(eventMap)
     }, [events, date])
 
@@ -258,7 +256,7 @@ export function CustomDayView({
                 originalEvent: { ...event },
             }
         })
-        console.log("Calculated positions:", positions);
+
         setEventPositions(positions)
     }, [displayEvents, startHour, minutesPerSlot])
 
@@ -522,7 +520,7 @@ export function CustomDayView({
     }
 
     const handleCreateVisit = (time: string, clientId: string) => {
-        console.log("CLIENT ID", clientId)
+
         const tempEvent: AppointmentEvent = {
             id: `temp-${Date.now()}`,
             title: 'New Visit',
@@ -601,7 +599,7 @@ export function CustomDayView({
 
                         <div className="p-4 space-y-3">
                             {unallocatedVisits.map((visit: any) => {
-                                console.log("VISIT", visit)
+
                                 return (
                                     <UnallocatedVisitCard key={visit.id} visit={visit} />
                                 )
