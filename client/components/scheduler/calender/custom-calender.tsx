@@ -95,86 +95,65 @@ export function CustomCalendar({
 
     // Add state for unallocated visits
     const [showUnallocated, setShowUnallocated] = useState(false)
-    const [unallocatedVisits, setUnallocatedVisits] = useState([
-        {
-            id: 'unalloc-1',
-            clientName: 'Sarah Johnson',
-            clientId: '3',
-            visitType: 'Personal Care',
-            duration: 90, // 1 hour and 30 minutes
-            priority: 'high',
-            notes: 'Prefers morning visits',
-            cost: 80.00
-        },
-        {
-            id: 'unalloc-2',
-            clientName: 'Michael Brown',
-            clientId: '4',
-            visitType: 'Medication',
-            duration: 45, // 45 minutes
-            priority: 'urgent',
-            notes: 'Medication reminder',
-            cost: 40.00
-        }
-    ])
+    const [unallocatedVisits, setUnallocatedVisits] = useState<ProcessedCalendarEvent[]>([])
+
+    // Filter out unallocated visits from the main events array
+    const filteredEvents = events.filter(event => !event.isUnallocated)
+
+    useEffect(() => {
+        // Get unallocated visits from a separate source or state
+        const unallocated = events.filter(event => event.isUnallocated)
+        setUnallocatedVisits(unallocated)
+    }, [events])
 
     const handleUnallocatedVisitDrop = (visit: any, clientId: string, timeSlot: string) => {
-        // Store current scroll position
-        const scrollLeft = containerRef.current?.scrollLeft || 0
+        console.log("Dropping visit:", visit);
+        console.log("Client ID:", clientId);
+        console.log("Time slot:", timeSlot);
 
-        // Calculate end time based on duration in minutes
-        const startTime = moment(timeSlot, 'HH:mm')
-        const endTime = moment(startTime).add(visit.duration, 'minutes')
-
-        // Create new scheduled appointment
-        const newAppointment = {
-            id: `sched-${Date.now()}`,
-            clientId: clientId,
-            time: timeSlot,
-            duration: visit.duration,
-            visitType: visit.visitType,
-            clientName: visit.clientName,
-            cost: visit.cost
-        }
-
-        // Add to events
-        const newEvent: AppointmentEvent = {
-            id: newAppointment.id,
-            title: visit.visitType,
+        // Create a new scheduled appointment
+        const newEvent: ProcessedCalendarEvent = {
+            ...visit,
             start: new Date(`${currentDate.toISOString().split('T')[0]}T${timeSlot}`),
-            end: new Date(`${currentDate.toISOString().split('T')[0]}T${endTime.format('HH:mm')}`),
-            date: currentDate,
-            startTime: timeSlot,
-            endTime: endTime.format('HH:mm'),
+            end: new Date(new Date(`${currentDate.toISOString().split('T')[0]}T${timeSlot}`).getTime() + visit.duration * 60000),
+            isUnallocated: false,
             resourceId: clientId,
-            clientId: clientId,
-            type: visit.visitType.toUpperCase().replace(' ', '_'),
+            clientId: visit.client.id,
+            type: visit.visitType || 'HOME_VISIT',
             status: 'PENDING',
-            notes: visit.notes,
-            client: {
-                fullName: visit.clientName
-            },
             color: '#4CAF50',
             careWorker: {
                 fullName: 'Unassigned'
-            }
-        }
+            },
+            client: visit.client
+        };
 
-        // Update events
-        const updatedEvents = [...events, newEvent]
-        dispatch(setEvents(updatedEvents))
+        console.log("New event created:", newEvent);
 
-        // Remove from unallocated
-        setUnallocatedVisits(unallocatedVisits.filter(v => v.id !== visit.id))
-        toast.success(`Scheduled ${visit.visitType} for ${visit.clientName}`)
+        // Update events by adding the new event and removing the unallocated one
+        const updatedEvents = [
+            ...events.filter(event => event.id !== visit.id),
+            newEvent
+        ];
 
-        // Restore scroll position after state updates
-        requestAnimationFrame(() => {
-            if (containerRef.current) {
-                containerRef.current.scrollLeft = scrollLeft
-            }
-        })
-    }
+        console.log("Updated events array:", updatedEvents);
+
+        // Update Redux store
+        dispatch(setEvents(updatedEvents));
+        console.log("Dispatched setEvents to Redux");
+
+        // Call the onEventUpdate callback if provided
+        onEventUpdate?.(newEvent);
+        console.log("Called onEventUpdate callback");
+
+        // Show success message
+        toast.success(`Visit scheduled for ${moment(newEvent.start).format('h:mm A')}`);
+    };
+
+    // Add effect to log events changes
+    useEffect(() => {
+        console.log("Events in Redux store:", events);
+    }, [events]);
 
     useEffect(() => {
         const style = document.createElement('style')
@@ -625,19 +604,83 @@ export function CustomCalendar({
                     <div className="flex items-center gap-2 bg-blue-500/20 rounded-full p-2.5 md:p-2 text-blue-500">
                         <Users className="h-4 w-4 md:h-3 md:w-3" />
                     </div>
-                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">2 Clients Scheduled</p>
+                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">
+                        {(() => {
+                            const viewEvents = filteredEvents.filter(event => {
+                                const eventDate = new Date(event.start);
+                                if (activeView === "day") {
+                                    return eventDate.toDateString() === currentDate.toDateString();
+                                } else if (activeView === "week") {
+                                    const weekStart = moment(currentDate).startOf('week').toDate();
+                                    const weekEnd = moment(currentDate).endOf('week').toDate();
+                                    return eventDate >= weekStart && eventDate <= weekEnd;
+                                } else if (activeView === "month") {
+                                    const monthStart = moment(currentDate).startOf('month').toDate();
+                                    const monthEnd = moment(currentDate).endOf('month').toDate();
+                                    return eventDate >= monthStart && eventDate <= monthEnd;
+                                }
+                                return true;
+                            });
+                            // Count unique clients by using a Set of clientIds
+                            const uniqueClients = new Set(viewEvents.map(event => event.clientId));
+                            return uniqueClients.size;
+                        })()} Clients Scheduled
+                    </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-2 bg-green-500/20 rounded-full p-2.5 md:p-2 text-green-500">
                         <Timer className="h-4 w-4 md:h-3 md:w-3" />
                     </div>
-                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">10.5 total hours</p>
+                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">
+                        {(() => {
+                            const viewEvents = filteredEvents.filter(event => {
+                                const eventDate = new Date(event.start);
+                                if (activeView === "day") {
+                                    return eventDate.toDateString() === currentDate.toDateString();
+                                } else if (activeView === "week") {
+                                    const weekStart = moment(currentDate).startOf('week').toDate();
+                                    const weekEnd = moment(currentDate).endOf('week').toDate();
+                                    return eventDate >= weekStart && eventDate <= weekEnd;
+                                } else if (activeView === "month") {
+                                    const monthStart = moment(currentDate).startOf('month').toDate();
+                                    const monthEnd = moment(currentDate).endOf('month').toDate();
+                                    return eventDate >= monthStart && eventDate <= monthEnd;
+                                }
+                                return true;
+                            });
+                            return viewEvents.reduce((total, event) => {
+                                const duration = (new Date(event.end).getTime() - new Date(event.start).getTime()) / (1000 * 60 * 60);
+                                return total + duration;
+                            }, 0).toFixed(1);
+                        })()} total hours
+                    </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-2 bg-yellow-500/20 rounded-full p-2.5 md:p-2 text-yellow-500">
                         <DollarSign className="h-4 w-4 md:h-3 md:w-3" />
                     </div>
-                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">$100 total cost</p>
+                    <p className="text-sm md:text-[11px] font-medium text-neutral-600">
+                        ${(() => {
+                            const viewEvents = filteredEvents.filter(event => {
+                                const eventDate = new Date(event.start);
+                                if (activeView === "day") {
+                                    return eventDate.toDateString() === currentDate.toDateString();
+                                } else if (activeView === "week") {
+                                    const weekStart = moment(currentDate).startOf('week').toDate();
+                                    const weekEnd = moment(currentDate).endOf('week').toDate();
+                                    return eventDate >= weekStart && eventDate <= weekEnd;
+                                } else if (activeView === "month") {
+                                    const monthStart = moment(currentDate).startOf('month').toDate();
+                                    const monthEnd = moment(currentDate).endOf('month').toDate();
+                                    return eventDate >= monthStart && eventDate <= monthEnd;
+                                }
+                                return true;
+                            });
+                            return viewEvents.reduce((total, event) => {
+                                return total + (event.cost || 0);
+                            }, 0).toFixed(2);
+                        })()} total cost
+                    </p>
                 </div>
             </div>
 
@@ -665,9 +708,6 @@ export function CustomCalendar({
             </div> */}
             {activeView === "day" && (
                 <CustomDayView
-                    currentView={activeView}
-                    currentDate={currentDate}
-                    onDateChange={onNavigate}
                     date={currentDate}
                     onSelectEvent={onSelectEvent}
                     onEventUpdate={onEventUpdate}
@@ -675,6 +715,11 @@ export function CustomCalendar({
                     onToggleUnallocated={() => setShowUnallocated(!showUnallocated)}
                     unallocatedVisits={unallocatedVisits}
                     onUnallocatedVisitDrop={handleUnallocatedVisitDrop}
+                    currentView={activeView}
+                    currentDate={currentDate}
+                    onDateChange={onNavigate}
+                    onViewChange={(view) => dispatch(setActiveView(view))}
+                    events={filteredEvents}
                 />
             )}
 
@@ -685,6 +730,7 @@ export function CustomCalendar({
                     onEventUpdate={onEventUpdate}
                     staffMembers={staffMembers}
                     getEventDurationInMinutes={getEventDurationInMinutes}
+                    events={filteredEvents}
                 />
             )}
 
@@ -697,6 +743,7 @@ export function CustomCalendar({
                     getEventDurationInMinutes={getEventDurationInMinutes}
                     getEventTypeLabel={getEventTypeLabel}
                     sidebarMode={sidebarMode}
+                    events={filteredEvents}
                 />
             )}
         </div>

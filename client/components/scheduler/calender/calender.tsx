@@ -46,6 +46,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
     const { data: leaveEvents } = useGetAgencyLeaveEventsQuery(user?.userInfo?.agencyId || "")
 
     const schedules = useAppSelector((state) => state.schedule.agencySchedules)
+    console.log("schedules", schedules)
 
     const processedEvents = useMemo(() => {
         const scheduleEvents = schedules.map(schedule => {
@@ -67,9 +68,39 @@ export function Calendar({ onEventSelect }: CalendarProps) {
             const end = new Date(date);
             end.setHours(endHours, endMinutes, 0, 0);
 
+            // If the event is unassigned (userId is null), create an unallocated visit
+            if (!schedule.userId) {
+                return {
+                    id: schedule.id,
+                    title: `${schedule.client?.fullName || 'Unknown Client'}`,
+                    start,
+                    end,
+                    date,
+                    startTime: schedule.startTime,
+                    endTime: schedule.endTime,
+                    resourceId: schedule.userId,
+                    clientId: schedule.clientId,
+                    type: schedule.type,
+                    status: schedule.status,
+                    notes: schedule.notes ?? "",
+                    color: schedule.color || '#10b981',
+                    careWorker: {
+                        fullName: 'Unassigned',
+                    },
+                    client: {
+                        fullName: schedule.client?.fullName || 'Unknown Client',
+                    },
+                    isUnallocated: true,
+                    duration: (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes),
+                    visitType: schedule.type,
+                    priority: 'medium',
+                    cost: 0
+                };
+            }
+
             const processedEvent: ProcessedCalendarEvent = {
                 id: schedule.id,
-                title: `${schedule.user!.fullName}`,
+                title: `${schedule.user?.fullName || 'Unassigned'}`,
                 start,
                 end,
                 date,
@@ -82,10 +113,10 @@ export function Calendar({ onEventSelect }: CalendarProps) {
                 notes: schedule.notes ?? "",
                 color: schedule.color || '#10b981',
                 careWorker: {
-                    fullName: schedule.user!.fullName,
+                    fullName: schedule.user?.fullName || 'Unassigned',
                 },
                 client: {
-                    fullName: schedule.client!.fullName,
+                    fullName: schedule.client?.fullName || 'Unknown Client',
                 },
                 isLeaveEvent: false,
             }
@@ -149,7 +180,11 @@ export function Calendar({ onEventSelect }: CalendarProps) {
             return events
         }).flat()
 
-        return [...scheduleEvents, ...processedLeaveEvents]
+        // Separate unallocated visits from regular events
+        const unallocatedVisits = scheduleEvents.filter(event => event.isUnallocated);
+        const regularEvents = scheduleEvents.filter(event => !event.isUnallocated);
+
+        return [...regularEvents, ...processedLeaveEvents, ...unallocatedVisits]
     }, [schedules, leaveEvents])
 
     const getLeaveTypeColor = (leaveType: string) => {

@@ -71,6 +71,86 @@ export const viewAlertsTool = createTool({
   },
 });
 
+export const createOfficeStaffProfileTool = createTool({
+  description: `Create a new office staff profile. 
+
+CRITICAL FORMATTING RULES FOR USER REQUESTS:
+- Use markdown bullets (-) not asterisks (*)
+- Use **Bold** for field names
+- NEVER show technical enum values to users
+- NEVER show format requirements like (format: YYYY-MM-DD)
+- Handle all format conversion automatically
+
+CORRECT REQUEST FORMAT:
+"To create a new office staff profile, I need the following information:
+
+- **Full Name** (the office staff's full name)
+- **Email** (a valid email address)
+- **Date of Birth** (the office staff's date of birth)
+- **Sub-Role** (Office Staff, Office Manager, Office Assistant, or Other)
+
+Please provide these details and I'll verify them before creating the profile."
+
+NEVER USE: fullName, dateOfBirth, format requirements`,
+  parameters: z.object({
+    fullName: z.string().describe('The full name of the office staff (display as "Full Name" to users)'),
+    email: z.string().email().describe('The email of the office staff (display as "Email" to users)'),
+    dateOfBirth: z.string().describe('The date of birth of the office staff (display as "Date of Birth" to users)'),
+    subRole: z.enum(['FINANCE_MANAGER', 'HR_MANAGER', 'CARE_MANAGER', 'SCHEDULING_COORDINATOR', 'OFFICE_ADMINISTRATOR', 'RECEPTIONIST', 'QUALITY_ASSURANCE_MANAGER', 'MARKETING_COORDINATOR', 'COMPLIANCE_OFFICER']).describe('The sub-role of the office staff (display options as: Finance Manager, HR Manager, Care Manager, Scheduling Coordinator, Office Administrator, Receptionist, Quality Assurance Manager, Marketing Coordinator, or Compliance Officer)'),
+      }),
+  execute: async function ({ fullName, email, dateOfBirth, subRole }) {
+    return {
+      fullName,
+      email,
+      dateOfBirth,
+      subRole,
+      status: 'active',
+      success: true
+    };
+  },
+});
+
+export const createCareWorkerProfileTool = createTool({
+  description: `Create a new care worker profile. 
+
+CRITICAL FORMATTING RULES FOR USER REQUESTS:
+- Use markdown bullets (-) not asterisks (*)
+- Use **Bold** for field names
+- NEVER show technical enum values to users
+- NEVER show format requirements like (format: YYYY-MM-DD)
+- Handle all format conversion automatically
+
+CORRECT REQUEST FORMAT:
+"To create a new care worker profile, I need the following information:
+
+- **Full Name** (the care worker's full name)
+- **Email** (a valid email address)
+- **Date of Birth** (the care worker's date of birth)
+- **Sub-Role** (Caregiver, Senior Caregiver, Junior Caregiver, Trainee Caregiver, Live In Caregiver, Part Time Caregiver, Specialized Caregiver, Nursing Assistant, or Other)
+
+Please provide these details and I'll verify them before creating the profile."
+
+NEVER USE: CARE_WORKER, OFFICE_STAFF, CARE_WORKER, OFFICE_STAFF, fullName, dateOfBirth, format requirements`,
+  parameters: z.object({
+    fullName: z.string().describe('The full name of the care worker (display as "Full Name" to users)'),
+    email: z.string().email().describe('The email of the care worker (display as "Email" to users)'),
+    dateOfBirth: z.string().describe('The date of birth of the care worker (display as "Date of Birth" to users)'),
+    subRole: z.enum(['CAREGIVER', 'SENIOR_CAREGIVER', 'JUNIOR_CAREGIVER', 'TRAINEE_CAREGIVER', 'LIVE_IN_CAREGIVER', 'PART_TIME_CAREGIVER', 'SPECIALIZED_CAREGIVER', 'NURSING_ASSISTANT', 'OTHER']).describe('The sub-role of the care worker (display options as: Caregiver, Senior Caregiver, Junior Caregiver, Trainee Caregiver, Live In Caregiver, Part Time Caregiver, Specialized Caregiver, Nursing Assistant, or Other)'),
+  }),
+  execute: async function ({ fullName, email, dateOfBirth, role, subRole }) {
+    return {
+      fullName,
+      email,
+      dateOfBirth,
+      role,
+      subRole,
+      status: 'active',
+      success: true,
+      toolName: 'createClientProfile'
+    };
+  },
+});
+
 export const createClientProfileTool = createTool({
   description: `Create a new client profile. 
 
@@ -189,6 +269,8 @@ export const generateCarePlanTool = createTool({
 });
 
 export const tools = {
+  createOfficeStaffProfile: createOfficeStaffProfileTool,
+  createCareWorkerProfile: createCareWorkerProfileTool,
   displayScheduleAppointment: displayScheduleAppointmentTool,
   createSchedule: scheduleTool,
   generatePayroll: generatePayrollTool,

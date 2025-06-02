@@ -751,6 +751,24 @@ export const getAgencyAlerts = async (req: Request, res: Response): Promise<void
     }
 };
 
+
+export const getAllAgencyAlerts = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const alerts = await prisma.alert.findMany({
+            where: { agencyId: id },
+            include: {
+                client: true,
+                careworker: true,
+                report: true,
+            }
+        });
+        res.json(alerts);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching all alerts", error: error });
+    }
+};
+
 export const getAgencyInvoices = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;

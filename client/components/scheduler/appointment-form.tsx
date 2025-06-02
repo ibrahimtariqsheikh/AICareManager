@@ -276,16 +276,7 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                 dispatch(addEvent(eventData as any))
                 onClose()
             } catch (error: any) {
-                console.error("Error saving appointment:", error)
-                if (error.data?.conflict) {
-                    const { type, id } = error.data.conflict
-                    const entity =
-                        type === "care worker" ? careWorkers.find((w: any) => w.id === id) : clients.find((c: any) => c.id === id)
-                    const name = entity ? `${entity.fullName}` : type
-                    toast.error(`${name} already has an appointment scheduled during this time`)
-                } else {
-                    toast.error("Failed to create appointment")
-                }
+                toast.error(error.error)
             }
         } catch (error) {
             console.error("Error in form submission:", error)
@@ -861,19 +852,11 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                 dispatch(updateEvent(eventData as any))
                 onClose()
             } catch (error: any) {
-                console.error("Error saving appointment:", error)
-                if (error.data?.conflict) {
-                    const { type, id } = error.data.conflict
-                    const entity =
-                        type === "care worker" ? careWorkers.find((w: any) => w.id === id) : clients.find((c: any) => c.id === id)
-                    const name = entity ? `${entity.fullName}` : type
-                    toast.error(`${name} already has an appointment scheduled during this time`)
-                } else {
-                    toast.error("Failed to update appointment")
-                }
+                console.log("ERROR", error)
+                toast.error("An unexpected error occurred")
             }
         } catch (error) {
-            console.error("Error in form submission:", error)
+            console.log("ERROR", error)
             toast.error("An unexpected error occurred")
         } finally {
             setIsLoading(false)

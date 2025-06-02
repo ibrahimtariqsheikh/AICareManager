@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import EventIcon from "@/components/icons/eventicon"
-import type { AppointmentEvent, StaffMember, Client } from "../types"
+import type { AppointmentEvent, StaffMember, Client, ProcessedCalendarEvent } from "../types"
 import type { ScheduleTemplate } from "@/types/prismaTypes"
 import { setEvents } from "@/state/slices/scheduleSlice"
 
@@ -42,6 +42,7 @@ interface CustomDayViewProps {
     onToggleUnallocated?: () => void
     unallocatedVisits?: any[]
     onUnallocatedVisitDrop?: (visit: any, clientId: string, timeSlot: string) => void
+    events: ProcessedCalendarEvent[]
 }
 
 export function CustomDayView({
@@ -56,14 +57,13 @@ export function CustomDayView({
     onToggleUnallocated,
     unallocatedVisits = [],
     onUnallocatedVisitDrop,
+    events,
 }: CustomDayViewProps) {
     const dispatch = useAppDispatch()
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType)
     const clients = useAppSelector((state) => state.user.clients || [])
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
-    const events = useAppSelector((state) => state.schedule.events || [])
-    console.log("events", events)
     const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
     const { userTemplates, isLoadingTemplates } = useAppSelector((state) => state.template)
     const agencyId = useAppSelector((state) => state.user.user?.userInfo?.agencyId)
@@ -187,8 +187,14 @@ export function CustomDayView({
         events
             .filter((event) => moment(event.start).isSame(date, "day"))
             .forEach((event) => {
-                if (event.clientId && userEvents[event.clientId]) {
-                    userEvents[event.clientId]?.push(event)
+                if (activeScheduleUserType === "careWorker") {
+                    if (event.resourceId && userEvents[event.resourceId]) {
+                        userEvents[event.resourceId]?.push(event)
+                    }
+                } else {
+                    if (event.clientId && userEvents[event.clientId]) {
+                        userEvents[event.clientId]?.push(event)
+                    }
                 }
             })
 
@@ -208,22 +214,30 @@ export function CustomDayView({
 
     // Process events for display
     useEffect(() => {
+        console.log("Processing events for display:", events);
         const eventMap: Record<string, AppointmentEvent> = {}
         events
-            .filter((event) => moment(event.start).isSame(date, "day"))
+            .filter((event) => {
+                const eventDate = typeof event.date === 'string' ? new Date(event.date) : event.date;
+                const isSameDay = moment(eventDate).isSame(date, "day");
+
+                return isSameDay;
+            })
             .forEach((event) => {
                 eventMap[event.id] = {
                     ...event,
-                    start: new Date(event.start),
-                    end: new Date(event.end),
-                    date: event.date ? new Date(event.date) : new Date(event.start),
+                    start: typeof event.start === 'string' ? new Date(event.start) : event.start,
+                    end: typeof event.end === 'string' ? new Date(event.end) : event.end,
+                    date: typeof event.date === 'string' ? new Date(event.date) : event.date,
                 }
             })
+        console.log("Processed event map:", eventMap);
         setDisplayEvents(eventMap)
     }, [events, date])
 
     // Calculate event positions
     useEffect(() => {
+
         const positions: Record<string, any> = {}
 
         Object.values(displayEvents).forEach((event) => {
@@ -244,9 +258,9 @@ export function CustomDayView({
                 originalEvent: { ...event },
             }
         })
-
+        console.log("Calculated positions:", positions);
         setEventPositions(positions)
-    }, [displayEvents, startHour, minutesPerSlot, 80])
+    }, [displayEvents, startHour, minutesPerSlot])
 
     // Sync header scroll with timeline - force synchronization
     useEffect(() => {
@@ -331,12 +345,8 @@ export function CustomDayView({
 
     // Effect to handle event selection state
     useEffect(() => {
-        // Reset active dialog when event is null
+        // Only reset active dialog when onSelectEvent changes to null
         if (!onSelectEvent) {
-            setActiveDialogEventId(null)
-        }
-        return () => {
-            // Cleanup function
             setActiveDialogEventId(null)
         }
     }, [onSelectEvent])
@@ -471,38 +481,45 @@ export function CustomDayView({
         return `${hours} hour${hours !== 1 ? 's' : ''} ${mins} min${mins !== 1 ? 's' : ''}`
     }
 
-    const UnallocatedVisitCard = ({ visit }: { visit: any }) => (
-        <div
-            draggable
-            onDragStart={(e) => handleDragStart(e, visit)}
-            className={`p-2 rounded-lg border border-dashed cursor-move hover:shadow-md transition-all ${getPriorityColor(visit.priority)} group`}
-        >
-            <div className="flex items-start gap-3">
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-medium text-[13px] truncate">{visit.clientName}</h4>
-
-                    </div>
-                    <div className="text-[10px] text-gray-600 mb-2 mt-2">
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className={cn('p-1 rounded-full  text-[10px] font-medium', visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
-                                visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
-                                    'bg-yellow-500/30 text-yellow-500')}>{visit.visitType}</span>
-                            <span className={cn('p-1 rounded-full  text-[10px] font-medium', visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
-                                visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
-                                    'bg-yellow-500/80 text-yellow-50')}>{formatDuration(visit.duration)}</span>
-                            <span className={cn('p-1 rounded-full  text-[10px] font-medium', visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
-                                visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
-                                    'bg-yellow-500/80 text-yellow-50')}>£{visit.cost}</span>
+    const UnallocatedVisitCard = ({ visit }: { visit: any }) => {
+        return (
+            <div
+                draggable
+                onDragStart={(e) => handleDragStart(e, visit)}
+                className={`p-2 rounded-lg border border-dashed cursor-move hover:shadow-md transition-all ${getPriorityColor(visit.priority)} group`}
+            >
+                <div className="flex items-start gap-3">
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                            <h4 className="font-medium text-[13px] truncate">{visit.client.fullName}</h4>
                         </div>
+                        <div className="text-[10px] text-gray-600 mb-2 mt-2">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className={cn('p-1 rounded-full text-[10px] font-medium',
+                                    visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
+                                        visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
+                                            'bg-yellow-500/30 text-yellow-500'
+                                )}>{visit.visitType}</span>
+                                <span className={cn('p-1 rounded-full text-[10px] font-medium',
+                                    visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
+                                        visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
+                                            'bg-yellow-500/30 text-yellow-500'
+                                )}>{formatDuration(visit.duration)}</span>
+                                <span className={cn('p-1 rounded-full text-[10px] font-medium',
+                                    visit.priority === 'urgent' ? 'bg-red-500/80 text-red-50' :
+                                        visit.priority === 'high' ? 'bg-orange-500/30 text-orange-800' :
+                                            'bg-yellow-500/30 text-yellow-500'
+                                )}>£{visit.cost}</span>
+                            </div>
+                        </div>
+                        {visit.notes && (
+                            <div className="text-xs text-gray-500 italic">"{visit.notes}"</div>
+                        )}
                     </div>
-                    {visit.notes && (
-                        <div className="text-xs text-gray-500 italic">"{visit.notes}"</div>
-                    )}
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     const handleCreateVisit = (time: string, clientId: string) => {
         console.log("CLIENT ID", clientId)
@@ -583,9 +600,12 @@ export function CustomDayView({
                         </div>
 
                         <div className="p-4 space-y-3">
-                            {unallocatedVisits.map((visit) => (
-                                <UnallocatedVisitCard key={visit.id} visit={visit} />
-                            ))}
+                            {unallocatedVisits.map((visit: any) => {
+                                console.log("VISIT", visit)
+                                return (
+                                    <UnallocatedVisitCard key={visit.id} visit={visit} />
+                                )
+                            })}
 
                             {unallocatedVisits.length === 0 && (
                                 <div className="text-center py-8 text-gray-500">
@@ -728,10 +748,7 @@ export function CustomDayView({
                     <div
                         ref={containerRef}
                         className="flex-1 overflow-auto timeline-container"
-                        style={{
-                            scrollbarWidth: 'auto',
-                            scrollbarColor: '#cbd5e1 #f1f5f9'
-                        }}
+
                     >
                         <div style={{ width: totalTimelineWidth, minWidth: totalTimelineWidth, position: 'relative' }}>
                             {/* Time Header */}
@@ -875,19 +892,23 @@ export function CustomDayView({
                                                                 <div className="w-full">
                                                                     <div className={cn("flex items-center gap-2 mb-1 event-title", getEventTextColor(event.status))}>
                                                                         {getEventIcon(event)}
-                                                                        <span className="font-medium text-sm truncate">{event.title}</span>
+                                                                        <span className="font-medium text-sm truncate">
+                                                                            {activeScheduleUserType === "careWorker" ? event.client?.fullName : event.title}
+                                                                        </span>
                                                                     </div>
                                                                     <div className={cn("flex items-center gap-1 text-xs opacity-75 mb-1 event-time", getEventTextColor(event.status))}>
                                                                         <Timer className="h-3 w-3 flex-shrink-0" />
                                                                         <span className="truncate">
-                                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+                                                                            {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")} ({formatDuration(moment(event.end).diff(moment(event.start), 'minutes'))})
                                                                         </span>
                                                                     </div>
                                                                 </div>
                                                             </TooltipTrigger>
                                                             <TooltipContent className="bg-gray-900">
                                                                 <div className="space-y-2">
-                                                                    <p className="font-medium text-white">{event.title}</p>
+                                                                    <p className="font-medium text-white">
+                                                                        {activeScheduleUserType === "careWorker" ? event.client?.fullName : event.title}
+                                                                    </p>
                                                                     <p className="text-sm text-white">
                                                                         {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
                                                                     </p>

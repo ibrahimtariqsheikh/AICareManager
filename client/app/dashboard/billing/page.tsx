@@ -33,6 +33,8 @@ import { NewPayrollForm } from "./components/new-payroll-form"
 import { NewExpenseForm } from "./components/new-expense-form"
 import { PayrollActions } from "./components/payroll-actions"
 import { ExpensesActions } from "./components/expenses-actions"
+import MileageTable from "./components/mileage-table"
+import { NewMileageForm } from "./components/new-mileage-form"
 
 export default function BillingPage() {
     const router = useRouter()
@@ -53,6 +55,9 @@ export default function BillingPage() {
 
     // State for new expense dialog
     const [showNewExpenseDialog, setShowNewExpenseDialog] = useState(false)
+
+    // State for new mileage dialog
+    const [showNewMileageDialog, setShowNewMileageDialog] = useState(false)
 
     // Update date range in Redux when it changes
     const handleDateRangeChange = (value: DateRange | undefined | ((prevState: DateRange | undefined) => DateRange | undefined)) => {
@@ -80,21 +85,12 @@ export default function BillingPage() {
                         <TabsTrigger value="invoices">Invoices</TabsTrigger>
                         <TabsTrigger value="payroll">Payroll</TabsTrigger>
                         <TabsTrigger value="expenses">Expenses</TabsTrigger>
+                        <TabsTrigger value="mileage">Mileage</TabsTrigger>
                         <TabsTrigger value="shift-review">Shift Review</TabsTrigger>
                         <TabsTrigger value="analytics">Analytics</TabsTrigger>
                     </TabsList>
 
-                    <div className="flex items-center gap-2">
-                        <DatePickerWithRange date={dateRange} setDate={handleDateRangeChange} />
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => setShowFilters(!showFilters)}
-                            className="transition-all duration-200 hover:scale-110 hover:bg-primary/10"
-                        >
-                            <Filter className="h-4 w-4 transition-transform duration-200 hover:rotate-12" />
-                        </Button>
-                    </div>
+
                 </div>
 
                 <TabsContent value="invoices" className="space-y-4">
@@ -132,6 +128,10 @@ export default function BillingPage() {
                     <ExpensesTable date={dateRange} />
                 </TabsContent>
 
+                <TabsContent value="mileage" className="space-y-4">
+                    <MileageTable />
+                </TabsContent>
+
                 <TabsContent value="analytics" className="space-y-4">
                     <BillingAnalytics />
                 </TabsContent>
@@ -163,6 +163,14 @@ export default function BillingPage() {
                     >
                         <Plus className="h-7 w-7" />
                     </Button>
+                ) : activeTab === "mileage" ? (
+                    <Button
+                        size="icon"
+                        className="rounded-full h-14 w-14 shadow-lg"
+                        onClick={() => setShowNewMileageDialog(true)}
+                    >
+                        <Plus className="h-7 w-7" />
+                    </Button>
                 ) : null}
             </div>
 
@@ -183,6 +191,16 @@ export default function BillingPage() {
                         <DialogTitle>Create New Expense</DialogTitle>
                     </DialogHeader>
                     <NewExpenseForm onClose={() => setShowNewExpenseDialog(false)} />
+                </DialogContent>
+            </Dialog>
+
+            {/* New Mileage Dialog */}
+            <Dialog open={showNewMileageDialog} onOpenChange={setShowNewMileageDialog}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Create New Mileage Entry</DialogTitle>
+                    </DialogHeader>
+                    <NewMileageForm onClose={() => setShowNewMileageDialog(false)} />
                 </DialogContent>
             </Dialog>
         </div>

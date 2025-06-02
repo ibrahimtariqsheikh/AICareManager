@@ -25,7 +25,8 @@ import {
     getAgencyInvoices,
     getAgencyExpenses,
     getAgencyPayrolls,
-    getAgencyAlerts
+    getAgencyAlerts,
+    getAllAgencyAlerts
 } from "../controllers/agencyController";
 
 const router = express.Router();
@@ -72,6 +73,6 @@ router.get("/:id/invoices", getAgencyInvoices);
 router.get("/:id/payrolls", getAgencyPayrolls);
 router.get("/:id/expenses", getAgencyExpenses);
 router.get("/:id/alerts", getAgencyAlerts);
-
+router.get("/:id/alerts/all", getAllAgencyAlerts);
 
 export default router;

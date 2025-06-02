@@ -22,6 +22,8 @@ import { HolidayRequestTool } from "./tools/holiday-request-tool"
 import { RevenueReportTool } from "./tools/revenue-report-tool"
 import { OnboardingInviteTool } from "./tools/onboarding-invite-tool"
 import { AlertsTool } from "./tools/alerts-tool"
+import CreateCareWorkerTool from "./tools/create-care-worker-tool"
+import CreateOfficeStaffTool from "./tools/create-office-staff-tool"
 
 // Add type declarations at the top of the file
 interface SpeechRecognitionEvent extends Event {
@@ -87,6 +89,10 @@ const ToolComponent = React.memo(({ part, messageId, index }: { part: any; messa
     switch (part.toolInvocation.toolName) {
         case "createClientProfile":
             return <CreateClientTool key={toolKey} {...part.toolInvocation} />
+        case "createCareWorkerProfile":
+            return <CreateCareWorkerTool key={toolKey} {...part.toolInvocation} />
+        case "createOfficeStaffProfile":
+            return <CreateOfficeStaffTool key={toolKey} {...part.toolInvocation} />
         case "createSchedule":
             return <CreateScheduleTool key={toolKey} {...part.toolInvocation} />
         case "displayScheduleAppointment":

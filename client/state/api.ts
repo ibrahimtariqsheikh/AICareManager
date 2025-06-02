@@ -209,6 +209,22 @@ export interface Alert {
   resolvedAt?: string;
   createdAt: string;
   updatedAt: string;
+  client?: {
+    id: string;
+    fullName: string;
+    [key: string]: any;
+  };
+  careworker?: {
+    id: string;
+    fullName: string;
+    [key: string]: any;
+  };
+  report?: {
+    id: string;
+    title: string;
+    status: string;
+    [key: string]: any;
+  };
 }
 
 export const api = createApi({
@@ -328,6 +344,10 @@ export const api = createApi({
     getAgencyReports: build.query<Report[], string>({
       query: (agencyId) => `/reports/agency/${agencyId}`,
       providesTags: ["Reports"],
+    }),
+    getAllAgencyAlerts: build.query<Alert[], string>({
+      query: (agencyId) => `/agencies/${agencyId}/alerts/all`,
+      providesTags: ["Alerts"],
     }),
 
     // Get users with filtering
@@ -1154,4 +1174,5 @@ export const {
   useCreateExpenseMutation,
   useCreateInvoiceMutation,
   useGetAgencyAlertsQuery,
+  useGetAllAgencyAlertsQuery,
 } = api

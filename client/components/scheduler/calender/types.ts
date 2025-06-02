@@ -25,9 +25,9 @@ export interface EventType {
 export interface AppointmentEvent {
   id: string
   title: string
-  start: Date
-  end: Date
-  date: Date
+  start: Date | string
+  end: Date | string
+  date: Date | string
   startTime: string
   endTime: string
   resourceId: string
@@ -44,6 +44,11 @@ export interface AppointmentEvent {
   }
   isLeaveEvent?: boolean
   leaveType?: string
+  isUnallocated?: boolean
+  duration?: number
+  visitType?: string
+  priority?: 'low' | 'medium' | 'high' | 'urgent'
+  cost?: number
 }
 
 export interface CalendarProps {
@@ -53,6 +58,8 @@ export interface CalendarProps {
     from?: Date
     to?: Date
   }
+  activeScheduleUserType?: "careWorker" | "client" | "officeStaff"
+  userId?: string
 }
 
 export type SidebarMode = "clients" | "careworkers" | "officestaff"
@@ -60,9 +67,9 @@ export type SidebarMode = "clients" | "careworkers" | "officestaff"
 export interface ProcessedCalendarEvent {
     id: string
     title: string
-    start: Date
-    end: Date
-    date: Date
+    start: Date | string
+    end: Date | string
+    date: Date | string
     startTime: string
     endTime: string
     resourceId: string
@@ -79,6 +86,11 @@ export interface ProcessedCalendarEvent {
     }
     isLeaveEvent?: boolean
     leaveType?: string
+    isUnallocated?: boolean
+    duration?: number
+    visitType?: string
+    priority?: 'low' | 'medium' | 'high' | 'urgent'
+    cost?: number
 }
 
 export interface CustomCalendarProps {
@@ -93,6 +105,37 @@ export interface CustomCalendarProps {
     sidebarMode: SidebarMode
     clients: Client[]
     spaceTheme?: boolean
+    events: ProcessedCalendarEvent[]
+}
+
+export interface CustomDayViewProps {
+    date: Date
+    onSelectEvent: (event: any) => void
+    onEventUpdate: (event: any) => void
+    currentView: "day" | "week" | "month"
+    currentDate: Date
+    onDateChange: (date: Date) => void
+    onViewChange: (view: "day" | "week" | "month") => void
+    events: ProcessedCalendarEvent[]
+}
+
+export interface CustomWeekViewProps {
+    date: Date
+    onSelectEvent: (event: any) => void
+    onEventUpdate: (event: any) => void
+    staffMembers: StaffMember[]
+    getEventDurationInMinutes: (event: AppointmentEvent) => number
+    events: ProcessedCalendarEvent[]
+}
+
+export interface CustomMonthViewProps {
+    date: Date
+    onSelectEvent: (event: any) => void
+    onDateSelect: (date: Date) => void
+    staffMembers: StaffMember[]
+    getEventDurationInMinutes: (event: AppointmentEvent) => number
+    getEventTypeLabel: (type: string) => string
+    sidebarMode: SidebarMode
     events: ProcessedCalendarEvent[]
 }
 

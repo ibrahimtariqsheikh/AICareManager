@@ -16,6 +16,7 @@ type CreateScheduleRequest = {
   status: string
   type: string
   notes?: string
+  rateSheetId?: string
   chargeRate?: string
 }
 
@@ -250,7 +251,7 @@ export const getSchedules = async (req: Request, res: Response): Promise<void> =
       date: schedule.date,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
-      resourceId: schedule.userId,
+      resourceId: schedule.userId || 'unallocated',
       clientId: schedule.clientId,
       type: mapDbTypeToFormType(schedule.type as ScheduleType),
       status: schedule.status,
@@ -296,11 +297,23 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
         status: statusStr, 
         type, 
         notes, 
-        chargeRate 
+        rateSheetId
       } = req.body
 
+      console.log("[CreateSchedule] Request body:", req.body)
+
       // Validate required fields
-      if (!agencyId || !clientId || !userId || !date || !startTime || !endTime || !statusStr || !type) {
+      if (!agencyId || !clientId ||  !date || !startTime || !endTime || !statusStr || !type) {
+        console.error("[CreateSchedule] Missing required fields:", {
+          agencyId: !!agencyId,
+          clientId: !!clientId,
+          userId: !!userId,
+          date: !!date,
+          startTime: !!startTime,
+          endTime: !!endTime,
+          status: !!statusStr,
+          type: !!type
+        })
         return {
           status: 400,
           body: { 
@@ -313,6 +326,7 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
       // Validate status
       const validStatus = Object.values(ScheduleStatus).find(s => s === statusStr)
       if (!validStatus) {
+        console.error("[CreateSchedule] Invalid status:", { providedStatus: statusStr, validStatuses: Object.values(ScheduleStatus) })
         return {
           status: 400,
           body: { 
@@ -325,6 +339,7 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
       // Validate time format
       const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
       if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+        console.error("[CreateSchedule] Invalid time format:", { startTime, endTime })
         return {
           status: 400,
           body: { message: "Invalid time format. Use HH:mm format" }
@@ -346,6 +361,7 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
       endDateTime.setHours(endHour, endMinute)
 
       if (endDateTime <= startDateTime) {
+        console.error("[CreateSchedule] Invalid time range:", { startDateTime, endDateTime })
         return {
           status: 400,
           body: { message: "End time must be after start time" }
@@ -364,6 +380,14 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
       })
 
       if (identicalAppointment) {
+        console.error("[CreateSchedule] Duplicate appointment found:", { 
+          existingId: identicalAppointment.id,
+          userId,
+          clientId,
+          date: appointmentDate,
+          startTime,
+          endTime
+        })
         return {
           status: 400,
           body: { 
@@ -383,10 +407,18 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
       )
 
       if (hasOverlap) {
+        console.error("[CreateSchedule] Scheduling conflict detected:", { conflicts })
+        const conflictMessages = conflicts.map(conflict => 
+          conflict.type === "care worker" 
+            ? "the care worker" 
+            : "the client"
+        ).join(" and ")
+        
         return {
           status: 400,
           body: { 
-            message: `Scheduling conflict detected`,
+            type: "conflict",
+            message: `There is a scheduling conflict with ${conflictMessages}.`,
             conflicts
           }
         }
@@ -396,13 +428,14 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
         data: {
           agencyId,
           clientId,
-          userId,
+          userId: userId || null,
           date: appointmentDate,
           startTime,
           endTime,
           status: validStatus as ScheduleStatus,
           type: mapFormTypeToDbType(type),
           notes: notes || undefined,
+          rateSheetId: rateSheetId || undefined,
         },
         include: {
           client: true,
@@ -410,23 +443,32 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
         },
       }) as ScheduleWithRelations
 
+      console.log("[CreateSchedule] Successfully created schedule:", { 
+        id: schedule.id,
+        clientId: schedule.clientId,
+        userId: schedule.userId,
+        date: schedule.date,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime
+      })
+
       // Format response to match frontend expectations
       const formattedSchedule: ScheduleResponse = {
         id: schedule.id,
-        title: `${schedule.client.fullName} with ${schedule.user.fullName}`,
+        title: `${schedule.client.fullName} with ${schedule.user?.fullName || 'Unassigned'}`,
         start: schedule.startTime,
         end: schedule.endTime,
         date: schedule.date,
         startTime: schedule.startTime,
         endTime: schedule.endTime,
-        resourceId: schedule.userId,
+        resourceId: schedule.userId || 'unallocated',
         clientId: schedule.clientId,
         type: mapDbTypeToFormType(schedule.type as ScheduleType),
         status: schedule.status as ScheduleStatus,
         notes: schedule.notes || undefined,
         color: getEventColor(schedule.type as ScheduleType),
         careWorker: {
-          fullName: schedule.user.fullName,
+          fullName: schedule.user?.fullName || 'Unassigned',
         },
         client: {
           fullName: schedule.client.fullName,
@@ -438,7 +480,7 @@ export const createSchedule = async (req: Request<{}, {}, CreateScheduleRequest>
         body: formattedSchedule
       }
     } catch (error) {
-      console.error("Error in transaction:", error)
+      console.error("[CreateSchedule] Error in transaction:", error)
       return {
         status: 500,
         body: { message: "Error creating schedule", error }
@@ -512,7 +554,7 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
         
         const appointmentStartTime = startTime || existingSchedule.startTime
         const appointmentEndTime = endTime || existingSchedule.endTime
-        const appointmentUserId = userId || existingSchedule.userId
+        const appointmentUserId = userId || existingSchedule.userId || 'unallocated'
         const appointmentClientId = clientId || existingSchedule.clientId
 
         // Check for time validity
@@ -568,7 +610,8 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
           return {
             status: 400,
             body: { 
-              message: `Scheduling conflict detected`,
+              type: "conflict",
+              message: `There is a conflict with another appointment. Please check the schedule and try again.`,
               conflicts
             }
           }
@@ -579,7 +622,7 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
         where: { id },
         data: {
           clientId,
-          userId,
+          userId: userId || null,
           date: date ? new Date(date) : undefined,
           startTime: startTime || undefined,
           endTime: endTime || undefined,
@@ -596,20 +639,20 @@ export const updateSchedule = async (req: Request<{ id: string }, {}, UpdateSche
       // Format response to match frontend expectations
       const formattedSchedule: ScheduleResponse = {
         id: updatedSchedule.id,
-        title: `${updatedSchedule.client.fullName} with ${updatedSchedule.user.fullName}`,
+        title: `${updatedSchedule.client.fullName} with ${updatedSchedule.user?.fullName || 'Unassigned'}`,
         start: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.startTime}`),
         end: new Date(`${updatedSchedule.date.toISOString().split('T')[0]}T${updatedSchedule.endTime}`),
         date: updatedSchedule.date,
         startTime: updatedSchedule.startTime,
         endTime: updatedSchedule.endTime,
-        resourceId: updatedSchedule.userId,
+        resourceId: updatedSchedule.userId || 'unallocated',
         clientId: updatedSchedule.clientId,
         type: mapDbTypeToFormType(updatedSchedule.type as ScheduleType),
         status: updatedSchedule.status as ScheduleStatus,
         notes: updatedSchedule.notes || undefined,
         color: getEventColor(updatedSchedule.type as ScheduleType),
         careWorker: {
-          fullName: updatedSchedule.user.fullName,
+          fullName: updatedSchedule.user?.fullName || 'Unassigned',
         },
         client: {
           fullName: updatedSchedule.client.fullName,

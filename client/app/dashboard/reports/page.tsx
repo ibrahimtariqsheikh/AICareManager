@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
-import { AlertCircle, CheckCircle, Clock, FileEdit, Flag, Search, RefreshCw } from "lucide-react"
+import { AlertCircle, CheckCircle, Clock, FileEdit, Flag, Search, RefreshCw, Download } from "lucide-react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
@@ -16,6 +16,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Geist_Mono } from "next/font/google"
+import { useGetAgencyAlertsQuery, useGetAllAgencyAlertsQuery } from "@/state/api"
+import { RootState } from "@/state/redux"
+import { CustomSelect } from "@/components/ui/custom-select"
+import { CustomDateRangeSelector } from "@/app/dashboard/billing/invoice-builder/components/custom-date-range"
+import React from "react"
 
 const geistMono = Geist_Mono({
     subsets: ['latin'],
@@ -25,7 +30,10 @@ const geistMono = Geist_Mono({
 
 export default function ReportsPage() {
 
-    const { agency } = useAppSelector((state: any) => state.agency)
+
+    const agencyId = useAppSelector((state: RootState) => state.user.user.userInfo?.agencyId)
+    const agency = useAppSelector((state: RootState) => state.agency.agency)
+
     const reports = agency?.reports || []
     const [searchTerm, setSearchTerm] = useState("")
     const [isLoaded, setIsLoaded] = useState(false)
@@ -41,7 +49,7 @@ export default function ReportsPage() {
 
 
     // Report filters
-    const [showReportFilters, setShowReportFilters] = useState(false)
+    const [showReportFilters, setShowReportFilters] = useState(true)
     const [reportFromDate, setReportFromDate] = useState("")
     const [reportToDate, setReportToDate] = useState("")
     const [selectedClient, setSelectedClient] = useState("all")
@@ -49,18 +57,35 @@ export default function ReportsPage() {
     const [selectedGroup] = useState("all")
     const [selectedTask] = useState("all")
 
-    // Dummy data for filters
-    const clients = [
-        { id: "1", name: "Ayan Khalid" },
-        { id: "2", name: "Salem Khalid" },
-        { id: "3", name: "John Doe" }
-    ]
+    // Get unique clients and care workers from reports
+    const uniqueClients = React.useMemo(() => {
+        const clientMap = new Map()
+        reports.forEach((report: any) => {
+            if (report.client?.id && report.client?.fullName) {
+                clientMap.set(report.client.id, {
+                    id: report.client.id,
+                    fullName: report.client.fullName
+                })
+            }
+        })
+        return Array.from(clientMap.values())
+    }, [reports])
 
-    const careWorkers = [
-        { id: "1", name: "Sarah Smith" },
-        { id: "2", name: "Mike Johnson" },
-        { id: "3", name: "Emma Wilson" }
-    ]
+    const uniqueCareWorkers = React.useMemo(() => {
+        const workerMap = new Map()
+        reports.forEach((report: any) => {
+            if (report.caregiver?.id && report.caregiver?.fullName) {
+                workerMap.set(report.caregiver.id, {
+                    id: report.caregiver.id,
+                    fullName: report.caregiver.fullName
+                })
+            }
+        })
+        return Array.from(workerMap.values())
+    }, [reports])
+
+    console.log("UNIQUE CLIENTS", uniqueClients)
+    console.log("UNIQUE CARE WORKERS", uniqueCareWorkers)
 
     // Reports summary data
     const reportsSummary = {
@@ -91,33 +116,14 @@ export default function ReportsPage() {
         }
     }, [reports])
 
-    // Enhanced alerts data based on the screenshot
-    const enhancedAlerts = [
-        {
-            id: 1,
-            date: "18/05/25, 16:00",
-            type: "MEDICATION",
-            client: { fullName: "ayan khalid" },
-            details: "It looks as though one of the Lunchtime medications have not yet been reported for ayan",
-            status: "UNRESOLVED"
-        },
-        {
-            id: 2,
-            date: "18/05/25, 12:00",
-            type: "MEDICATION",
-            client: { fullName: "ayan khalid" },
-            details: "It looks as though one of the Morning medications have not yet been reported for ayan",
-            status: "UNRESOLVED"
-        },
-        {
-            id: 3,
-            date: "18/05/25, 09:00",
-            type: "MEDICATION",
-            client: { fullName: "Salem Khalid" },
-            details: "It looks as though one of the Bedtime medications have not yet been reported for Salem",
-            status: "UNRESOLVED"
-        }
-    ]
+    const { data: alerts, isLoading: isLoadingAlerts } = useGetAllAgencyAlertsQuery(agencyId || "", {
+        skip: !agencyId
+    })
+
+    console.log("ALERTS", alerts)
+
+
+    const enhancedAlerts = alerts || []
 
     // Alerts summary data
     const alertsSummary = {
@@ -285,20 +291,25 @@ export default function ReportsPage() {
         let filtered = enhancedAlerts
 
         if (alertFilter !== "all") {
-            filtered = filtered.filter(alert => alert.status.toLowerCase() === alertFilter.toLowerCase())
+            filtered = filtered.filter(alert => {
+                if (alertFilter === "resolved") {
+                    return alert.resolvedAt !== null
+                } else if (alertFilter === "unresolved") {
+                    return alert.resolvedAt === null
+                }
+                return true
+            })
         }
 
         if (alertType !== "all") {
             filtered = filtered.filter(alert => alert.type.toLowerCase() === alertType.toLowerCase())
         }
 
-        // Date filtering would go here if implemented
-
         if (searchTerm) {
             filtered = filtered.filter(
                 alert =>
-                    (alert.client?.fullName && alert.client.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                    (alert.details && alert.details.toLowerCase().includes(searchTerm.toLowerCase()))
+                    (alert.client?.fullName && alert.client?.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                    (alert.description && alert.description.toLowerCase().includes(searchTerm.toLowerCase()))
             )
         }
 
@@ -383,17 +394,20 @@ export default function ReportsPage() {
 
     const renderEnhancedAlertItem = (alert: any) => (
         <tr key={alert.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
-            <td className="py-1.5 px-2 text-sm">{alert.date}</td>
+            <td className="py-1.5 px-2 text-sm">{format(new Date(alert.createdAt), "MMM dd, hh:mm a")}</td>
             <td className="py-1.5 px-2">
                 <Badge variant="outline" className={cn(
                     "text-xs font-medium",
-                    alert.type === 'MEDICATION' ? 'bg-red-100 text-red-800 border-red-200' : ''
+                    alert.type === 'MEDICATION' ? 'bg-red-100 text-red-800 border-red-200' :
+                        alert.type === 'LATE_VISIT' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                            alert.type === 'LOCATION' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                                'bg-gray-100 text-gray-800 border-gray-200'
                 )}>
-                    Medication alert
+                    {alert.type.replace('_', ' ')}
                 </Badge>
             </td>
-            <td className="py-1.5 px-2 text-sm text-primary">{alert.client.fullName}</td>
-            <td className="py-1.5 px-2 text-sm text-muted-foreground">{alert.details}</td>
+            <td className="py-1.5 px-2 text-sm text-primary">{alert.client?.fullName}</td>
+            <td className="py-1.5 px-2 text-sm text-muted-foreground">{alert.description}</td>
             <td className="py-1.5 px-2 text-right">
                 <Dialog>
                     <DialogTrigger asChild>
@@ -413,7 +427,7 @@ export default function ReportsPage() {
                         <DialogHeader>
                             <DialogTitle>Add Resolution</DialogTitle>
                             <DialogDescription>
-                                Add a resolution for the alert regarding {alert.client.fullName}
+                                Add a resolution for the alert regarding {alert.client?.fullName}
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
@@ -517,6 +531,43 @@ export default function ReportsPage() {
 
     const currentAlertsSummary = getFilteredAlertsSummary()
 
+    const handleDownloadCSV = () => {
+        const filteredData = filteredReports(reportFilter === "all" ? undefined : reportFilter.toUpperCase())
+
+        // Define CSV headers
+        const headers = [
+            "Title",
+            "Status",
+            "Client",
+            "Caregiver",
+            "Date",
+            "Description"
+        ]
+
+        // Convert data to CSV format
+        const csvContent = [
+            headers.join(","),
+            ...filteredData.map((report: any) => [
+                `"${(report.title || "Untitled Report").replace(/"/g, '""')}"`,
+                `"${report.status}"`,
+                `"${report.client?.fullName || ""}"`,
+                `"${report.caregiver?.fullName || ""}"`,
+                `"${format(new Date(report.checkInTime), "MMM dd, HH:mm")}"`,
+                `"${(report.description || "").replace(/"/g, '""')}"`
+            ].join(","))
+        ].join("\n")
+
+        // Create and trigger download
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+        const link = document.createElement("a")
+        const url = URL.createObjectURL(blob)
+        link.setAttribute("href", url)
+        link.setAttribute("download", `reports_${format(new Date(), "yyyy-MM-dd")}.csv`)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
     return (
         <div className={`relative min-h-screen transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
             <div className="container mx-auto px-6 py-2">
@@ -539,18 +590,29 @@ export default function ReportsPage() {
                                 </TabsTrigger>
                             </TabsList>
 
-                            <CustomInput
-                                placeholder="Search"
-                                value={searchTerm}
-                                icon={<Search className="h-4 w-4" />}
-                                onChange={(value: string) => setSearchTerm(value)}
-                                className="w-[300px]"
-                            />
+                            <div className="flex items-center space-x-2">
+                                <CustomInput
+                                    placeholder="Search"
+                                    value={searchTerm}
+                                    icon={<Search className="h-4 w-4" />}
+                                    onChange={(value: string) => setSearchTerm(value)}
+                                    className="w-[300px]"
+                                />
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleDownloadCSV}
+                                    className="h-9"
+                                >
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Download CSV
+                                </Button>
+                            </div>
                         </div>
 
                         <TabsContent value="reports" >
 
-                            <div className="space-y-6">
+                            <div className="space-y-4">
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                     {renderReportSummaryCard(
@@ -583,119 +645,60 @@ export default function ReportsPage() {
                                     )}
                                 </div>
 
-                                {/* Report Type Tabs */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-2">
-                                        <Button
-                                            variant={reportFilter === "all" ? "default" : "outline"}
-                                            onClick={() => setReportFilter("all")}
-                                            className={cn("rounded-md", geistMono.className, reportFilter !== "all" && "bg-gray-100 border-gray-200")}
-                                        >
-                                            All Reports
-                                        </Button>
-                                        <Button
-                                            variant={reportFilter === "flagged" ? "default" : "outline"}
-                                            onClick={() => setReportFilter("flagged")}
-                                            className={cn("rounded-md", geistMono.className, reportFilter !== "flagged" && "bg-gray-100 border-gray-200")}
-                                        >
-                                            Flagged
-                                        </Button>
-                                        <Button
-                                            variant={reportFilter === "reviewed" ? "default" : "outline"}
-                                            onClick={() => setReportFilter("reviewed")}
-                                            className={cn("rounded-md", geistMono.className, reportFilter !== "reviewed" && "bg-gray-100 border-gray-200")}
-                                        >
-                                            Reviewed
-                                        </Button>
-                                    </div>
 
-                                    <div className="flex items-center space-x-4">
-                                        <div className="text-sm text-muted-foreground flex items-center">
-                                            Last refreshed: {format(lastRefreshed, "HH:mm")}
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="ml-2 h-8 w-8"
-                                                onClick={handleRefresh}
-                                            >
-                                                <RefreshCw className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setShowReportFilters(!showReportFilters)}
-                                            className="rounded-md"
-                                        >
-                                            <span className="flex items-center">
-                                                <Search className="h-4 w-4 mr-1" />
-                                                {showReportFilters ? "Hide Filters" : "Show Filters"}
-                                            </span>
-                                        </Button>
-                                    </div>
-                                </div>
 
                                 {/* Report Filters */}
-                                {showReportFilters && (
-                                    <Card>
-                                        <CardContent className="p-4">
-                                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1.5">Client</label>
-                                                    <Select value={selectedClient} onValueChange={setSelectedClient}>
-                                                        <SelectTrigger className="w-full h-9">
-                                                            <SelectValue placeholder="All clients" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="all">All clients</SelectItem>
-                                                            {clients.map((client) => (
-                                                                <SelectItem key={client.id} value={client.id}>
-                                                                    {client.name}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1.5">Care Worker</label>
-                                                    <Select value={selectedCareWorker} onValueChange={setSelectedCareWorker}>
-                                                        <SelectTrigger className="w-full h-9">
-                                                            <SelectValue placeholder="All care workers" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="all">All care workers</SelectItem>
-                                                            {careWorkers.map((worker) => (
-                                                                <SelectItem key={worker.id} value={worker.id}>
-                                                                    {worker.name}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1.5">From date</label>
-                                                    <Input
-                                                        type="date"
-                                                        value={reportFromDate}
-                                                        onChange={(e) => setReportFromDate(e.target.value)}
-                                                        className="w-full h-9"
-                                                        placeholder="yyyy-mm-dd"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1.5">To date</label>
-                                                    <Input
-                                                        type="date"
-                                                        value={reportToDate}
-                                                        onChange={(e) => setReportToDate(e.target.value)}
-                                                        className="w-full h-9"
-                                                        placeholder="yyyy-mm-dd"
-                                                    />
-                                                </div>
+                                <Card>
+                                    <CardContent className="p-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1.5">Client</label>
+                                                <CustomSelect
+                                                    options={[
+                                                        { value: "all", label: "All clients" },
+                                                        ...uniqueClients.map(client => ({
+                                                            value: client.id,
+                                                            label: client.fullName
+                                                        }))
+                                                    ]}
+                                                    value={selectedClient}
+                                                    onChange={setSelectedClient}
+                                                    placeholder="Select client"
+                                                />
                                             </div>
-                                        </CardContent>
-                                    </Card>
-                                )}
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1.5">Care Worker</label>
+                                                <CustomSelect
+                                                    options={[
+                                                        { value: "all", label: "All care workers" },
+                                                        ...uniqueCareWorkers.map(worker => ({
+                                                            value: worker.id,
+                                                            label: worker.fullName
+                                                        }))
+                                                    ]}
+                                                    value={selectedCareWorker}
+                                                    onChange={setSelectedCareWorker}
+                                                    placeholder="Select care worker"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1.5">Date Range</label>
+                                                <CustomDateRangeSelector
+                                                    onRangeChange={(range) => {
+                                                        if (range) {
+                                                            setReportFromDate(range.from.toISOString().split('T')[0] || "")
+                                                            setReportToDate(range.to.toISOString().split('T')[0] || "")
+                                                        } else {
+                                                            setReportFromDate("")
+                                                            setReportToDate("")
+                                                        }
+                                                    }}
+                                                    placeholder="Select date range"
+                                                />
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
                                 {/* Reports Table */}
                                 {filteredReports(reportFilter === "all" ? undefined : reportFilter.toUpperCase()).length > 0 ? (
@@ -908,21 +911,21 @@ export default function ReportsPage() {
                                         <Button
                                             variant={alertFilter === "all" ? "default" : "outline"}
                                             onClick={() => setAlertFilter("all")}
-                                            className={cn("rounded-md", geistMono.className, alertFilter !== "all" && "bg-gray-100 border-gray-200")}
+                                            className={cn("rounded-md", alertFilter !== "all" && "bg-gray-100 border-gray-200")}
                                         >
                                             All
                                         </Button>
                                         <Button
                                             variant={alertFilter === "unresolved" ? "default" : "outline"}
                                             onClick={() => setAlertFilter("unresolved")}
-                                            className={cn("rounded-md", geistMono.className, alertFilter !== "unresolved" && "bg-gray-100 border-gray-200")}
+                                            className={cn("rounded-md", alertFilter !== "unresolved" && "bg-gray-100 border-gray-200")}
                                         >
                                             Unresolved
                                         </Button>
                                         <Button
                                             variant={alertFilter === "resolved" ? "default" : "outline"}
                                             onClick={() => setAlertFilter("resolved")}
-                                            className={cn("rounded-md", geistMono.className, alertFilter !== "resolved" && "bg-gray-100 border-gray-200")}
+                                            className={cn("rounded-md", alertFilter !== "resolved" && "bg-gray-100 border-gray-200")}
                                         >
                                             Resolved
                                         </Button>
@@ -954,44 +957,39 @@ export default function ReportsPage() {
                                     </div>
                                 </div>
 
-                                {/* Filters */}
+                                {/* Alert Filters */}
                                 {showFilters && (
                                     <Card>
                                         <CardContent className="p-4">
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                 <div>
                                                     <label className="block text-sm font-medium mb-1.5">Alert type</label>
-                                                    <Select value={alertType} onValueChange={setAlertType}>
-                                                        <SelectTrigger className="w-full h-9">
-                                                            <SelectValue placeholder="All types" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="all">All types</SelectItem>
-                                                            <SelectItem value="medication">Medication</SelectItem>
-                                                            <SelectItem value="safety">Safety</SelectItem>
-                                                            <SelectItem value="distance">Distance</SelectItem>
-                                                            <SelectItem value="report">Report</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1.5">From date</label>
-                                                    <Input
-                                                        type="date"
-                                                        value={fromDate}
-                                                        onChange={(e) => setFromDate(e.target.value)}
-                                                        className="w-full h-9"
-                                                        placeholder="yyyy-mm-dd"
+                                                    <CustomSelect
+                                                        options={[
+                                                            { value: "all", label: "All types" },
+                                                            { value: "medication", label: "Medication" },
+                                                            { value: "safety", label: "Safety" },
+                                                            { value: "distance", label: "Distance" },
+                                                            { value: "report", label: "Report" }
+                                                        ]}
+                                                        value={alertType}
+                                                        onChange={setAlertType}
+                                                        placeholder="Select alert type"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium mb-1.5">To date</label>
-                                                    <Input
-                                                        type="date"
-                                                        value={toDate}
-                                                        onChange={(e) => setToDate(e.target.value)}
-                                                        className="w-full h-9"
-                                                        placeholder="yyyy-mm-dd"
+                                                    <label className="block text-sm font-medium mb-1.5">Date Range</label>
+                                                    <CustomDateRangeSelector
+                                                        onRangeChange={(range) => {
+                                                            if (range) {
+                                                                setFromDate(range.from.toISOString().split('T')[0] || "")
+                                                                setToDate(range.to.toISOString().split('T')[0] || "")
+                                                            } else {
+                                                                setFromDate("")
+                                                                setToDate("")
+                                                            }
+                                                        }}
+                                                        placeholder="Select date range"
                                                     />
                                                 </div>
                                             </div>

@@ -10,6 +10,7 @@ import {
   BarChart,
   Mail,
   FileText,
+  UserCheck2,
 } from "lucide-react"
 
 export const SUGGESTIONS = [
@@ -32,6 +33,16 @@ export const SUGGESTIONS = [
     text: "Create client",
     icon: UserPlus,
     prompt: "I want to create a new client.",
+  },
+  {
+    text: "Create office staff",
+    icon: UserPlus,
+    prompt: "I want to create a new office staff.",
+  },
+  {
+    text: "Create Care worker",
+    icon: UserCheck,
+    prompt: "I want to create a new Carer.",
   },
   {
     text: "Send message",

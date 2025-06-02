@@ -5,11 +5,12 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import moment from "moment"
 import { motion } from "framer-motion"
 import { ChevronDown, Calendar, Clock, User, Home, Video, Building2, Phone, Heart, Flag, DollarSign, Baby, AlertTriangle, Stethoscope } from "lucide-react"
-import type { AppointmentEvent, StaffMember, Client } from "../types"
+import type { AppointmentEvent, StaffMember, Client, ProcessedCalendarEvent } from "../types"
 import { cn } from "../../../../lib/utils"
 import { toast } from "sonner"
-import { useAppSelector } from "@/state/redux"
+import { useAppSelector, useAppDispatch } from "@/state/redux"
 import { eventTypeStyles } from "../styles/event-colors"
+import { setActiveView } from "@/state/slices/calendarSlice"
 
 interface CustomMonthViewProps {
     date: Date
@@ -17,7 +18,7 @@ interface CustomMonthViewProps {
     onSelectEvent: (event: AppointmentEvent) => void
     onDateSelect: (date: Date) => void
     staffMembers: any[]
-    getEventDurationInMinutes: (event: any) => number
+    getEventDurationInMinutes: (event: AppointmentEvent) => number
     getEventTypeLabel: (type: string) => string
     spaceTheme?: boolean
     clients?: any[]
@@ -32,6 +33,7 @@ interface CustomMonthViewProps {
     deselectAllClients?: () => void
     toggleSidebarMode?: () => void
     onEventUpdate?: (updatedEvent: AppointmentEvent) => void
+    events: ProcessedCalendarEvent[]
 }
 
 
@@ -43,6 +45,7 @@ export function CustomMonthView({
     getEventTypeLabel,
     spaceTheme = false,
     onEventUpdate,
+    events,
 }: CustomMonthViewProps) {
     const [calendar, setCalendar] = useState<Date[][]>([])
     const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({})
@@ -71,8 +74,7 @@ export function CustomMonthView({
     const careworkers = useAppSelector((state) => state.user.careWorkers || [])
     const officeStaff = useAppSelector((state) => state.user.officeStaff || [])
     const filteredUsers = useAppSelector((state) => state.schedule.filteredUsers)
-
-    const events = useAppSelector((state) => state.schedule.events || [])
+    const dispatch = useAppDispatch()
 
     // Get the appropriate users based on activeScheduleUserType and filtered users
     const displayUsers = (() => {
@@ -671,8 +673,10 @@ export function CustomMonthView({
     const handleDayClick = useCallback((day: Date) => {
         if (!isDragging) {
             onDateSelect(day)
+            // Dispatch action to switch to day view
+            dispatch(setActiveView("day"))
         }
-    }, [isDragging, onDateSelect])
+    }, [isDragging, onDateSelect, dispatch])
 
     // Handle click on an event
     const handleEventClick = useCallback((event: AppointmentEvent, e: React.MouseEvent) => {
@@ -695,6 +699,11 @@ export function CustomMonthView({
         const minutes = duration % 60
         return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
     }, [getEventDurationInMinutes])
+
+    // Add this function to get the display title
+    const getEventDisplayTitle = useCallback((event: AppointmentEvent) => {
+        return activeScheduleUserType === "careWorker" ? event.client?.fullName : event.title;
+    }, [activeScheduleUserType]);
 
     // Render event component
     const renderEvent = useCallback((event: AppointmentEvent, _isExpanded: boolean) => {
@@ -767,7 +776,7 @@ export function CustomMonthView({
                         text
                     )}>
                         {eventIcon}
-                        <span className="font-medium truncate">{displayEvent.title}</span>
+                        <span className="font-medium truncate">{getEventDisplayTitle(displayEvent)}</span>
                     </div>
 
                     <div className={cn(
@@ -796,7 +805,8 @@ export function CustomMonthView({
         isDragging,
         ghostEvent,
         eventBeingDragged,
-        formatEventTime
+        formatEventTime,
+        getEventDisplayTitle
     ])
 
     // Render ghost event
@@ -866,13 +876,13 @@ export function CustomMonthView({
     }, [calendar])
 
     return (
-        <div className="h-[calc(100vh-100px)] flex flex-col p-4">
-            <div className="flex flex-col flex-1 h-full">
+        <div className="h-full flex flex-col p-4 overflow-hidden">
+            <div className="flex flex-col flex-1 overflow-hidden">
                 {/* Calendar grid */}
-                <div className="h-full flex flex-col border rounded-lg" ref={calendarRef}>
+                <div className="flex-1 flex flex-col border rounded-lg overflow-hidden" ref={calendarRef}>
                     {/* Day headers */}
                     <div
-                        className={`grid grid-cols-7 ${spaceTheme ? "bg-zinc-900 border-zinc-800" : "bg-gray-50 border-gray-200"} border-b rounded-t-lg`}
+                        className={`grid grid-cols-7 ${spaceTheme ? "bg-zinc-900 border-zinc-800" : "bg-gray-50 border-gray-200"} border-b`}
                     >
                         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
                             <div
@@ -886,9 +896,9 @@ export function CustomMonthView({
                     </div>
 
                     {/* Calendar grid */}
-                    <div className="flex-1 overflow-y-auto h-full">
+                    <div className="flex-1 overflow-auto">
                         <div
-                            className={`grid grid-cols-7 ${spaceTheme ? "bg-black" : "bg-white"} rounded-b-lg shadow-sm`}
+                            className={`grid grid-cols-7 ${spaceTheme ? "bg-black" : "bg-white"}`}
                             ref={gridRef}
                         >
                             {calendar.flat().map((day, i) => {
@@ -921,7 +931,7 @@ export function CustomMonthView({
                                         }}
                                         data-date={dateStr}
                                         className={cn(
-                                            "border-b border-r p-1 relative transition-colors duration-100",
+                                            "border-b border-r p-1 relative cursor-pointer active:scale-[0.98]",
                                             isCurrentMonth
                                                 ? spaceTheme
                                                     ? isWeekend
@@ -941,12 +951,24 @@ export function CustomMonthView({
                                             hasEvents ? "min-h-[200px]" : "min-h-[60px]",
                                             isHighlighted ? (spaceTheme ? "bg-zinc-800/40" : "bg-blue-100/60") : "",
                                             spaceTheme ? "border-zinc-800 text-white" : "border-gray-200",
-                                            "hover:bg-opacity-90 transition-all",
                                         )}
                                         onClick={() => handleDayClick(day)}
                                     >
+                                        {/* Hover effect wrapper */}
+                                        <div className={cn(
+                                            "absolute inset-0 transition-all duration-200",
+                                            isCurrentMonth
+                                                ? spaceTheme
+                                                    ? "hover:bg-zinc-900/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-zinc-900/20"
+                                                    : "hover:bg-gray-100/50 hover:scale-[1.02] hover:shadow-lg hover:shadow-gray-900/10"
+                                                : spaceTheme
+                                                    ? "hover:bg-zinc-900/30 hover:scale-[1.02] hover:shadow-lg hover:shadow-zinc-900/20"
+                                                    : "hover:bg-gray-100/30 hover:scale-[1.02] hover:shadow-lg hover:shadow-gray-900/10",
+                                            "pointer-events-none origin-center"
+                                        )} />
+
                                         {/* Day number with better styling */}
-                                        <div className="flex justify-between items-center mb-1">
+                                        <div className="flex justify-between items-center mb-1 relative z-10">
                                             <div
                                                 className={cn(
                                                     "text-sm font-medium rounded-full w-7 h-7 flex items-center justify-center",
@@ -979,18 +1001,20 @@ export function CustomMonthView({
                                             )}
                                         </div>
 
-                                        {/* Events */}
-                                        <div className="mt-1 space-y-2.5 overflow-hidden">
-                                            {visibleEvents.map((event) => renderEvent(event, isExpanded ?? false))}
-
+                                        {/* Events container */}
+                                        <div className="mt-1 space-y-2 overflow-hidden relative z-10">
+                                            {visibleEvents.map((event, index) => (
+                                                <div key={event.id} className="mb-2">
+                                                    {renderEvent(event, isExpanded ?? false)}
+                                                </div>
+                                            ))}
 
                                             {renderGhostEvent(dateStr)}
-
 
                                             {hasMore && (
                                                 <button
                                                     className={cn(
-                                                        "w-full text-[9px] flex items-center justify-center gap-1.5 px-2 py-[2px] rounded-full font-medium transition-colors",
+                                                        "w-full text-[9px] flex items-center justify-center gap-1.5 px-2 py-[2px] rounded-full font-medium transition-colors mt-2",
                                                         spaceTheme
                                                             ? "bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700/80 hover:text-zinc-100"
                                                             : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800"

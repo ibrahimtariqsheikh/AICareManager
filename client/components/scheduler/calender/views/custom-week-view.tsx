@@ -3,11 +3,19 @@ import { Calendar, Users, Clock, AlertCircle, CheckCircle, Heart, Flag, DollarSi
 import { useAppSelector } from "@/state/redux";
 import moment from 'moment';
 import { cn } from "@/lib/utils";
-import type { AppointmentEvent } from "../types";
+import type { AppointmentEvent, ProcessedCalendarEvent } from "../types";
 
-const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getEventDurationInMinutes }: any) => {
+interface CustomWeekViewProps {
+    date: Date;
+    onSelectEvent: (event: AppointmentEvent) => void;
+    onEventUpdate: (event: AppointmentEvent) => void;
+    staffMembers: any[];
+    getEventDurationInMinutes: (event: AppointmentEvent) => number;
+    events: ProcessedCalendarEvent[];
+}
+
+const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getEventDurationInMinutes, events }: CustomWeekViewProps) => {
     const [expandedSlot, setExpandedSlot] = useState(null);
-    const events = useAppSelector((state) => state.schedule.events || []);
     const activeScheduleUserType = useAppSelector((state) => state.schedule.activeScheduleUserType);
     const clients = useAppSelector((state) => state.user.clients || []);
     const careworkers = useAppSelector((state) => state.user.careWorkers || []);
@@ -106,6 +114,11 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
 
             return isInCurrentWeek && matchesDayAndTime && matchesUserType;
         });
+    };
+
+    // Add this function to get the display title
+    const getEventDisplayTitle = (event: AppointmentEvent) => {
+        return activeScheduleUserType === "careWorker" ? event.client?.fullName : event.title;
     };
 
     const getPriorityIcon = (priority: string) => {
@@ -329,6 +342,37 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
         }
     }
 
+    // Add handleCreateVisit function
+    const handleCreateVisit = (time: string, day: string) => {
+        // Convert time from "h:mm A" to "HH:mm" format
+        const timeObj = moment(time, "h:mm A");
+        const formattedTime = timeObj.format("HH:mm");
+
+        const tempEvent: AppointmentEvent = {
+            id: `temp-${Date.now()}`,
+            title: 'New Visit',
+            start: new Date(`${moment(date).startOf('week').add(days.findIndex(d => d.day === day), 'days').format('YYYY-MM-DD')}T${formattedTime}`),
+            end: new Date(`${moment(date).startOf('week').add(days.findIndex(d => d.day === day), 'days').format('YYYY-MM-DD')}T${formattedTime}`),
+            date: moment(date).startOf('week').add(days.findIndex(d => d.day === day), 'days').toDate(),
+            startTime: formattedTime,
+            endTime: formattedTime,
+            resourceId: '',
+            clientId: '',
+            type: 'HOME_VISIT',
+            status: 'PENDING',
+            notes: '',
+            color: '#4CAF50',
+            careWorker: {
+                fullName: 'Unassigned'
+            },
+            client: {
+                fullName: ''
+            }
+        };
+
+        onSelectEvent(tempEvent);
+    };
+
     return (
         <div className="px-6 min-h-screen pb-6">
             <div className="bg-white rounded-lg shadow-sm border">
@@ -364,14 +408,12 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
                                     const visits = getEventsForDayAndTime(day.day, time);
                                     const isExpanded = expandedSlot === slotKey;
 
-                                    // Debug log for visits in this slot
-                                    if (visits.length > 0) {
-                                        console.log(`Visits for ${day.day} ${time}:`, visits);
-                                    }
-
                                     return (
-                                        <div key={`${day.day}-${time}`} className={`border-l relative ${hasEventsInThisRow ? 'p-1' : 'py-0.5 px-0.5'}`}>
-                                            {visits.length > 0 && (
+                                        <div
+                                            key={`${day.day}-${time}`}
+                                            className={`border-l relative ${hasEventsInThisRow ? 'p-1' : 'py-0.5 px-0.5'} group`}
+                                        >
+                                            {visits.length > 0 ? (
                                                 <div className="h-full">
                                                     {!isExpanded && visits.length <= 3 ? (
                                                         // Show full details for 3 or fewer visits
@@ -382,18 +424,18 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
                                                                 return (
                                                                     <div
                                                                         key={visit.id}
-                                                                        className={`p-2 rounded-lg border text-xs ${bg} ${text} ${border} ${visit.isLeaveEvent ? 'border-l-4' : 'border-l-2'} transition-all hover:shadow-sm`}
+                                                                        className={`p-2 rounded-lg text-xs ${bg} ${text} ${border} ${visit.isLeaveEvent ? 'border-l-4' : 'border-l-2'} transition-all hover:shadow-sm cursor-pointer`}
                                                                         style={{
                                                                             borderLeftWidth: visit.isLeaveEvent ? "4px" : "2px",
                                                                             boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
                                                                         }}
+                                                                        onClick={() => onSelectEvent(visit)}
                                                                     >
-                                                                        <div className="flex items-center gap-1 mb-1">
+                                                                        <div className="flex items-center gap-2 mb-1">
                                                                             {eventIcon}
-                                                                            <span className="font-medium truncate">{visit.title}</span>
+                                                                            <span className="font-medium truncate">{getEventDisplayTitle(visit)}</span>
                                                                         </div>
                                                                         <div className={`text-[10px] flex items-center ${text}`}>
-                                                                            <Clock className="h-3 w-3 inline mr-1" />
                                                                             {moment(visit.start).format('h:mm A')} - {moment(visit.end).format('h:mm A')}
                                                                         </div>
                                                                     </div>
@@ -409,18 +451,19 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
                                                                 return (
                                                                     <div
                                                                         key={visit.id}
-                                                                        className={`p-1.5 rounded-lg text-xs border-l-2 cursor-pointer transition-all hover:shadow-sm ${bg} ${text} ${border}`}
+                                                                        className={`p-2 rounded-lg text-xs ${bg} ${text} ${border} ${visit.isLeaveEvent ? 'border-l-4' : 'border-l-2'} transition-all hover:shadow-sm cursor-pointer`}
                                                                         style={{
                                                                             borderLeftWidth: visit.isLeaveEvent ? "4px" : "2px",
+                                                                            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
                                                                         }}
+                                                                        onClick={() => onSelectEvent(visit)}
                                                                     >
-                                                                        <div className="flex items-center gap-1">
+                                                                        <div className="flex items-center gap-2 mb-1">
                                                                             {eventIcon}
-                                                                            <span className="font-medium truncate text-xs">{visit.title}</span>
+                                                                            <span className="font-medium truncate">{getEventDisplayTitle(visit)}</span>
                                                                         </div>
-                                                                        <div className={`text-[10px] truncate flex items-center ${text}`}>
-                                                                            <Clock className="h-3 w-3 inline mr-1" />
-                                                                            {moment(visit.start).format('h:mm A')}
+                                                                        <div className={`text-[10px] flex items-center ${text}`}>
+                                                                            {moment(visit.start).format('h:mm A')} - {moment(visit.end).format('h:mm A')}
                                                                         </div>
                                                                     </div>
                                                                 );
@@ -451,24 +494,42 @@ const CustomWeekView = ({ date, onSelectEvent, onEventUpdate, staffMembers, getE
                                                                     return (
                                                                         <div
                                                                             key={visit.id}
-                                                                            className={`p-2 rounded-lg border text-xs ${bg} ${text} ${border} ${visit.isLeaveEvent ? 'border-l-4' : 'border-l-2'} transition-all hover:shadow-sm`}
+                                                                            className={`p-2 rounded-lg text-xs ${bg} ${text} ${border} ${visit.isLeaveEvent ? 'border-l-4' : 'border-l-2'} transition-all hover:shadow-sm cursor-pointer`}
                                                                             style={{
                                                                                 borderLeftWidth: visit.isLeaveEvent ? "4px" : "2px",
                                                                                 boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
                                                                             }}
+                                                                            onClick={() => onSelectEvent(visit)}
                                                                         >
-                                                                            <div className="flex items-center gap-1 mb-1">
+                                                                            <div className="flex items-center gap-2 mb-1">
                                                                                 {eventIcon}
-                                                                                <span className="font-medium truncate">{visit.title}</span>
+                                                                                <span className="font-medium truncate">{getEventDisplayTitle(visit)}</span>
                                                                             </div>
                                                                             <div className={`text-[10px] flex items-center ${text}`}>
-                                                                                <Clock className="h-3 w-3 inline mr-1" />
                                                                                 {moment(visit.start).format('h:mm A')} - {moment(visit.end).format('h:mm A')}
                                                                             </div>
                                                                         </div>
                                                                     );
                                                                 })}
                                                             </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    className={cn("absolute inset-1 border-2 border-dashed rounded-lg transition-all border-blue-300 opacity-0 group-hover:opacity-100 bg-blue-50/20 flex items-center justify-center cursor-pointer", hasEventsInThisRow ? "rounded-lg" : "rounded-[2px]")}
+                                                    onClick={() => handleCreateVisit(time, day.day)}
+                                                >
+                                                    {!hasEventsInThisRow ? (
+                                                        <span className={cn("text-[10px]  font-medium", hasEventsInThisRow ? "text-blue-500" : "text-blue-600")}>Add</span>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center gap-1">
+                                                            <span className="text-[11px] font-medium text-blue-600">
+                                                                {time}
+                                                            </span>
+                                                            <span className="text-[10px] text-gray-500">
+                                                                Click to add event
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </div>

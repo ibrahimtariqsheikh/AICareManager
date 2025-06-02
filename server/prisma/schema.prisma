@@ -425,7 +425,7 @@ model Schedule {
   id          String       @id @default(cuid())
   agencyId    String
   clientId    String
-  userId      String
+  userId      String?
   date        DateTime
   startTime   String
   endTime     String
@@ -439,7 +439,7 @@ model Schedule {
   visitTypeId String?
   agency      Agency       @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   client      User         @relation("ClientSchedules", fields: [clientId], references: [id], onDelete: Cascade)
-  user        User         @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
+  user        User?        @relation("CareWorkerSchedules", fields: [userId], references: [id], onDelete: Cascade)
   visitType   VisitType?   @relation(fields: [visitTypeId], references: [id])
 
   @@unique([userId, clientId, date, startTime, endTime], name: "unique_schedule_appointment")
