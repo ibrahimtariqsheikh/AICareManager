@@ -17,12 +17,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea"
 import { Geist_Mono } from "next/font/google"
 import { useGetAgencyAlertsQuery, useGetAllAgencyAlertsQuery, useResolveReportAlertMutation } from "@/state/api"
-import { RootState } from "@/state/redux"
+import { RootState, useAppDispatch } from "@/state/redux"
 import { CustomSelect } from "@/components/ui/custom-select"
 import { CustomDateRangeSelector } from "@/app/dashboard/billing/invoice-builder/components/custom-date-range"
 import React from "react"
 import { CustomTextarea } from "@/components/ui/custom-textarea"
 import { toast } from "sonner"
+import { setSidebarMode } from "@/state/slices/reportSlice"
 
 
 export default function ReportsPage() {
@@ -44,6 +45,8 @@ export default function ReportsPage() {
     const [resolutionText, setResolutionText] = useState("")
     const [selectedAlert, setSelectedAlert] = useState<any>(null)
     const [reportFilter, setReportFilter] = useState("all")
+    const dispatch = useAppDispatch()
+    const sidebarMode = useAppSelector((state: RootState) => state.report.sidebarMode)
 
 
     // Report filters
@@ -588,12 +591,13 @@ export default function ReportsPage() {
         <div className={`relative min-h-screen transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
             <div className="container mx-auto px-6 py-2">
                 <div className="space-y-8">
-                    <Tabs defaultValue="reports" className="space-y-4">
+                    <Tabs defaultValue={sidebarMode} className="space-y-4">
                         <div className="flex items-center justify-between space-y-0">
                             <TabsList className="justify-start h-auto p-1 bg-muted/50 w-fit">
                                 <TabsTrigger
                                     value="reports"
                                     className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                                    onClick={() => dispatch(setSidebarMode("reports"))}
                                 >
                                     Reports
                                 </TabsTrigger>
@@ -601,6 +605,7 @@ export default function ReportsPage() {
                                 <TabsTrigger
                                     value="alerts"
                                     className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                                    onClick={() => dispatch(setSidebarMode("alerts"))}
                                 >
                                     Alerts
                                 </TabsTrigger>

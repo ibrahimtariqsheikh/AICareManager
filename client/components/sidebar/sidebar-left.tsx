@@ -94,12 +94,12 @@ interface NavigationSection {
 // Navigation data
 const navigation: NavigationSection[] = [
     {
-        title: "Overview",
+        title: "Main",
         items: [
             {
-                title: "Dashboard",
+                title: "Overview",
                 icon: LayoutDashboardIcon,
-                href: "/dashboard",
+                href: "/dashboard/overview",
                 isActive: true,
             },
             {
@@ -222,6 +222,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         <span className={cn("flex items-center gap-2 text-[13px] justify-between w-full", theme === "dark" ? "text-neutral-300" : "text-neutral-800")}>
                                             {item.title}
                                         </span>
+                                        {item.isBeta && <span className="text-xs text-neutral-500">Beta</span>}
                                     </button>
                                 )
                             })}

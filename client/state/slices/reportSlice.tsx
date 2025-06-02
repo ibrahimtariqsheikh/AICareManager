@@ -47,6 +47,7 @@ interface ReportsState {
         userId?: string
     }
     selectedReport: Report | null
+    sidebarMode: "reports" | "alerts"
 }
 
 const initialState: ReportsState = {
@@ -54,6 +55,7 @@ const initialState: ReportsState = {
     isLoading: false,
     error: null,
     filter: {},
+    sidebarMode: "reports",
     selectedReport: null,
 }
 
@@ -165,6 +167,9 @@ const reportsSlice = createSlice({
         setReports: (state, action: PayloadAction<Report[]>) => {
             state.reports = action.payload
         },
+        setSidebarMode: (state, action: PayloadAction<"reports" | "alerts">) => {
+            state.sidebarMode = action.payload
+        },
         updateReport: (state, action: PayloadAction<Report>) => {
             const index = state.reports.findIndex((r) => r.id === action.payload.id)
             if (index !== -1) {
@@ -188,5 +193,5 @@ const reportsSlice = createSlice({
     },
 })
 
-export const { setFilter, setSelectedReport, setReports, updateReport } = reportsSlice.actions
+export const { setFilter, setSelectedReport, setReports, updateReport, setSidebarMode } = reportsSlice.actions
 export default reportsSlice.reducer

@@ -36,9 +36,9 @@ export const sidebarNavigation: NavSection[] = [
         title: "Overview",
         items: [
             {
-                title: "Dashboard",
+                title: "Overview",
                 icon: LayoutDashboardIcon,
-                href: "/dashboard",
+                href: "/dashboard/overview",
                 isActive: true,
             },
         ],
