@@ -761,3 +761,66 @@ export const getAgencyExpenses = async (req: Request, res: Response): Promise<vo
     }
 };
 
+export const getAgencyMileageRecords = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        console.log('Fetching mileage records for agency:', id);
+        
+        const mileageRecords = await prisma.mileageRecord.findMany({
+            where: { agencyId: id },
+            include: {
+                client: {
+                    select: {
+                        fullName: true,
+                    }
+                },
+                careWorker: {
+                    select: {
+                        fullName: true,
+                    }
+                }
+            }
+        });
+        
+        console.log('Found mileage records:', JSON.stringify(mileageRecords, null, 2));
+        res.json(mileageRecords);
+    } catch (error) {
+        console.error('Error fetching mileage records:', error);
+        res.status(500).json({ message: "Error fetching mileage records", error: error });
+    }
+};
+
+export const getAgencyShiftReviews = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const shiftReviews = await prisma.shiftReview.findMany({
+            where: { agencyId: id },
+            include: {
+                careWorker: {
+                    select: {
+                        fullName: true,
+                    }
+                },
+                supervisor: {
+                    select: {
+                        fullName: true,
+                    }
+                },
+                approvedBy: {
+                    select: {
+                        fullName: true,
+                    }
+                },
+                exceptions: true,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        res.json(shiftReviews);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching shift reviews", error: error });
+    }
+};
+
+

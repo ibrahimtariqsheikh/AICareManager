@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -45,39 +45,76 @@ export default function InvoiceBuilderPage() {
     const [isLoading, _] = useState(false)
     const [createInvoice, { isLoading: isCreatingInvoice }] = useCreateInvoiceMutation()
 
-    const handleAddPredefinedItems = () => {
+    const handleAddPredefinedItems = useCallback(() => {
         console.log("Current invoiceData:", invoiceData)
-        if (invoiceData?.predefinedItems?.length) {
-            console.log("Adding predefined items:", invoiceData.predefinedItems)
-            // Create new items with unique IDs
-            const newItems = invoiceData.predefinedItems.map((item: InvoiceItem) => {
-                console.log("Processing item:", {
-                    type: item.serviceType,
-                    description: item.description,
-                    quantity: item.quantity,
-                    rate: item.rate,
-                    amount: item.amount
-                })
-                return {
-                    ...item,
-                    id: `${item.serviceType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                    amount: item.quantity * item.rate,
-                    rate: item.serviceType === "SCHEDULE_HOURS" ? Math.floor(item.rate) : item.rate
-                }
+        if (!invoiceData?.predefinedItems?.length) {
+            console.log("No predefined items to add")
+            return
+        }
+
+        console.log("Adding predefined items:", invoiceData.predefinedItems.map(item => ({
+            type: item.serviceType,
+            description: item.description,
+            quantity: item.quantity,
+            rate: item.rate,
+            amount: item.amount
+        })))
+
+        const newItems = invoiceData.predefinedItems.map(item => {
+            console.log("Processing item:", {
+                type: item.serviceType,
+                description: item.description,
+                quantity: item.quantity,
+                rate: item.rate,
+                amount: item.amount
             })
 
-            console.log("New items to add:", newItems)
-            setInvoiceItems(prevItems => {
-                console.log("Previous items:", prevItems)
-                const updatedItems = [...prevItems, ...newItems]
-                console.log("Updated items:", updatedItems)
-                return updatedItems
+            const updatedItem = {
+                id: `${item.serviceType}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+                description: item.description,
+                quantity: item.quantity,
+                rate: Math.round(item.rate),
+                amount: Math.round(item.quantity * item.rate),
+                serviceType: item.serviceType,
+                careWorkerId: item.careWorkerId
+            }
+
+            console.log("Created updated item:", {
+                type: updatedItem.serviceType,
+                description: updatedItem.description,
+                quantity: updatedItem.quantity,
+                rate: updatedItem.rate,
+                amount: updatedItem.amount
             })
-            setShowAddItemPopover(false)
-        } else {
-            console.log("No predefined items to add")
-        }
-    }
+
+            return updatedItem
+        })
+
+        console.log("New items to add:", newItems.map(item => ({
+            type: item.serviceType,
+            description: item.description,
+            quantity: item.quantity,
+            rate: item.rate,
+            amount: item.amount
+        })))
+
+        console.log("Previous items:", items.map(item => ({
+            type: item.serviceType,
+            description: item.description,
+            quantity: item.quantity,
+            rate: item.rate,
+            amount: item.amount
+        })))
+
+        setInvoiceItems(prevItems => [...prevItems, ...newItems])
+        console.log("Updated items:", [...prevItems, ...newItems].map(item => ({
+            type: item.serviceType,
+            description: item.description,
+            quantity: item.quantity,
+            rate: item.rate,
+            amount: item.amount
+        })))
+    }, [invoiceData, items])
 
     const handleAddManualItem = () => {
         const newItem: InvoiceItem = {

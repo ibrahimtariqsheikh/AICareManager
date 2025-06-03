@@ -4,17 +4,18 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { Loader2, Mail, Lock } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { useAppDispatch, useAppSelector } from "../../../state/redux"
 import { Alert, AlertDescription } from "../../../components/ui/alert"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form"
 import { clearAuthError, login } from "../../../state/slices/authSlice"
-import { Input } from "../../../components/ui/input"
 import { Button } from "../../../components/ui/button"
 import { Form } from "../../../components/ui/form"
+import { CustomInput } from "../../../components/ui/custom-input"
 import { signinSchema, type SigninFormValues } from "./schemas"
 import VerificationForm from "../signup/[id]/verificationform"
+import { Input } from "../../../components/ui/input"
 
 interface SigninFormProps {
     setUsernameForReset: (username: string) => void
@@ -32,7 +33,6 @@ const SigninForm: React.FC<SigninFormProps> = ({
     const router = useRouter()
     const dispatch = useAppDispatch()
     const { loading, error, isVerificationStep } = useAppSelector((state) => state.auth)
-    const [showPassword, setShowPassword] = useState<boolean>(false)
     const [, setVerificationStatus] = useState("")
     const [usernameForVerification, setUsernameForVerification] = useState("")
 
@@ -50,13 +50,15 @@ const SigninForm: React.FC<SigninFormProps> = ({
                 dispatch(clearAuthError())
             }
         })
-        return () => subscription.unsubscribe()
+        return () => {
+            if (subscription && typeof subscription.unsubscribe === 'function') {
+                subscription.unsubscribe()
+            }
+        }
     }, [form, dispatch, error])
-
 
     const onSubmit = async (values: SigninFormValues) => {
         try {
-
             setUsernameForReset(values.username)
             setUsernameForVerification(values.username)
             setVerificationStatus("Signing in...")
@@ -68,22 +70,17 @@ const SigninForm: React.FC<SigninFormProps> = ({
                 }),
             ).unwrap()
 
-
-
             if (isVerificationStep) {
                 setVerificationStatus("Account requires verification. Redirecting...")
                 setShowVerification(true)
             } else {
                 setVerificationStatus("Login successful! Redirecting to dashboard...")
-
-                router.push("/dashboard")
-
-                window.location.href = "/dashboard"
+                router.push("/dashboard/overview")
+                window.location.href = "/dashboard/overview"
             }
         } catch (err) {
             console.error("Login failed:", err)
             setVerificationStatus(`Login failed: ${err}`)
-
 
             if (error && (error.includes("User not confirmed") || error.includes("UserNotConfirmedException"))) {
                 setShowVerification(true)
@@ -101,24 +98,27 @@ const SigninForm: React.FC<SigninFormProps> = ({
     }
 
     return (
-        <div className="glass-form">
+        <div className="space-y-6">
             {error && (
-                <Alert variant="destructive" className="mb-6">
+                <Alert variant="destructive">
                     <AlertDescription>{error}</AlertDescription>
                 </Alert>
             )}
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField
                         control={form.control}
                         name="username"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-sm font-medium">Username</FormLabel>
+                                <FormLabel>Email</FormLabel>
                                 <FormControl>
                                     <Input
-                                        placeholder="yourname@aicaremanager.com" className="h-11" {...field} />
+                                        placeholder="m@example.com"
+                                        className="h-11"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -131,35 +131,23 @@ const SigninForm: React.FC<SigninFormProps> = ({
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex items-center justify-between">
-                                    <FormLabel className="text-sm font-medium">Password</FormLabel>
+                                    <FormLabel>Password</FormLabel>
                                     <Button
                                         type="button"
                                         variant="ghost"
                                         onClick={toggleForm}
-                                        className="text-sm text-gray-500 hover:text-gray-700 hover:bg-transparent px-0 h-auto"
+                                        className="text-sm text-muted-foreground hover:text-foreground hover:bg-transparent px-0 h-auto"
                                     >
-                                        Forgot your password?
+                                        Forgot password?
                                     </Button>
                                 </div>
                                 <FormControl>
-                                    <div className="relative">
-                                        <Input
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder="Enter your password"
-                                            className="h-11"
-                                            {...field}
-                                        />
-                                        <button
-                                            type="button"
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-                                            onClick={(e) => {
-                                                e.preventDefault()
-                                                setShowPassword(!showPassword)
-                                            }}
-                                        >
-                                            {showPassword ? <Eye className="w-4 h-4 text-gray-500" /> : <EyeOff className="w-4 h-4 text-gray-500" />}
-                                        </button>
-                                    </div>
+                                    <Input
+                                        type="password"
+                                        placeholder="Enter your password"
+                                        className="h-11"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -168,7 +156,7 @@ const SigninForm: React.FC<SigninFormProps> = ({
 
                     <Button
                         type="submit"
-                        className="w-full h-11 bg-gradient-to-r from-blue-700/90 via-blue-600/90 to-blue-500/90 text-white hover:from-blue-800/90 hover:via-blue-700/90 hover:to-blue-600/90 transition-all duration-200 rounded-lg shadow-sm"
+                        className="w-full h-11"
                         disabled={loading}
                     >
                         {loading ? (

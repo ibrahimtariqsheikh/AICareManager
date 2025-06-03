@@ -144,6 +144,7 @@ model Agency {
   carePlans         CarePlan[]
   riskAssessments   RiskAssessment[]
   riskTemplates     RiskTemplate[]
+  shiftReviews      ShiftReview[]
 }
 
 model Announcement {
@@ -410,6 +411,11 @@ model User {
   expenses                  Expenses[] // Added relation field for Expenses
   carePlansAsClient         CarePlan[]                @relation("CarePlanClient")
   carePlansCreated          CarePlan[]                @relation("CarePlanCreator")
+
+  shiftReviewsCareWorker ShiftReview[] @relation("ShiftReviewCareWorker")
+  shiftReviewsSupervisor ShiftReview[] @relation("ShiftReviewSupervisor")
+  shiftReviewsApproved   ShiftReview[] @relation("ShiftReviewApprovedBy")
+  ShiftReview            ShiftReview[]
 }
 
 enum TemplateVisitDay {
@@ -762,25 +768,128 @@ model Invoice {
   client        User?                 @relation(fields: [clientId], references: [id])
 }
 
-model MileageRecord {
-  id           String   @id @default(cuid())
+enum ShiftReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ShiftType {
+  REGULAR
+  OVERTIME
+  HOLIDAY
+  NIGHT_SHIFT
+}
+
+enum ExceptionSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model ShiftReview {
+  id String @id @default(cuid())
+
+  // Relationships
   agencyId     String
-  clientId     String
-  userId       String
-  date         DateTime
-  startMileage Float
-  endMileage   Float
-  totalMiles   Float
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  agency       Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  user         User     @relation("CareWorkerMileage", fields: [userId], references: [id], onDelete: Cascade, map: "MileageRecord_care_worker_fkey")
-  client       User     @relation("ClientMileage", fields: [clientId], references: [id], onDelete: Cascade, map: "MileageRecord_client_fkey")
+  agency       Agency  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  careWorkerId String
+  careWorker   User    @relation("ShiftReviewCareWorker", fields: [careWorkerId], references: [id], onDelete: Cascade)
+  supervisorId String?
+  supervisor   User?   @relation("ShiftReviewSupervisor", fields: [supervisorId], references: [id])
+  approvedById String?
+  approvedBy   User?   @relation("ShiftReviewApprovedBy", fields: [approvedById], references: [id])
+
+  // Shift Details
+  shiftDate  DateTime
+  startTime  String
+  endTime    String
+  totalHours Float
+  shiftType  ShiftType @default(REGULAR)
+  hourlyRate Float
+  totalPay   Float
+
+  // Review Status
+  status      ShiftReviewStatus @default(PENDING)
+  reviewNotes String?
+  approvedAt  DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Related models
+  exceptions ShiftException[]
+  User       User?            @relation(fields: [userId], references: [id])
+  userId     String?
+
+  @@index([agencyId])
+  @@index([careWorkerId])
+  @@index([shiftDate])
+  @@index([status])
+}
+
+model ShiftException {
+  id String @id @default(cuid())
+
+  // Relationship
+  shiftReviewId String
+  shiftReview   ShiftReview @relation(fields: [shiftReviewId], references: [id], onDelete: Cascade)
+
+  // Exception Details
+  type        String // e.g., "Blocking Exception", "Warning Exception"
+  title       String
+  description String
+  severity    ExceptionSeverity @default(MEDIUM)
+  detectedBy  String?
+  detectedAt  DateTime          @default(now())
+
+  // Resolution
+  isResolved      Boolean   @default(false)
+  resolvedAt      DateTime?
+  resolvedBy      String?
+  resolutionNotes String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shiftReviewId])
+  @@index([severity])
+  @@index([isResolved])
+}
+
+enum MileageStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model MileageRecord {
+  id              String        @id @default(cuid())
+  agencyId        String
+  clientId        String
+  careWorkerId    String
+  date            DateTime
+  fromLocation    String
+  toLocation      String
+  startMileage    Float
+  endMileage      Float
+  distanceInMiles Float
+  costPerMile     Float
+  travelTime      Float
+  amount          Float
+  notes           String?
+  status          MileageStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  agency          Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  careWorker      User          @relation("CareWorkerMileage", fields: [careWorkerId], references: [id], onDelete: Cascade, map: "MileageRecord_care_worker_fkey")
+  client          User          @relation("ClientMileage", fields: [clientId], references: [id], onDelete: Cascade, map: "MileageRecord_client_fkey")
 
   @@index([agencyId])
   @@index([clientId])
-  @@index([userId])
+  @@index([careWorkerId])
 }
 
 model Document {

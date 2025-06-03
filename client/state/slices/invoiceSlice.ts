@@ -61,6 +61,16 @@ const invoiceSlice = createSlice({
             state.selectedCareWorker = action.payload;
         },
         setInvoiceData: (state, action) => {
+            console.log("Setting invoice data in Redux:", {
+                ...action.payload,
+                predefinedItems: action.payload.predefinedItems?.map(item => ({
+                    type: item.serviceType,
+                    description: item.description,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                    amount: item.amount
+                }))
+            })
             state.invoiceData = action.payload;
         },
         setInvoiceNumber: (state, action: PayloadAction<string>) => {

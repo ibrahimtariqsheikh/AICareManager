@@ -110,6 +110,8 @@ export function InvoiceSettings() {
       endDate: debouncedDateRange.to.toISOString()
     } : skipToken
   )
+  console.log("scheduleHoursData", scheduleHoursData)
+  console.log("expensesData", expensesData)
 
   // Set timeout states
   useEffect(() => {
@@ -148,22 +150,24 @@ export function InvoiceSettings() {
 
         // Add expenses if available
         if (expensesData?.totalAmount && expensesData.totalAmount > 0) {
+          console.log("Adding expenses item:", expensesData)
           predefinedItems.push({
             id: `expenses-${Date.now()}`,
             description: `Expenses (${dateRangeString})`,
             quantity: 1,
-            rate: expensesData.totalAmount,
-            amount: expensesData.totalAmount,
+            rate: Math.floor(expensesData.totalAmount),
+            amount: Math.floor(expensesData.totalAmount),
             serviceType: "EXPENSES",
-            careWorkerId: "",
+            careWorkerId: ""
           })
         }
 
         // Add schedule hours if available
         if (scheduleHoursData?.totalHours && scheduleHoursData.totalHours > 0) {
-          const hours = scheduleHoursData.totalHours
+          console.log("Adding schedule hours item:", scheduleHoursData)
+          const hours = scheduleHoursData.totalHours // Keep decimal places for hours
           const rate = Math.floor(scheduleHoursData.payRate || 0)
-          const amount = hours * rate
+          const amount = Math.round(hours * rate) // Round the final amount
 
           predefinedItems.push({
             id: `hours-${Date.now()}`,
@@ -172,17 +176,31 @@ export function InvoiceSettings() {
             rate: rate,
             amount: amount,
             serviceType: "SCHEDULE_HOURS",
-            careWorkerId: "",
+            careWorkerId: ""
           })
         }
 
         if (predefinedItems.length > 0) {
+          console.log("Setting predefined items:", predefinedItems.map(item => ({
+            type: item.serviceType,
+            description: item.description,
+            quantity: item.quantity,
+            rate: item.rate,
+            amount: item.amount
+          })))
           const updatedInvoiceData = {
             ...invoiceData,
             predefinedItems,
             issueDate: invoiceData?.issueDate || new Date().toISOString(),
             dueDate: invoiceData?.dueDate || new Date().toISOString()
           }
+          console.log("Dispatching updated invoice data with items:", updatedInvoiceData.predefinedItems?.map(item => ({
+            type: item.serviceType,
+            description: item.description,
+            quantity: item.quantity,
+            rate: item.rate,
+            amount: item.amount
+          })))
           dispatch(setInvoiceData(updatedInvoiceData))
           predefinedItemsInitialized.current = true
         }

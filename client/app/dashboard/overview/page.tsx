@@ -48,8 +48,6 @@ export default function DashboardPage() {
     const unresolvedAlerts = alerts.filter(alert => alert.status !== "RESOLVED")
     const dispatch = useAppDispatch()
 
-    console.log("ALERTS", alerts)
-
 
     const getStatusColor = (status: string) => {
         if (status === "CONFIRMED") return "bg-green-100 text-green-800 border-green-200"
@@ -79,6 +77,9 @@ export default function DashboardPage() {
     } = useGetDashboardDataQuery(user?.userInfo?.id || "", {
         skip: !shouldFetch,
     })
+    console.log("DASHBOARD DATA", dashboardData)
+
+
 
     const isLoading = !shouldFetch || isDashboardLoading
 
@@ -260,11 +261,11 @@ export default function DashboardPage() {
                             <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-0.5">
-                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">$7,209.29</div>
+                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">${dashboardData?.stats.totalRevenue.toFixed(2)}</div>
                         </div>
 
                         <div className="flex justify-start mt-1">
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]" onClick={() => router.push("/dashboard/billing")}>
                                 <Info className="h-2.5 w-2.5 " />
                                 See details
                             </Button>

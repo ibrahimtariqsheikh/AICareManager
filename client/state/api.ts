@@ -3,9 +3,10 @@ import { createNewUserInDatabase } from "../lib/utils"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { Message } from "@/state/slices/chatSlice"
 
-import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog, LeaveEvent, Invoice, Expenses, Payroll, InvoicePaymentMethod } from "../types/prismaTypes"
+import { Invitation, Schedule, ReportTask, CommunicationLog, Profile, Agency, IncidentReport, KeyContact, CareOutcome, RiskAssessment, FamilyAccess, CustomTask, Group, RateSheet, VisitType, Task, ScheduleTemplate, Medication, MedicationLog, LeaveEvent, Invoice, Expenses, Payroll, InvoicePaymentMethod, MileageRecord } from "../types/prismaTypes"
 import { DashboardData } from "@/app/dashboard/types"
 import { EmergencyContact } from "@/types/profileTypes"
+import { ShiftReview } from "@/app/dashboard/billing/components/shift-review"
 
 
 export interface CreateUserInput {
@@ -1044,6 +1045,29 @@ getAgencyExpenses: build.query<Expenses[], string>({
 getExpensesByDateRange: build.query<{ totalAmount: number }, { startDate: string; endDate: string }>({
   query: ({ startDate, endDate }) => `/invoices/expenses/date-range?startDate=${startDate}&endDate=${endDate}`,
 }),
+  getAgencyShiftReviews: build.query<Array<typeof ShiftReview & {
+    careWorker: {
+      fullName: string;
+    };
+    supervisor: {
+      fullName: string;
+    };
+    approvedBy: {
+      fullName: string;
+    };
+  }>, string>({
+    query: (agencyId) => `/agencies/${agencyId}/shift-reviews`,
+  }),
+getAgencyMileageRecords: build.query<Array<MileageRecord & {
+  client: {
+    fullName: string;
+  };
+  careWorker: {
+    fullName: string;
+  };
+}>, string>({
+  query: (agencyId) => `/agencies/${agencyId}/mileage-records`,
+}),
 getScheduleHoursByDateRange: build.query<{ totalHours: number; payRate: number }, { startDate: string; endDate: string }>({
   query: ({ startDate, endDate }) => `/invoices/schedule-hours/date-range?startDate=${startDate}&endDate=${endDate}`,
 }),
@@ -1203,4 +1227,6 @@ export const {
   useGetAllAgencyAlertsQuery,
   useResolveReportAlertMutation,
   useDeleteInvoiceMutation,
+  useGetAgencyMileageRecordsQuery,
+  useGetAgencyShiftReviewsQuery,
 } = api

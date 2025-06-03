@@ -11,6 +11,7 @@ export interface DashboardStats {
     totalDocuments: number;
     totalMileageRecords: number;
     unreadNotifications: number;
+    totalRevenue: number;
 }
 
 export interface Schedule {

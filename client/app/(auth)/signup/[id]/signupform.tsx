@@ -114,10 +114,10 @@ const SignupForm = ({
             );
 
             if (isVerificationStep) {
-                // If verification is needed, automatically switch to verification form
+
                 toggleForm();
             } else if (result) {
-                //CREATE USER IN DATABASE
+
                 await createUser({
                     email: values.email,
                     fullName: values.fullName,
@@ -126,7 +126,7 @@ const SignupForm = ({
                     inviterId: invitationData?.inviterId ?? ""
                 })
                 toast.success("Account created successfully!");
-                router.push("/dashboard");
+                router.push("/dashboard/overview");
             }
         } catch (err) {
             console.error("Signup failed:", err);

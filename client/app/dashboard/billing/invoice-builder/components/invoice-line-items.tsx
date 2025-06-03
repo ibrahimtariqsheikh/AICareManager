@@ -23,11 +23,11 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
 
     if (field === "quantity" || field === "rate") {
       const numValue = Number.parseFloat(value) || 0
-      const roundedValue = Math.round(numValue)
+      const processedValue = field === "rate" ? Math.round(numValue) : numValue
       updatedItem = {
         ...item,
-        [field]: roundedValue,
-        amount: field === "quantity" ? roundedValue * item.rate : item.quantity * roundedValue,
+        [field]: processedValue,
+        amount: field === "quantity" ? processedValue * item.rate : item.quantity * processedValue,
       }
     } else {
       updatedItem = { ...item, [field]: value }
@@ -85,8 +85,8 @@ export function InvoiceLineItems({ items, onUpdateItem, onRemoveItem, isLoading 
             <CustomInput
               type="number"
               min="0"
-              step="1"
-              value={Math.round(item.quantity).toString()}
+              step="0.01"
+              value={item.quantity.toFixed(2)}
               onChange={(value) => handleItemChange(item.id, "quantity", value)}
               variant="default"
               inputSize="sm"

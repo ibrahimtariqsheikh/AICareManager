@@ -116,7 +116,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
             },
             include: {
                 client: true,
-                user: true,
+                careWorker: true,
             },
         });
           
@@ -194,6 +194,19 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
             take: 10,
         });
 
+        // Get all revenue for the agency
+        const revenue = await prisma.invoice.findMany({
+            where: {
+                agencyId: user.agencyId,
+            },
+            
+        });
+
+        // Calculate total revenue
+        const totalRevenue = revenue.reduce((sum, invoice) => {
+            return sum + (invoice.totalAmount || 0);
+        }, 0);
+
         // Return all dashboard data
         res.json({
             user: {
@@ -207,6 +220,7 @@ export const getDashboardData = async (req: Request, res: Response): Promise<voi
                 totalSchedules: stats.totalSchedules,
                 totalReports: stats.totalReports,
                 totalDocuments: stats.totalDocuments,
+                totalRevenue: totalRevenue,
                 totalMileageRecords: stats.totalMileageRecords,
                 unreadNotifications: stats.unreadNotifications,
             },

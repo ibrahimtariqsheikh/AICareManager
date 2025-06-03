@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -35,91 +35,37 @@ import { CustomInput } from '@/components/ui/custom-input';
 import { CustomSelect } from '@/components/ui/custom-select';
 import { MyCustomDateRange } from '@/app/dashboard/billing/components/my-custom-date-range';
 import { getRandomPlaceholderImage } from '@/lib/utils';
+import { MileageRecord, MileageStatus } from '@/types/mileage';
+import { useGetAgencyMileageRecordsQuery } from '@/state/api';
+import { RootState, useAppSelector } from '@/state/redux';
 
 const MileageTable = () => {
-    const [sortField, setSortField] = useState('date');
-    const [sortDirection, setSortDirection] = useState('desc');
+    const [sortField, setSortField] = useState<keyof MileageRecord>('date');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
     const [searchQuery, setSearchQuery] = useState('');
     const [dateRange, setDateRange] = useState<{ from: Date; to: Date } | undefined>();
-    const [statusFilter, setStatusFilter] = useState<string>('');
+    const [statusFilter, setStatusFilter] = useState<MileageStatus | ''>('');
+    const [mileageEntries, setMileageEntries] = useState<MileageRecord[]>([]);
 
-    // Sample mileage data
-    const mileageEntries = [
-        {
-            id: 'ML-001',
-            date: '2025-06-01',
-            employee: {
-                name: 'John Smith',
-                avatar: '/placeholder.svg?height=32&width=32'
-            },
-            client: 'Maria Garcia',
-            fromAddress: '123 Main St, Toronto, ON',
-            toAddress: '456 Oak Ave, Mississauga, ON',
-            distance: 12.5,
-            travelTime: 25,
-            rate: 0.67,
-            amount: 8.38,
-            status: 'approved',
-            appointmentType: 'Home Visit'
-        },
-        {
-            id: 'ML-002',
-            date: '2025-06-01',
-            employee: {
-                name: 'Sarah Johnson',
-                avatar: '/placeholder.svg?height=32&width=32'
-            },
-            client: 'Robert Chen',
-            fromAddress: '789 Pine St, Toronto, ON',
-            toAddress: '321 Elm Dr, Brampton, ON',
-            distance: 18.2,
-            travelTime: 32,
-            rate: 0.67,
-            amount: 12.19,
-            status: 'pending',
-            appointmentType: 'Weekly Checkup'
-        },
-        {
-            id: 'ML-003',
-            date: '2025-05-31',
-            employee: {
-                name: 'Mike Wilson',
-                avatar: '/placeholder.svg?height=32&width=32'
-            },
-            client: 'Linda Thompson',
-            fromAddress: '555 Queen St, Toronto, ON',
-            toAddress: '888 King St, Scarborough, ON',
-            distance: 24.7,
-            travelTime: 45,
-            rate: 0.67,
-            amount: 16.55,
-            status: 'approved',
-            appointmentType: 'Emergency'
-        },
-        {
-            id: 'ML-004',
-            date: '2025-05-31',
-            employee: {
-                name: 'Emily Davis',
-                avatar: '/placeholder.svg?height=32&width=32'
-            },
-            client: 'James Miller',
-            fromAddress: '234 Bay St, Toronto, ON',
-            toAddress: '567 College St, Toronto, ON',
-            distance: 3.8,
-            travelTime: 12,
-            rate: 0.67,
-            amount: 2.55,
-            status: 'rejected',
-            appointmentType: 'Routine'
+    const agencyId = useAppSelector((state: RootState) => state.user.user.userInfo?.agencyId ?? '');
+
+    const { data: mileageRecords, isLoading } = useGetAgencyMileageRecordsQuery(agencyId ?? '', {
+        skip: !agencyId
+    });
+
+    console.log(mileageRecords);
+
+    useEffect(() => {
+        if (mileageRecords) {
+            setMileageEntries(mileageRecords);
         }
-    ];
+    }, [mileageRecords]);
 
     const statusOptions = [
         { value: '', label: 'All Statuses' },
-        { value: 'approved', label: 'Approved' },
-        { value: 'pending', label: 'Pending' },
-        { value: 'rejected', label: 'Rejected' }
+        { value: MileageStatus.APPROVED, label: 'Approved' },
+        { value: MileageStatus.PENDING, label: 'Pending' },
+        { value: MileageStatus.REJECTED, label: 'Rejected' }
     ];
 
     // Filter entries based on search query, status, and date range
@@ -128,11 +74,10 @@ const MileageTable = () => {
         const searchLower = searchQuery.toLowerCase();
         const matchesSearch =
             entry.id.toLowerCase().includes(searchLower) ||
-            entry.employee.name.toLowerCase().includes(searchLower) ||
-            entry.client.toLowerCase().includes(searchLower) ||
-            entry.fromAddress.toLowerCase().includes(searchLower) ||
-            entry.toAddress.toLowerCase().includes(searchLower) ||
-            entry.appointmentType.toLowerCase().includes(searchLower);
+            entry.careWorker.fullName.toLowerCase().includes(searchLower) ||
+            entry.client.fullName.toLowerCase().includes(searchLower) ||
+            entry.fromLocation.toLowerCase().includes(searchLower) ||
+            entry.toLocation.toLowerCase().includes(searchLower);
 
         // Status filter
         const matchesStatus = !statusFilter || entry.status === statusFilter;
@@ -149,8 +94,8 @@ const MileageTable = () => {
 
     // Sort entries
     const sortedEntries = [...filteredEntries].sort((a, b) => {
-        const aValue = a[sortField as keyof typeof a];
-        const bValue = b[sortField as keyof typeof b];
+        const aValue = a[sortField];
+        const bValue = b[sortField];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return sortDirection === 'asc'
@@ -164,10 +109,16 @@ const MileageTable = () => {
                 : bValue - aValue;
         }
 
+        if (aValue instanceof Date && bValue instanceof Date) {
+            return sortDirection === 'asc'
+                ? aValue.getTime() - bValue.getTime()
+                : bValue.getTime() - aValue.getTime();
+        }
+
         return 0;
     });
 
-    const handleSort = (field: string) => {
+    const handleSort = (field: keyof MileageRecord) => {
         if (field === sortField) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
@@ -176,20 +127,18 @@ const MileageTable = () => {
         }
     };
 
-    const getStatusColor = (status: string) => {
+    const getStatusColor = (status: MileageStatus) => {
         switch (status) {
-            case 'approved':
+            case MileageStatus.APPROVED:
                 return 'bg-green-50 text-green-700 border-green-200';
-            case 'pending':
+            case MileageStatus.PENDING:
                 return 'bg-yellow-50 text-yellow-700 border-yellow-200';
-            case 'rejected':
+            case MileageStatus.REJECTED:
                 return 'bg-red-50 text-red-700 border-red-200';
             default:
                 return 'bg-gray-50 text-gray-700 border-gray-200';
         }
     };
-
-
 
     return (
         <div className="space-y-4">
@@ -207,7 +156,7 @@ const MileageTable = () => {
                     <CustomSelect
                         options={statusOptions}
                         value={statusFilter}
-                        onChange={setStatusFilter}
+                        onChange={(value) => setStatusFilter(value as MileageStatus | '')}
                         placeholder="Filter by status"
                         selectSize="sm"
                         className="w-[150px]"
@@ -232,19 +181,19 @@ const MileageTable = () => {
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort('employee')}>
+                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort('careWorkerId')}>
                                 <div className="flex items-center">
                                     Employee
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort('client')}>
+                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort('clientId')}>
                                 <div className="flex items-center">
                                     Client & Route
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort('distance')}>
+                            <TableHead className="cursor-pointer py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider" onClick={() => handleSort('distanceInMiles')}>
                                 <div className="flex items-center">
                                     Distance
                                     <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -272,91 +221,104 @@ const MileageTable = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {sortedEntries.map((entry) => (
-                            <TableRow key={entry.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
-                                <TableCell className="py-2 px-3">
-                                    <div className="font-medium">
-                                        {new Date(entry.date).toLocaleDateString('en-GB', {
-                                            day: 'numeric',
-                                            month: 'long',
-                                            year: 'numeric'
-                                        })}
-                                    </div>
-                                </TableCell>
-                                <TableCell className="py-2 px-3">
-                                    <div className="flex items-center gap-2">
-                                        <Avatar className="h-8 w-8">
-                                            <AvatarImage
-                                                src={getRandomPlaceholderImage()}
-                                                alt={entry.employee.name}
-                                            />
-                                            <AvatarFallback>{entry.employee.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <div className="font-medium">{entry.employee.name}</div>
-                                            <div className="text-sm text-muted-foreground">{entry.appointmentType}</div>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="py-2 px-3">
-                                    <div className="space-y-1">
-                                        <div className="font-medium flex items-center gap-1">
-                                            <MapPin className="h-3 w-3 text-blue-500" />
-                                            {entry.client}
-                                        </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            <div className="flex items-center gap-1">
-                                                <span className="text-green-600">From:</span>
-                                                <span>{entry.fromAddress}</span>
-                                            </div>
-                                            <div className="flex items-center gap-1 mt-0.5">
-                                                <span className="text-red-600">To:</span>
-                                                <span>{entry.toAddress}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="py-2 px-3">
-                                    <div className="flex items-center gap-1">
-                                        <Route className="h-4 w-4 text-blue-500" />
-                                        <span className="font-medium">{entry.distance} mi</span>
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                        ${entry.rate}/mile
-                                    </div>
-                                </TableCell>
-                                <TableCell className="py-2 px-3">
-                                    <div className="flex items-center gap-1">
-                                        <Clock className="h-4 w-4 text-orange-500" />
-                                        <span className="font-medium">{entry.travelTime} min</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="py-2 px-3 font-medium">
-                                    ${entry.amount.toFixed(2)}
-                                </TableCell>
-                                <TableCell className="py-2 px-3">
-                                    <Badge variant="outline" className={getStatusColor(entry.status)}>
-                                        {entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell className="py-2 px-3">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon">
-                                                <MoreHorizontal className="h-4 w-4" />
-                                                <span className="sr-only">Open menu</span>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem className="flex items-center gap-2 text-red-600">
-                                                <Trash2 className="h-4 w-4" /> Delete Entry
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={8} className="h-24 text-center">
+                                    Loading...
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ) : sortedEntries.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={8} className="h-24 text-center">
+                                    No mileage records found.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            sortedEntries.map((entry) => (
+                                <TableRow key={entry.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
+                                    <TableCell className="py-2 px-3">
+                                        <div className="font-medium">
+                                            {new Date(entry.date).toLocaleDateString('en-GB', {
+                                                day: 'numeric',
+                                                month: 'long',
+                                                year: 'numeric'
+                                            })}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        <div className="flex items-center gap-2">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage
+                                                    src={getRandomPlaceholderImage()}
+                                                    alt={entry.careWorker.fullName}
+                                                />
+                                                <AvatarFallback>{entry.careWorker.fullName.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <div className="font-medium">{entry.careWorker.fullName}</div>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        <div className="space-y-1">
+                                            <div className="font-medium flex items-center gap-1">
+                                                <MapPin className="h-3 w-3 text-blue-500" />
+                                                {entry.client.fullName}
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="text-green-600">From:</span>
+                                                    <span>{entry.fromLocation}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1 mt-0.5">
+                                                    <span className="text-red-600">To:</span>
+                                                    <span>{entry.toLocation}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        <div className="flex items-center gap-1">
+                                            <Route className="h-4 w-4 text-blue-500" />
+                                            <span className="font-medium">{entry.distanceInMiles} mi</span>
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            ${entry.costPerMile}/mile
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        <div className="flex items-center gap-1">
+                                            <Clock className="h-4 w-4 text-orange-500" />
+                                            <span className="font-medium">{entry.travelTime} min</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3 font-medium">
+                                        ${entry.amount.toFixed(2)}
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        <Badge variant="outline" className={getStatusColor(entry.status)}>
+                                            {entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="py-2 px-3">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon">
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                    <span className="sr-only">Open menu</span>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem className="flex items-center gap-2 text-red-600">
+                                                    <Trash2 className="h-4 w-4" /> Delete Entry
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </div>

@@ -3,18 +3,19 @@
 import { Input } from "@/components/ui/input"
 import { DateRange } from "react-day-picker"
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { AlertCircle, CheckCircle2, Clock, Edit, Sparkles, ArrowUpDown } from "lucide-react"
+import { CheckCircle2, Edit, Sparkles, ArrowUpDown } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown } from "lucide-react"
 import { getRandomPlaceholderImage } from "@/lib/utils"
 import { ShiftReviewActions } from "./shift-review-actions"
+import { useGetAgencyShiftReviewsQuery } from "@/state/api"
+import { useAppSelector } from "@/state/redux"
+import { RootState } from "@/state/redux"
+import type { ShiftReview } from "@/types/prismaTypes"
 
 interface ShiftReviewProps {
     date: DateRange | undefined
@@ -27,95 +28,15 @@ export function ShiftReview({ date }: ShiftReviewProps) {
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
     const [showAIResolve, setShowAIResolve] = useState(false)
 
-    // Mock data for shifts
-    const pendingShifts = [
-        {
-            id: "shift-1",
-            careWorker: {
-                name: "Lian Huang",
-                avatar: getRandomPlaceholderImage(),
-            },
-            date: "Fri, Mar 29",
-            timeRange: "8AM - 5PM EST",
-            supervisor: "S. Chen",
-            shifts: [
-                { id: "s1", type: "Regular", timeRange: "8:00AM - 5:00PM", rate: 42.0 },
-                { id: "s2", type: "Overtime", timeRange: "5:00PM - 7:00PM", rate: 64.0 },
-            ],
-            exceptions: [],
-        },
-        {
-            id: "shift-2",
-            careWorker: {
-                name: "Lian Huang",
-                avatar: getRandomPlaceholderImage(),
-            },
-            date: "Sat, Mar 30",
-            timeRange: "9AM - 3PM EST",
-            supervisor: "S. Chen",
-            shifts: [{ id: "s3", type: "Regular", timeRange: "9:00AM - 3:00PM", rate: 42.0 }],
-            exceptions: [
-                {
-                    id: "e1",
-                    type: "Blocking Exception",
-                    description: "Abnormal Travel Time: Time spent traveling between shifts exceeded 30 minutes.",
-                    severity: "high",
-                    detectedBy: "Looper AI",
-                    detectedAt: "2:31 PM",
-                },
-            ],
-        },
-        {
-            id: "shift-3",
-            careWorker: {
-                name: "Richard Brief",
-                avatar: getRandomPlaceholderImage(),
-            },
-            date: "Fri, Mar 29",
-            timeRange: "10AM - 6PM EST",
-            supervisor: "M. Johnson",
-            shifts: [{ id: "s4", type: "Regular", timeRange: "10:00AM - 6:00PM", rate: 38.0 }],
-            exceptions: [
-                {
-                    id: "e2",
-                    type: "Warning Exception",
-                    description: "Shift started 15 minutes later than scheduled.",
-                    severity: "medium",
-                    detectedBy: "Looper AI",
-                    detectedAt: "10:16 AM",
-                },
-            ],
-        },
-    ]
+    const agencyId = useAppSelector((state: RootState) => state.user.user.userInfo?.agencyId ?? '');
+    const { data: shiftReviews, isLoading } = useGetAgencyShiftReviewsQuery(agencyId, {
+        skip: !agencyId
+    });
 
-    const approvedShifts = [
-        {
-            id: "shift-4",
-            careWorker: {
-                name: "Sophia Gutkowski",
-                avatar: "/placeholder.svg?height=40&width=40",
-            },
-            date: "Thu, Mar 28",
-            timeRange: "9AM - 5PM EST",
-            supervisor: "J. Wilson",
-            shifts: [{ id: "s5", type: "Regular", timeRange: "9:00AM - 5:00PM", rate: 40.0 }],
-            approvedBy: "J. Wilson",
-            approvedAt: "Mar 28, 5:15 PM",
-        },
-        {
-            id: "shift-5",
-            careWorker: {
-                name: "Dejah Donnelly",
-                avatar: "/placeholder.svg?height=40&width=40",
-            },
-            date: "Thu, Mar 28",
-            timeRange: "2PM - 8PM EST",
-            supervisor: "S. Chen",
-            shifts: [{ id: "s6", type: "Regular", timeRange: "2:00PM - 8:00PM", rate: 42.0 }],
-            approvedBy: "S. Chen",
-            approvedAt: "Mar 28, 8:30 PM",
-        },
-    ]
+
+
+    const pendingShifts = (shiftReviews || []).filter((review: any) => review.status === "PENDING");
+    const approvedShifts = (shiftReviews || []).filter((review: any) => review.status === "APPROVED");
 
     const getExceptionBadge = (severity: string) => {
         switch (severity) {
@@ -190,40 +111,38 @@ export function ShiftReview({ date }: ShiftReviewProps) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {pendingShifts.map((shift) => (
+                            {pendingShifts.map((shift: ShiftReview) => (
                                 <TableRow key={shift.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
                                     <TableCell className="py-2 px-3">
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-8 w-8">
-                                                <AvatarImage src={shift.careWorker.avatar} alt={shift.careWorker.name} />
-                                                <AvatarFallback>{shift.careWorker.name.charAt(0)}</AvatarFallback>
+                                                <AvatarImage src={shift.careWorker?.avatar || getRandomPlaceholderImage()} alt={shift.careWorker?.fullName || "Care Worker"} />
+                                                <AvatarFallback>{shift.careWorker?.fullName?.charAt(0) || "?"}</AvatarFallback>
                                             </Avatar>
-                                            <span className="font-medium">{shift.careWorker.name}</span>
+                                            <span className="font-medium">{shift.careWorker?.fullName}</span>
                                         </div>
                                     </TableCell>
                                     <TableCell className="py-2 px-3">
-                                        <div className="font-medium">{shift.date}</div>
-                                        <div className="text-sm text-muted-foreground">{shift.timeRange}</div>
+                                        <div className="font-medium">{shift.shiftDate ? new Date(shift.shiftDate).toLocaleDateString() : "-"}</div>
+                                        <div className="text-sm text-muted-foreground">{shift.startTime} - {shift.endTime}</div>
                                     </TableCell>
-                                    <TableCell className="py-2 px-3">{shift.supervisor}</TableCell>
+                                    <TableCell className="py-2 px-3">{shift.supervisor?.fullName}</TableCell>
                                     <TableCell className="py-2 px-3">
                                         <div className="space-y-1">
-                                            {shift.shifts.map((subShift) => (
-                                                <div key={subShift.id} className="text-sm">
-                                                    <span className="font-medium">{subShift.type}:</span> {subShift.timeRange}
-                                                    <span className="text-muted-foreground ml-2">${subShift.rate}/hr</span>
-                                                </div>
-                                            ))}
+                                            <div className="text-sm">
+                                                <span className="font-medium">{shift.shiftType}:</span> {shift.startTime} - {shift.endTime}
+                                                <span className="text-muted-foreground ml-2">${shift.hourlyRate}/hr</span>
+                                            </div>
                                         </div>
                                     </TableCell>
                                     <TableCell className="py-2 px-3">
-                                        {shift.exceptions.length > 0 ? (
+                                        {shift.exceptions && shift.exceptions.length > 0 ? (
                                             <div className="space-y-1">
-                                                {shift.exceptions.map((exception) => (
+                                                {shift.exceptions.map((exception: any) => (
                                                     <div key={exception.id} className="flex items-center gap-2">
-                                                        {getExceptionBadge(exception.severity)}
+                                                        {getExceptionBadge(exception.severity?.toLowerCase())}
                                                         <span className="text-xs text-muted-foreground">
-                                                            {exception.detectedAt}
+                                                            {exception.detectedAt ? new Date(exception.detectedAt).toLocaleString() : ""}
                                                         </span>
                                                     </div>
                                                 ))}
@@ -279,36 +198,34 @@ export function ShiftReview({ date }: ShiftReviewProps) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {approvedShifts.map((shift) => (
+                            {approvedShifts.map((shift: ShiftReview) => (
                                 <TableRow key={shift.id} className="border-b border-border hover:bg-muted/50 transition-colors duration-200">
                                     <TableCell className="py-2 px-3">
                                         <div className="flex items-center gap-2">
                                             <Avatar className="h-8 w-8">
-                                                <AvatarImage src={shift.careWorker.avatar} alt={shift.careWorker.name} />
-                                                <AvatarFallback>{shift.careWorker.name.charAt(0)}</AvatarFallback>
+                                                <AvatarImage src={shift.careWorker?.avatar || getRandomPlaceholderImage()} alt={shift.careWorker?.fullName || "Care Worker"} />
+                                                <AvatarFallback>{shift.careWorker?.fullName?.charAt(0) || "?"}</AvatarFallback>
                                             </Avatar>
-                                            <span className="font-medium">{shift.careWorker.name}</span>
+                                            <span className="font-medium">{shift.careWorker?.fullName}</span>
                                         </div>
                                     </TableCell>
                                     <TableCell className="py-2 px-3">
-                                        <div className="font-medium">{shift.date}</div>
-                                        <div className="text-sm text-muted-foreground">{shift.timeRange}</div>
+                                        <div className="font-medium">{shift.shiftDate ? new Date(shift.shiftDate).toLocaleDateString() : "-"}</div>
+                                        <div className="text-sm text-muted-foreground">{shift.startTime} - {shift.endTime}</div>
                                     </TableCell>
-                                    <TableCell className="py-2 px-3">{shift.supervisor}</TableCell>
+                                    <TableCell className="py-2 px-3">{shift.supervisor?.fullName}</TableCell>
                                     <TableCell className="py-2 px-3">
                                         <div className="space-y-1">
-                                            {shift.shifts.map((subShift) => (
-                                                <div key={subShift.id} className="text-sm">
-                                                    <span className="font-medium">{subShift.type}:</span> {subShift.timeRange}
-                                                    <span className="text-muted-foreground ml-2">${subShift.rate}/hr</span>
-                                                </div>
-                                            ))}
+                                            <div className="text-sm">
+                                                <span className="font-medium">{shift.shiftType}:</span> {shift.startTime} - {shift.endTime}
+                                                <span className="text-muted-foreground ml-2">${shift.hourlyRate}/hr</span>
+                                            </div>
                                         </div>
                                     </TableCell>
                                     <TableCell className="py-2 px-3">
                                         <div className="text-sm">
-                                            <div className="font-medium">{shift.approvedBy}</div>
-                                            <div className="text-muted-foreground">{shift.approvedAt}</div>
+                                            <div className="font-medium">{shift.approvedBy?.fullName}</div>
+                                            <div className="text-muted-foreground">{shift.approvedAt ? new Date(shift.approvedAt).toLocaleString() : ""}</div>
                                         </div>
                                     </TableCell>
                                 </TableRow>

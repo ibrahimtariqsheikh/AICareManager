@@ -192,7 +192,7 @@ const Navbar = () => {
 
           <SheetClose asChild>
             <motion.div variants={mobileItemVariants} whileHover="hover" whileTap="tap">
-              <Link href="/dashboard" className={`block p-2 hover:text-purple-500 transition-colors ${geistMono.className}`}>
+              <Link href="/dashboard/overview" className={`block p-2 hover:text-purple-500 transition-colors ${geistMono.className}`}>
                 Dashboard
               </Link>
             </motion.div>

@@ -9,7 +9,6 @@ import {
     getAllSchedulesByAgencyId,
     getAllClientsByAgencyId,
     getAllInvoicesByAgencyId,
-    getAllMileageRecordsByAgencyId,
     getAllIncidentReportsByAgencyId,
     getAllDocumentsByAgencyId,
     getAgencyCustomTasks,
@@ -26,13 +25,12 @@ import {
     getAgencyExpenses,
     getAgencyPayrolls,
     getAgencyAlerts,
-    getAllAgencyAlerts
+    getAllAgencyAlerts,
+    getAgencyMileageRecords,
+    getAgencyShiftReviews
 } from "../controllers/agencyController";
 
 const router = express.Router();
-
-
-
 
 // Agency GET routes
 router.get("/", getAllAgencies);
@@ -65,14 +63,14 @@ router.delete("/:id/group/:groupId", deleteAgencyGroup);
 router.get("/:id/users", getAllUsersByAgencyId);
 router.get("/:id/schedules", getAllSchedulesByAgencyId);
 router.get("/:id/clients", getAllClientsByAgencyId);
-router.get("/:id/invoices", getAllInvoicesByAgencyId);
-router.get("/:id/mileage-records", getAllMileageRecordsByAgencyId);
+router.get("/:id/invoices", getAgencyInvoices);
+router.get("/:id/mileage-records", getAgencyMileageRecords);
 router.get("/:id/incident-reports", getAllIncidentReportsByAgencyId);
 router.get("/:id/documents", getAllDocumentsByAgencyId);
-router.get("/:id/invoices", getAgencyInvoices);
 router.get("/:id/payrolls", getAgencyPayrolls);
 router.get("/:id/expenses", getAgencyExpenses);
 router.get("/:id/alerts", getAgencyAlerts);
 router.get("/:id/alerts/all", getAllAgencyAlerts);
+router.get("/:id/shift-reviews", getAgencyShiftReviews);
 
 export default router;
