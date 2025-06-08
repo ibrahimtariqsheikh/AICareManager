@@ -18,6 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import { Skeleton } from "@/components/ui/skeleton"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -42,8 +43,6 @@ export default function DashboardPage() {
     const alerts: Alert[] = agencyData?.alerts || []
     const unresolvedAlerts = alerts.filter(alert => alert.status !== "RESOLVED")
     const dispatch = useAppDispatch()
-
-    console.log("ALERTS", alerts)
 
 
     const getStatusColor = (status: string) => {
@@ -74,6 +73,9 @@ export default function DashboardPage() {
     } = useGetDashboardDataQuery(user?.userInfo?.id || "", {
         skip: !shouldFetch,
     })
+    console.log("DASHBOARD DATA", dashboardData)
+
+
 
     const isLoading = !shouldFetch || isDashboardLoading
 
@@ -255,11 +257,11 @@ export default function DashboardPage() {
                             <h3 className="ml-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">Total Revenue</h3>
                         </div>
                         <div className="flex justify-between items-baseline mb-0.5">
-                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">$7,209.29</div>
+                            <div className="text-2xl font-bold text-neutral-800 dark:text-white">${dashboardData?.stats.totalRevenue.toFixed(2)}</div>
                         </div>
 
                         <div className="flex justify-start mt-1">
-                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]">
+                            <Button variant="link" className="text-neutral-600 dark:text-neutral-300 p-0 h-auto text-[11px]" onClick={() => router.push("/dashboard/billing")}>
                                 <Info className="h-2.5 w-2.5 " />
                                 See details
                             </Button>
@@ -378,7 +380,7 @@ export default function DashboardPage() {
                                             <td className="py-2 px-3">
                                                 <div className="flex items-center space-x-2">
                                                     <Avatar className="h-6 w-6">
-                                                        <AvatarImage src={getRandomPlaceholderImage()} />
+                                                        <AvatarImage src={schedule.client?.imageUrl || getRandomPlaceholderImage()} />
                                                         <AvatarFallback>{schedule.clientName[0]}</AvatarFallback>
                                                     </Avatar>
                                                     <span className="text-sm">{schedule.clientName}</span>

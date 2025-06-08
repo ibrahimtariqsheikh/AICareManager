@@ -707,8 +707,10 @@ export const getCareWorkerSchedules = async (req: Request, res: Response): Promi
         client: {
           include: {
             medications: true,
+            keyContacts: true,
           },
         },
+        
         visitType: {
           include: {
             assignedTasks: true,

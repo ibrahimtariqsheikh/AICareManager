@@ -1,8 +1,7 @@
 "use client"
 
-import React from "react"
+import React, { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { useChat } from "@ai-sdk/react"
-import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Lightbulb, ArrowUp, Mic } from "lucide-react"
@@ -24,6 +23,8 @@ import { OnboardingInviteTool } from "./tools/onboarding-invite-tool"
 import { AlertsTool } from "./tools/alerts-tool"
 import CreateCareWorkerTool from "./tools/create-care-worker-tool"
 import CreateOfficeStaffTool from "./tools/create-office-staff-tool"
+import { useAppSelector } from "@/hooks/useAppSelector"
+import { RootState } from "@/state/redux"
 
 // Add type declarations at the top of the file
 interface SpeechRecognitionEvent extends Event {
@@ -161,6 +162,8 @@ const MessageComponent = React.memo(({ message }: { message: any }) => {
         [message.parts]
     )
 
+    const user = useAppSelector((state: RootState) => state.user.user.userInfo)
+
     return (
         <motion.div
             key={message.id}
@@ -223,7 +226,7 @@ const MessageComponent = React.memo(({ message }: { message: any }) => {
                 </div>
                 {message.role === "user" && (
                     <Avatar className="h-8 w-8 shrink-0 mt-1 order-2">
-                        <AvatarImage src={getRandomPlaceholderImage() || "/placeholder.svg"} alt="You" />
+                        <AvatarImage src={user?.imageUrl || getRandomPlaceholderImage()} alt="You" />
                         <AvatarFallback>U</AvatarFallback>
                     </Avatar>
                 )}
@@ -524,11 +527,11 @@ export default function ChatUI() {
                                 <div className="w-full relative">
                                     <textarea
                                         placeholder={isListening ? "Listening..." : "Ask Anything..."}
-                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl border-0 focus:ring-0 shadow-sm resize-none lg:w-[900px] md:w-[500px] sm:w-[400px] xs:w-[300px]"
+                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl focus:ring-0 resize-none lg:w-[900px] md:w-[500px] sm:w-[400px] xs:w-[300px] border-neutral-300"
                                         rows={5}
                                         value={displayTranscript}
-                                        onChange={chat.handleInputChange}
-                                        onKeyDown={handleKeyDown}
+                                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => chat.handleInputChange(e)}
+                                        onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e)}
                                         disabled={chat.isLoading || isListening}
                                     />
                                     {isListening && !interimTranscript && (
@@ -609,8 +612,8 @@ export default function ChatUI() {
                                         className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl border-0 focus:ring-0 shadow-sm resize-none"
                                         rows={3}
                                         value={displayTranscript}
-                                        onChange={chat.handleInputChange}
-                                        onKeyDown={handleKeyDown}
+                                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => chat.handleInputChange(e)}
+                                        onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e)}
                                         disabled={chat.isLoading || isListening}
                                     />
                                     {isListening && !interimTranscript && (

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
-import { Geist_Mono } from 'next/font/google'
+import { Button } from "../ui/button";
+import { ChevronRightIcon } from "lucide-react";
 
 interface HeroSectionProps {
     title: string;
@@ -11,7 +12,7 @@ interface HeroSectionProps {
 
 }
 
-const geistMono = Geist_Mono({ subsets: ['latin'] })
+
 
 
 export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
@@ -164,22 +165,22 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
             <div className="absolute inset-0 backdrop-blur-[1px] z-0"></div>
 
             {/* Content */}
-            <div className="container mx-auto px-6 pt-20 pb-16 md:pt-32 md:pb-24 relative z-10">
+            <div className="container mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
                 <motion.div
-                    className="mx-auto text-center space-y-8"
+                    className="mx-auto text-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <div className="flex justify-center">
-                        <div className={cn("text-[14px] bg-blue-500/10 text-blue-500 font-medium border border-blue-500/20 rounded-full px-4 py-2 relative", theme === "dark" && "text-white bg-gray-800/70", geistMono.className)}>
+                    <div className="flex justify-center mb-4">
+                        <div className={cn("text-[13px] bg-blue-500/10 text-blue-600 font-medium border border-blue-600/20 rounded-full px-4 py-2 relative", theme === "dark" && "text-white bg-gray-800/70")}>
                             <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl -z-10 animate-pulse"></div>
-                            Level Up Your Care Management with AI
+                            AI-Powered Care Management
                         </div>
                     </div>
                     <div>
-                        <motion.h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight px-2">
-                            {title.split(" ").map((word, index) => (
+                        <motion.h1 className="text-4xl md:text-6xl lg:text-[5rem] font-semibold tracking-tighter  px-2">
+                            {words.slice(0, words.length - 4).map((word, index) => (
                                 <motion.span
                                     key={index}
                                     initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
@@ -189,8 +190,23 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                                         delay: index * 0.1,
                                         ease: "easeInOut",
                                     }}
-                                    className={`mr-2 inline-block ${index >= words.length - 2 ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600" : ""
-                                        }`}
+                                    className="p-1 inline-block leading-none"
+                                >
+                                    {word}
+                                </motion.span>
+                            ))}
+                            <br />
+                            {words.slice(words.length - 4).map((word, index) => (
+                                <motion.span
+                                    key={index}
+                                    initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
+                                    animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                                    transition={{
+                                        duration: 0.3,
+                                        delay: (index + words.length - 4) * 0.1,
+                                        ease: "easeInOut",
+                                    }}
+                                    className="p-1 inline-block leading-none text-4xl md:text-5xl lg:text-[4.5rem] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600"
                                 >
                                     {word}
                                 </motion.span>
@@ -198,7 +214,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                         </motion.h1>
 
                         <motion.p
-                            className={cn("relative z-10 mx-auto max-w-xl py-4 text-center text-md font-normal text-neutral-800 backdrop-blur-sm bg-white/10 rounded-lg px-4 border border-gray-100/30", theme === "dark" && "text-white bg-gray-800/10")}
+                            className={cn("relative z-10 mt-4 mx-auto max-w-4xl py-3 text-center text-md font-medium text-neutral-600 rounded-lg")}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.5 }}
@@ -206,6 +222,16 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                             {subtitle}
                         </motion.p>
                     </div>
+                    <div className="flex justify-center gap-4 mb-10 mt-4">
+                        <Button size="lg" className="bg-primary text-white hover:bg-blue-600 font-semibold">
+                            Talk to Sales
+                        </Button>
+                        <Button variant="ghost" className="flex items-center gap-2hover:bg-gray-100 " size="lg">
+                            Watch Demo
+                            <ChevronRightIcon className="w-4 h-4" />
+                        </Button>
+                    </div>
+
                     {/* Floating dashboard preview with reduced glow */}
                     <motion.div
                         className="max-w-5xl mx-auto relative"
@@ -215,7 +241,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                     >
                         {/* Reduced glow effect behind the dashboard */}
                         <div className="absolute inset-0 -z-10 opacity-40">
-                            <div className="absolute inset-0 hero-glow transform scale-105" />
+                            <div className="absolute inset-0 transform scale-105" />
                         </div>
 
                         <motion.div
@@ -231,13 +257,14 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                                 duration: 0.3,
                                 delay: 1.2,
                             }}
-                            className={cn("relative z-10 rounded-3xl border border-gray-200 bg-white/90 backdrop-blur-md p-4 shadow-lg hero-soft-glow", theme === "dark" && "bg-gray-800/90")}
+                            className={cn("relative z-10 rounded-3xl border border-neutral-200 bg-white/90 backdrop-blur-md   overflow-hidden")}
                         >
-                            <div className="w-full overflow-hidden rounded-xl border border-gray-200">
+                            <div className="w-full overflow-hidden">
                                 <img
                                     src={image || "/placeholder.svg"}
                                     alt="Landing page preview"
                                     className="h-auto w-full object-cover"
+
                                 />
                             </div>
                         </motion.div>

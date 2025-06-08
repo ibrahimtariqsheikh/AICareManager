@@ -1,9 +1,9 @@
 import { Search, Download, AlertCircle, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CustomInput } from "@/components/ui/custom-input"
-import { Badge } from "@/components/ui/badge"
+
 import { cn } from "@/lib/utils"
-import { Geist_Mono } from "next/font/google"
+
 
 interface ShiftReviewActionsProps {
     showFilters: boolean
@@ -13,10 +13,7 @@ interface ShiftReviewActionsProps {
     approvedCount: number
 }
 
-const geistMono = Geist_Mono({
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-})
+
 
 export function ShiftReviewActions({ showFilters, activeTab, onTabChange, pendingCount, approvedCount }: ShiftReviewActionsProps) {
     return (
@@ -27,7 +24,7 @@ export function ShiftReviewActions({ showFilters, activeTab, onTabChange, pendin
                     size="sm"
                     className={cn(
                         "h-8 px-3",
-                        geistMono.className,
+
                         activeTab === "pending" ? "bg-primary text-primary-foreground" : "bg-muted border-muted-foreground/40"
                     )}
                     onClick={() => onTabChange("pending")}
@@ -40,7 +37,7 @@ export function ShiftReviewActions({ showFilters, activeTab, onTabChange, pendin
                     size="sm"
                     className={cn(
                         "h-8 px-3",
-                        geistMono.className,
+
                         activeTab === "approved" ? "bg-primary text-primary-foreground" : "bg-muted border-muted-foreground/40"
                     )}
                     onClick={() => onTabChange("approved")}
@@ -56,7 +53,7 @@ export function ShiftReviewActions({ showFilters, activeTab, onTabChange, pendin
                     placeholder="Search shifts..."
                     className="w-full h-8"
                 />
-                <Button variant="outline" size="sm" className={cn("h-8", geistMono.className)}>
+                <Button variant="outline" size="sm" className={cn("h-8")}>
                     <Download className="mr-1 h-3 w-3" />
                     Export
                 </Button>

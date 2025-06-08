@@ -1,18 +1,17 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Dancing_Script } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import Providers from "./providers"
 import { Toaster } from "../components/ui/sonner"
 import { MessageProvider } from './context/MessageContext'
 import { cn } from "@/lib/utils"
 
-
-
-const dancingScript = Dancing_Script({
+const font = Inter({
   subsets: ['latin'],
-  variable: '--font-dancing-script',
+  variable: '--font-inter',
 })
+
 
 export const metadata: Metadata = {
   title: "AIM",
@@ -30,11 +29,11 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn(dancingScript.variable)}>
-      <body className={cn("min-h-screen bg-background font-sans antialiased", dancingScript.variable)} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn(font.variable)}>
+      <body className={cn("min-h-screen bg-transparent font-sans antialiased font-sans", font.variable)} suppressHydrationWarning>
         <MessageProvider>
           <Providers>
-            <div className="dark:noise-bg w-full font-sans">{children}</div>
+            <div className="w-full ">{children}</div>
           </Providers>
         </MessageProvider>
         <Toaster />

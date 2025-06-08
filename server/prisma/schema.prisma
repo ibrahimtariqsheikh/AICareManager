@@ -261,7 +261,7 @@ model CustomTask {
   priority    CustomTaskPriority
   icon        String?
   agencyId    String?
-  agency      Agency?             @relation(fields: [agencyId], references: [id]) // Renamed from Agency to agency
+  agency      Agency?             @relation(fields: [agencyId], references: [id])
 }
 
 model ClientCareAssignment {
@@ -342,6 +342,7 @@ model User {
   preferredName  String?
   role           Role
   subRole        SubRole?
+  imageUrl       String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   agencyId       String?

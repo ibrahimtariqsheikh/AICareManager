@@ -25,6 +25,7 @@ interface UserState {
       email: string;
       fullName: string;
       role: string;
+      imageUrl?: string;
       agencyId?: string;
     agenciesOwned: [
       {
