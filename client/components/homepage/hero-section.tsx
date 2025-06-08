@@ -173,7 +173,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                     transition={{ duration: 0.5 }}
                 >
                     <div className="flex justify-center mb-4">
-                        <div className={cn("text-[13px] bg-blue-500/10 text-blue-600 font-medium border border-blue-600/20 rounded-full px-4 py-2 relative", theme === "dark" && "text-white bg-gray-800/70")}>
+                        <div className={cn("text-[13px] bg-blue-500/10 text-blue-600 font-medium border border-blue-600/20 rounded-full px-4 py-2 relative tracking-tight leading-relaxed", theme === "dark" && "text-white bg-gray-800/70")}>
                             <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl -z-10 animate-pulse"></div>
                             AI-Powered Care Management
                         </div>
@@ -214,7 +214,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                         </motion.h1>
 
                         <motion.p
-                            className={cn("relative z-10 mt-4 mx-auto max-w-4xl py-3 text-center text-md font-medium text-neutral-600 rounded-lg")}
+                            className={cn("relative z-10 mt-4 mx-auto max-w-4xl py-3 text-center text-md font-medium text-neutral-600 rounded-lg tracking-tight leading-relaxed")}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.5 }}

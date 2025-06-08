@@ -321,11 +321,12 @@ export function MyNavbar() {
           <HeroSection
             title="Scale Your Care Business Without Hiring More Staff"
             subtitle="All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth.
-Reduce admin time and staffing costs by 70%+ with smart automation."
+Reduce admin time and staffing costs by 70% with smart automation."
             image={"/assets/dashboard.png"}
           />
         </div>
       </div>
+
     </div>
   );
 }
