@@ -1,271 +1,128 @@
-"use client"
-
-import { useState } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { Check } from "lucide-react"
-import { Button } from "../../components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card"
-import { Switch } from "../../components/ui/switch"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion"
-import { cn } from "../../lib/utils"
+import React from 'react';
+import { Check } from 'lucide-react';
+import Image from 'next/image';
 
 export default function PricingPage() {
-    const [annual, setAnnual] = useState(false)
-
-    // Define plans outside of the component to avoid hydration errors
-    const plansData = [
+    const plans = [
         {
-            name: "Starter",
-            priceMonthly: "$99",
-            priceAnnual: "$79",
-            description: "Perfect for small care agencies just getting started",
+            name: 'Starter',
+            description: 'Perfect for small care homes just getting started',
+            price: 99,
+            period: '/month',
             features: [
-                "Up to 10 care workers",
-                "Basic schedule management",
-                "Client management",
-                "Simple incident reporting",
-                "Mobile app access",
-                "Email support",
-                "Basic dashboard",
+                'Up to 10 care workers',
+                'Basic client management',
+                'Essential reporting',
+                'Email support',
+                'Standard scheduling'
             ],
-            popular: false,
-            buttonText: "Start Free Trial",
-            buttonVariant: "outline" as const,
-            href: "#book-demo",
+            buttonStyle: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+            popular: false
         },
         {
-            name: "Professional",
-            priceMonthly: "$199",
-            priceAnnual: "$159",
-            description: "Ideal for growing healthcare organizations",
+            name: 'Professional',
+            description: 'Ideal for growing care homes with multiple locations',
+            price: 199,
+            period: '/month',
             features: [
-                "Up to 50 care workers",
-                "Advanced schedule management",
-                "Electronic medication records (EMAR)",
-                "Revenue tracking dashboard",
-                "Custom forms and assessments",
-                "Week view of all schedules",
-                "Family chat bot",
-                "Priority support",
-                "Advanced reporting",
+                'Up to 50 care workers',
+                'Advanced client management',
+                'Comprehensive reporting',
+                'Priority support',
+                'AI-powered scheduling',
+                'Revenue analytics',
+                'Staff management'
             ],
-            popular: true,
-            buttonText: "Start Free Trial",
-            buttonVariant: "default" as const,
-            href: "#book-demo",
+            buttonStyle: 'bg-primary text-white hover:bg-primary/90',
+            popular: true
         },
         {
-            name: "Enterprise",
-            priceMonthly: "$399",
-            priceAnnual: "$319",
-            description: "For large healthcare providers with complex needs",
+            name: 'Enterprise',
+            description: 'For large care organizations with complex needs',
+            price: 399,
+            period: '/month',
             features: [
-                "Unlimited care workers",
-                "Multi-facility management",
-                "Advanced AI chat bot",
-                "Custom dashboards",
-                "White-labeling options",
-                "Enterprise-grade security",
-                "24/7 priority support",
-                "Staff training included",
-                "API access",
-                "Custom integrations",
+                'Unlimited care workers',
+                'Enterprise client management',
+                'Custom reporting',
+                '24/7 dedicated support',
+                'Advanced AI features',
+                'Multi-location management',
+                'Custom integrations',
+                'API access'
             ],
-            popular: false,
-            buttonText: "Contact Sales",
-            buttonVariant: "outline" as const,
-            href: "/contact",
-        },
-    ]
-
-    // Use the static data to create plans with the current pricing
-    const plans = plansData.map(plan => ({
-        ...plan,
-        price: annual ? plan.priceAnnual : plan.priceMonthly,
-        period: "/ mo"
-    }))
-
-    const faqs = [
-        {
-            question: "How long is the free trial?",
-            answer: "Our free trial lasts for 14 days with full access to all features. No credit card required to start.",
-        },
-        {
-            question: "Can I change plans later?",
-            answer: "Yes, you can upgrade or downgrade your plan at any time as your needs change.",
-        },
-        {
-            question: "Is my data secure?",
-            answer: "Yes, we use healthcare-grade security to protect all your sensitive information and comply with healthcare data regulations.",
-        },
-        {
-            question: "Do you offer training?",
-            answer: "Yes, we provide training for all plans. Professional plans include group training sessions, and Enterprise plans include personalized training.",
-        },
-        {
-            question: "How does the family chat bot work?",
-            answer: "The chat bot helps families get quick answers about their loved one's care, schedule, and medication, reducing calls to your office staff.",
-        },
-        {
-            question: "What payment methods do you accept?",
-            answer: "We accept all major credit cards, bank transfers, and can accommodate purchase orders for Enterprise plans.",
-        },
-    ]
-
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    }
-
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                type: "spring",
-                stiffness: 100,
-            },
-        },
-    }
+            buttonStyle: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+            popular: false
+        }
+    ];
 
     return (
-        <section className="py-16 md:py-32 bg-gradient-to-b from-background to-background/80">
-            <div className="mx-auto max-w-6xl px-6">
-                <div className="mx-auto max-w-2xl space-y-6 text-center">
-                    <motion.h1
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="text-center text-4xl font-semibold lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70"
-                    >
-                        Simple Pricing for Better Care
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-muted-foreground text-lg"
-                    >
-                        AIM helps you deliver better care with less paperwork. Choose the plan that works for you.
-                    </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                        className="flex items-center justify-center space-x-3 pt-4"
-                    >
-                        <span className={cn("text-sm", !annual && "text-primary font-medium")}>Monthly</span>
-                        <Switch checked={annual} onCheckedChange={setAnnual} className="data-[state=checked]:bg-primary" />
-                        <span className={cn("text-sm flex items-center gap-1.5", annual && "text-primary font-medium")}>
-                            Annual
-                            <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full font-medium">Save 20%</span>
-                        </span>
-                    </motion.div>
+        <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="text-center mb-24">
+                    <h2 className="text-6xl font-bold text-neutral-900 mb-4 tracking-tight leading-relaxed">
+                        Simple, Transparent Pricing
+                    </h2>
+                    <p className="text-lg text-neutral-500 max-w-2xl mx-auto tracking-tight leading-relaxed font-medium">
+                        Choose the perfect plan for your care home. All plans include our core features and regular updates.
+                    </p>
                 </div>
 
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="mt-8 grid gap-6 md:mt-16 md:grid-cols-3"
-                >
+                {/* Pricing Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
                     {plans.map((plan, index) => (
-                        <motion.div key={index} variants={itemVariants}>
-                            <Card
-                                className={cn(
-                                    "flex flex-col h-full transition-all duration-200 hover:shadow-lg",
-                                    plan.popular && "border-primary/50 shadow-md relative",
-                                )}
-                            >
-                                {plan.popular && (
-                                    <span className="absolute inset-x-0 -top-3 mx-auto flex h-6 w-fit items-center rounded-full bg-gradient-to-r from-primary/80 to-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+                        <div
+                            key={plan.name}
+                            className={`relative bg-white rounded-2xl shadow-sm ring-1 ring-neutral-200 p-6 ${plan.popular
+                                ? 'ring-2 ring-primary shadow-md lg:scale-110 bg-gradient-to-b from-primary/5 to-white'
+                                : ''
+                                } transition-all duration-300`}
+                        >
+                            {/* Popular Badge */}
+                            {plan.popular && (
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                                    <span className="inline-flex items-center rounded-full bg-primary px-4 py-1 text-xs font-medium text-white">
                                         Most Popular
                                     </span>
-                                )}
-
-                                <div className="flex flex-col h-full">
-                                    <CardHeader>
-                                        <CardTitle className="font-medium text-xl">{plan.name}</CardTitle>
-                                        <div className="my-3 flex items-end">
-                                            <span className="text-3xl font-bold">{plan.price}</span>
-                                            <span className="text-sm text-muted-foreground ml-1">{plan.period}</span>
-                                        </div>
-                                        <CardDescription className="text-sm">{plan.description}</CardDescription>
-                                    </CardHeader>
-
-                                    <CardContent className="space-y-4 flex-grow">
-                                        <div className="h-px bg-border/50 w-full" />
-
-                                        <ul className="space-y-3 text-base">
-                                            {plan.features.map((feature, featureIndex) => (
-                                                <li key={featureIndex} className="flex items-start gap-2">
-                                                    <Check className="size-5 text-primary mt-0.5 shrink-0" />
-                                                    <span>{feature}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </CardContent>
-
-                                    <CardFooter className="mt-auto pt-4">
-                                        <Button
-                                            asChild
-                                            variant={plan.buttonVariant}
-                                            className={cn(
-                                                "w-full text-base py-6",
-                                                plan.popular && plan.buttonVariant === "default" && "bg-primary hover:bg-primary/90",
-                                            )}
-                                        >
-                                            <Link href={plan.href}>{plan.buttonText}</Link>
-                                        </Button>
-                                    </CardFooter>
                                 </div>
-                            </Card>
-                        </motion.div>
+                            )}
+
+                            {/* Plan Header */}
+                            <div className="text-center">
+                                <h3 className="text-lg font-semibold text-neutral-900">{plan.name}</h3>
+                                <p className="mt-2 text-sm text-neutral-500">{plan.description}</p>
+                                <div className="mt-4 flex items-baseline justify-center">
+                                    <span className="text-4xl font-bold tracking-tight text-neutral-900">£{plan.price}</span>
+                                    <span className="ml-1 text-sm font-medium text-neutral-500">/month</span>
+                                </div>
+                            </div>
+
+                            {/* Features */}
+                            <ul className="mt-8 space-y-3">
+                                {plan.features.map((feature, idx) => (
+                                    <li key={idx} className="flex items-start">
+                                        <svg className="h-5 w-5 flex-shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                                        </svg>
+                                        <span className="ml-3 text-sm text-neutral-500">{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* CTA Button */}
+                            <button
+                                className={`w-full mt-8 py-2.5 px-4 rounded-lg font-medium transition-all duration-200 ${plan.popular
+                                    ? 'bg-primary text-white hover:bg-primary/90 shadow-sm hover:shadow-md'
+                                    : plan.buttonStyle
+                                    }`}
+                            >
+                                Get Started
+                            </button>
+                        </div>
                     ))}
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.8 }}
-                    className="mt-20 mx-auto max-w-3xl"
-                >
-                    <h2 className="text-2xl font-semibold text-center mb-8">Common Questions</h2>
-
-                    <Accordion type="single" collapsible className="w-full">
-                        {faqs.map((faq, index) => (
-                            <AccordionItem key={index} value={`item-${index}`}>
-                                <AccordionTrigger className="text-left text-lg py-4">{faq.question}</AccordionTrigger>
-                                <AccordionContent className="text-base">{faq.answer}</AccordionContent>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 1 }}
-                    className="mt-16 text-center"
-                >
-                    <div className="p-6 rounded-lg bg-muted/50 inline-block mx-auto">
-                        <h3 className="text-xl font-medium mb-2">Need a custom solution?</h3>
-                        <p className="text-muted-foreground mb-4 text-base">We can create a plan that fits your exact needs.</p>
-                        <Button asChild size="lg" className="text-base py-6">
-                            <Link href="/contact">Talk to Our Team</Link>
-                        </Button>
-                    </div>
-                </motion.div>
+                </div>
             </div>
-        </section>
-    )
+        </div>
+    );
 }
-

@@ -257,7 +257,7 @@ const MobileNavigation = ({
   );
 };
 
-export function MyNavbar() {
+export function MyNavbar({ showHero = true }: { showHero?: boolean }) {
   const { user } = useAuthenticator((context) => [context.user]);
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -315,18 +315,18 @@ export function MyNavbar() {
           />
         </MobileNav>
       </ResizeableNavbar>
-
-      <div className="min-h-screen w-full overflow-visible">
-        <div className="relative">
-          <HeroSection
-            title="Scale Your Care Business Without Hiring More Staff"
-            subtitle="All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth.
+      {showHero && (
+        <div className="min-h-screen w-full overflow-visible">
+          <div className="relative">
+            <HeroSection
+              title="Scale Your Care Business Without Hiring More Staff"
+              subtitle="All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth.
 Reduce admin time and staffing costs by 70% with smart automation."
-            image={"/assets/dashboard.png"}
-          />
+              image={"/assets/dashboard.png"}
+            />
+          </div>
         </div>
-      </div>
-
+      )}
     </div>
   );
 }
