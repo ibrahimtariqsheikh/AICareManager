@@ -377,26 +377,26 @@ Reduce admin time and staffing costs by 70% with smart automation."
                   <h3 className="text-3xl font-bold text-neutral-900">⁠Automatic Staff & Client Onboarding
                   </h3>
                   <p className="text-lg text-neutral-500">
-                    Just tell AIM Assist who to onboard — it instantly sends invites, collects info, and confirms when done.
+                    Instantly sends onboarding invites via AIM Assist, auto-creates staff and client profiles with required info, and tracks and confirms onboarding completion in real time.
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Automated document collection and verification</span>
+                      <span className="text-neutral-600">Instant onboarding invite distribution</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Instant welcome emails and access setup</span>
+                      <span className="text-neutral-600">Automated profile creation and data collection</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Automated compliance checks and approvals</span>
+                      <span className="text-neutral-600">Real-time onboarding progress tracking</span>
                     </li>
                   </ul>
                 </div>
@@ -413,26 +413,26 @@ Reduce admin time and staffing costs by 70% with smart automation."
                 <div className="space-y-6 order-1 lg:order-2">
                   <h3 className="text-3xl font-bold text-neutral-900">⁠Set Up Pay Rates Instantly</h3>
                   <p className="text-lg text-neutral-500">
-                    Assign pay rates in seconds — just tell AIM Assist who, what, and how much.
+                    Add pay rates for care workers using natural language prompts, instantly preview, confirm, and apply pay configurations.
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Quick rate assignment for different roles and shifts</span>
+                      <span className="text-neutral-600">Natural language pay rate configuration</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Automatic overtime and holiday rate calculations</span>
+                      <span className="text-neutral-600">Instant pay rate preview and confirmation</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Instant updates across all payroll systems</span>
+                      <span className="text-neutral-600">One-click pay configuration application</span>
                     </li>
                   </ul>
                 </div>
@@ -444,26 +444,26 @@ Reduce admin time and staffing costs by 70% with smart automation."
                   <h3 className="text-3xl font-bold text-neutral-900">AI-Powered Care Plan Drafting
                   </h3>
                   <p className="text-lg text-neutral-500">
-                    Send consultation notes — get a detailed, compliant care plan ready for approval and signature.
+                    Drafts detailed care plans from consultation notes with AI, sends for approval with built-in digital signature workflow.
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">AI-generated care plans from consultation notes</span>
+                      <span className="text-neutral-600">AI-powered care plan generation from notes</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Compliance checks and regulatory alignment</span>
+                      <span className="text-neutral-600">Built-in digital signature workflow</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Digital signature and approval workflow</span>
+                      <span className="text-neutral-600">Streamlined approval process</span>
                     </li>
                   </ul>
                 </div>
@@ -480,26 +480,26 @@ Reduce admin time and staffing costs by 70% with smart automation."
                 <div className="space-y-6 order-1 lg:order-2">
                   <h3 className="text-3xl font-bold text-neutral-900">⁠Medication Setup with AI</h3>
                   <p className="text-lg text-neutral-500">
-                    Tell AIM Assist the meds and dosages — it auto-updates EMAR and flags anything missing.
+                    Instantly view active medications via chat with AIM Assist, get alerted to unresolved or missing medication records, and resolve medication-related alerts with smart suggestions.
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Automated EMAR system updates</span>
+                      <span className="text-neutral-600">Instant medication overview via chat</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Missing medication alerts and reminders</span>
+                      <span className="text-neutral-600">Smart alerts for missing medication records</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Dosage verification and safety checks</span>
+                      <span className="text-neutral-600">AI-powered medication alert resolution</span>
                     </li>
                   </ul>
                 </div>
@@ -548,7 +548,7 @@ Reduce admin time and staffing costs by 70% with smart automation."
                   <h3 className="text-3xl font-bold text-neutral-900">⁠Instant Invoices & Payroll
                   </h3>
                   <p className="text-lg text-neutral-500">
-                    Once visits are logged, ask AIM for invoices or payslips — it builds and sends them automatically.
+                    AI-generated invoices from completed visit logs, instant payslip creation after check-in/check-out, and export-ready data for manual payroll and accounting systems.
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
@@ -561,13 +561,13 @@ Reduce admin time and staffing costs by 70% with smart automation."
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Instant payslip creation and distribution</span>
+                      <span className="text-neutral-600">Real-time payslip generation after visits</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Automated payment processing and reconciliation</span>
+                      <span className="text-neutral-600">Export-ready data for external systems</span>
                     </li>
                   </ul>
                 </div>
@@ -616,26 +616,26 @@ Reduce admin time and staffing costs by 70% with smart automation."
                   <h3 className="text-3xl font-bold text-neutral-900">Custom AI Dashboards for Compliance
                   </h3>
                   <p className="text-lg text-neutral-500">
-                    Ask AIM to generate any dashboard — track alerts, care delivery, finances, or audits in real time.
+                    Real-time compliance monitoring and alerts, customizable care delivery metrics.
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Real-time compliance monitoring and alerts</span>
+                      <span className="text-neutral-600">Live compliance status tracking</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Customizable care delivery metrics</span>
+                      <span className="text-neutral-600">Instant compliance alerts and notifications</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="text-neutral-600">Automated audit trail generation</span>
+                      <span className="text-neutral-600">Customizable care metrics dashboard</span>
                     </li>
                   </ul>
                 </div>

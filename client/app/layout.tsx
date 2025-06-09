@@ -29,8 +29,8 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn(font.variable)}>
-      <body className={cn("min-h-screen bg-transparent font-sans antialiased font-sans", font.variable)} suppressHydrationWarning>
+    <html lang="en" className={cn(font.variable)}>
+      <body className={cn("min-h-screen bg-background antialiased font-sans", font.variable)}>
         <MessageProvider>
           <Providers>
             <div className="w-full ">{children}</div>

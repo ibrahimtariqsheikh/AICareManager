@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { MyNavbar } from "../components/Navbar"
-import { AIChatDemo } from "../components/AIChatDemo"
-import Image from "next/image"
-import { Check } from "lucide-react"
 
 export default function Home() {
     const [mounted, setMounted] = useState(false)
