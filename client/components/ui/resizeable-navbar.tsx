@@ -89,22 +89,23 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
         <motion.div
             animate={{
                 backdropFilter: visible ? "blur(10px)" : "none",
-
-                width: visible ? "70%" : "90%",
+                width: visible ? "90%" : "100%",
                 paddingLeft: visible ? "2rem" : "1rem",
                 paddingRight: visible ? "2rem" : "1rem",
                 y: visible ? 10 : 0,
             }}
             transition={{
                 type: "spring",
-                stiffness: 200,
-                damping: 50,
+                stiffness: 100,
+                damping: 20,
+                mass: 1,
+                duration: 0.5
             }}
             style={{
-                minWidth: "600px",
+                minWidth: "1000px",
             }}
             className={cn(
-                "relative z-[60] mx-auto hidden w-full max-w-5xl flex-row items-center justify-between self-start rounded-lg px-4 py-1 lg:flex border border-neutral-200 bg-white/60",
+                "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-lg px-4 py-1 lg:flex border border-neutral-200 bg-white/60",
                 className,
             )}
         >

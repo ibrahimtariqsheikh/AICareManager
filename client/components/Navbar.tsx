@@ -14,10 +14,14 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from "next/navigation";
-import { LogIn, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { LogIn, LayoutDashboard, ChevronDown, Check } from 'lucide-react';
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { AIChatDemo } from "./AIChatDemo";
+import { BenefitDemo } from "./BenefitDemo";
+import { Footer } from "./Footer";
+import { Timeline } from "./Timeline";
 
 // Types
 type NavItem = {
@@ -316,16 +320,334 @@ export function MyNavbar({ showHero = true }: { showHero?: boolean }) {
         </MobileNav>
       </ResizeableNavbar>
       {showHero && (
-        <div className="min-h-screen w-full overflow-visible">
-          <div className="relative">
-            <HeroSection
-              title="Scale Your Care Business Without Hiring More Staff"
-              subtitle="All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth.
+        <>
+          <div className="min-h-screen w-full overflow-visible">
+            <div className="relative">
+              <HeroSection
+                title="Scale Your Care Business Without Hiring More Staff"
+                subtitle="All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth.
 Reduce admin time and staffing costs by 70% with smart automation."
-              image={"/assets/dashboard.png"}
-            />
+                image={"/assets/dashboard.png"}
+              />
+            </div>
           </div>
-        </div>
+          {/* What do we solve */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div className="text-center mb-24">
+              <h2 className="flex items-center justify-center text-5xl font-bold text-neutral-900 mb-4 tracking-tighter leading-relaxed">
+                What does <div className="flex items-center justify-center"><Image src="/assets/aimlogo.png" alt="AIM Logo" width={85} height={85} className="inline-block align-middle mx-1 mt-1" quality={100} /></div> solve?
+              </h2>
+
+              {/* Benefits Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24 mt-20">
+
+                <BenefitDemo benefit="client" speed={1.5} />
+
+
+
+                <BenefitDemo benefit="staff" speed={1.5} />
+
+
+
+
+                <BenefitDemo benefit="admin" speed={1.5} />
+
+                <BenefitDemo benefit="subscription" speed={1.5} />
+
+              </div>
+
+            </div>
+          </div>
+
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center mb-24">
+              <h2 className="text-4xl font-bold text-neutral-900 mb-4 tracking-tight leading-relaxed">What Used to Take a Team, Now Takes Just a Few Texts</h2>
+              <p className="text-lg text-neutral-500 max-w-2xl mx-auto tracking-tight leading-relaxed font-medium">
+                Discover how AIM Assist transforms care management with intelligent automation and seamless workflows
+              </p>
+            </div>
+
+            <div className="relative">
+              <Timeline />
+
+              {/* Feature 1: Automatic Staff & Client Onboarding */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="space-y-6">
+                  <h3 className="text-3xl font-bold text-neutral-900">⁠Automatic Staff & Client Onboarding
+                  </h3>
+                  <p className="text-lg text-neutral-500">
+                    Just tell AIM Assist who to onboard — it instantly sends invites, collects info, and confirms when done.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automated document collection and verification</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Instant welcome emails and access setup</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automated compliance checks and approvals</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="relative">
+                  <AIChatDemo speed={1.5} />
+                </div>
+              </div>
+
+              {/* Feature 2: Set Up Pay Rates Instantly */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="relative order-2 lg:order-1">
+                  <AIChatDemo speed={1.5} />
+                </div>
+                <div className="space-y-6 order-1 lg:order-2">
+                  <h3 className="text-3xl font-bold text-neutral-900">⁠Set Up Pay Rates Instantly</h3>
+                  <p className="text-lg text-neutral-500">
+                    Assign pay rates in seconds — just tell AIM Assist who, what, and how much.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Quick rate assignment for different roles and shifts</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automatic overtime and holiday rate calculations</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Instant updates across all payroll systems</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Feature 3: AI-Powered Care Plan Drafting */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="space-y-6">
+                  <h3 className="text-3xl font-bold text-neutral-900">AI-Powered Care Plan Drafting
+                  </h3>
+                  <p className="text-lg text-neutral-500">
+                    Send consultation notes — get a detailed, compliant care plan ready for approval and signature.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">AI-generated care plans from consultation notes</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Compliance checks and regulatory alignment</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Digital signature and approval workflow</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="relative">
+                  <AIChatDemo speed={1.5} />
+                </div>
+              </div>
+
+              {/* Feature 4 : Medication Setup with AI */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="relative order-2 lg:order-1">
+                  <AIChatDemo speed={1.5} />
+                </div>
+                <div className="space-y-6 order-1 lg:order-2">
+                  <h3 className="text-3xl font-bold text-neutral-900">⁠Medication Setup with AI</h3>
+                  <p className="text-lg text-neutral-500">
+                    Tell AIM Assist the meds and dosages — it auto-updates EMAR and flags anything missing.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automated EMAR system updates</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Missing medication alerts and reminders</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Dosage verification and safety checks</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Feature 5: Smart Scheduling by Text */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="space-y-6">
+                  <h3 className="text-3xl font-bold text-neutral-900">⁠Smart Scheduling by Text
+                  </h3>
+                  <p className="text-lg text-neutral-500">
+                    Just type the schedule request — AIM creates the full rota with optimal care matches.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">AI-powered staff matching based on skills</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automatic conflict resolution and coverage</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Instant schedule notifications to staff</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="relative">
+                  <AIChatDemo speed={1.5} />
+                </div>
+              </div>
+
+              {/* Feature 6: Instant Invoices & Payroll */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="relative order-2 lg:order-1">
+                  <AIChatDemo speed={1.5} />
+                </div>
+                <div className="space-y-6 order-1 lg:order-2">
+                  <h3 className="text-3xl font-bold text-neutral-900">⁠Instant Invoices & Payroll
+                  </h3>
+                  <p className="text-lg text-neutral-500">
+                    Once visits are logged, ask AIM for invoices or payslips — it builds and sends them automatically.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automated invoice generation from visit logs</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Instant payslip creation and distribution</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automated payment processing and reconciliation</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Feature 7: Visit Reporting with AI Support */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="space-y-6">
+                  <h3 className="text-3xl font-bold text-neutral-900">⁠Visit Reporting with AI Support
+                  </h3>
+                  <p className="text-lg text-neutral-500">
+                    Care workers check in, write quick notes — AIM rephrases and formats perfect logs instantly.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">AI-enhanced visit note formatting</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Professional language and tone adjustment</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Compliance and regulatory alignment checks</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="relative">
+                  <AIChatDemo speed={1.5} />
+                </div>
+              </div>
+
+              {/* Feature 8: Custom AI Dashboards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="relative order-2 lg:order-1">
+                  <AIChatDemo speed={1.5} />
+                </div>
+                <div className="space-y-6 order-1 lg:order-2">
+                  <h3 className="text-3xl font-bold text-neutral-900">Custom AI Dashboards for Compliance
+                  </h3>
+                  <p className="text-lg text-neutral-500">
+                    Ask AIM to generate any dashboard — track alerts, care delivery, finances, or audits in real time.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Real-time compliance monitoring and alerts</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Customizable care delivery metrics</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Check className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-neutral-600">Automated audit trail generation</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+
+          <Footer />
+        </>
       )}
     </div>
   );

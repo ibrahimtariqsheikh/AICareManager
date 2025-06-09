@@ -249,7 +249,7 @@ export async function handleChat(req: Request) {
     }
 
     const result = streamText({
-      model: anthropic('claude-sonnet-4-20250514'),
+      model: openai("gpt-4.1-mini"),
       system: baseSystemPrompt,
       messages,
       maxSteps: 5,

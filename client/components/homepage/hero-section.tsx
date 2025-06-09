@@ -222,14 +222,14 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                             {subtitle}
                         </motion.p>
                     </div>
-                    <div className="flex justify-center gap-4 mb-10 mt-4">
+                    <div className="flex justify-center gap-10 mb-10 mt-4 items-center">
                         <Button size="lg" className="bg-primary text-white hover:bg-blue-600 font-semibold">
                             Talk to Sales
                         </Button>
-                        <Button variant="ghost" className="flex items-center gap-2hover:bg-gray-100 " size="lg">
+                        <button className="flex items-center justify-center gap-2 bg-none border-none hover:bg-none text-neutral-900 font-medium text-sm" >
                             Watch Demo
                             <ChevronRightIcon className="w-4 h-4" />
-                        </Button>
+                        </button>
                     </div>
 
                     {/* Floating dashboard preview with reduced glow */}
