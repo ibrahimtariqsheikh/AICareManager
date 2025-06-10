@@ -2,7 +2,8 @@
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true
-  }
+  },
+  devIndicators: false
 }
 
 module.exports = nextConfig 

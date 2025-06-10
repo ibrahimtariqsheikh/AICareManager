@@ -14,14 +14,16 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from "next/navigation";
-import { LogIn, LayoutDashboard, ChevronDown, Check } from 'lucide-react';
+import { LogIn, LayoutDashboard, ChevronDown, Check, Users, Clock, Briefcase, MessageSquare, GraduationCap, UserCheck, FileText, Pill, DollarSign, BarChart, TrendingUp } from 'lucide-react';
 import { Button } from "./ui/button";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { AIChatDemo } from "./AIChatDemo";
 import { BenefitDemo } from "./BenefitDemo";
 import { Footer } from "./Footer";
 import { Timeline } from "./Timeline";
+import React from 'react';
+import Cal, { getCalApi } from "@calcom/embed-react";
 
 // Types
 type NavItem = {
@@ -179,17 +181,13 @@ const AuthButton = ({ user, router, onMobileMenuClose }: {
 }) => {
   if (user) {
     return (
-      <NavbarButton
-        variant="primary"
-        onClick={() => {
-          router.push("/dashboard");
-          onMobileMenuClose?.();
-        }}
-        className="flex items-center gap-2"
-      >
+      <Button variant="default" onClick={() => {
+        router.push("/dashboard");
+        onMobileMenuClose?.();
+      }}>
         <LayoutDashboard className="w-4 h-4" />
         <span>Dashboard</span>
-      </NavbarButton>
+      </Button>
     );
   }
 
@@ -270,6 +268,348 @@ const MobileNavigation = ({
   );
 };
 
+const bulletPoints = [
+  {
+    category: 'AI Scheduling & Rostering',
+    points: [
+      'AI-Powered Scheduling',
+      'Live GPS Check-In/Out',
+      'Pay Rate Management'
+    ]
+  },
+  {
+    category: 'Care Planning & Documentation',
+    points: [
+      'Automated Care Planning',
+      'Risk Assessments & Client Profiles',
+      'Custom Document Management'
+    ]
+  },
+  {
+    category: 'Medication & Visit Management',
+    points: [
+      'Medication Management (EMAR)',
+      'Smart Visit Reporting',
+      'Intelligent Alert Resolution'
+    ]
+  },
+  {
+    category: 'Staff & Client Operations',
+    points: [
+      'Staff & Client Onboarding',
+      'Staff HR & Certification Tracking',
+      'Internal & Family Messaging'
+    ]
+  },
+  {
+    category: 'Finance & Compliance',
+    points: [
+      'Invoicing & Payroll Automation',
+      'Expense Tracking',
+      'Compliance Alerts & Expiry Tracking'
+    ]
+  },
+  {
+    category: 'Insights & Inspection Readiness',
+    points: [
+      'AI-Generated Dashboards',
+      'Built-In Policies & Procedures',
+      'Audit & Inspection Readiness Tools'
+    ]
+  },
+  {
+    category: 'Sales & Marketing Automation',
+    points: [
+      'AI-powered lead capture & CRM',
+      'Automated SMS, email & voice follow-ups',
+      'Smart appointment booking workflows',
+      'Review generation & reputation management',
+      'Campaign dashboard with ROI tracking'
+    ]
+  }
+];
+
+const features = [
+  {
+    id: 'ai-scheduling',
+    title: 'AI Scheduling & Rostering',
+    icon: Clock,
+    color: 'bg-blue-50 text-blue-600',
+    image: '/assets/features/scheduling.png',
+    bulletPoints: [
+      'AI-Powered Scheduling',
+      'Live GPS Check-In/Out',
+      'Pay Rate Management'
+    ]
+  },
+  {
+    id: 'care-planning',
+    title: 'Care Planning & Documentation',
+    icon: FileText,
+    color: 'bg-green-50 text-green-600',
+    image: '/assets/features/scheduling.png',
+    bulletPoints: [
+      'Automated Care Planning',
+      'Risk Assessments & Client Profiles',
+      'Custom Document Management'
+    ]
+  },
+  {
+    id: 'medication-management',
+    title: 'Medication & Visit Management',
+    icon: Pill,
+    color: 'bg-purple-50 text-purple-600',
+    image: '/assets/features/scheduling.png',
+    bulletPoints: [
+      'Medication Management (EMAR)',
+      'Smart Visit Reporting',
+      'Intelligent Alert Resolution'
+    ]
+  },
+  {
+    id: 'staff-operations',
+    title: 'Staff & Client Operations',
+    icon: Users,
+    color: 'bg-orange-50 text-orange-600',
+    image: '/assets/features/scheduling.png',
+    bulletPoints: [
+      'Staff & Client Onboarding',
+      'Staff HR & Certification Tracking',
+      'Internal & Family Messaging'
+    ]
+  },
+  {
+    id: 'finance-compliance',
+    title: 'Finance & Compliance',
+    icon: DollarSign,
+    color: 'bg-teal-50 text-teal-600',
+    image: '/assets/features/scheduling.png',
+    bulletPoints: [
+      'Invoicing & Payroll Automation',
+      'Expense Tracking',
+      'Compliance Alerts & Expiry Tracking'
+    ]
+  },
+  {
+    id: 'insights',
+    title: 'Insights & Inspection Readiness',
+    icon: BarChart,
+    color: 'bg-pink-50 text-pink-600',
+    image: '/assets/features/scheduling.png',
+    bulletPoints: [
+      'AI-Generated Dashboards',
+      'Built-In Policies & Procedures',
+      'Audit & Inspection Readiness Tools'
+    ]
+  },
+  {
+    id: 'sales-marketing',
+    title: 'Sales & Marketing Automation',
+    icon: TrendingUp,
+    color: 'bg-indigo-50 text-indigo-600',
+    image: '/assets/features/scheduling.png',
+    bulletPoints: [
+      'AI-powered lead capture & CRM',
+      'Automated SMS, email & voice follow-ups',
+      'Smart appointment booking workflows',
+      'Review generation & reputation management',
+      'Campaign dashboard with ROI tracking'
+    ]
+  }
+];
+
+const AnimatedDropdownSection = () => {
+  const [activeFeature, setActiveFeature] = useState<number>(0);
+  const [isExpanded, setIsExpanded] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % features.length);
+    }, 6000); // Change every 6 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Auto-expand the active feature
+    setIsExpanded(prev => ({
+      ...prev,
+      [activeFeature]: true
+    }));
+
+    // Collapse all other features immediately
+    setIsExpanded(prev => {
+      const newExpanded = { ...prev };
+      Object.keys(newExpanded).forEach(key => {
+        if (parseInt(key) !== activeFeature) {
+          newExpanded[parseInt(key)] = false;
+        }
+      });
+      return newExpanded;
+    });
+  }, [activeFeature]);
+
+  const toggleFeature = (index: number) => {
+    setActiveFeature(index);
+    setIsExpanded(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
+  return (
+    <div className="mx-auto px-4 sm:px-6 lg:px-10 py-10">
+      <div className="text-center mb-24">
+        <h2 className="text-5xl font-bold text-neutral-900 mb-4 tracking-tighter leading-relaxed">
+          Our Features
+        </h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 mt-10">
+          {/* Left side - Feature list */}
+          <div className="">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              const isActive = index === activeFeature;
+              const isExpandedState = isExpanded[index] || false;
+
+              return (
+                <motion.div
+                  key={feature.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    backgroundColor: isActive ? 'rgb(239 246 255)' : 'white'
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className={`transition-all rounded-xl duration-500 ease-in-out cursor-pointer ${isActive
+                    ? 'bg-blue-50'
+                    : 'bg-white hover:bg-gray-50'
+                    }`}
+                  onClick={() => toggleFeature(index)}
+                >
+                  {/* Progress bar */}
+                  {isActive && (
+                    <div className="w-full h-1 overflow-hidden rounded-full mb-4">
+                      <motion.div
+                        className="h-full w-full bg-blue-600 rounded-full"
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '0%' }}
+                        transition={{
+                          duration: 6,
+                          ease: "linear"
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Feature header */}
+                  <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-3">
+                      <motion.div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${isActive ? 'bg-blue-100' : 'bg-gray-100'
+                          }`}
+                        animate={{
+                          scale: isActive ? 1.1 : 1,
+                          backgroundColor: isActive ? 'rgb(219 234 254)' : 'rgb(243 244 246)'
+                        }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-blue-700' : 'text-gray-600'
+                          }`} />
+                      </motion.div>
+                      <motion.span
+                        className={`font-medium ${isActive ? 'text-[oklch(48.8%_0.243_264.376)]' : 'text-gray-700'
+                          }`}
+                        animate={{
+                          color: isActive ? 'oklch(48.8% 0.243 264.376)' : 'rgb(55 65 81)'
+                        }}
+                      >
+                        {feature.title}
+                      </motion.span>
+                    </div>
+                    <motion.div
+                      animate={{
+                        rotate: isExpandedState ? 180 : 0,
+                        color: isActive ? 'rgb(37 99 235)' : 'rgb(156 163 175)'
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </motion.div>
+                  </div>
+
+                  {/* Feature description */}
+                  <AnimatePresence>
+                    {isExpandedState && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-4">
+                          <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.05 }}
+                            className="text-start text-sm text-neutral-600 leading-relaxed"
+                          >
+                            {feature.bulletPoints.map((point, index) => (
+                              <div key={index} className="flex items-start gap-2">
+                                <span className="text-neutral-400">•</span>
+                                <span>{point}</span>
+                              </div>
+                            ))}
+                          </motion.p>
+
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Right side - Visual placeholder */}
+          <motion.div
+            className="rounded-xl h-full flex items-center justify-center overflow-hidden"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <AnimatePresence mode="wait">
+              {features[activeFeature] && (
+                <motion.div
+                  key={activeFeature}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full h-full relative rounded-xl overflow-hidden"
+                >
+                  <Image
+                    src={features[activeFeature].image}
+                    alt={features[activeFeature].title}
+                    fill
+                    className="object-cover rounded-xl"
+                    priority
+                    quality={100}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      </div>
+
+
+    </div>
+  );
+};
+
 export function MyNavbar({ showHero = true }: { showHero?: boolean }) {
   const { user } = useAuthenticator((context) => [context.user]);
   const router = useRouter();
@@ -284,6 +624,13 @@ export function MyNavbar({ showHero = true }: { showHero?: boolean }) {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    (async function () {
+      const cal = await getCalApi({ "namespace": "30min" });
+      cal("ui", { "theme": "light", "cssVarsPerTheme": { "light": { "cal-brand": "#2463eb" }, "dark": { "cal-brand": "#2463eb" } }, "hideEventTypeDetails": false, "layout": "month_view" });
+    })();
   }, []);
 
   return (
@@ -352,14 +699,14 @@ Reduce admin time and staffing costs by 70% with smart automation."
               </div>
             </div>
             {/* What do we solve */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div className=" mx-auto px-4 sm:px-6 lg:px-10 py-10">
               <div className="text-center mb-24">
                 <h2 className="flex items-center justify-center text-5xl font-bold text-neutral-900 mb-4 tracking-tighter leading-relaxed">
                   What does <div className="flex items-center justify-center"><Image src="/assets/aimlogo.png" alt="AIM Logo" width={85} height={85} className="inline-block align-middle mx-1 mt-1" quality={100} /></div> solve?
                 </h2>
 
                 {/* Benefits Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24 mt-20">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-10">
 
                   <BenefitDemo benefit="client" speed={1.5} />
 
@@ -379,6 +726,15 @@ Reduce admin time and staffing costs by 70% with smart automation."
               </div>
             </div>
 
+            <div className=" mx-auto px-4 sm:px-6 lg:px-10 ">
+
+
+
+              <AnimatedDropdownSection />
+
+
+            </div>
+
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
               <div className="text-center mb-24">
@@ -389,17 +745,21 @@ Reduce admin time and staffing costs by 70% with smart automation."
               </div>
 
               <div className="relative">
-                <Timeline />
+                <div className="hidden lg:block">
+                  <Timeline />
+                </div>
 
                 {/* Feature 1: Automatic Staff & Client Onboarding */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32 text-center lg:text-left">
                   <div className="space-y-6">
-                    <h3 className="text-3xl font-bold text-neutral-900">⁠Automatic Staff & Client Onboarding
+                    <h3 className="text-3xl font-bold text-neutral-900 ">⁠Automatic Staff & Client Onboarding
                     </h3>
                     <p className="text-lg text-neutral-500">
-                      Instantly sends onboarding invites via AIM Assist, auto-creates staff and client profiles with required info, and tracks and confirms onboarding completion in real time.
+                      Just tell AIM Assist who to onboard — it instantly sends invites, collects info, and confirms when done.
+
+
                     </p>
-                    <ul className="space-y-4">
+                    <ul className="space-y-4 lg:text-left text-center">
                       <li className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                           <Check className="h-4 w-4 text-blue-600" />
@@ -421,19 +781,20 @@ Reduce admin time and staffing costs by 70% with smart automation."
                     </ul>
                   </div>
                   <div className="relative">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="onboarding" />
                   </div>
                 </div>
 
                 {/* Feature 2: Set Up Pay Rates Instantly */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
                   <div className="relative order-2 lg:order-1">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="pay-rates" />
                   </div>
-                  <div className="space-y-6 order-1 lg:order-2">
+                  <div className="space-y-6 order-1 lg:order-2 text-center lg:text-left">
                     <h3 className="text-3xl font-bold text-neutral-900">⁠Set Up Pay Rates Instantly</h3>
                     <p className="text-lg text-neutral-500">
-                      Add pay rates for care workers using natural language prompts, instantly preview, confirm, and apply pay configurations.
+                      Assign pay rates in seconds — just tell AIM Assist who, what, and how much.
+
                     </p>
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
@@ -460,11 +821,11 @@ Reduce admin time and staffing costs by 70% with smart automation."
 
                 {/* Feature 3: AI-Powered Care Plan Drafting */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
-                  <div className="space-y-6">
+                  <div className="space-y-6 text-center lg:text-left">
                     <h3 className="text-3xl font-bold text-neutral-900">AI-Powered Care Plan Drafting
                     </h3>
                     <p className="text-lg text-neutral-500">
-                      Drafts detailed care plans from consultation notes with AI, sends for approval with built-in digital signature workflow.
+                      Send consultation notes — get a detailed, compliant care plan ready for approval and signature.
                     </p>
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
@@ -488,19 +849,19 @@ Reduce admin time and staffing costs by 70% with smart automation."
                     </ul>
                   </div>
                   <div className="relative">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="medication" />
                   </div>
                 </div>
 
                 {/* Feature 4 : Medication Setup with AI */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
                   <div className="relative order-2 lg:order-1">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="medication" />
                   </div>
-                  <div className="space-y-6 order-1 lg:order-2">
+                  <div className="space-y-6 order-1 lg:order-2 text-center lg:text-left">
                     <h3 className="text-3xl font-bold text-neutral-900">⁠Medication Setup with AI</h3>
                     <p className="text-lg text-neutral-500">
-                      Instantly view active medications via chat with AIM Assist, get alerted to unresolved or missing medication records, and resolve medication-related alerts with smart suggestions.
+                      Tell AIM Assist the meds and dosages — it auto-updates EMAR and flags anything missing.
                     </p>
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
@@ -527,7 +888,7 @@ Reduce admin time and staffing costs by 70% with smart automation."
 
                 {/* Feature 5: Smart Scheduling by Text */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
-                  <div className="space-y-6">
+                  <div className="space-y-6 text-center lg:text-left">
                     <h3 className="text-3xl font-bold text-neutral-900">⁠Smart Scheduling by Text
                     </h3>
                     <p className="text-lg text-neutral-500">
@@ -555,20 +916,20 @@ Reduce admin time and staffing costs by 70% with smart automation."
                     </ul>
                   </div>
                   <div className="relative">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="scheduling" />
                   </div>
                 </div>
 
                 {/* Feature 6: Instant Invoices & Payroll */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
                   <div className="relative order-2 lg:order-1">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="invoicing" />
                   </div>
-                  <div className="space-y-6 order-1 lg:order-2">
+                  <div className="space-y-6 order-1 lg:order-2 text-center lg:text-left">
                     <h3 className="text-3xl font-bold text-neutral-900">⁠Instant Invoices & Payroll
                     </h3>
                     <p className="text-lg text-neutral-500">
-                      AI-generated invoices from completed visit logs, instant payslip creation after check-in/check-out, and export-ready data for manual payroll and accounting systems.
+                      Once visits are logged, ask AIM for invoices or payslips — it builds and sends them automatically.
                     </p>
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
@@ -595,7 +956,7 @@ Reduce admin time and staffing costs by 70% with smart automation."
 
                 {/* Feature 7: Visit Reporting with AI Support */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
-                  <div className="space-y-6">
+                  <div className="space-y-6 text-center lg:text-left">
                     <h3 className="text-3xl font-bold text-neutral-900">⁠Visit Reporting with AI Support
                     </h3>
                     <p className="text-lg text-neutral-500">
@@ -623,21 +984,20 @@ Reduce admin time and staffing costs by 70% with smart automation."
                     </ul>
                   </div>
                   <div className="relative">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="visit-reporting" />
                   </div>
                 </div>
 
                 {/* Feature 8: Custom AI Dashboards */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-32">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center mb-10">
                   <div className="relative order-2 lg:order-1">
-                    <AIChatDemo speed={1.5} />
+                    <AIChatDemo speed={1.5} feature="compliance" />
                   </div>
-                  <div className="space-y-6 order-1 lg:order-2">
+                  <div className="space-y-6 order-1 lg:order-2 text-center lg:text-left">
                     <h3 className="text-3xl font-bold text-neutral-900">Custom AI Dashboards for Compliance
                     </h3>
                     <p className="text-lg text-neutral-500">
-                      Real-time compliance monitoring and alerts, customizable care delivery metrics.
-                    </p>
+                      Ask AIM to generate any dashboard — track alerts, care delivery, finances, or audits in real time.                    </p>
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
@@ -664,6 +1024,33 @@ Reduce admin time and staffing costs by 70% with smart automation."
 
               </div>
 
+            </div>
+
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  mb-32">
+              <div className="text-center">
+                <h2 className="text-4xl font-bold text-neutral-900 mb-4 tracking-tight leading-relaxed">Book a Demo</h2>
+                <p className="text-lg text-neutral-500 max-w-2xl mx-auto tracking-tight leading-relaxed font-medium mb-10">
+                  Schedule a 30-minute demo to see how AIM can transform your care business
+                </p>
+              </div>
+              <div className="w-full">
+                <Cal
+                  namespace="30min"
+                  calLink="ai-care-manager/30min"
+                  style={{ width: "100%", height: "100%", overflow: "scroll" }}
+                  config={{
+                    iframeAttrs: {
+                      style: "box-shadow: none !important;"
+                    },
+                    layout: "month_view",
+                    theme: "light",
+                    styles: "box-shadow: none !important;"
+
+                  }}
+
+                />
+              </div>
             </div>
 
             <Footer />

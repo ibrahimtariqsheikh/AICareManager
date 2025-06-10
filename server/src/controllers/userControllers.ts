@@ -609,6 +609,12 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
+        // Delete all visit types associated with the user
+        await prisma.visitType.deleteMany({
+            where: { userId: id }
+        });
+
+        // Now delete the user
         await prisma.user.delete({
             where: { id },
         });

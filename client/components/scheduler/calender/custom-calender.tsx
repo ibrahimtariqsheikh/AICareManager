@@ -674,28 +674,7 @@ export function CustomCalendar({
                 </div>
             </div>
 
-            {/* <div className="flex justify-end items-center">
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button size="sm" >
-                            <PlusCircle className="h-3 w-3" />
-                            Create Appointment
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64" align="end">
-                        <div className="flex flex-col gap-2 text-xs">
-                            <Button onClick={() => setIsAppointmentFormOpen(true)} className="w-full text-xs" variant="ghost">
-                                <EventIcon className="h-3 w-3" />
-                                New Appointment
-                            </Button>
-                            <Button onClick={() => { }} className="w-full text-xs " variant="ghost">
-                                <Clipboard className="h-3 w-3" />
-                                New Event
-                            </Button>
-                        </div>
-                    </PopoverContent>
-                </Popover>
-            </div> */}
+
             {activeView === "day" && (
                 <CustomDayView
                     date={currentDate}

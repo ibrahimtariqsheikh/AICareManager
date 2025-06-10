@@ -8,8 +8,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "../ui/button"
 import { Label } from "../ui/label"
 import { useAppSelector } from "@/state/redux"
-import { CustomInput } from "../ui/custom-input"
-import { CustomSelect } from "../ui/custom-select"
+import { Input } from "../ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 interface AddUsersNewDialogProps {
     open: boolean
@@ -88,32 +88,43 @@ export function AddUsersNewDialog({ open, onOpenChange, onAddUser, isCreatingUse
                             <div className="flex gap-4">
                                 <div className="space-y-2 flex-1">
                                     <Label htmlFor="fullName">Full Name</Label>
-                                    <CustomInput
+                                    <Input
                                         id="fullName"
                                         placeholder="Enter the full name of the user"
                                         type="text"
                                         value={fullName}
-                                        onChange={setFullName}
+                                        onChange={(e) => setFullName(e.target.value)}
                                         required
-
                                     />
                                 </div>
 
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
-                                <CustomInput id="email" type="email" value={email} onChange={setEmail} required placeholder="Enter the email of the user" />
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="Enter the email of the user"
+                                />
                             </div>
                             {getSubroleOptions(activeUserType as Role).length > 0 && (
                                 <div className="space-y-2">
                                     <Label htmlFor="subRole">Subrole</Label>
-                                    <CustomSelect
-                                        options={getSubroleOptions(activeUserType as Role).map((option) => ({
-                                            value: option,
-                                            label: option.replace(/_/g, " "),
-                                        }))}
-                                        onChange={(value: string) => setSubRole(value as SubRole)}
-                                    />
+                                    <Select onValueChange={(value) => setSubRole(value as SubRole)}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a subrole" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {getSubroleOptions(activeUserType as Role).map((option) => (
+                                                <SelectItem key={option} value={option}>
+                                                    {option.replace(/_/g, " ")}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             )}
                         </div>

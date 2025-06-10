@@ -123,18 +123,16 @@ function AdminCostSavings({ speed = 1 }: AdminCostSavingsProps) {
     const totalSavings = 28375
 
     return (
-        <div className="relative w-full max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden border border-gray-200">
-            <div className="bg-gray-50 px-8 py-4 border-b border-gray-200 flex justify-start items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Calculator className="h-4 w-4 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900">Replace Admin, Not Humans</h3>
+        <div className="relative w-full max-w-4xl mx-auto bg-gray-50 rounded-2xl overflow-hidden ">
+            <div className="px-6 pt-6  flex justify-center    items-center">
+
+                <h3 className="text-md  text-center font-semibold text-gray-900 mb-4 mt-2">Replace Admin, Not Humans</h3>
             </div>
 
             <div className="h-[300px] p-4">
                 <div className="rounded-xl p-6 h-full flex items-center justify-center">
                     <div className="text-center">
-                        <p className="text-lg font-medium text-gray-600 mb-2">Savings up to</p>
+                        <p className="text-sm font-medium text-neutral-500 mb-2">Savings up to</p>
                         <div className="flex items-baseline justify-center gap-1 relative">
                             <span className="text-3xl text-gray-500">£</span>
                             <div className="relative">

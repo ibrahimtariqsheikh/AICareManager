@@ -512,6 +512,7 @@ console.log("user", user)
         url: `/schedules/agency/${agencyId}`,
         method: 'GET',
       }),
+      providesTags: [{ type: "Schedule", id: "AGENCY" }],
     }),
 
     // Create a new invitation
@@ -599,7 +600,10 @@ console.log("user", user)
         method: "POST",
         body: schedule,
       }),
-      invalidatesTags: [{ type: "Schedule", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Schedule", id: "LIST" },
+        { type: "Schedule", id: "AGENCY" }
+      ],
     }),
 
     // Update a schedule
@@ -609,7 +613,10 @@ console.log("user", user)
         method: "PUT",
         body: schedule,
       }),
-      invalidatesTags: [{ type: "Schedule", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Schedule", id: "LIST" },
+        { type: "Schedule", id: "AGENCY" }
+      ],
     }),
 
     // Delete a schedule
@@ -618,7 +625,10 @@ console.log("user", user)
         url: `/schedules/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "Schedule", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Schedule", id: "LIST" },
+        { type: "Schedule", id: "AGENCY" }
+      ],
     }),
 
     // Get locations

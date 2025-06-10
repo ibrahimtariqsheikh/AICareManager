@@ -23,6 +23,9 @@ import {
     ResponsiveContainer,
     Area,
     AreaChart,
+    BarChart,
+    Bar,
+    Rectangle,
 } from "recharts"
 
 interface BenefitMessage {
@@ -217,20 +220,14 @@ function ClientRetentionChart({ speed = 1 }: ClientRetentionProps) {
     const [animationStep, setAnimationStep] = useState(0)
     const [isVisible, setIsVisible] = useState(false)
 
-    // Sample data for client retention with exponential growth
+    // Sample data for client retention with exponential growth - only 6 months
     const retentionData = [
-        { month: "January", rate: 30, clients: 120 },
-        { month: "February", rate: 35, clients: 125 },
-        { month: "March", rate: 42, clients: 132 },
-        { month: "April", rate: 50, clients: 138 },
-        { month: "May", rate: 60, clients: 145 },
-        { month: "June", rate: 68, clients: 152 },
-        { month: "July", rate: 74, clients: 158 },
-        { month: "August", rate: 79, clients: 162 },
-        { month: "September", rate: 83, clients: 165 },
-        { month: "October", rate: 86, clients: 168 },
-        { month: "November", rate: 88, clients: 170 },
-        { month: "December", rate: 90, clients: 172 }
+        { month: "Jan", rate: 30, clients: 120, fill: "rgb(219, 234, 254)" }, // very light blue
+        { month: "Feb", rate: 35, clients: 125, fill: "rgb(191, 219, 254)" }, // light blue
+        { month: "Mar", rate: 42, clients: 132, fill: "rgb(147, 197, 253)" }, // medium light blue
+        { month: "Apr", rate: 50, clients: 138, fill: "rgb(96, 165, 250)" }, // medium blue
+        { month: "May", rate: 60, clients: 145, fill: "rgb(59, 130, 246)" }, // dark blue
+        { month: "Jun", rate: 68, clients: 152, fill: "hsl(var(--primary))" }  // primary color
     ]
 
     const maxRate = Math.max(...retentionData.map(d => d.rate))
@@ -273,93 +270,59 @@ function ClientRetentionChart({ speed = 1 }: ClientRetentionProps) {
     }
 
     return (
-        <div className="relative w-full max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden border border-gray-200">
+        <div className="relative w-full max-w-4xl mx-auto bg-gray-50 rounded-2xl overflow-hidden ">
             {/* Header */}
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                            <Users className="h-4 w-4 text-blue-600" />
-                        </div>
+            <div className="bg-gray-50 px-6 pt-6 ">
+                <div className="flex items-center justify-center">
+                    <div className="flex items-center">
+
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 text-center tracking-tight leading-relaxed">Improved Client Retention</h3>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="text-2xl font-bold text-gray-900">{currentRate}%</div>
-                        <div className="flex items-center gap-1 text-xs text-green-600">
-                            <TrendingUp className="h-3 w-3" />
-                            <span>+60%</span>
+                            <h3 className="text-md font-semibold text-gray-900 text-center leading-relaxed mb-4 mt-2">Improved Client Retention</h3>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Chart */}
-            <div className="p-4">
-                <div className="h-64">
-                    <ChartContainer config={chartConfig}>
-                        <AreaChart
-                            data={retentionData}
-                            margin={{
-                                left: 12,
-                                right: 12,
-                                top: 12,
-                                bottom: 12
-                            }}
-                        >
-                            <defs>
-                                <linearGradient id="fillRetention" x1="0" y1="0" x2="0" y2="1">
-                                    <stop
-                                        offset="5%"
-                                        stopColor="var(--color-retention)"
-                                        stopOpacity={0.8}
-                                    />
-                                    <stop
-                                        offset="95%"
-                                        stopColor="var(--color-retention)"
-                                        stopOpacity={0.1}
-                                    />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                            <XAxis
-                                dataKey="month"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12 }}
-                                interval={0}
-                                tickFormatter={(value) => value.slice(0, 3)}
-                                height={40}
-                            />
-                            <YAxis
-                                domain={[20, 100]}
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12 }}
-                                tickFormatter={(value) => `${value}%`}
-                                width={40}
-                            />
-                            <ChartTooltip
-                                content={
-                                    <ChartTooltipContent
-                                        labelFormatter={(label) => `${label}`}
-                                        formatter={(value) => [`${value}%`, "Retention"]}
-                                    />
-                                }
-                            />
-                            <Area
-                                type="natural"
-                                dataKey="rate"
-                                stroke="var(--color-retention)"
-                                strokeWidth={2}
-                                fill="url(#fillRetention)"
-                                fillOpacity={0.4}
-                                dot={{ r: 4, fill: "var(--color-retention)", strokeWidth: 2, stroke: "white" }}
-                                activeDot={{ r: 6, fill: "var(--color-retention)", strokeWidth: 2, stroke: "white" }}
-                            />
-                        </AreaChart>
-                    </ChartContainer>
+            <div className="p-4 h-[350px]">
+                <div className="h-full w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <ChartContainer config={chartConfig}>
+                            <BarChart data={retentionData}>
+                                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f0f0f0" />
+                                <XAxis
+                                    dataKey="month"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fontSize: 12 }}
+                                    interval={0}
+                                    height={40}
+                                />
+                                <ChartTooltip
+                                    content={
+                                        <ChartTooltipContent
+                                            labelFormatter={(label) => `${label}`}
+                                            formatter={(value) => [`${value}%`, "Retention"]}
+                                        />
+                                    }
+                                />
+                                <Bar
+                                    dataKey="rate"
+                                    strokeWidth={2}
+                                    radius={8}
+                                    activeIndex={retentionData.length - 1}
+                                    activeBar={({ ...props }) => {
+                                        return (
+                                            <Rectangle
+                                                {...props}
+                                                fillOpacity={1}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </BarChart>
+                        </ChartContainer>
+                    </ResponsiveContainer>
                 </div>
             </div>
         </div>
@@ -379,7 +342,7 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
         { name: "Tuesday", emoji: "😕", task: "Complex scheduling" },
         { name: "Wednesday", emoji: "🙂", task: "Using our software" },
         { name: "Thursday", emoji: "😊", task: "Streamlined workflow" },
-        { name: "Friday", emoji: "🥰", task: "Work-life balance!" }
+        { name: "Friday", emoji: "🥰", task: "Performance" }
     ]
 
     const currentEmoji = days[currentDay]?.emoji || "😊"
@@ -413,25 +376,24 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
     }, [speed, days.length])
 
     const metrics = [
-        { label: "Stress Level", value: stressLevel, color: stressLevel > 50 ? "bg-red-500" : "bg-green-500", inverse: true },
-        { label: "Happiness", value: happinessLevel, color: "bg-yellow-500", inverse: false },
-        { label: "Productivity", value: productivityScore, color: "bg-blue-500", inverse: false },
-        { label: "Work-Life Balance", value: workLifeBalance, color: "bg-purple-500", inverse: false }
+        { label: "Stress Level", value: stressLevel, color: stressLevel > 50 ? "bg-blue-600" : "bg-blue-500", inverse: true },
+        { label: "Happiness", value: happinessLevel, color: "bg-blue-500", inverse: false },
+        { label: "Productivity", value: productivityScore, color: "bg-blue-400", inverse: false },
+        { label: "Performance", value: workLifeBalance, color: "bg-blue-300", inverse: false }
     ]
 
     return (
-        <div className="relative w-full h-full bg-white rounded-xl">
-
+        <div className="flex flex-col items-center justify-center w-full h-full  rounded-xl mt-4">
             {/* Content */}
-            <div className="p-4 h-[calc(100%-4rem)] flex flex-col">
+            <div className="h-full flex flex-col items-center justify-center">
                 {/* Main Employee Avatar */}
-                <div className="flex flex-col items-center mb-3">
+                <div className="flex flex-col items-center mb-6">
                     <motion.div
                         key={currentDay}
-                        className="relative w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-xl mb-2 border-2 border-gray-100"
+                        className="relative w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center text-xl mb-2"
                         animate={{
-                            scale: [1, 1.1, 1],
-                            y: [0, -5, 0]
+                            scale: [1, 1.05, 1],
+                            y: [0, -3, 0]
                         }}
                         transition={{
                             duration: 1.5 / speed,
@@ -448,28 +410,7 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                             {currentEmoji}
                         </motion.span>
 
-                        {/* Floating particles based on happiness */}
-                        {happinessLevel > 70 && (
-                            <>
-                                {[...Array(3)].map((_, i) => (
-                                    <motion.div
-                                        key={`particle-${i}`}
-                                        className="absolute w-2 h-2 rounded-full bg-yellow-400"
-                                        animate={{
-                                            y: [-40, -80],
-                                            x: [(i - 1) * 20, (i - 1) * 30],
-                                            opacity: [1, 0],
-                                            scale: [1, 0.5]
-                                        }}
-                                        transition={{
-                                            duration: 2 / speed,
-                                            repeat: Infinity,
-                                            delay: i * 0.3 / speed
-                                        }}
-                                    />
-                                ))}
-                            </>
-                        )}
+
                     </motion.div>
 
                     <motion.div
@@ -479,28 +420,28 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 / speed }}
                     >
-                        <h4 className="text-sm font-medium text-gray-800">{days[currentDay]?.name}</h4>
-                        <p className="text-xs text-gray-600">{currentTask}</p>
+                        <h4 className="text-md font-semibold text-neutral-800">{days[currentDay]?.name}</h4>
+                        <p className="text-xs text-neutral-600">{currentTask}</p>
                     </motion.div>
                 </div>
 
                 {/* Metrics Dashboard */}
-                <div className="grid grid-cols-2 gap-2 flex-1 min-h-[120px]">
+                <div className="grid grid-cols-2 gap-2 ">
                     {metrics.map((metric, index) => (
                         <motion.div
                             key={metric.label}
-                            className="bg-gray-50 rounded-lg p-2 flex flex-col justify-between"
+                            className="bg-gray-100 rounded-xl p-4 flex flex-col justify-between"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: index * 0.1 / speed }}
                         >
-                            <div className="flex items-center justify-between mb-1.5">
-                                <span className="text-xs font-medium text-gray-600">{metric.label}</span>
-                                <span className="text-xs font-bold text-gray-800">
+                            <div className="flex justify-between mb-1 items-center gap-2">
+                                <span className="text-[11px] font-medium text-neutral-600">{metric.label}</span>
+                                <span className="text-[14px] font-bold text-neutral-800">
                                     {Math.round(metric.value)}%
                                 </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                            <div className="w-full bg-neutral-200 rounded-full h-2 overflow-hidden">
                                 <motion.div
                                     className={cn("h-full rounded-full", metric.color)}
                                     initial={{ width: 0 }}
@@ -513,13 +454,13 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                 </div>
 
                 {/* Weekly Progress Indicator */}
-                <div className="mt-2 flex justify-center space-x-1.5">
+                <div className="mt-6 flex justify-center space-x-2">
                     {days.map((day, index) => (
                         <motion.div
                             key={index}
                             className={cn(
-                                "w-1.5 h-1.5 rounded-full transition-all duration-300",
-                                index === currentDay ? "bg-blue-500 scale-125" : "bg-gray-200"
+                                "w-1 h-1 rounded-full transition-all duration-300",
+                                index === currentDay ? "bg-primary scale-110" : "bg-gray-200"
                             )}
                             animate={index === currentDay ? { scale: [1, 1.3, 1] } : {}}
                             transition={{ duration: 0.5 / speed }}
@@ -534,9 +475,9 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                             initial={{ opacity: 0, y: 20, scale: 0.8 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -20, scale: 0.8 }}
-                            className="absolute top-4 right-4 bg-green-50 border border-green-200 rounded-lg p-1.5"
+                            className="absolute top-16 right-4 bg-green-200/30 rounded-xl p-2"
                         >
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-2">
                                 <CheckCircle2 className="h-3 w-3 text-green-600" />
                                 <span className="text-xs font-medium text-green-700">
                                     98% Staff Retention
@@ -559,27 +500,19 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
     // Show unique staff happiness visualization for staff benefit
     if (benefit === "staff") {
         return (
-            <div className="relative w-full max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden border border-gray-200">
-                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                                <Users className="h-4 w-4 text-blue-600" />
-                            </div>
+            <div className="relative w-full max-w-4xl mx-auto bg-gray-50 rounded-2xl overflow-hidden ">
+                <div className="bg-gray-50 px-6 pt-6">
+                    <div className="flex items-center justify-center">
+                        <div className="flex items-center">
+
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-900 text-center tracking-tight leading-relaxed">Higher Staff Retention</h3>
+                                <h3 className="text-md font-semibold text-gray-900 text-center leading-relaxed mb-4 mt-2">Higher Staff Retention</h3>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="text-2xl font-bold text-gray-900">98%</div>
-                            <div className="flex items-center gap-1 text-xs text-green-600">
-                                <TrendingUp className="h-3 w-3" />
-                                <span>+45%</span>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
-                <div className="h-[300px] p-4">
+                <div className="h-fit p-4">
                     <StaffHappinessVisualization speed={0.5} />
                 </div>
             </div>
@@ -592,40 +525,36 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
     }
 
     // Cal.com-style orbiting visualization for subscription
-    const [rotation, setRotation] = useState(0)
+    const [rotation1, setRotation1] = useState(0)
+    const [rotation2, setRotation2] = useState(0)
+    const [rotation3, setRotation3] = useState(0)
+    const [rotation4, setRotation4] = useState(0)
 
     const features = [
-        { name: "AI-Powered Scheduling", icon: <Calendar className="h-4 w-4" />, bgColor: "bg-red-500" },
-        { name: "Automated Care Planning", icon: <ClipboardList className="h-4 w-4" />, bgColor: "bg-blue-500" },
-        { name: "Medication Management", icon: <Pill className="h-4 w-4" />, bgColor: "bg-green-500" },
-        { name: "Smart Visit Reporting", icon: <FileText className="h-4 w-4" />, bgColor: "bg-purple-500" }
+        { name: "AI-Powered Scheduling", icon: <Calendar className="h-3.5 w-3.5" />, bgColor: "bg-red-500", rotation: rotation1, radius: 125, orbit: 4 },
+        { name: "Automated Care Planning", icon: <ClipboardList className="h-3.5 w-3.5" />, bgColor: "bg-blue-500", rotation: rotation2, radius: 95, orbit: 3 },
+        { name: "Medication Management", icon: <Pill className="h-3.5 w-3.5" />, bgColor: "bg-green-500", rotation: rotation3, radius: 60, orbit: 2 },
+        { name: "Smart Visit Reporting", icon: <FileText className="h-3.5 w-3.5" />, bgColor: "bg-purple-500", rotation: rotation4, radius: 23, orbit: 1 }
     ]
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setRotation(prev => prev + 0.5) // Slow continuous rotation
+            setRotation1(prev => prev + 0.3) // Slowest rotation
+            setRotation2(prev => prev + 0.4) // Slightly faster
+            setRotation3(prev => prev + 0.5) // Medium speed
+            setRotation4(prev => prev + 0.6) // Fastest rotation
         }, 50 / speed)
 
         return () => clearInterval(interval)
     }, [speed])
 
     return (
-        <div className="relative w-full max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden border border-gray-200">
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                            <CreditCard className="h-4 w-4 text-blue-600" />
-                        </div>
+        <div className="relative w-full  mx-auto bg-gray-50 rounded-2xl overflow-hidden">
+            <div className="bg-gray-50 px-6 pt-6">
+                <div className="flex items-center justify-center">
+                    <div className="flex items-center mt-2 mb-6">
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 text-center tracking-tight leading-relaxed">Everything Under One Subscription</h3>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="text-2xl font-bold text-gray-900">4+</div>
-                        <div className="flex items-center gap-1 text-xs text-green-600">
-                            <TrendingUp className="h-3 w-3" />
-                            <span>Tools</span>
+                            <h3 className="text-md font-semibold text-gray-900  leading-relaxed">Everything Under One Subscription</h3>
                         </div>
                     </div>
                 </div>
@@ -634,60 +563,57 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
             <div className="relative h-[300px] p-8  overflow-hidden flex items-center justify-center">
                 {/* Orbital Rings */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    {/* Outer ring */}
-                    <div className="w-64 h-64 rounded-full border border-neutral-200 opacity-60" />
-                    {/* Middle ring */}
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border border-neutral-200 opacity-60" />
-                    {/* Inner ring */}
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-neutral-200 opacity-60" />
+                    {/* ring 1*/}
+                    <div className="w-72 h-72 rounded-full border border-neutral-200 opacity-40" />
+                    {/* ring 2 */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full border border-neutral-200 opacity-50" />
+                    {/* ring 3 */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-neutral-200 opacity-60" />
+                    {/* ring 4 */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full border border-neutral-200 opacity-70" />
                 </div>
 
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
                     <motion.div
-                        className="w-16 h-10 rounded-full bg-gray-200/50 flex items-center justify-center border border-neutral-200"
+                        className="w-10 h-10 rounded-full bg-gray-200/50 flex items-center justify-center border border-neutral-200"
                         animate={{
                             scale: [1, 1.02, 1]
                         }}
                         transition={{ duration: 4 / speed, repeat: Infinity, ease: "easeInOut" }}
                     >
-                        <Image src="/assets/aimlogo.png" alt="Aim Logo" width={32} height={32} />
+                        <Image src="/assets/aimlogo.png" alt="Aim Logo" width={28} height={28} />
                     </motion.div>
                 </div>
 
-                {/* Orbiting Features Container */}
-                <motion.div
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                    animate={{ rotate: rotation }}
-                    transition={{ duration: 0, ease: "linear" }}
-                >
-                    {features.map((feature, index) => {
-                        const angle = (index * 90) // 360/4 = 90 degrees between each feature
-                        const radius = 110 // Reduced radius to fit smaller container
-                        const x = Math.cos((angle * Math.PI) / 180) * radius
-                        const y = Math.sin((angle * Math.PI) / 180) * radius
-
-                        return (
+                {/* Individual Orbiting Features */}
+                {features.map((feature, index) => {
+                    return (
+                        <motion.div
+                            key={feature.name}
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 overflow-visible"
+                            animate={{ rotate: feature.rotation }}
+                            transition={{ duration: 0, ease: "linear" }}
+                        >
                             <motion.div
-                                key={feature.name}
                                 className="absolute"
                                 style={{
-                                    left: `${x}px`,
-                                    top: `${y}px`,
+                                    left: `${feature.radius}px`,
+                                    top: '0',
                                     transform: 'translate(-50%, -50%)'
                                 }}
                                 animate={{
-                                    rotate: -rotation // Counter-rotate to keep icons upright
+                                    rotate: -feature.rotation // Counter-rotate to keep icons upright
                                 }}
                                 transition={{ duration: 0, ease: "linear" }}
                             >
                                 <motion.div
                                     className={cn(
-                                        "w-9 h-9 rounded-full flex items-center justify-center shadow-sm border border-blue-300/50 backdrop-blur-sm",
+                                        "w-8 h-8 rounded-full flex items-center justify-center shadow-sm backdrop-blur-sm z-50",
                                         "bg-blue-200/50 text-blue-700"
                                     )}
                                     whileHover={{ scale: 1.1 }}
                                     animate={{
-                                        y: [0, -3, 0] // Reduced vertical movement
+                                        y: [0, -3, 0]
                                     }}
                                     transition={{
                                         y: {
@@ -698,14 +624,12 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
                                         }
                                     }}
                                 >
-                                    <div className="">
-                                        {feature.icon}
-                                    </div>
+                                    {feature.icon}
                                 </motion.div>
                             </motion.div>
-                        )
-                    })}
-                </motion.div>
+                        </motion.div>
+                    )
+                })}
 
                 {/* Background decoration - Fixed positioning and reduced opacity */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -735,39 +659,3 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
     )
 }
 
-const Sparkles = () => {
-    const randomMove = () => Math.random() * 2 - 1;
-    const randomOpacity = () => Math.random();
-    const random = () => Math.random();
-
-    return (
-        <div className="absolute inset-0">
-            {[...Array(12)].map((_, i) => (
-                <motion.span
-                    key={`star-${i}`}
-                    animate={{
-                        top: `calc(${random() * 100}% + ${randomMove()}px)`,
-                        left: `calc(${random() * 100}% + ${randomMove()}px)`,
-                        opacity: randomOpacity(),
-                        scale: [1, 1.2, 0],
-                    }}
-                    transition={{
-                        duration: random() * 2 + 4,
-                        repeat: Infinity,
-                        ease: "linear",
-                    }}
-                    style={{
-                        position: "absolute",
-                        top: `${random() * 100}%`,
-                        left: `${random() * 100}%`,
-                        width: `2px`,
-                        height: `2px`,
-                        borderRadius: "50%",
-                        zIndex: 1,
-                    }}
-                    className="inline-block bg-blue-500"
-                />
-            ))}
-        </div>
-    );
-};

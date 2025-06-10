@@ -19,9 +19,11 @@ interface Message {
     content: string
     timestamp: Date
     attachment?: {
-        type: "pdf" | "schedule" | "map" | "report" | "alert"
+        type: "profile" | "schedule" | "map" | "report" | "alert" | "invoice" | "care-plan" | "medication" | "certification"
         name: string
         status: "generating" | "complete"
+        statusMessage?: string
+        completeMessage?: string
     }
 }
 
@@ -29,291 +31,408 @@ interface ConversationMessage {
     type: "user" | "assistant"
     content: string
     attachment?: {
-        type: "pdf" | "schedule" | "map" | "report" | "alert"
+        type: "profile" | "schedule" | "map" | "report" | "alert" | "invoice" | "care-plan" | "medication" | "certification"
         name: string
         status: "generating" | "complete"
+        statusMessage?: string
+        completeMessage?: string
     }
 }
 
 interface AIChatDemoProps {
     speed?: number
+    feature: 'onboarding' | 'pay-rates' | 'care-planning' | 'medication' | 'scheduling' | 'invoicing' | 'visit-reporting' | 'compliance'
 }
 
-export function AIChatDemo({ speed = 1 }: AIChatDemoProps) {
+export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProps) {
     const [messages, setMessages] = useState<Message[]>([])
     const [currentStep, setCurrentStep] = useState(0)
-    const [isTyping, setIsTyping] = useState(false)
     const chatContainerRef = useRef<HTMLDivElement>(null)
     const userAvatar = useRef(getRandomPlaceholderImage())
-
-    const conversation: ConversationMessage[] = [
-        {
-            type: "assistant",
-            content: "How can I help you with care management today?",
-        },
-        {
-            type: "user",
-            content: "I need to create a new client profile.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you create a new client profile. I'll need some basic information to get started.",
-            attachment: {
-                type: "pdf",
-                name: "Create_Client_Form.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Client profile created successfully. Would you like to create a care plan for this client?",
-        },
-        {
-            type: "user",
-            content: "Yes, please create a care plan.",
-        },
-        {
-            type: "assistant",
-            content: "I'll create a comprehensive care plan based on the client's needs.",
-            attachment: {
-                type: "pdf",
-                name: "Care_Plan.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Care plan has been created. Would you like to create a schedule for this client?",
-        },
-        {
-            type: "user",
-            content: "Yes, create a schedule.",
-        },
-        {
-            type: "assistant",
-            content: "I'll create a schedule and find available care workers in the area.",
-            attachment: {
-                type: "map",
-                name: "Available_Care_Workers.png",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "I've found available care workers. Now creating the schedule.",
-        },
-        {
-            type: "assistant",
-            content: "Schedule created successfully. Would you like to generate a revenue report?",
-            attachment: {
-                type: "schedule",
-                name: "Weekly_Schedule.pdf",
-                status: "complete",
-            },
-        },
-        {
-            type: "user",
-            content: "Yes, show me the revenue report.",
-        },
-        {
-            type: "assistant",
-            content: "Generating a detailed revenue report for this client arrangement.",
-            attachment: {
-                type: "report",
-                name: "Revenue_Report.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Here's the revenue report. Would you like to create a holiday request for any care workers?",
-        },
-        {
-            type: "user",
-            content: "Yes, create a holiday request.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you create a holiday request. This will help manage cover arrangements.",
-            attachment: {
-                type: "pdf",
-                name: "Holiday_Request.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Holiday request created. Would you like me to help arrange cover for this period?",
-        },
-        {
-            type: "user",
-            content: "Yes, arrange cover.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you assign cover for the holiday period.",
-            attachment: {
-                type: "pdf",
-                name: "Cover_Assignment.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Cover has been arranged. Would you like to send a message to the covering care worker?",
-        },
-        {
-            type: "user",
-            content: "Yes, send a message.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you compose and send a message to the care worker.",
-            attachment: {
-                type: "pdf",
-                name: "Message_Draft.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Message sent successfully. Would you like to process the payroll for this period?",
-        },
-        {
-            type: "user",
-            content: "Yes, process payroll.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you process the payroll for all care workers.",
-            attachment: {
-                type: "report",
-                name: "Payroll_Report.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Payroll has been processed. Would you like to create an appointment for the client?",
-        },
-        {
-            type: "user",
-            content: "Yes, create an appointment.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you schedule an appointment for the client.",
-            attachment: {
-                type: "pdf",
-                name: "Appointment_Schedule.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Appointment scheduled successfully. Would you like to check for any alerts or notifications?",
-        },
-        {
-            type: "user",
-            content: "Yes, show me alerts.",
-        },
-        {
-            type: "assistant",
-            content: "I'll check for any alerts or notifications in the system.",
-            attachment: {
-                type: "alert",
-                name: "System_Alerts.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Here are the current alerts. Would you like to create a new office staff member?",
-        },
-        {
-            type: "user",
-            content: "Yes, create office staff.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you create a new office staff member profile.",
-            attachment: {
-                type: "pdf",
-                name: "Office_Staff_Form.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Office staff member created successfully. Would you like to send an onboarding invite?",
-        },
-        {
-            type: "user",
-            content: "Yes, send invite.",
-        },
-        {
-            type: "assistant",
-            content: "I'll help you send an onboarding invite to the new staff member.",
-            attachment: {
-                type: "pdf",
-                name: "Onboarding_Invite.pdf",
-                status: "generating",
-            },
-        },
-        {
-            type: "assistant",
-            content: "Onboarding invite sent successfully. Is there anything else you'd like me to help you with?",
-        },
-    ]
+    const [isVisible, setIsVisible] = useState(false)
+    const demoRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const entry = entries[0]
+                if (entry && entry.isIntersecting) {
+                    setIsVisible(true)
+                    observer.disconnect()
+                }
+            },
+            {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            }
+        )
+
+        if (demoRef.current) {
+            observer.observe(demoRef.current)
+        }
+
+        return () => {
+            if (demoRef.current) {
+                observer.unobserve(demoRef.current)
+            }
+        }
+    }, [])
+
+    const getFeatureSpecificConversation = (feature: string): ConversationMessage[] => {
+        switch (feature) {
+            case 'onboarding':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to create a new staff member profile.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you create a new staff member profile. Please provide the following information:\n\n- Full name\n- Role (Care Worker or Office Staff)\n- Email address\n- Phone number (optional)\n- Sub-role (optional)",
+                    },
+                    {
+                        type: "user",
+                        content: "The name is Sarah Smith, she's a Care Worker, and her email is sarah.smith@example.com",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Great! I'll create Sarah's profile as a Care Worker. Would you like to specify a sub-role? Options include:\n\n- Senior Caregiver\n- Junior Caregiver\n- Trainee Caregiver\n- Live-in Caregiver\n- Part-time Caregiver\n- Specialized Caregiver\n- Nursing Assistant",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, make her a Senior Caregiver.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Creating Sarah's profile as a Senior Caregiver...",
+                        attachment: {
+                            type: "profile",
+                            name: "Sarah_Smith_Profile",
+                            status: "generating",
+                            statusMessage: "Creating staff profile...",
+                            completeMessage: "Staff profile created successfully"
+                        },
+                    },
+
+                ]
+            case 'pay-rates':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to set up a new pay rate sheet.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you create a new pay rate sheet. Please provide the following information:\n\n- Staff type (Care Worker, Office Staff, etc.)\n- Base hourly rate\n- Overtime rate (if applicable)\n- Weekend rate (if applicable)\n- Holiday rate (if applicable)",
+                    },
+                    {
+                        type: "user",
+                        content: "For Care Workers, base rate is £12.50, overtime is £15.00, weekend is £14.00, and holiday is £16.00.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Great! I'll create a pay rate sheet for Care Workers with those rates. Would you like to add any additional allowances or bonuses?",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, add a £2.00 per hour travel allowance.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Creating pay rate sheet with all specified rates and allowances...",
+                        attachment: {
+                            type: "report",
+                            name: "Pay_Rate_Sheet",
+                            status: "generating",
+                            statusMessage: "Creating pay rate sheet...",
+                            completeMessage: "Pay rate sheet created successfully"
+                        },
+                    }
+                ]
+            case 'care-planning':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to create a new care plan.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you create a new care plan. Please provide the following information:\n\n- Client's full name\n- Primary care needs\n- Medical conditions\n- Allergies\n- Emergency contact details",
+                    },
+                    {
+                        type: "user",
+                        content: "Client is John Davis, needs assistance with mobility and medication, has diabetes, no allergies, and emergency contact is his daughter at 07700 900123.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Thank you for the information. Would you like to specify any specific care routines or preferences? For example:\n\n- Preferred meal times\n- Medication schedule\n- Mobility assistance requirements\n- Personal care preferences",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, he needs help with morning and evening routines, takes medication at 8am and 8pm, and prefers assistance with bathing in the morning.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Creating comprehensive care plan for John Davis...",
+                        attachment: {
+                            type: "care-plan",
+                            name: "John_Davis_Care_Plan",
+                            status: "generating",
+                            statusMessage: "Creating care plan...",
+                            completeMessage: "Care plan created successfully"
+                        },
+                    }
+                ]
+            case 'medication':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to add a new medication schedule.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you create a medication schedule. Please provide the following information:\n\n- Client's name\n- Medication name\n- Dosage\n- Frequency\n- Special instructions (if any)",
+                    },
+                    {
+                        type: "user",
+                        content: "For John Davis, he needs Metformin 500mg twice daily with meals, and Insulin 10 units before breakfast and dinner.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll set up the medication schedule. Would you like to add any specific timing preferences or reminders? For example:\n\n- Exact times for each dose\n- Reminder notifications\n- Special storage instructions\n- Administration method",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, Metformin at 8am and 8pm with meals, Insulin 30 minutes before meals, and set reminders 15 minutes before each dose.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Creating medication schedule with specified timings and reminders...",
+                        attachment: {
+                            type: "medication",
+                            name: "John_Davis_Medication_Schedule",
+                            status: "generating",
+                            statusMessage: "Creating medication schedule...",
+                            completeMessage: "Medication schedule created successfully"
+                        },
+                    }
+                ]
+            case 'scheduling':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to create a new schedule.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you create a new schedule. Please provide the following information:\n\n- Client's name\n- Required visit times\n- Duration of each visit\n- Type of care needed\n- Preferred care worker (if any)",
+                    },
+                    {
+                        type: "user",
+                        content: "For John Davis, we need morning visits at 7am for 1 hour, evening visits at 7pm for 1 hour, and he prefers Sarah Smith as his care worker.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll check Sarah's availability and create the schedule. Would you like to set up any recurring patterns? For example:\n\n- Daily visits\n- Weekday only\n- Weekend only\n- Specific days of the week",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, set it up for daily visits, including weekends.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Creating daily schedule with Sarah Smith...",
+                        attachment: {
+                            type: "schedule",
+                            name: "John_Davis_Schedule",
+                            status: "generating",
+                            statusMessage: "Creating schedule...",
+                            completeMessage: "Schedule created successfully"
+                        },
+                    }
+                ]
+            case 'invoicing':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to generate an invoice.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you generate an invoice. Please provide the following information:\n\n- Client's name\n- Invoice period\n- Services provided\n- Any additional charges",
+                    },
+                    {
+                        type: "user",
+                        content: "For John Davis, invoice period is 1st to 31st March, daily morning and evening visits, and include travel allowance.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll calculate the total based on the care plan. Would you like to include any additional details? For example:\n\n- Payment terms\n- Special notes\n- Tax information\n- Payment methods",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, add standard payment terms of 30 days and include bank details for payment.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Generating invoice for John Davis...",
+                        attachment: {
+                            type: "invoice",
+                            name: "John_Davis_March_Invoice",
+                            status: "generating",
+                            statusMessage: "Generating invoice...",
+                            completeMessage: "Invoice generated successfully"
+                        },
+                    }
+                ]
+            case 'visit-reporting':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to create a visit report.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you create a visit report. Please provide the following information:\n\n- Client's name\n- Visit date and time\n- Care worker name\n- Services provided\n- Any observations or concerns",
+                    },
+                    {
+                        type: "user",
+                        content: "For John Davis, visit was today at 7am with Sarah Smith, provided morning care and medication, and noticed he was a bit tired.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll document the visit. Would you like to add any specific details? For example:\n\n- Medication administered\n- Vital signs\n- Client's mood\n- Any incidents or concerns",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, add that Metformin was given at 7:15am, blood sugar was 6.2, and he mentioned not sleeping well last night.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Creating detailed visit report...",
+                        attachment: {
+                            type: "report",
+                            name: "John_Davis_Visit_Report",
+                            status: "generating",
+                            statusMessage: "Creating visit report...",
+                            completeMessage: "Visit report created successfully"
+                        },
+                    }
+                ]
+            case 'compliance':
+                return [
+                    {
+                        type: "user",
+                        content: "I need to check staff certifications.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll help you check staff certifications. Please provide the following information:\n\n- Staff member's name\n- Type of certification\n- Current expiry date\n- Training provider",
+                    },
+                    {
+                        type: "user",
+                        content: "For Sarah Smith, she has a Level 3 Diploma in Health and Social Care expiring next month, and her Moving and Handling certificate expired last week.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "I'll check the certification status. Would you like to set up renewal reminders? For example:\n\n- Email notifications\n- SMS alerts\n- Calendar reminders\n- Manager notifications",
+                    },
+                    {
+                        type: "user",
+                        content: "Yes, set up email notifications for both certificates and add calendar reminders.",
+                    },
+                    {
+                        type: "assistant",
+                        content: "Checking certification status and setting up reminders...",
+                        attachment: {
+                            type: "certification",
+                            name: "Sarah_Smith_Certifications",
+                            status: "generating",
+                            statusMessage: "Checking certifications...",
+                            completeMessage: "Certification check complete and reminders set up"
+                        },
+                    }
+                ]
+            default:
+                return [
+                    {
+                        type: "user",
+                        content: "How can I help you with care management today?",
+                    }
+                ]
+        }
+    }
+
+    const conversation = getFeatureSpecificConversation(feature)
+
+    useEffect(() => {
+        if (!isVisible) return // Don't start messages if not visible
+
         if (currentStep < conversation.length) {
             const currentMessage = conversation[currentStep]
-            if (currentMessage) {
 
-                if (currentMessage.type === "assistant") {
-                    setIsTyping(true)
-                }
+            // Ensure we have a valid message
+            if (!currentMessage) {
+                console.error('Invalid message at step:', currentStep)
+                setCurrentStep(prev => prev + 1)
+                return
+            }
 
-                const timer = setTimeout(
-                    () => {
-                        const newMessage: Message = {
-                            id: Date.now(),
-                            type: currentMessage.type,
-                            content: currentMessage.content,
-                            timestamp: new Date(),
-                            ...(currentMessage.attachment && { attachment: currentMessage.attachment }),
-                        }
-                        setMessages((prev) => [...prev, newMessage])
-                        setIsTyping(false)
-
-                        // Auto advance to next step after a delay
-                        const nextTimer = setTimeout(
-                            () => {
-                                setCurrentStep((prev) => prev + 1)
-                            },
-                            // Divide the delay by the speed factor to make it faster
-                            (currentMessage.type === "assistant" ? 3000 : 2000) / speed,
+            const timer = setTimeout(
+                () => {
+                    try {
+                        // Check if this message is already in the messages array
+                        const messageExists = messages.some(
+                            m => m.content === currentMessage.content &&
+                                m.type === currentMessage.type
                         )
 
-                        return () => clearTimeout(nextTimer)
-                    },
-                    // Divide the typing delay by the speed factor
-                    (Math.random() * 500 + 800) / speed,
-                )
+                        if (!messageExists) {
+                            const newMessage: Message = {
+                                id: Date.now(),
+                                type: currentMessage.type,
+                                content: currentMessage.content,
+                                timestamp: new Date(),
+                                ...(currentMessage.attachment && { attachment: currentMessage.attachment }),
+                            }
+                            setMessages(prev => [...prev, newMessage])
+                        }
 
-                return () => clearTimeout(timer)
-            }
+                        // Only advance to next step if message was added successfully
+                        if (!messageExists) {
+                            const nextTimer = setTimeout(
+                                () => {
+                                    setCurrentStep(prev => prev + 1)
+                                },
+                                (currentMessage.type === "assistant" ? 5000 : 3000) / speed
+                            )
+                            return () => clearTimeout(nextTimer)
+                        }
+                    } catch (error) {
+                        console.error('Error processing message:', error)
+                        // Try to recover by moving to next step
+                        setCurrentStep(prev => prev + 1)
+                    }
+                },
+                (Math.random() * 1000 + 1500) / speed
+            )
+
+            return () => clearTimeout(timer)
         } else {
-            // Restart the animation after a longer pause
+            // Reset after conversation ends
             const resetTimer = setTimeout(() => {
                 setMessages([])
                 setCurrentStep(0)
-            }, 5000 / speed)
+            }, 8000 / speed)
 
             return () => clearTimeout(resetTimer)
         }
-    }, [currentStep, speed])
+    }, [currentStep, speed, conversation, messages, isVisible])
+
+    useEffect(() => {
+        // Reset messages and step when feature changes
+        setMessages([])
+        setCurrentStep(0)
+    }, [feature])
 
     useEffect(() => {
         // Scroll to bottom when new messages arrive
@@ -348,10 +467,9 @@ export function AIChatDemo({ speed = 1 }: AIChatDemoProps) {
     }, [messages, speed])
 
     return (
-        <div className="relative w-full max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden border border-gray-200">
+        <div ref={demoRef} className="relative w-full max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden border border-gray-200">
             <div className="bg-gray-50 px-8 py-2 border-b border-gray-200 flex items-center gap-3">
                 <Image src="/logos/logo_full.svg" alt="Assistant" width={120} height={120} quality={100} />
-
             </div>
 
             <div ref={chatContainerRef} className="h-[380px] overflow-y-auto p-4 space-y-4 bg-white">
@@ -421,18 +539,21 @@ export function AIChatDemo({ speed = 1 }: AIChatDemoProps) {
                                                         </div>
                                                         <div>
                                                             <div className="font-medium text-black text-sm">
-                                                                {message.attachment.type === "pdf"
-                                                                    ? "Document Processing"
-                                                                    : message.attachment.type === "map"
-                                                                        ? "Finding Available Carers"
-                                                                        : message.attachment.type === "report"
-                                                                            ? "Generating Report"
-                                                                            : "Processing Request"}
+                                                                {message.attachment.type === "profile" && "Creating Staff Profile"}
+                                                                {message.attachment.type === "report" && message.attachment.name.includes("Pay_Rate") && "Creating Pay Rate Sheet"}
+                                                                {message.attachment.type === "report" && message.attachment.name.includes("Payroll") && "Processing Payroll"}
+                                                                {message.attachment.type === "care-plan" && message.attachment.name.includes("Care_Plan") && "Creating Care Plan"}
+                                                                {message.attachment.type === "care-plan" && message.attachment.name.includes("Medical") && "Adding Medical Information"}
+                                                                {message.attachment.type === "medication" && "Creating Medication Schedule"}
+                                                                {message.attachment.type === "alert" && "Setting Up Medication Alerts"}
+                                                                {message.attachment.type === "schedule" && "Creating Schedule Template"}
+                                                                {message.attachment.type === "invoice" && "Generating Invoice"}
+                                                                {message.attachment.type === "report" && !message.attachment.name.includes("Pay_Rate") && !message.attachment.name.includes("Payroll") && "Generating Report"}
                                                             </div>
                                                             <div className="text-xs text-neutral-500">
                                                                 {message.attachment.status === "generating"
-                                                                    ? "Please wait..."
-                                                                    : "Successfully completed"}
+                                                                    ? message.attachment.statusMessage
+                                                                    : message.attachment.completeMessage}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -440,22 +561,30 @@ export function AIChatDemo({ speed = 1 }: AIChatDemoProps) {
 
                                                 <div className="p-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${message.attachment.type === "pdf"
+                                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${message.attachment.type === "profile"
                                                             ? "bg-red-100"
-                                                            : message.attachment.type === "map"
-                                                                ? "bg-green-100"
-                                                                : message.attachment.type === "report"
-                                                                    ? "bg-blue-100"
-                                                                    : "bg-yellow-100"
+                                                            : message.attachment.type === "report"
+                                                                ? "bg-blue-100"
+                                                                : message.attachment.type === "care-plan"
+                                                                    ? "bg-green-100"
+                                                                    : message.attachment.type === "medication"
+                                                                        ? "bg-yellow-100"
+                                                                        : message.attachment.type === "alert"
+                                                                            ? "bg-yellow-100"
+                                                                            : "bg-yellow-100"
                                                             }`}>
-                                                            {message.attachment.type === "pdf" ? (
-                                                                <FileText className="h-5 w-5 text-red-600" />
-                                                            ) : message.attachment.type === "map" ? (
-                                                                <Calendar className="h-5 w-5 text-green-600" />
+                                                            {message.attachment.type === "profile" ? (
+                                                                <User className="h-5 w-5 text-red-600" />
                                                             ) : message.attachment.type === "report" ? (
                                                                 <FileSpreadsheet className="h-5 w-5 text-blue-600" />
-                                                            ) : (
+                                                            ) : message.attachment.type === "care-plan" ? (
+                                                                <FileText className="h-5 w-5 text-green-600" />
+                                                            ) : message.attachment.type === "medication" ? (
+                                                                <FileText className="h-5 w-5 text-yellow-600" />
+                                                            ) : message.attachment.type === "alert" ? (
                                                                 <AlertCircle className="h-5 w-5 text-yellow-600" />
+                                                            ) : (
+                                                                <FileText className="h-5 w-5 text-yellow-600" />
                                                             )}
                                                         </div>
                                                         <div className="flex-1">
@@ -465,13 +594,15 @@ export function AIChatDemo({ speed = 1 }: AIChatDemoProps) {
                                                                     <>
                                                                         <div className="relative w-24 h-1 bg-gray-200 rounded-full overflow-hidden">
                                                                             <motion.div
-                                                                                className={`absolute top-0 left-0 h-full ${message.attachment.type === "pdf"
+                                                                                className={`absolute top-0 left-0 h-full ${message.attachment.type === "profile"
                                                                                     ? "bg-red-500"
-                                                                                    : message.attachment.type === "map"
-                                                                                        ? "bg-green-500"
-                                                                                        : message.attachment.type === "report"
-                                                                                            ? "bg-blue-500"
-                                                                                            : "bg-yellow-500"
+                                                                                    : message.attachment.type === "report"
+                                                                                        ? "bg-blue-500"
+                                                                                        : message.attachment.type === "care-plan"
+                                                                                            ? "bg-green-500"
+                                                                                            : message.attachment.type === "medication"
+                                                                                                ? "bg-yellow-500"
+                                                                                                : "bg-yellow-500"
                                                                                     }`}
                                                                                 initial={{ width: "0%" }}
                                                                                 animate={{ width: "100%" }}
@@ -479,37 +610,31 @@ export function AIChatDemo({ speed = 1 }: AIChatDemoProps) {
                                                                             />
                                                                         </div>
                                                                         <span className="text-xs text-neutral-500">
-                                                                            {message.attachment.type === "pdf"
-                                                                                ? "Generating document..."
-                                                                                : message.attachment.type === "map"
-                                                                                    ? "Finding available carers..."
-                                                                                    : message.attachment.type === "report"
-                                                                                        ? "Generating report..."
-                                                                                        : "Processing..."}
+                                                                            {message.attachment.status === "generating"
+                                                                                ? "Processing..."
+                                                                                : "Complete"}
                                                                         </span>
                                                                     </>
                                                                 ) : (
                                                                     <>
                                                                         <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
                                                                             <Check className="h-3 w-3 mr-1" />
-                                                                            {message.attachment.type === "pdf"
-                                                                                ? "Document ready"
-                                                                                : message.attachment.type === "map"
-                                                                                    ? "Map generated"
-                                                                                    : message.attachment.type === "report"
-                                                                                        ? "Report complete"
-                                                                                        : "Complete"}
+                                                                            {message.attachment.type === "profile"
+                                                                                ? "Staff profile created"
+                                                                                : message.attachment.type === "report"
+                                                                                    ? "Report complete"
+                                                                                    : message.attachment.type === "care-plan"
+                                                                                        ? "Medical information added"
+                                                                                        : message.attachment.type === "medication"
+                                                                                            ? "Medication schedule created"
+                                                                                            : message.attachment.type === "alert"
+                                                                                                ? "Medication alerts configured"
+                                                                                                : message.attachment.type === "schedule"
+                                                                                                    ? "Schedule template created"
+                                                                                                    : message.attachment.type === "invoice"
+                                                                                                        ? "Invoice generated"
+                                                                                                        : "Complete"}
                                                                         </Badge>
-                                                                        <button className="ml-auto flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800">
-                                                                            <Download className="h-3 w-3" />
-                                                                            {message.attachment.type === "pdf"
-                                                                                ? "Download PDF"
-                                                                                : message.attachment.type === "map"
-                                                                                    ? "View Details"
-                                                                                    : message.attachment.type === "report"
-                                                                                        ? "Download Report"
-                                                                                        : "View Details"}
-                                                                        </button>
                                                                     </>
                                                                 )}
                                                             </div>
@@ -597,24 +722,6 @@ export function AIChatDemo({ speed = 1 }: AIChatDemoProps) {
                         </motion.div>
                     ))}
                 </AnimatePresence>
-
-                {isTyping && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex items-center gap-2 text-gray-500 text-sm"
-                    >
-                        <Avatar className="h-8 w-8">
-                            <AvatarImage src="/logos/logo.svg" alt="Assistant" />
-                            <AvatarFallback>A</AvatarFallback>
-                        </Avatar>
-                        <div className="flex items-center gap-1 bg-gray-100 px-4 py-2 rounded-md">
-                            <div className="w-2 h-2 rounded-full bg-neutral-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-                            <div className="w-2 h-2 rounded-full bg-neutral-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-                            <div className="w-2 h-2 rounded-full bg-neutral-400 animate-bounce" style={{ animationDelay: "300ms" }} />
-                        </div>
-                    </motion.div>
-                )}
             </div>
 
             <div className="p-4 border-t border-gray-200 bg-gray-50">

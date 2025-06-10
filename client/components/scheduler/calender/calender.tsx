@@ -256,6 +256,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
 
     const handleCreateAppointment = () => {
         const defaultEvent = {
+            id: `temp-${Date.now()}`,
             start: new Date(currentDate),
             end: new Date(new Date(currentDate).setHours(currentDate.getHours() + 1)),
             date: currentDate,
@@ -263,8 +264,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
             status: "PENDING",
             notes: "",
         }
-        setEditingEvent(defaultEvent as any)
-        setIsFormOpen(true)
+        onEventSelect(defaultEvent)
     }
 
     const isDark = theme === "dark"
@@ -294,12 +294,12 @@ export function Calendar({ onEventSelect }: CalendarProps) {
                     className={`${isDark ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"} border rounded-lg overflow-hidden transition-all duration-200 ease-in-out flex-1`}
                 >
                     {schedules.length === 0 && !isSchedulesLoading ? (
-                        <div className="flex-1 h-full flex flex-col items-center justify-center">
+                        <div className="p-20 flex flex-col items-center justify-center my-20">
                             <div className="text-center max-w-md">
                                 <div
-                                    className={`w-14 h-14 mx-auto mb-6 rounded-full flex items-center justify-center ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
+                                    className={`w-10 h-10 mx-auto mb-6 rounded-full flex items-center justify-center ${isDark ? "bg-slate-800" : "bg-slate-100"}`}
                                 >
-                                    <CalendarIcon className={`h-6 w-6 ${isDark ? "text-emerald-400" : "text-emerald-500"}`} />
+                                    <CalendarIcon className={`h-5 w-5 ${isDark ? "text-neutral-400" : "text-neutral-500"}`} />
                                 </div>
                                 <h3 className={`text-xl font-semibold mb-3 ${isDark ? "text-white" : "text-slate-800"}`}>
                                     Create a schedule
@@ -307,10 +307,7 @@ export function Calendar({ onEventSelect }: CalendarProps) {
                                 <p className={`mb-6 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                                     You don't have any appointments scheduled. Create your first appointment to get started.
                                 </p>
-                                <Button
-                                    onClick={handleCreateAppointment}
-                                    className="mx-auto"
-                                >
+                                <Button onClick={handleCreateAppointment}>
                                     <PlusIcon className="h-4 w-4 mr-2" />
                                     Create Appointment
                                 </Button>

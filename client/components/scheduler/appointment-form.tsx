@@ -14,6 +14,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "../ui/button"
 import { toast } from "sonner"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "../ui/form"
+import { Input } from "../ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 import { useAppSelector, useAppDispatch } from "../../state/redux"
 import { addEvent, updateEvent, deleteEvent } from "../../state/slices/scheduleSlice"
@@ -26,8 +28,6 @@ import {
     useGetUserByIdQuery,
 } from "../../state/api"
 import type { RateSheet, VisitType } from "@/types/prismaTypes"
-import { CustomSelect } from "../ui/custom-select"
-import { CustomInput } from "../ui/custom-input"
 
 const formSchema = z.object({
     agencyId: z
@@ -319,15 +319,20 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Client</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select a client"
-                                            options={clients.map((client: any) => ({
-                                                value: client.id,
-                                                label: client.fullName,
-                                            }))}
-                                            onChange={(value: string) => field.onChange(value)}
-                                            value={field.value || initialEvent?.clientId}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a client" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {clients.map((client: any) => (
+                                                    <SelectItem key={client.id} value={client.id}>
+                                                        {client.fullName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -339,15 +344,20 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Care Worker</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select a care worker"
-                                            options={availableStaff.map((staffMember) => ({
-                                                value: staffMember.id,
-                                                label: staffMember.fullName,
-                                            }))}
-                                            onChange={(value: string) => field.onChange(value)}
-                                            value={field.value || initialEvent?.userId}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a care worker" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {availableStaff.map((staffMember) => (
+                                                    <SelectItem key={staffMember.id} value={staffMember.id}>
+                                                        {staffMember.fullName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -504,14 +514,20 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Time From</FormLabel>
-                                                <CustomSelect
-                                                    placeholder="Select start time"
-                                                    options={allTimeOptions}
-                                                    onChange={field.onChange}
-                                                    value={field.value}
-                                                    defaultValue={field.value || ""}
-                                                    className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                                />
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select start time" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {allTimeOptions.map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -523,14 +539,20 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Time To</FormLabel>
-                                                <CustomSelect
-                                                    placeholder="Select end time"
-                                                    options={availableEndTimes}
-                                                    onChange={field.onChange}
-                                                    value={field.value}
-                                                    defaultValue={field.value || ""}
-                                                    className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                                />
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select end time" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {availableEndTimes.map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -546,14 +568,19 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Visit Type</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select type"
-                                            options={
-                                                visitTypes && visitTypes.length > 0
-                                                    ? visitTypes.map((type: VisitType) => ({
-                                                        value: type.id,
-                                                        label: type.name,
-                                                    }))
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select type" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {visitTypes && visitTypes.length > 0
+                                                    ? visitTypes.map((type: VisitType) => (
+                                                        <SelectItem key={type.id} value={type.id}>
+                                                            {type.name}
+                                                        </SelectItem>
+                                                    ))
                                                     : [
                                                         { value: "WEEKLY_CHECKUP", label: "Weekly Checkup" },
                                                         { value: "APPOINTMENT", label: "Appointment" },
@@ -562,13 +589,13 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                                         { value: "EMERGENCY", label: "Emergency" },
                                                         { value: "ROUTINE", label: "Routine" },
                                                         { value: "OTHER", label: "Other" },
-                                                    ]
-                                            }
-                                            onChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                        />
+                                                    ].map((type) => (
+                                                        <SelectItem key={type.value} value={type.value}>
+                                                            {type.label}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -579,19 +606,25 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Status</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select status"
-                                            options={[
-                                                { value: "PENDING", label: "Pending" },
-                                                { value: "CONFIRMED", label: "Confirmed" },
-                                                { value: "COMPLETED", label: "Completed" },
-                                                { value: "CANCELED", label: "Canceled" },
-                                            ]}
-                                            onChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {[
+                                                    { value: "PENDING", label: "Pending" },
+                                                    { value: "CONFIRMED", label: "Confirmed" },
+                                                    { value: "COMPLETED", label: "Completed" },
+                                                    { value: "CANCELED", label: "Canceled" },
+                                                ].map((status) => (
+                                                    <SelectItem key={status.value} value={status.value}>
+                                                        {status.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -605,23 +638,24 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                 render={({ field }) => (
                                     <FormItem className="w-full">
                                         <FormLabel>Rate Sheet</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select rate sheet"
-                                            options={
-                                                rateSheets && rateSheets.length > 0
-                                                    ? rateSheets.map((rateSheet: RateSheet) => ({
-                                                        value: rateSheet.id,
-                                                        label: rateSheet.value
-                                                            ? `$${rateSheet.value} - ${rateSheet.name}`
-                                                            : rateSheet.name,
-                                                    }))
-                                                    : [{ value: "NO_RATE_SHEET", label: "No rate sheets available" }]
-                                            }
-                                            onChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select rate sheet" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {rateSheets && rateSheets.length > 0
+                                                    ? rateSheets.map((rateSheet: RateSheet) => (
+                                                        <SelectItem key={rateSheet.id} value={rateSheet.id}>
+                                                            {rateSheet.value
+                                                                ? `$${rateSheet.value} - ${rateSheet.name}`
+                                                                : rateSheet.name}
+                                                        </SelectItem>
+                                                    ))
+                                                    : [<SelectItem key="NO_RATE_SHEET" value="NO_RATE_SHEET">No rate sheets available</SelectItem>]}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -635,7 +669,7 @@ export function CreateAppointmentForm({ isOpen, onClose, spaceTheme = false, ini
                                 <FormItem>
                                     <FormLabel>Notes</FormLabel>
                                     <FormControl>
-                                        <CustomInput
+                                        <Input
                                             placeholder="Add any additional notes here..."
                                             {...field}
                                         />
@@ -894,16 +928,20 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Client</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select a client"
-                                            options={clients.map((client: any) => ({
-                                                value: client.id,
-                                                label: client.fullName,
-                                            }))}
-                                            onChange={(value: string) => field.onChange(value)}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a client" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {clients.map((client: any) => (
+                                                    <SelectItem key={client.id} value={client.id}>
+                                                        {client.fullName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -915,16 +953,20 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Care Worker</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select a care worker"
-                                            options={availableStaff.map((staffMember) => ({
-                                                value: staffMember.id,
-                                                label: staffMember.fullName,
-                                            }))}
-                                            onChange={(value: string) => field.onChange(value)}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a care worker" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {availableStaff.map((staffMember) => (
+                                                    <SelectItem key={staffMember.id} value={staffMember.id}>
+                                                        {staffMember.fullName}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -1088,14 +1130,20 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Time From</FormLabel>
-                                                <CustomSelect
-                                                    placeholder="Select start time"
-                                                    options={allTimeOptions}
-                                                    onChange={field.onChange}
-                                                    value={field.value}
-                                                    defaultValue={field.value || ""}
-                                                    className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                                />
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select start time" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {allTimeOptions.map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -1107,14 +1155,20 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Time To</FormLabel>
-                                                <CustomSelect
-                                                    placeholder="Select end time"
-                                                    options={availableEndTimes}
-                                                    onChange={field.onChange}
-                                                    value={field.value}
-                                                    defaultValue={field.value || ""}
-                                                    className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                                />
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select end time" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {availableEndTimes.map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -1130,14 +1184,19 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Visit Type</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select type"
-                                            options={
-                                                visitTypes && visitTypes.length > 0
-                                                    ? visitTypes.map((type: VisitType) => ({
-                                                        value: type.id,
-                                                        label: type.name,
-                                                    }))
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select type" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {visitTypes && visitTypes.length > 0
+                                                    ? visitTypes.map((type: VisitType) => (
+                                                        <SelectItem key={type.id} value={type.id}>
+                                                            {type.name}
+                                                        </SelectItem>
+                                                    ))
                                                     : [
                                                         { value: "WEEKLY_CHECKUP", label: "Weekly Checkup" },
                                                         { value: "APPOINTMENT", label: "Appointment" },
@@ -1146,13 +1205,13 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                                         { value: "EMERGENCY", label: "Emergency" },
                                                         { value: "ROUTINE", label: "Routine" },
                                                         { value: "OTHER", label: "Other" },
-                                                    ]
-                                            }
-                                            onChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                        />
+                                                    ].map((type) => (
+                                                        <SelectItem key={type.value} value={type.value}>
+                                                            {type.label}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -1163,19 +1222,25 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Status</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select status"
-                                            options={[
-                                                { value: "PENDING", label: "Pending" },
-                                                { value: "CONFIRMED", label: "Confirmed" },
-                                                { value: "COMPLETED", label: "Completed" },
-                                                { value: "CANCELED", label: "Canceled" },
-                                            ]}
-                                            onChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {[
+                                                    { value: "PENDING", label: "Pending" },
+                                                    { value: "CONFIRMED", label: "Confirmed" },
+                                                    { value: "COMPLETED", label: "Completed" },
+                                                    { value: "CANCELED", label: "Canceled" },
+                                                ].map((status) => (
+                                                    <SelectItem key={status.value} value={status.value}>
+                                                        {status.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -1189,23 +1254,24 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                 render={({ field }) => (
                                     <FormItem className="w-full">
                                         <FormLabel>Rate Sheet</FormLabel>
-                                        <CustomSelect
-                                            placeholder="Select rate sheet"
-                                            options={
-                                                rateSheets && rateSheets.length > 0
-                                                    ? rateSheets.map((rateSheet: RateSheet) => ({
-                                                        value: rateSheet.id,
-                                                        label: rateSheet.value
-                                                            ? `$${rateSheet.value} - ${rateSheet.name}`
-                                                            : rateSheet.name,
-                                                    }))
-                                                    : [{ value: "NO_RATE_SHEET", label: "No rate sheets available" }]
-                                            }
-                                            onChange={field.onChange}
-                                            value={field.value}
-                                            defaultValue={field.value || ""}
-                                            className={spaceTheme ? "bg-slate-800 border-slate-700 text-white" : ""}
-                                        />
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select rate sheet" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {rateSheets && rateSheets.length > 0
+                                                    ? rateSheets.map((rateSheet: RateSheet) => (
+                                                        <SelectItem key={rateSheet.id} value={rateSheet.id}>
+                                                            {rateSheet.value
+                                                                ? `$${rateSheet.value} - ${rateSheet.name}`
+                                                                : rateSheet.name}
+                                                        </SelectItem>
+                                                    ))
+                                                    : [<SelectItem key="NO_RATE_SHEET" value="NO_RATE_SHEET">No rate sheets available</SelectItem>]}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -1219,7 +1285,7 @@ export function EditAppointmentForm({ isOpen, onClose, event, spaceTheme = false
                                 <FormItem>
                                     <FormLabel>Notes</FormLabel>
                                     <FormControl>
-                                        <CustomInput
+                                        <Input
                                             placeholder="Add any additional notes here..."
                                             {...field}
                                         />
