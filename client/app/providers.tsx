@@ -28,7 +28,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         <SidebarProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >

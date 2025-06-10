@@ -29,7 +29,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={cn(font.variable)}>
+    <html lang="en" className={cn(font.variable)} suppressHydrationWarning >
       <body className={cn("min-h-screen bg-background antialiased font-sans", font.variable)}>
         <MessageProvider>
           <Providers>
