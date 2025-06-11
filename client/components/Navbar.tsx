@@ -824,7 +824,7 @@ export function MyNavbar({ showHero = true }: { showHero?: boolean }) {
                   <div className="ml-14">
                     <AIChatDemo speed={1.5} feature={step.feature} />
                   </div>
-                  {index < 6 && (
+                  {index < 7 && (
                     <div className="absolute left-5 top-10 bottom-0 w-px bg-gray-200" />
                   )}
                 </div>
@@ -850,7 +850,7 @@ export function MyNavbar({ showHero = true }: { showHero?: boolean }) {
               </div>
 
               {/* Feature sections */}
-              <div className="space-y-16 md:space-y-32">
+              <div className="space-y-16 md:space-y-32 hidden lg:block">
                 {/* Feature 1: Automatic Staff & Client Onboarding */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-24 items-center text-center lg:text-left">
                   <div className="relative order-2 lg:order-1">
