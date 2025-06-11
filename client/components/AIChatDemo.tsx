@@ -82,285 +82,191 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
             case 'onboarding':
                 return [
                     {
-                        type: "user",
-                        content: "I need to create a new staff member profile.",
+                        type: 'user',
+                        content: 'Hey, can you onboard a new staff called Jane Doe, she\'s a care worker starting next week.'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you create a new staff member profile. Please provide the following information:\n\n- Full name\n- Role (Care Worker or Office Staff)\n- Email address\n- Phone number (optional)\n- Sub-role (optional)",
+                        type: 'assistant',
+                        content: 'Sure! I\'ll invite Jane Doe and create her profile as a Care Worker.'
                     },
                     {
-                        type: "user",
-                        content: "The name is Sarah Smith, she's a Care Worker, and her email is sarah.smith@example.com",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Great! I'll create Sarah's profile as a Care Worker. Would you like to specify a sub-role? Options include:\n\n- Senior Caregiver\n- Junior Caregiver\n- Trainee Caregiver\n- Live-in Caregiver\n- Part-time Caregiver\n- Specialized Caregiver\n- Nursing Assistant",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, make her a Senior Caregiver.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Creating Sarah's profile as a Senior Caregiver...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "profile",
-                            name: "Sarah_Smith_Profile",
-                            status: "generating",
-                            statusMessage: "Creating staff profile...",
-                            completeMessage: "Staff profile created successfully"
-                        },
-                    },
+                            type: 'profile',
+                            name: 'Jane_Doe_Profile',
+                            status: 'generating',
+                            statusMessage: 'Sending invite and creating profile...',
+                            completeMessage: 'Staff profile for Jane created successfully.'
+                        }
+                    }
+                ];
 
-                ]
             case 'pay-rates':
                 return [
                     {
-                        type: "user",
-                        content: "I need to set up a new pay rate sheet.",
+                        type: 'user',
+                        content: 'Assign £15/hour weekday and £18/hour weekend rate to Sarah Smith.'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you create a new pay rate sheet. Please provide the following information:\n\n- Staff type (Care Worker, Office Staff, etc.)\n- Base hourly rate\n- Overtime rate (if applicable)\n- Weekend rate (if applicable)\n- Holiday rate (if applicable)",
+                        type: 'assistant',
+                        content: 'Got it! Applying weekday rate: £15/hr and weekend: £18/hr to Sarah Smith.'
                     },
                     {
-                        type: "user",
-                        content: "For Care Workers, base rate is £12.50, overtime is £15.00, weekend is £14.00, and holiday is £16.00.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Great! I'll create a pay rate sheet for Care Workers with those rates. Would you like to add any additional allowances or bonuses?",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, add a £2.00 per hour travel allowance.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Creating pay rate sheet with all specified rates and allowances...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "report",
-                            name: "Pay_Rate_Sheet",
-                            status: "generating",
-                            statusMessage: "Creating pay rate sheet...",
-                            completeMessage: "Pay rate sheet created successfully"
-                        },
+                            type: 'report',
+                            name: 'Sarah_Smith_Pay_Rate',
+                            status: 'generating',
+                            statusMessage: 'Configuring rates...',
+                            completeMessage: 'Pay rates assigned successfully.'
+                        }
                     }
-                ]
+                ];
+
             case 'care-planning':
                 return [
                     {
-                        type: "user",
-                        content: "I need to create a new care plan.",
+                        type: 'user',
+                        content: 'Draft a care plan from the consultation notes I uploaded for Mr. Alan.'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you create a new care plan. Please provide the following information:\n\n- Client's full name\n- Primary care needs\n- Medical conditions\n- Allergies\n- Emergency contact details",
+                        type: 'assistant',
+                        content: 'Reviewing consultation notes for Mr. Alan and drafting the care plan.'
                     },
                     {
-                        type: "user",
-                        content: "Client is John Davis, needs assistance with mobility and medication, has diabetes, no allergies, and emergency contact is his daughter at 07700 900123.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Thank you for the information. Would you like to specify any specific care routines or preferences? For example:\n\n- Preferred meal times\n- Medication schedule\n- Mobility assistance requirements\n- Personal care preferences",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, he needs help with morning and evening routines, takes medication at 8am and 8pm, and prefers assistance with bathing in the morning.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Creating comprehensive care plan for John Davis...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "care-plan",
-                            name: "John_Davis_Care_Plan",
-                            status: "generating",
-                            statusMessage: "Creating care plan...",
-                            completeMessage: "Care plan created successfully"
-                        },
+                            type: 'care-plan',
+                            name: 'Alan_Care_Plan',
+                            status: 'generating',
+                            statusMessage: 'Drafting care plan...',
+                            completeMessage: 'Care plan ready for review and signature.'
+                        }
                     }
-                ]
+                ];
+
             case 'medication':
                 return [
                     {
-                        type: "user",
-                        content: "I need to add a new medication schedule.",
+                        type: 'user',
+                        content: 'Can you show me the meds and dosages for Mary?'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you create a medication schedule. Please provide the following information:\n\n- Client's name\n- Medication name\n- Dosage\n- Frequency\n- Special instructions (if any)",
+                        type: 'assistant',
+                        content: 'Here\'s the current medication list for Mary with dosages.'
                     },
                     {
-                        type: "user",
-                        content: "For John Davis, he needs Metformin 500mg twice daily with meals, and Insulin 10 units before breakfast and dinner.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "I'll set up the medication schedule. Would you like to add any specific timing preferences or reminders? For example:\n\n- Exact times for each dose\n- Reminder notifications\n- Special storage instructions\n- Administration method",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, Metformin at 8am and 8pm with meals, Insulin 30 minutes before meals, and set reminders 15 minutes before each dose.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Creating medication schedule with specified timings and reminders...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "medication",
-                            name: "John_Davis_Medication_Schedule",
-                            status: "generating",
-                            statusMessage: "Creating medication schedule...",
-                            completeMessage: "Medication schedule created successfully"
-                        },
+                            type: 'medication',
+                            name: 'Mary_Meds',
+                            status: 'generating',
+                            statusMessage: 'Fetching medication data...',
+                            completeMessage: 'Medication list ready with alert summary.'
+                        }
                     }
-                ]
+                ];
+
             case 'scheduling':
                 return [
                     {
-                        type: "user",
-                        content: "I need to create a new schedule.",
+                        type: 'user',
+                        content: 'Schedule James Mon–Wed 8–10am, and Thu–Fri 2–4pm for Client Zoe.'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you create a new schedule. Please provide the following information:\n\n- Client's name\n- Required visit times\n- Duration of each visit\n- Type of care needed\n- Preferred care worker (if any)",
+                        type: 'assistant',
+                        content: 'Creating schedule for James as requested for Client Zoe.'
                     },
                     {
-                        type: "user",
-                        content: "For John Davis, we need morning visits at 7am for 1 hour, evening visits at 7pm for 1 hour, and he prefers Sarah Smith as his care worker.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "I'll check Sarah's availability and create the schedule. Would you like to set up any recurring patterns? For example:\n\n- Daily visits\n- Weekday only\n- Weekend only\n- Specific days of the week",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, set it up for daily visits, including weekends.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Creating daily schedule with Sarah Smith...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "schedule",
-                            name: "John_Davis_Schedule",
-                            status: "generating",
-                            statusMessage: "Creating schedule...",
-                            completeMessage: "Schedule created successfully"
-                        },
+                            type: 'schedule',
+                            name: 'Zoe_Schedule',
+                            status: 'generating',
+                            statusMessage: 'Building rota...',
+                            completeMessage: 'Schedule created and sent to James.'
+                        }
                     }
-                ]
+                ];
+
             case 'invoicing':
                 return [
                     {
-                        type: "user",
-                        content: "I need to generate an invoice.",
+                        type: 'user',
+                        content: 'Can you generate this week\'s invoices and payslips?'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you generate an invoice. Please provide the following information:\n\n- Client's name\n- Invoice period\n- Services provided\n- Any additional charges",
+                        type: 'assistant',
+                        content: 'Sure! Calculating visit logs to generate invoices and payslips.'
                     },
                     {
-                        type: "user",
-                        content: "For John Davis, invoice period is 1st to 31st March, daily morning and evening visits, and include travel allowance.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "I'll calculate the total based on the care plan. Would you like to include any additional details? For example:\n\n- Payment terms\n- Special notes\n- Tax information\n- Payment methods",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, add standard payment terms of 30 days and include bank details for payment.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Generating invoice for John Davis...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "invoice",
-                            name: "John_Davis_March_Invoice",
-                            status: "generating",
-                            statusMessage: "Generating invoice...",
-                            completeMessage: "Invoice generated successfully"
-                        },
+                            type: 'report',
+                            name: 'Weekly_Financials',
+                            status: 'generating',
+                            statusMessage: 'Processing visit data...',
+                            completeMessage: 'Invoices and payslips are ready.'
+                        }
                     }
-                ]
+                ];
+
             case 'visit-reporting':
                 return [
                     {
-                        type: "user",
-                        content: "I need to create a visit report.",
+                        type: 'user',
+                        content: 'Just had a visit with Client A. Notes are written — can you format them?'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you create a visit report. Please provide the following information:\n\n- Client's name\n- Visit date and time\n- Care worker name\n- Services provided\n- Any observations or concerns",
+                        type: 'assistant',
+                        content: 'Formatting visit notes with professional tone and compliance checks.'
                     },
                     {
-                        type: "user",
-                        content: "For John Davis, visit was today at 7am with Sarah Smith, provided morning care and medication, and noticed he was a bit tired.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "I'll document the visit. Would you like to add any specific details? For example:\n\n- Medication administered\n- Vital signs\n- Client's mood\n- Any incidents or concerns",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, add that Metformin was given at 7:15am, blood sugar was 6.2, and he mentioned not sleeping well last night.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Creating detailed visit report...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "report",
-                            name: "John_Davis_Visit_Report",
-                            status: "generating",
-                            statusMessage: "Creating visit report...",
-                            completeMessage: "Visit report created successfully"
-                        },
+                            type: 'report',
+                            name: 'Client_A_Visit',
+                            status: 'generating',
+                            statusMessage: 'Formatting notes...',
+                            completeMessage: 'Visit log formatted and saved.'
+                        }
                     }
-                ]
+                ];
+
             case 'compliance':
                 return [
                     {
-                        type: "user",
-                        content: "I need to check staff certifications.",
+                        type: 'user',
+                        content: 'Can I get a dashboard showing unresolved alerts and audit status?'
                     },
                     {
-                        type: "assistant",
-                        content: "I'll help you check staff certifications. Please provide the following information:\n\n- Staff member's name\n- Type of certification\n- Current expiry date\n- Training provider",
+                        type: 'assistant',
+                        content: 'Generating custom compliance dashboard with unresolved alerts.'
                     },
                     {
-                        type: "user",
-                        content: "For Sarah Smith, she has a Level 3 Diploma in Health and Social Care expiring next month, and her Moving and Handling certificate expired last week.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "I'll check the certification status. Would you like to set up renewal reminders? For example:\n\n- Email notifications\n- SMS alerts\n- Calendar reminders\n- Manager notifications",
-                    },
-                    {
-                        type: "user",
-                        content: "Yes, set up email notifications for both certificates and add calendar reminders.",
-                    },
-                    {
-                        type: "assistant",
-                        content: "Checking certification status and setting up reminders...",
+                        type: 'assistant',
+                        content: '',
                         attachment: {
-                            type: "certification",
-                            name: "Sarah_Smith_Certifications",
-                            status: "generating",
-                            statusMessage: "Checking certifications...",
-                            completeMessage: "Certification check complete and reminders set up"
-                        },
+                            type: 'report',
+                            name: 'Compliance_Overview',
+                            status: 'generating',
+                            statusMessage: 'Building dashboard...',
+                            completeMessage: 'Dashboard ready with real-time updates.'
+                        }
                     }
-                ]
+                ];
+
             default:
-                return [
-                    {
-                        type: "user",
-                        content: "How can I help you with care management today?",
-                    }
-                ]
+                return [];
         }
-    }
+    };
 
     const conversation = getFeatureSpecificConversation(feature)
 
