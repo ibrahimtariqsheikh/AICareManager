@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Bot, User, FileText, Calendar, Check, ArrowRight, Download, UserPlus, Clock, AlertCircle, MessageSquare, FileSpreadsheet, Loader2, CheckCircle2, Shield } from "lucide-react"
+import { Bot, User, FileText, Calendar, Check, ArrowRight, Download, UserPlus, Clock, AlertCircle, MessageSquare, FileSpreadsheet, Loader2, CheckCircle2, Shield, MoreHorizontal } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import ReactMarkdown from "react-markdown"
@@ -47,6 +47,7 @@ interface AIChatDemoProps {
 export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProps) {
     const [messages, setMessages] = useState<Message[]>([])
     const [currentStep, setCurrentStep] = useState(0)
+    const [isTyping, setIsTyping] = useState(false)
     const chatContainerRef = useRef<HTMLDivElement>(null)
     const userAvatar = useRef(getRandomPlaceholderImage())
     const [isVisible, setIsVisible] = useState(false)
@@ -283,6 +284,11 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                 return
             }
 
+            // Show typing indicator before assistant messages
+            if (currentMessage.type === 'assistant') {
+                setIsTyping(true)
+            }
+
             const timer = setTimeout(
                 () => {
                     try {
@@ -301,25 +307,36 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                                 ...(currentMessage.attachment && { attachment: currentMessage.attachment }),
                             }
                             setMessages(prev => [...prev, newMessage])
-                        }
+                            setIsTyping(false) // Clear typing indicator after message is added
 
-                        // Only advance to next step if message was added successfully
-                        if (!messageExists) {
-                            const nextTimer = setTimeout(
-                                () => {
-                                    setCurrentStep(prev => prev + 1)
-                                },
-                                (currentMessage.type === "assistant" ? 5000 : 3000) / speed
-                            )
-                            return () => clearTimeout(nextTimer)
+                            // If message has attachment, wait before resetting
+                            if (currentMessage.attachment) {
+                                const resetTimer = setTimeout(() => {
+                                    setMessages([])
+                                    setCurrentStep(0)
+                                }, 10000 / speed)
+                                return () => clearTimeout(resetTimer)
+                            }
+
+                            // Only advance to next step if message was added successfully and doesn't have an attachment
+                            if (!currentMessage.attachment) {
+                                const nextTimer = setTimeout(
+                                    () => {
+                                        setCurrentStep(prev => prev + 1)
+                                    },
+                                    (currentMessage.type === "assistant" ? 3000 : 2000) / speed
+                                )
+                                return () => clearTimeout(nextTimer)
+                            }
                         }
                     } catch (error) {
                         console.error('Error processing message:', error)
                         // Try to recover by moving to next step
                         setCurrentStep(prev => prev + 1)
+                        setIsTyping(false) // Hide typing indicator on error
                     }
                 },
-                (Math.random() * 1000 + 1500) / speed
+                (Math.random() * 500 + 1000) / speed
             )
 
             return () => clearTimeout(timer)
@@ -328,7 +345,8 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
             const resetTimer = setTimeout(() => {
                 setMessages([])
                 setCurrentStep(0)
-            }, 8000 / speed)
+                setIsTyping(false)
+            }, 10000 / speed)
 
             return () => clearTimeout(resetTimer)
         }
@@ -378,7 +396,7 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                 <Image src="/logos/logo_full.svg" alt="Assistant" width={120} height={120} quality={100} />
             </div>
 
-            <div ref={chatContainerRef} className="h-[380px] overflow-y-auto p-4 space-y-4 bg-white">
+            <div ref={chatContainerRef} className="h-[380px] overflow-y-auto p-4 space-y-4 bg-white scrollbar-none select-none pointer-events-none">
                 <AnimatePresence>
                     {messages.map((message) => (
                         <motion.div
@@ -403,8 +421,8 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                                 <div className={cn("max-w-[75%]", message.type === "user" ? "order-1" : "order-1")}>
                                     <div
                                         className={cn(
-                                            "px-4 py-3 rounded-md prose prose-sm max-w-none dark:prose-invert",
-                                            message.type === "user" ? "bg-blue-500 text-white" : "bg-gray-50",
+                                            "prose prose-sm max-w-none dark:prose-invert",
+                                            message.type === "user" ? "bg-blue-500 text-white px-4 py-3 rounded-md" : message.attachment ? "" : "bg-gray-50 px-4 py-3 rounded-md",
                                         )}
                                     >
                                         <ReactMarkdown
@@ -433,7 +451,7 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                                         </ReactMarkdown>
 
                                         {message.attachment && (
-                                            <div className="mt-3 bg-white rounded-lg shadow-sm overflow-hidden">
+                                            <div className="mt-3 bg-gray-50/50 rounded-lg overflow-hidden">
                                                 <div className="p-3 bg-muted">
                                                     <div className="flex items-center gap-2">
                                                         <div className="w-8 h-8 bg-background rounded-lg flex items-center justify-center">
@@ -480,17 +498,17 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                                                                             : "bg-yellow-100"
                                                             }`}>
                                                             {message.attachment.type === "profile" ? (
-                                                                <User className="h-5 w-5 text-red-600" />
+                                                                <User className="h-4 w-4 text-red-600" />
                                                             ) : message.attachment.type === "report" ? (
-                                                                <FileSpreadsheet className="h-5 w-5 text-blue-600" />
+                                                                <FileSpreadsheet className="h-4 w-4 text-blue-600" />
                                                             ) : message.attachment.type === "care-plan" ? (
-                                                                <FileText className="h-5 w-5 text-green-600" />
+                                                                <FileText className="h-4 w-4 text-green-600" />
                                                             ) : message.attachment.type === "medication" ? (
-                                                                <FileText className="h-5 w-5 text-yellow-600" />
+                                                                <FileText className="h-4 w-4 text-yellow-600" />
                                                             ) : message.attachment.type === "alert" ? (
-                                                                <AlertCircle className="h-5 w-5 text-yellow-600" />
+                                                                <AlertCircle className="h-4 w-4 text-yellow-600" />
                                                             ) : (
-                                                                <FileText className="h-5 w-5 text-yellow-600" />
+                                                                <FileText className="h-4 w-4 text-yellow-600" />
                                                             )}
                                                         </div>
                                                         <div className="flex-1">
@@ -627,6 +645,24 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                             </div>
                         </motion.div>
                     ))}
+                    {isTyping && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="flex items-start gap-2 mb-4"
+                        >
+                            <Avatar className="h-8 w-8 shrink-0 mt-1">
+                                <AvatarImage src="/logos/logo.svg" alt="Assistant" />
+                                <AvatarFallback>A</AvatarFallback>
+                            </Avatar>
+                            <div className="flex items-center gap-1 px-4 py-2 bg-gray-50 rounded-md">
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                            </div>
+                        </motion.div>
+                    )}
                 </AnimatePresence>
             </div>
 
@@ -635,10 +671,10 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                     <input
                         type="text"
                         placeholder="Type your question here..."
-                        className="w-full rounded-lg border border-gray-200 py-3 px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-white"
+                        className="w-full rounded-lg border border-gray-200 py-3 px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-neutral-500 bg-white cursor-not-allowed opacity-50"
                         disabled
                     />
-                    <button className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                    <button className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center cursor-not-allowed opacity-50" disabled>
                         <ArrowRight className="h-4 w-4 text-white" />
                     </button>
                 </div>
