@@ -1,7 +1,7 @@
 "use client"
 
+import { MyNavbar } from "@/components/Navbar"
 import { useEffect, useState } from "react"
-import { MyNavbar } from "../components/Navbar"
 
 export default function Home() {
     const [mounted, setMounted] = useState(false)
@@ -15,7 +15,6 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-white">
             <MyNavbar />
-
         </div>
     )
 }

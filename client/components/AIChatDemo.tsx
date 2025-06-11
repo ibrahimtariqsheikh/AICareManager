@@ -421,7 +421,7 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
                                 <div className={cn("max-w-[75%]", message.type === "user" ? "order-1" : "order-1")}>
                                     <div
                                         className={cn(
-                                            "prose prose-sm max-w-none dark:prose-invert",
+                                            "prose prose-sm max-w-none dark:prose-invert text-left",
                                             message.type === "user" ? "bg-blue-500 text-white px-4 py-3 rounded-md" : message.attachment ? "" : "bg-gray-50 px-4 py-3 rounded-md",
                                         )}
                                     >

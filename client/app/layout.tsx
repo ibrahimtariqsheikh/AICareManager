@@ -6,16 +6,16 @@ import Providers from "./providers"
 import { Toaster } from "../components/ui/sonner"
 import { MessageProvider } from './context/MessageContext'
 import { cn } from "@/lib/utils"
+import { NavigationWrapper } from "../components/NavigationWrapper"
 
-const font = Inter({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 })
 
-
 export const metadata: Metadata = {
-  title: "AIM",
-  description: "AI Manager",
+  title: "AIM Assist - AI-Powered Care Management",
+  description: "All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -23,17 +23,19 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="en" className={cn(font.variable)} suppressHydrationWarning >
-      <body className={cn("min-h-screen bg-background antialiased font-sans", font.variable)} suppressHydrationWarning>
+    <html lang="en" className={cn(inter.variable)} suppressHydrationWarning >
+      <body className={cn("min-h-screen bg-background antialiased font-sans", inter.variable)} suppressHydrationWarning>
         <MessageProvider>
           <Providers>
-            <div className="w-full ">{children}</div>
+            <NavigationWrapper>
+              {children}
+            </NavigationWrapper>
           </Providers>
         </MessageProvider>
         <Toaster />

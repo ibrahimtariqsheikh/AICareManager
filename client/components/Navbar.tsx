@@ -39,36 +39,43 @@ type DropdownItem = {
 type CoreAgent = {
   title: string;
   description: string;
+  link: string;
 };
 
 // Constants
 const CORE_AGENTS: CoreAgent[] = [
   {
     title: "AI Care Manager",
-    description: "Run care operations with AI care planning & reporting."
+    description: "Run care operations with AI care planning & reporting.",
+    link: "/products/ai-care-manager"
   },
   {
     title: "AI Finance Manager",
-    description: "Automate payroll, invoicing, and financial insights."
+    description: "Automate payroll, invoicing, and financial insights.",
+    link: "/products/ai-finance-manager"
   },
   {
     title: "AI Sales Manager",
-    description: "Convert more leads with smart CRM & follow-up."
+    description: "Convert more leads with smart CRM & follow-up.",
+    link: "/products/ai-sales-manager"
   },
   {
     title: "AI Marketing Manager",
-    description: "Launch ads, track results, and grow online."
+    description: "Launch ads, track results, and grow online.",
+    link: "/products/ai-marketing-manager"
   }
 ];
 
 const MORE_ITEMS = [
   {
     title: "Policies & Procedures",
-    description: "Built-in templates for care, supported living, homes."
+    description: "Built-in templates for care, supported living, homes.",
+    link: "/policies"
   },
   {
     title: "Support & Training",
-    description: "Onboarding, video guides, and expert help anytime."
+    description: "Onboarding, video guides, and expert help anytime.",
+    link: "/support"
   }
 ];
 
@@ -76,7 +83,32 @@ const navItems: NavItem[] = [
   {
     name: "Products",
     link: "/products",
-    dropdown: []
+    dropdown: [
+      {
+        name: "AI Care Manager",
+        link: "/products/ai-care-manager"
+      },
+      {
+        name: "AI Finance Manager",
+        link: "/products/ai-finance-manager"
+      },
+      {
+        name: "AI Sales Manager",
+        link: "/products/ai-sales-manager"
+      },
+      {
+        name: "AI Marketing Manager",
+        link: "/products/ai-marketing-manager"
+      },
+      {
+        name: "Policies & Procedures",
+        link: "/policies"
+      },
+      {
+        name: "Support & Training",
+        link: "/support"
+      }
+    ]
   },
   {
     name: "Features",
@@ -94,12 +126,18 @@ const navItems: NavItem[] = [
 
 // Components
 const DropdownMenu = () => {
+  const router = useRouter();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-full">
       <div className="p-4 md:p-6">
         <h3 className='text-xs text-neutral-500 font-medium'>Core Agents</h3>
         {CORE_AGENTS.map((agent, index) => (
-          <div key={index} className="flex flex-col mt-3 md:mt-4 gap-1">
+          <div
+            key={index}
+            className="flex flex-col mt-3 md:mt-4 gap-1 cursor-pointer hover:bg-neutral-50 p-2 rounded-lg transition-colors"
+            onClick={() => router.push(agent.link)}
+          >
             <h4 className='text-sm text-neutral-900 font-medium'>{agent.title}</h4>
             <p className='text-xs text-neutral-500'>{agent.description}</p>
           </div>
@@ -108,7 +146,11 @@ const DropdownMenu = () => {
       <div className="border-t md:border-t-0 md:border-l border-gray-200 p-4 md:p-6">
         <h3 className='text-xs text-neutral-500 font-medium'>More</h3>
         {MORE_ITEMS.map((item, index) => (
-          <div key={index} className="flex flex-col mt-3 md:mt-4 gap-1">
+          <div
+            key={index}
+            className="flex flex-col mt-3 md:mt-4 gap-1 cursor-pointer hover:bg-neutral-50 p-2 rounded-lg transition-colors"
+            onClick={() => router.push(item.link)}
+          >
             <h4 className='text-sm text-neutral-900 font-medium'>{item.title}</h4>
             <p className='text-xs text-neutral-500'>{item.description}</p>
           </div>
@@ -122,18 +164,21 @@ const NavItem = ({ item }: { item: NavItem }) => {
   const hasDropdown = 'dropdown' in item;
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setIsOpen(true);
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
 
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleClick = () => {
     if (hasDropdown) {
@@ -146,8 +191,7 @@ const NavItem = ({ item }: { item: NavItem }) => {
   return (
     <div
       className="relative group"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      ref={dropdownRef}
     >
       <Button
         onClick={handleClick}
@@ -161,8 +205,6 @@ const NavItem = ({ item }: { item: NavItem }) => {
       {hasDropdown && isOpen && (
         <div
           className="absolute left-0 mt-2 w-[300px] md:w-[500px] h-fit shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-50 rounded-lg backdrop-blur-lg"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
         >
           <DropdownMenu />
         </div>
@@ -439,117 +481,146 @@ const AnimatedDropdownSection = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-6 md:mb-10 mt-6 md:mt-10">
           {/* Left side - Feature list */}
-          <motion.div variants={containerVariants} className="order-2 lg:order-1">
+          <motion.div variants={containerVariants} className="order-1">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               const isActive = index === activeFeature;
               const isExpandedState = isExpanded[index] || false;
 
               return (
-                <motion.div
-                  key={feature.id}
-                  variants={itemVariants}
-                  className={`transition-all rounded-xl duration-500 ease-in-out cursor-pointer mb-2 md:mb-0 ${isActive ? 'bg-blue-50' : 'bg-white hover:bg-gray-50'}`}
-                  onClick={() => toggleFeature(index)}
-                >
-                  {/* Progress bar */}
-                  {isActive && isInView && (
-                    <div className="w-full h-1 overflow-hidden rounded-full mb-2 md:mb-4">
-                      <motion.div
-                        className="h-full w-full bg-blue-600 rounded-full"
-                        initial={{ x: '-100%' }}
-                        animate={{ x: '0%' }}
-                        transition={{
-                          duration: 6,
-                          ease: "linear"
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Feature header */}
-                  <div className="flex items-center justify-between p-3 md:p-4">
-                    <div className="flex items-center gap-2 md:gap-3">
-                      <motion.div
-                        className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${isActive ? 'bg-blue-100' : 'bg-gray-100'}`}
-                        animate={isInView ? {
-                          scale: isActive ? 1.1 : 1,
-                          backgroundColor: isActive ? 'rgb(219 234 254)' : 'rgb(243 244 246)'
-                        } : {
-                          scale: 1,
-                          backgroundColor: 'rgb(243 244 246)'
-                        }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Icon className={`w-3 h-3 md:w-4 md:h-4 ${isActive ? 'text-blue-700' : 'text-gray-600'}`} />
-                      </motion.div>
-                      <motion.span
-                        className={`font-medium text-sm md:text-base ${isActive ? 'text-[oklch(48.8%_0.243_264.376)]' : 'text-gray-700'}`}
-                        animate={isInView ? {
-                          color: isActive ? 'oklch(48.8% 0.243 264.376)' : 'rgb(55 65 81)'
-                        } : {
-                          color: 'rgb(55 65 81)'
-                        }}
-                      >
-                        {feature.title}
-                      </motion.span>
-                    </div>
-                    <motion.div
-                      animate={isInView ? {
-                        rotate: isExpandedState ? 180 : 0,
-                        color: isActive ? 'rgb(37 99 235)' : 'rgb(156 163 175)'
-                      } : {
-                        rotate: 0,
-                        color: 'rgb(156 163 175)'
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <ChevronDown className="w-3 h-3 md:w-4 md:h-4" />
-                    </motion.div>
-                  </div>
-
-                  {/* Feature description */}
-                  <AnimatePresence>
-                    {isExpandedState && isInView && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-3 md:px-4 pb-3 md:pb-4">
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.05 }}
-                            className="text-start text-xs md:text-sm text-neutral-600 leading-relaxed"
-                          >
-                            {feature.bulletPoints.map((point, index) => (
-                              <motion.div
-                                key={index}
-                                className="flex items-start gap-2 mb-1"
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                              >
-                                <span className="text-neutral-400">•</span>
-                                <span>{point}</span>
-                              </motion.div>
-                            ))}
-                          </motion.div>
-                        </div>
-                      </motion.div>
+                <React.Fragment key={feature.id}>
+                  <motion.div
+                    variants={itemVariants}
+                    className={`transition-all rounded-xl duration-500 ease-in-out cursor-pointer mb-2 md:mb-0 ${isActive ? 'bg-blue-50' : 'bg-white hover:bg-gray-50'}`}
+                    onClick={() => toggleFeature(index)}
+                  >
+                    {/* Progress bar */}
+                    {isActive && isInView && (
+                      <div className="w-full h-1 overflow-hidden rounded-full mb-2 md:mb-4">
+                        <motion.div
+                          className="h-full w-full bg-blue-600 rounded-full"
+                          initial={{ x: '-100%' }}
+                          animate={{ x: '0%' }}
+                          transition={{
+                            duration: 6,
+                            ease: "linear"
+                          }}
+                        />
+                      </div>
                     )}
-                  </AnimatePresence>
-                </motion.div>
+
+                    {/* Feature header */}
+                    <div className="flex items-center justify-between p-3 md:p-4">
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <motion.div
+                          className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${isActive ? 'bg-blue-100' : 'bg-gray-100'}`}
+                          animate={isInView ? {
+                            scale: isActive ? 1.1 : 1,
+                            backgroundColor: isActive ? 'rgb(219 234 254)' : 'rgb(243 244 246)'
+                          } : {
+                            scale: 1,
+                            backgroundColor: 'rgb(243 244 246)'
+                          }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Icon className={`w-3 h-3 md:w-4 md:h-4 ${isActive ? 'text-blue-700' : 'text-gray-600'}`} />
+                        </motion.div>
+                        <motion.span
+                          className={`font-medium text-sm md:text-base ${isActive ? 'text-[oklch(48.8%_0.243_264.376)]' : 'text-gray-700'}`}
+                          animate={isInView ? {
+                            color: isActive ? 'oklch(48.8% 0.243 264.376)' : 'rgb(55 65 81)'
+                          } : {
+                            color: 'rgb(55 65 81)'
+                          }}
+                        >
+                          {feature.title}
+                        </motion.span>
+                      </div>
+                      <motion.div
+                        animate={isInView ? {
+                          rotate: isExpandedState ? 180 : 0,
+                          color: isActive ? 'rgb(37 99 235)' : 'rgb(156 163 175)'
+                        } : {
+                          rotate: 0,
+                          color: 'rgb(156 163 175)'
+                        }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <ChevronDown className="w-3 h-3 md:w-4 md:h-4" />
+                      </motion.div>
+                    </div>
+
+                    {/* Feature description */}
+                    <AnimatePresence>
+                      {isExpandedState && isInView && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-3 md:px-4 pb-3 md:pb-4">
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.05 }}
+                              className="text-start text-xs md:text-sm text-neutral-600 leading-relaxed"
+                            >
+                              {feature.bulletPoints.map((point, index) => (
+                                <motion.div
+                                  key={index}
+                                  className="flex items-start gap-2 mb-1"
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: index * 0.1 }}
+                                >
+                                  <span className="text-neutral-400">•</span>
+                                  <span>{point}</span>
+                                </motion.div>
+                              ))}
+                            </motion.div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+
+                  {/* Show image after active feature on mobile */}
+                  {isActive && (
+                    <motion.div
+                      className="lg:hidden rounded-xl h-64 flex items-center justify-center overflow-hidden mt-4 mb-6"
+                      variants={itemVariants}
+                    >
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={activeFeature}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.3 }}
+                          className="w-full h-full relative rounded-xl overflow-hidden"
+                        >
+                          <Image
+                            src={feature.image}
+                            alt={feature.title}
+                            fill
+                            className="object-cover rounded-xl"
+                            priority
+                            quality={100}
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+                </React.Fragment>
               );
             })}
           </motion.div>
 
-          {/* Right side - Visual placeholder */}
+          {/* Right side - Visual placeholder (desktop only) */}
           <motion.div
-            className="rounded-xl h-64 md:h-full flex items-center justify-center overflow-hidden order-1 lg:order-2"
+            className="hidden lg:block rounded-xl h-full flex items-center justify-center overflow-hidden order-2"
             variants={itemVariants}
           >
             <AnimatePresence mode="wait">
@@ -689,18 +760,91 @@ export function MyNavbar({ showHero = true }: { showHero?: boolean }) {
             <AnimatedDropdownSection />
           </div>
 
+          <div className="lg:hidden w-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white p-4 mb-4 -mx-4 sm:-mx-6 lg:-mx-8 h-24 flex items-center justify-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl  font-bold text-center text-white capitalize tracking-tighter leading-relaxed">Your entire Agency - in 8 steps</h2>
+          </div>
+
+          {/* Mobile Timeline Steps */}
+          <div className="lg:hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mr-4">
+            <div className="space-y-12">
+              {[
+                {
+                  title: "Automatic Staff & Client Onboarding",
+                  description: "Just tell AIM Assist who to onboard — it instantly sends invites, collects info, and confirms when done.",
+                  icon: Users,
+                  feature: "onboarding" as const
+                },
+                {
+                  title: "AI-Powered Care Plan Drafting",
+                  description: "Send consultation notes — get a detailed, compliant care plan ready for approval and signature.",
+                  icon: FileText,
+                  feature: "care-planning" as const
+                },
+                {
+                  title: "Medication Setup with AI",
+                  description: "Tell AIM Assist the meds and dosages — it auto-updates EMAR and flags anything missing.",
+                  icon: Pill,
+                  feature: "medication" as const
+                },
+                {
+                  title: "Smart Scheduling by Text",
+                  description: "Just type the schedule request — AIM creates the full rota with optimal care matches.",
+                  icon: Clock,
+                  feature: "scheduling" as const
+                },
+                {
+                  title: "Instant Invoices & Payroll",
+                  description: "Once visits are logged, ask AIM for invoices or payslips — it builds and sends them automatically.",
+                  icon: DollarSign,
+                  feature: "invoicing" as const
+                },
+                {
+                  title: "Visit Reporting with AI Support",
+                  description: "Care workers check in, write quick notes — AIM rephrases and formats perfect logs instantly.",
+                  icon: MessageSquare,
+                  feature: "visit-reporting" as const
+                },
+                {
+                  title: "Custom AI Dashboards",
+                  description: "Ask AIM to generate any dashboard — track alerts, care delivery, finances, or audits in real time.",
+                  icon: BarChart,
+                  feature: "compliance" as const
+                }
+              ].map((step, index) => (
+                <div key={index} className="relative">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <step.icon className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-base font-semibold text-neutral-900 mb-1">{step.title}</h3>
+                      <p className="text-sm text-neutral-600 leading-relaxed">{step.description}</p>
+                    </div>
+                  </div>
+                  <div className="ml-14">
+                    <AIChatDemo speed={1.5} feature={step.feature} />
+                  </div>
+                  {index < 6 && (
+                    <div className="absolute left-5 top-10 bottom-0 w-px bg-gray-200" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-            <div className="text-center mb-12 md:mb-24">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 mb-4 tracking-tight leading-tight md:leading-relaxed">
+            <div className="text-center mb-12 md:mb-24 hidden lg:block">
+
+              <h2 className="hidden lg:block text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 mb-4 tracking-tight leading-tight md:leading-relaxed">
                 What Used to Take a Team, Now Takes Just a Few Texts
               </h2>
-              <p className="text-base md:text-lg text-neutral-500 max-w-2xl mx-auto tracking-tight leading-relaxed font-medium">
+              <p className="hidden lg:block text-base md:text-lg text-neutral-500 max-w-2xl mx-auto tracking-tight leading-relaxed font-medium">
                 Discover how AIM Assist transforms care management with intelligent automation and seamless workflows
               </p>
             </div>
 
             <div className="relative">
-              {/* Desktop Timeline - hidden on mobile */}
+
               <div className="hidden lg:block">
                 <Timeline />
               </div>
