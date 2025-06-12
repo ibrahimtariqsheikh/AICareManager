@@ -29,13 +29,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn(inter.variable)} suppressHydrationWarning >
-      <body className={cn("min-h-screen bg-background antialiased font-sans", inter.variable)} suppressHydrationWarning>
+    <html lang="en" className={cn(inter.variable)}  >
+      <body className={cn("min-h-screen antialiased bg-white font-sans", inter.variable)} >
         <MessageProvider>
           <Providers>
-            <NavigationWrapper>
-              {children}
-            </NavigationWrapper>
+
+            {children}
+
           </Providers>
         </MessageProvider>
         <Toaster />

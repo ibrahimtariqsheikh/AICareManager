@@ -6,7 +6,7 @@ const PricingLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="flex flex-col min-h-screen w-full">
             <div className="fixed top-0 left-0 right-0 z-50 bg-transparent">
                 <div className="mt-12">
-                    <MyNavbar showHero={false} />
+                    <MyNavbar />
                 </div>
             </div>
             <div className="flex-1 w-full pt-36">
@@ -18,7 +18,7 @@ const PricingLayout = ({ children }: { children: React.ReactNode }) => {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         {/* Company Info */}
                         <div className="space-y-4">
-                            <Image src="/logos/logo_full.svg" alt="AIM Assist" width={120} height={120} quality={100} />
+                            <Image src="/logos/logo_full.svg" alt="AIM Assist" width={120} height={120} quality={100} loading="lazy" />
                             <p className="text-sm text-gray-500">
                                 Empowering care management with AI-driven solutions for better patient care and operational efficiency.
                             </p>

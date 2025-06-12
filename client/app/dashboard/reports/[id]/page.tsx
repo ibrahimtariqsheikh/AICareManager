@@ -937,6 +937,7 @@ const VisitReportPage = () => {
                                                         width={140}
                                                         height={300}
                                                         className="mx-auto"
+                                                        loading="lazy"
                                                     />
                                                     {bodyMapObservations.filter((obs: BodyMapObservation) => obs.bodyPart.includes('back')).map((observation: BodyMapObservation) => (
                                                         <div

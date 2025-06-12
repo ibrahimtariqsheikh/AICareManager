@@ -1,13 +1,12 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef, useLayoutEffect, useMemo, useCallback, memo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { CheckCircle2, Users, Shield, CreditCard, Loader2, ArrowRight, TrendingUp, Eye, Heart, Star, Smile, Calendar, ClipboardList, Pill, FileText, Bell } from "lucide-react"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Heart, Star, Smile, Calendar, Clipboard, Pill, FileText, CheckCircle2 } from "lucide-react"
+
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
 import { AdminCostSavings } from "@/components/AdminCostSavings"
 import {
     ChartContainer,
@@ -15,27 +14,17 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import {
-    LineChart,
-    Line,
+
     XAxis,
-    YAxis,
+
     CartesianGrid,
     ResponsiveContainer,
-    Area,
-    AreaChart,
+
     BarChart,
     Bar,
     Rectangle,
 } from "recharts"
 
-interface BenefitMessage {
-    id: number
-    type: "system" | "user"
-    content: string
-    timestamp: Date
-    icon?: React.ReactNode
-    status?: "processing" | "complete"
-}
 
 interface BenefitDemoProps {
     speed?: number
@@ -46,220 +35,187 @@ interface ClientRetentionProps {
     speed?: number
 }
 
-// Happy Employee Animation Component
-function HappyEmployeeAnimation({ currentStep, speed = 1 }: { currentStep: number, speed: number }) {
-    const [currentEmotion, setCurrentEmotion] = useState<'happy' | 'excited' | 'relieved' | 'satisfied'>('happy')
-    const [showFloatingElements, setShowFloatingElements] = useState(false)
-
-    const emotions = {
-        happy: {
-            emoji: "😊",
-            color: "text-yellow-500",
-            bgColor: "bg-yellow-50",
-            borderColor: "border-yellow-200"
-        },
-        excited: {
-            emoji: "🤩",
-            color: "text-orange-500",
-            bgColor: "bg-orange-50",
-            borderColor: "border-orange-200"
-        },
-        relieved: {
-            emoji: "😌",
-            color: "text-green-500",
-            bgColor: "bg-green-50",
-            borderColor: "border-green-200"
-        },
-        satisfied: {
-            emoji: "🥰",
-            color: "text-pink-500",
-            bgColor: "bg-pink-50",
-            borderColor: "border-pink-200"
-        }
+// Memoize the emotions object to prevent recreation on each render
+const emotions = {
+    happy: {
+        emoji: "😊",
+        color: "text-yellow-500",
+        bgColor: "bg-yellow-50",
+        borderColor: "border-yellow-200"
+    },
+    excited: {
+        emoji: "🤩",
+        color: "text-orange-500",
+        bgColor: "bg-orange-50",
+        borderColor: "border-orange-200"
+    },
+    relieved: {
+        emoji: "😌",
+        color: "text-green-500",
+        bgColor: "bg-green-50",
+        borderColor: "border-green-200"
+    },
+    satisfied: {
+        emoji: "🥰",
+        color: "text-pink-500",
+        bgColor: "bg-pink-50",
+        borderColor: "border-pink-200"
     }
+} as const
 
-    const emotionSequence: Array<keyof typeof emotions> = ['happy', 'excited', 'relieved', 'satisfied']
+// Memoize the emotion sequence
+const emotionSequence = ['happy', 'excited', 'relieved', 'satisfied'] as const
 
-    useEffect(() => {
-        if (currentStep > 0) {
-            const emotionIndex = Math.min(currentStep - 1, emotionSequence.length - 1)
-            setCurrentEmotion(emotionSequence[emotionIndex] as keyof typeof emotions)
-            setShowFloatingElements(true)
-        }
-    }, [currentStep])
+// Memoize the retention data
+const retentionData = [
+    { month: "Jan", rate: 30, clients: 120, fill: "rgb(219, 234, 254)" },
+    { month: "Feb", rate: 35, clients: 125, fill: "rgb(191, 219, 254)" },
+    { month: "Mar", rate: 42, clients: 132, fill: "rgb(147, 197, 253)" },
+    { month: "Apr", rate: 50, clients: 138, fill: "rgb(96, 165, 250)" },
+    { month: "May", rate: 60, clients: 145, fill: "rgb(59, 130, 246)" },
+    { month: "Jun", rate: 68, clients: 152, fill: "hsl(var(--primary))" }
+] as const
 
+// Memoize the days data
+const days = [
+    { name: "Monday", emoji: "😔", task: "Manual paperwork" },
+    { name: "Tuesday", emoji: "😕", task: "Complex scheduling" },
+    { name: "Wednesday", emoji: "🙂", task: "Using our software" },
+    { name: "Thursday", emoji: "😊", task: "Streamlined workflow" },
+    { name: "Friday", emoji: "🥰", task: "Performance" }
+] as const
+
+// Memoize the features data
+const features = [
+    { name: "AI-Powered Scheduling", icon: <Calendar className="h-3.5 w-3.5" />, bgColor: "bg-red-500", radius: 125, orbit: 4 },
+    { name: "Automated Care Planning", icon: <Clipboard className="h-3.5 w-3.5" />, bgColor: "bg-blue-500", radius: 95, orbit: 3 },
+    { name: "Medication Management", icon: <Pill className="h-3.5 w-3.5" />, bgColor: "bg-green-500", radius: 60, orbit: 2 },
+    { name: "Smart Visit Reporting", icon: <FileText className="h-3.5 w-3.5" />, bgColor: "bg-purple-500", radius: 23, orbit: 1 }
+] as const
+
+// Optimize HappyEmployeeAnimation component
+const HappyEmployeeAnimation = memo(({ currentStep, speed = 1 }: { currentStep: number, speed: number }) => {
+    const emotionIndex = Math.min(currentStep - 1, emotionSequence.length - 1)
+    const currentEmotion = emotionSequence[emotionIndex] as keyof typeof emotions
+    const showFloatingElements = currentStep > 0
     const currentEmotionData = emotions[currentEmotion]
+
+    // Memoize floating elements
+    const floatingElements = useMemo(() => (
+        <>
+            {[...Array(3)].map((_, i) => (
+                <motion.div
+                    key={`heart-${i}`}
+                    className="absolute"
+                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                    animate={{
+                        opacity: [0, 1, 0],
+                        scale: [0, 1, 0.8],
+                        x: (i - 1) * 30,
+                        y: -40 - (i * 10)
+                    }}
+                    transition={{
+                        duration: 2 / speed,
+                        repeat: Infinity,
+                        delay: i * 0.5 / speed,
+                        ease: "easeOut"
+                    }}
+                >
+                    <Heart className="h-4 w-4 text-pink-500 fill-pink-500" />
+                </motion.div>
+            ))}
+            {[...Array(2)].map((_, i) => (
+                <motion.div
+                    key={`star-${i}`}
+                    className="absolute"
+                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                    animate={{
+                        opacity: [0, 1, 0],
+                        scale: [0, 1.2, 1],
+                        x: i === 0 ? -35 : 35,
+                        y: -20,
+                        rotate: [0, 180, 360]
+                    }}
+                    transition={{
+                        duration: 3 / speed,
+                        repeat: Infinity,
+                        delay: (i * 0.8 + 1) / speed,
+                        ease: "easeInOut"
+                    }}
+                >
+                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                </motion.div>
+            ))}
+        </>
+    ), [speed])
 
     return (
         <div className="relative flex items-center justify-center">
-            {/* Main Employee Avatar */}
-            <motion.div
+            <div
                 className={cn(
                     "relative w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-500",
                     currentEmotionData.bgColor,
                     currentEmotionData.borderColor,
                     "border-2"
                 )}
-                animate={{
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 5, -5, 0]
-                }}
-                transition={{
-                    duration: 2 / speed,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                }}
             >
-                <motion.span
-                    key={currentEmotion}
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ duration: 0.5 / speed, type: "spring", bounce: 0.6 }}
-                >
-                    {currentEmotionData.emoji}
-                </motion.span>
-            </motion.div>
+                <span>{currentEmotionData.emoji}</span>
+            </div>
 
-            {/* Floating Elements */}
             <AnimatePresence>
-                {showFloatingElements && (
-                    <>
-                        {/* Hearts */}
-                        {[...Array(3)].map((_, i) => (
-                            <motion.div
-                                key={`heart-${i}`}
-                                className="absolute"
-                                initial={{
-                                    opacity: 0,
-                                    scale: 0,
-                                    x: 0,
-                                    y: 0
-                                }}
-                                animate={{
-                                    opacity: [0, 1, 0],
-                                    scale: [0, 1, 0.8],
-                                    x: (i - 1) * 30,
-                                    y: -40 - (i * 10)
-                                }}
-                                transition={{
-                                    duration: 2 / speed,
-                                    repeat: Infinity,
-                                    delay: i * 0.5 / speed,
-                                    ease: "easeOut"
-                                }}
-                            >
-                                <Heart className="h-4 w-4 text-pink-500 fill-pink-500" />
-                            </motion.div>
-                        ))}
-
-                        {/* Stars */}
-                        {[...Array(2)].map((_, i) => (
-                            <motion.div
-                                key={`star-${i}`}
-                                className="absolute"
-                                initial={{
-                                    opacity: 0,
-                                    scale: 0,
-                                    x: 0,
-                                    y: 0
-                                }}
-                                animate={{
-                                    opacity: [0, 1, 0],
-                                    scale: [0, 1.2, 1],
-                                    x: i === 0 ? -35 : 35,
-                                    y: -20,
-                                    rotate: [0, 180, 360]
-                                }}
-                                transition={{
-                                    duration: 3 / speed,
-                                    repeat: Infinity,
-                                    delay: (i * 0.8 + 1) / speed,
-                                    ease: "easeInOut"
-                                }}
-                            >
-                                <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                            </motion.div>
-                        ))}
-
-                        {/* Sparkle Effect */}
-                        <motion.div
-                            className="absolute inset-0 pointer-events-none"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 0.6, 0] }}
-                            transition={{
-                                duration: 1.5 / speed,
-                                repeat: Infinity,
-                                delay: 0.5 / speed
-                            }}
-                        >
-                            <div className="absolute top-0 right-0 w-2 h-2 bg-yellow-400 rounded-full blur-sm" />
-                            <div className="absolute bottom-0 left-0 w-1 h-1 bg-pink-400 rounded-full blur-sm" />
-                            <div className="absolute top-2 left-2 w-1.5 h-1.5 bg-blue-400 rounded-full blur-sm" />
-                        </motion.div>
-                    </>
-                )}
+                {showFloatingElements && floatingElements}
             </AnimatePresence>
 
-            {/* Satisfaction Meter */}
-            <motion.div
-                className="absolute -bottom-8 left-1/2 transform -translate-x-1/2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: currentStep > 2 ? 1 : 0, y: currentStep > 2 ? 0 : 10 }}
-                transition={{ duration: 0.5 / speed }}
-            >
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
                 <div className="flex items-center gap-1 bg-white rounded-full px-3 py-1 shadow-md border">
                     <Smile className="h-3 w-3 text-green-500" />
                     <span className="text-xs font-semibold text-green-600">98% Happy</span>
                 </div>
-            </motion.div>
+            </div>
         </div>
     )
-}
+})
 
-function ClientRetentionChart({ speed = 1 }: ClientRetentionProps) {
+// Optimize ClientRetentionChart component
+const ClientRetentionChart = memo(({ speed = 1 }: ClientRetentionProps) => {
     const [animationStep, setAnimationStep] = useState(0)
     const [isVisible, setIsVisible] = useState(false)
+    const animationRef = useRef<number>()
+    const lastTimeRef = useRef<number>()
 
-    // Sample data for client retention with exponential growth - only 6 months
-    const retentionData = [
-        { month: "Jan", rate: 30, clients: 120, fill: "rgb(219, 234, 254)" }, // very light blue
-        { month: "Feb", rate: 35, clients: 125, fill: "rgb(191, 219, 254)" }, // light blue
-        { month: "Mar", rate: 42, clients: 132, fill: "rgb(147, 197, 253)" }, // medium light blue
-        { month: "Apr", rate: 50, clients: 138, fill: "rgb(96, 165, 250)" }, // medium blue
-        { month: "May", rate: 60, clients: 145, fill: "rgb(59, 130, 246)" }, // dark blue
-        { month: "Jun", rate: 68, clients: 152, fill: "hsl(var(--primary))" }  // primary color
-    ]
+    const animate = useCallback((time: number) => {
+        if (lastTimeRef.current === undefined) {
+            lastTimeRef.current = time
+        }
 
-    const maxRate = Math.max(...retentionData.map(d => d.rate))
-    const currentRate = retentionData[retentionData.length - 1]?.rate ?? 0
+        const delta = time - lastTimeRef.current
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsVisible(true)
-        }, 500 / speed)
-
-        return () => clearTimeout(timer)
-    }, [speed])
-
-    useEffect(() => {
-        if (isVisible && animationStep < retentionData.length) {
-            const timer = setTimeout(() => {
+        if (delta > 800 / speed) {
+            if (!isVisible) {
+                setIsVisible(true)
+            } else if (animationStep < retentionData.length) {
                 setAnimationStep(prev => prev + 1)
-            }, 800 / speed)
-
-            return () => clearTimeout(timer)
-        } else if (animationStep >= retentionData.length) {
-            const resetTimer = setTimeout(() => {
+            } else {
                 setAnimationStep(0)
                 setIsVisible(false)
                 setTimeout(() => setIsVisible(true), 200)
-            }, 3000 / speed)
-
-            return () => clearTimeout(resetTimer)
+            }
+            lastTimeRef.current = time
         }
-    }, [isVisible, animationStep, speed, retentionData.length])
 
-    const chartConfig = {
+        animationRef.current = requestAnimationFrame(animate)
+    }, [speed, isVisible, animationStep])
+
+    useLayoutEffect(() => {
+        animationRef.current = requestAnimationFrame(animate)
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current)
+            }
+        }
+    }, [animate])
+
+    const chartConfig = useMemo(() => ({
         retention: {
             label: "Retention Rate",
             theme: {
@@ -267,15 +223,13 @@ function ClientRetentionChart({ speed = 1 }: ClientRetentionProps) {
                 dark: "#60a5fa"
             }
         }
-    }
+    }), [])
 
     return (
-        <div className="relative w-full max-w-4xl mx-auto bg-gray-50 rounded-2xl overflow-hidden ">
-            {/* Header */}
-            <div className="bg-gray-50 px-6 pt-6 ">
+        <div className="relative w-full max-w-4xl mx-auto bg-gray-50 rounded-2xl overflow-hidden">
+            <div className="bg-gray-50 px-6 pt-6">
                 <div className="flex items-center justify-center">
                     <div className="flex items-center">
-
                         <div>
                             <h3 className="text-md font-semibold text-gray-900 text-center leading-relaxed mb-4 mt-2">Improved Client Retention</h3>
                         </div>
@@ -283,12 +237,11 @@ function ClientRetentionChart({ speed = 1 }: ClientRetentionProps) {
                 </div>
             </div>
 
-            {/* Chart */}
             <div className="p-4 h-[350px]">
                 <div className="h-full w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <ChartContainer config={chartConfig}>
-                            <BarChart data={retentionData}>
+                            <BarChart data={[...retentionData]}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f0f0f0" />
                                 <XAxis
                                     dataKey="month"
@@ -311,14 +264,9 @@ function ClientRetentionChart({ speed = 1 }: ClientRetentionProps) {
                                     strokeWidth={2}
                                     radius={8}
                                     activeIndex={retentionData.length - 1}
-                                    activeBar={({ ...props }) => {
-                                        return (
-                                            <Rectangle
-                                                {...props}
-                                                fillOpacity={1}
-                                            />
-                                        )
-                                    }}
+                                    activeBar={({ ...props }) => (
+                                        <Rectangle {...props} fillOpacity={1} />
+                                    )}
                                 />
                             </BarChart>
                         </ChartContainer>
@@ -327,66 +275,78 @@ function ClientRetentionChart({ speed = 1 }: ClientRetentionProps) {
             </div>
         </div>
     )
-}
+})
 
-// Interactive Employee Happiness Visualization for Staff Retention
-function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
+// Optimize StaffHappinessVisualization component
+const StaffHappinessVisualization = memo(({ speed = 1 }: { speed: number }) => {
     const [currentDay, setCurrentDay] = useState(0)
-    const [stressLevel, setStressLevel] = useState(90)
-    const [happinessLevel, setHappinessLevel] = useState(30)
-    const [productivityScore, setProductivityScore] = useState(40)
-    const [workLifeBalance, setWorkLifeBalance] = useState(25)
+    const [metrics, setMetrics] = useState({
+        stressLevel: 90,
+        happinessLevel: 30,
+        productivityScore: 40,
+        workLifeBalance: 25
+    })
 
-    const days = [
-        { name: "Monday", emoji: "😔", task: "Manual paperwork" },
-        { name: "Tuesday", emoji: "😕", task: "Complex scheduling" },
-        { name: "Wednesday", emoji: "🙂", task: "Using our software" },
-        { name: "Thursday", emoji: "😊", task: "Streamlined workflow" },
-        { name: "Friday", emoji: "🥰", task: "Performance" }
-    ]
+    const animationRef = useRef<number>()
+    const lastTimeRef = useRef<number>()
+
+    const updateMetrics = useCallback((nextDay: number) => {
+        if (nextDay <= 2) {
+            setMetrics({
+                stressLevel: 90 - (nextDay * 15),
+                happinessLevel: 30 + (nextDay * 20),
+                productivityScore: 40 + (nextDay * 15),
+                workLifeBalance: 25 + (nextDay * 15)
+            })
+        } else {
+            setMetrics({
+                stressLevel: Math.max(10, 60 - ((nextDay - 2) * 25)),
+                happinessLevel: Math.min(95, 70 + ((nextDay - 2) * 15)),
+                productivityScore: Math.min(98, 70 + ((nextDay - 2) * 14)),
+                workLifeBalance: Math.min(92, 55 + ((nextDay - 2) * 18))
+            })
+        }
+    }, [])
+
+    const animate = useCallback((time: number) => {
+        if (lastTimeRef.current === undefined) {
+            lastTimeRef.current = time
+        }
+
+        const delta = time - lastTimeRef.current
+
+        if (delta > 2000 / speed) {
+            const nextDay = (currentDay + 1) % days.length
+            updateMetrics(nextDay)
+            setCurrentDay(nextDay)
+            lastTimeRef.current = time
+        }
+
+        animationRef.current = requestAnimationFrame(animate)
+    }, [speed, currentDay, updateMetrics])
+
+    useLayoutEffect(() => {
+        animationRef.current = requestAnimationFrame(animate)
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current)
+            }
+        }
+    }, [animate])
 
     const currentEmoji = days[currentDay]?.emoji || "😊"
     const currentTask = days[currentDay]?.task || "Happy working!"
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentDay(prev => {
-                const nextDay = (prev + 1) % days.length
-
-                // Update metrics based on the day
-                if (nextDay <= 2) {
-                    // Before/during software adoption
-                    setStressLevel(90 - (nextDay * 15))
-                    setHappinessLevel(30 + (nextDay * 20))
-                    setProductivityScore(40 + (nextDay * 15))
-                    setWorkLifeBalance(25 + (nextDay * 15))
-                } else {
-                    // After software adoption
-                    setStressLevel(Math.max(10, 60 - ((nextDay - 2) * 25)))
-                    setHappinessLevel(Math.min(95, 70 + ((nextDay - 2) * 15)))
-                    setProductivityScore(Math.min(98, 70 + ((nextDay - 2) * 14)))
-                    setWorkLifeBalance(Math.min(92, 55 + ((nextDay - 2) * 18)))
-                }
-
-                return nextDay
-            })
-        }, 2000 / speed)
-
-        return () => clearInterval(interval)
-    }, [speed, days.length])
-
-    const metrics = [
-        { label: "Stress Level", value: stressLevel, color: stressLevel > 50 ? "bg-blue-600" : "bg-blue-500", inverse: true },
-        { label: "Happiness", value: happinessLevel, color: "bg-blue-500", inverse: false },
-        { label: "Productivity", value: productivityScore, color: "bg-blue-400", inverse: false },
-        { label: "Performance", value: workLifeBalance, color: "bg-blue-300", inverse: false }
-    ]
+    const metricsList = useMemo(() => [
+        { label: "Stress Level", value: metrics.stressLevel, color: metrics.stressLevel > 50 ? "bg-blue-600" : "bg-blue-500", inverse: true },
+        { label: "Happiness", value: metrics.happinessLevel, color: "bg-blue-500", inverse: false },
+        { label: "Productivity", value: metrics.productivityScore, color: "bg-blue-400", inverse: false },
+        { label: "Performance", value: metrics.workLifeBalance, color: "bg-blue-300", inverse: false }
+    ], [metrics])
 
     return (
-        <div className="flex flex-col items-center justify-center w-full h-full  rounded-xl mt-4">
-            {/* Content */}
+        <div className="flex flex-col items-center justify-center w-full h-full rounded-xl mt-4">
             <div className="h-full flex flex-col items-center justify-center">
-                {/* Main Employee Avatar */}
                 <div className="flex flex-col items-center mb-6">
                     <motion.div
                         key={currentDay}
@@ -409,8 +369,6 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                         >
                             {currentEmoji}
                         </motion.span>
-
-
                     </motion.div>
 
                     <motion.div
@@ -425,9 +383,8 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                     </motion.div>
                 </div>
 
-                {/* Metrics Dashboard */}
-                <div className="grid grid-cols-2 gap-2 ">
-                    {metrics.map((metric, index) => (
+                <div className="grid grid-cols-2 gap-2">
+                    {metricsList.map((metric, index) => (
                         <motion.div
                             key={metric.label}
                             className="bg-gray-100 rounded-xl p-4 flex flex-col justify-between"
@@ -453,7 +410,6 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                     ))}
                 </div>
 
-                {/* Weekly Progress Indicator */}
                 <div className="mt-6 flex justify-center space-x-2">
                     {days.map((day, index) => (
                         <motion.div
@@ -468,9 +424,8 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
                     ))}
                 </div>
 
-                {/* Success Message */}
                 <AnimatePresence>
-                    {happinessLevel > 85 && (
+                    {metrics.happinessLevel > 85 && (
                         <motion.div
                             initial={{ opacity: 0, y: 20, scale: 0.8 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -489,27 +444,63 @@ function StaffHappinessVisualization({ speed = 1 }: { speed: number }) {
             </div>
         </div>
     )
-}
+})
 
-export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
-    // If it's the client benefit, show the chart
+// Optimize BenefitDemo component
+export const BenefitDemo = memo(({ speed = 1, benefit }: BenefitDemoProps) => {
+    const [rotations, setRotations] = useState({
+        rotation1: 0,
+        rotation2: 0,
+        rotation3: 0,
+        rotation4: 0
+    })
+
+    const animationRef = useRef<number>()
+    const lastTimeRef = useRef<number>()
+
+    const animate = useCallback((time: number) => {
+        if (lastTimeRef.current === undefined) {
+            lastTimeRef.current = time
+        }
+
+        const delta = time - lastTimeRef.current
+
+        if (delta > 50 / speed) {
+            setRotations(prev => ({
+                rotation1: prev.rotation1 + 0.3,
+                rotation2: prev.rotation2 + 0.4,
+                rotation3: prev.rotation3 + 0.5,
+                rotation4: prev.rotation4 + 0.6
+            }))
+            lastTimeRef.current = time
+        }
+
+        animationRef.current = requestAnimationFrame(animate)
+    }, [speed])
+
+    useLayoutEffect(() => {
+        animationRef.current = requestAnimationFrame(animate)
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current)
+            }
+        }
+    }, [animate])
+
     if (benefit === "client") {
         return <ClientRetentionChart speed={speed} />
     }
 
-    // Show unique staff happiness visualization for staff benefit
     if (benefit === "staff") {
         return (
-            <div className="relative w-full max-w-4xl mx-auto bg-gray-50 rounded-2xl overflow-hidden ">
+            <div className="relative w-full max-w-4xl mx-auto bg-gray-50 rounded-2xl overflow-hidden">
                 <div className="bg-gray-50 px-6 pt-6">
                     <div className="flex items-center justify-center">
                         <div className="flex items-center">
-
                             <div>
                                 <h3 className="text-md font-semibold text-gray-900 text-center leading-relaxed mb-4 mt-2">Higher Staff Retention</h3>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div className="h-fit p-4">
@@ -519,57 +510,27 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
         )
     }
 
-    // Show admin cost savings visualization for admin benefit
     if (benefit === "admin") {
         return <AdminCostSavings speed={speed} />
     }
 
-    // Cal.com-style orbiting visualization for subscription
-    const [rotation1, setRotation1] = useState(0)
-    const [rotation2, setRotation2] = useState(0)
-    const [rotation3, setRotation3] = useState(0)
-    const [rotation4, setRotation4] = useState(0)
-
-    const features = [
-        { name: "AI-Powered Scheduling", icon: <Calendar className="h-3.5 w-3.5" />, bgColor: "bg-red-500", rotation: rotation1, radius: 125, orbit: 4 },
-        { name: "Automated Care Planning", icon: <ClipboardList className="h-3.5 w-3.5" />, bgColor: "bg-blue-500", rotation: rotation2, radius: 95, orbit: 3 },
-        { name: "Medication Management", icon: <Pill className="h-3.5 w-3.5" />, bgColor: "bg-green-500", rotation: rotation3, radius: 60, orbit: 2 },
-        { name: "Smart Visit Reporting", icon: <FileText className="h-3.5 w-3.5" />, bgColor: "bg-purple-500", rotation: rotation4, radius: 23, orbit: 1 }
-    ]
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setRotation1(prev => prev + 0.3) // Slowest rotation
-            setRotation2(prev => prev + 0.4) // Slightly faster
-            setRotation3(prev => prev + 0.5) // Medium speed
-            setRotation4(prev => prev + 0.6) // Fastest rotation
-        }, 50 / speed)
-
-        return () => clearInterval(interval)
-    }, [speed])
-
     return (
-        <div className="relative w-full  mx-auto bg-gray-50 rounded-2xl overflow-hidden">
+        <div className="relative w-full mx-auto bg-gray-50 rounded-2xl overflow-hidden">
             <div className="bg-gray-50 px-6 pt-6">
                 <div className="flex items-center justify-center">
                     <div className="flex items-center mt-2 mb-6">
                         <div>
-                            <h3 className="text-md font-semibold text-gray-900  leading-relaxed">Everything Under One Subscription</h3>
+                            <h3 className="text-md font-semibold text-gray-900 leading-relaxed">Everything Under One Subscription</h3>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="relative h-[300px] p-8  overflow-hidden flex items-center justify-center">
-                {/* Orbital Rings */}
+            <div className="relative h-[300px] p-8 overflow-hidden flex items-center justify-center">
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    {/* ring 1*/}
                     <div className="w-72 h-72 rounded-full border border-neutral-200 opacity-40" />
-                    {/* ring 2 */}
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full border border-neutral-200 opacity-50" />
-                    {/* ring 3 */}
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-neutral-200 opacity-60" />
-                    {/* ring 4 */}
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full border border-neutral-200 opacity-70" />
                 </div>
 
@@ -581,57 +542,53 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
                         }}
                         transition={{ duration: 4 / speed, repeat: Infinity, ease: "easeInOut" }}
                     >
-                        <Image src="/assets/aimlogo.png" alt="Aim Logo" width={28} height={28} />
+                        <Image src="/assets/aimlogo.png" alt="Aim Logo" width={28} height={28} loading="lazy" />
                     </motion.div>
                 </div>
 
-                {/* Individual Orbiting Features */}
-                {features.map((feature, index) => {
-                    return (
+                {features.map((feature, index) => (
+                    <motion.div
+                        key={feature.name}
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  overflow-visible"
+                        animate={{ rotate: rotations[`rotation${index + 1}` as keyof typeof rotations] }}
+                        transition={{ duration: 0, ease: "linear" }}
+                    >
                         <motion.div
-                            key={feature.name}
-                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 overflow-visible"
-                            animate={{ rotate: feature.rotation }}
+                            className="absolute"
+                            style={{
+                                left: `${feature.radius}px`,
+                                top: '0',
+                                transform: 'translate(-50%, -50%)'
+                            }}
+                            animate={{
+                                rotate: -rotations[`rotation${index + 1}` as keyof typeof rotations]
+                            }}
                             transition={{ duration: 0, ease: "linear" }}
                         >
                             <motion.div
-                                className="absolute"
-                                style={{
-                                    left: `${feature.radius}px`,
-                                    top: '0',
-                                    transform: 'translate(-50%, -50%)'
-                                }}
+                                className={cn(
+                                    "w-8 h-8 rounded-full flex items-center justify-center shadow-sm backdrop-blur-sm",
+                                    "bg-blue-200/50 text-blue-700"
+                                )}
+                                whileHover={{ scale: 1.1 }}
                                 animate={{
-                                    rotate: -feature.rotation // Counter-rotate to keep icons upright
+                                    y: [0, -3, 0]
                                 }}
-                                transition={{ duration: 0, ease: "linear" }}
+                                transition={{
+                                    y: {
+                                        duration: 2 + index * 0.5,
+                                        repeat: Infinity,
+                                        ease: "easeInOut",
+                                        delay: index * 0.3
+                                    }
+                                }}
                             >
-                                <motion.div
-                                    className={cn(
-                                        "w-8 h-8 rounded-full flex items-center justify-center shadow-sm backdrop-blur-sm z-50",
-                                        "bg-blue-200/50 text-blue-700"
-                                    )}
-                                    whileHover={{ scale: 1.1 }}
-                                    animate={{
-                                        y: [0, -3, 0]
-                                    }}
-                                    transition={{
-                                        y: {
-                                            duration: 2 + index * 0.5,
-                                            repeat: Infinity,
-                                            ease: "easeInOut",
-                                            delay: index * 0.3
-                                        }
-                                    }}
-                                >
-                                    {feature.icon}
-                                </motion.div>
+                                {feature.icon}
                             </motion.div>
                         </motion.div>
-                    )
-                })}
+                    </motion.div>
+                ))}
 
-                {/* Background decoration - Fixed positioning and reduced opacity */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     {[...Array(4)].map((_, i) => (
                         <motion.div
@@ -657,5 +614,5 @@ export function BenefitDemo({ speed = 1, benefit }: BenefitDemoProps) {
             </div>
         </div>
     )
-}
+})
 

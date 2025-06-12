@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+"use client"
+
 import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
+
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { ChevronRightIcon } from "lucide-react";
+import Image from "next/image";
 
 interface HeroSectionProps {
     title: string;
@@ -14,30 +16,20 @@ interface HeroSectionProps {
 
 
 
-
 export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
-    const [mounted, setMounted] = useState(false);
-    const { theme } = useTheme()
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    if (!mounted) return null;
 
     const words = title.split(" ");
 
     return (
         <div className="relative w-full overflow-hidden">
 
-            {/* Background gradient - toned down */}
-            <div className={cn("absolute top-0 -z-10 h-full w-full bg-white", theme === "dark" && "bg-black")}>
+            <div className={cn("absolute top-0 -z-10 h-full w-full ",)}>
                 <div className="absolute bottom-auto left-auto right-0 top-0 h-[300px] md:h-[500px] w-[300px] md:w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-blue-300/20 md:bg-blue-300/30 opacity-20 md:opacity-30 blur-[60px] md:blur-[80px]" />
             </div>
 
-            {/* Blurry background elements - reduced opacity and saturation */}
+
             <div className="absolute inset-0 overflow-hidden">
-                {/* Primary blurry elements with toned down blues */}
+
                 <motion.div
                     className="absolute w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-blue-300/10 md:bg-blue-300/20 rounded-full blur-2xl md:blur-3xl mix-blend-multiply"
                     animate={{
@@ -81,7 +73,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                     style={{ bottom: "30%", left: "45%" }}
                 />
 
-                {/* Additional toned down blurry elements */}
+
                 <motion.div
                     className="absolute w-[180px] md:w-[280px] h-[180px] md:h-[280px] bg-cyan-300/10 md:bg-cyan-300/15 rounded-full blur-2xl md:blur-3xl mix-blend-multiply"
                     animate={{
@@ -126,7 +118,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                 />
             </div>
 
-            {/* Side blurry effects with toned down blues */}
+
             <div className="absolute inset-y-0 left-0 w-[100px] md:w-[150px] opacity-20 md:opacity-40">
                 <motion.div
                     className="absolute w-[150px] md:w-[200px] h-[300px] md:h-[500px] bg-gradient-to-r from-blue-200/20 md:from-blue-200/30 to-transparent rounded-full blur-2xl md:blur-3xl"
@@ -161,10 +153,10 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                 />
             </div>
 
-            {/* Backdrop filter for content - slightly reduced blur */}
+
             <div className="absolute inset-0 backdrop-blur-[1px] z-0"></div>
 
-            {/* Content */}
+
             <div className="container mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
                 <motion.div
                     className="mx-auto text-center"
@@ -173,7 +165,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                     transition={{ duration: 0.5 }}
                 >
                     <div className="flex justify-center mb-4">
-                        <div className={cn("text-[13px] bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-4 py-2 relative tracking-tight leading-relaxed", theme === "dark" && "text-white bg-gray-800/70")}>
+                        <div className={cn("text-[13px] bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-4 py-2 relative tracking-tight leading-relaxed")}>
                             <div className="absolute inset-0 rounded-full bg-blue-500/30 blur-xl -z-10 animate-pulse"></div>
                             AI-Powered Care Management
                         </div>
@@ -232,14 +224,14 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                         </button>
                     </div>
 
-                    {/* Floating dashboard preview with reduced glow */}
+
                     <motion.div
                         className="max-w-5xl mx-auto relative"
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        {/* Reduced glow effect behind the dashboard */}
+
                         <div className="absolute inset-0 -z-10 opacity-40">
                             <div className="absolute inset-0 transform scale-105" />
                         </div>
@@ -260,10 +252,14 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                             className={cn("relative z-10 rounded-3xl border border-neutral-200 bg-white/90 backdrop-blur-md   overflow-hidden")}
                         >
                             <div className="w-full overflow-hidden">
-                                <img
+                                <Image
                                     src={image || "/placeholder.svg"}
                                     alt="Landing page preview"
                                     className="h-auto w-full object-cover"
+                                    loading="lazy"
+                                    width={1000}
+                                    height={1000}
+                                    quality={100}
 
                                 />
                             </div>

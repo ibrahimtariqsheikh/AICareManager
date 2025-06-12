@@ -393,7 +393,7 @@ export function AIChatDemo({ speed = 1, feature = 'onboarding' }: AIChatDemoProp
     return (
         <div ref={demoRef} className="relative w-full max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden border border-gray-200">
             <div className="bg-gray-50 px-8 py-2 border-b border-gray-200 flex items-center gap-3">
-                <Image src="/logos/logo_full.svg" alt="Assistant" width={120} height={120} quality={100} />
+                <Image src="/logos/logo_full.svg" alt="Assistant" width={120} height={120} quality={100} loading="lazy" />
             </div>
 
             <div ref={chatContainerRef} className="h-[380px] overflow-y-auto p-4 space-y-4 bg-white scrollbar-none select-none pointer-events-none">

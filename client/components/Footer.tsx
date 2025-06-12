@@ -7,7 +7,7 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Company Info */}
                     <div className="space-y-4">
-                        <Image src="/logos/logo_full.svg" alt="AIM Assist" width={120} height={120} quality={100} />
+                        <Image src="/logos/logo_full.svg" alt="AIM Assist" width={120} height={120} quality={100} loading="lazy" />
                         <p className="text-sm text-gray-500">
                             Empowering care management with AI-driven solutions for better patient care and operational efficiency.
                         </p>

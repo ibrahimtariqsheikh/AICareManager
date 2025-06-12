@@ -269,6 +269,7 @@ export const NavbarLogo = () => {
                 height={35}
                 className="md:w-[50px] md:h-[50px]"
                 quality={100}
+                loading="lazy"
             />
         </a>
     );

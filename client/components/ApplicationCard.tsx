@@ -101,6 +101,7 @@ const ApplicationCard = ({
                 width={40}
                 height={40}
                 className="rounded-full mr-2 min-w-[40px] min-h-[40px]"
+                loading="lazy"
               />
             </div>
             <div className="flex flex-col gap-2">

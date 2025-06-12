@@ -497,6 +497,7 @@ export default function HeroHealthcare({
                             width={1200}
                             height={600}
                             className="w-full h-auto rounded-xl"
+                            loading="lazy"
                         />
                         <div
                             className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t ${isDark ? "from-[#030303]" : "from-white"} to-transparent`}
