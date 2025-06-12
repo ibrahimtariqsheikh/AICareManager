@@ -14,17 +14,13 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import {
-
     XAxis,
-
     CartesianGrid,
     ResponsiveContainer,
-
     BarChart,
     Bar,
     Rectangle,
 } from "recharts"
-
 
 interface BenefitDemoProps {
     speed?: number
@@ -35,38 +31,6 @@ interface ClientRetentionProps {
     speed?: number
 }
 
-// Memoize the emotions object to prevent recreation on each render
-const emotions = {
-    happy: {
-        emoji: "😊",
-        color: "text-yellow-500",
-        bgColor: "bg-yellow-50",
-        borderColor: "border-yellow-200"
-    },
-    excited: {
-        emoji: "🤩",
-        color: "text-orange-500",
-        bgColor: "bg-orange-50",
-        borderColor: "border-orange-200"
-    },
-    relieved: {
-        emoji: "😌",
-        color: "text-green-500",
-        bgColor: "bg-green-50",
-        borderColor: "border-green-200"
-    },
-    satisfied: {
-        emoji: "🥰",
-        color: "text-pink-500",
-        bgColor: "bg-pink-50",
-        borderColor: "border-pink-200"
-    }
-} as const
-
-// Memoize the emotion sequence
-const emotionSequence = ['happy', 'excited', 'relieved', 'satisfied'] as const
-
-// Memoize the retention data
 const retentionData = [
     { month: "Jan", rate: 30, clients: 120, fill: "rgb(219, 234, 254)" },
     { month: "Feb", rate: 35, clients: 125, fill: "rgb(191, 219, 254)" },
@@ -76,7 +40,6 @@ const retentionData = [
     { month: "Jun", rate: 68, clients: 152, fill: "hsl(var(--primary))" }
 ] as const
 
-// Memoize the days data
 const days = [
     { name: "Monday", emoji: "😔", task: "Manual paperwork" },
     { name: "Tuesday", emoji: "😕", task: "Complex scheduling" },
@@ -85,96 +48,12 @@ const days = [
     { name: "Friday", emoji: "🥰", task: "Performance" }
 ] as const
 
-// Memoize the features data
 const features = [
     { name: "AI-Powered Scheduling", icon: <Calendar className="h-3.5 w-3.5" />, bgColor: "bg-red-500", radius: 125, orbit: 4 },
     { name: "Automated Care Planning", icon: <Clipboard className="h-3.5 w-3.5" />, bgColor: "bg-blue-500", radius: 95, orbit: 3 },
     { name: "Medication Management", icon: <Pill className="h-3.5 w-3.5" />, bgColor: "bg-green-500", radius: 60, orbit: 2 },
     { name: "Smart Visit Reporting", icon: <FileText className="h-3.5 w-3.5" />, bgColor: "bg-purple-500", radius: 23, orbit: 1 }
 ] as const
-
-// Optimize HappyEmployeeAnimation component
-const HappyEmployeeAnimation = memo(({ currentStep, speed = 1 }: { currentStep: number, speed: number }) => {
-    const emotionIndex = Math.min(currentStep - 1, emotionSequence.length - 1)
-    const currentEmotion = emotionSequence[emotionIndex] as keyof typeof emotions
-    const showFloatingElements = currentStep > 0
-    const currentEmotionData = emotions[currentEmotion]
-
-    // Memoize floating elements
-    const floatingElements = useMemo(() => (
-        <>
-            {[...Array(3)].map((_, i) => (
-                <motion.div
-                    key={`heart-${i}`}
-                    className="absolute"
-                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                    animate={{
-                        opacity: [0, 1, 0],
-                        scale: [0, 1, 0.8],
-                        x: (i - 1) * 30,
-                        y: -40 - (i * 10)
-                    }}
-                    transition={{
-                        duration: 2 / speed,
-                        repeat: Infinity,
-                        delay: i * 0.5 / speed,
-                        ease: "easeOut"
-                    }}
-                >
-                    <Heart className="h-4 w-4 text-pink-500 fill-pink-500" />
-                </motion.div>
-            ))}
-            {[...Array(2)].map((_, i) => (
-                <motion.div
-                    key={`star-${i}`}
-                    className="absolute"
-                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                    animate={{
-                        opacity: [0, 1, 0],
-                        scale: [0, 1.2, 1],
-                        x: i === 0 ? -35 : 35,
-                        y: -20,
-                        rotate: [0, 180, 360]
-                    }}
-                    transition={{
-                        duration: 3 / speed,
-                        repeat: Infinity,
-                        delay: (i * 0.8 + 1) / speed,
-                        ease: "easeInOut"
-                    }}
-                >
-                    <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                </motion.div>
-            ))}
-        </>
-    ), [speed])
-
-    return (
-        <div className="relative flex items-center justify-center">
-            <div
-                className={cn(
-                    "relative w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-500",
-                    currentEmotionData.bgColor,
-                    currentEmotionData.borderColor,
-                    "border-2"
-                )}
-            >
-                <span>{currentEmotionData.emoji}</span>
-            </div>
-
-            <AnimatePresence>
-                {showFloatingElements && floatingElements}
-            </AnimatePresence>
-
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
-                <div className="flex items-center gap-1 bg-white rounded-full px-3 py-1 shadow-md border">
-                    <Smile className="h-3 w-3 text-green-500" />
-                    <span className="text-xs font-semibold text-green-600">98% Happy</span>
-                </div>
-            </div>
-        </div>
-    )
-})
 
 // Optimize ClientRetentionChart component
 const ClientRetentionChart = memo(({ speed = 1 }: ClientRetentionProps) => {
