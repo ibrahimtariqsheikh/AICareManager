@@ -12,7 +12,11 @@ import Cal from "@calcom/embed-react"
 import { useInView, motion, AnimatePresence } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import React from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
+// Register ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger)
 
 const features = [
     {
@@ -105,69 +109,165 @@ const features = [
 
 const AnimatedDropdownSection: React.FC = () => {
     const [activeFeature, setActiveFeature] = useState<number>(0);
-    const [isExpanded, setIsExpanded] = useState<Record<number, boolean>>({});
-    const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, {
-        once: false,
-        amount: 0.1
-    });
+    const [isExpanded, setIsExpanded] = useState<Record<number, boolean>>({ 0: true });
+    const [isAutoRotating, setIsAutoRotating] = useState(true);
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const featureRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const progressBarRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const timelineRef = useRef<gsap.core.Timeline | null>(null);
+    const autoRotateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const toggleFeature = (index: number) => {
-        setActiveFeature(index);
-        setIsExpanded(prev => {
-            const newExpanded = { ...prev };
-            // Close all other features
-            Object.keys(newExpanded).forEach(key => {
-                if (parseInt(key) !== index) {
-                    newExpanded[parseInt(key)] = false;
+    // Initialize GSAP animations
+    useEffect(() => {
+        if (!sectionRef.current) return;
+
+        // Animate section entrance immediately
+        gsap.from(sectionRef.current, {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            ease: "power2.out"
+        });
+
+        return () => {
+            if (timelineRef.current) {
+                timelineRef.current.kill();
+            }
+        };
+    }, []);
+
+    // Handle auto-rotation with smoother transitions
+    useEffect(() => {
+        if (!isAutoRotating) return;
+
+        const startAutoRotation = () => {
+            autoRotateTimeoutRef.current = setTimeout(() => {
+                setActiveFeature((prev) => {
+                    const next = (prev + 1) % features.length;
+                    return next;
+                });
+            }, 5000); // Slightly shorter for better pacing
+        };
+
+        startAutoRotation();
+
+        return () => {
+            if (autoRotateTimeoutRef.current) {
+                clearTimeout(autoRotateTimeoutRef.current);
+            }
+        };
+    }, [activeFeature, isAutoRotating]);
+
+    // Handle expanded state with smoother transitions
+    useEffect(() => {
+        // Smooth transition for expanding/collapsing
+        const transitionDelay = 150;
+
+        setTimeout(() => {
+            setIsExpanded(prev => {
+                const newExpanded = { ...prev };
+
+                // Collapse all others first
+                Object.keys(newExpanded).forEach(key => {
+                    if (parseInt(key) !== activeFeature) {
+                        newExpanded[parseInt(key)] = false;
+                    }
+                });
+
+                // Then expand the active one
+                newExpanded[activeFeature] = true;
+
+                return newExpanded;
+            });
+        }, transitionDelay);
+
+        // Smooth progress bar animation
+        const activeProgressBar = progressBarRefs.current[activeFeature];
+        if (activeProgressBar) {
+            // Kill existing timeline
+            if (timelineRef.current) {
+                timelineRef.current.kill();
+            }
+
+            // Reset all progress bars with smooth fade
+            progressBarRefs.current.forEach((ref, idx) => {
+                if (ref) {
+                    gsap.to(ref, {
+                        width: "0%",
+                        opacity: idx === activeFeature ? 1 : 0.3,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
                 }
             });
-            // Toggle the clicked feature
-            newExpanded[index] = !prev[index];
-            return newExpanded;
-        });
-    };
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1
-            }
-        }
-    };
+            // Animate the active progress bar
+            const tl = gsap.timeline({
+                delay: 0.3,
+                ease: "none"
+            });
 
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.3
-            }
+            tl.to(activeProgressBar, {
+                width: "100%",
+                duration: 4.7, // Slightly shorter to account for delays
+                ease: "none",
+                onComplete: () => {
+                    // Smooth reset with fade
+                    gsap.to(activeProgressBar, {
+                        opacity: 0.3,
+                        duration: 0.2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            gsap.set(activeProgressBar, { width: "0%" });
+                            gsap.to(activeProgressBar, {
+                                opacity: 1,
+                                duration: 0.2,
+                                ease: "power2.out"
+                            });
+                        }
+                    });
+                }
+            });
+
+            timelineRef.current = tl;
         }
+    }, [activeFeature]);
+
+    const toggleFeature = (index: number) => {
+        // Pause auto-rotation when user interacts
+        setIsAutoRotating(false);
+
+        // Clear any existing timeout
+        if (autoRotateTimeoutRef.current) {
+            clearTimeout(autoRotateTimeoutRef.current);
+        }
+
+        setActiveFeature(index);
+
+        // Resume auto-rotation after a delay
+        setTimeout(() => {
+            setIsAutoRotating(true);
+        }, 8000);
     };
 
     return (
-        <motion.div
-            ref={ref}
+        <div
+            ref={sectionRef}
             className="mx-auto px-4 sm:px-6 lg:px-10 py-6 md:py-10"
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={containerVariants}
         >
             <div className="text-center mb-12 md:mb-24">
                 <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
                     className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 mb-4 tracking-tighter leading-tight md:leading-relaxed"
-                    variants={itemVariants}
                 >
                     Our Features
                 </motion.h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-6 md:mb-10 mt-6 md:mt-10">
                     {/* Left side - Feature list */}
-                    <motion.div variants={containerVariants} className="order-1">
+                    <div className="order-1 space-y-2">
                         {features.map((feature, index) => {
                             const Icon = feature.icon;
                             const isActive = index === activeFeature;
@@ -176,61 +276,65 @@ const AnimatedDropdownSection: React.FC = () => {
                             return (
                                 <React.Fragment key={feature.id}>
                                     <motion.div
-                                        variants={itemVariants}
-                                        className={`transition-all rounded-xl duration-500 ease-in-out cursor-pointer mb-2 md:mb-0 ${isActive ? 'bg-blue-50' : 'bg-white hover:bg-gray-50'}`}
+                                        ref={(el) => {
+                                            featureRefs.current[index] = el;
+                                        }}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{
+                                            opacity: 1,
+                                            scale: 1,
+                                            backgroundColor: isActive ? '#f8fafc' : '#ffffff'
+                                        }}
+                                        transition={{
+                                            duration: 0.4,
+                                            ease: "easeOut",
+                                            backgroundColor: { duration: 0.3 }
+                                        }}
+                                        className={`transition-all rounded-xl duration-300 ease-out cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-sm ${isActive ? 'shadow-sm' : ''
+                                            }`}
                                         onClick={() => toggleFeature(index)}
+                                        whileHover={{ scale: 1.01 }}
+                                        whileTap={{ scale: 0.99 }}
                                     >
                                         {/* Progress bar */}
-                                        {isActive && isInView && (
-                                            <div className="w-full h-1 overflow-hidden rounded-full mb-2 md:mb-4">
-                                                <motion.div
-                                                    className="h-full w-full bg-blue-600 rounded-full"
-                                                    initial={{ x: '-100%' }}
-                                                    animate={{ x: '0%' }}
-                                                    transition={{
-                                                        duration: 6,
-                                                        ease: "linear"
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
+                                        <div className={`w-full h-1 overflow-hidden rounded-t-xl transition-all duration-300 ${isActive ? 'bg-gray-100' : 'bg-transparent'
+                                            }`}>
+                                            <div
+                                                ref={(el) => {
+                                                    progressBarRefs.current[index] = el;
+                                                }}
+                                                className="h-full w-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                                            />
+                                        </div>
 
                                         {/* Feature header */}
                                         <div className="flex items-center justify-between p-3 md:p-4">
                                             <div className="flex items-center gap-2 md:gap-3">
                                                 <motion.div
-                                                    className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center ${isActive ? 'bg-blue-100' : 'bg-gray-100'}`}
-                                                    animate={isInView ? {
-                                                        scale: isActive ? 1.1 : 1,
-                                                        backgroundColor: isActive ? 'rgb(219 234 254)' : 'rgb(243 244 246)'
-                                                    } : {
-                                                        scale: 1,
-                                                        backgroundColor: 'rgb(243 244 246)'
+                                                    animate={{
+                                                        backgroundColor: isActive ? '#dbeafe' : '#f3f4f6',
+                                                        scale: isActive ? 1.05 : 1
                                                     }}
-                                                    transition={{ duration: 0.2 }}
+                                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                                    className="w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center"
                                                 >
-                                                    <Icon className={`w-3 h-3 md:w-4 md:h-4 ${isActive ? 'text-blue-700' : 'text-gray-600'}`} />
+                                                    <Icon className={`w-3 h-3 md:w-4 md:h-4 transition-colors duration-300 ${isActive ? 'text-blue-700' : 'text-gray-600'
+                                                        }`} />
                                                 </motion.div>
-                                                <motion.span
-                                                    className={`font-medium text-sm md:text-base ${isActive ? 'text-[oklch(48.8%_0.243_264.376)]' : 'text-gray-700'}`}
-                                                    animate={isInView ? {
-                                                        color: isActive ? 'oklch(48.8% 0.243 264.376)' : 'rgb(55 65 81)'
-                                                    } : {
-                                                        color: 'rgb(55 65 81)'
-                                                    }}
+                                                <span
+                                                    className={`font-medium text-sm md:text-base transition-colors duration-300 ${isActive ? 'text-blue-900' : 'text-gray-700'
+                                                        }`}
                                                 >
                                                     {feature.title}
-                                                </motion.span>
+                                                </span>
                                             </div>
                                             <motion.div
-                                                animate={isInView ? {
+                                                animate={{
                                                     rotate: isExpandedState ? 180 : 0,
-                                                    color: isActive ? 'rgb(37 99 235)' : 'rgb(156 163 175)'
-                                                } : {
-                                                    rotate: 0,
-                                                    color: 'rgb(156 163 175)'
+                                                    color: isActive ? '#2563eb' : '#9ca3af'
                                                 }}
-                                                transition={{ duration: 0.3 }}
+                                                transition={{ duration: 0.3, ease: "easeOut" }}
                                             >
                                                 <ChevronDown className="w-3 h-3 md:w-4 md:h-4" />
                                             </motion.div>
@@ -238,102 +342,72 @@ const AnimatedDropdownSection: React.FC = () => {
 
                                         {/* Feature description */}
                                         <AnimatePresence>
-                                            {isExpandedState && isInView && (
+                                            {isExpandedState && (
                                                 <motion.div
+                                                    key={`content-${index}`}
                                                     initial={{ height: 0, opacity: 0 }}
                                                     animate={{ height: "auto", opacity: 1 }}
                                                     exit={{ height: 0, opacity: 0 }}
-                                                    transition={{ duration: 0.3 }}
+                                                    transition={{
+                                                        duration: 0.4,
+                                                        ease: "easeOut",
+                                                        opacity: { duration: 0.3, delay: isExpandedState ? 0.1 : 0 }
+                                                    }}
                                                     className="overflow-hidden"
                                                 >
                                                     <div className="px-3 md:px-4 pb-3 md:pb-4">
-                                                        <motion.div
-                                                            initial={{ opacity: 0, y: 10 }}
-                                                            animate={{ opacity: 1, y: 0 }}
-                                                            transition={{ delay: 0.05 }}
-                                                            className="text-start text-xs md:text-sm text-neutral-600 leading-relaxed"
-                                                        >
-                                                            {feature.bulletPoints.map((point, index) => (
+                                                        <div className="text-start text-xs md:text-sm text-neutral-600 leading-relaxed space-y-1">
+                                                            {feature.bulletPoints.map((point, pointIndex) => (
                                                                 <motion.div
-                                                                    key={index}
-                                                                    className="flex items-start gap-2 mb-1"
+                                                                    key={pointIndex}
                                                                     initial={{ opacity: 0, x: -10 }}
                                                                     animate={{ opacity: 1, x: 0 }}
-                                                                    transition={{ delay: index * 0.1 }}
+                                                                    transition={{
+                                                                        duration: 0.3,
+                                                                        delay: pointIndex * 0.1 + 0.2,
+                                                                        ease: "easeOut"
+                                                                    }}
+                                                                    className="flex items-start gap-2"
                                                                 >
-                                                                    <span className="text-neutral-400">•</span>
+                                                                    <span className="text-blue-400 font-medium">•</span>
                                                                     <span>{point}</span>
                                                                 </motion.div>
                                                             ))}
-                                                        </motion.div>
+                                                        </div>
                                                     </div>
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
                                     </motion.div>
 
-                                    {/* Show image after active feature on mobile */}
-                                    {isActive && (
-                                        <motion.div
-                                            className="lg:hidden rounded-xl h-64 flex items-center justify-center overflow-hidden mt-4 mb-6"
-                                            variants={itemVariants}
-                                        >
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key={activeFeature}
-                                                    initial={{ opacity: 0, scale: 0.95 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    exit={{ opacity: 0, scale: 0.95 }}
-                                                    transition={{ duration: 0.3 }}
-                                                    className="w-full h-full relative rounded-xl overflow-hidden"
-                                                >
-                                                    <Image
-                                                        src={feature.image}
-                                                        alt={feature.title}
-                                                        fill
-                                                        className="object-cover rounded-xl"
-                                                        priority
-                                                        quality={100}
-                                                    />
-                                                </motion.div>
-                                            </AnimatePresence>
-                                        </motion.div>
-                                    )}
+                                    {/* Mobile placeholder */}
+                                    <AnimatePresence>
+                                        {isActive && (
+                                            <motion.div
+                                                key={`mobile-${index}`}
+                                                initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, height: 256, scale: 1 }}
+                                                exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                                className="lg:hidden rounded-xl flex items-center justify-center overflow-hidden mt-4 mb-6 bg-gray-50"
+                                            />
+                                        )}
+                                    </AnimatePresence>
                                 </React.Fragment>
                             );
                         })}
-                    </motion.div>
+                    </div>
 
                     {/* Right side - Visual placeholder (desktop only) */}
                     <motion.div
-                        className="hidden lg:block rounded-xl h-full flex items-center justify-center overflow-hidden order-2"
-                        variants={itemVariants}
-                    >
-                        <AnimatePresence mode="wait">
-                            {features[activeFeature] && isInView && (
-                                <motion.div
-                                    key={activeFeature}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="w-full h-full relative rounded-xl overflow-hidden"
-                                >
-                                    <Image
-                                        src={features[activeFeature].image}
-                                        alt={features[activeFeature].title}
-                                        fill
-                                        className="object-cover rounded-xl"
-                                        loading="lazy"
-                                        quality={100}
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </motion.div>
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                        className="flex lg:block rounded-xl h-full  items-center justify-center overflow-hidden order-2 bg-gray-50 "
+                    />
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
