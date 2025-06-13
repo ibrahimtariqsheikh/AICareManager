@@ -114,11 +114,11 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
 
     return (
         <div className={cn("relative w-full max-w-[100vw] overflow-hidden", !isMounted && "invisible")} ref={containerRef}>
-            <div className={cn("absolute top-0 -z-10 h-full w-full pointer-events-none")}>
+            <div className={cn("absolute top-0 -z-10 h-full w-full")}>
                 <div className="absolute bottom-auto left-auto right-0 top-0 h-[300px] md:h-[500px] w-[300px] md:w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-blue-300/20 md:bg-blue-300/30 opacity-20 md:opacity-30 blur-[60px] md:blur-[80px]" />
             </div>
 
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 overflow-hidden">
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}
@@ -136,9 +136,9 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                 ))}
             </div>
 
-            <div className="absolute inset-0 backdrop-blur-[1px] z-0 pointer-events-none"></div>
+            <div className="absolute inset-0 backdrop-blur-[1px] z-0"></div>
 
-            <div className="w-full max-w-7xl mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
+            <div className="w-full mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
                 <div className="mx-auto text-center">
                     <div className="flex justify-center mb-4">
                         <div className={cn("text-[10px] md:text-[13px] bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-2 md:px-4 py-1 md:py-2 relative tracking-tight leading-relaxed")}>
@@ -147,7 +147,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                         </div>
                     </div>
                     <div>
-                        <h1 ref={titleRef} className="text-4xl md:text-6xl md:max-w-4xl lg:text-[5rem] font-semibold tracking-tighter px-2 mx-auto text-center">
+                        <h1 ref={titleRef} className="text-3xl md:text-6xl  lg:text-[5rem] font-semibold tracking-tighter px-2 mx-auto text-center">
                             <div className="title-line block text-black">
                                 {title.split(' ').slice(0, Math.ceil(title.split(' ').length / 2)).join(' ')}
                             </div>
