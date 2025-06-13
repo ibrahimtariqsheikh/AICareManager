@@ -120,30 +120,14 @@ const AnimatedDropdownSection: React.FC = () => {
     const autoRotateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
-    // Initialize GSAP animations
-    useEffect(() => {
-        if (!sectionRef.current) return;
-
-        // Animate section entrance when in view
-        if (isInView) {
-            gsap.from(sectionRef.current, {
-                opacity: 0,
-                y: 30,
-                duration: 0.8,
-                ease: "power2.out"
-            });
-        }
-
-        return () => {
-            if (timelineRef.current) {
-                timelineRef.current.kill();
-            }
-        };
-    }, [isInView]);
-
     // Handle auto-rotation with smoother transitions
     useEffect(() => {
-        if (!isAutoRotating || !isInView) return;
+        if (!isAutoRotating || !isInView) {
+            if (timelineRef.current) {
+                timelineRef.current.pause();
+            }
+            return;
+        }
 
         const startAutoRotation = () => {
             autoRotateTimeoutRef.current = setTimeout(() => {
@@ -154,6 +138,9 @@ const AnimatedDropdownSection: React.FC = () => {
             }, 5000);
         };
 
+        if (timelineRef.current) {
+            timelineRef.current.play();
+        }
         startAutoRotation();
 
         return () => {
@@ -196,14 +183,12 @@ const AnimatedDropdownSection: React.FC = () => {
                 timelineRef.current.kill();
             }
 
-            // Reset all progress bars with smooth fade
+            // Reset all progress bars
             progressBarRefs.current.forEach((ref, idx) => {
                 if (ref) {
-                    gsap.to(ref, {
+                    gsap.set(ref, {
                         width: "0%",
-                        opacity: idx === activeFeature ? 1 : 0.3,
-                        duration: 0.3,
-                        ease: "power2.out"
+                        opacity: idx === activeFeature ? 1 : 0.3
                     });
                 }
             });
@@ -219,20 +204,7 @@ const AnimatedDropdownSection: React.FC = () => {
                 duration: 4.7,
                 ease: "none",
                 onComplete: () => {
-                    // Smooth reset with fade
-                    gsap.to(activeProgressBar, {
-                        opacity: 0.3,
-                        duration: 0.2,
-                        ease: "power2.out",
-                        onComplete: () => {
-                            gsap.set(activeProgressBar, { width: "0%" });
-                            gsap.to(activeProgressBar, {
-                                opacity: 1,
-                                duration: 0.2,
-                                ease: "power2.out"
-                            });
-                        }
-                    });
+                    gsap.set(activeProgressBar, { width: "0%" });
                 }
             });
 
