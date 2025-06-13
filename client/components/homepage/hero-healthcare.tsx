@@ -460,7 +460,7 @@ export default function HeroHealthcare({
                                             } border-blue-500/20 focus:border-blue-500/50 focus:ring-blue-500/30 transition-all`}
                                     />
                                 </div>
-                                <Button onClick={() => router.push("/dashboard")} className="bg-blue-600 hover:bg-blue-700 text-white">
+                                <Button onClick={() => router.push("/contact")} className="bg-blue-600 hover:bg-blue-700 text-white">
                                     Book a Demo
                                 </Button>
                             </>

@@ -13,7 +13,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from "next/navigation";
-import { LogIn, LayoutDashboard, ChevronDown, Users, Clock, FileText, Pill, DollarSign, BarChart, TrendingUp, X } from 'lucide-react';
+import { LogIn, LayoutDashboard, ChevronDown, Users, Clock, FileText, Pill, DollarSign, BarChart, TrendingUp, X, Mail } from 'lucide-react';
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { motion, AnimatePresence, useInView } from "framer-motion";
@@ -195,7 +195,7 @@ const NavItem = ({ item }: { item: NavItem }) => {
       <Button
         onClick={handleClick}
         variant="ghost"
-        className="flex items-center gap-2 rounded-lg text-sm md:text-base px-2 md:px-4"
+        className="flex items-center gap-2 rounded-lg text-sm md:text-base px-2 md:px-4 hover:scale-105 transition-all duration-300 font-normal"
       >
         {item.name}
         {hasDropdown && <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
@@ -236,13 +236,13 @@ const AuthButton = ({ user, router, onMobileMenuClose }: {
           router.push("/signin");
           onMobileMenuClose?.();
         }}
-        className="flex items-center gap-2 rounded-lg z-10 text-black hover:bg-gray-100 p-2 px-3 md:px-4 text-sm md:text-base"
+        className="flex items-center gap-2 rounded-lg z-10 text-black hover:bg-gray-100 p-2 px-3 md:px-4 text-sm md:text-base hover:scale-105 transition-all duration-300"
       >
         <span className="font-medium">Login</span>
       </button>
       <button
-        onClick={() => router.push("/demo/book")}
-        className="flex items-center gap-2 rounded-lg bg-primary text-white p-2 px-3 md:px-4 text-sm md:text-base"
+        onClick={() => router.push("/contact")}
+        className="flex items-center gap-2 rounded-lg bg-primary text-white p-2 px-3 md:px-4 text-sm md:text-base hover:scale-105 transition-all duration-300"
       >
         <span className="font-medium">Book a demo</span>
       </button>
@@ -268,9 +268,20 @@ const MobileNavigation = ({
       <div className="flex flex-col h-full">
         {/* Close button */}
         <div className="flex justify-between items-center px-4 py-2">
-          <Image src="/assets/aimlogo.png" alt="logo" width={45} height={45} className="md:w-[50px] md:h-[50px]" loading="lazy" quality={100} />
+          <motion.div
+            className="flex items-center justify-center cursor-pointer"
+            onClick={() => router.push("/")}
+            whileHover={{
+              scale: 1.05,
+              transition: {
+                duration: 0.1,
+                ease: "easeInOut"
+              }
+            }}
+          >
+            <Image src="/assets/aimlogo.png" alt="logo" width={45} height={45} className="cursor-pointer md:w-[50px] md:h-[50px]" loading="lazy" quality={100} />
+          </motion.div>
           <div className="flex items-center justify-center gap-1">
-            <Button variant="default" onClick={() => { }} className=" hover:bg-neutral-100 p-3 rounded-lg transition-colors text-sm">Contact Us</Button>
             <button
               onClick={onClose}
               className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
@@ -293,7 +304,21 @@ const MobileNavigation = ({
             </Link>
           ))}
 
-          <div className="pt-6 ">
+          <div className="pt-6 space-y-4">
+            {!user && (
+              <Button
+                variant="default"
+                className="w-full py-5 text-sm font-medium text-neutral-700 bg-neutral-50 border border-neutral-300 hover:bg-neutral-100"
+                onClick={() => {
+                  router.push("/contact");
+                  onClose();
+                }}
+              >
+                <Mail className="w-4 h-4 mr-1" />
+                Contact Us
+              </Button>
+            )}
+
             {user ? (
               <Button
                 onClick={() => {

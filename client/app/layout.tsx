@@ -29,14 +29,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" >
       <body className={cn(
-        "min-h-screen antialiased bg-background font-sans",
+        "min-h-screen antialiased bg-white font-sans w-full max-w-[100vw] overflow-x-hidden",
         inter.variable
       )} suppressHydrationWarning>
         <MessageProvider>
           <Providers>
-            {children}
+            <div className="w-full">
+
+              {children}
+            </div>
           </Providers>
         </MessageProvider>
         <Toaster />

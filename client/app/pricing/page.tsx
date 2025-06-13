@@ -215,7 +215,7 @@ export default function PricingPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 md:mb-24">
                     <div className="bg-white rounded-2xl ring-1 ring-neutral-200 p-8">
                         <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                            <div className="hidden sm:flex flex-shrink-0 h-10 w-10 rounded-full bg-blue-500/10 items-center justify-center">
                                 <svg className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                 </svg>

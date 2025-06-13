@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // Register SplitText plugin
 gsap.registerPlugin(SplitText);
@@ -25,6 +27,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
     const imageRef = useRef<HTMLDivElement>(null);
     const buttonsRef = useRef<HTMLDivElement>(null);
     const floatingElementsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const router = useRouter();
 
     useEffect(() => {
         setIsMounted(true);
@@ -110,12 +113,12 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
     const words = title.split(" ");
 
     return (
-        <div className={cn("relative w-full overflow-hidden", !isMounted && "invisible")} ref={containerRef}>
-            <div className={cn("absolute top-0 -z-10 h-full w-full")}>
+        <div className={cn("relative w-full max-w-[100vw] overflow-hidden", !isMounted && "invisible")} ref={containerRef}>
+            <div className={cn("absolute top-0 -z-10 h-full w-full pointer-events-none")}>
                 <div className="absolute bottom-auto left-auto right-0 top-0 h-[300px] md:h-[500px] w-[300px] md:w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-blue-300/20 md:bg-blue-300/30 opacity-20 md:opacity-30 blur-[60px] md:blur-[80px]" />
             </div>
 
-            <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {[...Array(6)].map((_, i) => (
                     <div
                         key={i}
@@ -126,14 +129,16 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                         style={{
                             top: `${[15, 45, 70, 10, 85, 35][i]}%`,
                             left: `${[40, 65, 45, 75, 70, 20][i]}%`,
+                            maxWidth: '100%',
+                            maxHeight: '100%'
                         }}
                     />
                 ))}
             </div>
 
-            <div className="absolute inset-0 backdrop-blur-[1px] z-0"></div>
+            <div className="absolute inset-0 backdrop-blur-[1px] z-0 pointer-events-none"></div>
 
-            <div className="container mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
+            <div className="w-full max-w-7xl mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
                 <div className="mx-auto text-center">
                     <div className="flex justify-center mb-4">
                         <div className={cn("text-[10px] md:text-[13px] bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-2 md:px-4 py-1 md:py-2 relative tracking-tight leading-relaxed")}>
@@ -159,13 +164,23 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                         </p>
                     </div>
                     <div ref={buttonsRef} className="flex justify-center gap-10 mb-10 mt-4 items-center">
-                        <Button size="lg" className="bg-primary text-white hover:bg-blue-600 font-semibold">
+
+                        <Button
+                            onClick={() => router.push("/contact")}
+                            size="lg"
+                            className="bg-primary text-white hover:bg-blue-600 font-semibold cursor-pointer"
+                        >
                             Talk to Sales
                         </Button>
-                        <button className="flex items-center justify-center gap-2 bg-none border-none hover:bg-none text-neutral-900 font-medium text-sm">
-                            Watch Demo
-                            <ChevronRightIcon className="w-4 h-4" />
-                        </button>
+
+                        <Link href="/watch-demo">
+                            <button
+                                className="flex items-center justify-center gap-2 bg-none border-none hover:bg-none text-neutral-900 font-medium text-sm hover:bg-neutral-100 cursor-pointer"
+                            >
+                                Watch Demo
+                                <ChevronRightIcon className="w-4 h-4" />
+                            </button>
+                        </Link>
                     </div>
 
                     <div ref={imageRef} className="max-w-5xl mx-auto relative">

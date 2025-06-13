@@ -4,6 +4,7 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
     children: React.ReactNode;
@@ -201,10 +202,11 @@ export const MobileNavToggle = ({
 };
 
 export const NavbarLogo = () => {
+    const router = useRouter();
     return (
         <a
-            href="#"
-            className="relative z-20 mr-2 md:mr-4 flex items-center space-x-2 px-1 md:px-2 py-1 text-sm font-normal text-black transition-transform duration-200 hover:scale-105"
+            onClick={() => router.push("/")}
+            className="relative z-20 mr-2 md:mr-4 flex items-center space-x-2 px-1 md:px-2 py-1 text-sm font-normal text-black transition-transform duration-200 hover:scale-105 cursor-pointer"
         >
             <Image
                 src="/assets/aimlogo.png"

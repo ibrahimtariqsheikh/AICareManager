@@ -194,9 +194,17 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
         <Sidebar className={cn("border-r-0 w-[250px]", theme === "dark" ? "bg-[#171717]" : "bg-[#f6f7f9]")} {...props}>
             <SidebarHeader className="m-0 p-0 flex items-center justify-center ">
                 <div className="flex flex-col items-center flex-1">
-                    <motion.img src="/assets/aimlogo.png" alt="AI Manager" width={55} height={55} whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }} className="cursor-pointer" onClick={() => router.push("/")} />
+                    <motion.img
+                        src="/assets/aimlogo.png"
+                        alt="AI Manager"
+                        width={55}
+                        height={55}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.2 }}
+                        className="cursor-pointer"
+                        onClick={() => router.push("/")}
+                    />
                 </div>
-
             </SidebarHeader>
             <div className="border-b border-border w-[100%] mx-auto my-1" />
             <SidebarContent className="px-3 py-4">

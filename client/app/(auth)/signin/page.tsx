@@ -61,12 +61,13 @@ const SigninPage = () => {
                         <div className="flex flex-col items-center">
                             <a
                                 href="#"
-                                className="flex flex-col items-center gap-2 font-medium"
-                                onClick={() => router.push("/")}
+                                className="flex flex-col items-center gap-2 font-medium cursor-pointer"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    router.push("/");
+                                }}
                             >
                                 <Image src="/assets/aimlogo.png" alt="AIM" width={50} height={50} loading="lazy" quality={100} />
-
-
                             </a>
 
                             {!showResetPassword && !showVerification && (

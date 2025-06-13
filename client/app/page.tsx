@@ -109,6 +109,7 @@ const features = [
 ];
 
 const AnimatedDropdownSection: React.FC = () => {
+    console.log('AnimatedDropdownSection rendering');
     const [activeFeature, setActiveFeature] = useState<number>(0);
     const [isExpanded, setIsExpanded] = useState<Record<number, boolean>>({ 0: true });
     const [isAutoRotating, setIsAutoRotating] = useState(true);
@@ -292,7 +293,7 @@ const AnimatedDropdownSection: React.FC = () => {
                                             ease: "easeOut",
                                             backgroundColor: { duration: 0.3 }
                                         }}
-                                        className={`transition-all rounded-xl duration-300 ease-out cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-sm 
+                                        className={`transition-all rounded-xl duration-300 ease-out cursor-pointer border border-transparent hover:border-gray-100 
                                             }`}
                                         onClick={() => toggleFeature(index)}
                                         whileHover={{ scale: 1.01 }}
@@ -418,13 +419,12 @@ export default function Home() {
 
     return (
         <>
-            <div className="fixed inset-0 z-50 mt-8">
+            <div className="mt-10 fixed top-0 left-0 right-0 z-50">
                 <MyNavbar />
             </div>
-            <div className="min-h-screen mt-20">
-
-                <div className="min-h-screen w-full overflow-visible">
-                    <div className="relative">
+            <div className="min-h-screen mt-20 w-full max-w-[100vw]">
+                <div className="w-full">
+                    <div className="relative z-40">
                         <HeroSection
                             title="Scale Your Care Business Without Hiring More Staff"
                             subtitle="All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth. Reduce admin time and staffing costs by 70% with smart automation."
@@ -434,7 +434,7 @@ export default function Home() {
                 </div>
 
                 {/* What do we solve */}
-                <div className="mx-auto px-4 sm:px-6 lg:px-10 py-6 md:py-10">
+                <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 md:py-10">
                     <div className="text-center mb-12 md:mb-24">
                         <h2 className="flex flex-row items-center justify-center text-2xl md:text-4xl lg:text-5xl font-bold text-neutral-900 mb-4 tracking-tighter leading-tight md:leading-relaxed">
                             <span className="whitespace-nowrap">What does</span>
@@ -454,16 +454,16 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="mx-auto px-4 sm:px-6 lg:px-10">
+                <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
                     <AnimatedDropdownSection />
                 </div>
 
-                <div className="lg:hidden w-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white p-4 mb-4 -mx-4 sm:-mx-6 lg:-mx-8 h-24 flex items-center justify-center">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl  font-bold text-center text-white capitalize tracking-tighter leading-relaxed">Your entire Agency - in 8 steps</h2>
+                <div className="lg:hidden w-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white p-4 mb-4">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white capitalize tracking-tighter leading-relaxed">Your entire Agency - in 8 steps</h2>
                 </div>
 
                 {/* Mobile Timeline Steps */}
-                <div className="lg:hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mr-4">
+                <div className="lg:hidden w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="space-y-12">
                         {[
                             {

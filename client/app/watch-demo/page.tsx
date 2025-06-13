@@ -130,8 +130,8 @@ export default function WatchDemoPage() {
                         Book a personalized demo to see how AI Care Manager can work for your organization.
                     </p>
                     <div className="mt-8">
-                        <Link href="/demo/book">
-                            <Button size="lg" className="text-lg px-8">
+                        <Link href="/contact">
+                            <Button size="lg" className="text-lg px-8 hover:scale-105 transition-all duration-300">
                                 Book a Demo
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
