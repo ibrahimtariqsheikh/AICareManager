@@ -313,22 +313,12 @@ const MobileNavigation = ({
                     router.push("/signin");
                     onClose();
                   }}
-                  variant="outline"
-                  className="w-full py-5 text-sm font-medium"
+                  className="w-full py-5 text-sm font-medium bg-primary text-white"
                 >
                   <LogIn className="w-4 h-4 mr-1" />
                   Login
                 </Button>
-                <Button
-                  onClick={() => {
-                    router.push("/demo/book");
-                    onClose();
-                  }}
-                  variant="default"
-                  className="w-full py-5 text-sm font-medium bg-primary text-white"
-                >
-                  Book a demo
-                </Button>
+
               </div>
             )}
           </div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import ResetPasswordForm from "./resetpasswordform"
 import SigninForm from "./signinform"
 import { Blocks, ChevronLeft, Shield, Lock, CheckCircle2 } from "lucide-react"
+import Image from "next/image"
 
 const SigninPage = () => {
     const router = useRouter()
@@ -57,18 +58,17 @@ const SigninPage = () => {
                     )}
 
                     <div className="flex flex-col gap-6">
-                        <div className="flex flex-col items-center gap-2">
+                        <div className="flex flex-col items-center">
                             <a
                                 href="#"
                                 className="flex flex-col items-center gap-2 font-medium"
                                 onClick={() => router.push("/")}
                             >
-                                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
-                                    <Blocks className="h-6 w-6 text-primary" />
-                                </div>
-                                <span className="sr-only">AIM</span>
+                                <Image src="/assets/aimlogo.png" alt="AIM" width={50} height={50} loading="lazy" quality={100} />
+
+
                             </a>
-                            <h1 className="text-xl font-bold">{title}</h1>
+
                             {!showResetPassword && !showVerification && (
                                 <div className="text-center text-sm text-muted-foreground">
                                     Don&apos;t have an account?{" "}
@@ -100,21 +100,7 @@ const SigninPage = () => {
 
 
 
-                    {/* Compliance Badges */}
-                    <div className="flex items-center justify-center gap-6 text-muted-foreground mt-8 text-[9px]">
-                        <div className="flex items-center gap-2">
-                            <Shield className="h-3 w-3" />
-                            <span >HIPAA Compliant</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Lock className="h-3 w-3" />
-                            <span >256-bit Encryption</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle2 className="h-3 w-3" />
-                            <span >SOC 2 Certified</span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
