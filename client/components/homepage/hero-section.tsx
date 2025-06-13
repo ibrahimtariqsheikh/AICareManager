@@ -2,10 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
+
+// Register SplitText plugin
+gsap.registerPlugin(SplitText);
 
 interface HeroSectionProps {
     title: string;
@@ -15,7 +19,6 @@ interface HeroSectionProps {
 
 export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
     const [isMounted, setIsMounted] = useState(false);
-    const words = title.split(" ");
     const containerRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLHeadingElement>(null);
     const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -27,25 +30,33 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
         setIsMounted(true);
 
         // Set initial state
-        gsap.set([titleRef.current?.children, subtitleRef.current, imageRef.current, buttonsRef.current?.children], {
+        gsap.set([subtitleRef.current, imageRef.current, buttonsRef.current?.children], {
             opacity: 0,
             y: 20
         });
 
         const ctx = gsap.context(() => {
-            // Main content animations
-            if (titleRef.current?.children) {
-                gsap.fromTo(
-                    Array.from(titleRef.current.children),
-                    { opacity: 0, y: 10 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.3,
-                        stagger: 0.1,
-                        ease: "power2.out",
-                    }
-                );
+            // SplitText animation for title
+            if (titleRef.current) {
+                const titleLines = titleRef.current.querySelectorAll('.title-line');
+
+                titleLines.forEach((line, index) => {
+                    const splitLine = new SplitText(line, { type: "chars,words" });
+
+                    gsap.fromTo(
+                        splitLine.chars,
+                        { opacity: 0, y: 10, filter: "blur(4px)" },
+                        {
+                            opacity: 1,
+                            y: 0,
+                            filter: "blur(0px)",
+                            duration: 0.3,
+                            stagger: 0.02,
+                            delay: index * 0.5,
+                            ease: "power2.out",
+                        }
+                    );
+                });
             }
 
             if (subtitleRef.current) {
@@ -96,6 +107,8 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
         return () => ctx.revert();
     }, []);
 
+    const words = title.split(" ");
+
     return (
         <div className={cn("relative w-full overflow-hidden", !isMounted && "invisible")} ref={containerRef}>
             <div className={cn("absolute top-0 -z-10 h-full w-full")}>
@@ -123,27 +136,19 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
             <div className="container mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
                 <div className="mx-auto text-center">
                     <div className="flex justify-center mb-4">
-                        <div className={cn("text-xs bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-3 py-1.5 relative tracking-tight leading-relaxed")}>
+                        <div className={cn("text-[10px] md:text-[13px] bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-2 md:px-4 py-1 md:py-2 relative tracking-tight leading-relaxed")}>
                             <div className="absolute inset-0 rounded-full bg-blue-500/30 blur-xl -z-10 animate-pulse"></div>
                             AI-Powered Care Management
                         </div>
                     </div>
                     <div>
-                        <h1 ref={titleRef} className="text-4xl md:text-6xl lg:text-[5rem] font-semibold tracking-tighter px-2">
-                            {words.slice(0, words.length - 4).map((word, index) => (
-                                <span key={index} className="p-1 inline-block leading-none">
-                                    {word}
-                                </span>
-                            ))}
-                            <br />
-                            {words.slice(words.length - 4).map((word, index) => (
-                                <span
-                                    key={index}
-                                    className="p-1 inline-block leading-none text-4xl md:text-5xl lg:text-[4.5rem] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600"
-                                >
-                                    {word}
-                                </span>
-                            ))}
+                        <h1 ref={titleRef} className="text-4xl md:text-6xl md:max-w-4xl lg:text-[5rem] font-semibold tracking-tighter px-2 mx-auto text-center">
+                            <div className="title-line block text-black">
+                                {title.split(' ').slice(0, Math.ceil(title.split(' ').length / 2)).join(' ')}
+                            </div>
+                            <div className="title-line block text-blue-600">
+                                {title.split(' ').slice(Math.ceil(title.split(' ').length / 2)).join(' ')}
+                            </div>
                         </h1>
 
                         <p
