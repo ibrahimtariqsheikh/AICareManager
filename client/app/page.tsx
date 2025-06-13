@@ -285,14 +285,14 @@ const AnimatedDropdownSection: React.FC = () => {
                                         animate={{
                                             opacity: 1,
                                             scale: 1,
-                                            backgroundColor: isActive ? '#f8fafc' : '#ffffff'
+                                            backgroundColor: isActive ? '#eef2ff' : '#ffffff'
                                         }}
                                         transition={{
                                             duration: 0.4,
                                             ease: "easeOut",
                                             backgroundColor: { duration: 0.3 }
                                         }}
-                                        className={`transition-all rounded-xl duration-300 ease-out cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-sm ${isActive ? 'shadow-sm' : ''
+                                        className={`transition-all rounded-xl duration-300 ease-out cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-sm 
                                             }`}
                                         onClick={() => toggleFeature(index)}
                                         whileHover={{ scale: 1.01 }}
@@ -390,7 +390,7 @@ const AnimatedDropdownSection: React.FC = () => {
                                                 animate={{ opacity: 1, height: 256, scale: 1 }}
                                                 exit={{ opacity: 0, height: 0, scale: 0.95 }}
                                                 transition={{ duration: 0.4, ease: "easeOut" }}
-                                                className="lg:hidden rounded-xl flex items-center justify-center overflow-hidden mt-4 mb-6 bg-gray-50"
+                                                className="lg:hidden rounded-xl flex items-center justify-center overflow-hidden mt-4 mb-6 bg-white/50"
                                             />
                                         )}
                                     </AnimatePresence>
@@ -404,7 +404,7 @@ const AnimatedDropdownSection: React.FC = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-                        className="flex lg:block rounded-xl h-full  items-center justify-center overflow-hidden order-2 bg-gray-50 "
+                        className="flex lg:block rounded-xl h-full  items-center justify-center overflow-hidden order-2 bg-white/50"
                     />
                 </div>
             </div>

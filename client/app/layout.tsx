@@ -14,7 +14,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "AIM Assist - AI-Powered Care Management",
+  title: "AIM Manager",
   description: "All-in-one AI platform for care, HR, compliance, scheduling, finance, and growth.",
   icons: {
     icon: "/favicon.ico",
@@ -29,13 +29,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn(inter.variable)}  >
-      <body className={cn("min-h-screen antialiased bg-white font-sans", inter.variable)} >
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(
+        "min-h-screen antialiased bg-background font-sans",
+        inter.variable
+      )} suppressHydrationWarning>
         <MessageProvider>
           <Providers>
-
             {children}
-
           </Providers>
         </MessageProvider>
         <Toaster />

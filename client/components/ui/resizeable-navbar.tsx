@@ -147,18 +147,34 @@ export const MobileNavMenu = ({
     children,
     className,
     isOpen,
+    onClose,
 }: MobileNavMenuProps) => {
     return (
-        <div
-            className={cn(
-                "absolute inset-x-0 top-14 md:top-16 z-50 flex w-full flex-col items-start justify-start gap-3 md:gap-4 rounded-lg bg-white/95 backdrop-blur-md px-4 md:px-6 py-6 md:py-8 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset] dark:bg-neutral-950/95 border border-neutral-200/50",
-                "transition-all duration-200 ease-out transform",
-                isOpen ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-2 scale-95 pointer-events-none",
-                className,
-            )}
-        >
-            {children}
-        </div>
+        <>
+            {/* Backdrop */}
+            <div
+                className={cn(
+                    "fixed inset-0 bg-black/20 backdrop-blur-sm z-40",
+                    "transition-opacity duration-300",
+                    isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}
+                onClick={onClose}
+            />
+
+            {/* Menu */}
+            <div
+                className={cn(
+                    "fixed inset-y-0 right-0 w-full max-w-[100vw] z-50 bg-white/80 dark:bg-neutral-950",
+                    "transition-transform duration-300 ease-in-out",
+                    isOpen ? "translate-x-0" : "translate-x-full",
+                    className
+                )}
+            >
+                <div className="h-full w-full overflow-y-auto">
+                    {children}
+                </div>
+            </div>
+        </>
     );
 };
 
@@ -176,9 +192,7 @@ export const MobileNavToggle = ({
             aria-label={isOpen ? "Close menu" : "Open menu"}
         >
             <div className="transition-transform duration-200">
-                {isOpen ? (
-                    <IconX className="w-5 h-5 md:w-6 md:h-6 text-black dark:text-white" />
-                ) : (
+                {!isOpen && (
                     <IconMenu2 className="w-5 h-5 md:w-6 md:h-6 text-black dark:text-white" />
                 )}
             </div>

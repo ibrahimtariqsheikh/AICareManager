@@ -13,12 +13,13 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from "next/navigation";
-import { LogIn, LayoutDashboard, ChevronDown, Users, Clock, FileText, Pill, DollarSign, BarChart, TrendingUp } from 'lucide-react';
+import { LogIn, LayoutDashboard, ChevronDown, Users, Clock, FileText, Pill, DollarSign, BarChart, TrendingUp, X } from 'lucide-react';
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 
 import React from 'react';
+import Link from "next/link";
 
 
 // Types
@@ -26,6 +27,7 @@ type NavItem = {
   name: string;
   link: string;
   dropdown?: DropdownItem[];
+  hideOnMobile?: boolean;
 };
 
 type DropdownItem = {
@@ -80,6 +82,7 @@ const navItems: NavItem[] = [
   {
     name: "Products",
     link: "/products",
+    hideOnMobile: true,
     dropdown: [
       {
         name: "AI Care Manager",
@@ -112,12 +115,12 @@ const navItems: NavItem[] = [
     link: "/features",
   },
   {
-    name: "Pricing",
-    link: "/pricing",
-  },
-  {
     name: "Watch Demo",
     link: "/watch-demo",
+  },
+  {
+    name: "Pricing",
+    link: "/pricing",
   },
 ];
 
@@ -262,42 +265,74 @@ const MobileNavigation = ({
 }) => {
   return (
     <MobileNavMenu isOpen={isOpen} onClose={onClose}>
-      {navItems.map((item, idx) => (
-        <a
-          key={`mobile-link-${idx}`}
-          href={item.link}
-          onClick={onClose}
-          className="relative text-neutral-600 dark:text-neutral-300 text-lg py-2"
-        >
-          <span className="block">{item.name}</span>
-        </a>
-      ))}
-      <div className="flex w-full flex-col gap-4 mt-6">
-        {user ? (
-          <NavbarButton
-            onClick={() => {
-              router.push("/dashboard");
-              onClose();
-            }}
-            variant="primary"
-            className="w-full text-base py-3"
-          >
-            <LayoutDashboard className="w-4 h-4 mr-2" />
-            Dashboard
-          </NavbarButton>
-        ) : (
-          <NavbarButton
-            onClick={() => {
-              router.push("/signin");
-              onClose();
-            }}
-            variant="primary"
-            className="w-full text-base py-3"
-          >
-            <LogIn className="w-4 h-4 mr-2" />
-            Login
-          </NavbarButton>
-        )}
+      <div className="flex flex-col h-full">
+        {/* Close button */}
+        <div className="flex justify-between items-center px-4 py-2">
+          <Image src="/assets/aimlogo.png" alt="logo" width={45} height={45} className="md:w-[50px] md:h-[50px]" loading="lazy" quality={100} />
+          <div className="flex items-center justify-center gap-1">
+            <Button variant="default" onClick={() => { }} className=" hover:bg-neutral-100 p-3 rounded-lg transition-colors text-sm">Contact Us</Button>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+              aria-label="Close menu"
+            >
+              <X className="w-4 h-4 text-neutral-600" />
+            </button>
+          </div>
+        </div>
+        <div className="border-b border-neutral-300 w-full" />
+        <div className="flex-1 space-y-2 px-4 mt-10">
+          {navItems.filter(item => !item.hideOnMobile).map((item, idx) => (
+            <Link
+              key={`mobile-link-${idx}`}
+              href={item.link}
+              onClick={onClose}
+              className="text-md text-lg block font-medium text-neutral-800 py-2 hover:text-black transition-colors hover:underline underline-offset-4 leading-relaxed tracking-tighter"
+            >
+              {item.name}
+            </Link>
+          ))}
+
+          <div className="pt-6 ">
+            {user ? (
+              <Button
+                onClick={() => {
+                  router.push("/dashboard");
+                  onClose();
+                }}
+                variant="default"
+                className="w-full py-5 text-sm font-medium bg-primary text-white"
+              >
+                <LayoutDashboard className="w-4 h-4 mr-1" />
+                Dashboard
+              </Button>
+            ) : (
+              <div className="space-y-4">
+                <Button
+                  onClick={() => {
+                    router.push("/signin");
+                    onClose();
+                  }}
+                  variant="outline"
+                  className="w-full py-5 text-sm font-medium"
+                >
+                  <LogIn className="w-4 h-4 mr-1" />
+                  Login
+                </Button>
+                <Button
+                  onClick={() => {
+                    router.push("/demo/book");
+                    onClose();
+                  }}
+                  variant="default"
+                  className="w-full py-5 text-sm font-medium bg-primary text-white"
+                >
+                  Book a demo
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </MobileNavMenu>
   );

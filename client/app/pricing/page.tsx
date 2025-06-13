@@ -138,17 +138,17 @@ export default function PricingPage() {
         <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="text-center mb-24">
-                    <h2 className="text-6xl font-bold text-neutral-900 mb-4 tracking-tight leading-relaxed">
+                <div className="text-center mb-12 md:mb-24">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 mb-4 tracking-tighter leading-tight md:leading-relaxed">
                         Simple, Transparent Pricing
                     </h2>
-                    <p className="text-lg text-neutral-500 max-w-2xl mx-auto tracking-tight leading-relaxed font-medium">
+                    <p className="text-base md:text-lg text-neutral-500 max-w-2xl mx-auto tracking-tight leading-relaxed font-medium">
                         Choose the perfect plan for your care home. All plans include our core features and regular updates.
                     </p>
                 </div>
 
                 {/* Pricing Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 md:mb-24">
                     {plans.map((plan, index) => (
                         <div
                             key={plan.name}
@@ -174,7 +174,7 @@ export default function PricingPage() {
                                     <div className="mt-4 flex items-baseline justify-center">
                                         {plan.price ? (
                                             <>
-                                                <span className="text-4xl font-bold tracking-tight text-neutral-900">£{plan.price}</span>
+                                                <span className="text-3xl md:text-4xl font-bold tracking-tight text-neutral-900">£{plan.price}</span>
                                                 <span className="ml-1 text-xs font-medium text-neutral-500">+VAT {plan.period}</span>
                                             </>
                                         ) : (
@@ -192,7 +192,7 @@ export default function PricingPage() {
                                                     <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                                                 </svg>
                                             </div>
-                                            <span className="ml-3 text-sm text-neutral-500">{feature}</span>
+                                            <span className="ml-3 text-sm text-neutral-600 leading-relaxed">{feature}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -212,7 +212,7 @@ export default function PricingPage() {
                 </div>
 
                 {/* Pricing Calculator Section */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 md:mb-24">
                     <div className="bg-white rounded-2xl ring-1 ring-neutral-200 p-8">
                         <div className="flex items-start gap-4">
                             <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
@@ -221,8 +221,8 @@ export default function PricingPage() {
                                 </svg>
                             </div>
                             <div className="flex-grow">
-                                <h3 className="text-lg font-semibold text-neutral-900">Calculate Your Custom Price</h3>
-                                <p className="mt-2 text-sm text-neutral-500 leading-relaxed ">
+                                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-neutral-900 mb-4 tracking-tight leading-tight md:leading-relaxed">Calculate Your Custom Price</h3>
+                                <p className="text-base md:text-lg text-neutral-500 max-w-2xl tracking-tight leading-relaxed font-medium">
                                     Wondering what AIM will cost your agency?
                                 </p>
 
@@ -234,7 +234,7 @@ export default function PricingPage() {
                                             name="plan"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Select Your Plan</FormLabel>
+                                                    <FormLabel className="text-base font-medium text-neutral-900">Select Your Plan</FormLabel>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                         <button
                                                             type="button"
@@ -270,7 +270,7 @@ export default function PricingPage() {
                                             name="staffCount"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Number of Active Staff</FormLabel>
+                                                    <FormLabel className="text-base font-medium text-neutral-900">Number of Active Staff</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             type="number"
@@ -290,7 +290,7 @@ export default function PricingPage() {
                                             name="addons"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Optional Add-ons</FormLabel>
+                                                    <FormLabel className="text-base font-medium text-neutral-900">Optional Add-ons</FormLabel>
                                                     <div className="space-y-3">
                                                         <div className="flex items-start gap-3 p-4 rounded-lg border border-neutral-200 hover:border-primary/50 transition-all duration-200">
                                                             <div className="mt-1">
@@ -301,7 +301,7 @@ export default function PricingPage() {
                                                             </div>
                                                             <div className="flex-1">
                                                                 <div className="font-medium text-neutral-900">Policies and Procedures</div>
-                                                                <div className="text-sm text-neutral-500">170+ regularly updated, CQC / CI / CIW-compliant templates</div>
+                                                                <div className="text-sm text-neutral-500 leading-relaxed">170+ regularly updated, CQC / CI / CIW-compliant templates</div>
                                                                 <div className="text-sm text-neutral-500 mt-1">£90 + VAT /month</div>
                                                             </div>
                                                         </div>
@@ -314,7 +314,7 @@ export default function PricingPage() {
                                                             </div>
                                                             <div className="flex-1">
                                                                 <div className="font-medium text-neutral-900">Operational Document Pack</div>
-                                                                <div className="text-sm text-neutral-500">Key daily-use forms & templates for efficient care delivery</div>
+                                                                <div className="text-sm text-neutral-500 leading-relaxed">Key daily-use forms & templates for efficient care delivery</div>
                                                                 <div className="text-sm text-neutral-500 mt-1">£50 + VAT /month</div>
                                                             </div>
                                                         </div>
