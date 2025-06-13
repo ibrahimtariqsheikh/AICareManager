@@ -29,22 +29,21 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
         // Set initial state
         gsap.set([titleRef.current?.children, subtitleRef.current, imageRef.current, buttonsRef.current?.children], {
             opacity: 0,
-            y: 30
+            y: 20
         });
 
         const ctx = gsap.context(() => {
-            // Main content animations with smoother easing
+            // Main content animations
             if (titleRef.current?.children) {
                 gsap.fromTo(
                     Array.from(titleRef.current.children),
-                    { opacity: 0, y: 20, filter: "blur(8px)" },
+                    { opacity: 0, y: 10 },
                     {
                         opacity: 1,
                         y: 0,
-                        filter: "blur(0px)",
-                        duration: 0.8,
-                        stagger: 0.08,
-                        ease: "power3.out",
+                        duration: 0.3,
+                        stagger: 0.1,
+                        ease: "power2.out",
                     }
                 );
             }
@@ -52,14 +51,8 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
             if (subtitleRef.current) {
                 gsap.fromTo(
                     subtitleRef.current,
-                    { opacity: 0, y: 25 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.9,
-                        delay: 0.4,
-                        ease: "power3.out"
-                    }
+                    { opacity: 0, y: 20 },
+                    { opacity: 1, y: 0, duration: 0.5, delay: 0.3 }
                 );
             }
 
@@ -67,10 +60,10 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                 gsap.to(Array.from(buttonsRef.current.children), {
                     opacity: 1,
                     y: 0,
-                    duration: 0.7,
-                    delay: 0.7,
-                    stagger: 0.15,
-                    ease: "power3.out"
+                    duration: 0.5,
+                    delay: 0.6,
+                    stagger: 0.1,
+                    ease: "power2.out"
                 });
             }
 
@@ -78,24 +71,24 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
                 gsap.to(imageRef.current, {
                     opacity: 1,
                     y: 0,
-                    duration: 1.2,
-                    delay: 0.6,
-                    ease: "power3.out"
+                    duration: 0.8,
+                    delay: 0.5,
+                    ease: "power2.out"
                 });
             }
 
-            // Smoother floating elements animations
+            // Floating elements animations
             floatingElementsRef.current.forEach((el, index) => {
                 if (!el) return;
 
                 gsap.to(el, {
-                    x: gsap.utils.wrap(["-25%", "15%", "-12%"]),
-                    y: gsap.utils.wrap(["-18%", "22%", "-8%"]),
-                    scale: gsap.utils.wrap([1, 1.15, 0.95, 1.08]),
-                    duration: 18 + index * 3,
+                    x: gsap.utils.wrap(["-30%", "20%", "-15%"]),
+                    y: gsap.utils.wrap(["-20%", "25%", "-10%"]),
+                    scale: gsap.utils.wrap([1, 1.2, 0.9, 1.1]),
+                    duration: 15 + index * 2,
                     repeat: -1,
                     yoyo: true,
-                    ease: "sine.inOut",
+                    ease: "none",
                 });
             });
         }, containerRef);
@@ -130,7 +123,7 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
             <div className="container mx-auto px-6 pt-10 pb-16 md:pt-24 md:pb-24 relative z-10">
                 <div className="mx-auto text-center">
                     <div className="flex justify-center mb-4">
-                        <div className={cn("text-[13px] bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-4 py-2 relative tracking-tight leading-relaxed")}>
+                        <div className={cn("text-xs bg-blue-500/20 text-blue-600 font-medium border border-blue-500/30 rounded-full px-3 py-1.5 relative tracking-tight leading-relaxed")}>
                             <div className="absolute inset-0 rounded-full bg-blue-500/30 blur-xl -z-10 animate-pulse"></div>
                             AI-Powered Care Management
                         </div>
