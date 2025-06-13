@@ -118,29 +118,32 @@ const AnimatedDropdownSection: React.FC = () => {
     const progressBarRefs = useRef<(HTMLDivElement | null)[]>([]);
     const timelineRef = useRef<gsap.core.Timeline | null>(null);
     const autoRotateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
     // Initialize GSAP animations
     useEffect(() => {
         if (!sectionRef.current) return;
 
-        // Animate section entrance immediately
-        gsap.from(sectionRef.current, {
-            opacity: 0,
-            y: 30,
-            duration: 0.8,
-            ease: "power2.out"
-        });
+        // Animate section entrance when in view
+        if (isInView) {
+            gsap.from(sectionRef.current, {
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        }
 
         return () => {
             if (timelineRef.current) {
                 timelineRef.current.kill();
             }
         };
-    }, []);
+    }, [isInView]);
 
     // Handle auto-rotation with smoother transitions
     useEffect(() => {
-        if (!isAutoRotating) return;
+        if (!isAutoRotating || !isInView) return;
 
         const startAutoRotation = () => {
             autoRotateTimeoutRef.current = setTimeout(() => {
@@ -148,7 +151,7 @@ const AnimatedDropdownSection: React.FC = () => {
                     const next = (prev + 1) % features.length;
                     return next;
                 });
-            }, 5000); // Slightly shorter for better pacing
+            }, 5000);
         };
 
         startAutoRotation();
@@ -158,10 +161,12 @@ const AnimatedDropdownSection: React.FC = () => {
                 clearTimeout(autoRotateTimeoutRef.current);
             }
         };
-    }, [activeFeature, isAutoRotating]);
+    }, [activeFeature, isAutoRotating, isInView]);
 
     // Handle expanded state with smoother transitions
     useEffect(() => {
+        if (!isInView) return;
+
         // Smooth transition for expanding/collapsing
         const transitionDelay = 150;
 
@@ -211,7 +216,7 @@ const AnimatedDropdownSection: React.FC = () => {
 
             tl.to(activeProgressBar, {
                 width: "100%",
-                duration: 4.7, // Slightly shorter to account for delays
+                duration: 4.7,
                 ease: "none",
                 onComplete: () => {
                     // Smooth reset with fade
@@ -233,7 +238,7 @@ const AnimatedDropdownSection: React.FC = () => {
 
             timelineRef.current = tl;
         }
-    }, [activeFeature]);
+    }, [activeFeature, isInView]);
 
     const toggleFeature = (index: number) => {
         // Pause auto-rotation when user interacts
@@ -458,8 +463,8 @@ export default function Home() {
                     <AnimatedDropdownSection />
                 </div>
 
-                <div className="lg:hidden w-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white p-4 mb-4">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white capitalize tracking-tighter leading-relaxed">Your entire Agency - in 8 steps</h2>
+                <div className="lg:hidden w-full  p-4 mb-4">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-black capitalize tracking-tighter leading-relaxed">Your entire Agency - in 8 steps</h2>
                 </div>
 
                 {/* Mobile Timeline Steps */}
@@ -469,62 +474,52 @@ export default function Home() {
                             {
                                 title: "Automatic Staff & Client Onboarding",
                                 description: "Just tell AIM Assist who to onboard — it instantly sends invites, collects info, and confirms when done.",
-                                icon: Users,
                                 feature: "onboarding" as const
                             },
                             {
                                 title: "AI-Powered Care Plan Drafting",
                                 description: "Send consultation notes — get a detailed, compliant care plan ready for approval and signature.",
-                                icon: FileText,
                                 feature: "care-planning" as const
                             },
                             {
                                 title: "Medication Setup with AI",
                                 description: "Tell AIM Assist the meds and dosages — it auto-updates EMAR and flags anything missing.",
-                                icon: Pill,
                                 feature: "medication" as const
                             },
                             {
                                 title: "Smart Scheduling by Text",
                                 description: "Just type the schedule request — AIM creates the full rota with optimal care matches.",
-                                icon: Clock,
                                 feature: "scheduling" as const
                             },
                             {
                                 title: "Instant Invoices & Payroll",
                                 description: "Once visits are logged, ask AIM for invoices or payslips — it builds and sends them automatically.",
-                                icon: DollarSign,
                                 feature: "invoicing" as const
                             },
                             {
                                 title: "Visit Reporting with AI Support",
                                 description: "Care workers check in, write quick notes — AIM rephrases and formats perfect logs instantly.",
-                                icon: MessageSquare,
                                 feature: "visit-reporting" as const
                             },
                             {
                                 title: "Custom AI Dashboards",
                                 description: "Ask AIM to generate any dashboard — track alerts, care delivery, finances, or audits in real time.",
-                                icon: BarChart,
                                 feature: "compliance" as const
                             }
                         ].map((step, index) => (
                             <div key={index} className="relative">
                                 <div className="flex items-start gap-4 mb-6">
                                     <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                                        <step.icon className="w-5 h-5 text-blue-600" />
+                                        <span className="text-lg font-semibold text-blue-600">{index + 1}</span>
                                     </div>
                                     <div className="flex-1">
                                         <h3 className="text-base font-semibold text-neutral-900 mb-1">{step.title}</h3>
                                         <p className="text-sm text-neutral-600 leading-relaxed">{step.description}</p>
                                     </div>
                                 </div>
-                                <div className="ml-14">
+                                <div>
                                     <AIChatDemo speed={1.5} feature={step.feature} />
                                 </div>
-                                {index < 7 && (
-                                    <div className="absolute left-5 top-10 bottom-0 w-px bg-gray-200" />
-                                )}
                             </div>
                         ))}
                     </div>
