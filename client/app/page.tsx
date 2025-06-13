@@ -399,7 +399,7 @@ export default function Home() {
             <div className="mt-10 fixed top-0 left-0 right-0 z-50">
                 <MyNavbar />
             </div>
-            <div className="min-h-screen mt-20 w-full max-w-[100vw]">
+            <div className="min-h-screen mt-24 w-full max-w-[100vw]">
                 <div className="w-full">
                     <div className="relative z-40">
                         <HeroSection
