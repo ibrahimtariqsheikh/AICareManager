@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react"
 import React from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useLenis } from "@/hooks/useLenis"
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -413,6 +414,7 @@ const AnimatedDropdownSection: React.FC = () => {
 
 
 export default function Home() {
+    useLenis();
 
     return (
         <>
