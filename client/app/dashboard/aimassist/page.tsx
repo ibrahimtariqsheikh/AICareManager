@@ -4,13 +4,20 @@ import React, { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { useChat } from "@ai-sdk/react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Lightbulb, ArrowUp, Mic } from "lucide-react"
+import { Lightbulb, ArrowUp, Mic, Plus } from "lucide-react"
 import { cn, getRandomPlaceholderImage } from "@/lib/utils"
 import { AnimatePresence, motion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"
+import { FileUpload } from "./components/file-upload"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 
 import { AppointmentTool } from "./tools/appointment-tool"
 import { CreateClientTool } from "./tools/create-client-tool"
@@ -25,6 +32,8 @@ import CreateCareWorkerTool from "./tools/create-care-worker-tool"
 import CreateOfficeStaffTool from "./tools/create-office-staff-tool"
 import { useAppSelector } from "@/hooks/useAppSelector"
 import { RootState } from "@/state/redux"
+import Image from "next/image"
+import { MedicationTool } from "./tools/medication-tool"
 
 // Add type declarations at the top of the file
 interface SpeechRecognitionEvent extends Event {
@@ -108,6 +117,8 @@ const ToolComponent = React.memo(({ part, messageId, index }: { part: any; messa
             return <OnboardingInviteTool key={toolKey} {...part.toolInvocation} />
         case "viewAlerts":
             return <AlertsTool key={toolKey} {...part.toolInvocation} />
+        case "medication":
+            return <MedicationTool key={toolKey} {...part.toolInvocation} />
         default:
             return null
     }
@@ -258,6 +269,7 @@ export default function ChatUI() {
     const [finalTranscript, setFinalTranscript] = useState("")
     const [silenceTimer, setSilenceTimer] = useState<NodeJS.Timeout | null>(null)
     const [shouldRestart, setShouldRestart] = useState(false)
+    const [showFileUpload, setShowFileUpload] = useState(false)
 
     // Memoize hasMessages to prevent unnecessary re-renders
     const hasMessages = useMemo(() => chat.messages.length > 0, [chat.messages.length])
@@ -269,12 +281,11 @@ export default function ChatUI() {
     const onSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault()
-            if (chat.input.trim() && !chat.isLoading) {
-                // Prevent submission while loading
+            if (chat.input.trim() && chat.status !== 'streaming') {
                 chat.handleSubmit(e)
             }
         },
-        [chat.input, chat.handleSubmit, chat.isLoading],
+        [chat.input, chat.handleSubmit, chat.status],
     )
 
     // Scroll to bottom when messages change
@@ -286,43 +297,43 @@ export default function ChatUI() {
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.key === "Enter" && !e.shiftKey && !chat.isLoading && !isListening) {
+            if (e.key === "Enter" && !e.shiftKey && chat.status !== 'streaming' && !isListening) {
                 e.preventDefault()
                 onSubmit(e as unknown as React.FormEvent<HTMLFormElement>)
             }
         },
-        [onSubmit, chat.isLoading, isListening],
+        [onSubmit, chat.status, isListening],
     )
 
     // Memoize suggestion handler to prevent re-creation
     const handleSuggestionSelect = useCallback(
         (text: string) => {
-            if (chat.isLoading) return // Prevent multiple submissions
+            if (chat.status === 'streaming') return
 
             chat.append({
                 role: "user",
                 content: text,
                 createdAt: new Date(),
-                id: `user-${Date.now()}-${Math.random()}`, // More unique ID
+                id: `user-${Date.now()}-${Math.random()}`,
             })
         },
-        [chat.append, chat.isLoading],
+        [chat.append, chat.status],
     )
 
     // Memoize button click handler
     const handleSendClick = useCallback(
         (e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault()
-            if (chat.input.trim() && !chat.isLoading) {
+            if (chat.input.trim() && chat.status !== 'streaming') {
                 onSubmit(e as unknown as React.FormEvent<HTMLFormElement>)
             }
         },
-        [onSubmit, chat.input, chat.isLoading],
+        [onSubmit, chat.input, chat.status],
     )
 
     // Function to restart recognition after silence
     const restartRecognition = useCallback(() => {
-        if (recognition && isListening && !chat.isLoading) {
+        if (recognition && isListening && chat.status !== 'streaming') {
             try {
                 recognition.stop()
                 setShouldRestart(true)
@@ -330,7 +341,7 @@ export default function ChatUI() {
                 console.log('Recognition already stopped')
             }
         }
-    }, [recognition, isListening, chat.isLoading])
+    }, [recognition, isListening, chat.status])
 
     // Initialize speech recognition with improved continuous listening
     useEffect(() => {
@@ -415,7 +426,7 @@ export default function ChatUI() {
                     }
 
                     // Restart if we should continue listening
-                    if (shouldRestart && isListening && !chat.isLoading) {
+                    if (shouldRestart && isListening && chat.status !== 'streaming') {
                         console.log('Restarting recognition...')
                         setTimeout(() => {
                             try {
@@ -437,7 +448,7 @@ export default function ChatUI() {
                 setRecognition(recognition)
             }
         }
-    }, [chat.setInput, silenceTimer, shouldRestart, isListening, chat.isLoading])
+    }, [chat.setInput, silenceTimer, shouldRestart, isListening, chat.status])
 
     const toggleListening = useCallback(() => {
         if (!recognition) return
@@ -477,16 +488,10 @@ export default function ChatUI() {
     // Add global keyboard event listener
     useEffect(() => {
         const handleGlobalKeyDown = (e: KeyboardEvent) => {
-            // Don't trigger if:
-            // 1. User is typing in an input/textarea
-            // 2. User is holding shift (for new lines)
-            // 3. Chat is loading
-            // 4. Voice recording is active
-            // 5. No input text
             if (
                 e.key === "Enter" &&
                 !e.shiftKey &&
-                !chat.isLoading &&
+                chat.status !== 'streaming' &&
                 !isListening &&
                 chat.input.trim() &&
                 !(e.target instanceof HTMLInputElement) &&
@@ -499,7 +504,7 @@ export default function ChatUI() {
 
         window.addEventListener('keydown', handleGlobalKeyDown)
         return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-    }, [onSubmit, chat.isLoading, isListening, chat.input])
+    }, [onSubmit, chat.status, isListening, chat.input])
 
     // Display transcript (interim or input)
     const displayTranscript = useMemo(() => {
@@ -509,79 +514,62 @@ export default function ChatUI() {
         return chat.input
     }, [isListening, interimTranscript, chat.input])
 
+    const handleFileSelect = useCallback((file: File) => {
+        // Handle the selected file here
+        console.log('Selected file:', file)
+        setShowFileUpload(false)
+    }, [])
+
     return (
         <div className="flex flex-col h-[calc(100vh-4rem)] text-foreground">
             <main className="flex-1 overflow-hidden flex flex-col">
                 <div ref={messagesContainerRef} className="flex-1 overflow-y-auto">
                     {!hasMessages ? (
                         <div className="flex flex-col items-center justify-center w-full h-full px-4">
-                            <div className="flex flex-col gap-4 items-center justify-center">
-                                <Avatar className="h-16 w-16">
-                                    <AvatarImage src="/logos/logo.svg" alt="AIM Assist" />
-                                    <AvatarFallback>AI</AvatarFallback>
-                                </Avatar>
-                                <div className="flex flex-col items-center justify-center gap-1">
-                                    <div className="text-xl font-bold">Ask AIM Assist</div>
-                                    <div className="text-sm text-neutral-500">Automate your healthcare operations with AIM Assist</div>
+                            <div className="relative">
+                                <div className="w-full flex flex-col items-center justify-center gap-1 mb-4">
+                                    <h1 className="text-2xl font-bold">Ask AIM Assist</h1>
+                                    <p className="text-sm text-neutral-600">Automate care, admin, and ops — instantly.
+                                    </p>
                                 </div>
+
                                 <div className="w-full relative">
                                     <textarea
-                                        placeholder={isListening ? "Listening..." : "Ask Anything..."}
-                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl focus:ring-0 resize-none lg:w-[900px] md:w-[500px] sm:w-[400px] xs:w-[300px] border-neutral-300"
-                                        rows={5}
+                                        placeholder="Ask Anything"
+                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-2xl focus:ring-0 resize-none lg:w-[900px] md:w-[500px] sm:w-[400px] xs:w-[300px] border border-neutral-200 shadow-sm "
+                                        rows={4}
                                         value={displayTranscript}
                                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => chat.handleInputChange(e)}
                                         onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e)}
-                                        disabled={chat.isLoading || isListening}
+                                        disabled={chat.status === 'streaming'}
                                     />
-                                    {isListening && !interimTranscript && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-xl">
-                                            <div className="flex items-center gap-2">
-                                                <div className="flex items-center gap-1">
-                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-100" />
-                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-200" />
-                                                </div>
-                                                <span className="text-sm text-foreground/70">Listening for speech...</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div className="absolute bottom-2 right-2 flex items-center gap-2">
+                                    <div className="absolute bottom-5 left-4 flex items-center gap-2">
                                         <Button
-                                            className="rounded-lg"
+                                            className="rounded-full"
                                             size="icon"
-                                            variant="outline"
+                                            variant="ghost"
+                                            onClick={() => setShowFileUpload(true)}
+                                            disabled={chat.status === 'streaming'}
+                                        >
+                                            <Plus className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                    <div className="absolute bottom-5 right-4 flex items-center gap-2">
+                                        <Button
+                                            className="rounded-full"
+                                            size="icon"
+                                            variant="ghost"
                                             onClick={() => setShowSuggestions(true)}
-                                            disabled={chat.isLoading}
+                                            disabled={chat.status === 'streaming'}
                                         >
                                             <Lightbulb className="h-4 w-4" />
                                         </Button>
+
                                         <Button
-                                            className={cn(
-                                                "rounded-lg",
-                                                isListening && "bg-red-500 hover:bg-red-600 text-white",
-                                                isConnecting && "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                            )}
-                                            size="icon"
-                                            variant={isListening ? "default" : "outline"}
-                                            onClick={toggleListening}
-                                            disabled={chat.isLoading || !recognition}
-                                        >
-                                            {isConnecting ? (
-                                                <div className="flex items-center gap-1">
-                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
-                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-100" />
-                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-200" />
-                                                </div>
-                                            ) : (
-                                                <Mic className={cn("h-4 w-4", isListening && "animate-pulse")} />
-                                            )}
-                                        </Button>
-                                        <Button
-                                            className="rounded-lg bg-blue-500 hover:bg-blue-600"
+                                            className="rounded-full bg-primary hover:bg-blue-600"
                                             size="icon"
                                             onClick={handleSendClick}
-                                            disabled={!chat.input.trim() || chat.isLoading}
+                                            disabled={!chat.input.trim() || chat.status === 'streaming'}
                                         >
                                             <ArrowUp className="h-4 w-4" />
                                         </Button>
@@ -603,67 +591,46 @@ export default function ChatUI() {
 
                 {/* Fixed Textarea at the Bottom - Only shown when messages exist */}
                 {hasMessages && (
-                    <div className="sticky bottom-0 bg-background pt-4 pb-6 px-4">
+                    <div className="sticky bottom-0 pt-4 pb-6 px-4">
                         <div className="max-w-5xl mx-auto w-full flex justify-center relative">
                             <div className="w-full flex flex-col gap-2">
                                 <div className="relative">
                                     <textarea
-                                        placeholder={isListening ? "Listening..." : "Ask Anything..."}
-                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-xl border-0 focus:ring-0 shadow-sm resize-none"
-                                        rows={3}
+                                        placeholder="Ask Anything"
+                                        className="p-4 pr-16 text-sm text-neutral-900 placeholder:text-neutral-500 w-full rounded-2xl focus:ring-0 border-neutral-200 border"
+                                        rows={4}
                                         value={displayTranscript}
                                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => chat.handleInputChange(e)}
                                         onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e)}
-                                        disabled={chat.isLoading || isListening}
+                                        disabled={chat.status === 'streaming' || isListening}
                                     />
-                                    {isListening && !interimTranscript && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-xl">
-                                            <div className="flex items-center gap-2">
-                                                <div className="flex items-center gap-1">
-                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-100" />
-                                                    <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse delay-200" />
-                                                </div>
-                                                <span className="text-sm text-foreground/70">Listening for speech...</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div className="absolute bottom-2 right-2 flex items-center gap-2">
+                                    <div className="absolute bottom-5 left-4 flex items-center gap-2">
                                         <Button
-                                            className="rounded-lg"
+                                            className="rounded-full"
                                             size="icon"
-                                            variant="outline"
+                                            variant="ghost"
+                                            onClick={() => setShowFileUpload(true)}
+                                            disabled={chat.status === 'streaming'}
+                                        >
+                                            <Plus className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                    <div className="absolute bottom-5 right-4 flex items-center gap-2">
+                                        <Button
+                                            className="rounded-full"
+                                            size="icon"
+                                            variant="ghost"
                                             onClick={() => setShowSuggestions(true)}
-                                            disabled={chat.isLoading}
+                                            disabled={chat.status === 'streaming'}
                                         >
                                             <Lightbulb className="h-4 w-4" />
                                         </Button>
+
                                         <Button
-                                            className={cn(
-                                                "rounded-lg",
-                                                isListening && "bg-red-500 hover:bg-red-600 text-white",
-                                                isConnecting && "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                            )}
-                                            size="icon"
-                                            variant={isListening ? "default" : "outline"}
-                                            onClick={toggleListening}
-                                            disabled={chat.isLoading || !recognition}
-                                        >
-                                            {isConnecting ? (
-                                                <div className="flex items-center gap-1">
-                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
-                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-100" />
-                                                    <div className="h-2 w-2 rounded-full bg-white animate-pulse delay-200" />
-                                                </div>
-                                            ) : (
-                                                <Mic className={cn("h-4 w-4", isListening && "animate-pulse")} />
-                                            )}
-                                        </Button>
-                                        <Button
-                                            className="rounded-lg bg-blue-500 hover:bg-blue-600"
+                                            className="rounded-full bg-primary hover:bg-blue-600"
                                             size="icon"
                                             onClick={handleSendClick}
-                                            disabled={!chat.input.trim() || chat.isLoading}
+                                            disabled={!chat.input.trim() || chat.status === 'streaming'}
                                         >
                                             <ArrowUp className="h-4 w-4" />
                                         </Button>
@@ -671,14 +638,29 @@ export default function ChatUI() {
                                 </div>
                             </div>
                         </div>
-                        <div className="text-xs text-center mt-2 flex items-center justify-center gap-1 text-muted-foreground">
-                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-foreground/30 animate-pulse"></span>
+                        <div className="text-[10px] text-center mt-2 flex items-center justify-center gap-1 text-neutral-500">
+                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/50"></span>
                             AI Care Assistant may make mistakes. Please verify important information.
                         </div>
                     </div>
                 )}
             </main>
             <SuggestionDialog open={showSuggestions} onOpenChange={setShowSuggestions} onSelect={handleSuggestionSelect} />
+
+            {/* File Upload Dialog */}
+            <Dialog open={showFileUpload} onOpenChange={setShowFileUpload}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Upload File</DialogTitle>
+                    </DialogHeader>
+                    <FileUpload
+                        onFileSelect={handleFileSelect}
+                        onCancel={() => setShowFileUpload(false)}
+                        accept="*/*"
+                        maxSize={10}
+                    />
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

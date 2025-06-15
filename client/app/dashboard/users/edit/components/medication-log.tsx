@@ -93,14 +93,9 @@ export const MedicationLog = () => {
 
         const flatLogs = medicationLogs.flat()
 
-
-
         const matchingLog = flatLogs.find((log) => {
             const logDate = new Date(log.date)
-
             const localLogDate = new Date(logDate.getTime() + logDate.getTimezoneOffset() * 60000)
-
-
 
             return (
                 log.medicationId === medicationId &&
@@ -111,26 +106,36 @@ export const MedicationLog = () => {
         })
 
         if (matchingLog) {
-            return matchingLog.status.toLowerCase()
-        }
 
+            switch (matchingLog.status.toUpperCase()) {
+                case "TAKEN":
+                    return "TAKEN"
+                case "NOT_TAKEN":
+                    return "NOT_TAKEN"
+                case "NOT_REPORTED":
+                case "NOT-REPORTED":
+                    return "NOT_REPORTED"
+                default:
+                    return matchingLog.status
+            }
+        }
 
         const medication = medications.find((med) => med.id === medicationId)
         const isTimeScheduled = timeOfDay && medication && medication[timeOfDay.toLowerCase() as keyof typeof medication]
-        return isTimeScheduled ? "not-reported" : "not-scheduled"
+        return isTimeScheduled ? "NOT_REPORTED" : "NOT_SCHEDULED"
     }
 
     const getStatusClass = (status: string) => {
-        switch (status.toLowerCase()) {
-            case "taken":
+        switch (status.toUpperCase()) {
+            case "TAKEN":
                 return "bg-emerald-400"
-            case "not-taken":
+            case "NOT_TAKEN":
                 return "bg-red-500"
-            case "not-reported":
-                return "bg-white border border-gray-200"
-            case "not-scheduled":
-                return "bg-gray-100"
-            case "empty":
+            case "NOT_REPORTED":
+                return "bg-gray-100 border border-gray-200"
+            case "NOT_SCHEDULED":
+                return "bg-gray-50"
+            case "EMPTY":
                 return "bg-transparent"
             default:
                 return "bg-gray-100"
@@ -138,14 +143,16 @@ export const MedicationLog = () => {
     }
 
     const getDayStatus = (status: string) => {
-        switch (status.toLowerCase()) {
-            case "taken":
+        switch (status.toUpperCase()) {
+            case "TAKEN":
                 return "text-white"
-            case "not-taken":
+            case "NOT_TAKEN":
                 return "text-white"
-            case "not-reported":
+            case "NOT_REPORTED":
                 return "text-neutral-500"
-            case "empty":
+            case "NOT_SCHEDULED":
+                return "text-neutral-500"
+            case "EMPTY":
                 return "text-neutral-500"
             default:
                 return "text-neutral-500"
@@ -153,16 +160,16 @@ export const MedicationLog = () => {
     }
 
     const getStatusTitle = (status: string) => {
-        switch (status.toLowerCase()) {
-            case "taken":
+        switch (status.toUpperCase()) {
+            case "TAKEN":
                 return "Taken"
-            case "not-taken":
+            case "NOT_TAKEN":
                 return "Not taken"
-            case "not-reported":
+            case "NOT_REPORTED":
                 return "Not reported"
-            case "not-scheduled":
+            case "NOT_SCHEDULED":
                 return "Not scheduled"
-            case "empty":
+            case "EMPTY":
                 return ""
             default:
                 return ""
@@ -184,21 +191,20 @@ export const MedicationLog = () => {
 
     const handleDeleteMedication = async (medicationId: string) => {
         try {
-            const response = await deleteMedication(medicationId)
-                ("Response:", response)
+            await deleteMedication(medicationId)
             dispatch(deleteMedicationRedux(medicationId))
             toast.success("Medication deleted successfully")
         } catch (error) {
             toast.error("Error deleting medication")
-                ("Error deleting medication:", error)
+            console.error("Error deleting medication:", error)
         }
     }
 
     return (
         <div className="p-2">
             <div className="flex items-center justify-between mb-8 border-b pb-4">
-                <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <Calendar className="mr-2 w-4 h-4" />
+                <h2 className="text-lg font-semibold text-neutral-800 flex items-center">
+                    <Calendar className="mr-3 w-4 h-4" />
                     EMAR
                 </h2>
                 <div className="flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-2 -sm">
@@ -210,7 +216,7 @@ export const MedicationLog = () => {
                     >
                         <ChevronLeft className="h-5 w-5" />
                     </Button>
-                    <span className="text-lg font-semibold text-gray-800">
+                    <span className="text-lg font-semibold text-neutral-800">
                         {monthNames[Number.parseInt(selectedMonth)]} {selectedYear}
                     </span>
                     <Button
@@ -230,11 +236,11 @@ export const MedicationLog = () => {
                         <div className="flex items-center space-x-3 text-sm justify-center">
                             <span className="legend-item flex items-center">
                                 <span className="inline-block w-4 h-4 bg-emerald-500 rounded-sm mr-1" />
-                                <span className="text-xs">Taken</span>
+                                <span className="text-xs">Administered</span>
                             </span>
                             <span className="legend-item flex items-center">
                                 <span className="inline-block w-4 h-4 bg-red-500 rounded-sm mr-1" />
-                                <span className="text-xs">Not taken</span>
+                                <span className="text-xs">Not administered</span>
                             </span>
                             <span className="legend-item flex items-center">
                                 <span className="inline-block w-4 h-4 bg-gray-200 border border-gray-200 rounded-sm mr-1" />
@@ -340,8 +346,18 @@ export const MedicationLog = () => {
                                                                                 return (
                                                                                     <div
                                                                                         key={`${weekIndex}-${dayIndex}`}
-                                                                                        className={`w-5 h-5 ${statusClass} rounded-sm flex items-center justify-center`}
+                                                                                        className={`w-5 h-5 ${statusClass} rounded-sm flex items-center justify-center cursor-pointer hover:opacity-80`}
                                                                                         title={`${day ? day : ""} - ${statusTitle}`}
+                                                                                        onClick={() => {
+                                                                                            if (day && day <= daysInMonth) {
+                                                                                                dispatch(openCheckInModal({
+                                                                                                    medicationId: medication.id,
+                                                                                                    timeOfDay,
+                                                                                                    day,
+                                                                                                    currentStatus: status
+                                                                                                }))
+                                                                                            }
+                                                                                        }}
                                                                                     >
                                                                                         {day && day <= daysInMonth && (
                                                                                             <span className={`text-[10px] font-medium ${dayStatus}`}>{day}</span>
@@ -355,7 +371,7 @@ export const MedicationLog = () => {
                                                             </div>
 
 
-                                                            <div className="mt-4 flex justify-center">
+                                                            {/* <div className="mt-4 flex justify-center">
                                                                 <Button
                                                                     variant="outline"
                                                                     size="sm"
@@ -369,7 +385,7 @@ export const MedicationLog = () => {
                                                                         <span className="text-sm font-medium">Check in</span>
                                                                     </div>
                                                                 </Button>
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                         {index < array.length - 1 && <div className="w-px h-full bg-neutral-200 mx-3" />}
                                                     </React.Fragment>

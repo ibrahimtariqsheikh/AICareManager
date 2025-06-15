@@ -58,16 +58,20 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children, user
     // Initialize socket connection when user is available
     useEffect(() => {
         if (currentUserId) {
-
             let isMounted = true;
 
             const initializeSocket = async () => {
                 try {
+                    console.log("Initializing socket connection for user:", currentUserId);
                     const socket = await socketService.connect(currentUserId);
-                    if (socket && isMounted) {
+
+                    if (!socket) {
+                        console.error("Socket connection failed - no socket returned");
+                        return;
+                    }
+
+                    if (isMounted) {
                         console.log("Socket connection established successfully");
-                    } else if (isMounted) {
-                        console.error("Failed to establish socket connection");
                     }
                 } catch (error) {
                     if (isMounted) {
@@ -188,13 +192,25 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children, user
     // Send a new message
     const sendMessage = async (content: string) => {
         if (!content.trim() || !currentConversationId || !currentUserId) {
-            console.log("Cannot send message:", { content, currentConversationId, currentUserId })
-            return
+            console.log("Cannot send message:", { content, currentConversationId, currentUserId });
+            return;
+        }
+
+        // Check socket connection
+        if (!socketService.isConnected()) {
+            console.log("Socket not connected, attempting to reconnect...");
+            try {
+                await socketService.connect(currentUserId);
+            } catch (error) {
+                console.error("Failed to reconnect socket:", error);
+                setError("Failed to connect to chat server. Please try again.");
+                return;
+            }
         }
 
         // Generate tempId outside try block so it's accessible in catch
-        const tempId = uuidv4()
-        console.log("Sending message with tempId:", tempId)
+        const tempId = uuidv4();
+        console.log("Sending message with tempId:", tempId);
 
         try {
             // Optimistic update with temporary ID
@@ -210,14 +226,14 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children, user
                     fullName: user?.fullName || "You",
                     email: user?.email || "",
                 },
-            }
+            };
 
-            console.log("Adding optimistic message:", tempMessage)
-            setMessages((prev) => [...prev, tempMessage])
+            console.log("Adding optimistic message:", tempMessage);
+            setMessages((prev) => [...prev, tempMessage]);
 
             // Send to server
-            const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001'}/messages`
-            console.log("Sending message to server:", apiUrl)
+            const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001'}/messages`;
+            console.log("Sending message to server:", apiUrl);
 
             const response = await fetch(apiUrl, {
                 method: "POST",
@@ -230,36 +246,41 @@ export const MessageProvider: React.FC<MessageProviderProps> = ({ children, user
                     conversationId: currentConversationId,
                     senderId: currentUserId,
                 }),
-            })
+            });
 
-            console.log("Server response status:", response.status)
+            console.log("Server response status:", response.status);
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => null)
-                console.error("Server error response:", errorData)
-                throw new Error(errorData?.error || `Failed to send message: ${response.status}`)
+                const errorData = await response.json().catch(() => null);
+                console.error("Server error response:", errorData);
+                throw new Error(errorData?.error || `Failed to send message: ${response.status}`);
             }
 
-            const savedMessage = await response.json()
-            console.log("Message saved successfully:", savedMessage)
+            const savedMessage = await response.json();
+            console.log("Message saved successfully:", savedMessage);
 
             // Replace temp message with saved one
-            setMessages((prev) => prev.map((m) => (m.id === tempId ? savedMessage : m)))
+            setMessages((prev) => prev.map((m) => (m.id === tempId ? savedMessage : m)));
 
             // Emit socket event for real-time updates
-            socketService.sendMessage({
-                conversationId: currentConversationId,
-                content,
-                senderId: currentUserId
-            })
+            if (socketService.isConnected()) {
+                console.log("Emitting socket message");
+                socketService.sendMessage({
+                    conversationId: currentConversationId,
+                    content,
+                    senderId: currentUserId
+                });
+            } else {
+                console.warn("Socket not connected, skipping real-time update");
+            }
         } catch (err) {
-            console.error("Error sending message:", err)
-            setError(err instanceof Error ? err.message : "Failed to send message")
+            console.error("Error sending message:", err);
+            setError(err instanceof Error ? err.message : "Failed to send message");
 
             // Remove the optimistic message on error
-            setMessages((prev) => prev.filter((m) => m.id !== tempId))
+            setMessages((prev) => prev.filter((m) => m.id !== tempId));
         }
-    }
+    };
 
     // Delete a message
     const deleteMessage = async (id: string) => {

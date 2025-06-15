@@ -13,6 +13,7 @@ interface MedicationState {
   selectedMedicationId: string | null
   selectedTimeOfDay: string | null
   selectedDay: number | null
+  currentStatus: string | null
 }
 
 const initialState: MedicationState = {
@@ -27,6 +28,7 @@ const initialState: MedicationState = {
   selectedMedicationId: null,
   selectedTimeOfDay: null,
   selectedDay: null,
+  currentStatus: null,
 }
 
 const medicationSlice = createSlice({
@@ -69,17 +71,19 @@ const medicationSlice = createSlice({
     closeAddMedicationModal: (state) => {
       state.isAddMedicationModalOpen = false
     },
-    openCheckInModal: (state, action: PayloadAction<{ medicationId: string; timeOfDay: string; day: number }>) => {
+    openCheckInModal: (state, action: PayloadAction<{ medicationId: string; timeOfDay: string; day: number; currentStatus: string }>) => {
       state.isCheckInModalOpen = true
       state.selectedMedicationId = action.payload.medicationId
       state.selectedTimeOfDay = action.payload.timeOfDay
       state.selectedDay = action.payload.day
+      state.currentStatus = action.payload.currentStatus
     },
     closeCheckInModal: (state) => {
       state.isCheckInModalOpen = false
       state.selectedMedicationId = null
       state.selectedTimeOfDay = null
       state.selectedDay = null
+      state.currentStatus = null
     },
     setStatus: (state, action: PayloadAction<MedicationState['status']>) => {
       state.status = action.payload

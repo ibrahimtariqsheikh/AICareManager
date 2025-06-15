@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -31,8 +32,6 @@ import {
 import type { EmergencyContact } from "@/types/profileTypes"
 import { useAppDispatch } from "@/state/redux"
 import { updateUser as updateUserAction } from "@/state/slices/userSlice"
-import { CustomInput } from "@/components/ui/custom-input"
-import { CustomSelect } from "@/components/ui/custom-select"
 import { setActiveEditUserTab } from "@/state/slices/tabsSlice"
 import { formatSubrole } from "@/utils/format-role"
 import { MyCustomDateRange } from "@/app/dashboard/billing/components/my-custom-date-range"
@@ -552,7 +551,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             <div className="space-y-2">
                                 <Label className="text-xs font-normal text-neutral-600">UserID</Label>
-                                <CustomInput value={user?.id || ""} disabled />
+                                <Input value={user?.id || ""} disabled />
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-xs font-normal text-neutral-600">Date of Birth</Label>
@@ -574,7 +573,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Preferred Name</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="Preferred Name" />
+                                            <Input {...field} placeholder="Preferred Name" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -588,7 +587,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Full Name</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="Full Name" />
+                                            <Input {...field} placeholder="Full Name" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -602,7 +601,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Contact Number</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="Contact Number" />
+                                            <Input {...field} placeholder="Contact Number" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -616,7 +615,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Email Address</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="Email Address" />
+                                            <Input {...field} placeholder="Email Address" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -630,7 +629,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Address</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="Address" />
+                                            <Input {...field} placeholder="Address" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -644,7 +643,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">City</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="City" />
+                                            <Input {...field} placeholder="City" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -658,7 +657,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Postal Code</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="Postal Code" />
+                                            <Input {...field} placeholder="Postal Code" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -672,7 +671,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Province</FormLabel>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="Province" />
+                                            <Input {...field} placeholder="Province" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -685,18 +684,27 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Role</FormLabel>
-                                        <CustomSelect
+                                        <Select
                                             value={field.value}
-                                            onChange={(value) => {
+                                            onValueChange={(value) => {
                                                 field.onChange(value)
                                                 setSelectedRole(value)
                                             }}
-                                            options={Object.values(Role).map((role) => ({
-                                                label: role,
-                                                value: role,
-                                            }))}
                                             disabled
-                                        />
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select role" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {Object.values(Role).map((role) => (
+                                                    <SelectItem key={role} value={role}>
+                                                        {role}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -708,47 +716,55 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 render={({ field }) => (
                                     <FormItem className="space-y-2">
                                         <FormLabel className="text-xs font-normal text-neutral-600">Sub Role</FormLabel>
-                                        <CustomSelect
+                                        <Select
                                             value={field.value}
-                                            onChange={field.onChange}
-                                            options={Object.entries(SubRole)
-                                                .filter(([key]) => {
-                                                    if (selectedRole === "OFFICE_STAFF") {
-                                                        return [
-                                                            "FINANCE_MANAGER",
-                                                            "HR_MANAGER",
-                                                            "CARE_MANAGER",
-                                                            "SCHEDULING_COORDINATOR",
-                                                            "OFFICE_ADMINISTRATOR",
-                                                            "RECEPTIONIST",
-                                                            "QUALITY_ASSURANCE_MANAGER",
-                                                            "MARKETING_COORDINATOR",
-                                                            "COMPLIANCE_OFFICER",
-                                                        ].includes(key)
-                                                    }
-                                                    if (selectedRole === "CARE_WORKER") {
-                                                        return [
-                                                            "CAREGIVER",
-                                                            "SENIOR_CAREGIVER",
-                                                            "JUNIOR_CAREGIVER",
-                                                            "TRAINEE_CAREGIVER",
-                                                            "LIVE_IN_CAREGIVER",
-                                                            "PART_TIME_CAREGIVER",
-                                                            "SPECIALIZED_CAREGIVER",
-                                                            "NURSING_ASSISTANT",
-                                                        ].includes(key)
-                                                    }
-                                                    if (selectedRole === "CLIENT") {
-                                                        return ["SERVICE_USER", "FAMILY_AND_FRIENDS", "OTHER"].includes(key)
-                                                    }
-                                                    return false
-                                                })
-                                                .map(([_, value]) => ({
-                                                    label: formatSubrole(value),
-                                                    value: value,
-                                                }))}
-                                            placeholder="Select Sub Role"
-                                        />
+                                            onValueChange={field.onChange}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Sub Role" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {Object.entries(SubRole)
+                                                    .filter(([key]) => {
+                                                        if (selectedRole === "OFFICE_STAFF") {
+                                                            return [
+                                                                "FINANCE_MANAGER",
+                                                                "HR_MANAGER",
+                                                                "CARE_MANAGER",
+                                                                "SCHEDULING_COORDINATOR",
+                                                                "OFFICE_ADMINISTRATOR",
+                                                                "RECEPTIONIST",
+                                                                "QUALITY_ASSURANCE_MANAGER",
+                                                                "MARKETING_COORDINATOR",
+                                                                "COMPLIANCE_OFFICER",
+                                                            ].includes(key)
+                                                        }
+                                                        if (selectedRole === "CARE_WORKER") {
+                                                            return [
+                                                                "CAREGIVER",
+                                                                "SENIOR_CAREGIVER",
+                                                                "JUNIOR_CAREGIVER",
+                                                                "TRAINEE_CAREGIVER",
+                                                                "LIVE_IN_CAREGIVER",
+                                                                "PART_TIME_CAREGIVER",
+                                                                "SPECIALIZED_CAREGIVER",
+                                                                "NURSING_ASSISTANT",
+                                                            ].includes(key)
+                                                        }
+                                                        if (selectedRole === "CLIENT") {
+                                                            return ["SERVICE_USER", "FAMILY_AND_FRIENDS", "OTHER"].includes(key)
+                                                        }
+                                                        return false
+                                                    })
+                                                    .map(([_, value]) => (
+                                                        <SelectItem key={value} value={value}>
+                                                            {formatSubrole(value)}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -772,17 +788,22 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                             <FormItem className="space-y-2">
                                                 <FormLabel className="text-xs font-normal text-neutral-600">Gender</FormLabel>
                                                 <FormControl>
-                                                    <CustomSelect
+                                                    <Select
                                                         value={field.value}
-                                                        onChange={field.onChange}
-                                                        options={[
-                                                            { label: "Male", value: "MALE" },
-                                                            { label: "Female", value: "FEMALE" },
-                                                            { label: "Other", value: "OTHER" },
-                                                            { label: "Prefer not to say", value: "PREFER_NOT_TO_SAY" }
-                                                        ] as SelectOption[]}
-                                                        placeholder="Select gender"
-                                                    />
+                                                        onValueChange={field.onChange}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select gender" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="MALE">Male</SelectItem>
+                                                            <SelectItem value="FEMALE">Female</SelectItem>
+                                                            <SelectItem value="OTHER">Other</SelectItem>
+                                                            <SelectItem value="PREFER_NOT_TO_SAY">Prefer not to say</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -796,7 +817,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                             <FormItem className="space-y-2">
                                                 <FormLabel className="text-xs font-normal text-neutral-600">National Insurance Number</FormLabel>
                                                 <FormControl>
-                                                    <CustomInput {...field} placeholder="e.g. AB123456C" />
+                                                    <Input {...field} placeholder="e.g. AB123456C" />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -810,7 +831,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                             <FormItem className="space-y-2">
                                                 <FormLabel className="text-xs font-normal text-neutral-600">Nationality</FormLabel>
                                                 <FormControl>
-                                                    <CustomInput {...field} placeholder="e.g. British" />
+                                                    <Input {...field} placeholder="e.g. British" />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -824,17 +845,22 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                             <FormItem className="space-y-2">
                                                 <FormLabel className="text-xs font-normal text-neutral-600">Right to Work Status</FormLabel>
                                                 <FormControl>
-                                                    <CustomSelect
+                                                    <Select
                                                         value={field.value}
-                                                        onChange={field.onChange}
-                                                        options={[
-                                                            { label: "British Citizen", value: "BRITISH_CITIZEN" },
-                                                            { label: "EU Citizen", value: "EU_CITIZEN" },
-                                                            { label: "Work Visa", value: "WORK_VISA" },
-                                                            { label: "Other", value: "OTHER" }
-                                                        ]}
-                                                        placeholder="Select status"
-                                                    />
+                                                        onValueChange={field.onChange}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select status" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="BRITISH_CITIZEN">British Citizen</SelectItem>
+                                                            <SelectItem value="EU_CITIZEN">EU Citizen</SelectItem>
+                                                            <SelectItem value="WORK_VISA">Work Visa</SelectItem>
+                                                            <SelectItem value="OTHER">Other</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -848,17 +874,22 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                             <FormItem className="space-y-2">
                                                 <FormLabel className="text-xs font-normal text-neutral-600">DBS Status</FormLabel>
                                                 <FormControl>
-                                                    <CustomSelect
+                                                    <Select
                                                         value={field.value}
-                                                        onChange={field.onChange}
-                                                        options={[
-                                                            { label: "Enhanced", value: "ENHANCED" },
-                                                            { label: "Standard", value: "STANDARD" },
-                                                            { label: "Basic", value: "BASIC" },
-                                                            { label: "Not Available", value: "NOT_AVAILABLE" }
-                                                        ]}
-                                                        placeholder="Select DBS status"
-                                                    />
+                                                        onValueChange={field.onChange}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select DBS status" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="ENHANCED">Enhanced</SelectItem>
+                                                            <SelectItem value="STANDARD">Standard</SelectItem>
+                                                            <SelectItem value="BASIC">Basic</SelectItem>
+                                                            <SelectItem value="NOT_AVAILABLE">Not Available</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -889,31 +920,36 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div className="space-y-2">
                                                         <Label className="text-xs font-normal text-neutral-600">Contact Type</Label>
-                                                        <CustomSelect
+                                                        <Select
                                                             value={contact.type}
-                                                            onChange={(value) => updateContactMethod(contact.id, "type", value)}
-                                                            options={[
-                                                                { label: "Email", value: "EMAIL" },
-                                                                { label: "Phone", value: "PHONE" },
-                                                                { label: "WhatsApp", value: "WHATSAPP" },
-                                                                { label: "Emergency Contact", value: "EMERGENCY" }
-                                                            ] as SelectOption[]}
-                                                            placeholder="Select contact type"
-                                                        />
+                                                            onValueChange={(value) => updateContactMethod(contact.id, "type", value)}
+                                                        >
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select contact type" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="EMAIL">Email</SelectItem>
+                                                                <SelectItem value="PHONE">Phone</SelectItem>
+                                                                <SelectItem value="WHATSAPP">WhatsApp</SelectItem>
+                                                                <SelectItem value="EMERGENCY">Emergency Contact</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
                                                     </div>
                                                     <div className="space-y-2">
                                                         <Label className="text-xs font-normal text-neutral-600">Label</Label>
-                                                        <CustomInput
+                                                        <Input
                                                             value={contact.label}
-                                                            onChange={(value) => updateContactMethod(contact.id, "label", value)}
+                                                            onChange={(e) => updateContactMethod(contact.id, "label", e.target.value)}
                                                             placeholder="e.g. Work Email, Mobile Phone"
                                                         />
                                                     </div>
                                                     <div className="space-y-2 md:col-span-2">
                                                         <Label className="text-xs font-normal text-neutral-600">Value</Label>
-                                                        <CustomInput
+                                                        <Input
                                                             value={contact.value}
-                                                            onChange={(value) => updateContactMethod(contact.id, "value", value)}
+                                                            onChange={(e) => updateContactMethod(contact.id, "value", e.target.value)}
                                                             placeholder="Enter contact details"
                                                         />
                                                     </div>
@@ -964,17 +1000,17 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div className="space-y-2">
                                                         <Label className="text-xs font-normal text-neutral-600">Employer Name</Label>
-                                                        <CustomInput
+                                                        <Input
                                                             value={employment.employerName}
-                                                            onChange={(value) => updateEmploymentHistory(employment.id, "employerName", value)}
+                                                            onChange={(e) => updateEmploymentHistory(employment.id, "employerName", e.target.value)}
                                                             placeholder="Enter employer name"
                                                         />
                                                     </div>
                                                     <div className="space-y-2">
                                                         <Label className="text-xs font-normal text-neutral-600">Role/Job Title</Label>
-                                                        <CustomInput
+                                                        <Input
                                                             value={employment.role}
-                                                            onChange={(value) => updateEmploymentHistory(employment.id, "role", value)}
+                                                            onChange={(e) => updateEmploymentHistory(employment.id, "role", e.target.value)}
                                                             placeholder="Enter job title"
                                                         />
                                                     </div>
@@ -1004,9 +1040,9 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                     </div>
                                                     <div className="space-y-2 md:col-span-2">
                                                         <Label className="text-xs font-normal text-neutral-600">Summary</Label>
-                                                        <CustomInput
+                                                        <Input
                                                             value={employment.summary}
-                                                            onChange={(value) => updateEmploymentHistory(employment.id, "summary", value)}
+                                                            onChange={(e) => updateEmploymentHistory(employment.id, "summary", e.target.value)}
                                                             placeholder="Enter employment summary (optional)"
                                                         />
                                                     </div>
@@ -1057,9 +1093,9 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div className="space-y-2">
                                                         <Label className="text-xs font-normal text-neutral-600">Title</Label>
-                                                        <CustomInput
+                                                        <Input
                                                             value={qualification.title}
-                                                            onChange={(value) => updateQualification(qualification.id, "title", value)}
+                                                            onChange={(e) => updateQualification(qualification.id, "title", e.target.value)}
                                                             placeholder="Enter qualification title"
                                                         />
                                                     </div>
@@ -1145,7 +1181,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem>
                                         <h3 className="text-xs font-normal text-neutral-600">Allergies</h3>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="No allergies recorded" />
+                                            <Input {...field} placeholder="No allergies recorded" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1159,7 +1195,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem>
                                         <h3 className="text-xs font-normal text-neutral-600">Interests</h3>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="No interests recorded" />
+                                            <Input {...field} placeholder="No interests recorded" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1173,7 +1209,7 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <FormItem>
                                         <h3 className="text-xs font-normal text-neutral-600">Medical History</h3>
                                         <FormControl>
-                                            <CustomInput {...field} placeholder="No medical history recorded" />
+                                            <Input {...field} placeholder="No medical history recorded" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -1210,47 +1246,52 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                     <div className="grid gap-4 py-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="name" className="text-xs font-normal text-neutral-600">Name</Label>
-                                            <CustomInput
+                                            <Input
                                                 id="name"
                                                 placeholder="Full name"
                                                 value={newContact.name}
-                                                onChange={(value) => setNewContact({ ...newContact, name: value })}
+                                                onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
                                             />
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="relation" className="text-xs font-normal text-neutral-600">Relationship</Label>
-                                            <CustomSelect
+                                            <Select
                                                 value={newContact.relation}
-                                                onChange={(value) => setNewContact({ ...newContact, relation: value })}
-                                                options={[
-                                                    { label: "Spouse", value: "Spouse" },
-                                                    { label: "Parent", value: "Parent" },
-                                                    { label: "Child", value: "Child" },
-                                                    { label: "Sibling", value: "Sibling" },
-                                                    { label: "Friend", value: "Friend" },
-                                                    { label: "Caregiver", value: "Caregiver" },
-                                                    { label: "Other", value: "Other" }
-                                                ]}
-                                                placeholder="Select relationship"
-                                            />
+                                                onValueChange={(value) => setNewContact({ ...newContact, relation: value })}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select relationship" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Spouse">Spouse</SelectItem>
+                                                    <SelectItem value="Parent">Parent</SelectItem>
+                                                    <SelectItem value="Child">Child</SelectItem>
+                                                    <SelectItem value="Sibling">Sibling</SelectItem>
+                                                    <SelectItem value="Friend">Friend</SelectItem>
+                                                    <SelectItem value="Caregiver">Caregiver</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="phone" className="text-xs font-normal text-neutral-600">Phone Number</Label>
-                                            <CustomInput
+                                            <Input
                                                 id="phone"
                                                 placeholder="(555) 123-4567"
                                                 value={newContact.phone}
-                                                onChange={(value) => setNewContact({ ...newContact, phone: value })}
+                                                onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
                                             />
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="email" className="text-xs font-normal text-neutral-600">Email Address</Label>
-                                            <CustomInput
+                                            <Input
                                                 id="email"
                                                 type="email"
                                                 placeholder="contact@example.com"
                                                 value={newContact.email}
-                                                onChange={(value) => setNewContact({ ...newContact, email: value })}
+                                                onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
                                             />
                                         </div>
                                     </div>
@@ -1376,20 +1417,20 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                 <div className="grid gap-4 py-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="visit-name" className="text-xs font-normal text-neutral-600">Visit Name</Label>
-                                        <CustomInput
+                                        <Input
                                             id="visit-name"
                                             placeholder="e.g. Morning Visit, Medication Check"
                                             value={newVisitType.name}
-                                            onChange={(value) => setNewVisitType({ ...newVisitType, name: value })}
+                                            onChange={(e) => setNewVisitType({ ...newVisitType, name: e.target.value })}
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="visit-description" className="text-xs font-normal text-neutral-600">Description</Label>
-                                        <CustomInput
+                                        <Input
                                             id="visit-description"
                                             placeholder="Describe the purpose of this visit"
                                             value={newVisitType.description}
-                                            onChange={(value) => setNewVisitType({ ...newVisitType, description: value })}
+                                            onChange={(e) => setNewVisitType({ ...newVisitType, description: e.target.value })}
                                         />
                                     </div>
                                 </div>
@@ -1443,15 +1484,23 @@ export const PatientInformation = ({ user }: { user: User }) => {
                                                     <div className="grid gap-4 py-4">
                                                         <div className="space-y-2">
                                                             <Label htmlFor="task-type" className="text-xs font-normal text-neutral-600">Task Type</Label>
-                                                            <CustomSelect
+                                                            <Select
                                                                 value={newTask.type}
-                                                                onChange={(value) => setNewTask({ ...newTask, type: value })}
-                                                                options={Object.values(TaskType).map((type) => ({
-                                                                    label: type,
-                                                                    value: type,
-                                                                }))}
-                                                                placeholder="Select task type"
-                                                            />
+                                                                onValueChange={(value) => setNewTask({ ...newTask, type: value })}
+                                                            >
+                                                                <FormControl>
+                                                                    <SelectTrigger>
+                                                                        <SelectValue placeholder="Select task type" />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    {Object.values(TaskType).map((type) => (
+                                                                        <SelectItem key={type} value={type}>
+                                                                            {type}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
                                                         </div>
                                                         {/* <div className="space-y-2">
                                                             <Label htmlFor="task-notes">Careworker Notes</Label>
@@ -1538,52 +1587,57 @@ export const PatientInformation = ({ user }: { user: User }) => {
                     <div className="grid gap-4 py-4">
                         <div className="space-y-2">
                             <Label htmlFor="edit-name" className="text-xs font-normal text-neutral-600">Name</Label>
-                            <CustomInput
+                            <Input
                                 id="edit-name"
                                 placeholder="Full name"
                                 value={editingContact?.name || ""}
-                                onChange={(value) => setEditingContact(editingContact ? { ...editingContact, name: value } : null)}
+                                onChange={(e) => setEditingContact(editingContact ? { ...editingContact, name: e.target.value } : null)}
                             />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-relation" className="text-xs font-normal text-neutral-600">Relationship</Label>
-                            <CustomSelect
+                            <Select
                                 value={editingContact?.relation || ""}
-                                onChange={(value) =>
+                                onValueChange={(value) =>
                                     setEditingContact(editingContact ? { ...editingContact, relation: value } : null)
                                 }
-                                options={[
-                                    { label: "Spouse", value: "Spouse" },
-                                    { label: "Parent", value: "Parent" },
-                                    { label: "Child", value: "Child" },
-                                    { label: "Sibling", value: "Sibling" },
-                                    { label: "Friend", value: "Friend" },
-                                    { label: "Caregiver", value: "Caregiver" },
-                                    { label: "Other", value: "Other" }
-                                ]}
-                                placeholder="Select relationship"
-                            />
+                            >
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select relationship" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="Spouse">Spouse</SelectItem>
+                                    <SelectItem value="Parent">Parent</SelectItem>
+                                    <SelectItem value="Child">Child</SelectItem>
+                                    <SelectItem value="Sibling">Sibling</SelectItem>
+                                    <SelectItem value="Friend">Friend</SelectItem>
+                                    <SelectItem value="Caregiver">Caregiver</SelectItem>
+                                    <SelectItem value="Other">Other</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-phone" className="text-xs font-normal text-neutral-600">Phone Number</Label>
-                            <CustomInput
+                            <Input
                                 id="edit-phone"
                                 placeholder="(555) 123-4567"
                                 value={editingContact?.phone || ""}
-                                onChange={(value) =>
-                                    setEditingContact(editingContact ? { ...editingContact, phone: value } : null)
+                                onChange={(e) =>
+                                    setEditingContact(editingContact ? { ...editingContact, phone: e.target.value } : null)
                                 }
                             />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-email" className="text-xs font-normal text-neutral-600">Email Address</Label>
-                            <CustomInput
+                            <Input
                                 id="edit-email"
                                 type="email"
                                 placeholder="contact@example.com"
                                 value={editingContact?.email || ""}
-                                onChange={(value) =>
-                                    setEditingContact(editingContact ? { ...editingContact, email: value } : null)
+                                onChange={(e) =>
+                                    setEditingContact(editingContact ? { ...editingContact, email: e.target.value } : null)
                                 }
                             />
                         </div>

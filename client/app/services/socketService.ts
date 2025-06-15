@@ -23,7 +23,7 @@ class SocketService {
   async connect(_userId: string) {
     if (!this.socket) {
       const serverUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
-      ("Connecting to socket server:", serverUrl);
+      console.log("Connecting to socket server:", serverUrl);
       
       try {
         const session = await fetchAuthSession();
@@ -44,7 +44,7 @@ class SocketService {
           });
 
           this.socket.on("connect", () => {
-            ("Connected to WebSocket server with ID:", this.socket?.id);
+            console.log("Connected to WebSocket server with ID:", this.socket?.id);
             resolve(this.socket);
           });
 
@@ -54,7 +54,7 @@ class SocketService {
           });
 
           this.socket.on("disconnect", () => {
-            ("Disconnected from WebSocket server");
+            console.log("Disconnected from WebSocket server");
           });
         });
       } catch (error) {
@@ -70,13 +70,19 @@ class SocketService {
   }
 
   sendMessage(data: MessageData) {
-    if (this.socket) {
-      const { conversationId, content, senderId } = data;
-      ('Socket service - Sending message:', {
-        conversationId,
-        content,
-        senderId
-      });
+    if (!this.socket) {
+      console.error("Socket not connected. Cannot send message.");
+      return;
+    }
+
+    const { conversationId, content, senderId } = data;
+    console.log('Socket service - Sending message:', {
+      conversationId,
+      content,
+      senderId
+    });
+
+    try {
       this.socket.emit("send_message", {
         conversationId,
         content,
@@ -84,10 +90,10 @@ class SocketService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         isRead: false,
-      })
-      ('Socket service - Message emitted');
-    } else {
-      console.error("Socket not connected. Cannot send message.")
+      });
+      console.log('Socket service - Message emitted');
+    } catch (error) {
+      console.error("Error sending message through socket:", error);
     }
   }
 
@@ -102,38 +108,40 @@ class SocketService {
   }
 
   onMessageReceived(callback: (message: any) => void) {
-    if (this.socket) {
-      ('Setting up message listener...');
-      this.socket.on("receive_message", (message) => {
-        ('Socket event received:', 'receive_message');
-        ('Raw message data:', message);
-        
-        // Map the server's message format to our expected structure
-        const formattedMessage = {
-          id: message.id || Date.now().toString(),
-          content: message.content,
-          senderId: message.senderId,
-          conversationId: message.roomId || message.conversationId,
-          createdAt: message.timestamp || message.createdAt || new Date().toISOString(),
-          updatedAt: message.timestamp || message.updatedAt || new Date().toISOString(),
-          isRead: message.isRead || false,
-          sender: message.sender || {
-            id: message.senderId,
-            fullName: message.sender?.fullName || 'Unknown User',
-            email: message.sender?.email || '',
-          }
-        };
-        
-        ('Formatted message:', formattedMessage);
-        callback(formattedMessage);
-      });
-      return () => {
-        ('Cleaning up message listener...');
-        this.socket?.off("receive_message", callback);
-      };
+    if (!this.socket) {
+      console.log("Socket not connected, cannot set up message listener");
+      return () => {};
     }
-    ('Socket not connected, cannot set up message listener');
-    return () => {};
+
+    console.log('Setting up message listener...');
+    this.socket.on("receive_message", (message) => {
+      console.log('Socket event received:', 'receive_message');
+      console.log('Raw message data:', message);
+      
+      // Map the server's message format to our expected structure
+      const formattedMessage = {
+        id: message.id || Date.now().toString(),
+        content: message.content,
+        senderId: message.senderId,
+        conversationId: message.roomId || message.conversationId,
+        createdAt: message.timestamp || message.createdAt || new Date().toISOString(),
+        updatedAt: message.timestamp || message.updatedAt || new Date().toISOString(),
+        isRead: message.isRead || false,
+        sender: message.sender || {
+          id: message.senderId,
+          fullName: message.sender?.fullName || 'Unknown User',
+          email: message.sender?.email || '',
+        }
+      };
+      
+      console.log('Formatted message:', formattedMessage);
+      callback(formattedMessage);
+    });
+
+    return () => {
+      console.log('Cleaning up message listener...');
+      this.socket?.off("receive_message", callback);
+    };
   }
 
   onTyping(callback: (data: any) => void) {

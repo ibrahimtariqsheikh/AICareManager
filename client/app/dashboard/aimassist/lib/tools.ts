@@ -268,6 +268,36 @@ export const generateCarePlanTool = createTool({
   },
 });
 
+export const medicationTool = createTool({
+  description: `View and manage medication records for a client. 
+
+CRITICAL FORMATTING RULES FOR USER REQUESTS:
+- Use markdown bullets (-) not asterisks (*)
+- Use **Bold** for field names
+- NEVER show technical enum values to users
+- NEVER show format requirements like (format: YYYY-MM-DD)
+- Handle all format conversion automatically
+
+CORRECT REQUEST FORMAT:
+"To view a client's medication records, I need the following information:
+
+- **Client Name** (the name of the client to view medications for)
+"
+
+NEVER USE: format requirements`,
+  parameters: z.object({
+    client_name: z.string().describe('The name of the client to view medications for (display as "Client Name" to users)'),
+  }),
+  execute: async function ({ client_name }) {
+    return {
+      client_name,
+      status: 'success',
+      success: true,
+      toolName: 'medicationTool'
+    };
+  },
+});
+
 export const tools = {
   createOfficeStaffProfile: createOfficeStaffProfileTool,
   createCareWorkerProfile: createCareWorkerProfileTool,
@@ -282,4 +312,5 @@ export const tools = {
   generateRevenueReport: generateRevenueReportTool,
   sendOnboardingInvite: sendOnboardingInviteTool,
   generateCarePlan: generateCarePlanTool,
+  medication: medicationTool,
 };

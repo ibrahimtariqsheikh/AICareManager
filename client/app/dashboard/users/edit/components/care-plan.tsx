@@ -8,8 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Plus, Trash2, Pencil, FileText } from "lucide-react"
-import { CustomInput } from "@/components/ui/custom-input"
-import { CustomSelect } from "@/components/ui/custom-select"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MyCustomDateRange } from "@/app/dashboard/billing/components/my-custom-date-range"
 import { CustomTextarea } from "@/components/ui/custom-textarea"
 import { TextSignature } from "@/components/ui/text-signature"
@@ -96,7 +96,6 @@ const carePlanSchema = z.object({
 })
 
 type CarePlanFormData = z.infer<typeof carePlanSchema>
-
 type CustomQuestion = z.infer<typeof customQuestionSchema>
 
 export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'] }) {
@@ -165,7 +164,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
     })
 
     const handleSignatureChange = (type: keyof CarePlanFormData['signatures'], hasSignature: boolean) => {
-        form.setValue(`signatures.${type}`, hasSignature)
+        form.setValue(`signatures.${String(type)}`, hasSignature)
     }
 
     // const savePlan = async (data: CarePlanFormData) => {
@@ -196,23 +195,23 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
 
     const removeCustomQuestion = (id: string) => {
         const currentQuestions = form.getValues("customQuestions")
-        form.setValue("customQuestions", currentQuestions.filter(q => q.id !== id))
+        form.setValue("customQuestions", currentQuestions.filter((q: CustomQuestion) => q.id !== id))
     }
 
     const updateCustomQuestion = (id: string, updates: Partial<CustomQuestion>) => {
         const currentQuestions = form.getValues("customQuestions")
-        form.setValue("customQuestions", currentQuestions.map(q =>
+        form.setValue("customQuestions", currentQuestions.map((q: CustomQuestion) =>
             q.id === id ? { ...q, ...updates } : q
         ))
     }
 
     const getQuestionsForSection = (sectionId: string): CustomQuestion[] => {
-        return form.getValues("customQuestions").filter(q => q.section === sectionId)
+        return form.getValues("customQuestions").filter((q: CustomQuestion) => q.section === sectionId)
     }
 
 
     const saveQuestion = (questionId: string) => {
-        const question = form.getValues("customQuestions").find(q => q.id === questionId)
+        const question = form.getValues("customQuestions").find((q: CustomQuestion) => q.id === questionId)
         if (!question || !question.question.trim()) {
             removeCustomQuestion(questionId)
             return
@@ -226,26 +225,26 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                 <div className="p-4 border border-dashed border-neutral-200 rounded-lg bg-neutral-50/50">
                     <div className="flex justify-between items-start mb-4">
                         <div className="space-y-2 flex-1 mr-4">
-                            <CustomInput
+                            <Input
                                 placeholder="Enter your question"
                                 value={question.question}
-                                onChange={(value: string) =>
-                                    updateCustomQuestion(question.id, { question: value })}
+                                onChange={(e) => updateCustomQuestion(question.id, { question: e.target.value })}
                             />
                             <div className="flex items-center gap-4">
-                                <CustomSelect
+                                <Select
                                     value={question.type}
-                                    onChange={(value) =>
-                                        updateCustomQuestion(question.id, { type: value as 'text' | 'radio' | 'checkbox' | 'select' })}
-                                    options={[
-                                        { value: 'text', label: 'Text Input' },
-                                        { value: 'radio', label: 'Radio Buttons' },
-                                        { value: 'checkbox', label: 'Checkboxes' },
-                                        { value: 'select', label: 'Dropdown' }
-                                    ]}
-                                    placeholder="Select type"
-                                    className="w-[180px]"
-                                />
+                                    onValueChange={(value) => updateCustomQuestion(question.id, { type: value as 'text' | 'radio' | 'checkbox' | 'select' })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="text">Text Input</SelectItem>
+                                        <SelectItem value="radio">Radio Buttons</SelectItem>
+                                        <SelectItem value="checkbox">Checkboxes</SelectItem>
+                                        <SelectItem value="select">Dropdown</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 <div className="flex items-center space-x-2">
                                     <Checkbox
                                         id={`required-${question.id}`}
@@ -285,11 +284,11 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                             <div className="space-y-2">
                                 {question.options.map((option, optionIndex) => (
                                     <div key={optionIndex} className="flex items-center gap-2">
-                                        <CustomInput
+                                        <Input
                                             value={option}
-                                            onChange={(value: string) => {
+                                            onChange={(e) => {
                                                 const newOptions = [...question.options]
-                                                newOptions[optionIndex] = value
+                                                newOptions[optionIndex] = e.target.value
                                                 updateCustomQuestion(question.id, { options: newOptions })
                                             }}
                                             placeholder={`Option ${optionIndex + 1}`}
@@ -335,18 +334,16 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                             {question.required && <span className="text-red-500 text-sm">*</span>}
                         </div>
                         {question.type === 'text' && (
-                            <CustomInput
+                            <Input
                                 placeholder="Enter your answer"
                                 value={question.answer as string || ''}
-                                onChange={(value: string) =>
-                                    updateCustomQuestion(question.id, { answer: value })}
+                                onChange={(e) => updateCustomQuestion(question.id, { answer: e.target.value })}
                             />
                         )}
                         {question.type === 'radio' && (
                             <RadioGroup
                                 value={question.answer as string}
-                                onValueChange={(value) =>
-                                    updateCustomQuestion(question.id, { answer: value })}
+                                onValueChange={(value) => updateCustomQuestion(question.id, { answer: value })}
                             >
                                 {question.options.map((option, index) => (
                                     <div key={index} className="flex items-center space-x-2">
@@ -377,16 +374,21 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                             </div>
                         )}
                         {question.type === 'select' && (
-                            <CustomSelect
+                            <Select
                                 value={question.answer as string}
-                                onChange={(value) =>
-                                    updateCustomQuestion(question.id, { answer: value })}
-                                options={question.options.map(option => ({
-                                    value: option,
-                                    label: option
-                                }))}
-                                placeholder="Select an option"
-                            />
+                                onValueChange={(value) => updateCustomQuestion(question.id, { answer: value })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select an option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {question.options.map(option => (
+                                        <SelectItem key={option} value={option}>
+                                            {option}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         )}
                     </div>
                     <Button
@@ -429,7 +431,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="fullName">Full Name *</Label>
-                            <CustomInput id="fullName" placeholder="Enter full name" />
+                            <Input id="fullName" placeholder="Enter full name" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="dob">Date of Birth *</Label>
@@ -457,18 +459,18 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="nhsNumber">NHS Number</Label>
-                            <CustomInput id="nhsNumber" placeholder="000 000 0000" />
+                            <Input id="nhsNumber" placeholder="000 000 0000" />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="contact">Contact Number</Label>
-                            <CustomInput id="contact" type="tel" placeholder="+44 1234 567890" />
+                            <Input id="contact" type="tel" placeholder="+44 1234 567890" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="keySafe">Key Safe Code (optional)</Label>
-                            <CustomInput id="keySafe" placeholder="Enter key safe code" />
+                            <Input id="keySafe" placeholder="Enter key safe code" />
                         </div>
                     </div>
 
@@ -495,11 +497,11 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="nextOfKin">Next of Kin Name & Contact</Label>
-                            <CustomInput id="nextOfKin" placeholder="Name and phone number" />
+                            <Input id="nextOfKin" placeholder="Name and phone number" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="emergency">Emergency Contact</Label>
-                            <CustomInput id="emergency" placeholder="Name and phone number" />
+                            <Input id="emergency" placeholder="Name and phone number" />
                         </div>
                     </div>
 
@@ -510,7 +512,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
 
                     <div className="space-y-2">
                         <Label htmlFor="socialWorker">Social Worker / Case Manager Contact</Label>
-                        <CustomInput id="socialWorker" placeholder="Name and contact details" />
+                        <Input id="socialWorker" placeholder="Name and contact details" />
                     </div>
 
                     <div className="space-y-2">
@@ -623,23 +625,25 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="printName">Print Name</Label>
-                                    <CustomInput id="printName" placeholder="Full name of person signing" />
+                                    <Input id="printName" placeholder="Full name of person signing" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="relationship">Relationship to Client</Label>
-                                    <CustomSelect
-                                        options={[
-                                            { value: "self", label: "Self (Client)" },
-                                            { value: "spouse", label: "Spouse/Partner" },
-                                            { value: "child", label: "Child" },
-                                            { value: "parent", label: "Parent" },
-                                            { value: "sibling", label: "Sibling" },
-                                            { value: "lpa", label: "LPA (Lasting Power of Attorney)" },
-                                            { value: "guardian", label: "Legal Guardian" },
-                                            { value: "other", label: "Other" },
-                                        ]}
-                                        placeholder="Select relationship"
-                                    />
+                                    <Select>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select relationship" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="self">Self (Client)</SelectItem>
+                                            <SelectItem value="spouse">Spouse/Partner</SelectItem>
+                                            <SelectItem value="child">Child</SelectItem>
+                                            <SelectItem value="parent">Parent</SelectItem>
+                                            <SelectItem value="sibling">Sibling</SelectItem>
+                                            <SelectItem value="lpa">LPA (Lasting Power of Attorney)</SelectItem>
+                                            <SelectItem value="guardian">Legal Guardian</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
 
@@ -650,7 +654,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="witness">Witness Name (if required)</Label>
-                                    <CustomInput id="witness" placeholder="Witness name (optional)" />
+                                    <Input id="witness" placeholder="Witness name (optional)" />
                                 </div>
                             </div>
                         </div>
@@ -711,7 +715,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
 
                     <div className="space-y-2">
                         <Label htmlFor="otherConditions">Other Medical Conditions</Label>
-                        <CustomInput id="otherConditions" placeholder="Please specify any other conditions" />
+                        <Input id="otherConditions" placeholder="Please specify any other conditions" />
                     </div>
 
                     <div className="space-y-4">
@@ -730,7 +734,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
 
                     <div className="space-y-2">
                         <Label htmlFor="otherMentalHealth">Other Mental Health Conditions</Label>
-                        <CustomInput id="otherMentalHealth" placeholder="Please specify" />
+                        <Input id="otherMentalHealth" placeholder="Please specify" />
                     </div>
 
                     <div className="space-y-4">
@@ -749,7 +753,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
 
                     <div className="space-y-2">
                         <Label htmlFor="otherAllergies">Other Allergies</Label>
-                        <CustomInput id="otherAllergies" placeholder="Please specify" />
+                        <Input id="otherAllergies" placeholder="Please specify" />
                     </div>
 
                     <div className="space-y-2">
@@ -858,7 +862,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 <div className="space-y-2">
                                     <Label>Print Name</Label>
-                                    <CustomInput placeholder="Print name" />
+                                    <Input placeholder="Print name" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Date & Time</Label>
@@ -877,7 +881,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 <div className="space-y-2">
                                     <Label>Print Name</Label>
-                                    <CustomInput placeholder="Print name" />
+                                    <Input placeholder="Print name" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Date & Time</Label>
@@ -896,7 +900,7 @@ export default function CarePlan({ user }: { user: UserAllDetailsResponse['data'
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 <div className="space-y-2">
                                     <Label>Print Name</Label>
-                                    <CustomInput placeholder="Print name" />
+                                    <Input placeholder="Print name" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Date & Time</Label>

@@ -144,7 +144,7 @@ const EditUserPage = () => {
         { id: "appointmentHistory", label: "Appointment History", icon: Calendar },
         { id: "reports", label: "Reports", icon: FileText },
         { id: "emar", label: "EMAR", icon: Pill },
-        { id: "scheduleTemplate", label: "Schedule Template", icon: Calendar },
+        { id: "scheduleTemplate", label: "Schedule Templates", icon: Calendar },
         { id: "carePlan", label: "Care Plan", icon: FileText },
         { id: "riskAssessment", label: "Risk Assessment", icon: Shield },
         { id: "documents", label: "Documents", icon: FileText },
@@ -256,10 +256,10 @@ const EditUserPage = () => {
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 items-center w-full sm:w-auto justify-start sm:justify-end">
-                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30 whitespace-nowrap">
+                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-full font-medium border border-primary/30 whitespace-nowrap">
                             {formatRole(user?.role) || "No Role"}
                         </p>
-                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-md font-medium border border-primary/30 whitespace-nowrap">
+                        <p className="text-xs text-primary bg-primary/5 px-2 py-1 rounded-full font-medium border border-primary/30 whitespace-nowrap">
                             {formatSubRole(user?.subRole) || "No Subrole"}
                         </p>
                     </div>
@@ -280,7 +280,7 @@ const EditUserPage = () => {
                                     }}
                                     className={`px-2 sm:px-3 py-2 cursor-pointer transition-all duration-300 h-[30px] text-xs sm:text-sm ${tab.id === activeTab
                                         ? "bg-primary/10 rounded-md text-primary"
-                                        : "text-[#0e0f1199] dark:text-[#ffffff99] border border-border rounded-md hover:border-primary/50 hover:bg-primary/5 hover:text-primary/80"
+                                        : "text-[#0e0f1199] dark:text-[#ffffff99]  rounded-md hover:border-primary/50 hover:bg-primary/5 hover:text-primary/80"
                                         }`}
                                     onClick={() => handleTabChange(tab.id)}
                                 >

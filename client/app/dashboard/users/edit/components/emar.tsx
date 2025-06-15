@@ -17,7 +17,7 @@ interface EMARProps {
 export const EMAR = ({ user }: EMARProps) => {
     const dispatch = useAppDispatch()
 
-    // Safely access medications with fallbacks
+
     const medicationsFromUser = user?.medications || []
     const logsFromUser = medicationsFromUser.map((medication: Medication) => medication.logs || [])
 

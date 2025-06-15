@@ -19,11 +19,7 @@ const contactFormSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5 }
-};
+
 
 export default function ContactPage() {
     const {
@@ -55,7 +51,7 @@ export default function ContactPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-4xl font-bold text-neutral-900 mb-4">Book a Demo</h1>
+                    <h1 className="text-4xl font-bold text-neutral-900 mb-4">Book Your AI Care Systems Consultation</h1>
                     <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
                         Schedule a personalized demo to see how our AI-powered platform can transform your healthcare operations.
                     </p>
@@ -162,20 +158,22 @@ export default function ContactPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.3 }}
                         >
-                            <h2 className="text-2xl font-semibold text-neutral-900 mb-6">
+                            <h2 className="text-2xl font-semibold text-neutral-900 mb-6 leading-relaxed tracking-tighter">
                                 Get in Touch
                             </h2>
                             <div className="space-y-6">
                                 <motion.div
-                                    className="flex items-start space-x-4"
+                                    className="flex items-start space-x-4 text-sm md:text-base"
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.5, delay: 0.4 }}
                                 >
-                                    <Mail className="w-6 h-6 text-primary mt-1" />
+                                    <div className="p-2 rounded-lg bg-primary/10 flex items-center justify-center">
+                                        <Mail className="w-4 h-4 text-primary" />
+                                    </div>
                                     <div>
                                         <h3 className="text-lg font-medium text-neutral-900">Email</h3>
-                                        <p className="text-neutral-600">support@aicaremanager.com</p>
+                                        <p className="text-neutral-600">care@weaim.io</p>
                                     </div>
                                 </motion.div>
 
@@ -185,31 +183,15 @@ export default function ContactPage() {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.5, delay: 0.5 }}
                                 >
-                                    <Phone className="w-6 h-6 text-primary mt-1" />
+                                    <div className="p-2 rounded-lg bg-primary/10 flex items-center justify-center">
+                                        <Phone className="w-4 h-4 text-primary" />
+                                    </div>
                                     <div>
                                         <h3 className="text-lg font-medium text-neutral-900">Phone</h3>
-                                        <p className="text-neutral-600">+1 (555) 123-4567</p>
+                                        <p className="text-neutral-600">+44 7341 362145</p>
                                     </div>
                                 </motion.div>
 
-                                <motion.div
-                                    className="flex items-start space-x-4"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.5, delay: 0.6 }}
-                                >
-                                    <MapPin className="w-6 h-6 text-primary mt-1" />
-                                    <div>
-                                        <h3 className="text-lg font-medium text-neutral-900">Location</h3>
-                                        <p className="text-neutral-600">
-                                            123 Innovation Street
-                                            <br />
-                                            Tech City, TC 12345
-                                            <br />
-                                            United States
-                                        </p>
-                                    </div>
-                                </motion.div>
                             </div>
                         </motion.div>
 
@@ -219,12 +201,12 @@ export default function ContactPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.7 }}
                         >
-                            <h2 className="text-2xl font-semibold text-neutral-900 mb-6">
+                            <h2 className="text-2xl font-semibold text-neutral-900 leading-relaxed tracking-tighter mb-6">
                                 Business Hours
                             </h2>
-                            <div className="space-y-2">
-                                <p className="text-neutral-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                                <p className="text-neutral-600">Saturday: 10:00 AM - 4:00 PM</p>
+                            <div className="space-y-2 text-sm md:text-base">
+                                <p className="text-neutral-600">Monday - Friday: 09:00 AM - 05:00 PM</p>
+                                <p className="text-neutral-600">Saturday: 09:00 AM - 05:00 PM</p>
                                 <p className="text-neutral-600">Sunday: Closed</p>
                             </div>
                         </motion.div>

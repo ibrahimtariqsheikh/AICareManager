@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Users, Briefcase } from "lucide-react"
 import { getRandomPlaceholderImage } from "@/lib/utils"
-import { CustomInput } from "@/components/ui/custom-input"
+import { Input } from "@/components/ui/input"
 import { useAppSelector } from "@/state/redux"
 import { User } from "@/types/prismaTypes"
 
@@ -99,21 +99,23 @@ export default function ContactsPage() {
     })()
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)] w-full bg-background mt-2">
+        <div className="flex flex-col h-[calc(100vh-4rem)] w-full  mt-2">
             {/* Search Bar */}
             <div className="px-3 py-1.5">
-                <CustomInput
-                    type="text"
-                    placeholder="Search contacts..."
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    className="w-full"
-                    icon={<Search className="h-3.5 w-3.5" />}
-                />
+                <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="text"
+                        placeholder="Search contacts..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-8"
+                    />
+                </div>
             </div>
 
             {/* Role Tabs */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-2">
                 <div className="">
                     <TabsList className="h-10 w-full justify-start rounded-none border-b bg-transparent p-0">
                         <TabsTrigger
@@ -142,7 +144,7 @@ export default function ContactsPage() {
 
                 {/* Contact Lists */}
                 <TabsContent value={activeTab} className="flex-1 overflow-hidden mt-0 p-0">
-                    <div className="h-full overflow-y-auto">
+                    <div className="h-full overflow-y-auto mt-2 p-0">
                         {filteredContacts.length > 0 ? (
                             <div className="divide-y">
                                 {filteredContacts.map((contact) => (

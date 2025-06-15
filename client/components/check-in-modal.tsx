@@ -6,7 +6,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -16,6 +15,8 @@ import { CheckCircle, XCircle, AlertCircle } from "lucide-react"
 import { MedicationTime, User } from "@/types/prismaTypes"
 import { useCheckInMedicationMutation } from "@/state/api"
 import { toast } from "sonner"
+import React from "react"
+import { CustomRadio, CustomRadioItem } from "@/components/ui/custom-radio"
 
 const formSchema = z.object({
     status: z.enum(["TAKEN", "NOT_TAKEN", "NOT_REPORTED"]),
@@ -33,17 +34,30 @@ export function CheckInModal({ user }: CheckInModalProps) {
         selectedMedicationId = null,
         selectedTimeOfDay = null,
         selectedDay = null,
+        selectedMonth = "0",
+        selectedYear = new Date().getFullYear().toString(),
         medications = [],
+        currentStatus = null,
     } = useAppSelector((state) => state.medication) || {}
 
     const [checkInMedication] = useCheckInMedicationMutation()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            status: "TAKEN",
+            status: currentStatus || "NOT_REPORTED",
             notes: "",
         },
     })
+
+    // Reset form when modal opens with new status
+    React.useEffect(() => {
+        if (isCheckInModalOpen && currentStatus) {
+            form.reset({
+                status: currentStatus,
+                notes: "",
+            })
+        }
+    }, [isCheckInModalOpen, currentStatus, form])
 
     const selectedMedication = medications.find((med) => med.id === selectedMedicationId)
 
@@ -59,23 +73,24 @@ export function CheckInModal({ user }: CheckInModalProps) {
         }
 
         try {
+            console.log(selectedMedicationId, selectedTimeOfDay, selectedDay, user.id)
+            console.log(values)
             await checkInMedication({
                 medicationId: selectedMedicationId,
                 userId: user.id,
                 data: {
-                    date: new Date(Date.now()).toISOString(),
+                    date: new Date(Number.parseInt(selectedYear), Number.parseInt(selectedMonth), selectedDay).toISOString(),
                     time: selectedTimeOfDay.toUpperCase() as MedicationTime,
                     status: values.status,
                     notes: values.notes || null,
                 }
             }).unwrap()
 
-
             dispatch(addMedicationLog({
                 medicationId: selectedMedicationId,
                 userId: user.id,
                 data: {
-                    date: new Date(Date.now()).toISOString(),
+                    date: new Date(Number.parseInt(selectedYear), Number.parseInt(selectedMonth), selectedDay).toISOString(),
                     time: selectedTimeOfDay.toUpperCase() as MedicationTime,
                     status: values.status,
                     notes: values.notes || null,
@@ -101,15 +116,15 @@ export function CheckInModal({ user }: CheckInModalProps) {
         <Dialog open={isCheckInModalOpen} onOpenChange={(open) => !open && handleClose()}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle className="text-lg font-semibold">Medication Check-In</DialogTitle>
+                    <DialogTitle className="text-lg font-semibold leading-none">Medication Check-In</DialogTitle>
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4 ">
                         {selectedMedication && (
-                            <div className="rounded-lg bg-gray-50 p-4">
-                                <h3 className="font-medium text-gray-900">{selectedMedication.name}</h3>
-                                <div className="mt-1 text-sm text-gray-500">
+                            <div className="rounded-lg border border-neutral-200 p-4 bg-gray-100">
+                                <h3 className="font-medium text-neutral-800">{selectedMedication.name}</h3>
+                                <div className="text-sm text-neutral-500">
                                     {selectedMedication.dosage} • {selectedMedication.frequency}
                                 </div>
 
@@ -122,17 +137,16 @@ export function CheckInModal({ user }: CheckInModalProps) {
                                 name="status"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-base">Status</FormLabel>
+                                        <div className="text-base text-neutral-500 font-medium text-left ">Status</div>
                                         <FormControl>
-                                            <RadioGroup
+                                            <CustomRadio
                                                 onValueChange={field.onChange}
                                                 defaultValue={field.value}
                                                 className="mt-3 flex flex-col space-y-3"
                                             >
-                                                <div className="flex items-center space-x-2 rounded-md border border-gray-200 p-3 hover:bg-gray-50">
-                                                    <RadioGroupItem value="TAKEN" id="TAKEN" className="border-emerald-500 text-emerald-500" />
-                                                    <Label htmlFor="TAKEN" className="flex flex-1 items-center cursor-pointer">
-                                                        <CheckCircle className="mr-2 h-5 w-5 text-emerald-500" />
+                                                <div className="flex items-center space-x-2 rounded-md p-3 hover:bg-gray-50">
+                                                    <CustomRadioItem value="TAKEN" id="label-TAKEN" color="emerald" />
+                                                    <Label htmlFor="label-TAKEN" className="flex flex-1 items-center cursor-pointer">
                                                         <div>
                                                             <div className="font-medium">Taken</div>
                                                             <div className="text-sm text-gray-500">Medication was administered</div>
@@ -140,10 +154,9 @@ export function CheckInModal({ user }: CheckInModalProps) {
                                                     </Label>
                                                 </div>
 
-                                                <div className="flex items-center space-x-2 rounded-md border border-gray-200 p-3 hover:bg-gray-50">
-                                                    <RadioGroupItem value="NOT_TAKEN" id="NOT_TAKEN" className="border-rose-500 text-rose-500" />
-                                                    <Label htmlFor="NOT_TAKEN" className="flex flex-1 items-center cursor-pointer">
-                                                        <XCircle className="mr-2 h-5 w-5 text-rose-500" />
+                                                <div className="flex items-center space-x-2 rounded-md p-3 hover:bg-gray-50">
+                                                    <CustomRadioItem value="NOT_TAKEN" id="label-NOT_TAKEN" color="red" />
+                                                    <Label htmlFor="label-NOT_TAKEN" className="flex flex-1 items-center cursor-pointer">
                                                         <div>
                                                             <div className="font-medium">Not Taken</div>
                                                             <div className="text-sm text-gray-500">Medication was not administered</div>
@@ -151,17 +164,16 @@ export function CheckInModal({ user }: CheckInModalProps) {
                                                     </Label>
                                                 </div>
 
-                                                <div className="flex items-center space-x-2 rounded-md border border-gray-200 p-3 hover:bg-gray-50">
-                                                    <RadioGroupItem value="NOT_REPORTED" id="NOT_REPORTED" className="border-gray-500 text-gray-500" />
-                                                    <Label htmlFor="NOT_REPORTED" className="flex flex-1 items-center cursor-pointer">
-                                                        <AlertCircle className="mr-2 h-5 w-5 text-gray-500" />
+                                                <div className="flex items-center space-x-2 rounded-md p-3 hover:bg-gray-50">
+                                                    <CustomRadioItem value="NOT_REPORTED" id="label-NOT_REPORTED" color="gray" />
+                                                    <Label htmlFor="label-NOT_REPORTED" className="flex flex-1 items-center cursor-pointer">
                                                         <div>
                                                             <div className="font-medium">Not Reported</div>
                                                             <div className="text-sm text-gray-500">Status not yet reported</div>
                                                         </div>
                                                     </Label>
                                                 </div>
-                                            </RadioGroup>
+                                            </CustomRadio>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
